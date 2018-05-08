@@ -1,0 +1,11 @@
+# Copy and rename this file into application-dev.properties, and correct/add relevant properties
+
+spring.profiles.active=dev
+
+#DATASOURCE
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://host:port/db
+spring.datasource.username=username
+spring.datasource.password=password
+spring.datasource.tomcat.initial-size=1
+spring.datasource.tomcat.maxActive=10

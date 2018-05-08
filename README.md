@@ -1,0 +1,1 @@
+# Kiinteistö- ja sopimusrekisteri
