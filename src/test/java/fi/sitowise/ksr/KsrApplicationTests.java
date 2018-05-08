@@ -1,4 +1,4 @@
-package fi.dimenteq.ksr;
+package fi.sitowise.ksr;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

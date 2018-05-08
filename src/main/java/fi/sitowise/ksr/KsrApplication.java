@@ -1,4 +1,4 @@
-package fi.dimenteq.ksr;
+package fi.sitowise.ksr;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
