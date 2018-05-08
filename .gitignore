@@ -47,3 +47,11 @@ src/main/client/npm-debug.log*
 src/main/client/yarn-debug.log*
 src/main/client/yarn-error.log*
 /.metadata/
+
+### Node ###
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
