@@ -1,0 +1,59 @@
+{
+  "plugins": [
+    "react",
+    "jasmine",
+    "chai-friendly",
+    "flowtype"
+  ],
+  "extends": [
+    "airbnb",
+    "plugin:jasmine/recommended",
+    "plugin:flowtype/recommended"
+  ],
+  "rules": {
+    "func-names": [
+      "error",
+      "never"
+    ],
+    "indent": [
+      "error",
+      4,
+      { "SwitchCase": 1 }
+    ],
+    "linebreak-style": 0,
+    "react/jsx-indent": 0,
+    "react/jsx-indent-props": 0,
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2,
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ],
+    "import/prefer-default-export": "off"
+  },
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "jasmine": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true
+    }
+  },
+  "globals": {
+    "expect": true
+  }
+}
