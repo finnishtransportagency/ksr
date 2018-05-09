@@ -93,13 +93,13 @@
 			        </execution>
 			
 			        <execution>
-			            <id>npm install</id>
+			            <id>npm update</id>
 			            <phase>compile</phase>
 			            <goals>
 			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
-			                <arguments>install</arguments>
+			                <arguments>update</arguments>
 			            </configuration>
 			        </execution>
 			
