@@ -1,0 +1,1 @@
+-- Comments for tables and columns

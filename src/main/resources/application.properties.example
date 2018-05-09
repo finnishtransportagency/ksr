@@ -12,3 +12,8 @@ spring.datasource.tomcat.maxActive=10
 
 #jOOQ
 spring.jooq.sql-dialect=Postgres
+
+#Flyway
+spring.flyway.clean-disabled=true
+spring.flyway.locations=classpath:/db/migration
+spring.flyway.out-of-order=true
