@@ -13,7 +13,7 @@ const App = () => (
     </Router>
 );
 
-injectGlobal([`
+injectGlobal`
   body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -28,6 +28,6 @@ injectGlobal([`
     *::-moz-selection { background: ${styles.colorMain}; }
     *::selection { background: ${styles.colorMain}; }
   }
-`]);
+`;
 
 export default App;

@@ -9,7 +9,7 @@ type Props = {
 
 const HomeView = ({ title }: Props) => (
     <Wrapper>
-        <H1>{ title }</H1>
+        <H1>{title}</H1>
     </Wrapper>
 );
 
