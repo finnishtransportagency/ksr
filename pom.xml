@@ -171,6 +171,37 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<executions>
+					<execution>
+						<id>ksr-datasource</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<jdbc>
+								<url>${db.ksr.url}</url>
+								<user>${db.ksr.username}</user>
+								<password>${db.ksr.password}</password>
+							</jdbc>
+							<generator>
+								<database>
+									<includes>.*</includes>
+									<excludes></excludes>
+									<inputSchema>public</inputSchema>
+								</database>
+								<target>
+									<packageName>fi.sitowise.ksr.jooq</packageName>
+									<directory>target/generated-sources</directory>
+								</target>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

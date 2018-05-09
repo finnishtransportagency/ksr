@@ -9,3 +9,6 @@ spring.datasource.username=username
 spring.datasource.password=password
 spring.datasource.tomcat.initial-size=1
 spring.datasource.tomcat.maxActive=10
+
+#jOOQ
+spring.jooq.sql-dialect=Postgres
