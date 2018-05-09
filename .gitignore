@@ -32,7 +32,6 @@ nbdist/
 src/main/resources/application-dev.properties
 src/main/resources/application-test.properties
 src/main/resources/application-prod.properties
-src/main/resources/pom.properties
 
 ### React stuff
 src/main/client/build/
