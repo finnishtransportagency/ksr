@@ -169,7 +169,7 @@
 						</goals>
 						<configuration>
 							<files>
-								<file>src/main/resources/pom.properties</file>
+								<file>src/main/resources/application-${spring.profiles.active}.properties</file>
 							</files>
 						</configuration>
 					</execution>
@@ -187,9 +187,9 @@
 						</goals>
 						<configuration>
 							<jdbc>
-								<url>${db.ksr.url}</url>
-								<user>${db.ksr.username}</user>
-								<password>${db.ksr.password}</password>
+								<url>${spring.datasource.url}</url>
+								<user>${spring.datasource.username}</user>
+								<password>${spring.datasource.password}</password>
 							</jdbc>
 							<generator>
 								<database>

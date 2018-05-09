@@ -1,5 +1,0 @@
-# Environment specific settings for pom.xml. Copy and rename this file to pom.properties.
-
-db.ksr.url=jdbc:postgresql://localhost:5678/dbname
-db.ksr.username=dbuser
-db.ksr.password=dbpassword
