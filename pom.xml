@@ -75,7 +75,6 @@
 	<build>
 		<finalName>KSR</finalName>
 		<plugins>
-			<!-- Remove when frontend in place
 			<plugin>
 			    <groupId>com.github.eirslett</groupId>
 			    <artifactId>frontend-maven-plugin</artifactId>
@@ -110,22 +109,12 @@
 			                <arguments>run build</arguments>
 			            </configuration>
 			        </execution>
-					<execution>
-			            <id>Frontend production postbuild</id>
-			            <phase>compile</phase>
-			            <goals>
-			                <goal>npm</goal>
-			            </goals>
-			            <configuration>
-			                <arguments>run postbuild</arguments>
-			            </configuration>
-			        </execution>
 			    </executions>
 			    <configuration>
 			        <nodeVersion>v8.11.1</nodeVersion>
 			        <npmVersion>3.10.10</npmVersion>
 			        <installDirectory>.mvn</installDirectory>
-			        <workingDirectory>src/client</workingDirectory>
+			        <workingDirectory>src/main/client</workingDirectory>
 			    </configuration>
 			</plugin>
 			<plugin>
@@ -141,14 +130,17 @@
 			                <outputDirectory>${basedir}/target/classes/static</outputDirectory>
 			                <resources>
 			                    <resource>
-			                        <directory>src/client/build/</directory>
+			                        <directory>src/main/client/build/</directory>
 			                        <filtering>true</filtering>
+			                        <excludes>
+			                        	<exclude>**/*.map</exclude>
+			                        </excludes>
 			                    </resource>
 			                </resources>
 			            </configuration>
 			        </execution>
 			    </executions>
-			</plugin> -->
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
