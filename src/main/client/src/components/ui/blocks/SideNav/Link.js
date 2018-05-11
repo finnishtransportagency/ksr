@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
 const Link = styled.div`
@@ -14,8 +14,12 @@ const Link = styled.div`
     
     &:hover {
         cursor: pointer;
+        border-left: 5px solid ${styles.colorMainHighlight};
+    };
+    
+    ${props => props.active && css`
         border-left: 5px solid ${styles.colorMain};
-    }
+    `}
 `;
 
 export default Link;

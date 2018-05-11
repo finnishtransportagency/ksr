@@ -9,7 +9,7 @@ const SideNavView = () => (
         </SideNav.Logo>
         <SideNav.LinkWrapper>
             <div>
-                <SideNav.Link>
+                <SideNav.Link active>
                     <i className="fas fa-map" />
                 </SideNav.Link>
                 <SideNav.Link>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Logo = styled.div`
-    height: 60px;
+    height: 80px;
     width: 60px;
     display: flex;
     align-items: center;
@@ -10,7 +10,6 @@ const Logo = styled.div`
     img {
         height: 40px;
         width: 40px;
-        z-index: 1;
     }
 `;
 

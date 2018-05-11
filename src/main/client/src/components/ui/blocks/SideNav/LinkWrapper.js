@@ -4,7 +4,7 @@ const LinkWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: calc(100% - 60px);
+    height: calc(100% - 80px);
 `;
 
 export default LinkWrapper;

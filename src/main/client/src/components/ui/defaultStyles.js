@@ -1,6 +1,6 @@
 // Colors
-export const colorMain = '#00B0CA';
-export const colorMainHighlight = '#3DB7E4';
+export const colorMain = '#3DB7E4';
+export const colorMainHighlight = '#00B0CA';
 
 export const colorFontDark = '#444444';
 export const colorFontLight = '#F1F1F1';
