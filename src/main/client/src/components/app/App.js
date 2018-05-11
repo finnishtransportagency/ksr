@@ -18,7 +18,7 @@ injectGlobal`
     margin: 0;
     font-family: Arial, sans-serif;
     font-size: 16px;
-    background: ${styles.colorBackgroundLightGray};
+    background: ${styles.colorBackgroundLight};
     color: ${styles.colorFontDark};
     
     input, select, textarea, button {
