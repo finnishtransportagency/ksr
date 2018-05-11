@@ -1,9 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
-import { H1 } from '../../ui/elements/H1';
-import { Button } from '../../ui/elements/Button';
+import { H1, Button, H2 } from '../../ui/elements';
 import SideBar from '../../ui/blocks/SideBar';
-import { H2 } from '../../ui/elements/H2';
 import SideNavView from '../shared/SideNav/SideNavView';
 import { Wrapper } from './styles';
 
