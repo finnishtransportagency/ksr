@@ -22,7 +22,6 @@ const HomeView = () => (
                 <Button>nappula</Button>
             </SideBar.Content>
         </SideBar>
-        <div />
     </Fragment>
 );
 
