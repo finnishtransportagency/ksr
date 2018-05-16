@@ -23,7 +23,7 @@ type State = {
 
 const initialState = {
     options: {
-        basemap: 'hybrid',
+        basemap: 'topo',
         container: 'mapView',
         zoom: 17,
         extentData: {

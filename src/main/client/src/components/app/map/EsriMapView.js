@@ -24,6 +24,7 @@ class EsriMapView extends Component<Props, void> {
     }
 
     initMap = () => {
+        esriLoader.loadCss('https://js.arcgis.com/4.7/esri/css/main.css');
         esriLoader
             .loadModules([
                 'esri/views/MapView',
@@ -53,6 +54,7 @@ class EsriMapView extends Component<Props, void> {
                     zoom,
                 });
 
+                view.ui.move('zoom', 'top-right');
                 this.mapWidgets(view);
             });
     };
@@ -77,10 +79,8 @@ class EsriMapView extends Component<Props, void> {
                     view,
                 });
 
-                view.ui.move('zoom', 'top-right');
                 view.ui.add([locate, home], 'top-right');
                 view.ui.add([search], 'top-left');
-                view.ui.remove('attribution');
             });
     };
 
