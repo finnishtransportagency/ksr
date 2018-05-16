@@ -11,11 +11,16 @@ export const Wrapper = styled.div`
         height: 100%;
         width: calc(100% - 360px);
     }
-    
+
     .esri-locate,
-    .esri-interactive,
+    .esri-zoom .esri-interactive,
     .esri-home {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
+
+        &:hover {
+            background: ${styles.colorMainHighlight};
+            color: ${styles.colorFontLight};
+        }
     }
 `;
