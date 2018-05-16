@@ -29,9 +29,8 @@ class EsriMapView extends Component<Props, void> {
                 'esri/views/MapView',
                 'esri/Map',
                 'esri/geometry/Extent',
-                'esri/layers/FeatureLayer',
             ])
-            .then(([MapView, Map, Extent, FeatureLayer]) => {
+            .then(([MapView, Map, Extent]) => {
                 const {
                     zoom,
                     container,
@@ -43,6 +42,8 @@ class EsriMapView extends Component<Props, void> {
                     basemap,
                 });
 
+                this.mapLayers(map);
+
                 const extent = new Extent({ ...extentData });
 
                 const view = new MapView({
@@ -52,18 +53,11 @@ class EsriMapView extends Component<Props, void> {
                     zoom,
                 });
 
-                const featureLayer = new FeatureLayer({
-                    url:
-                        'https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0',
-                });
-
-                map.add(featureLayer);
-
-                this.addWidgets(view);
+                this.mapWidgets(view);
             });
     };
 
-    addWidgets = (view: any) => {
+    mapWidgets = (view: any) => {
         esriLoader
             .loadModules([
                 'esri/widgets/Search',
@@ -83,8 +77,23 @@ class EsriMapView extends Component<Props, void> {
                     view,
                 });
 
-                view.ui.add([search, locate, home], 'top-right');
                 view.ui.move('zoom', 'top-right');
+                view.ui.add([locate, home], 'top-right');
+                view.ui.add([search], 'top-left');
+                view.ui.remove('attribution');
+            });
+    };
+
+    mapLayers = (map: any) => {
+        esriLoader
+            .loadModules(['esri/layers/FeatureLayer'])
+            .then(([FeatureLayer]) => {
+                const featureLayer = new FeatureLayer({
+                    url:
+                        'https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0',
+                });
+
+                map.add(featureLayer);
             });
     };
 

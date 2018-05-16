@@ -4,7 +4,7 @@ import EsriMapView from './EsriMapView';
 
 type Props = {
     /* ... */
-}
+};
 
 type State = {
     options: {
@@ -18,7 +18,7 @@ type State = {
             ymax: number,
             spatialReference: number,
         },
-    }
+    },
 };
 
 const initialState = {
