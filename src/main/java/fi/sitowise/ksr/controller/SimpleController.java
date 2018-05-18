@@ -23,6 +23,9 @@ public class SimpleController {
 	@RequestMapping(value="/simple", method=RequestMethod.GET)
 	public @ResponseBody String simple(HttpServletRequest request) {
 		OAMAuthenticationToken authToken = (OAMAuthenticationToken) request.getUserPrincipal();
+		if (authToken == null) {
+			return "No user";
+		}
 		User user = authToken.getUser();
 		return user.getFirstName();
 	}
