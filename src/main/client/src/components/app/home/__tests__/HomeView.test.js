@@ -1,10 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import SideBar from '../../../ui/blocks/SideBar';
-import { H2, H1, Button } from '../../../ui/elements';
+import { H2, Button } from '../../../ui/elements';
 import SideNavView from '../../shared/SideNav/SideNavView';
 import HomeView from '../HomeView';
-import { Wrapper } from '../styles';
 
 function setup() {
     const props = {};
