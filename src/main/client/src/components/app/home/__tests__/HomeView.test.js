@@ -1,27 +1,36 @@
-import { expect } from 'chai';
-import { shallow } from 'enzyme';
 import React from 'react';
+import { shallow } from 'enzyme';
 import SideBar from '../../../ui/blocks/SideBar';
+import { H2, H1, Button } from '../../../ui/elements';
 import SideNavView from '../../shared/SideNav/SideNavView';
 import HomeView from '../HomeView';
 import { Wrapper } from '../styles';
 
-describe('<HomeView />', () => {
+function setup() {
+    const props = {};
     const wrapper = shallow(<HomeView />);
 
-    it('renders <HomeView />', () => {
-        expect(wrapper.exists()).to.be.true;
-    });
+    return { props, wrapper };
+}
 
-    it('renders Wrapper', () => {
-        expect(wrapper.find(Wrapper)).to.have.length(1);
-    });
+describe('components', () => {
+    describe('<HomeView />', () => {
+        const { wrapper } = setup();
 
-    it('renders <SideNavView />', () => {
-        expect(wrapper.find(SideNavView)).to.have.length(1);
-    });
+        it('should render self', () => {
+            expect(wrapper.find(SideNavView).length).toBe(1);
+            expect(wrapper.find(SideBar).length).toBe(1);
+        });
 
-    it('renders <SideBar />', () => {
-        expect(wrapper.find(SideBar)).to.have.length(1);
+        it('should have correct SideBar content', () => {
+            expect(wrapper.find(SideBar.Header).length).toBe(1);
+            expect(wrapper.find(SideBar.Content).length).toBe(1);
+
+            const sideBarHeader = wrapper.find(SideBar.Header);
+            expect(sideBarHeader.find(H2).dive().text()).toBe('Karttatasot');
+
+            const sideBarContent = wrapper.find(SideBar.Content);
+            expect(sideBarContent.find(Button).length).toBe(3);
+        });
     });
 });

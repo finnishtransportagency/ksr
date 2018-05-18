@@ -25,9 +25,6 @@ const HomeView = ({ title }: Props) => (
                 <Button>nappula</Button>
             </SideBar.Content>
         </SideBar>
-        <Wrapper>
-            <H1>{title}</H1>
-        </Wrapper>
     </Fragment>
 );
 
