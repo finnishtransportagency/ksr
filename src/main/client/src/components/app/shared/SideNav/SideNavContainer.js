@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { setActiveNav } from '../../../../reducers/navigation/actions';
-import SideNav from './SideNav';
+import SideNavView from './SideNavView';
 
 const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
@@ -12,6 +12,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SideNavContainer = connect(mapStateToProps, mapDispatchToProps)(SideNav);
+const SideNavContainer = connect(mapStateToProps, mapDispatchToProps)(SideNavView);
 
 export default SideNavContainer;
