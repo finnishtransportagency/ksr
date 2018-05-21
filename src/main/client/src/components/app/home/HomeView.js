@@ -6,20 +6,21 @@ import SideNavContainer from '../shared/SideNav/SideNavContainer';
 
 const HomeView = () => (
     <Fragment>
-        <SideNavContainer />
-        {/*<SideBar>*/}
-            {/*<SideBar.Header>*/}
-                {/*<H2>Karttatasot</H2>*/}
-                {/*<span>*/}
-                    {/*<i className="fas fa-times" />*/}
-                {/*</span>*/}
-            {/*</SideBar.Header>*/}
-            {/*<SideBar.Content>*/}
-                {/*<Button>nappula</Button>*/}
-                {/*<Button>nappula</Button>*/}
-                {/*<Button>nappula</Button>*/}
-            {/*</SideBar.Content>*/}
-        {/*</SideBar>*/}
+        <SideNavView />
+        <EsriMap />
+        <SideBar>
+            <SideBar.Header>
+                <H2>Karttatasot</H2>
+                <span>
+                    <i className="fas fa-times" />
+                </span>
+            </SideBar.Header>
+            <SideBar.Content>
+                <Button>nappula</Button>
+                <Button>nappula</Button>
+                <Button>nappula</Button>
+            </SideBar.Content>
+        </SideBar>
     </Fragment>
 );
 
