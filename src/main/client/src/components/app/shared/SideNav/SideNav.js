@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import SideNavView from './SideNavView';
 
 type Props = {
-    setActiveNav: (string) => void,
+    setActiveNav: string => void,
     navActive: {
         active: string,
     },
@@ -30,12 +30,14 @@ class SideNav extends Component<Props, State> {
 
     setActive = (selectedNav: string) => {
         this.props.setActiveNav(selectedNav);
-    }
+    };
 
     render() {
         const { navActive } = this.props;
 
-        return <SideNavView setActiveNav={this.setActive} navActive={navActive} />;
+        return (
+            <SideNavView setActiveNav={this.setActive} navActive={navActive} />
+        );
     }
 }
 
