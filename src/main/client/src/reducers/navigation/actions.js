@@ -1,4 +1,4 @@
-import * as types from '../../constants/action-types';
+import * as types from '../../constants/actionTypes';
 
 export const getActiveNav = () => ({
     type: types.GET_ACTIVE_NAV,
@@ -6,5 +6,5 @@ export const getActiveNav = () => ({
 
 export const setActiveNav = selectedNav => ({
     type: types.SET_ACTIVE_NAV,
-    payload: selectedNav,
+    selectedNav,
 });

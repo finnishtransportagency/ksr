@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import sideNav from './sideNav';
+import navigation from './navigation';
 
 export default combineReducers({
-    sideNav,
+    navigation,
 });

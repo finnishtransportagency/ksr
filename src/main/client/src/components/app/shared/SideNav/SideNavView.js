@@ -4,22 +4,20 @@ import SideNav from '../../../ui/blocks/SideNav';
 
 type Props = {
     setActiveNav: (string) => void,
-    navActive: {
-        active: string,
-    },
+    activeNav: string,
 };
 
-const SideNavView = ({ setActiveNav, navActive }: Props) => (
+const SideNavView = ({ setActiveNav, activeNav }: Props) => (
     <SideNav>
         <SideNav.Logo>
             <img src="https://www.liikennevirasto.fi/livi-theme/images/general/liikennevirasto_logo_2x.png" alt="" />
         </SideNav.Logo>
         <SideNav.LinkWrapper>
             <div>
-                <SideNav.Link active={navActive && navActive.active === 'mapLayers'} onClick={() => { setActiveNav('mapLayers'); }}>
+                <SideNav.Link active={activeNav === 'mapLayers'} onClick={() => { setActiveNav('mapLayers'); }}>
                     <i className="fas fa-map" />
                 </SideNav.Link>
-                <SideNav.Link active={navActive && navActive.active === 'fileExport'} onClick={() => { setActiveNav('fileExport'); }}>
+                <SideNav.Link active={activeNav === 'fileExport'} onClick={() => { setActiveNav('fileExport'); }}>
                     <i className="fas fa-copy" />
                 </SideNav.Link>
             </div>

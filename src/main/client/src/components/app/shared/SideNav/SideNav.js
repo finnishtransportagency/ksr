@@ -4,9 +4,7 @@ import SideNavView from './SideNavView';
 
 type Props = {
     setActiveNav: string => void,
-    navActive: {
-        active: string,
-    },
+    activeNav: string,
 };
 
 type State = {
@@ -33,10 +31,10 @@ class SideNav extends Component<Props, State> {
     };
 
     render() {
-        const { navActive } = this.props;
+        const { activeNav } = this.props;
 
         return (
-            <SideNavView setActiveNav={this.setActive} navActive={navActive} />
+            <SideNavView setActiveNav={this.setActive} activeNav={activeNav} />
         );
     }
 }

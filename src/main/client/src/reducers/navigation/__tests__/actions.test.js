@@ -1,4 +1,4 @@
-import * as types from '../../../constants/action-types';
+import * as types from '../../../constants/actionTypes';
 import * as actions from '../actions';
 
 describe('actions', () => {
@@ -8,11 +8,11 @@ describe('actions', () => {
     });
 
     it('should create an action to set active nav', () => {
-        const payload = 'mapLayers';
+        const selectedNav = 'mapLayers';
         const expectedAction = {
             type: types.SET_ACTIVE_NAV,
-            payload,
+            selectedNav,
         };
-        expect(actions.setActiveNav(payload)).toEqual(expectedAction);
+        expect(actions.setActiveNav(selectedNav)).toEqual(expectedAction);
     });
 });

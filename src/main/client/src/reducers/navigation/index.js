@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import navSelected from './navigation';
+import activeNav from './activeNav';
 
 export default combineReducers({
-    navSelected,
+    activeNav,
 });
