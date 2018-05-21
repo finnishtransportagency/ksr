@@ -5,11 +5,11 @@ export const Wrapper = styled.div`
     #mapView {
         position: fixed;
         top: 0;
-        left: 360px;
+        left: 60px;
         z-index: -1;
         background: #ffffff;
         height: 100%;
-        width: calc(100% - 360px);
+        width: calc(100% - 60px);
     }
 
     .esri-locate,

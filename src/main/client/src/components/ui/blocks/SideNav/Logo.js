@@ -11,6 +11,10 @@ const Logo = styled.div`
         height: 40px;
         width: 40px;
     }
+    
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 export default Logo;

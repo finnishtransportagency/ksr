@@ -12,7 +12,8 @@ const SideNav = styled.div`
     top: 0;
     left: 0;
     width: 60px;
-    color: ${styles.colorFontLight}
+    color: ${styles.colorFontLight};
+    z-index: 2;
 `;
 
 SideNav.Logo = Logo;

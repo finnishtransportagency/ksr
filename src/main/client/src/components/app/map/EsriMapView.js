@@ -43,7 +43,7 @@ class EsriMapView extends Component<Props, void> {
                     basemap,
                 });
 
-                this.mapLayers(map);
+                // this.mapLayers(map);
 
                 const extent = new Extent({ ...extentData });
 
