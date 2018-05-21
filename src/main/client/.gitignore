@@ -5,6 +5,7 @@
 
 # testing
 /coverage
+*.snap
 __snapshots__/
 
 # production
