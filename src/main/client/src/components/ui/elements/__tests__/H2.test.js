@@ -1,8 +1,13 @@
 import { shallow } from 'enzyme';
+import 'jest-styled-components';
 import React from 'react';
 import { H2 } from '../H2';
 
-test('it works', () => {
-    const wrapper = shallow(<H2 />);
-    expect(wrapper).toMatchSnapshot();
+describe('<H2 />', () => {
+    it('renders correctly', () => {
+        const wrapper = shallow(<H2 />);
+        expect(wrapper).toMatchSnapshot();
+        expect(wrapper).toHaveStyleRule('font-size', '18px');
+        expect(wrapper).toHaveStyleRule('font-weight', '700');
+    });
 });

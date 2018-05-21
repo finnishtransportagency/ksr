@@ -12,24 +12,22 @@ function setup() {
     return { props, wrapper };
 }
 
-describe('components', () => {
-    describe('<HomeView />', () => {
-        const { wrapper } = setup();
+describe('<HomeView />', () => {
+    const { wrapper } = setup();
 
-        it('should render self', () => {
-            expect(wrapper.find(SideNavView).length).toBe(1);
-            expect(wrapper.find(SideBar).length).toBe(1);
-        });
+    it('should render self', () => {
+        expect(wrapper.find(SideNavView).length).toBe(1);
+        expect(wrapper.find(SideBar).length).toBe(1);
+    });
 
-        it('should have correct SideBar content', () => {
-            expect(wrapper.find(SideBar.Header).length).toBe(1);
-            expect(wrapper.find(SideBar.Content).length).toBe(1);
+    it('should have correct SideBar content', () => {
+        expect(wrapper.find(SideBar.Header).length).toBe(1);
+        expect(wrapper.find(SideBar.Content).length).toBe(1);
 
-            const sideBarHeader = wrapper.find(SideBar.Header);
-            expect(sideBarHeader.find(H2).dive().text()).toBe('Karttatasot');
+        const sideBarHeader = wrapper.find(SideBar.Header);
+        expect(sideBarHeader.find(H2).dive().text()).toBe('Karttatasot');
 
-            const sideBarContent = wrapper.find(SideBar.Content);
-            expect(sideBarContent.find(Button).length).toBe(3);
-        });
+        const sideBarContent = wrapper.find(SideBar.Content);
+        expect(sideBarContent.find(Button).length).toBe(3);
     });
 });

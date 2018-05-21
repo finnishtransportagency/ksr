@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Button /> works 1`] = `
+exports[`<Button /> renders correctly 1`] = `
 .c0 {
   text-transform: uppercase;
   font-weight: 700;
