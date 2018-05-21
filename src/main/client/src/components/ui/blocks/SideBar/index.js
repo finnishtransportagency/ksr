@@ -9,7 +9,7 @@ const SideBar = styled.div`
     position: fixed;
     height: 100%;
     top: 0;
-    left: -360px;
+    left: -300px;
     width: 300px;
     color: ${styles.colorFontLight};
     transition: 0.3s;
