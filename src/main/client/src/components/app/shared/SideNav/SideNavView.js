@@ -14,11 +14,14 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => (
         </SideNav.Logo>
         <SideNav.LinkWrapper>
             <div>
+                <SideNav.Link active={activeNav === 'search'} onClick={() => { setActiveNav('search'); }}>
+                    <i className="fas fa-search" />
+                </SideNav.Link>
                 <SideNav.Link active={activeNav === 'mapLayers'} onClick={() => { setActiveNav('mapLayers'); }}>
                     <i className="fas fa-map" />
                 </SideNav.Link>
                 <SideNav.Link active={activeNav === 'fileExport'} onClick={() => { setActiveNav('fileExport'); }}>
-                    <i className="fas fa-copy" />
+                    <i className="fas fa-print" />
                 </SideNav.Link>
             </div>
             <div>
