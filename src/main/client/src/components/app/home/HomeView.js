@@ -1,17 +1,12 @@
 // @flow
 import React, { Fragment } from 'react';
-import { H1, Button, H2 } from '../../ui/elements';
+import { Button, H2 } from '../../ui/elements';
 import SideBar from '../../ui/blocks/SideBar';
-import SideNavView from '../shared/SideNav/SideNavView';
-import { Wrapper } from './styles';
+import SideNavContainer from '../shared/SideNav/SideNavContainer';
 
-type Props = {
-    title: string,
-};
-
-const HomeView = ({ title }: Props) => (
+const HomeView = () => (
     <Fragment>
-        <SideNavView />
+        <SideNavContainer />
         <SideBar>
             <SideBar.Header>
                 <H2>Karttatasot</H2>

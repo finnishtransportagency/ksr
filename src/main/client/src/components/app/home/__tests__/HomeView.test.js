@@ -16,7 +16,6 @@ describe('<HomeView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {
-        expect(wrapper.find(SideNavView).length).toBe(1);
         expect(wrapper.find(SideBar).length).toBe(1);
     });
 
