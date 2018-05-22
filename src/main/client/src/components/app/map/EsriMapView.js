@@ -65,9 +65,9 @@ class EsriMapView extends Component<Props, void> {
             .loadModules([
                 'esri/widgets/Search',
                 'esri/widgets/Home',
-                'esri/widgets/Locate',
+                'esri/widgets/Track',
             ])
-            .then(([Search, Home, Locate]) => {
+            .then(([Search, Home, Track]) => {
                 const search = new Search({
                     view,
                 });
@@ -76,11 +76,11 @@ class EsriMapView extends Component<Props, void> {
                     view,
                 });
 
-                const locate = new Locate({
+                const track = new Track({
                     view,
                 });
 
-                view.ui.add([locate, home], 'top-right');
+                view.ui.add([track, home], 'top-right');
                 view.ui.add([search], 'top-left');
             });
     };
@@ -100,7 +100,7 @@ class EsriMapView extends Component<Props, void> {
 
     render() {
         const { activeNav } = this.props;
-        console.log(activeNav);
+
         return (
             <Wrapper sideBar={activeNav}>
                 <div id="mapView" />

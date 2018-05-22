@@ -15,10 +15,15 @@ export const Wrapper = styled.div`
         ${props => props.sideBar && css`
             left: 360px;
             width: calc(100% - 360px);
-        `}
+        `};
+        
+        @media only screen and (max-width: 768px) {
+            left: 0;
+            width: 100%;
+        };
     }
     
-    .esri-locate,
+    .esri-track,
     .esri-zoom .esri-interactive,
     .esri-home {
         background: ${styles.colorMain};
