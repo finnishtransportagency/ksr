@@ -14,7 +14,6 @@ const Link = styled.div`
     
     &:hover {
         cursor: pointer;
-        border-left: 5px solid ${styles.colorMainHighlight};
         background: ${styles.colorBackgroundDarkSecondary};
     };
     
@@ -29,10 +28,8 @@ const Link = styled.div`
         border-top: 5px solid transparent;
         
         &:hover {
-                cursor: pointer;
-                border-bottom: 5px solid ${styles.colorMainHighlight};
-                border-left: none;
-                background: ${styles.colorBackgroundDarkSecondary};
+            cursor: pointer;
+            background: ${styles.colorBackgroundDarkSecondary};
         };
         
         ${props => props.active && css`

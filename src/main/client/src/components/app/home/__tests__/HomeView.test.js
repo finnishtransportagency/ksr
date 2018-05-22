@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import EsriMap from '../../map/EsriMap';
 import EsriMapContainer from '../../map/EsriMapContainer';
 import SideBarContainer from '../../side-bar/SideBarContainer';
 import SideNavContainer from '../../side-nav/SideNavContainer';
