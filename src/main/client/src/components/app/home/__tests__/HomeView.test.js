@@ -1,10 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SideBar from '../../../ui/blocks/SideBar';
-import { H2, Button } from '../../../ui/elements';
 import EsriMap from '../../map/EsriMap';
-import SideNavContainer from '../../SideNav/SideNavContainer';
-import SideNavView from '../../SideNav/SideNavView';
+import EsriMapContainer from '../../map/EsriMapContainer';
+import SideBarContainer from '../../side-bar/SideBarContainer';
+import SideNavContainer from '../../side-nav/SideNavContainer';
 import HomeView from '../HomeView';
 
 function setup() {
@@ -19,6 +18,7 @@ describe('<HomeView />', () => {
 
     it('should render self', () => {
         expect(wrapper.find(SideNavContainer).length).toBe(1);
-        expect(wrapper.find(EsriMap).length).toBe(1);
+        expect(wrapper.find(EsriMapContainer).length).toBe(1);
+        expect(wrapper.find(SideBarContainer).length).toBe(1);
     });
 });

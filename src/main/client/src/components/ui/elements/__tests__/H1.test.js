@@ -1,5 +1,4 @@
 import { shallow } from 'enzyme';
-import 'jest-styled-components';
 import React from 'react';
 import { H1 } from '../H1';
 
