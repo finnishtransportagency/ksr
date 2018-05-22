@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { getActiveNav } from '../../../../reducers/navigation/actions';
-import SideBarView from './SideBarView';
+import { getActiveNav } from '../../../reducers/navigation/actions';
+import EsriMap from './EsriMap';
 
 const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
@@ -12,6 +12,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SideBarContainer = connect(mapStateToProps, mapDispatchToProps)(SideBarView);
+const EsriMapContainer = connect(mapStateToProps, mapDispatchToProps)(EsriMap);
 
-export default SideBarContainer;
+export default EsriMapContainer;

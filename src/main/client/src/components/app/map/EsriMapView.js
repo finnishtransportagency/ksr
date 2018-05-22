@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Wrapper } from './styles';
 
 type Props = {
+    activeNav: string,
     options: {
         zoom: number,
         container: string,
@@ -98,8 +99,10 @@ class EsriMapView extends Component<Props, void> {
     };
 
     render() {
+        const { activeNav } = this.props;
+        console.log(activeNav);
         return (
-            <Wrapper>
+            <Wrapper sideBar={activeNav}>
                 <div id="mapView" />
             </Wrapper>
         );

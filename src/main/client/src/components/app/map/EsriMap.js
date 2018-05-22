@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
 
 type Props = {
-    /* ... */
+    activeNav: string,
 };
 
 type State = {
@@ -45,8 +45,9 @@ class EsriMap extends Component<Props, State> {
 
     render() {
         const { options } = this.state;
+        const { activeNav } = this.props;
 
-        return <EsriMapView options={options} />;
+        return <EsriMapView options={options} activeNav={activeNav} />;
     }
 }
 

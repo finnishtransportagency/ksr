@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import SideNav from '../../../ui/blocks/SideNav';
+import SideNav from '../../ui/blocks/SideNav/index';
 
 type Props = {
     setActiveNav: (string) => void,

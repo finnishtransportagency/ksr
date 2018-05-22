@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../ui/defaultStyles';
 
 export const Wrapper = styled.div`
@@ -10,8 +10,14 @@ export const Wrapper = styled.div`
         background: #ffffff;
         height: 100%;
         width: calc(100% - 60px);
+        transition: 0.3s;
+        
+        ${props => props.sideBar && css`
+            left: 360px;
+            width: calc(100% - 360px);
+        `}
     }
-
+    
     .esri-locate,
     .esri-zoom .esri-interactive,
     .esri-home {

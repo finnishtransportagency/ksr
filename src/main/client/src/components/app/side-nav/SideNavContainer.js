@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setActiveNav } from '../../../../reducers/navigation/actions';
+import { setActiveNav } from '../../../reducers/navigation/actions';
 import SideNavView from './SideNavView';
 
 const mapStateToProps = state => ({

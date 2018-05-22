@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SideNav from '../../../../ui/blocks/SideNav';
+import SideNav from '../../../ui/blocks/SideNav/index';
 import SideNavView from '../SideNavView';
 
 function setup() {

@@ -1,14 +1,14 @@
 // @flow
 import React, { Fragment } from 'react';
-import EsriMap from '../map/EsriMap';
-import SideBarContainer from '../shared/SideBar/SideBarContainer';
-import SideNavContainer from '../shared/SideNav/SideNavContainer';
+import EsriMapContainer from '../map/EsriMapContainer';
+import SideBarContainer from '../side-bar/SideBarContainer';
+import SideNavContainer from '../side-nav/SideNavContainer';
 
 const HomeView = () => (
     <Fragment>
         <SideNavContainer />
         <SideBarContainer />
-        <EsriMap />
+        <EsriMapContainer />
     </Fragment>
 );
 

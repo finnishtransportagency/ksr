@@ -3,8 +3,8 @@ import { shallow } from 'enzyme';
 import SideBar from '../../../ui/blocks/SideBar';
 import { H2, Button } from '../../../ui/elements';
 import EsriMap from '../../map/EsriMap';
-import SideNavContainer from '../../shared/SideNav/SideNavContainer';
-import SideNavView from '../../shared/SideNav/SideNavView';
+import SideNavContainer from '../../SideNav/SideNavContainer';
+import SideNavView from '../../SideNav/SideNavView';
 import HomeView from '../HomeView';
 
 function setup() {
