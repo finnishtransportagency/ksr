@@ -20,7 +20,25 @@ const Link = styled.div`
     
     ${props => props.active && css`
         border-left: 5px solid ${styles.colorMain};
-    `}
+    `};
+    
+    @media only screen and (max-width: 768px) {
+        border-left: none;
+        border-right: none;
+        border-bottom: 5px solid transparent;
+        border-top: 5px solid transparent;
+        
+        &:hover {
+                cursor: pointer;
+                border-bottom: 5px solid ${styles.colorMainHighlight};
+                border-left: none;
+                background: ${styles.colorBackgroundDarkSecondary};
+        };
+        
+        ${props => props.active && css`
+            border-bottom: 5px solid ${styles.colorMain};
+        `};
+    }
 `;
 
 export default Link;

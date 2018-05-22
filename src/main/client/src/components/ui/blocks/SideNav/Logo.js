@@ -12,6 +12,10 @@ const Logo = styled.div`
         width: 40px;
     }
     
+    @media only screen and (max-width: 768px) {
+        height: 60px;
+    }
+    
     &:hover {
         cursor: pointer;
     }

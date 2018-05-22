@@ -28,6 +28,7 @@ export const Wrapper = styled.div`
     .esri-home {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
+        padding: 1.25rem;
 
         &:hover {
             background: ${styles.colorMainHighlight};
