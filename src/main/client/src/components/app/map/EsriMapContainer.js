@@ -1,3 +1,4 @@
+// @flow
 import { connect } from 'react-redux';
 import { getActiveNav } from '../../../reducers/navigation/actions';
 import EsriMap from './EsriMap';
