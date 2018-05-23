@@ -1,33 +1,14 @@
 // @flow
 import React, { Fragment } from 'react';
-import { H1, Button, H2 } from '../../ui/elements';
-import SideBar from '../../ui/blocks/SideBar';
-import SideNavView from '../shared/SideNav/SideNavView';
-import { Wrapper } from './styles';
+import EsriMapContainer from '../map/EsriMapContainer';
+import SideBarContainer from '../side-bar/SideBarContainer';
+import SideNavContainer from '../side-nav/SideNavContainer';
 
-type Props = {
-    title: string,
-};
-
-const HomeView = ({ title }: Props) => (
+const HomeView = () => (
     <Fragment>
-        <SideNavView />
-        <SideBar>
-            <SideBar.Header>
-                <H2>Karttatasot</H2>
-                <span>
-                    <i className="fas fa-times" />
-                </span>
-            </SideBar.Header>
-            <SideBar.Content>
-                <Button>nappula</Button>
-                <Button>nappula</Button>
-                <Button>nappula</Button>
-            </SideBar.Content>
-        </SideBar>
-        <Wrapper>
-            <H1>{title}</H1>
-        </Wrapper>
+        <SideNavContainer />
+        <SideBarContainer />
+        <EsriMapContainer />
     </Fragment>
 );
 
