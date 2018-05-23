@@ -20,6 +20,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+        <flyway.outOfOrder>true</flyway.outOfOrder>
+        <!-- Disable clean by default to avoid accidental cleaning. Enable
+             clean for development in the application-dev.properties file
+             if needed. -->
+        <flyway.cleanDisabled>true</flyway.cleanDisabled>
 	</properties>
 
 	<dependencies>
@@ -92,10 +97,6 @@
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-resources-plugin</artifactId>
 			<version>3.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -237,6 +238,22 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>4.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                        <configuration>
+                            <locations>filesystem:src/main/resources/db/migration</locations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 

@@ -14,6 +14,6 @@ spring.datasource.tomcat.maxActive=10
 spring.jooq.sql-dialect=Postgres
 
 #Flyway
-spring.flyway.clean-disabled=true
-spring.flyway.locations=classpath:/db/migration
-spring.flyway.out-of-order=true
+flyway.url=jdbc:oracle:thin:@host:port:db
+flyway.user=username
+flyway.password=password
