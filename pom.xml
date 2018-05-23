@@ -65,11 +65,6 @@
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>		
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
@@ -83,6 +78,11 @@
             <groupId>org.jooq.trial</groupId>
             <artifactId>jooq</artifactId>
             <version>3.10.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.jdbc</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.4</version>
         </dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -205,6 +205,7 @@
 						</goals>
 						<configuration>
 							<jdbc>
+								<driver>${spring.datasource.driver-class-name}</driver>
 								<url>${spring.datasource.url}</url>
 								<user>${spring.datasource.username}</user>
 								<password>${spring.datasource.password}</password>
@@ -213,7 +214,7 @@
 								<database>
 									<includes>.*</includes>
 									<excludes></excludes>
-									<inputSchema>public</inputSchema>
+									<inputSchema>ksr</inputSchema>
 								</database>
 								<target>
 									<packageName>fi.sitowise.ksr.jooq</packageName>
