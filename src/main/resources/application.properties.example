@@ -17,3 +17,12 @@ spring.jooq.sql-dialect=Postgres
 spring.flyway.clean-disabled=true
 spring.flyway.locations=classpath:/db/migration
 spring.flyway.out-of-order=true
+
+#Authorization
+authorization.oam.authorized_user_header=OAM_REMOTE_USER
+authorization.oam.authorized_user_first_name_header=OAM_USER_FIRST_NAME
+authorization.oam.authorized_user_last_name_header=OAM_USER_LAST_NAME
+authorization.oam.authorized_user_mail_header=OAM_USER_MAIL
+authorization.oam.authorized_user_mobile_header=OAM_USER_MOBILE
+authorization.oam.authorized_user_organization_header=OAM_ORGANIZATION
+authorization.oam.authorized_groups_header=OAM_GROUPS
