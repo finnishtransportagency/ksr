@@ -1,27 +1,23 @@
-import { expect } from 'chai';
-import { shallow } from 'enzyme';
 import React from 'react';
-import SideBar from '../../../ui/blocks/SideBar';
-import SideNavView from '../../shared/SideNav/SideNavView';
+import { shallow } from 'enzyme';
+import EsriMapContainer from '../../map/EsriMapContainer';
+import SideBarContainer from '../../side-bar/SideBarContainer';
+import SideNavContainer from '../../side-nav/SideNavContainer';
 import HomeView from '../HomeView';
-import { Wrapper } from '../styles';
 
-describe('<HomeView />', () => {
+function setup() {
+    const props = {};
     const wrapper = shallow(<HomeView />);
 
-    it('renders <HomeView />', () => {
-        expect(wrapper.exists()).to.be.true;
-    });
+    return { props, wrapper };
+}
 
-    it('renders Wrapper', () => {
-        expect(wrapper.find(Wrapper)).to.have.length(1);
-    });
+describe('<HomeView />', () => {
+    const { wrapper } = setup();
 
-    it('renders <SideNavView />', () => {
-        expect(wrapper.find(SideNavView)).to.have.length(1);
-    });
-
-    it('renders <SideBar />', () => {
-        expect(wrapper.find(SideBar)).to.have.length(1);
+    it('should render self', () => {
+        expect(wrapper.find(SideNavContainer).length).toBe(1);
+        expect(wrapper.find(EsriMapContainer).length).toBe(1);
+        expect(wrapper.find(SideBarContainer).length).toBe(1);
     });
 });

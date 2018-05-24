@@ -1,13 +1,10 @@
 {
   "plugins": [
     "react",
-    "jasmine",
-    "chai-friendly",
     "flowtype"
   ],
   "extends": [
     "airbnb",
-    "plugin:jasmine/recommended",
     "plugin:flowtype/recommended"
   ],
   "rules": {
@@ -23,14 +20,11 @@
     "linebreak-style": 0,
     "react/jsx-indent": 0,
     "react/jsx-indent-props": 0,
-    "no-unused-expressions": 0,
-    "chai-friendly/no-unused-expressions": ["error", {"allowTaggedTemplates": true}],
     "react/jsx-filename-extension": [
       1,
       {
         "extensions": [
-          ".js",
-          ".jsx"
+          ".js"
         ]
       }
     ],
@@ -45,7 +39,7 @@
   "env": {
     "browser": true,
     "commonjs": true,
-    "jasmine": true
+    "jest": true
   },
   "parserOptions": {
     "ecmaFeatures": {
