@@ -19,7 +19,7 @@ flyway.user=username
 flyway.password=password
 
 #Log4j2
-logging.config=classpath:log4j2.xml
+logging.config=classpath:log4j2-dev.xml
 
 #Authorization
 authorization.oam.authorized_user_header=OAM_REMOTE_USER
