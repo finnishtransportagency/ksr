@@ -25,7 +25,17 @@ export const Wrapper = styled.div`
         #measurement {
             position: absolute;
             right: 1rem;
-            bottom: 1rem;
+            bottom: 2rem;
+            background: #FFFFFF;
+            padding: 1rem;
+            -webkit-box-shadow: ${styles.shadowDefault};
+            -moz-box-shadow: ${styles.shadowDefault};
+            box-shadow: ${styles.shadowDefault};
+            display: none;
+            
+            @media only screen and (max-width: 768px) {
+                bottom: 5rem;
+            };
         }
     }
     

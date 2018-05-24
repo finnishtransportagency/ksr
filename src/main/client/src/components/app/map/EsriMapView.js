@@ -31,8 +31,11 @@ class EsriMapView extends Component<Props, void> {
                 'esri/views/MapView',
                 'esri/Map',
                 'esri/geometry/Extent',
+                'esri/widgets/Search',
+                'esri/widgets/Home',
+                'esri/widgets/Track',
             ])
-            .then(([MapView, Map, Extent]) => {
+            .then(([MapView, Map, Extent, Search, Home, Track]) => {
                 const {
                     zoom,
                     container,
@@ -53,20 +56,6 @@ class EsriMapView extends Component<Props, void> {
                     zoom,
                 });
 
-                view.ui.move('zoom', 'top-right');
-                this.mapWidgets(view);
-                this.mapDraw(view);
-            });
-    };
-
-    mapWidgets = (view: any) => {
-        esriLoader
-            .loadModules([
-                'esri/widgets/Search',
-                'esri/widgets/Home',
-                'esri/widgets/Track',
-            ])
-            .then(([Search, Home, Track]) => {
                 const search = new Search({
                     view,
                 });
@@ -79,12 +68,14 @@ class EsriMapView extends Component<Props, void> {
                     view,
                 });
 
-                view.ui.add([track, home], 'top-right');
+                view.ui.move('zoom', 'top-right');
+                view.ui.add([track, home, 'draw-polygon', 'draw-line'], 'top-right');
                 view.ui.add([search], 'top-left');
+                this.mapMeasure(view);
             });
     };
 
-    mapDraw = (view: any) => {
+    mapMeasure = (view: any) => {
         esriLoader
             .loadModules([
                 'esri/views/2d/draw/Draw',
@@ -103,27 +94,6 @@ class EsriMapView extends Component<Props, void> {
                     paths: vertices,
                     spatialReference: view.spatialReference,
                 });
-
-                const labelAreas = (geom, area) => {
-                    const graphic = new Graphic({
-                        geometry: geom.centroid,
-                        symbol: {
-                            type: 'text',
-                            color: '#444444',
-                            text:
-                                area >= 10000
-                                    ? `${(area / 10000).toFixed(2)} ha`
-                                    : `${area.toFixed(2)} m/2`,
-                            xoffset: 3,
-                            yoffset: 3,
-                            font: {
-                                size: 16,
-                                family: 'Arial',
-                            },
-                        },
-                    });
-                    view.graphics.add(graphic);
-                };
 
                 const createGraphic = (geometry): any =>
                     new Graphic({
@@ -152,6 +122,7 @@ class EsriMapView extends Component<Props, void> {
                         polygon,
                         'square-meters',
                     );
+
                     if (area < 0) {
                         const simplifiedPolygon = geometryEngine.simplify(polygon);
 
@@ -162,7 +133,9 @@ class EsriMapView extends Component<Props, void> {
                             );
                         }
                     }
-                    labelAreas(polygon, area);
+
+                    (document.getElementById: Function)('measurement').style.display = 'block';
+                    (document.getElementById: Function)('measurement').innerText = area >= 10000 && area > 0 ? `${(area / 10000).toFixed(2)} ha` : `${area.toFixed(2)} m/2`;
                 };
 
                 const drawLine = (evt) => {
@@ -180,9 +153,8 @@ class EsriMapView extends Component<Props, void> {
                         'meters',
                     );
 
+                    (document.getElementById: Function)('measurement').style.display = 'block';
                     (document.getElementById: Function)('measurement').innerText = length >= 1000 && length > 0 ? `${(length / 1000).toFixed(2)} km` : `${length.toFixed(2)} m`;
-
-                    labelAreas(line, length);
                 };
 
                 const enableCreatePolygon = (draw) => {
@@ -193,7 +165,6 @@ class EsriMapView extends Component<Props, void> {
                     action.on(
                         [
                             'vertex-add',
-                            'cursor-update',
                             'vertex-remove',
                             'draw-complete',
                         ],
@@ -209,7 +180,6 @@ class EsriMapView extends Component<Props, void> {
                     action.on(
                         [
                             'vertex-add',
-                            'cursor-update',
                             'vertex-remove',
                             'draw-complete',
                         ],
@@ -224,6 +194,7 @@ class EsriMapView extends Component<Props, void> {
                 const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
                 drawPolygonButton.addEventListener('click', () => {
                     view.graphics.removeAll();
+                    (document.getElementById: Function)('measurement').style.display = 'none';
                     (document.getElementById: Function)('measurement').innerText = '';
                     enableCreatePolygon(draw);
                 });
@@ -231,11 +202,10 @@ class EsriMapView extends Component<Props, void> {
                 const drawLineButton = (document.getElementById: Function)('draw-line');
                 drawLineButton.addEventListener('click', () => {
                     view.graphics.removeAll();
+                    (document.getElementById: Function)('measurement').style.display = 'none';
                     (document.getElementById: Function)('measurement').innerText = '';
                     enableCreateLine(draw);
                 });
-
-                view.ui.add(['draw-polygon', 'draw-line'], 'top-right');
             });
     };
 
