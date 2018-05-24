@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
 import Header from './Header';
@@ -9,9 +9,31 @@ const SideBar = styled.div`
     position: fixed;
     height: 100%;
     top: 0;
-    left: 60px;
+    left: -300px;
     width: 300px;
-    color: ${styles.colorFontLight}
+    color: ${styles.colorFontLight};
+    transition: 0.3s;
+    visibility: hidden;
+    -webkit-box-shadow: ${styles.shadowDefault};
+    -moz-box-shadow: ${styles.shadowDefault};
+    box-shadow: ${styles.shadowDefault};
+    
+    ${props => props.active && css`
+        left: 60px;
+        visibility: visible;
+    `};
+    
+    @media only screen and (max-width: 768px) {
+        left: auto;
+        top: auto;
+        width: 100%;
+        bottom: -100%;
+        height: calc(100% - 60px);
+        
+        ${props => props.active && css`
+            bottom: 60px;
+        `}
+    }
 `;
 
 SideBar.Header = Header;

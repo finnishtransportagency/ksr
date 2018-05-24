@@ -12,7 +12,22 @@ const SideNav = styled.div`
     top: 0;
     left: 0;
     width: 60px;
-    color: ${styles.colorFontLight}
+    color: ${styles.colorFontLight};
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    -webkit-box-shadow: ${styles.shadowDefault};
+    -moz-box-shadow: ${styles.shadowDefault};
+    box-shadow: ${styles.shadowDefault};
+    
+    @media only screen and (max-width: 768px) {
+        height: 60px;
+        bottom: 0;
+        top: auto;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 `;
 
 SideNav.Logo = Logo;

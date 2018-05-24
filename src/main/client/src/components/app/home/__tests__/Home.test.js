@@ -1,17 +1,21 @@
-import { expect } from 'chai';
-import { shallow } from 'enzyme';
 import React from 'react';
+import { shallow } from 'enzyme';
 import Home from '../Home';
 import HomeView from '../HomeView';
 
-describe('<Home />', () => {
+function setup() {
+    const props = {};
     const wrapper = shallow(<Home />);
 
-    it('renders <Home />', () => {
-        expect(wrapper.exists()).to.be.true;
-    });
+    return { props, wrapper };
+}
 
-    it('renders <HomeView />', () => {
-        expect(wrapper.find(HomeView)).to.have.length(1);
+describe('components', () => {
+    describe('<Home />', () => {
+        const { wrapper } = setup();
+
+        it('should contain HomeView', () => {
+            expect(wrapper.find(HomeView).length).toBe(1);
+        });
     });
 });
