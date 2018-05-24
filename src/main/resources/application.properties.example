@@ -17,3 +17,6 @@ spring.jooq.sql-dialect=Postgres
 spring.flyway.clean-disabled=true
 spring.flyway.locations=classpath:/db/migration
 spring.flyway.out-of-order=true
+
+#Log4j2
+logging.config=classpath:log4j2.xml

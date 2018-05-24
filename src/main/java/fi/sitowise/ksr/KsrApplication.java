@@ -12,8 +12,8 @@ public class KsrApplication {
 
 	public static void main(String[] args) {
 		
-		logger.info("Entering application.");
 		SpringApplication.run(KsrApplication.class, args);
+		logger.info("Entered application...");
 
 	}
 }
