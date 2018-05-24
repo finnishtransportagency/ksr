@@ -5,7 +5,7 @@
     </Properties>
     <Appenders>
         <!-- Console Appender -->
-        <Console name="Console" target="SYSTEM_OUT">
+        <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
         </Console>
         <!-- Rolling File Appender -->
@@ -29,7 +29,7 @@
             <AppenderRef ref="fileLogger" />
         </Logger>
         <Root level="warn">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="console" />
         </Root>
     </Loggers>
 </Configuration>
