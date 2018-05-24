@@ -21,11 +21,19 @@ export const Wrapper = styled.div`
             left: 0;
             width: 100%;
         };
+        
+        #measurement {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+        }
     }
     
     .esri-track,
     .esri-zoom .esri-interactive,
-    .esri-home {
+    .esri-home,
+    #draw-polygon,
+    #draw-line {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
 
