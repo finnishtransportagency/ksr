@@ -13,29 +13,17 @@ type State = {
         zoom: number,
         container: string,
         basemap: string,
-        extentData: {
-            xmin: number,
-            ymin: number,
-            xmax: number,
-            ymax: number,
-            spatialReference: number,
-        },
+        center: Array<number>,
     },
 };
 
 const initialState = {
     view: {},
     options: {
-        basemap: 'streets',
+        basemap: 'topo',
         container: 'mapView',
-        zoom: 15,
-        extentData: {
-            xmin: -9177811,
-            ymin: 4247000,
-            xmax: -9176791,
-            ymax: 4247784,
-            spatialReference: 102100,
-        },
+        zoom: 16,
+        center: [25, 60.3],
     },
 };
 
@@ -57,16 +45,15 @@ class EsriMap extends Component<Props, State> {
             .loadModules([
                 'esri/views/MapView',
                 'esri/Map',
-                'esri/geometry/Extent',
                 'esri/widgets/Search',
                 'esri/widgets/Home',
                 'esri/widgets/Track',
             ])
-            .then(([MapView, Map, Extent, Search, Home, Track]) => {
+            .then(([MapView, Map, Search, Home, Track]) => {
                 const {
                     zoom,
                     container,
-                    extentData,
+                    center,
                     basemap,
                 } = this.state.options;
 
@@ -74,12 +61,10 @@ class EsriMap extends Component<Props, State> {
                     basemap,
                 });
 
-                const extent = new Extent({ ...extentData });
-
                 const view = new MapView({
                     container,
                     map,
-                    extent,
+                    center,
                     zoom,
                 });
 
