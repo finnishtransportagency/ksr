@@ -4,14 +4,28 @@ import React, { Component } from 'react';
 import MapMeasureView from './MapMeasureView';
 
 type State = {
-    /* ... */
-}
+    value: string,
+    draw: boolean,
+};
 
 type Props = {
     /* ... */
-}
+};
+
+const initialState = {
+    value: '',
+    draw: false,
+};
 
 class MapMeasure extends Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = { ...initialState };
+
+        this.removeMeasurement = this.removeMeasurement.bind(this);
+    }
+
     componentWillReceiveProps(newProps: any) {
         const { view } = newProps;
 
@@ -79,12 +93,11 @@ class MapMeasure extends Component<Props, State> {
                         }
                     }
 
-                    (document.getElementById: Function)('measurement').style.display =
-                        'block';
-                    (document.getElementById: Function)('measurement').innerText =
-                        area >= 10000 && area > 0
-                            ? `${parseFloat((area / 10000).toPrecision(2))} ha`
-                            : `${parseFloat(area.toPrecision(2))} m2`;
+                    area = (area >= 10000 && area > 0)
+                        ? `${parseFloat((area / 10000).toPrecision(2))} ha`
+                        : `${parseFloat(area.toPrecision(2))} m2`;
+
+                    this.setState({ value: area });
                 };
 
                 const drawLine = (evt) => {
@@ -97,38 +110,32 @@ class MapMeasure extends Component<Props, State> {
                     const graphic = createGraphic(line);
                     view.graphics.add(graphic);
 
-                    const length = geometryEngine.geodesicLength(
+                    let length = geometryEngine.geodesicLength(
                         line,
                         'meters',
                     );
 
-                    (document.getElementById: Function)('measurement').style.display =
-                        'block';
-                    (document.getElementById: Function)('measurement').innerText =
-                        length >= 1000 && length > 0
-                            ? `${parseFloat((length / 1000).toPrecision(2))} km`
-                            : `${parseFloat(length.toPrecision(2))} m`;
+                    length = (length >= 1000 && length > 0)
+                        ? `${parseFloat((length / 1000).toPrecision(2))} km`
+                        : `${parseFloat(length.toPrecision(2))} m`;
+
+                    this.setState({ value: length });
                 };
 
-                const enableCreatePolygon = (draw) => {
-                    const action = draw.create('polygon');
-
-                    view.focus();
-
-                    action.on(
-                        ['vertex-add', 'vertex-remove', 'draw-complete'],
-                        drawPolygon,
-                    );
-                };
-
-                const enableCreateLine = (draw) => {
-                    const action = draw.create('polyline');
-                    view.focus();
-
-                    action.on(
-                        ['vertex-add', 'vertex-remove', 'draw-complete'],
-                        drawLine,
-                    );
+                const drawingMode = (draw, geometry, drawGeometry) => {
+                    if (!this.state.draw) {
+                        const action = draw.create(geometry);
+                        view.focus();
+                        this.setState({ draw: true });
+                        action.on(
+                            ['vertex-add', 'vertex-remove', 'draw-complete'],
+                            drawGeometry,
+                        );
+                    } else {
+                        draw.complete();
+                        this.setState({ draw: false });
+                        this.removeMeasurement(view);
+                    }
                 };
 
                 const draw = new Draw({
@@ -137,24 +144,27 @@ class MapMeasure extends Component<Props, State> {
 
                 const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
                 drawPolygonButton.addEventListener('click', () => {
-                    view.graphics.removeAll();
-                    (document.getElementById: Function)('measurement').style.display = 'none';
-                    (document.getElementById: Function)('measurement').innerText = '';
-                    enableCreatePolygon(draw);
+                    this.removeMeasurement(view);
+                    drawingMode(draw, 'polygon', drawPolygon);
                 });
 
                 const drawLineButton = (document.getElementById: Function)('draw-line');
                 drawLineButton.addEventListener('click', () => {
-                    view.graphics.removeAll();
-                    (document.getElementById: Function)('measurement').style.display = 'none';
-                    (document.getElementById: Function)('measurement').innerText = '';
-                    enableCreateLine(draw);
+                    this.removeMeasurement(view);
+                    drawingMode(draw, 'polyline', drawLine);
                 });
             });
     };
 
+    removeMeasurement = (view: any) => {
+        view.graphics.removeAll();
+        this.setState({ value: '' });
+    };
+
     render() {
-        return <MapMeasureView />;
+        const { value } = this.state;
+
+        return <MapMeasureView value={value} />;
     }
 }
 

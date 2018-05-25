@@ -1,6 +1,11 @@
+// @flow
 import React, { Fragment } from 'react';
 
-const MapMeasureView = () => (
+type Props = {
+    value: string,
+};
+
+const MapMeasureView = ({ value }: Props) => (
     <Fragment>
         <div
             id="draw-polygon"
@@ -16,7 +21,9 @@ const MapMeasureView = () => (
         >
             <span className="esri-icon-polyline" />
         </div>
-        <div id="measurement" />
+        <div hidden={!value} id="measurement">
+            {value}
+        </div>
     </Fragment>
 );
 
