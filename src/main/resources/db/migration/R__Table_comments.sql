@@ -19,3 +19,11 @@ comment on column layer.layer_order is 'Order of the layers.';
 comment on column layer.min_zoom is 'Minimum zoom level for the layer.';
 comment on column layer.max_zoom is 'Maximum zoom level for the layer.';
 comment on column layer.layer_group_id is 'Identifier of the layer group that the layer belongs to.';
+
+comment on table layer_permission is 'Layer permissions.';
+comment on column layer_permission.layer_id is 'Identifier of the layer that the permissions belong to.';
+comment on column layer_permission.user_group is 'Name of the user group that the permissions belong to.';
+comment on column layer_permission.create_layer is 'Whether user can create layers or not.';
+comment on column layer_permission.read_layer is 'Whether user can read layers or not.';
+comment on column layer_permission.update_layer is 'Whether user can update layers or not.';
+comment on column layer_permission.delete_layer is 'Whether user can delete layers or not.';
