@@ -9,7 +9,7 @@
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
         </Console>
         <!-- Rolling File Appender -->
-        <RollingFile name="fileLogger" fileName="${basePath}/KSR.log" filePattern="${basePath}/$${date:yyyy-MM}/KSR-%d{yyyy-MM-dd}.log.gz">
+        <RollingFile name="fileLogger" fileName="${basePath}/KSR.log" filePattern="${basePath}/$${date:yyyy-MM}/KSR-%d{yyyy-MM-dd}.log">
             <PatternLayout>
                 <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
             </PatternLayout>
