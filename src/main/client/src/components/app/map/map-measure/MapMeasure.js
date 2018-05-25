@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader/dist/esm/esri-loader';
+import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
 import MapMeasureView from './MapMeasureView';
 
