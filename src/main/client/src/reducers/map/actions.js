@@ -8,3 +8,11 @@ export const getWmsLayers = () => ({
 export const setWmsLayers = () => ({
     type: types.SET_WMS_LAYERS,
 });
+
+export const getWmtsLayers = () => ({
+    type: types.GET_WMTS_LAYERS,
+});
+
+export const setWmtsLayers = () => ({
+    type: types.SET_WMTS_LAYERS,
+});

@@ -14,8 +14,18 @@ type WmsLayer = {
     sublayers: Array<SubLayers>
 }
 
+type WmtsLayer = {
+    server: string,
+    url: string,
+    copyright: string,
+    activeLayer: {
+        id: string,
+    }
+}
+
 type Props = {
     wmsLayers: Array<WmsLayer>,
+    wmtsLayers: Array<WmtsLayer>,
     activeNav: string,
 }
 
@@ -56,6 +66,7 @@ class EsriMap extends Component<Props, State> {
                 'esri/widgets/Home',
                 'esri/widgets/Track',
                 'esri/layers/WMSLayer',
+                'esri/layers/WMTSLayer',
                 'esri/geometry/SpatialReference',
                 'esri/geometry/Extent',
             ])
@@ -67,11 +78,12 @@ class EsriMap extends Component<Props, State> {
                 Home,
                 Track,
                 WMSLayer,
+                WMTSLayer,
                 SpatialReference,
                 Extent,
             ]) => {
                 const { container } = this.state.options;
-                const { wmsLayers } = this.props;
+                const { wmsLayers, wmtsLayers } = this.props;
                 const layers = [];
 
                 wmsLayers.map((layer) => {
@@ -80,6 +92,15 @@ class EsriMap extends Component<Props, State> {
                         url: layer.url,
                         copyright: layer.copyright,
                         sublayers: layer.sublayers,
+                    }));
+                });
+
+                wmtsLayers.map((layer) => {
+                    esriConfig.request.corsEnabledServers.push(layer.server);
+                    return layers.push(new WMTSLayer({
+                        url: layer.url,
+                        copyright: layer.copyright,
+                        activeLayer: layer.activeLayer,
                     }));
                 });
 

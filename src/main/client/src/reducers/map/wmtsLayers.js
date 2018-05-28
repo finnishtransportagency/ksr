@@ -1,21 +1,19 @@
 // @flow
-import { GET_WMS_LAYERS, SET_WMS_LAYERS } from '../../constants/actionTypes';
-import { mockWmsLayers } from '../../mock-data/wmsLayers';
+import { GET_WMTS_LAYERS, SET_WMTS_LAYERS } from '../../constants/actionTypes';
+import { mockWmtsLayers } from '../../mock-data/wmtsLayers';
 
-const initialState = mockWmsLayers;
+const initialState = mockWmtsLayers;
 
-type SubLayers = {
-    name: string,
-};
-
-type WmsLayer = {
+type WmtsLayer = {
     server: string,
     url: string,
     copyright: string,
-    sublayers: Array<SubLayers>
-}
+    activeLayer: {
+        id: string,
+    },
+};
 
-type State = Array<WmsLayer>;
+type State = Array<WmtsLayer>;
 
 type Action = {
     selectedNav: string,
@@ -25,9 +23,9 @@ type Action = {
 export default (state: State = initialState, action: Action) => {
     let newState = state;
     switch (action.type) {
-        case GET_WMS_LAYERS:
+        case GET_WMTS_LAYERS:
             return state;
-        case SET_WMS_LAYERS:
+        case SET_WMTS_LAYERS:
             newState = state;
             return newState;
         default:

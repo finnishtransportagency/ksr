@@ -1,12 +1,13 @@
 // @flow
 import { connect } from 'react-redux';
-import { getWmsLayers } from '../../../reducers/map/actions';
+import { getWmsLayers, getWmtsLayers } from '../../../reducers/map/actions';
 import { getActiveNav } from '../../../reducers/navigation/actions';
 import EsriMap from './EsriMap';
 
 const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
     wmsLayers: state.map.wmsLayers,
+    wmtsLayers: state.map.wmtsLayers,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -15,6 +16,9 @@ const mapDispatchToProps = dispatch => ({
     },
     getWmsLayers: () => {
         dispatch(getWmsLayers());
+    },
+    getWmtsLayers: () => {
+        dispatch(getWmtsLayers());
     },
 });
 
