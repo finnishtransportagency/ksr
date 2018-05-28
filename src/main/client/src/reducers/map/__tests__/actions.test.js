@@ -11,4 +11,14 @@ describe('actions', () => {
         const expectedAction = { type: types.SET_WMS_LAYERS };
         expect(actions.setWmsLayers()).toEqual(expectedAction);
     });
+
+    it('should create an action to get WMTS layers', () => {
+        const expectedAction = { type: types.GET_WMTS_LAYERS };
+        expect(actions.getWmtsLayers()).toEqual(expectedAction);
+    });
+
+    it('should create an action to set WMTS layers', () => {
+        const expectedAction = { type: types.SET_WMTS_LAYERS };
+        expect(actions.setWmtsLayers()).toEqual(expectedAction);
+    });
 });

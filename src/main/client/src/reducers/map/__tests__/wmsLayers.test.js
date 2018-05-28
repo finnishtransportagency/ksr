@@ -2,7 +2,7 @@ import * as types from '../../../constants/actionTypes';
 import { mockWmsLayers } from '../../../mock-data/wmsLayers';
 import reducer from '../wmsLayers';
 
-describe('map reducer', () => {
+describe('WMS Layers reducer', () => {
     it('should return initial state', () => {
         expect(reducer(undefined, {})).toEqual(mockWmsLayers);
     });
@@ -15,7 +15,7 @@ describe('map reducer', () => {
 
     it('should handle SET_WMS_LAYERS', () => {
         expect(reducer(undefined, {
-            type: types.SET_ACTIVE_NAV,
+            type: types.SET_WMS_LAYERS,
         })).toEqual(mockWmsLayers);
     });
 });
