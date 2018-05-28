@@ -2,6 +2,7 @@ package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.MapLayer;
 
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class ProxyService {
             }
             else {
                 urlBuilder.append(mlUrl);
-                urlBuilder.append(serviceEndpoint.endsWith("/") ? serviceEndpoint.substring(0, serviceEndpoint.length() - 1) : serviceEndpoint);
+                urlBuilder.append(KsrStringUtils.withoutTrailingSlash(serviceEndpoint));
             }
         }
         else {
@@ -34,7 +35,7 @@ public class ProxyService {
             else {
                 urlBuilder.append(mlUrl);
                 urlBuilder.append("/");
-                urlBuilder.append(serviceEndpoint.endsWith("/") ? serviceEndpoint.substring(0, serviceEndpoint.length() - 1) : serviceEndpoint);
+                urlBuilder.append(KsrStringUtils.withoutTrailingSlash(serviceEndpoint));
             }
         }
 

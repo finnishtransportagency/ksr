@@ -2,6 +2,7 @@ package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.MapLayer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
+import org.w3c.dom.Entity;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -151,23 +153,27 @@ public class HttpRequestService {
         return  bos.toByteArray();
     }
 
+    public Document parseDocumentFromEntity(HttpEntity entity) throws IOException, SAXException, ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputStream in = entity.getContent();
+        Document doc = builder.parse(in);
+        in.close();
+        return doc;
+    }
 
     public void setGetCapabilitiesResponse(MapLayer mapLayer, String baseUrl, HttpServletResponse response, CloseableHttpResponse cRes) {
         HttpEntity entity = cRes.getEntity();
 
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            InputStream in = entity.getContent();
-            Document doc = builder.parse(in);
-            in.close();
+            Document doc = parseDocumentFromEntity(entity);
 
-            String hostNameWithoutSlash = (hostName.endsWith("/") ? hostName.substring(0, hostName.length() - 1) : hostName);
+            String hostNameWithoutSlash = KsrStringUtils.withoutTrailingSlash(hostName);
             String baseUrlWithSlash = hostNameWithoutSlash + baseUrl + (baseUrl.endsWith("/") ? "" : "/" );
-            String baseUrlWithoutSlash = hostNameWithoutSlash + (baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl );
+            String baseUrlWithoutSlash = KsrStringUtils.withoutTrailingSlash(baseUrl);
 
             String mlUrl = mapLayer.getUrl();
-            String mlUrlWithoutSlash = (mlUrl.endsWith("/") ? mlUrl.substring(0, mlUrl.length() - 1) : mlUrl );
+            String mlUrlWithoutSlash = KsrStringUtils.withoutTrailingSlash(mlUrl);
 
             doc = replaceAttributeValues(doc, "//*[@template]", "template", mlUrl, baseUrlWithSlash);
             doc = replaceAttributeValues(doc, "//*[name()='ows:Get']", "xlink:href", mlUrlWithoutSlash, baseUrlWithoutSlash);
