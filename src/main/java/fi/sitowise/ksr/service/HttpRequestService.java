@@ -134,7 +134,9 @@ public class HttpRequestService {
             Node attr = nodes.item(i).getAttributes().getNamedItem(attributeName);
             if (attr != null) {
                 String val = attr.getNodeValue();
-                attr.setNodeValue(val.replaceFirst(replaceValue, replaceWith));
+                if (replaceValue != null && replaceWith != null) {
+                    attr.setNodeValue(val.replaceFirst(replaceValue, replaceWith));
+                }
             }
         }
         return doc;
