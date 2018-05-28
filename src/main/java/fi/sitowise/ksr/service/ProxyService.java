@@ -16,10 +16,28 @@ public class ProxyService {
     public String getEndpointUrl(MapLayer mapLayer, String serviceEndpoint, String queryString) {
         String mlUrl = mapLayer.getUrl();
 
-        StringBuilder urlBuilder = new StringBuilder(mlUrl);
+        StringBuilder urlBuilder = new StringBuilder();
         // Also ensure that there is a slash between those two url base parts.
-        urlBuilder.append(mlUrl.substring(mlUrl.length() - 1).equals("/") ? "" : "/");
-        urlBuilder.append(serviceEndpoint);
+        if (mlUrl.endsWith("/")) {
+            if (serviceEndpoint == null || serviceEndpoint.isEmpty() || serviceEndpoint.equals("/")) {
+                urlBuilder.append(mlUrl.substring(0, mlUrl.length() - 1));
+            }
+            else {
+                urlBuilder.append(mlUrl);
+                urlBuilder.append(serviceEndpoint.endsWith("/") ? serviceEndpoint.substring(0, serviceEndpoint.length() - 1) : serviceEndpoint);
+            }
+        }
+        else {
+            if (serviceEndpoint == null || serviceEndpoint.isEmpty() || serviceEndpoint.equals("/")) {
+                urlBuilder.append(mlUrl);
+            }
+            else {
+                urlBuilder.append(mlUrl);
+                urlBuilder.append("/");
+                urlBuilder.append(serviceEndpoint.endsWith("/") ? serviceEndpoint.substring(0, serviceEndpoint.length() - 1) : serviceEndpoint);
+            }
+        }
+
         if (queryString != null && queryString.length() > 0) {
             urlBuilder.append("?");
             urlBuilder.append(queryString);
