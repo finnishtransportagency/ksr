@@ -3,6 +3,8 @@ package fi.sitowise.ksr.authentication;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -82,6 +84,7 @@ public class User implements UserDetails {
     }
     
     @Override
+    @JsonIgnore
     public String getPassword() {
         return null;
     }
@@ -92,21 +95,25 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return false;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return false;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return false;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
