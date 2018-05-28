@@ -77,7 +77,7 @@ class MapMeasure extends Component<Props, State> {
                     const graphic = createGraphic(polygon);
                     view.graphics.add(graphic);
 
-                    let area = geometryEngine.geodesicArea(
+                    let area = geometryEngine.planarArea(
                         polygon,
                         'square-meters',
                     );
@@ -86,7 +86,7 @@ class MapMeasure extends Component<Props, State> {
                         const simplifiedPolygon = geometryEngine.simplify(polygon);
 
                         if (simplifiedPolygon) {
-                            area = geometryEngine.geodesicArea(
+                            area = geometryEngine.planarArea(
                                 simplifiedPolygon,
                                 'square-meters',
                             );
@@ -110,7 +110,7 @@ class MapMeasure extends Component<Props, State> {
                     const graphic = createGraphic(line);
                     view.graphics.add(graphic);
 
-                    let length = geometryEngine.geodesicLength(
+                    let length = geometryEngine.planarLength(
                         line,
                         'meters',
                     );
