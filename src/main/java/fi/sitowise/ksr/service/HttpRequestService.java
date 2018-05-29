@@ -162,6 +162,12 @@ public class HttpRequestService {
         return doc;
     }
 
+    public void writeBytesArrayToResponse(byte[] bytes, HttpServletResponse response) throws IOException {
+        response.setHeader("Content-Length", String.format("%d", bytes.length));
+        ServletOutputStream out = response.getOutputStream();
+        out.write(bytes);
+    }
+
     public void setGetCapabilitiesResponse(MapLayer mapLayer, String baseUrl, HttpServletResponse response, CloseableHttpResponse cRes) {
         HttpEntity entity = cRes.getEntity();
 
@@ -169,7 +175,7 @@ public class HttpRequestService {
             Document doc = parseDocumentFromEntity(entity);
 
             String hostNameWithoutSlash = KsrStringUtils.withoutTrailingSlash(hostName);
-            String baseUrlWithSlash = hostNameWithoutSlash + baseUrl + (baseUrl.endsWith("/") ? "" : "/" );
+            String baseUrlWithSlash = hostNameWithoutSlash + KsrStringUtils.withTrailingSlash(baseUrl);
             String baseUrlWithoutSlash = KsrStringUtils.withoutTrailingSlash(baseUrl);
 
             String mlUrl = mapLayer.getUrl();
@@ -180,12 +186,7 @@ public class HttpRequestService {
             doc = replaceAttributeValues(doc, "//*[name()='OnlineResource']", "xlink:href", mlUrlWithoutSlash, baseUrlWithoutSlash);
 
             byte[] xmlBytes = documentToBytesArray(doc);
-
-            response.setHeader("Content-Length", String.format("%d", xmlBytes.length));
-
-            ServletOutputStream out = response.getOutputStream();
-            out.write(xmlBytes);
-
+            writeBytesArrayToResponse(xmlBytes, response);
 
         } catch (SAXException | IOException | ParserConfigurationException |
                 XPathExpressionException | TransformerException e ) {

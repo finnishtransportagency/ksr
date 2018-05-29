@@ -136,4 +136,14 @@ public class HttpRequestServiceTests {
 
         Assert.assertEquals("1.0", doc.getXmlVersion());
     }
+
+    @Test
+    public void testSetGetCapabilitiesResponse() throws IOException {
+        MockHttpServletResponse res = new MockHttpServletResponse();
+        byte[] testBytes = "test".getBytes();
+
+        httpRequestService.writeBytesArrayToResponse(testBytes, res);
+
+        Assert.assertEquals(testBytes.length, Integer.parseInt(res.getHeader("Content-Length")));
+    }
 }
