@@ -13,4 +13,13 @@ public class KsrStringUtilsTests {
         Assert.assertEquals("qwerty", KsrStringUtils.withoutTrailingSlash("qwerty"));
         Assert.assertEquals("", KsrStringUtils.withoutTrailingSlash(""));
     }
+
+    @Test
+    public void testWithTrailingSlash() {
+        Assert.assertEquals("aqwerty/", KsrStringUtils.withTrailingSlash("aqwerty/"));
+        Assert.assertEquals(null, KsrStringUtils.withTrailingSlash(null));
+        Assert.assertEquals("/", KsrStringUtils.withTrailingSlash("/"));
+        Assert.assertEquals("aqwerty/", KsrStringUtils.withTrailingSlash("aqwerty"));
+        Assert.assertEquals("/", KsrStringUtils.withTrailingSlash(""));
+    }
 }
