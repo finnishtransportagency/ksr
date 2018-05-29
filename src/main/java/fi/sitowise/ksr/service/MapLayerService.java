@@ -6,6 +6,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class MapLayerService {
 
+    /**
+     * Get maplayer for given id.
+     *
+     * @param id Maplayers id
+     * @return Matching maplayer or null
+     */
     public MapLayer getMapLayerById(Integer id) {
         MapLayer ml = new MapLayer();
         ml.setId(id);

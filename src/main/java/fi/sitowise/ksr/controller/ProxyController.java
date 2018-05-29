@@ -47,6 +47,12 @@ public class ProxyController {
         proxyService.get(mapLayer, baseUrl, queryString, request.getMethod(), serviceEndpoint, response);
     }
 
+    /**
+     * Get serviceEndpoint (the URL-path matching controllers RequestMapping wildcard).
+     *
+     * @param requestUri Request URI.
+     * @return The serviceEndpoint.
+     */
     public String getServiceEndpoint(String requestUri) {
         Matcher matcher = generalProxyUrlPattern.matcher(requestUri);
         return matcher.find() ? matcher.group(1) : null;

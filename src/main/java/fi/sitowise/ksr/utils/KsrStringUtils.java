@@ -1,7 +1,15 @@
 package fi.sitowise.ksr.utils;
 
+/**
+ * A Helper class to format Strings.
+ */
 public class KsrStringUtils {
 
+    /**
+     * Returns a new String without trailing slash, or null if given string was null.
+     * @param str String to format.
+     * @return String without trailing slash
+     */
     public static String withoutTrailingSlash(String str) {
         if (str == null) {
             return null;
@@ -9,6 +17,11 @@ public class KsrStringUtils {
         return (str.endsWith("/") ? str.substring(0, str.length() - 1) : str);
     }
 
+    /**
+     * Returns a new String witho trailing slash, or null if given string was null.
+     * @param str String to format.
+     * @return String with trailing slash
+     */
     public static String withTrailingSlash(String str) {
         if (str == null) {
             return null;

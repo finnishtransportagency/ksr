@@ -71,6 +71,15 @@ public class HttpRequestService {
         this.requestConfig = requestConfigBuilder.build();
     }
 
+    /**
+     * Fetch endPointUrl:s content and write into HttpServletResponse.
+     *
+     * @param mapLayer MapLayer that is requested.
+     * @param baseUrl Baseurl for proxy-service for given layer.
+     * @param method HTTP method, GET | POST | PUT etc.
+     * @param endPointUrl The url to be fetched.
+     * @param response HttpServletResponse, where to write the fetched content
+     */
     public void fetchToResponse(MapLayer mapLayer, String baseUrl, String method, String endPointUrl, HttpServletResponse response) {
         HttpRequestBase base = getRequestBase(method, endPointUrl, requestConfig);
 
@@ -92,11 +101,25 @@ public class HttpRequestService {
         }
     }
 
+    /**
+     * Returns whether given URL should be treated as a GetCapabilities -URL.
+     *
+     * @param endPointUrl URL that should be inspected.
+     * @return boolean whether URL should be treated as a GetCapablities URL.
+     */
     public boolean isGetCapabilitiesRequest(String endPointUrl) {
         String lowerCasedUrl = endPointUrl.toLowerCase();
         return lowerCasedUrl.contains("wmtscapabilities.xml") || lowerCasedUrl.contains("getcapabilities");
     }
 
+    /**
+     * Returns a correct HttpRequestBase for given method, endpoint and config.
+     *
+     * @param method String indicating HTTP method PUT | POST | GET etc.
+     * @param endPointUrl The url to be fetched.
+     * @param requestConfig Common requestconfiguration for this httpRequestService.
+     * @return Correct HttpRequestBase or GET if no matches found for method.
+     */
     public HttpRequestBase getRequestBase(String method, String endPointUrl, RequestConfig requestConfig) {
         HttpRequestBase base;
         switch (method) {
@@ -110,6 +133,13 @@ public class HttpRequestService {
         return base;
     }
 
+    /**
+     * Set HttpServletResponse headers from CloseableHttpResponse.
+     * Only specified headers are added if the exists. Other headers are omitted.
+     *
+     * @param response HttpServletResponse where the headers should be added.
+     * @param cRes CloseableHttpResponse from where to read the headers.
+     */
     public void setResponseHeaders(HttpServletResponse response, CloseableHttpResponse cRes) {
         String[] headerNames = { "Content-Type", "Content-Length", "Cache-control", "Expires", "Last-Modified" };
         for (String headerName : headerNames) {
@@ -120,6 +150,13 @@ public class HttpRequestService {
         }
     }
 
+    /**
+     * Write content from CloseableHttpResponse into HttpServletResponse
+     *
+     * @param response HttpServletResponse whose OutputStream to write.
+     * @param cRes CloseableHttpResponse from where to read contents.
+     * @throws IOException
+     */
     public void setResponseContent(HttpServletResponse response, CloseableHttpResponse cRes) throws IOException {
         HttpEntity entity = cRes.getEntity();
         ServletOutputStream out = response.getOutputStream();
@@ -128,6 +165,17 @@ public class HttpRequestService {
         }
     }
 
+    /**
+     * Replace given attribute values with new ones for matching XML-elements.
+     *
+     * @param doc XML Document where to replace attributes
+     * @param xPathExpr XPath expression to search corresponding nodes.
+     * @param attributeName Name of the attribute.
+     * @param replaceValue Value/placeholder to be replaced.
+     * @param replaceWith The value that will replace the 'replaceValue'
+     * @return The XML Document with replaced values;
+     * @throws XPathExpressionException
+     */
     public Document replaceAttributeValues(Document doc, String xPathExpr, String attributeName, String replaceValue, String replaceWith) throws XPathExpressionException {
         XPath xpath = XPathFactory.newInstance().newXPath();
 
@@ -144,6 +192,13 @@ public class HttpRequestService {
         return doc;
     }
 
+    /**
+     * Writes a XML Document into a byte[] -array.
+     *
+     * @param doc XML Document
+     * @return byte[] -array of XML Document content.
+     * @throws TransformerException
+     */
     public byte[] documentToBytesArray(Document doc) throws TransformerException {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
 
@@ -153,6 +208,15 @@ public class HttpRequestService {
         return  bos.toByteArray();
     }
 
+    /**
+     * Parse XML Docoument from HTTPEntity.
+     *
+     * @param entity HTTPEntity which holds the contents of XML-document.
+     * @return Document XML Document parsed from Entitys content.
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public Document parseDocumentFromEntity(HttpEntity entity) throws IOException, SAXException, ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -162,12 +226,28 @@ public class HttpRequestService {
         return doc;
     }
 
+    /**
+     * Write byte[] into HttpServletResponses OutputStream. Also set's the correct Content-Size -header based on the
+     * byte[] -arrays length.
+     *
+     * @param bytes byte[] to be written.
+     * @param response HttpServletResponse whose OutputStream the bytes should be written.
+     * @throws IOException
+     */
     public void writeBytesArrayToResponse(byte[] bytes, HttpServletResponse response) throws IOException {
         response.setHeader("Content-Length", String.format("%d", bytes.length));
         ServletOutputStream out = response.getOutputStream();
         out.write(bytes);
     }
 
+    /**
+     * Handle GetCapabilities Response so that it no longer contains links to external services but into our own proxy.
+     *
+     * @param mapLayer The requested maplayer.
+     * @param baseUrl Baseurl for proxy-service for given layer.
+     * @param response HttpServletResponse, where to write the fetched content
+     * @param cRes CloseableHttpResponse from where to read contents.
+     */
     public void setGetCapabilitiesResponse(MapLayer mapLayer, String baseUrl, HttpServletResponse response, CloseableHttpResponse cRes) {
         HttpEntity entity = cRes.getEntity();
 
