@@ -54,6 +54,9 @@ public class ProxyController {
      * @return The serviceEndpoint.
      */
     public String getServiceEndpoint(String requestUri) {
+        if (requestUri == null) {
+            return null;
+        }
         Matcher matcher = generalProxyUrlPattern.matcher(requestUri);
         return matcher.find() ? matcher.group(1) : null;
     }
