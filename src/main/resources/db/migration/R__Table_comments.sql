@@ -19,6 +19,8 @@ comment on column layer.layer_order is 'Order of the layers.';
 comment on column layer.min_zoom is 'Minimum zoom level for the layer.';
 comment on column layer.max_zoom is 'Maximum zoom level for the layer.';
 comment on column layer.layer_group_id is 'Identifier of the layer group that the layer belongs to.';
+comment on column layer.transparent is 'Whether the layer is transparent or not.';
+comment on column layer.attribution is 'Layer copyright information.';
 
 comment on table layer_permission is 'Layer permissions.';
 comment on column layer_permission.layer_id is 'Identifier of the layer that the permissions belong to.';
