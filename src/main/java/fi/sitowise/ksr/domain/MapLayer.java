@@ -9,6 +9,7 @@ public class MapLayer {
     private String url;
     private String type;
 
+
     public Integer getId() {
         return id;
     }

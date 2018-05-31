@@ -28,7 +28,6 @@ public class ProxyController {
     @Autowired
     private ProxyService proxyService;
 
-
     @Autowired
     public void setUpGeneralProxyUrlMatcher() {
         generalProxyUrlPattern = Pattern.compile("^\\/api\\/proxy\\/layer\\/\\d{1,6}\\/(.*?)$");
@@ -36,9 +35,7 @@ public class ProxyController {
 
     @CrossOrigin(origins = "http://localhost")
     @RequestMapping("/api/proxy/layer/{layerId}/**")
-    public void generalProxy(
-            @PathVariable int layerId,
-            HttpServletRequest request,
+    public void generalProxy(@PathVariable int layerId, HttpServletRequest request,
             HttpServletResponse response
     ) {
         MapLayer mapLayer = mapLayerService.getMapLayerById(layerId);

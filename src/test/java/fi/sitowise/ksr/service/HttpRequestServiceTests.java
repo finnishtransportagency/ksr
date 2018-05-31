@@ -43,7 +43,6 @@ public class HttpRequestServiceTests {
     @MockBean
     RequestConfig requestConfig;
 
-
     @Test
     public void testIsGetCapabilitiesRequest() {
         Assert.assertEquals(true, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetCapabilities"));

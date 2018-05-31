@@ -56,7 +56,6 @@ public class ProxyControllerTests {
         mockMvc.perform(get("/api/proxy")).andExpect(status().isNotFound());
     }
 
-
     @Test
     public void testGetServiceEndpoint() {
         Assert.assertNull(proxyController.getServiceEndpoint(null));

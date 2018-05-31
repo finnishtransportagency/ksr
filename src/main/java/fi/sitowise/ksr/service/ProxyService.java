@@ -35,17 +35,14 @@ public class ProxyService {
         if (mlUrl.endsWith("/")) {
             if (serviceEndpoint == null || serviceEndpoint.isEmpty() || serviceEndpoint.equals("/")) {
                 urlBuilder.append(mlUrl.substring(0, mlUrl.length() - 1));
-            }
-            else {
+            } else {
                 urlBuilder.append(mlUrl);
                 urlBuilder.append(KsrStringUtils.withoutTrailingSlash(serviceEndpoint));
             }
-        }
-        else {
+        } else {
             if (serviceEndpoint == null || serviceEndpoint.isEmpty() || serviceEndpoint.equals("/")) {
                 urlBuilder.append(mlUrl);
-            }
-            else {
+            } else {
                 urlBuilder.append(mlUrl);
                 urlBuilder.append("/");
                 urlBuilder.append(KsrStringUtils.withoutTrailingSlash(serviceEndpoint));

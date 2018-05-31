@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = SpringRunner.class)
 @ContextConfiguration(classes = ProxyService.class)
@@ -21,7 +20,6 @@ public class ProxyServiceTests {
 
     @MockBean
     private HttpRequestService httpRequestService;
-
 
     @Test
     public void testGetEndpointUrlForWMSWithoutTrailingSlash() {
@@ -100,5 +98,4 @@ public class ProxyServiceTests {
         Assert.assertEquals("http://test.example.com/wmts/1.0.0/WMTSCapabilities.xml",
                 proxyService.getEndpointUrl(ml, "1.0.0/WMTSCapabilities.xml", null));
     }
-
 }
