@@ -110,10 +110,10 @@ class MapMeasure extends Component<Props, State> {
                         }
                     }
 
-                    if (area > 10000) {
-                        area = `${parseFloat((area / 10000).toPrecision(2))} ha`;
-                    } else if (area !== 0 && area < 10000) {
-                        area = `${parseFloat(area.toPrecision(2))} m2`;
+                    if (area >= 10000) {
+                        area = `${parseFloat((area / 10000).toFixed(2))} ha`;
+                    } else if (area > 0 && area < 10000) {
+                        area = `${parseFloat(area.toFixed(2))} m\xB2`;
                     } else {
                         area = '';
                     }
@@ -131,10 +131,10 @@ class MapMeasure extends Component<Props, State> {
 
                     let length = geometryEngine.geodesicLength(line, 'meters');
 
-                    if (length > 1000) {
-                        length = `${parseFloat((length / 1000).toPrecision(2))} km`;
-                    } else if (length !== 0 && length < 1000) {
-                        length = `${parseFloat(length.toPrecision(2))} m`;
+                    if (length >= 1000) {
+                        length = `${parseFloat((length / 1000).toFixed(2))} km`;
+                    } else if (length > 0 && length < 1000) {
+                        length = `${parseFloat(length.toFixed(2))} m`;
                     } else {
                         length = '';
                     }
