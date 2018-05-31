@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
-import org.w3c.dom.Entity;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -259,12 +258,12 @@ public class HttpRequestService {
         try {
             Document doc = parseDocumentFromEntity(entity);
 
-            String hostNameWithoutSlash = KsrStringUtils.withoutTrailingSlash(hostName);
-            String baseUrlWithSlash = hostNameWithoutSlash + KsrStringUtils.withTrailingSlash(baseUrl);
-            String baseUrlWithoutSlash = KsrStringUtils.withoutTrailingSlash(baseUrl);
+            String hostNameWithoutSlash = KsrStringUtils.removeTrailingSlash(hostName);
+            String baseUrlWithSlash = hostNameWithoutSlash + KsrStringUtils.addTrailingSlash(baseUrl);
+            String baseUrlWithoutSlash = KsrStringUtils.removeTrailingSlash(baseUrl);
 
             String mlUrl = mapLayer.getUrl();
-            String mlUrlWithoutSlash = KsrStringUtils.withoutTrailingSlash(mlUrl);
+            String mlUrlWithoutSlash = KsrStringUtils.removeTrailingSlash(mlUrl);
 
             doc = replaceAttributeValues(doc, "//*[@template]", "template", mlUrl, baseUrlWithSlash);
             doc = replaceAttributeValues(doc, "//*[name()='ows:Get']", "xlink:href", mlUrlWithoutSlash, baseUrlWithoutSlash);

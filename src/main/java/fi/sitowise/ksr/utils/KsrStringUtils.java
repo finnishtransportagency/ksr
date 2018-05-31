@@ -10,7 +10,7 @@ public class KsrStringUtils {
      * @param str String to format.
      * @return String without trailing slash
      */
-    public static String withoutTrailingSlash(String str) {
+    public static String removeTrailingSlash(String str) {
         if (str == null) {
             return null;
         }
@@ -18,11 +18,11 @@ public class KsrStringUtils {
     }
 
     /**
-     * Returns a new String witho trailing slash, or null if given string was null.
+     * Returns a new String with trailing slash, or null if given string was null.
      * @param str String to format.
      * @return String with trailing slash
      */
-    public static String withTrailingSlash(String str) {
+    public static String addTrailingSlash(String str) {
         if (str == null) {
             return null;
         }

@@ -37,7 +37,7 @@ public class ProxyService {
                 urlBuilder.append(mlUrl.substring(0, mlUrl.length() - 1));
             } else {
                 urlBuilder.append(mlUrl);
-                urlBuilder.append(KsrStringUtils.withoutTrailingSlash(serviceEndpoint));
+                urlBuilder.append(KsrStringUtils.removeTrailingSlash(serviceEndpoint));
             }
         } else {
             if (serviceEndpoint == null || serviceEndpoint.isEmpty() || serviceEndpoint.equals("/")) {
@@ -45,7 +45,7 @@ public class ProxyService {
             } else {
                 urlBuilder.append(mlUrl);
                 urlBuilder.append("/");
-                urlBuilder.append(KsrStringUtils.withoutTrailingSlash(serviceEndpoint));
+                urlBuilder.append(KsrStringUtils.removeTrailingSlash(serviceEndpoint));
             }
         }
 

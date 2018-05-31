@@ -7,19 +7,19 @@ public class KsrStringUtilsTests {
 
     @Test
     public void testWithoutTrailingSlash() {
-        Assert.assertEquals("qwerty", KsrStringUtils.withoutTrailingSlash("qwerty/"));
-        Assert.assertNull(KsrStringUtils.withoutTrailingSlash(null));
-        Assert.assertEquals("", KsrStringUtils.withoutTrailingSlash("/"));
-        Assert.assertEquals("qwerty", KsrStringUtils.withoutTrailingSlash("qwerty"));
-        Assert.assertEquals("", KsrStringUtils.withoutTrailingSlash(""));
+        Assert.assertEquals("qwerty", KsrStringUtils.removeTrailingSlash("qwerty/"));
+        Assert.assertNull(KsrStringUtils.removeTrailingSlash(null));
+        Assert.assertEquals("", KsrStringUtils.removeTrailingSlash("/"));
+        Assert.assertEquals("qwerty", KsrStringUtils.removeTrailingSlash("qwerty"));
+        Assert.assertEquals("", KsrStringUtils.removeTrailingSlash(""));
     }
 
     @Test
     public void testWithTrailingSlash() {
-        Assert.assertEquals("aqwerty/", KsrStringUtils.withTrailingSlash("aqwerty/"));
-        Assert.assertNull(KsrStringUtils.withTrailingSlash(null));
-        Assert.assertEquals("/", KsrStringUtils.withTrailingSlash("/"));
-        Assert.assertEquals("aqwerty/", KsrStringUtils.withTrailingSlash("aqwerty"));
-        Assert.assertEquals("/", KsrStringUtils.withTrailingSlash(""));
+        Assert.assertEquals("aqwerty/", KsrStringUtils.addTrailingSlash("aqwerty/"));
+        Assert.assertNull(KsrStringUtils.addTrailingSlash(null));
+        Assert.assertEquals("/", KsrStringUtils.addTrailingSlash("/"));
+        Assert.assertEquals("aqwerty/", KsrStringUtils.addTrailingSlash("aqwerty"));
+        Assert.assertEquals("/", KsrStringUtils.addTrailingSlash(""));
     }
 }
