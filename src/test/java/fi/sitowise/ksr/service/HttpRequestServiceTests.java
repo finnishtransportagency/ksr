@@ -1,6 +1,5 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.domain.MapLayer;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
