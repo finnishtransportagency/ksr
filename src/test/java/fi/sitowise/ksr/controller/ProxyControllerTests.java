@@ -60,7 +60,7 @@ public class ProxyControllerTests {
 
     @Test
     public void testGetServiceEndpoint() {
-        Assert.assertEquals(null, proxyController.getServiceEndpoint(null));
+        Assert.assertNull(proxyController.getServiceEndpoint(null));
         Assert.assertEquals(
                 "1.00/GetCapalibites.xml",
                 proxyController.getServiceEndpoint("/api/proxy/layer/134/1.00/GetCapalibites.xml"));
@@ -68,6 +68,6 @@ public class ProxyControllerTests {
                 "a/b/c/D?e=f&g=h",
                 proxyController.getServiceEndpoint("/api/proxy/layer/321/a/b/c/D?e=f&g=h"));
         Assert.assertEquals("", proxyController.getServiceEndpoint("/api/proxy/layer/321/"));
-        Assert.assertEquals(null, proxyController.getServiceEndpoint("/api/proxy/layer/321"));
+        Assert.assertNull(proxyController.getServiceEndpoint("/api/proxy/layer/321"));
     }
 }

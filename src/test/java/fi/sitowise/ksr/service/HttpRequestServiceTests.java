@@ -74,9 +74,9 @@ public class HttpRequestServiceTests {
 
         Assert.assertEquals("image/png", res.getHeader("Content-Type"));
         Assert.assertEquals("Expires", "Wed, 21 Oct 2045 07:28:00 GMT", res.getHeader("Expires"));
-        Assert.assertEquals(null, res.getHeader("Last-Modified"));
-        Assert.assertEquals(null, res.getHeader("Content-Length"));
-        Assert.assertEquals(null, res.getHeader("Last-Modified"));
+        Assert.assertNull(res.getHeader("Last-Modified"));
+        Assert.assertNull(res.getHeader("Content-Length"));
+        Assert.assertNull(res.getHeader("Last-Modified"));
     }
 
     @Test
