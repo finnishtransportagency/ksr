@@ -15,7 +15,8 @@ import fi.sitowise.ksr.authentication.OAMFilter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final OAMAuthenticationProvider oamAuthenticationProvider;
-	
+
+	@Autowired
 	private final OAMFilter oamFilter;
 	
 	@Autowired
