@@ -83,6 +83,7 @@ class MapMeasure extends Component<Props, State> {
                                 width: 2,
                             },
                         },
+                        id: 'drawMeasure',
                     });
 
                 const drawPolygon = (evt) => {
@@ -90,7 +91,7 @@ class MapMeasure extends Component<Props, State> {
                     const polygon = createPolygon(vertices);
                     const graphic = createGraphic(polygon, 'solid');
 
-                    view.graphics.removeAll();
+                    view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.add(graphic);
 
                     let area = geometryEngine.geodesicArea(
@@ -125,7 +126,7 @@ class MapMeasure extends Component<Props, State> {
                     const line = createLine(vertices);
                     const graphic = createGraphic(line, 'none');
 
-                    view.graphics.removeAll();
+                    view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.add(graphic);
 
                     let length = geometryEngine.geodesicLength(line, 'meters');
@@ -169,7 +170,7 @@ class MapMeasure extends Component<Props, State> {
     removeMeasurement = () => {
         const { view, draw } = this.state;
         draw.reset();
-        view.graphics.removeAll();
+        view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
         this.setState({ value: '', active: '' });
     };
 
