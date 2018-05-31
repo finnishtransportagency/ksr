@@ -200,7 +200,7 @@
 						</goals>
 						<configuration>
 							<files>
-								<file>src/main/resources/application-${spring.profiles.active}.properties</file>
+								<file>src/main/resources/application-${spring-boot.run.profiles}.properties</file>
 							</files>
 						</configuration>
 					</execution>
