@@ -37,7 +37,3 @@ authorization.oam.authorized_groups_header=OAM_GROUPS
 proxy.maxDefaultPerRoute=20
 proxy.maxTotal=50
 proxy.socketTimeout=20000
-
-#Async http-executor
-async.httpExecutor.poolSize=100
-async.httpExecutor.queueCapacity=500
