@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * RestController for maplayer proxy.
+ */
 @RestController
 public class ProxyController {
 

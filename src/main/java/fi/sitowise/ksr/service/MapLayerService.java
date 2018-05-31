@@ -3,6 +3,10 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.domain.MapLayer;
 import org.springframework.stereotype.Service;
 
+/**
+ * A simple MapLayerService mockup.
+ * @TODO: Possibly to be replaced in the future.
+ */
 @Service
 public class MapLayerService {
 

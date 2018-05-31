@@ -39,6 +39,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * A Service to handle HTTP(S) requests to external servers.
+ * This service uses a pool of HTTP-connection to avoid extra
+ * overhead of initializing HTTP-connections.
+ */
 @Service
 public class HttpRequestService {
     private CloseableHttpClient closeableHttpClient;

@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * A proxy service for contructing URL:s from
+ * client defined query parameters and database stored maplayer -configuration.
+ */
 @Service
 public class ProxyService {
 

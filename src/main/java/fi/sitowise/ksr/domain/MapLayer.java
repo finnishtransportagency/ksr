@@ -1,5 +1,8 @@
 package fi.sitowise.ksr.domain;
 
+/**
+ * A KSR model representing a simple MapLayer.
+ */
 public class MapLayer {
 
     private Integer id;
