@@ -45,5 +45,6 @@
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./config/setupTests.js"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
