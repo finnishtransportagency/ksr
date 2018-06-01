@@ -16,3 +16,7 @@ export const getWmtsLayers = () => ({
 export const setWmtsLayers = () => ({
     type: types.SET_WMTS_LAYERS,
 });
+
+export const getLayerGroups = () => ({
+    type: types.GET_LAYER_GROUPS,
+});

@@ -8,3 +8,5 @@ export const SET_WMS_LAYERS = 'SET_WMS_LAYERS';
 
 export const GET_WMTS_LAYERS = 'GET_WMTS_LAYERS';
 export const SET_WMTS_LAYERS = 'SET_WMTS_LAYERS';
+
+export const GET_LAYER_GROUPS = 'GET_LAYER_GROUPS';
