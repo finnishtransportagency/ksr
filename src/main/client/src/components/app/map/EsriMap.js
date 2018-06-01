@@ -3,27 +3,43 @@ import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
 
-type Props = {
-    activeNav: string,
+type SubLayers = {
+    name: string,
 };
+
+type WmsLayer = {
+    server: string,
+    url: string,
+    copyright: string,
+    sublayers: Array<SubLayers>
+}
+
+type WmtsLayer = {
+    server: string,
+    url: string,
+    copyright: string,
+    activeLayer: {
+        id: string,
+    }
+}
+
+type Props = {
+    wmsLayers: Array<WmsLayer>,
+    wmtsLayers: Array<WmtsLayer>,
+    activeNav: string,
+}
 
 type State = {
     view: {},
     options: {
-        zoom: number,
         container: string,
-        basemap: string,
-        center: Array<number>,
     },
 };
 
 const initialState = {
     view: {},
     options: {
-        basemap: 'topo',
         container: 'mapView',
-        zoom: 16,
-        center: [25, 60.3],
     },
 };
 
@@ -43,29 +59,72 @@ class EsriMap extends Component<Props, State> {
 
         esriLoader
             .loadModules([
+                'esri/config',
                 'esri/views/MapView',
                 'esri/Map',
                 'esri/widgets/Search',
                 'esri/widgets/Home',
                 'esri/widgets/Track',
+                'esri/layers/WMSLayer',
+                'esri/layers/WMTSLayer',
+                'esri/geometry/SpatialReference',
+                'esri/geometry/Extent',
             ])
-            .then(([MapView, Map, Search, Home, Track]) => {
-                const {
-                    zoom,
-                    container,
-                    center,
-                    basemap,
-                } = this.state.options;
+            .then(([
+                esriConfig,
+                MapView,
+                Map,
+                Search,
+                Home,
+                Track,
+                WMSLayer,
+                WMTSLayer,
+                SpatialReference,
+                Extent,
+            ]) => {
+                const { container } = this.state.options;
+                const { wmsLayers, wmtsLayers } = this.props;
+                const layers = [];
+
+                wmsLayers.map((layer) => {
+                    esriConfig.request.corsEnabledServers.push(layer.server);
+                    return layers.push(new WMSLayer({
+                        url: layer.url,
+                        copyright: layer.copyright,
+                        sublayers: layer.sublayers,
+                    }));
+                });
+
+                wmtsLayers.map((layer) => {
+                    esriConfig.request.corsEnabledServers.push(layer.server);
+                    return layers.push(new WMTSLayer({
+                        url: layer.url,
+                        copyright: layer.copyright,
+                        activeLayer: layer.activeLayer,
+                    }));
+                });
 
                 const map = new Map({
-                    basemap,
+                    layers,
+                });
+
+                const epsg3067 = new SpatialReference(3067);
+
+                const extent = new Extent({
+                    xmin: -548576,
+                    ymin: 6291456,
+                    xmax: 1548576,
+                    ymax: 8388608,
+                    spatialReference: {
+                        wkid: 3067,
+                    },
                 });
 
                 const view = new MapView({
                     container,
                     map,
-                    center,
-                    zoom,
+                    spatialReference: epsg3067,
+                    extent,
                 });
 
                 const search = new Search({

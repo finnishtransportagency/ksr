@@ -94,7 +94,7 @@ class MapMeasure extends Component<Props, State> {
                     view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.add(graphic);
 
-                    let area = geometryEngine.geodesicArea(
+                    let area = geometryEngine.planarArea(
                         polygon,
                         'square-meters',
                     );
@@ -103,7 +103,7 @@ class MapMeasure extends Component<Props, State> {
                         const simplifiedPolygon = geometryEngine.simplify(polygon);
 
                         if (simplifiedPolygon) {
-                            area = geometryEngine.geodesicArea(
+                            area = geometryEngine.planarArea(
                                 simplifiedPolygon,
                                 'square-meters',
                             );
@@ -129,7 +129,7 @@ class MapMeasure extends Component<Props, State> {
                     view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.add(graphic);
 
-                    let length = geometryEngine.geodesicLength(line, 'meters');
+                    let length = geometryEngine.planarLength(line, 'meters');
 
                     if (length >= 1000) {
                         length = `${parseFloat((length / 1000).toFixed(2))} km`;

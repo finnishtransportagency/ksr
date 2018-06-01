@@ -29,3 +29,8 @@ authorization.oam.authorized_user_mail_header=OAM_USER_MAIL
 authorization.oam.authorized_user_mobile_header=OAM_USER_MOBILE
 authorization.oam.authorized_user_organization_header=OAM_ORGANIZATION
 authorization.oam.authorized_groups_header=OAM_GROUPS
+
+#Proxy
+proxy.maxDefaultPerRoute=20
+proxy.maxTotal=50
+proxy.socketTimeout=20000
