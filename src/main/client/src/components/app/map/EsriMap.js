@@ -1,9 +1,7 @@
 // @flow
 import esriLoader from 'esri-loader';
-import proj4 from 'proj4';
 import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
-import { defs } from '../../../utils/proj4Defs';
 
 type SubLayers = {
     name: string,
@@ -14,7 +12,7 @@ type WmsLayer = {
     url: string,
     copyright: string,
     sublayers: Array<SubLayers>
-};
+}
 
 type WmtsLayer = {
     server: string,
@@ -23,19 +21,21 @@ type WmtsLayer = {
     activeLayer: {
         id: string,
     }
-};
+}
 
 type Props = {
     wmsLayers: Array<WmsLayer>,
     wmtsLayers: Array<WmtsLayer>,
     activeNav: string,
-};
+    layerGroups: any,
+}
 
 type State = {
     view: {},
     options: {
         container: string,
     },
+    layerGroups: Array<any>,
 };
 
 const initialState = {
@@ -43,6 +43,7 @@ const initialState = {
     options: {
         container: 'mapView',
     },
+    layerGroups: [],
 };
 
 class EsriMap extends Component<Props, State> {
@@ -53,7 +54,11 @@ class EsriMap extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.initMap();
+        const { layerGroups } = this.props;
+
+        layerGroups
+            .then(r => this.setState({ layerGroups: r }))
+            .then(this.initMap());
     }
 
     initMap = () => {
@@ -67,7 +72,6 @@ class EsriMap extends Component<Props, State> {
                 'esri/widgets/Search',
                 'esri/widgets/Home',
                 'esri/widgets/Track',
-                'esri/widgets/ScaleBar',
                 'esri/layers/WMSLayer',
                 'esri/layers/WMTSLayer',
                 'esri/geometry/SpatialReference',
@@ -80,14 +84,14 @@ class EsriMap extends Component<Props, State> {
                 Search,
                 Home,
                 Track,
-                ScaleBar,
                 WMSLayer,
                 WMTSLayer,
                 SpatialReference,
                 Extent,
             ]) => {
+                const { layerGroups } = this.state;
                 const { container } = this.state.options;
-                const { wmsLayers, wmtsLayers } = this.props;
+                const { wmsLayers } = this.props;
                 const layers = [];
 
                 wmsLayers.map((layer) => {
@@ -99,14 +103,39 @@ class EsriMap extends Component<Props, State> {
                     }));
                 });
 
-                wmtsLayers.map((layer) => {
-                    esriConfig.request.corsEnabledServers.push(layer.server);
-                    return layers.push(new WMTSLayer({
-                        url: layer.url,
-                        copyright: layer.copyright,
-                        activeLayer: layer.activeLayer,
-                    }));
-                });
+                // Add visible WMS layers to array
+                layerGroups.map(layerGroup => layerGroup.layers.map((layer) => {
+                    esriConfig.request.corsEnabledServers.push(layer.url);
+
+                    if (layer.visible && layer.type === 'wms') {
+                        return layers.push(new WMSLayer({
+                            url: layer.url,
+                            copyright: layer.attribution,
+                            sublayers: [
+                                {
+                                    name: layer.layers,
+                                },
+                            ],
+                        }));
+                    }
+                    return null;
+                }));
+
+                // Add visible WMTS layers to array
+                layerGroups.map(layerGroup => layerGroup.layers.map((layer) => {
+                    esriConfig.request.corsEnabledServers.push(layer.url);
+
+                    if (layer.visible && layer.type === 'wmts') {
+                        return layers.push(new WMTSLayer({
+                            url: layer.url,
+                            copyright: layer.attribution,
+                            activeLayer: {
+                                id: layer.layers,
+                            },
+                        }));
+                    }
+                    return null;
+                }));
 
                 const map = new Map({
                     layers,
@@ -143,39 +172,12 @@ class EsriMap extends Component<Props, State> {
                     view,
                 });
 
-                const scaleBar = new ScaleBar({
-                    view,
-                    unit: 'metric',
-                });
-
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
                     [track, home, 'draw-polygon', 'draw-line'],
                     'top-right',
                 );
                 view.ui.add([search], 'top-left');
-                view.ui.add([scaleBar], 'bottom-left');
-
-                proj4.defs(defs);
-
-                view.on('click', (event) => {
-                    event.stopPropagation();
-
-                    const googleLocation =
-                        proj4('EPSG:3067', 'EPSG:4326', [event.mapPoint.x, event.mapPoint.y]);
-                    const streetViewUrl = `
-                        https://www.google.com/maps/@?api=1&map_action=pano&` +
-                        `viewpoint=${googleLocation[1]},${googleLocation[0]}`;
-
-                    view.popup.collapseEnabled = false;
-                    view.popup.open({
-                        title: 'Kohteen tiedot',
-                        location: event.mapPoint,
-                        content: `
-                            <a href=${streetViewUrl} target="blank">Avaa Google Street View</a>
-                        `,
-                    });
-                });
 
                 this.setState({ view });
             });
