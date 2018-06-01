@@ -9,24 +9,4 @@ export const mockWmsLayers = [
             },
         ],
     },
-    {
-        server: 'https://julkinen.liikennevirasto.fi',
-        url: 'https://julkinen.liikennevirasto.fi/inspirepalvelu/avoin/wms?',
-        copyright: 'liikennevirasto',
-        sublayers: [
-            {
-                name: 'rataverkko',
-            },
-        ],
-    },
-    {
-        server: 'https://julkinen.liikennevirasto.fi',
-        url: 'https://julkinen.liikennevirasto.fi/inspirepalvelu/avoin/wms?',
-        copyright: 'liikennevirasto',
-        sublayers: [
-            {
-                name: 'tasoristeykset',
-            },
-        ],
-    },
 ];
