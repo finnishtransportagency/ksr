@@ -1,11 +1,14 @@
 // @flow
 import React, { Fragment } from 'react';
+import { MeasurementBox } from './styles';
 
 type Props = {
     value: string,
+    active: string,
+    removeMeasurement: () => void,
 };
 
-const MapMeasureView = ({ value }: Props) => (
+const MapMeasureView = ({ value, active, removeMeasurement }: Props) => (
     <Fragment>
         <div
             id="draw-polygon"
@@ -21,9 +24,22 @@ const MapMeasureView = ({ value }: Props) => (
         >
             <span className="esri-icon-polyline" />
         </div>
-        <div hidden={!value} id="measurement">
-            {value}
-        </div>
+        <MeasurementBox hidden={!active}>
+            <div>
+                <span className={`esri-icon-${active}`} />
+            </div>
+            <div>
+                <span className="value-text">{value && value}</span>
+            </div>
+            <div
+                tabIndex="0"
+                role="button"
+                onClick={removeMeasurement}
+                onKeyPress={removeMeasurement}
+            >
+                <i className="fas fa-times" />
+            </div>
+        </MeasurementBox>
     </Fragment>
 );
 

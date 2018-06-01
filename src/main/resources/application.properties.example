@@ -3,20 +3,23 @@
 spring.profiles.active=dev
 
 #DATASOURCE
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://host:port/db
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@host:port:db
 spring.datasource.username=username
 spring.datasource.password=password
 spring.datasource.tomcat.initial-size=1
 spring.datasource.tomcat.maxActive=10
 
 #jOOQ
-spring.jooq.sql-dialect=Postgres
+spring.jooq.sql-dialect=ORACLE
 
 #Flyway
-spring.flyway.clean-disabled=true
-spring.flyway.locations=classpath:/db/migration
-spring.flyway.out-of-order=true
+flyway.url=jdbc:oracle:thin:@host:port:db
+flyway.user=username
+flyway.password=password
+
+#Log4j2
+logging.config=classpath:log4j2-dev.xml
 
 #Authorization
 authorization.oam.authorized_user_header=OAM_REMOTE_USER

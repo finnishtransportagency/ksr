@@ -13,13 +13,13 @@ public class KsrApplication extends SpringBootServletInitializer {
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(KsrApplication.class);
 	}
-	
+
 	private static Logger log = LogManager.getLogger(KsrApplication.class);
 
 	public static void main(String[] args) {
-		
-		log.info("Entering application.");
+
 		SpringApplication.run(KsrApplication.class, args);
+        log.info("Entered application...");
 
 	}
 }

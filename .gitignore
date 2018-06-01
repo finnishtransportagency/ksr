@@ -32,6 +32,9 @@ nbdist/
 src/main/resources/application-dev.properties
 src/main/resources/application-test.properties
 src/main/resources/application-prod.properties
+src/main/resources/log4j2-dev.xml
+src/main/resources/log4j2-test.xml
+src/main/resources/log4j2-prod.xml
 
 ### React stuff
 src/main/client/build/

@@ -4,17 +4,25 @@ import React, { Component } from 'react';
 import MapMeasureView from './MapMeasureView';
 
 type State = {
+    view: {
+        graphics: any,
+    },
     value: string,
-    draw: boolean,
+    active: string,
+    draw: Function,
 };
 
 type Props = {
-    /* ... */
+    view: {},
 };
 
 const initialState = {
+    view: {
+        graphics: {},
+    },
     value: '',
-    draw: false,
+    active: '',
+    draw: () => {},
 };
 
 class MapMeasure extends Component<Props, State> {
@@ -29,7 +37,10 @@ class MapMeasure extends Component<Props, State> {
     componentWillReceiveProps(newProps: any) {
         const { view } = newProps;
 
-        this.mapMeasure(view);
+        if (view !== this.props.view) {
+            this.setState({ view });
+            this.mapMeasure(view);
+        }
     }
 
     mapMeasure = (view: any) => {
@@ -42,6 +53,12 @@ class MapMeasure extends Component<Props, State> {
                 'esri/geometry/geometryEngine',
             ])
             .then(([Draw, Polygon, Polyline, Graphic, geometryEngine]) => {
+                const draw = new Draw({
+                    view,
+                });
+
+                this.setState({ draw });
+
                 const createPolygon = vertices =>
                     new Polygon({
                         rings: vertices,
@@ -54,27 +71,27 @@ class MapMeasure extends Component<Props, State> {
                         spatialReference: view.spatialReference,
                     });
 
-                const createGraphic = (geometry): any =>
+                const createGraphic = (geometry, style): any =>
                     new Graphic({
                         geometry,
                         symbol: {
                             type: 'simple-fill',
-                            style: 'none',
+                            style,
+                            color: [60, 180, 200, 0.5],
                             outline: {
                                 color: '#444444',
                                 width: 2,
                             },
                         },
+                        id: 'drawMeasure',
                     });
 
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
-
-                    view.graphics.removeAll();
-
                     const polygon = createPolygon(vertices);
+                    const graphic = createGraphic(polygon, 'solid');
 
-                    const graphic = createGraphic(polygon);
+                    view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.add(graphic);
 
                     let area = geometryEngine.planarArea(
@@ -93,78 +110,80 @@ class MapMeasure extends Component<Props, State> {
                         }
                     }
 
-                    area = (area >= 10000 && area > 0)
-                        ? `${parseFloat((area / 10000).toPrecision(2))} ha`
-                        : `${parseFloat(area.toPrecision(2))} m2`;
+                    if (area >= 10000) {
+                        area = `${parseFloat((area / 10000).toFixed(2))} ha`;
+                    } else if (area > 0 && area < 10000) {
+                        area = `${parseFloat(area.toFixed(2))} m\xB2`;
+                    } else {
+                        area = '';
+                    }
 
                     this.setState({ value: area });
                 };
 
                 const drawLine = (evt) => {
                     const { vertices } = evt;
-
-                    view.graphics.removeAll();
-
                     const line = createLine(vertices);
+                    const graphic = createGraphic(line, 'none');
 
-                    const graphic = createGraphic(line);
+                    view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.add(graphic);
 
-                    let length = geometryEngine.planarLength(
-                        line,
-                        'meters',
-                    );
+                    let length = geometryEngine.planarLength(line, 'meters');
 
-                    length = (length >= 1000 && length > 0)
-                        ? `${parseFloat((length / 1000).toPrecision(2))} km`
-                        : `${parseFloat(length.toPrecision(2))} m`;
+                    if (length >= 1000) {
+                        length = `${parseFloat((length / 1000).toFixed(2))} km`;
+                    } else if (length > 0 && length < 1000) {
+                        length = `${parseFloat(length.toFixed(2))} m`;
+                    } else {
+                        length = '';
+                    }
 
                     this.setState({ value: length });
                 };
 
-                const drawingMode = (draw, geometry, drawGeometry) => {
-                    if (!this.state.draw) {
-                        const action = draw.create(geometry);
-                        view.focus();
-                        this.setState({ draw: true });
-                        action.on(
-                            ['vertex-add', 'vertex-remove', 'draw-complete'],
-                            drawGeometry,
-                        );
-                    } else {
-                        draw.complete();
-                        this.setState({ draw: false });
-                        this.removeMeasurement(view);
-                    }
-                };
+                const drawingMode = (geometry, drawGeometry) => {
+                    const action = draw.create(geometry);
+                    view.focus();
+                    this.setState({ active: geometry, view });
 
-                const draw = new Draw({
-                    view,
-                });
+                    action.on(
+                        ['vertex-add', 'cursor-update', 'vertex-remove', 'draw-complete'],
+                        drawGeometry,
+                    );
+                };
 
                 const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
                 drawPolygonButton.addEventListener('click', () => {
-                    this.removeMeasurement(view);
-                    drawingMode(draw, 'polygon', drawPolygon);
+                    this.removeMeasurement();
+                    drawingMode('polygon', drawPolygon);
                 });
 
                 const drawLineButton = (document.getElementById: Function)('draw-line');
                 drawLineButton.addEventListener('click', () => {
-                    this.removeMeasurement(view);
-                    drawingMode(draw, 'polyline', drawLine);
+                    this.removeMeasurement();
+                    drawingMode('polyline', drawLine);
                 });
             });
     };
 
-    removeMeasurement = (view: any) => {
-        view.graphics.removeAll();
-        this.setState({ value: '' });
+    removeMeasurement = () => {
+        const { view, draw } = this.state;
+        draw.reset();
+        view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
+        this.setState({ value: '', active: '' });
     };
 
     render() {
-        const { value } = this.state;
+        const { value, active } = this.state;
 
-        return <MapMeasureView value={value} />;
+        return (
+            <MapMeasureView
+                value={value}
+                active={active}
+                removeMeasurement={this.removeMeasurement}
+            />
+        );
     }
 }
 

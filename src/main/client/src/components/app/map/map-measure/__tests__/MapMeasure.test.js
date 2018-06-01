@@ -4,7 +4,10 @@ import MapMeasure from '../MapMeasure';
 import MapMeasureView from '../MapMeasureView';
 
 function setup() {
-    const wrapper = shallow(<MapMeasure />);
+    const props = {
+        view: {},
+    };
+    const wrapper = shallow(<MapMeasure {...props} />);
 
     return { wrapper };
 }
@@ -23,14 +26,19 @@ describe('<MapMeasure />', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should remove measurement value', () => {
-        const view = {
-            graphics: {
-                removeAll: () => {},
+    it('should remove measurement data from state', () => {
+        wrapper.setState({
+            value: '544 m',
+            active: 'polyline',
+            draw: {
+                reset: () => {},
             },
-        };
-        wrapper.setState({ value: '544 m' });
-        wrapper.instance().removeMeasurement(view);
+            view: {
+                graphics: [],
+            },
+        });
+        wrapper.instance().removeMeasurement();
         expect(wrapper.state('value')).toBe('');
+        expect(wrapper.state('active')).toBe('');
     });
 });
