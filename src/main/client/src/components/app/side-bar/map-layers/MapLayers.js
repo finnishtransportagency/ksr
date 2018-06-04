@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import MapLayersView from './MapLayersView';
 
 type Props = {
-    setActiveLayerTab: (string) => void,
+    setActiveLayerTab: string,
     activeTab: string,
 };
 
@@ -14,7 +14,6 @@ type State = {
 
 const initialState = {
     layerGroups: [],
-    layersAll: '',
 };
 
 class MapLayers extends Component<Props, State> {
