@@ -20,3 +20,20 @@ export const setWmtsLayers = () => ({
 export const getLayerGroups = () => ({
     type: types.GET_LAYER_GROUPS,
 });
+
+export const getActiveLayerTab = () => ({
+    type: types.GET_ACTIVE_LAYER_TAB,
+});
+
+export const setActiveLayerTab = (tab: string) => ({
+    type: types.SET_ACTIVE_LAYER_TAB,
+    tab,
+});
+
+export const getActiveLayers = () => ({
+    type: types.GET_ACTIVE_LAYERS,
+});
+
+export const setActiveLayers = () => ({
+    type: types.SET_ACTIVE_LAYERS,
+});
