@@ -15,8 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class ProxyService {
 
+    private final HttpRequestService httpRequestService;
+
     @Autowired
-    private HttpRequestService httpRequestService;
+    public ProxyService(HttpRequestService httpRequestService) {
+        this.httpRequestService = httpRequestService;
+    }
 
     /**
      * Constructs a valid final URL by combining the maplayers original URL with serviceEndpoint and
@@ -69,6 +73,6 @@ public class ProxyService {
      */
     public void get(MapLayer mapLayer, String baseUrl, String queryString, String method, String serviceEndpoint, HttpServletResponse response) {
         String endPointUrl = getEndpointUrl(mapLayer, serviceEndpoint, queryString);
-        httpRequestService.fetchToResponse(mapLayer, baseUrl, method, endPointUrl, response);
+        this.httpRequestService.fetchToResponse(mapLayer, baseUrl, method, endPointUrl, response);
     }
 }
