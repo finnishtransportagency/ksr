@@ -12,7 +12,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -20,6 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -60,7 +60,7 @@ public class HttpRequestService {
     @Value("${ksr.hostname}")
     private String hostName;
 
-    @Autowired
+    @PostConstruct
     public void setClient() {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setDefaultMaxPerRoute(maxDefaultPerRoute);
@@ -68,7 +68,7 @@ public class HttpRequestService {
         this.closeableHttpClient = HttpClients.custom().setConnectionManager(cm).build();
     }
 
-    @Autowired
+    @PostConstruct
     public void setRequestConfig() {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(socketTimeout);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
@@ -22,13 +23,16 @@ public class ProxyController {
 
     private Pattern generalProxyUrlPattern;
 
-    @Autowired
-    private MapLayerService mapLayerService;
+    private final MapLayerService mapLayerService;
+
+    private final ProxyService proxyService;
 
     @Autowired
-    private ProxyService proxyService;
-
-    @Autowired
+    public ProxyController(MapLayerService mapLayerService, ProxyService proxyService) {
+        this.mapLayerService = mapLayerService;
+        this.proxyService = proxyService;
+    }
+    @PostConstruct
     public void setUpGeneralProxyUrlMatcher() {
         generalProxyUrlPattern = Pattern.compile("^\\/api\\/proxy\\/layer\\/\\d{1,6}\\/(.*?)$");
     }
