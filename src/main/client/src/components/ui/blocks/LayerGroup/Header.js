@@ -2,12 +2,12 @@ import styled from 'styled-components';
 
 const Header = styled.div`
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    padding: 1rem 1rem 0;
-    align-items: center;
+    padding: 1rem;
     
-    h2 {
-        margin: 0;
+    &:hover {
+        cursor: pointer;
     }
 `;
 
