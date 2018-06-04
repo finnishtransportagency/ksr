@@ -38,7 +38,12 @@ proxy.maxDefaultPerRoute=20
 proxy.maxTotal=50
 proxy.socketTimeout=20000
 
+
 #Map
 map.center.lng=425574
 map.center.lat=7051264
 map.zoom=3
+
+#AES
+aes.key=
+aes.iv=
