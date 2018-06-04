@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.MapLayer;
+import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.service.MapLayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import org.junit.Assert;
@@ -43,6 +44,9 @@ public class ProxyControllerTests {
 
     @MockBean
     MapLayerService mapLayerService;
+
+    @MockBean
+    LayerGroupRepository layerGroupRepository;
 
     @Before
     public void setup() {
