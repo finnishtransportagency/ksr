@@ -10,7 +10,7 @@ type Props = {
 const SideNavView = ({ setActiveNav, activeNav }: Props) => (
     <SideNav>
         <SideNav.Logo onClick={() => { setActiveNav(''); }}>
-            <img src="https://www.liikennevirasto.fi/livi-theme/images/general/liikennevirasto_logo_2x.png" alt="" />
+            <img src="images/liikennevirasto_logo_2x.png" alt="" />
         </SideNav.Logo>
         <SideNav.LinkWrapper>
             <div>
