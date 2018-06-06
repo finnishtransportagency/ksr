@@ -1,5 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
+import strings from '../../../../translations';
 import SideBar from '../../../ui/blocks/SideBar';
 import { H1 } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
@@ -14,7 +15,7 @@ type Props = {
 const MapLayersView = ({ handleButtonClickLayers, activeTab }: Props) => (
     <Fragment>
         <SideBar.Header>
-            <H1>Karttatasot</H1>
+            <H1>{strings.mapLayers.title}</H1>
         </SideBar.Header>
         <SideBar.Content>
             <ButtonLayerNav
@@ -22,14 +23,14 @@ const MapLayersView = ({ handleButtonClickLayers, activeTab }: Props) => (
                 activeLayer={activeTab === 'active'}
                 onClick={() => handleButtonClickLayers('active')}
             >
-                Aktiiviset
+                {strings.mapLayers.active}
             </ButtonLayerNav>
             <ButtonLayerNav
                 flat
                 activeLayer={activeTab === 'all'}
                 onClick={() => handleButtonClickLayers('all')}
             >
-                Kaikki
+                {strings.mapLayers.all}
             </ButtonLayerNav>
             {activeTab === 'all' && <MapLayersAllContainer />}
             {activeTab === 'active' && <MapLayersActiveContainer />}
