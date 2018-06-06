@@ -45,7 +45,6 @@ public class AESService {
         } catch (Exception ex) {
             log.error("Error while ecrypting: "+ExceptionUtils.getStackTrace(ex));
         }
-
         return null;
     }
 
@@ -72,8 +71,7 @@ public class AESService {
             return new String(original);
         } catch (Exception ex) {
             log.error("Error while decrypting: "+ExceptionUtils.getStackTrace(ex));
-        } finally {
-            return null;
         }
+        return null;
     }
 }
