@@ -228,7 +228,7 @@
 								<database>
 									<includes>.*</includes>
 									<excludes></excludes>
-									<inputSchema>ksr</inputSchema>
+									<inputSchema>${spring.datasource.username}</inputSchema>
 								</database>
 								<target>
 									<packageName>fi.sitowise.ksr.jooq</packageName>
