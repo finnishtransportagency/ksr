@@ -13,8 +13,8 @@ export const Wrapper = styled.div`
         transition: 0.3s;
         
         ${props => props.sideBar && css`
-            left: 360px;
-            width: calc(100% - 360px);
+            left: 460px;
+            width: calc(100% - 460px);
         `};
         
         @media only screen and (max-width: 768px) {

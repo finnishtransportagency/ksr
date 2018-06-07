@@ -9,14 +9,15 @@ const SideBar = styled.div`
     position: fixed;
     height: 100%;
     top: 0;
-    left: -300px;
-    width: 300px;
+    left: -400px;
+    width: 400px;
     color: ${styles.colorFontLight};
     transition: 0.3s;
     visibility: hidden;
     -webkit-box-shadow: ${styles.shadowDefault};
     -moz-box-shadow: ${styles.shadowDefault};
     box-shadow: ${styles.shadowDefault};
+    overflow: auto;
     
     ${props => props.active && css`
         left: 60px;
