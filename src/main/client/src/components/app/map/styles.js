@@ -22,8 +22,17 @@ export const Wrapper = styled.div`
             width: 100%;
         };
         
-        .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after {
+        .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
+        .esri-popup__button, .esri-popup__header-title {
             outline: none;
+        }
+    
+        .esri-popup--is-docked-top-right {
+            margin-right: 60px;
+        }
+        
+        .esri-popup--is-docked-bottom-center {
+            margin-bottom: 60px;
         }
     }
     
