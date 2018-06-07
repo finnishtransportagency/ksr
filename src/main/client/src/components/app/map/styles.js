@@ -34,6 +34,7 @@ export const Wrapper = styled.div`
     #draw-line {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
+        outline: none;
 
         &:hover {
             background: ${styles.colorMainHighlight};
