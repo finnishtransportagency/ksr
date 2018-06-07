@@ -19,6 +19,11 @@ const SideBar = styled.div`
     box-shadow: ${styles.shadowDefault};
     overflow: auto;
     
+    .loading-icon {
+        text-align: center;
+        margin-top: 2em;
+    };
+    
     ${props => props.active && css`
         left: 60px;
         visibility: visible;
