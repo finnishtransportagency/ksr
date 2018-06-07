@@ -65,6 +65,7 @@ class EsriMap extends Component<Props, State> {
                 'esri/widgets/Search',
                 'esri/widgets/Home',
                 'esri/widgets/Track',
+                'esri/widgets/ScaleBar',
                 'esri/layers/WMSLayer',
                 'esri/layers/WMTSLayer',
                 'esri/geometry/SpatialReference',
@@ -77,6 +78,7 @@ class EsriMap extends Component<Props, State> {
                 Search,
                 Home,
                 Track,
+                ScaleBar,
                 WMSLayer,
                 WMTSLayer,
                 SpatialReference,
@@ -139,12 +141,18 @@ class EsriMap extends Component<Props, State> {
                     view,
                 });
 
+                const scaleBar = new ScaleBar({
+                    view,
+                    unit: 'metric',
+                });
+
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
                     [track, home, 'draw-polygon', 'draw-line'],
                     'top-right',
                 );
                 view.ui.add([search], 'top-left');
+                view.ui.add([scaleBar], 'bottom-left');
 
                 this.setState({ view });
             });
