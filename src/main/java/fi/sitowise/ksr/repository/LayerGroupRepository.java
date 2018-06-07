@@ -16,7 +16,7 @@ import static fi.sitowise.ksr.jooq.Tables.LAYER;
 import static fi.sitowise.ksr.jooq.Tables.LAYER_PERMISSION;
 
 /**
- * The type Layer group repository.
+ * Layer group repository.
  */
 @Repository
 public class LayerGroupRepository {
@@ -44,17 +44,15 @@ public class LayerGroupRepository {
                         .from(LAYER_GROUP)
                         .join(LAYER).on(LAYER.LAYER_GROUP_ID.equal(LAYER_GROUP.ID))
                         .join(LAYER_PERMISSION).on(LAYER_PERMISSION.LAYER_ID.equal(LAYER.ID))
-                        .where(LAYER_PERMISSION.READ_LAYER.eq("1"))
-                        .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
-                .fetchGroups(
-                    r -> r.into(LAYER_GROUP).into(LayerGroupRecord.class),
-                    r -> r.into(LAYER).into(LayerRecord.class)
-                );
+                        .where(LAYER_PERMISSION.READ_LAYER.equal("1"))
+                            .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
+                        .fetchGroups(
+                                r -> r.into(LAYER_GROUP).into(LayerGroupRecord.class),
+                                r -> r.into(LAYER).into(LayerRecord.class)
+                        );
 
-        List<fi.sitowise.ksr.domain.LayerGroup> layerGroups = groups.entrySet().stream().map(
+        return groups.entrySet().stream().map(
                 e -> new LayerGroup(e.getKey(), e.getValue())
         ).collect(Collectors.toList());
-
-        return layerGroups;
     }
 }
