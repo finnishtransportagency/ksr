@@ -14,7 +14,7 @@ type WmsLayer = {
     url: string,
     copyright: string,
     sublayers: Array<SubLayers>
-}
+};
 
 type WmtsLayer = {
     server: string,
@@ -23,13 +23,13 @@ type WmtsLayer = {
     activeLayer: {
         id: string,
     }
-}
+};
 
 type Props = {
     wmsLayers: Array<WmsLayer>,
     wmtsLayers: Array<WmtsLayer>,
     activeNav: string,
-}
+};
 
 type State = {
     view: {},
