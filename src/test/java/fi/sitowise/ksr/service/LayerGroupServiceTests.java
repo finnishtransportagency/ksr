@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * The type Layer group service tests.
+ * Layer group service tests.
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = LayerGroupService.class)
@@ -34,12 +34,13 @@ public class LayerGroupServiceTests {
      */
     @MockBean
     LayerGroupRepository layerGroupRepository;
+    private boolean isMobile = false;
 
     /**
      * Test get user groups with roles.
      */
     @Test
-    @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"} )
+    @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetUserGroupsWithRoles() {
         Assert.assertEquals(Arrays.asList("ROLE_ADMIN", "ROLE_USER"), layerGroupService.getUserGroups());
     }
@@ -65,22 +66,22 @@ public class LayerGroupServiceTests {
      * Test get layer groups.
      */
     @Test
-    @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"} )
+    @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetLayerGroups() {
         LayerGroup lg = new LayerGroup();
         lg.setId(123);
 
         Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(Collections.singletonList(lg));
-        Assert.assertEquals(Collections.singletonList(lg), layerGroupService.getLayerGroups());
+        Assert.assertEquals(Collections.singletonList(lg), layerGroupService.getLayerGroups(isMobile));
     }
 
     /**
      * Test get layer groups without user.
      */
     @Test
-    @WithMockUser(username = "mock-user", roles = {} )
+    @WithMockUser(username = "mock-user", roles = {})
     public void testGetLayerGroupsWithoutUser() {
         Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(new ArrayList<>());
-        Assert.assertEquals(new ArrayList<>(), layerGroupService.getLayerGroups());
+        Assert.assertEquals(new ArrayList<>(), layerGroupService.getLayerGroups(isMobile));
     }
 }
