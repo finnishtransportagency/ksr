@@ -1,8 +1,8 @@
 package fi.sitowise.ksr.controller;
 
-import fi.sitowise.ksr.domain.MapLayer;
+import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
-import fi.sitowise.ksr.service.MapLayerService;
+import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,50 +24,77 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Proxy controller tests.
+ */
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = {ProxyController.class} )
+@WebMvcTest(controllers = {ProxyController.class})
 @ComponentScan(basePackages =
-        { "fi.sitowise.ksr.authentication", "fi.sitowise.ksr.config", "fi.sitowise.ksr.controller", "fi.sitowise.ksr.service" })
+        {"fi.sitowise.ksr.authentication", "fi.sitowise.ksr.config", "fi.sitowise.ksr.controller", "fi.sitowise.ksr.service"})
 public class ProxyControllerTests {
 
     @Autowired
     private WebApplicationContext context;
 
+    /**
+     * The Proxy controller.
+     */
     @Autowired
     ProxyController proxyController;
 
+    /**
+     * The Mock mvc.
+     */
     @Autowired
     MockMvc mockMvc;
 
+    /**
+     * The Layer service.
+     */
+    @MockBean
+    LayerService layerService;
+
+    /**
+     * The Proxy service.
+     */
     @MockBean
     ProxyService proxyService;
 
-    @MockBean
-    MapLayerService mapLayerService;
-
+    /**
+     * The Layer group repository.
+     */
     @MockBean
     LayerGroupRepository layerGroupRepository;
 
+    /**
+     * Sets webAppContext and adds springSecurity.
+     */
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity()).build();
     }
 
+    /**
+     * Test general proxy.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testGeneralProxy() throws Exception {
         Mockito.doNothing().when(proxyService).get(
-                Mockito.any(MapLayer.class),
+                String.valueOf(Mockito.any(LayerRecord.class)),
                 Mockito.anyString(),
                 Mockito.anyString(),
                 Mockito.anyString(),
                 Mockito.anyString(),
                 Mockito.any(HttpServletResponse.class));
 
-        MapLayer ml = new MapLayer();
-        ml.setId(123);
-        ml.setUrl("http://test.example.com");
-        Mockito.when(mapLayerService.getMapLayerById(Mockito.anyInt())).thenReturn(ml);
+
+        LayerRecord lr = new LayerRecord();
+        lr.setUrl("http://test.example.com");
+
+        Mockito.when(layerService.getLayerUrl(Mockito.anyInt())).thenReturn(String.valueOf(lr));
 
         mockMvc.perform(get("/api/proxy/layer/134/1.00/GetCapalibites.xml").header("OAM_REMOTE_USER", "TestUser")
                 .header("OAM_USER_FIRST_NAME", "firstName")
@@ -85,6 +112,9 @@ public class ProxyControllerTests {
                 .header("OAM_GROUPS", "KSR_ROLE_USER,KSR_ROLE_ADMIN")).andExpect(status().isNotFound());
     }
 
+    /**
+     * Test get service endpoint.
+     */
     @Test
     public void testGetServiceEndpoint() {
         Assert.assertNull(proxyController.getServiceEndpoint(null));

@@ -1,6 +1,5 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.domain.MapLayer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+/**
+ * Proxy service tests.
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = SpringRunner.class)
 @ContextConfiguration(classes = ProxyService.class)
@@ -21,81 +23,81 @@ public class ProxyServiceTests {
     @MockBean
     private HttpRequestService httpRequestService;
 
+    /**
+     * Test get endpoint url for wms without trailing slash.
+     */
     @Test
     public void testGetEndpointUrlForWMSWithoutTrailingSlash() {
-        MapLayer ml = new MapLayer();
-        ml.setUrl("http://test.example.com/wms");
-        ml.setId(123);
-        ml.setType("WMS");
+       String url ="http://test.example.com/wms";
 
         Assert.assertEquals(
                 "http://test.example.com/wms?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
 
         Assert.assertEquals(
                 "http://test.example.com/wms?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "/", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "/", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
 
         Assert.assertEquals(
                 "http://test.example.com/wms/workspace?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "workspace", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "workspace", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
 
         Assert.assertEquals(
                 "http://test.example.com/wms/workspace?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "workspace/", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "workspace/", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
     }
 
+    /**
+     * Test get endpoint url for wms with trailing slash.
+     */
     @Test
     public void testGetEndpointUrlForWMSWithTrailingSlash() {
-        MapLayer ml = new MapLayer();
-        ml.setUrl("http://test.example.com/wms/");
-        ml.setId(123);
-        ml.setType("WMS");
+        String url ="http://test.example.com/wms/";
 
         Assert.assertEquals(
                 "http://test.example.com/wms?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
 
         Assert.assertEquals(
                 "http://test.example.com/wms?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "/", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "/", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
 
         Assert.assertEquals(
                 "http://test.example.com/wms/workspace?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "workspace", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "workspace", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
 
         Assert.assertEquals(
                 "http://test.example.com/wms/workspace?request=GetCapabilities&service=WMS&version=1.1.0",
-                proxyService.getEndpointUrl(ml, "workspace/", "request=GetCapabilities&service=WMS&version=1.1.0")
+                proxyService.getEndpointUrl(url, "workspace/", "request=GetCapabilities&service=WMS&version=1.1.0")
         );
     }
 
+    /**
+     * Test get endpoint url for wmts get capabilities with trailing slash.
+     */
     @Test
     public void testGetEndpointUrlForWMTSGetCapabilitiesWithTrailingSlash() {
-        MapLayer ml = new MapLayer();
-        ml.setUrl("http://test.example.com/wmts/");
-        ml.setId(123);
-        ml.setType("WMTS");
+        String url ="http://test.example.com/wmts/";
 
         Assert.assertEquals("http://test.example.com/wmts/1.0.0/WMTSCapabilities.xml",
-                proxyService.getEndpointUrl(ml, "1.0.0/WMTSCapabilities.xml", null));
+                proxyService.getEndpointUrl(url, "1.0.0/WMTSCapabilities.xml", null));
     }
 
+    /**
+     * Test get endpoint url for wmts get capabilities without trailing slash.
+     */
     @Test
     public void testGetEndpointUrlForWMTSGetCapabilitiesWithoutTrailingSlash() {
-        MapLayer ml = new MapLayer();
-        ml.setUrl("http://test.example.com/wmts");
-        ml.setId(123);
-        ml.setType("WMTS");
+        String url ="http://test.example.com/wmts";
 
         Assert.assertEquals("http://test.example.com/wmts/1.0.0/WMTSCapabilities.xml",
-                proxyService.getEndpointUrl(ml, "1.0.0/WMTSCapabilities.xml", null));
+                proxyService.getEndpointUrl(url, "1.0.0/WMTSCapabilities.xml", null));
     }
 }

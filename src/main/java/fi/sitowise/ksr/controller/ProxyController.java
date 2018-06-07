@@ -1,13 +1,10 @@
 package fi.sitowise.ksr.controller;
 
-import fi.sitowise.ksr.domain.MapLayer;
-import fi.sitowise.ksr.service.MapLayerService;
+import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -23,32 +20,36 @@ public class ProxyController {
 
     private Pattern generalProxyUrlPattern;
 
-    private final MapLayerService mapLayerService;
+    private final LayerService layerService;
 
     private final ProxyService proxyService;
 
     @Autowired
-    public ProxyController(MapLayerService mapLayerService, ProxyService proxyService) {
-        this.mapLayerService = mapLayerService;
+    public ProxyController(LayerService layerService, ProxyService proxyService) {
+        this.layerService = layerService;
         this.proxyService = proxyService;
     }
+
     @PostConstruct
     public void setUpGeneralProxyUrlMatcher() {
         generalProxyUrlPattern = Pattern.compile("^\\/api\\/proxy\\/layer\\/\\d{1,6}\\/(.*?)$");
     }
 
     @CrossOrigin(origins = "http://localhost")
-    @RequestMapping("/api/proxy/layer/{layerId}/**")
+    @RequestMapping(value = "/api/proxy/layer/{layerId}/**", method = RequestMethod.GET)
     public void generalProxy(@PathVariable int layerId, HttpServletRequest request,
-            HttpServletResponse response
-    ) {
-        MapLayer mapLayer = mapLayerService.getMapLayerById(layerId);
+                HttpServletResponse response) {
+
+        String layerUrl = layerService.getLayerUrl(layerId);
+        if (layerUrl == null) {
+            throw new KsrApiException.NotFoundErrorException("No Layer URL can be found.");
+        }
 
         String queryString = request.getQueryString();
         String serviceEndpoint = getServiceEndpoint(request.getRequestURI());
         String baseUrl = "/api/proxy/layer/" + layerId;
 
-        proxyService.get(mapLayer, baseUrl, queryString, request.getMethod(), serviceEndpoint, response);
+        proxyService.get(layerUrl, baseUrl, queryString, request.getMethod(), serviceEndpoint, response);
     }
 
     /**

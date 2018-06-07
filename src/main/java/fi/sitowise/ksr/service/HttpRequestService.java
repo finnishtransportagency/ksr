@@ -1,6 +1,5 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.domain.MapLayer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.http.Header;
@@ -78,13 +77,13 @@ public class HttpRequestService {
     /**
      * Fetch endPointUrl:s content and write into HttpServletResponse.
      *
-     * @param mapLayer MapLayer that is requested.
+     * @param layerUrl Layer URL that is requested.
      * @param baseUrl Baseurl for proxy-service for given layer.
      * @param method HTTP method, GET | POST | PUT etc.
      * @param endPointUrl The url to be fetched.
      * @param response HttpServletResponse, where to write the fetched content
      */
-    public void fetchToResponse(MapLayer mapLayer, String baseUrl, String method, String endPointUrl, HttpServletResponse response) {
+    public void fetchToResponse(String layerUrl, String baseUrl, String method, String endPointUrl, HttpServletResponse response) {
         HttpRequestBase base = getRequestBase(method, endPointUrl, requestConfig);
 
         try {
@@ -94,7 +93,7 @@ public class HttpRequestService {
             setResponseHeaders(response, cRes);
 
             if (isGetCapabilitiesRequest(endPointUrl)) {
-                setGetCapabilitiesResponse(mapLayer, baseUrl, response, cRes);
+                setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes);
             } else {
                 setResponseContent(response, cRes);
             }
@@ -247,12 +246,12 @@ public class HttpRequestService {
     /**
      * Handle GetCapabilities Response so that it no longer contains links to external services but into our own proxy.
      *
-     * @param mapLayer The requested maplayer.
+     * @param layerUrl The requested layer URL.
      * @param baseUrl Baseurl for proxy-service for given layer.
      * @param response HttpServletResponse, where to write the fetched content
      * @param cRes CloseableHttpResponse from where to read contents.
      */
-    public void setGetCapabilitiesResponse(MapLayer mapLayer, String baseUrl, HttpServletResponse response, CloseableHttpResponse cRes) {
+    public void setGetCapabilitiesResponse(String layerUrl, String baseUrl, HttpServletResponse response, CloseableHttpResponse cRes) {
         HttpEntity entity = cRes.getEntity();
 
         try {
@@ -262,10 +261,9 @@ public class HttpRequestService {
             String baseUrlWithSlash = hostNameWithoutSlash + KsrStringUtils.addTrailingSlash(baseUrl);
             String baseUrlWithoutSlash = KsrStringUtils.removeTrailingSlash(baseUrl);
 
-            String mlUrl = mapLayer.getUrl();
-            String mlUrlWithoutSlash = KsrStringUtils.removeTrailingSlash(mlUrl);
+            String mlUrlWithoutSlash = KsrStringUtils.removeTrailingSlash(layerUrl);
 
-            doc = replaceAttributeValues(doc, "//*[@template]", "template", mlUrl, baseUrlWithSlash);
+            doc = replaceAttributeValues(doc, "//*[@template]", "template", layerUrl, baseUrlWithSlash);
             doc = replaceAttributeValues(doc, "//*[name()='ows:Get']", "xlink:href", mlUrlWithoutSlash, baseUrlWithoutSlash);
             doc = replaceAttributeValues(doc, "//*[name()='OnlineResource']", "xlink:href", mlUrlWithoutSlash, baseUrlWithoutSlash);
 
