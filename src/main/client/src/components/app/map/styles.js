@@ -20,6 +20,10 @@ export const Wrapper = styled.div`
         @media only screen and (max-width: 768px) {
             left: 0;
             width: 100%;
+            
+            .esri-ui-bottom-left {
+                bottom: 2rem;
+            }
         };
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
@@ -43,6 +47,7 @@ export const Wrapper = styled.div`
     #draw-line {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
+        outline: none;
 
         &:hover {
             background: ${styles.colorMainHighlight};
