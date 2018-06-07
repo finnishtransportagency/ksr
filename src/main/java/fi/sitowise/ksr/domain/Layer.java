@@ -25,6 +25,8 @@ public class Layer implements Serializable {
     private Integer maxZoom;
     private Boolean transparent;
     private String attribution;
+    private Boolean desktopVisible;
+    private Boolean mobileVisible;
 
     /**
      * Construct a Layer from jOOQ LayerRecord.
@@ -38,12 +40,15 @@ public class Layer implements Serializable {
         this.setUrl(lr.getUrl());
         this.setLayers(lr.getLayers());
         this.setStyles(lr.getStyles());
-        this.setVisible(lr.getVisible());
         this.setOpacity(lr.getOpacity());
         this.setAuthentication(lr.getAuthentication());
         this.setLayerOrder(lr.getLayerOrder());
         this.setMinZoom(lr.getMinZoom());
         this.setMaxZoom(lr.getMaxZoom());
+        this.setTransparent(lr.getTransparent());
+        this.setAttribution(lr.getAttribution());
+        this.setDesktopVisible(lr.getDesktopVisible());
+        this.setMobileVisible(lr.getMobileVisible());
     }
 
     /**
@@ -164,30 +169,21 @@ public class Layer implements Serializable {
     }
 
     /**
-     * Get the visible
+     * Gets visible.
      *
-     * @return visible visible
+     * @return the visible
      */
     public Boolean getVisible() {
         return visible;
     }
 
     /**
-     * Set the visible
+     * Sets visible.
      *
-     * @param visible visible
+     * @param visible the visible
      */
     public void setVisible(Boolean visible) {
         this.visible = visible;
-    }
-
-    /**
-     * Set the visible
-     *
-     * @param visible visible
-     */
-    public void setVisible(String visible) {
-        this.visible = "1".equals(visible);
     }
 
     /**
@@ -333,4 +329,41 @@ public class Layer implements Serializable {
     public void setAttribution(String attribution) {
         this.attribution = attribution;
     }
+
+    /**
+     * Gets desktop visible.
+     *
+     * @return the desktop visible
+     */
+    public Boolean getDesktopVisible() {
+        return desktopVisible;
+    }
+
+    /**
+     * Sets desktop visible.
+     *
+     * @param desktopVisible the desktop visible
+     */
+    public void setDesktopVisible(String desktopVisible) {
+        this.desktopVisible = "1".equals(desktopVisible);
+    }
+
+    /**
+     * Gets mobile visible.
+     *
+     * @return the mobile visible
+     */
+    public Boolean getMobileVisible() {
+        return mobileVisible;
+    }
+
+    /**
+     * Sets mobile visible.
+     *
+     * @param mobileVisible the mobile visible
+     */
+    public void setMobileVisible(String mobileVisible) {
+        this.mobileVisible = "1".equals(mobileVisible);
+    }
+
 }
