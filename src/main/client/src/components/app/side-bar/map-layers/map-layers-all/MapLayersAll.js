@@ -1,18 +1,20 @@
 // @flow
 import React, { Component } from 'react';
+import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersAllView from './MapLayersAllView';
 
 type Props = {
-    layerGroups: Promise<any>,
+    layerGroups: {
+        layerGroups: Array<any>,
+        fetching: boolean,
+    },
 };
 
 type State = {
-    layerGroups: Array<any>,
     activeGroup: number,
 };
 
 const initialState = {
-    layerGroups: [],
     activeGroup: 0,
 };
 
@@ -25,18 +27,9 @@ class MapLayersActive extends Component<Props, State> {
         this.handleGroupClick = this.handleGroupClick.bind(this);
     }
 
-    componentDidMount() {
-        this.generateLayerGroups();
-    }
-
-    generateLayerGroups() {
-        const { layerGroups } = this.props;
-
-        layerGroups.then(r => this.setState({ layerGroups: r }));
-    }
-
     handleGroupClick = (id: number) => {
         const { activeGroup } = this.state;
+
         if (activeGroup === id) {
             this.setState({ activeGroup: 0 });
         } else {
@@ -45,9 +38,20 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     render() {
-        const { layerGroups, activeGroup } = this.state;
+        const { activeGroup } = this.state;
+        const { layerGroups } = this.props;
 
-        return <MapLayersAllView layerGroups={layerGroups} handleGroupClick={this.handleGroupClick} activeGroup={activeGroup} />;
+        if (!layerGroups.fetching) {
+            return (
+                <MapLayersAllView
+                    layerGroups={layerGroups.layerGroups}
+                    handleGroupClick={this.handleGroupClick}
+                    activeGroup={activeGroup}
+                />
+            );
+        }
+
+        return <LoadingIcon loading={layerGroups.fetching} />;
     }
 }
 

@@ -3,24 +3,17 @@ import React, { Component } from 'react';
 import MapLayersView from './MapLayersView';
 
 type Props = {
-    setActiveLayerTab: string,
+    setActiveLayerTab: (string) => void,
     activeTab: string,
 };
 
 type State = {
-    layerGroups: Array<any>,
-    layersAll: string,
-};
-
-const initialState = {
-    layerGroups: [],
+    /* ... */
 };
 
 class MapLayers extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
-
-        this.state = { ...initialState };
 
         this.handleButtonClickLayers = this.handleButtonClickLayers.bind(this);
     }
