@@ -83,8 +83,8 @@ public class HttpRequestService {
      * @param endPointUrl The url to be fetched.
      * @param response HttpServletResponse, where to write the fetched content
      */
-    public void fetchToResponse(String layerUrl, String baseUrl, String method, String endPointUrl, HttpServletResponse response) {
-        HttpRequestBase base = getRequestBase(method, endPointUrl, requestConfig);
+    public void fetchToResponse(String layerUrl, String authentication, String baseUrl, String method, String endPointUrl, HttpServletResponse response) {
+        HttpRequestBase base = getRequestBase(method, authentication, endPointUrl, requestConfig);
 
         try {
             CloseableHttpResponse cRes = closeableHttpClient.execute(base);
@@ -123,7 +123,7 @@ public class HttpRequestService {
      * @param requestConfig Common requestconfiguration for this httpRequestService.
      * @return Correct HttpRequestBase or GET if no matches found for method.
      */
-    public HttpRequestBase getRequestBase(String method, String endPointUrl, RequestConfig requestConfig) {
+    public HttpRequestBase getRequestBase(String method, String authentication, String endPointUrl, RequestConfig requestConfig) {
         HttpRequestBase base;
         switch (method) {
             case "GET":
@@ -133,6 +133,9 @@ public class HttpRequestService {
                 base = new HttpGet(endPointUrl);
         }
         base.setConfig(requestConfig);
+        if (authentication != null) {
+            base.setHeader("Authorization", String.format("Basic %s", authentication));
+        }
         return base;
     }
 

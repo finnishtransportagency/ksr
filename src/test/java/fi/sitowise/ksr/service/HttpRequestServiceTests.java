@@ -53,7 +53,7 @@ public class HttpRequestServiceTests {
 
     @Test
     public void testGetRequestBase() throws URISyntaxException {
-        HttpRequestBase getBase = httpRequestService.getRequestBase("GET", "http://test.example.com/wms?service=wms&request=GetCapabilities", null);
+        HttpRequestBase getBase = httpRequestService.getRequestBase("GET", null, "http://test.example.com/wms?service=wms&request=GetCapabilities", null);
         Assert.assertEquals("GET", getBase.getMethod());
         Assert.assertEquals(new java.net.URI("http://test.example.com/wms?service=wms&request=GetCapabilities"), getBase.getURI());
     }

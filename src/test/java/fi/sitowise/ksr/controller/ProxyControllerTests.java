@@ -4,6 +4,7 @@ import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
+import fi.sitowise.ksr.domain.Layer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +84,7 @@ public class ProxyControllerTests {
     @Test
     public void testGeneralProxy() throws Exception {
         Mockito.doNothing().when(proxyService).get(
-                String.valueOf(Mockito.any(LayerRecord.class)),
+                Mockito.any(Layer.class),
                 Mockito.anyString(),
                 Mockito.anyString(),
                 Mockito.anyString(),
@@ -94,7 +95,10 @@ public class ProxyControllerTests {
         LayerRecord lr = new LayerRecord();
         lr.setUrl("http://test.example.com");
 
-        Mockito.when(layerService.getLayerUrl(Mockito.anyInt())).thenReturn(String.valueOf(lr));
+        Layer l = new Layer();
+        l.setUrl("http://test.example.com/arcgis/services/WMS/MapServer/WMSServer?");
+
+        Mockito.when(layerService.getLayer(Mockito.anyInt())).thenReturn(l);
 
         mockMvc.perform(get("/api/proxy/layer/134/1.00/GetCapalibites.xml").header("OAM_REMOTE_USER", "TestUser")
                 .header("OAM_USER_FIRST_NAME", "firstName")

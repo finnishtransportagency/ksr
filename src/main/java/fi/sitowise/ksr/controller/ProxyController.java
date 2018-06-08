@@ -1,6 +1,8 @@
 package fi.sitowise.ksr.controller;
 
+import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.service.AESService;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +42,16 @@ public class ProxyController {
     public void generalProxy(@PathVariable int layerId, HttpServletRequest request,
                 HttpServletResponse response) {
 
-        String layerUrl = layerService.getLayerUrl(layerId);
-        if (layerUrl == null) {
-            throw new KsrApiException.NotFoundErrorException("No Layer URL can be found.");
+        Layer layer = layerService.getLayer(layerId);
+        if (layer == null) {
+            throw new KsrApiException.NotFoundErrorException("No Layer can be found.");
         }
 
         String queryString = request.getQueryString();
         String serviceEndpoint = getServiceEndpoint(request.getRequestURI());
         String baseUrl = "/api/proxy/layer/" + layerId;
 
-        proxyService.get(layerUrl, baseUrl, queryString, request.getMethod(), serviceEndpoint, response);
+        proxyService.get(layer, baseUrl, queryString, request.getMethod(), serviceEndpoint, response);
     }
 
     /**

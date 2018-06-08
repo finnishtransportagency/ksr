@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 public class ProxyService {
 
     private final HttpRequestService httpRequestService;
+    private final AESService aesService;
 
     @Autowired
-    public ProxyService(HttpRequestService httpRequestService) {
+    public ProxyService(HttpRequestService httpRequestService, AESService aesService) {
         this.httpRequestService = httpRequestService;
+        this.aesService = aesService;
     }
 
     /**
@@ -60,15 +63,16 @@ public class ProxyService {
     /**
      * Proxy a HTTP-request into given endpoint.
      *
-     * @param layerUrl The layer URL that is requested
+     * @param layer The layer that is requested
      * @param baseUrl Baseurl for proxy-service for given layer.
      * @param queryString HTTP queryString without leading ?, separated by &
      * @param method HTTP method, GET | POST | PUT etc.
      * @param serviceEndpoint Service specific endpoint, after mapLayers base url.
      * @param response HttpServletResponse where to write the proxy-response
      */
-    public void get(String layerUrl, String baseUrl, String queryString, String method, String serviceEndpoint, HttpServletResponse response) {
-        String endPointUrl = getEndpointUrl(layerUrl, serviceEndpoint, queryString);
-        this.httpRequestService.fetchToResponse(layerUrl, baseUrl, method, endPointUrl, response);
+    public void get(Layer layer, String baseUrl, String queryString, String method, String serviceEndpoint, HttpServletResponse response) {
+        String endPointUrl = getEndpointUrl(layer.getUrl(), serviceEndpoint, queryString);
+        String authentication = aesService.decrypt(layer.getAuthentication());
+        this.httpRequestService.fetchToResponse(layer.getUrl(), authentication, baseUrl, method, endPointUrl, response);
     }
 }

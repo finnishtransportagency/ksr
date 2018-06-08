@@ -1,5 +1,7 @@
 package fi.sitowise.ksr.repository;
 
+import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,20 +29,22 @@ public class LayerRepository {
     }
 
     /**
-     * Gets layer URL.
+     * Gets layer.
      *
      * @param id         the layer id
      * @param userGroups the user groups
-     * @return the layer url
+     * @return the layer
      */
-    public String getLayerUrl(int id, List<String> userGroups) {
-        return context.select(LAYER.URL)
+    public Layer getLayer(int id, List<String> userGroups) {
+        LayerRecord lr = context.select(LAYER.fields())
                 .from(LAYER)
                 .join(LAYER_PERMISSION)
                     .on(LAYER_PERMISSION.LAYER_ID.equal(LAYER.ID))
                 .where(LAYER.ID.equal(Long.valueOf(id)))
                     .and(LAYER_PERMISSION.READ_LAYER.equal("1"))
                     .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
-                .fetchOne(LAYER.URL);
+                .fetchOneInto(LayerRecord.class);
+
+        return lr == null ? null : new Layer(lr);
     }
 }

@@ -29,6 +29,11 @@ public class Layer implements Serializable {
     private Boolean mobileVisible;
 
     /**
+     * Construct a Layer
+     */
+    public Layer() {}
+
+    /**
      * Construct a Layer from jOOQ LayerRecord.
      *
      * @param lr LayerRecord

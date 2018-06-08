@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.repository.LayerRepository;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,9 +40,11 @@ public class LayerServiceTests {
      */
     @Test
     public  void testGetLayerUrlWithResponse() {
+        Layer l = new Layer();
+        l.setUrl("http://test.example.com/arcgis/services/WMS/MapServer/WMSServer?");
         String returnUrl = "http://test.example.com/arcgis/services/WMS/MapServer/WMSServer?";
-        Mockito.when(layerService.getLayerUrl(1)).thenReturn(returnUrl);
-        Assert.assertEquals(returnUrl,layerService.getLayerUrl(1));
+        Mockito.when(layerService.getLayer(1)).thenReturn(l);
+        Assert.assertEquals(returnUrl,layerService.getLayer(1));
     }
 
     /**
@@ -49,7 +52,7 @@ public class LayerServiceTests {
      */
     @Test
     public  void testGetLayerUrlWithoutResponse() {
-        Mockito.when(layerService.getLayerUrl(1)).thenReturn(null);
-        Assert.assertNull(layerService.getLayerUrl(1));
+        Mockito.when(layerService.getLayer(1)).thenReturn(null);
+        Assert.assertNull(layerService.getLayer(1));
     }
 }
