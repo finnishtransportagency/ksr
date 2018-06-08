@@ -5,42 +5,32 @@ import MapLayersActiveView from './MapLayersActiveView';
 
 type Props = {
     activeLayers: Promise<any>,
+    getActiveLayers: () => void,
+    activeLayers: {
+        activeLayers: Array<any>,
+        fetching: boolean,
+    }
 };
 
 type State = {
-    activeLayers: Array<any>,
-    loading: boolean,
-};
-
-const initialState = {
-    activeLayers: [],
-    loading: true,
+    /* ... */
 };
 
 class MapLayersActive extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-
-        this.state = { ...initialState };
-    }
-
     componentDidMount() {
-        this.generateLayerGroups();
-    }
+        const { getActiveLayers } = this.props;
 
-    generateLayerGroups() {
-        const { activeLayers } = this.props;
-        activeLayers.then(r => this.setState({ activeLayers: r, loading: false }));
+        getActiveLayers();
     }
 
     render() {
-        const { activeLayers, loading } = this.state;
+        const { activeLayers } = this.props;
 
-        if (!loading) {
-            return <MapLayersActiveView activeLayers={activeLayers} />;
+        if (!activeLayers.fetching) {
+            return <MapLayersActiveView activeLayers={activeLayers.activeLayers} />;
         }
 
-        return <LoadingIcon loading={loading} />;
+        return <LoadingIcon loading={activeLayers.fetching} />;
     }
 }
 

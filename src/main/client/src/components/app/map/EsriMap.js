@@ -28,6 +28,7 @@ type Props = {
     wmtsLayers: Array<WmtsLayer>,
     activeNav: string,
     layerGroups: any,
+    getLayerGroups: () => void,
 }
 
 type State = {
@@ -35,7 +36,6 @@ type State = {
     options: {
         container: string,
     },
-    layerGroups: Array<any>,
 };
 
 const initialState = {
@@ -43,10 +43,10 @@ const initialState = {
     options: {
         container: 'mapView',
     },
-    layerGroups: [],
 };
 
 class EsriMap extends Component<Props, State> {
+
     constructor(props: any) {
         super(props);
 
@@ -54,11 +54,17 @@ class EsriMap extends Component<Props, State> {
     }
 
     componentDidMount() {
+        const { getLayerGroups } = this.props;
+
+        getLayerGroups();
+    }
+
+    componentDidUpdate(prevProps: Props) {
         const { layerGroups } = this.props;
 
-        layerGroups
-            .then(r => this.setState({ layerGroups: r }))
-            .then(this.initMap());
+        if (prevProps.layerGroups.fetching !== layerGroups.fetching) {
+            this.initMap();
+        }
     }
 
     initMap = () => {
@@ -89,9 +95,8 @@ class EsriMap extends Component<Props, State> {
                 SpatialReference,
                 Extent,
             ]) => {
-                const { layerGroups } = this.state;
                 const { container } = this.state.options;
-                const { wmsLayers } = this.props;
+                const { wmsLayers, layerGroups } = this.props;
                 const layers = [];
 
                 wmsLayers.map((layer) => {
@@ -104,7 +109,7 @@ class EsriMap extends Component<Props, State> {
                 });
 
                 // Add visible WMS layers to array
-                layerGroups.map(layerGroup => layerGroup.layers.map((layer) => {
+                layerGroups.layerGroups.map(layerGroup => layerGroup.layers.map((layer) => {
                     esriConfig.request.corsEnabledServers.push(layer.url);
 
                     if (layer.visible && layer.type === 'wms') {
@@ -122,7 +127,7 @@ class EsriMap extends Component<Props, State> {
                 }));
 
                 // Add visible WMTS layers to array
-                layerGroups.map(layerGroup => layerGroup.layers.map((layer) => {
+                layerGroups.layerGroups.map(layerGroup => layerGroup.layers.map((layer) => {
                     esriConfig.request.corsEnabledServers.push(layer.url);
 
                     if (layer.visible && layer.type === 'wmts') {

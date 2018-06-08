@@ -1,8 +1,5 @@
 // @flow
-import { getLayerGroups } from '../../api/map-layers/layerGroups';
-import { GET_LAYER_GROUPS } from '../../constants/actionTypes';
-
-const initialState = getLayerGroups();
+import { GET_LAYER_GROUPS, GET_LAYER_GROUPS_FULFILLED } from '../../constants/actionTypes';
 
 type SubLayers = {
     name: string,
@@ -15,17 +12,35 @@ type WmsLayer = {
     sublayers: Array<SubLayers>
 }
 
-type State = Array<WmsLayer>;
+type State = {
+    layerGroups: Array<WmsLayer>,
+    fetching: boolean,
+};
 
 type Action = {
     selectedNav: string,
     type: string,
+    payload: Array<WmsLayer>,
+};
+
+const initialState = {
+    layerGroups: [],
+    fetching: true,
 };
 
 export default (state: State = initialState, action: Action) => {
     switch (action.type) {
         case GET_LAYER_GROUPS:
-            return state;
+            return {
+                ...state,
+                fetching: true,
+            };
+        case GET_LAYER_GROUPS_FULFILLED:
+            return {
+                ...state,
+                layerGroups: action.payload,
+                fetching: false,
+            };
         default:
             return state;
     }
