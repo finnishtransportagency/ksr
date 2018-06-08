@@ -20,10 +20,23 @@ export const Wrapper = styled.div`
         @media only screen and (max-width: 768px) {
             left: 0;
             width: 100%;
+            
+            .esri-ui-bottom-left {
+                bottom: 2rem;
+            }
         };
         
-        .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after {
+        .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
+        .esri-popup__button, .esri-popup__header-title {
             outline: none;
+        }
+    
+        .esri-popup--is-docked-top-right {
+            margin-right: 60px;
+        }
+        
+        .esri-popup--is-docked-bottom-center {
+            margin-bottom: 60px;
         }
     }
     
@@ -34,6 +47,7 @@ export const Wrapper = styled.div`
     #draw-line {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
+        outline: none;
 
         &:hover {
             background: ${styles.colorMainHighlight};
