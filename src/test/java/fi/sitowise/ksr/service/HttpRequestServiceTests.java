@@ -55,7 +55,13 @@ public class HttpRequestServiceTests {
     public void testGetRequestBase() throws URISyntaxException {
         HttpRequestBase getBase = httpRequestService.getRequestBase("GET", null, "http://test.example.com/wms?service=wms&request=GetCapabilities", null);
         Assert.assertEquals("GET", getBase.getMethod());
+        Assert.assertNull(getBase.getFirstHeader("Authorization"));
         Assert.assertEquals(new java.net.URI("http://test.example.com/wms?service=wms&request=GetCapabilities"), getBase.getURI());
+
+        HttpRequestBase getAuthBase = httpRequestService.getRequestBase("GET", "user:pass", "http://test.2.example.com/wms?service=wms&request=GetCapabilities", null);
+        Assert.assertEquals("GET", getAuthBase.getMethod());
+        Assert.assertEquals("Basic user:pass", getAuthBase.getFirstHeader("Authorization").getValue());
+        Assert.assertEquals(new java.net.URI("http://test.2.example.com/wms?service=wms&request=GetCapabilities"), getAuthBase.getURI());
     }
 
     @Test
