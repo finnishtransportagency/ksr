@@ -21,8 +21,8 @@ public class Layer implements Serializable {
     private Double opacity;
     private String authentication;
     private Integer layerOrder;
-    private Integer minZoom;
-    private Integer maxZoom;
+    private Integer minScale;
+    private Integer maxScale;
     private Boolean transparent;
     private String attribution;
     private Boolean desktopVisible;
@@ -48,8 +48,8 @@ public class Layer implements Serializable {
         this.setOpacity(lr.getOpacity());
         this.setAuthentication(lr.getAuthentication());
         this.setLayerOrder(lr.getLayerOrder());
-        this.setMinZoom(lr.getMinZoom());
-        this.setMaxZoom(lr.getMaxZoom());
+        this.setMinScale(lr.getMinScale());
+        this.setMaxScale(lr.getMaxScale());
         this.setTransparent(lr.getTransparent());
         this.setAttribution(lr.getAttribution());
         this.setDesktopVisible(lr.getDesktopVisible());
@@ -259,17 +259,17 @@ public class Layer implements Serializable {
      *
      * @return min zoom
      */
-    public Integer getMinZoom() {
-        return minZoom;
+    public Integer getMinScale() {
+        return minScale;
     }
 
     /**
      * Set the min zoom.
      *
-     * @param minZoom min zoom
+     * @param minScale min zoom
      */
-    public void setMinZoom(Integer minZoom) {
-        this.minZoom = minZoom;
+    public void setMinScale(Integer minScale) {
+        this.minScale = minScale;
     }
 
     /**
@@ -277,17 +277,17 @@ public class Layer implements Serializable {
      *
      * @return max zoom
      */
-    public Integer getMaxZoom() {
-        return maxZoom;
+    public Integer getMaxScale() {
+        return maxScale;
     }
 
     /**
      * Set the max zoom
      *
-     * @param maxZoom max zoom
+     * @param maxScale max zoom
      */
-    public void setMaxZoom(Integer maxZoom) {
-        this.maxZoom = maxZoom;
+    public void setMaxScale(Integer maxScale) {
+        this.maxScale = maxScale;
     }
 
     /**

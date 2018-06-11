@@ -15,8 +15,8 @@ comment on column layer.styles is 'JSON formatted string of styles for the layer
 comment on column layer.opacity is 'Opacity of the layer.';
 comment on column layer.authentication is 'AES256 encrypted Base64 encoded authentication string or null if the layer does not need authentication.';
 comment on column layer.layer_order is 'Order of the layers.';
-comment on column layer.min_zoom is 'Minimum zoom level for the layer.';
-comment on column layer.max_zoom is 'Maximum zoom level for the layer.';
+comment on column layer.min_scale is 'The minimum scale at which the layer is visible.';
+comment on column layer.max_scale is 'The maximum scale at which the layer is visible.';
 comment on column layer.layer_group_id is 'Identifier of the layer group that the layer belongs to.';
 comment on column layer.transparent is 'Whether the layer is transparent or not.';
 comment on column layer.attribution is 'Layer copyright information.';
