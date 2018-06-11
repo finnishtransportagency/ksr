@@ -46,7 +46,6 @@ const initialState = {
 };
 
 class EsriMap extends Component<Props, State> {
-
     constructor(props: any) {
         super(props);
 
@@ -96,17 +95,8 @@ class EsriMap extends Component<Props, State> {
                 Extent,
             ]) => {
                 const { container } = this.state.options;
-                const { wmsLayers, layerGroups } = this.props;
+                const { layerGroups } = this.props;
                 const layers = [];
-
-                wmsLayers.map((layer) => {
-                    esriConfig.request.corsEnabledServers.push(layer.server);
-                    return layers.push(new WMSLayer({
-                        url: layer.url,
-                        copyright: layer.copyright,
-                        sublayers: layer.sublayers,
-                    }));
-                });
 
                 // Add visible WMS layers to array
                 layerGroups.layerGroups.map(layerGroup => layerGroup.layers.map((layer) => {
@@ -116,6 +106,8 @@ class EsriMap extends Component<Props, State> {
                         return layers.push(new WMSLayer({
                             url: layer.url,
                             copyright: layer.attribution,
+                            maxScale: layer.maxZoom,
+                            minScale: layer.minZoom,
                             sublayers: [
                                 {
                                     name: layer.layers,
@@ -134,6 +126,8 @@ class EsriMap extends Component<Props, State> {
                         return layers.push(new WMTSLayer({
                             url: layer.url,
                             copyright: layer.attribution,
+                            maxScale: layer.maxZoom,
+                            minScale: layer.minZoom,
                             activeLayer: {
                                 id: layer.layers,
                             },
