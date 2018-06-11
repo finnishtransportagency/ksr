@@ -23,6 +23,9 @@ public class ProxyServiceTests {
     @MockBean
     private HttpRequestService httpRequestService;
 
+    @MockBean
+    private AESService aesService;
+
     /**
      * Test get endpoint url for wms without trailing slash.
      */
