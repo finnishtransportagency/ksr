@@ -65,7 +65,7 @@ class EsriMap extends Component<Props, State> {
                 'esri/views/MapView',
                 'esri/Map',
                 'esri/widgets/Search',
-                'esri/widgets/Home',
+                'esri/widgets/Locate',
                 'esri/widgets/Track',
                 'esri/widgets/ScaleBar',
                 'esri/layers/WMSLayer',
@@ -78,7 +78,7 @@ class EsriMap extends Component<Props, State> {
                 MapView,
                 Map,
                 Search,
-                Home,
+                Locate,
                 Track,
                 ScaleBar,
                 WMSLayer,
@@ -135,7 +135,7 @@ class EsriMap extends Component<Props, State> {
                     view,
                 });
 
-                const home = new Home({
+                const locate = new Locate({
                     view,
                 });
 
@@ -150,7 +150,7 @@ class EsriMap extends Component<Props, State> {
 
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
-                    [track, home, 'draw-polygon', 'draw-line'],
+                    [locate, track, 'draw-polygon', 'draw-line'],
                     'top-right',
                 );
                 view.ui.add([search], 'top-left');

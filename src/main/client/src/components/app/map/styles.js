@@ -41,8 +41,8 @@ export const Wrapper = styled.div`
     }
     
     .esri-track,
+    .esri-locate,
     .esri-zoom .esri-interactive,
-    .esri-home,
     #draw-polygon,
     #draw-line {
         background: ${styles.colorMain};
