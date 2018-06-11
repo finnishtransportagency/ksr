@@ -1,7 +1,7 @@
 // @flow
 import { GET_ACTIVE_LAYER_TAB, SET_ACTIVE_LAYER_TAB } from '../../constants/actionTypes';
 
-const initialState = 'all';
+const initialState = 'active';
 
 type Action = {
     tab: string,
