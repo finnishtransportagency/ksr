@@ -1,6 +1,6 @@
 alter table layer rename column min_zoom to min_scale;
 alter table layer rename column max_zoom to max_scale;
-alter table layer modify(max_scale  number(9) default 0);
+alter table layer modify(max_scale number(9) default 0);
 
 update layer set min_scale = 70 where min_scale = 23;
 update layer set max_scale = 70 where max_scale = 23;
