@@ -10,7 +10,7 @@ const MapLayersView = ({ activeLayers }: Props) => (
     <Fragment>
         {activeLayers.map(lg => (
             lg.map(l => (
-                <LayerSettings>
+                <LayerSettings key={l.id}>
                     <LayerSettings.Drag>
                         <i className="fas fa-arrows-alt-v" />
                     </LayerSettings.Drag>
