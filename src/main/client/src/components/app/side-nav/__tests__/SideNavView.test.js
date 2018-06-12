@@ -3,12 +3,12 @@ import { shallow } from 'enzyme';
 import SideNav from '../../../ui/blocks/SideNav/index';
 import SideNavView from '../SideNavView';
 
-function setup() {
+const setup = () => {
     const props = {};
     const wrapper = shallow(<SideNavView />);
 
     return { props, wrapper };
-}
+};
 
 describe('components', () => {
     describe('<SideNavView />', () => {

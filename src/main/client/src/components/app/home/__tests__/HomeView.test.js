@@ -5,12 +5,12 @@ import SideBarContainer from '../../side-bar/SideBarContainer';
 import SideNavContainer from '../../side-nav/SideNavContainer';
 import HomeView from '../HomeView';
 
-function setup() {
+const setup = () => {
     const props = {};
     const wrapper = shallow(<HomeView />);
 
     return { props, wrapper };
-}
+};
 
 describe('<HomeView />', () => {
     const { wrapper } = setup();

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import LayerSettings from '../../../../../ui/blocks/LayerSettings';
 import MapLayersActiveView from '../MapLayersActiveView';
 
-function setup() {
+const setup = () => {
     const props = {
         activeLayers: [
             [
@@ -21,7 +21,7 @@ function setup() {
     const wrapper = shallow(<MapLayersActiveView {...props} />);
 
     return { props, wrapper };
-}
+};
 
 describe('<MapLayersActiveView />', () => {
     const { wrapper } = setup();

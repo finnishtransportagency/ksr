@@ -4,7 +4,7 @@ import MapLayersView from '../MapLayersView';
 import { ButtonLayerNav } from '../styles';
 import SideBar from '../../../../ui/blocks/SideBar';
 
-function setup() {
+const setup = () => {
     const props = {
         handleButtonClickLayers: () => {},
         activeTab: '',
@@ -12,7 +12,7 @@ function setup() {
     const wrapper = shallow(<MapLayersView />);
 
     return { props, wrapper };
-}
+};
 
 describe('<MapLayersView />', () => {
     const { wrapper } = setup();

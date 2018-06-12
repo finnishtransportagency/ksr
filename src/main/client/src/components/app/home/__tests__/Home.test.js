@@ -3,12 +3,12 @@ import { shallow } from 'enzyme';
 import Home from '../Home';
 import HomeView from '../HomeView';
 
-function setup() {
+const setup = () => {
     const props = {};
     const wrapper = shallow(<Home />);
 
     return { props, wrapper };
-}
+};
 
 describe('components', () => {
     describe('<Home />', () => {

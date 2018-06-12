@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import MapMeasureView from '../MapMeasureView';
 import { MeasurementBox } from '../styles';
 
-function setup() {
+const setup = () => {
     const props = {
         value: '522 m',
         active: 'polyline',
@@ -12,7 +12,7 @@ function setup() {
     const wrapper = shallow(<MapMeasureView {...props} />);
 
     return { wrapper, props };
-}
+};
 
 describe('<MapMeasureView />', () => {
     const { wrapper } = setup();

@@ -3,14 +3,14 @@ import { shallow } from 'enzyme';
 import MapMeasure from '../MapMeasure';
 import MapMeasureView from '../MapMeasureView';
 
-function setup() {
+const setup = () => {
     const props = {
         view: {},
     };
     const wrapper = shallow(<MapMeasure {...props} />);
 
     return { wrapper };
-}
+};
 
 describe('<MapMeasure />', () => {
     const { wrapper } = setup();

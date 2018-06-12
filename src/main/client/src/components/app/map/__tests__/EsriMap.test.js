@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { getLayerGroups } from '../../../../api/map-layers/layerGroups';
 import EsriMap from '../EsriMap';
 import EsriMapView from '../EsriMapView';
 

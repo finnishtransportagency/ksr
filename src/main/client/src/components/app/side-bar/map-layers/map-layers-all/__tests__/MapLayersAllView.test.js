@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import LayerGroup from '../../../../../ui/blocks/LayerGroup';
 import MapLayersAllView from '../MapLayersAllView';
 
-function setup() {
+const setup = () => {
     const props = {
         layerGroups: [
             {
@@ -24,7 +24,7 @@ function setup() {
     const wrapper = shallow(<MapLayersAllView {...props} />);
 
     return { props, wrapper };
-}
+};
 
 describe('<MapLayersAllView />', () => {
     const { wrapper } = setup();

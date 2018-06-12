@@ -1,6 +1,5 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import * as styles from '../../../defaultStyles';
 import Content from '../Content';
 
 it('renders correctly', () => {
