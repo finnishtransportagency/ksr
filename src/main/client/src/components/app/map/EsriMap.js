@@ -85,6 +85,7 @@ class EsriMap extends Component<Props, State> {
                 'esri/widgets/ScaleBar',
                 'esri/layers/WMSLayer',
                 'esri/layers/WMTSLayer',
+                'esri/layers/FeatureLayer',
                 'esri/geometry/SpatialReference',
                 'esri/geometry/Extent',
             ])
@@ -98,6 +99,7 @@ class EsriMap extends Component<Props, State> {
                 ScaleBar,
                 WMSLayer,
                 WMTSLayer,
+                FeatureLayer,
                 SpatialReference,
                 Extent,
             ]) => {
@@ -131,12 +133,20 @@ class EsriMap extends Component<Props, State> {
                         },
                     }));
 
+                const addAgfsLayer = layer =>
+                    layers.push(new FeatureLayer({
+                        url: layer.url,
+                        copyright: layer.attribution,
+                        maxScale: layer.maxZoom,
+                        minScale: layer.minZoom,
+                    }));
+
                 layerList.map((l) => {
                     esriConfig.request.corsEnabledServers.push(l.url);
 
                     if (l.visible && l.type === 'wms') addWmsLayer(l);
                     if (l.visible && l.type === 'wmts') addWmtsLayer(l);
-
+                    if (l.visible && l.type === 'agfs') addAgfsLayer(l);
                     return null;
                 });
 
