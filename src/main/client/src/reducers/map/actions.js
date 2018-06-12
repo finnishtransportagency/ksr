@@ -1,8 +1,9 @@
+// @flow
 import { fetchLayerGroups } from '../../api/map-layers/layerGroups';
 import { fetchActiveLayers } from '../../api/map-layers/activeLayers';
 import * as types from '../../constants/actionTypes';
 
-export const getLayerGroups = () => (dispatch) => {
+export const getLayerGroups = () => (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
     fetchLayerGroups()
         .then(r => dispatch({ type: types.GET_LAYER_GROUPS_FULFILLED, payload: r }))
@@ -18,13 +19,10 @@ export const setActiveLayerTab = (tab: string) => ({
     tab,
 });
 
-export const getActiveLayers = () => (dispatch) => {
+export const getActiveLayers = () => (dispatch: Function) => {
+    console.log(dispatch);
     dispatch({ type: types.GET_ACTIVE_LAYERS });
     fetchActiveLayers()
         .then(r => dispatch({ type: types.GET_ACTIVE_LAYERS_FULFILLED, payload: r }))
         .catch(err => console.log(err));
 };
-
-export const setActiveLayers = () => ({
-    type: types.SET_ACTIVE_LAYERS,
-});
