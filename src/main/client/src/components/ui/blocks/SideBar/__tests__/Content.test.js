@@ -1,16 +1,17 @@
-import { shallow } from 'enzyme';
 import React from 'react';
+import renderer from 'react-test-renderer';
 import Content from '../Content';
+
 
 describe('<Content />', () => {
     it('works', () => {
-        const wrapper = shallow(<Content />);
+        const wrapper = renderer.create(<Content />).toJSON();
         expect(wrapper).toMatchSnapshot();
     });
 
     it('has correct styles', () => {
-        const wrapper = shallow(<Content />);
-        expect(wrapper).toHaveStyleRule('padding', '1rem');
+        const wrapper = renderer.create(<Content />).toJSON();
+        expect(wrapper).toHaveStyleRule('padding', '0 1rem');
     });
 });
 

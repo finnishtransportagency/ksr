@@ -1,11 +1,10 @@
-import { shallow } from 'enzyme';
 import React from 'react';
 import renderer from 'react-test-renderer';
 import SideBar from '../index';
 
 describe('<SideBar />', () => {
     it('works', () => {
-        const wrapper = shallow(<SideBar />);
+        const wrapper = renderer.create(<SideBar />).toJSON();
         expect(wrapper).toMatchSnapshot();
     });
 
@@ -18,6 +17,6 @@ describe('<SideBar />', () => {
     it('renders hidden', () => {
         const wrapper = renderer.create(<SideBar />).toJSON();
         expect(wrapper).toHaveStyleRule('visibility', 'hidden');
-        expect(wrapper).toHaveStyleRule('left', '-300px');
+        expect(wrapper).toHaveStyleRule('left', '-400px');
     });
 });

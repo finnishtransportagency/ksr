@@ -3,12 +3,12 @@ import { shallow } from 'enzyme';
 import SideBar from '../../../ui/blocks/SideBar';
 import SideBarView from '../SideBarView';
 
-function setup() {
+const setup = () => {
     const props = {};
     const wrapper = shallow(<SideBarView />);
 
     return { props, wrapper };
-}
+};
 
 describe('<SideBarView />', () => {
     const { wrapper } = setup();

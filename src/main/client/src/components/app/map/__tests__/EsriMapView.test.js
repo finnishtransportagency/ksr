@@ -3,14 +3,14 @@ import { shallow } from 'enzyme';
 import EsriMapView from '../EsriMapView';
 import MapMeasure from '../map-measure/MapMeasure';
 
-function setup() {
+const setup = () => {
     const props = {
         activeNav: '',
     };
     const wrapper = shallow(<EsriMapView {...props} />);
 
     return { props, wrapper };
-}
+};
 
 describe('<EsriMapView />', () => {
     const { wrapper } = setup();
