@@ -1,13 +1,22 @@
 // @flow
 import { fetchLayerGroups } from '../../api/map-layers/layerGroups';
-import { fetchActiveLayers } from '../../api/map-layers/activeLayers';
 import * as types from '../../constants/actionTypes';
 
 export const getLayerGroups = () => (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
+    const layerList = [];
     fetchLayerGroups()
-        .then(r => dispatch({ type: types.GET_LAYER_GROUPS_FULFILLED, payload: r }))
+        .then((r) => {
+            r.map(lg => lg.layers.map(l => layerList.push(l)));
+            layerList.sort((a, b) => b.layerOrder - a.layerOrder);
+            return r;
+        })
+        .then(r => dispatch({ type: types.GET_LAYER_GROUPS_FULFILLED, layerGroups: r, layerList }))
         .catch(err => console.log(err));
+};
+
+export const setLayerList = (layerList: Array<any>) => (dispatch: Function) => {
+    dispatch({ type: types.SET_LAYER_LIST, layerList });
 };
 
 export const getActiveLayerTab = () => ({
@@ -18,11 +27,3 @@ export const setActiveLayerTab = (tab: string) => ({
     type: types.SET_ACTIVE_LAYER_TAB,
     tab,
 });
-
-export const getActiveLayers = () => (dispatch: Function) => {
-    console.log(dispatch);
-    dispatch({ type: types.GET_ACTIVE_LAYERS });
-    fetchActiveLayers()
-        .then(r => dispatch({ type: types.GET_ACTIVE_LAYERS_FULFILLED, payload: r }))
-        .catch(err => console.log(err));
-};
