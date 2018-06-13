@@ -39,7 +39,6 @@ export default (state: State = initialState, action: Action) => {
             };
         case GET_LAYER_GROUPS_FULFILLED:
             return {
-                ...state,
                 layerGroups: action.layerGroups,
                 layerList: action.layerList,
                 fetching: false,

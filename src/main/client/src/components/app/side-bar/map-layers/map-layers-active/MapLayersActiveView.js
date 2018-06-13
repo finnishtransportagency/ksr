@@ -17,7 +17,7 @@ const MapLayersView = ({ activeLayers, onDragEnd }: Props) => (
                     <div ref={dropProvided.innerRef}>
                         {activeLayers.map((l, i) => (
                             <Draggable key={l.id} draggableId={l.id} index={i}>
-                                {(provided) => (
+                                {provided => (
                                     <div
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}

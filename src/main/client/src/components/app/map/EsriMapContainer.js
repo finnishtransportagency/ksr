@@ -1,6 +1,5 @@
 // @flow
 import { connect } from 'react-redux';
-import { getLayerGroups } from '../../../reducers/map/actions';
 import EsriMap from './EsriMap';
 
 const mapStateToProps = state => ({
@@ -9,12 +8,6 @@ const mapStateToProps = state => ({
     layerGroups: state.map.layerGroups,
 });
 
-const mapDispatchToProps = dispatch => ({
-    getLayerGroups: () => {
-        dispatch(getLayerGroups());
-    },
-});
-
-const EsriMapContainer = connect(mapStateToProps, mapDispatchToProps)(EsriMap);
+const EsriMapContainer = connect(mapStateToProps)(EsriMap);
 
 export default EsriMapContainer;
