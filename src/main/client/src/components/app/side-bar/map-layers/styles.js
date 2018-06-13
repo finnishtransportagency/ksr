@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import { css } from 'styled-components';
 import { Button } from '../../../ui/elements';
 
 export const ButtonLayerNav = Button.extend`
