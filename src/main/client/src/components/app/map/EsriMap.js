@@ -1,10 +1,13 @@
 // @flow
 import esriLoader from 'esri-loader';
-import proj4 from 'proj4';
+
 import React, { Component } from 'react';
 import strings from '../../../translations';
 import EsriMapView from './EsriMapView';
-import { defs } from '../../../utils/proj4Defs';
+
+import { graphicsToEsriJSON } from '../../../utils/arcFormats';
+import { getStreetViewLink } from '../../../utils/streetView';
+
 
 type Props = {
     activeNav: string,
@@ -137,8 +140,8 @@ class EsriMap extends Component<Props, State> {
                     layers.push(new FeatureLayer({
                         url: layer.url,
                         copyright: layer.attribution,
-                        maxScale: layer.maxZoom,
-                        minScale: layer.minZoom,
+                        maxScale: layer.maxScale,
+                        minScale: layer.minScale,
                     }));
 
                 layerList.map((l) => {
@@ -200,25 +203,31 @@ class EsriMap extends Component<Props, State> {
                 view.ui.add([search], 'top-left');
                 view.ui.add([scaleBar], 'bottom-left');
 
-                proj4.defs(defs);
-
                 view.on('click', (event) => {
                     event.stopPropagation();
 
-                    const googleLocation =
-                        proj4('EPSG:3067', 'EPSG:4326', [event.mapPoint.x, event.mapPoint.y]);
-                    const streetViewUrl = `
-                        https://www.google.com/maps/@?api=1&map_action=pano&` +
-                        `viewpoint=${googleLocation[1]},${googleLocation[0]}`;
+                    if (event.button === 0) { // Should be primary click both on mouse and touch.
+                        const swLink = getStreetViewLink(event.mapPoint.x, event.mapPoint.y);
 
-                    view.popup.collapseEnabled = false;
-                    view.popup.open({
-                        title: strings.esriMap.destinationDetails,
-                        location: event.mapPoint,
-                        content: `
-                            <a href=${streetViewUrl} target="blank">${strings.esriMap.openGoogleStreetView}</a>
-                        `,
-                    });
+                        view.popup.collapseEnabled = false;
+                        view.popup.open({
+                            title: strings.esriMap.destinationDetails,
+                            location: event.mapPoint,
+                            content: swLink,
+                        });
+
+                        const point = {
+                            x: event.x,
+                            y: event.y,
+                        };
+
+                        view.hitTest(point).then(({ results }) => {
+                            if (results.length) {
+                                const graphics = results.map(re => re.graphic);
+                                graphicsToEsriJSON(graphics);
+                            }
+                        });
+                    }
                 });
 
                 this.setState({ view });
