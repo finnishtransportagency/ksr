@@ -1,34 +1,29 @@
 // @flow
 import React, { Component } from 'react';
+import type { DropResult } from 'react-beautiful-dnd';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersActiveView from './MapLayersActiveView';
 
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+};
+
 type Props = {
-    activeLayers: Promise<any>,
-    getActiveLayers: () => void,
-    activeLayers: {
-        activeLayers: Array<any>,
+    layerGroups: {
+        layerGroups: Array<any>,
+        layerList: Array<any>,
         fetching: boolean,
     },
+    setLayerList: (Array<any>) => void,
 };
 
 type State = {
     /* ... */
 };
-
-/*
-* Drag and drop stuff
-*/
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-    userSelect: 'none',
-    background: isDragging ? '#444444' : 'transparent',
-    ...draggableStyle,
-});
-
-/*
-* Drag and drop stuff
-*/
 
 class MapLayersActive extends Component<Props, State> {
     constructor(props: Props) {
@@ -37,35 +32,35 @@ class MapLayersActive extends Component<Props, State> {
         this.onDragEnd = this.onDragEnd.bind(this);
     }
 
-    componentDidMount() {
-        const { getActiveLayers } = this.props;
-
-        getActiveLayers();
-    }
-
-    onDragEnd = (result) => {
-        // dropped outside the list
-        console.log(result.destination);
+    onDragEnd = (result: DropResult) => {
+        const { layerGroups, setLayerList } = this.props;
 
         if (!result.destination) {
             return;
         }
+
+        const layerList = reorder(
+            layerGroups.layerList,
+            result.source.index,
+            result.destination.index,
+        );
+
+        setLayerList(layerList);
     };
 
     render() {
-        const { activeLayers } = this.props;
+        const { layerList, fetching } = this.props.layerGroups;
 
-        if (!activeLayers.fetching) {
+        if (!fetching) {
             return (
                 <MapLayersActiveView
-                    activeLayers={activeLayers.activeLayers}
-                    getItemStyle={getItemStyle}
+                    activeLayers={layerList}
                     onDragEnd={this.onDragEnd}
                 />
             );
         }
 
-        return <LoadingIcon loading={activeLayers.fetching} />;
+        return <LoadingIcon loading={fetching} />;
     }
 }
 
