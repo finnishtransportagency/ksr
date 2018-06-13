@@ -4,8 +4,8 @@ import EsriMap from './EsriMap';
 
 const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
-    wmsLayers: state.map.wmsLayers,
-    layerGroups: state.map.layerGroups,
+    layerList: state.map.layerGroups.layerList,
+    fetching: state.map.layerGroups.fetching,
 });
 
 const EsriMapContainer = connect(mapStateToProps)(EsriMap);
