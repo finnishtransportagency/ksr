@@ -6,11 +6,12 @@ import MapLayersActiveView from '../MapLayersActiveView';
 
 const setup = (prop) => {
     const minProps = {
-        getActiveLayers: () => {},
-        activeLayers: {
-            activeLayers: [],
+        layerGroups: {
+            layerGroups: [],
+            layerList: [],
             fetching: true,
         },
+        setLayerList: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -27,14 +28,31 @@ describe('<MapLayersActive />', () => {
 
     it('should render view if fetching completed', () => {
         const props = {
-            getActiveLayers: () => {},
-            activeLayers: {
+            layerGroups: {
                 activeLayers: [],
+                layerGroups: [],
                 fetching: false,
             },
         };
 
         const { wrapper } = setup(props);
         expect(wrapper.find(MapLayersActiveView).exists()).toBe(true);
+    });
+
+    it('should handle onDragEnd correctly', () => {
+        const { wrapper } = setup();
+        const { setLayerList } = wrapper.instance().props;
+
+        const result = {
+            destination: {
+                index: 2,
+            },
+            source: {
+                index: 1,
+            },
+        };
+
+        wrapper.instance().onDragEnd(result);
+        expect(setLayerList).toHaveBeenCalled();
     });
 });
