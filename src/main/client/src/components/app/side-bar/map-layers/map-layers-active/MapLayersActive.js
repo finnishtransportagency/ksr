@@ -1,23 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import type { DropResult } from 'react-beautiful-dnd';
+import { reorder } from '../../../../../utils/reorder';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersActiveView from './MapLayersActiveView';
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
-
 type Props = {
-    layerGroups: {
-        layerGroups: Array<any>,
-        layerList: Array<any>,
-        fetching: boolean,
-    },
+    layerList: Array<any>,
+    fetching: boolean,
     setLayerList: (Array<any>) => void,
 };
 
@@ -33,23 +23,23 @@ class MapLayersActive extends Component<Props, State> {
     }
 
     onDragEnd = (result: DropResult) => {
-        const { layerGroups, setLayerList } = this.props;
+        const { layerList, setLayerList } = this.props;
 
         if (!result.destination) {
             return;
         }
 
-        const layerList = reorder(
-            layerGroups.layerList,
+        const layerListReorder = reorder(
+            layerList,
             result.source.index,
             result.destination.index,
         );
 
-        setLayerList(layerList);
+        setLayerList(layerListReorder);
     };
 
     render() {
-        const { layerList, fetching } = this.props.layerGroups;
+        const { layerList, fetching } = this.props;
 
         if (!fetching) {
             return (
