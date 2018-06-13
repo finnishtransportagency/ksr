@@ -1,5 +1,3 @@
-import { fetchActiveLayers } from '../../../api/map-layers/activeLayers';
-import { fetchLayerGroups } from '../../../api/map-layers/layerGroups';
 import * as types from '../../../constants/actionTypes';
 import * as actions from '../actions';
 
