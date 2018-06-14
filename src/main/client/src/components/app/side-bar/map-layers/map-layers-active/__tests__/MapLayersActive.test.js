@@ -6,11 +6,8 @@ import MapLayersActiveView from '../MapLayersActiveView';
 
 const setup = (prop) => {
     const minProps = {
-        layerGroups: {
-            layerGroups: [],
-            layerList: [],
-            fetching: true,
-        },
+        layerList: [],
+        fetching: true,
         setLayerList: jest.fn(),
     };
 
