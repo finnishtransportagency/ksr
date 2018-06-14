@@ -5,61 +5,46 @@ import EsriMapView from './EsriMapView';
 
 type Props = {
     activeNav: string,
-    layerGroups: {
-        layerGroups: Array<any>,
-        layerList: Array<any>,
-        fetching: boolean,
-    },
-    getLayerGroups: () => void,
+    layerList: Array<any>,
+    fetching: boolean,
 };
 
 type State = {
-    view: {
-        map: any,
-    },
     options: {
         container: string,
     },
 };
 
 const initialState = {
-    view: {
-        map: {},
-    },
     options: {
         container: 'mapView',
     },
 };
 
 class EsriMap extends Component<Props, State> {
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
 
         this.state = { ...initialState };
-    }
 
-    componentDidMount() {
-        const { getLayerGroups } = this.props;
-
-        getLayerGroups();
+        (this: any).view = null;
     }
 
     componentDidUpdate(prevProps: Props) {
-        const { fetching, layerList } = this.props.layerGroups;
-        const { view } = this.state;
+        const { fetching, layerList } = this.props;
 
-        if (prevProps.layerGroups.fetching !== fetching) {
+        if (prevProps.fetching !== fetching) {
             this.initMap();
         }
 
         if (
-            prevProps.layerGroups.layerList.length > 0 &&
-            prevProps.layerGroups.layerList !== layerList
+            prevProps.layerList.length > 0 &&
+            prevProps.layerList !== layerList
         ) {
-            if (view.map) {
+            if ((this: any).view.map) {
                 const layerListReversed = [...layerList].reverse();
                 layerListReversed.map((l, i) =>
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, i)));
+                    (this: any).view.map.reorder((this: any).view.map.findLayerById(`${l.id}`, i)));
             }
         }
     }
@@ -93,7 +78,7 @@ class EsriMap extends Component<Props, State> {
                 Extent,
             ]) => {
                 const { container } = this.state.options;
-                const { layerList } = this.props.layerGroups;
+                const { layerList } = this.props;
                 const layers = [];
 
                 const addWmsLayer = layer =>
@@ -101,8 +86,8 @@ class EsriMap extends Component<Props, State> {
                         id: layer.id,
                         url: layer.url,
                         copyright: layer.attribution,
-                        maxScale: layer.maxZoom,
-                        minScale: layer.minZoom,
+                        maxScale: layer.maxScale,
+                        minScale: layer.minScale,
                         sublayers: [
                             {
                                 name: layer.layers,
@@ -115,8 +100,8 @@ class EsriMap extends Component<Props, State> {
                         id: layer.id,
                         url: layer.url,
                         copyright: layer.attribution,
-                        maxScale: layer.maxZoom,
-                        minScale: layer.minZoom,
+                        maxScale: layer.maxScale,
+                        minScale: layer.minScale,
                         activeLayer: {
                             id: layer.layers,
                         },
@@ -173,15 +158,14 @@ class EsriMap extends Component<Props, State> {
                 );
                 view.ui.add([search], 'top-left');
 
-                this.setState({ view });
+                (this: any).view = view;
             });
     };
 
     render() {
-        const { view } = this.state;
         const { activeNav } = this.props;
 
-        return <EsriMapView activeNav={activeNav} view={view} />;
+        return <EsriMapView activeNav={activeNav} view={(this: any).view} />;
     }
 }
 
