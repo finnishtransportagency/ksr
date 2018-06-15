@@ -1,7 +1,9 @@
 // @flow
 import esriLoader from 'esri-loader';
+import proj4 from 'proj4';
 import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
+import { defs } from '../../../utils/proj4Defs';
 
 type Props = {
     activeNav: string,
@@ -165,6 +167,27 @@ class EsriMap extends Component<Props, State> {
                 );
                 view.ui.add([search], 'top-left');
                 view.ui.add([scaleBar], 'bottom-left');
+
+                proj4.defs(defs);
+
+                view.on('click', (event) => {
+                    event.stopPropagation();
+
+                    const googleLocation =
+                        proj4('EPSG:3067', 'EPSG:4326', [event.mapPoint.x, event.mapPoint.y]);
+                    const streetViewUrl = `
+                        https://www.google.com/maps/@?api=1&map_action=pano&` +
+                        `viewpoint=${googleLocation[1]},${googleLocation[0]}`;
+
+                    view.popup.collapseEnabled = false;
+                    view.popup.open({
+                        title: 'Kohteen tiedot',
+                        location: event.mapPoint,
+                        content: `
+                            <a href=${streetViewUrl} target="blank">Avaa Google Street View</a>
+                        `,
+                    });
+                });
 
                 (this: any).view = view;
             });
