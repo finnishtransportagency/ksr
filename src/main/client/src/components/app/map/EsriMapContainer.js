@@ -6,8 +6,8 @@ import EsriMap from './EsriMap';
 
 const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
-    wmsLayers: state.map.wmsLayers,
     layerGroups: state.map.layerGroups,
+    isOpenTable: state.table.toggleTable,
 });
 
 const mapDispatchToProps = dispatch => ({

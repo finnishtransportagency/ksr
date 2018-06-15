@@ -1,7 +1,9 @@
 // @flow
 import esriLoader from 'esri-loader';
+import proj4 from 'proj4';
 import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
+import { defs } from '../../../utils/proj4Defs';
 
 type SubLayers = {
     name: string,
@@ -12,7 +14,7 @@ type WmsLayer = {
     url: string,
     copyright: string,
     sublayers: Array<SubLayers>
-}
+};
 
 type WmtsLayer = {
     server: string,
@@ -21,7 +23,7 @@ type WmtsLayer = {
     activeLayer: {
         id: string,
     }
-}
+};
 
 type Props = {
     wmsLayers: Array<WmsLayer>,
@@ -29,7 +31,8 @@ type Props = {
     activeNav: string,
     layerGroups: any,
     getLayerGroups: () => void,
-}
+    isOpenTable: boolean,
+};
 
 type State = {
     view: {},
@@ -77,6 +80,7 @@ class EsriMap extends Component<Props, State> {
                 'esri/widgets/Search',
                 'esri/widgets/Home',
                 'esri/widgets/Track',
+                'esri/widgets/ScaleBar',
                 'esri/layers/WMSLayer',
                 'esri/layers/WMTSLayer',
                 'esri/geometry/SpatialReference',
@@ -89,6 +93,7 @@ class EsriMap extends Component<Props, State> {
                 Search,
                 Home,
                 Track,
+                ScaleBar,
                 WMSLayer,
                 WMTSLayer,
                 SpatialReference,
@@ -171,12 +176,39 @@ class EsriMap extends Component<Props, State> {
                     view,
                 });
 
+                const scaleBar = new ScaleBar({
+                    view,
+                    unit: 'metric',
+                });
+
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
                     [track, home, 'draw-polygon', 'draw-line'],
                     'top-right',
                 );
                 view.ui.add([search], 'top-left');
+                view.ui.add([scaleBar], 'bottom-left');
+
+                proj4.defs(defs);
+
+                view.on('click', (event) => {
+                    event.stopPropagation();
+
+                    const googleLocation =
+                        proj4('EPSG:3067', 'EPSG:4326', [event.mapPoint.x, event.mapPoint.y]);
+                    const streetViewUrl = `
+                        https://www.google.com/maps/@?api=1&map_action=pano&` +
+                        `viewpoint=${googleLocation[1]},${googleLocation[0]}`;
+
+                    view.popup.collapseEnabled = false;
+                    view.popup.open({
+                        title: 'Kohteen tiedot',
+                        location: event.mapPoint,
+                        content: `
+                            <a href=${streetViewUrl} target="blank">Avaa Google Street View</a>
+                        `,
+                    });
+                });
 
                 this.setState({ view });
             });
@@ -184,9 +216,9 @@ class EsriMap extends Component<Props, State> {
 
     render() {
         const { view } = this.state;
-        const { activeNav } = this.props;
+        const { activeNav, isOpenTable } = this.props;
 
-        return <EsriMapView activeNav={activeNav} view={view} />;
+        return <EsriMapView activeNav={activeNav} isOpenTable={isOpenTable} view={view} />;
     }
 }
 
