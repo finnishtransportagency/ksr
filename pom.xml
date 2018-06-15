@@ -89,7 +89,7 @@
             <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>org.jooq.trial</groupId>
+            <groupId>org.jooq.pro</groupId>
             <artifactId>jooq</artifactId>
             <version>3.10.7</version>
         </dependency>
@@ -244,7 +244,7 @@
                 </executions>
             </plugin>
 			<plugin>
-				<groupId>org.jooq.trial</groupId>
+				<groupId>org.jooq.pro</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
 				<version>3.10.7</version>
 				<executions>
