@@ -4,8 +4,10 @@ import Home from '../Home';
 import HomeView from '../HomeView';
 
 const setup = () => {
-    const props = {};
-    const wrapper = shallow(<Home />);
+    const props = {
+        getLayerGroups: () => {},
+    };
+    const wrapper = shallow(<Home {...props} />);
 
     return { props, wrapper };
 };

@@ -4,13 +4,13 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { injectGlobal } from 'styled-components';
 import * as styles from '../ui/defaultStyles';
-import Home from './home/Home';
+import HomeContainer from './home/HomeContainer';
 
 const App = ({ store }: any) => (
     <Provider store={store}>
         <Router>
             <Switch>
-                <Route path="/" component={Home} />
+                <Route path="/" component={HomeContainer} />
             </Switch>
         </Router>
     </Provider>

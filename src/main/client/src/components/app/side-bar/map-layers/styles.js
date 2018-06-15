@@ -9,3 +9,11 @@ export const ButtonLayerNav = Button.extend`
         border-bottom: 5px solid;
     `}
 `;
+
+export const ButtonLayerNavWrapper = styled.div`
+    padding: 0;
+    
+    ${props => props.layerSettings && css`
+        padding: 0 1rem;
+    `}
+`;

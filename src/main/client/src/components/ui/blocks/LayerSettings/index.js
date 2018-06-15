@@ -7,6 +7,7 @@ import ContentMain from './ContentMain';
 const LayerSettings = styled.div`
     display: flex;
     justify-content: space-between;
+    margin: 0 1rem;
 `;
 
 const Icons = styled.div`

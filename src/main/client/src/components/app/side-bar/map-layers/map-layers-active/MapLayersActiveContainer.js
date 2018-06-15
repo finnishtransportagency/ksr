@@ -1,19 +1,16 @@
 // @flow
 import { connect } from 'react-redux';
-import { setActiveLayerTab, getActiveLayers } from '../../../../../reducers/map/actions';
+import { setLayerList } from '../../../../../reducers/map/actions';
 import MapLayersActive from './MapLayersActive';
 
 const mapStateToProps = state => ({
-    activeTab: state.map.activeLayerTab,
-    activeLayers: state.map.activeLayers,
+    layerList: state.map.layerGroups.layerList,
+    fetching: state.map.layerGroups.fetching,
 });
 
 const mapDispatchToProps = dispatch => ({
-    setActiveLayerTab: (tab) => {
-        dispatch(setActiveLayerTab(tab));
-    },
-    getActiveLayers: () => {
-        dispatch(getActiveLayers());
+    setLayerList: (layerList) => {
+        dispatch(setLayerList(layerList));
     },
 });
 

@@ -1,5 +1,5 @@
 // @flow
-import { GET_LAYER_GROUPS, GET_LAYER_GROUPS_FULFILLED } from '../../constants/actionTypes';
+import { GET_LAYER_GROUPS, GET_LAYER_GROUPS_FULFILLED, SET_LAYER_LIST } from '../../constants/actionTypes';
 
 type SubLayers = {
     name: string,
@@ -20,11 +20,13 @@ type State = {
 type Action = {
     selectedNav: string,
     type: string,
-    payload: Array<WmsLayer>,
+    layerGroups: Array<any>,
+    layerList: Array<any>,
 };
 
 const initialState = {
     layerGroups: [],
+    layerList: [],
     fetching: true,
 };
 
@@ -37,9 +39,14 @@ export default (state: State = initialState, action: Action) => {
             };
         case GET_LAYER_GROUPS_FULFILLED:
             return {
-                ...state,
-                layerGroups: action.payload,
+                layerGroups: action.layerGroups,
+                layerList: action.layerList,
                 fetching: false,
+            };
+        case SET_LAYER_LIST:
+            return {
+                ...state,
+                layerList: action.layerList,
             };
         default:
             return state;
