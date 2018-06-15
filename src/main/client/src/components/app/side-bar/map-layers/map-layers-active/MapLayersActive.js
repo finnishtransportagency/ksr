@@ -1,15 +1,14 @@
 // @flow
 import React, { Component } from 'react';
+import type { DropResult } from 'react-beautiful-dnd';
+import { reorder } from '../../../../../utils/reorder';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersActiveView from './MapLayersActiveView';
 
 type Props = {
-    activeLayers: Promise<any>,
-    getActiveLayers: () => void,
-    activeLayers: {
-        activeLayers: Array<any>,
-        fetching: boolean,
-    }
+    layerList: Array<any>,
+    fetching: boolean,
+    setLayerList: (Array<any>) => void,
 };
 
 type State = {
@@ -17,20 +16,41 @@ type State = {
 };
 
 class MapLayersActive extends Component<Props, State> {
-    componentDidMount() {
-        const { getActiveLayers } = this.props;
+    constructor(props: Props) {
+        super(props);
 
-        getActiveLayers();
+        this.onDragEnd = this.onDragEnd.bind(this);
     }
 
-    render() {
-        const { activeLayers } = this.props;
+    onDragEnd = (result: DropResult) => {
+        const { layerList, setLayerList } = this.props;
 
-        if (!activeLayers.fetching) {
-            return <MapLayersActiveView activeLayers={activeLayers.activeLayers} />;
+        if (!result.destination) {
+            return;
         }
 
-        return <LoadingIcon loading={activeLayers.fetching} />;
+        const layerListReorder = reorder(
+            layerList,
+            result.source.index,
+            result.destination.index,
+        );
+
+        setLayerList(layerListReorder);
+    };
+
+    render() {
+        const { layerList, fetching } = this.props;
+
+        if (!fetching) {
+            return (
+                <MapLayersActiveView
+                    activeLayers={layerList}
+                    onDragEnd={this.onDragEnd}
+                />
+            );
+        }
+
+        return <LoadingIcon loading={fetching} />;
     }
 }
 

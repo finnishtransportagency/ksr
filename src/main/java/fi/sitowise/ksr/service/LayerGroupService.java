@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
@@ -47,6 +48,7 @@ public class LayerGroupService {
             if (lg.getLayers() != null) {
                 for (Layer l : lg.getLayers()) {
                     l.setVisible(isMobile ? l.getMobileVisible() : l.getDesktopVisible());
+                    l.setUrl(String.format("%s/%d/", ProxyController.PROXY_URL, l.getId()));
                 }
             }
         }

@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
  * RestController for maplayer proxy.
  */
 @RestController
+@RequestMapping(ProxyController.PROXY_URL)
 public class ProxyController {
 
     private Pattern generalProxyUrlPattern;
@@ -25,6 +26,8 @@ public class ProxyController {
     private final LayerService layerService;
 
     private final ProxyService proxyService;
+
+    public static final String PROXY_URL = "/api/proxy/layer";
 
     @Autowired
     public ProxyController(LayerService layerService, ProxyService proxyService) {
@@ -38,7 +41,7 @@ public class ProxyController {
     }
 
     @CrossOrigin(origins = "http://localhost")
-    @RequestMapping(value = "/api/proxy/layer/{layerId}/**", method = RequestMethod.GET)
+    @RequestMapping(value = "/{layerId}/**", method = RequestMethod.GET)
     public void generalProxy(@PathVariable int layerId, HttpServletRequest request,
                 HttpServletResponse response) {
 

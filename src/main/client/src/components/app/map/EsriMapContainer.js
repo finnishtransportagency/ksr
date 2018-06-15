@@ -1,24 +1,14 @@
 // @flow
 import { connect } from 'react-redux';
-import { getLayerGroups } from '../../../reducers/map/actions';
-import { getActiveNav } from '../../../reducers/navigation/actions';
 import EsriMap from './EsriMap';
 
 const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
-    layerGroups: state.map.layerGroups,
+    layerList: state.map.layerGroups.layerList,
+    fetching: state.map.layerGroups.fetching,
     isOpenTable: state.table.toggleTable,
 });
 
-const mapDispatchToProps = dispatch => ({
-    getActiveNav: () => {
-        dispatch(getActiveNav());
-    },
-    getLayerGroups: () => {
-        dispatch(getLayerGroups());
-    },
-});
-
-const EsriMapContainer = connect(mapStateToProps, mapDispatchToProps)(EsriMap);
+const EsriMapContainer = connect(mapStateToProps)(EsriMap);
 
 export default EsriMapContainer;

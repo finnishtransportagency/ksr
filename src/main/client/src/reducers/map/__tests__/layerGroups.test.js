@@ -5,6 +5,7 @@ describe('Layer group reducer', () => {
     it('should return initial state', () => {
         const initialState = {
             layerGroups: [],
+            layerList: [],
             fetching: true,
         };
 
@@ -14,6 +15,7 @@ describe('Layer group reducer', () => {
     it('should handle GET_GROUP_LAYERS', () => {
         const initialState = {
             layerGroups: [],
+            layerList: [],
             fetching: true,
         };
 
@@ -25,6 +27,7 @@ describe('Layer group reducer', () => {
     it('should handle GET_GROUP_LAYERS_FULFILLED', () => {
         const initialState = {
             layerGroups: [],
+            layerList: [],
             fetching: true,
         };
 

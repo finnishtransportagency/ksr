@@ -5,11 +5,9 @@ import EsriMapView from '../EsriMapView';
 
 const setup = () => {
     const props = {
-        wmsLayers: [],
-        wmtsLayers: [],
         activeNav: '',
-        layerGroups: jest.fn(),
-        getLayerGroups: jest.fn(),
+        layerList: [],
+        fetching: false,
     };
     const wrapper = shallow(<EsriMap {...props} />);
 

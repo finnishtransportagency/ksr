@@ -1,5 +1,7 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.controller.ProxyController;
+import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import org.junit.Assert;
@@ -73,6 +75,33 @@ public class LayerGroupServiceTests {
 
         Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(Collections.singletonList(lg));
         Assert.assertEquals(Collections.singletonList(lg), layerGroupService.getLayerGroups(isMobile));
+    }
+
+    /**
+     * Test get layer groups, modify layer url.
+     */
+    @Test
+    @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
+    public void testGetLayerGroupsModifyLayerUrl() {
+        LayerGroup lg = new LayerGroup();
+        lg.setId(123);
+
+        Layer l1 = new Layer();
+        l1.setId(321);
+        l1.setUrl("https://test.example.com");
+
+        Layer l2 = new Layer();
+        l2.setId(543);
+        l2.setUrl("https://2.test.example.com");
+
+        lg.setLayers(Arrays.asList(l1, l2));
+
+        Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(Collections.singletonList(lg));
+        for (LayerGroup lgr : layerGroupService.getLayerGroups(false)) {
+            for (Layer lr : lgr.getLayers()) {
+                Assert.assertEquals(String.format("%s/%d/", ProxyController.PROXY_URL, lr.getId()), lr.getUrl());
+            }
+        }
     }
 
     /**

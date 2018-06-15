@@ -2,23 +2,23 @@
 import React, { Component } from 'react';
 import HomeView from './HomeView';
 
-type State = {
-    title: string,
+type Props = {
+    getLayerGroups: Function,
 };
 
-class Home extends Component<void, State> {
-    constructor(props: any) {
-        super(props);
+type State = {
+    /* ... */
+};
 
-        this.state = {
-            title: 'ksr',
-        };
+class Home extends Component<Props, State> {
+    componentDidMount() {
+        const { getLayerGroups } = this.props;
+
+        getLayerGroups();
     }
 
     render() {
-        const { title } = this.state;
-
-        return <HomeView title={title} />;
+        return <HomeView />;
     }
 }
 
