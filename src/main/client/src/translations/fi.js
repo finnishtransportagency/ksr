@@ -17,6 +17,10 @@ const fi = {
         ofText: '/',
         rowsText: 'riviä',
     },
+    esriMap: {
+        openGoogleStreetView: 'Avaa Google Street View',
+        destinationDetails: 'Kohteen tiedot',
+    },
 };
 
 export default fi;
