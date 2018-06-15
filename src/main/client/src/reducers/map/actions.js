@@ -20,7 +20,6 @@ export const setActiveLayerTab = (tab: string) => ({
 });
 
 export const getActiveLayers = () => (dispatch: Function) => {
-    console.log(dispatch);
     dispatch({ type: types.GET_ACTIVE_LAYERS });
     fetchActiveLayers()
         .then(r => dispatch({ type: types.GET_ACTIVE_LAYERS_FULFILLED, payload: r }))
