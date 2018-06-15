@@ -2,9 +2,6 @@
 
 spring.profiles.active=dev
 
-#App
-ksr.hostname=http://localhost:8080/
-
 #DATASOURCE
 spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
 spring.datasource.url=jdbc:oracle:thin:@host:port:db
@@ -37,7 +34,6 @@ authorization.oam.authorized_groups_header=OAM_GROUPS
 proxy.maxDefaultPerRoute=20
 proxy.maxTotal=50
 proxy.socketTimeout=20000
-
 
 #Map
 map.center.lng=425574
