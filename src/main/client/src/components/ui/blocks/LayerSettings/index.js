@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import * as styles from '../../defaultStyles';
 
 import Content from './Content';
 import ContentTop from './ContentTop';
@@ -23,6 +24,20 @@ const Drag = styled.div`
 
 const Slider = styled.div`
     padding-top: 1rem;
+    
+    .rc-slider {
+        .rc-slider-track {
+            background: ${styles.colorMain};
+        }
+        
+        .rc-slider-rail {
+            background: ${styles.colorBackgroundDark};
+        }
+        
+        .rc-slider-handle {
+            border: 2px solid ${styles.colorMain};
+        }
+    }
 `;
 
 const Title = styled.div`
