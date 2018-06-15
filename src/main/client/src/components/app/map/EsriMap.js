@@ -15,12 +15,14 @@ type State = {
     options: {
         container: string,
     },
+    view: any,
 };
 
 const initialState = {
     options: {
         container: 'mapView',
     },
+    view: null,
 };
 
 class EsriMap extends Component<Props, State> {
@@ -28,12 +30,11 @@ class EsriMap extends Component<Props, State> {
         super(props);
 
         this.state = { ...initialState };
-
-        (this: any).view = null;
     }
 
     componentDidUpdate(prevProps: Props) {
         const { fetching, layerList } = this.props;
+        const { view } = this.state;
 
         if (prevProps.fetching !== fetching) {
             this.initMap();
@@ -43,10 +44,10 @@ class EsriMap extends Component<Props, State> {
             prevProps.layerList.length > 0 &&
             prevProps.layerList !== layerList
         ) {
-            if ((this: any).view.map) {
+            if (view.map) {
                 const layerListReversed = [...layerList].reverse();
                 layerListReversed.map((l, i) =>
-                    (this: any).view.map.reorder((this: any).view.map.findLayerById(`${l.id}`, i)));
+                    view.map.reorder(view.map.findLayerById(`${l.id}`, i)));
             }
         }
     }
@@ -189,14 +190,15 @@ class EsriMap extends Component<Props, State> {
                     });
                 });
 
-                (this: any).view = view;
+                this.setState({ view });
             });
     };
 
     render() {
         const { activeNav } = this.props;
+        const { view } = this.state;
 
-        return <EsriMapView activeNav={activeNav} view={(this: any).view} />;
+        return <EsriMapView activeNav={activeNav} view={view} />;
     }
 }
 
