@@ -56,9 +56,6 @@ public class HttpRequestService {
     @Value("${proxy.socketTimeout}")
     private int socketTimeout;
 
-    @Value("${ksr.hostname}")
-    private String hostName;
-
     @PostConstruct
     public void setClient() {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
@@ -260,8 +257,7 @@ public class HttpRequestService {
         try {
             Document doc = parseDocumentFromEntity(entity);
 
-            String hostNameWithoutSlash = KsrStringUtils.removeTrailingSlash(hostName);
-            String baseUrlWithSlash = hostNameWithoutSlash + KsrStringUtils.addTrailingSlash(baseUrl);
+            String baseUrlWithSlash = KsrStringUtils.addTrailingSlash(baseUrl);
             String baseUrlWithoutSlash = KsrStringUtils.removeTrailingSlash(baseUrl);
 
             String mlUrlWithoutSlash = KsrStringUtils.removeTrailingSlash(layerUrl);
