@@ -7,9 +7,10 @@ import LayerSettings from '../../../../ui/blocks/LayerSettings';
 type Props = {
     activeLayers: Array<any>,
     onDragEnd: (DropResult) => void,
+    onToggleVisibility: (Number) => void,
 };
 
-const MapLayersView = ({ activeLayers, onDragEnd }: Props) => (
+const MapLayersView = ({ activeLayers, onDragEnd, onToggleVisibility }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
@@ -23,10 +24,10 @@ const MapLayersView = ({ activeLayers, onDragEnd }: Props) => (
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                     >
-                                        <LayerSettings>
+                                        <LayerSettings toggledHidden={!l.visible}>
                                             <LayerSettings.Content>
-                                                <LayerSettings.Toggle>
-                                                    <i className="fas fa-toggle-on" />
+                                                <LayerSettings.Toggle onClick={() => onToggleVisibility(l.id)}>
+                                                    <i className={l.visible ? 'fas fa-toggle-on' : 'fas fa-toggle-off'} />
                                                 </LayerSettings.Toggle>
                                                 <LayerSettings.ContentMain>
                                                     <LayerSettings.ContentTop>

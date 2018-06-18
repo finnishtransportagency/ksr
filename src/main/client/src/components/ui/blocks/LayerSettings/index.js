@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Content from './Content';
 import ContentTop from './ContentTop';
@@ -8,6 +8,10 @@ const LayerSettings = styled.div`
     display: flex;
     justify-content: space-between;
     margin: 0 1rem;
+    
+    ${props => props.toggledHidden && css`
+        opacity: 0.5;
+    `}
 `;
 
 const Icons = styled.div`
