@@ -20,6 +20,7 @@ class MapLayersActive extends Component<Props, State> {
         super(props);
 
         this.onDragEnd = this.onDragEnd.bind(this);
+        this.onToggleVisibility = this.onToggleVisibility.bind(this);
     }
 
     onDragEnd = (result: DropResult) => {
@@ -38,14 +39,23 @@ class MapLayersActive extends Component<Props, State> {
         setLayerList(layerListReorder);
     };
 
+    onToggleVisibility = (id: Number) => {
+        const { layerList, setLayerList } = this.props;
+        const layerListChanged = [...layerList];
+        const foundIndex = layerListChanged.findIndex(l => l.id === id);
+        layerListChanged[foundIndex].visible = !layerListChanged[foundIndex].visible;
+
+        setLayerList(layerListChanged);
+    };
+
     render() {
         const { layerList, fetching } = this.props;
-
         if (!fetching) {
             return (
                 <MapLayersActiveView
                     activeLayers={layerList}
                     onDragEnd={this.onDragEnd}
+                    onToggleVisibility={this.onToggleVisibility}
                 />
             );
         }
