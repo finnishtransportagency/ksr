@@ -47,8 +47,22 @@ class EsriMap extends Component<Props, State> {
         ) {
             if (view.map) {
                 const layerListReversed = [...layerList].reverse();
-                layerListReversed.map((l, i) =>
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, i)));
+
+                // Update layer settings
+                layerListReversed.forEach((l, i) => {
+                    // Change layer opacity and visibility
+                    view.map.allLayers.forEach((layer) => {
+                        if (parseInt(l.id, 10) === parseInt(layer.id, 10)) {
+                            const newLayer = layer;
+                            newLayer.visible = l.visible;
+                            return newLayer;
+                        }
+                        return null;
+                    });
+
+                    // Change layer order
+                    view.map.reorder(view.map.findLayerById(`${l.id}`, i));
+                });
             }
         }
     }
