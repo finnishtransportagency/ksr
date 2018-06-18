@@ -19,8 +19,15 @@ const ReactTableView = ({ data, columns }: Props) => (
             filterable
             defaultFilterMethod={(filter, row) => {
                 const id = filter.pivotId || filter.id;
-                return row[id] !== undefined ? String(row[id].toLowerCase())
-                    .startsWith(filter.value.toLowerCase()) : true;
+                if (row[id] !== null && typeof row[id] === 'string') {
+                    return (row[id] !== undefined
+                        ? String(row[id].toLowerCase()).includes(filter.value.toLowerCase())
+                        : true);
+                }
+
+                return (row[id] !== undefined
+                    ? String(row[id]).includes(filter.value)
+                    : true);
             }}
             style={{
                 height: '100%',
