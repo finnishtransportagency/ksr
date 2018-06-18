@@ -18,6 +18,7 @@ const SideBar = styled.div`
     -moz-box-shadow: ${styles.shadowDefault};
     box-shadow: ${styles.shadowDefault};
     overflow: auto;
+    z-index: 2;
     
     .loading-icon {
         text-align: center;
