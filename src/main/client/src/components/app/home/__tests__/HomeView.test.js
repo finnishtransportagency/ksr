@@ -4,6 +4,7 @@ import EsriMapContainer from '../../map/EsriMapContainer';
 import SideBarContainer from '../../side-bar/SideBarContainer';
 import SideNavContainer from '../../side-nav/SideNavContainer';
 import HomeView from '../HomeView';
+import TableContainer from '../../table/TableContainer';
 
 const setup = () => {
     const props = {};
@@ -19,5 +20,6 @@ describe('<HomeView />', () => {
         expect(wrapper.find(SideNavContainer).length).toBe(1);
         expect(wrapper.find(EsriMapContainer).length).toBe(1);
         expect(wrapper.find(SideBarContainer).length).toBe(1);
+        expect(wrapper.find(TableContainer).length).toBe(1);
     });
 });

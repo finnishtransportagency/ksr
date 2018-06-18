@@ -8,13 +8,17 @@ export const Wrapper = styled.div`
         left: 60px;
         z-index: -1;
         background: #ffffff;
-        height: 100%;
         width: calc(100% - 60px);
         transition: 0.3s;
+        height: 100%;
         
         ${props => props.sideBar && css`
             left: 460px;
             width: calc(100% - 460px);
+        `};
+        
+         ${props => props.toggleTable && css`
+            height: calc(100% - 400px);
         `};
         
         @media only screen and (max-width: 768px) {
@@ -25,6 +29,10 @@ export const Wrapper = styled.div`
                 bottom: 2rem;
             }
         };
+        
+        .esri-scale-bar__bar-container, .esri-attribution {
+            margin-left: 60px;
+        }
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
         .esri-popup__button, .esri-popup__header-title {

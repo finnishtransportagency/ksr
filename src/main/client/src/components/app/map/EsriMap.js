@@ -9,6 +9,7 @@ type Props = {
     activeNav: string,
     layerList: Array<any>,
     fetching: boolean,
+    isOpenTable: boolean,
 };
 
 type State = {
@@ -195,10 +196,10 @@ class EsriMap extends Component<Props, State> {
     };
 
     render() {
-        const { activeNav } = this.props;
+        const { activeNav, isOpenTable } = this.props;
         const { view } = this.state;
 
-        return <EsriMapView activeNav={activeNav} view={view} />;
+        return <EsriMapView activeNav={activeNav} isOpenTable={isOpenTable} view={view} />;
     }
 }
 
