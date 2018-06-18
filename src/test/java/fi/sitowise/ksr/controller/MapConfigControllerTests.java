@@ -28,8 +28,8 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
     @Value("${map.center.lat}")
     private int centerLat;
 
-    @Value("${map.zoom}")
-    private int zoomLevel;
+    @Value("${map.scale}")
+    private int scale;
 
     /**
      * Sets webAppContext and springSecurity.
@@ -48,7 +48,7 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
     public void getTestMapInformation() throws Exception {
         MapConfig mapConfigData = new MapConfig();
         mapConfigData.setCenter(new int[]{centerLng, centerLat});
-        mapConfigData.setZoom(zoomLevel);
+        mapConfigData.setScale(scale);
 
         MvcResult result = this.mockMvc.perform(get("/api/map")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))

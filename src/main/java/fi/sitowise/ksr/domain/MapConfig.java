@@ -6,25 +6,25 @@ import java.io.Serializable;
  * MapConfig POJO -class.
  */
 public class MapConfig implements Serializable {
-    private int zoom;
+    private int scale;
     private int[] center;
 
     /**
-     * Gets zoom.
+     * Gets scale.
      *
-     * @return the zoom
+     * @return scale
      */
-    public int getZoom() {
-        return zoom;
+    public int getScale() {
+        return scale;
     }
 
     /**
-     * Sets zoom.
+     * Sets scale.
      *
-     * @param zoom the zoom
+     * @param scale scale
      */
-    public void setZoom(int zoom) {
-        this.zoom = zoom;
+    public void setScale(int scale) {
+        this.scale = scale;
     }
 
     /**
