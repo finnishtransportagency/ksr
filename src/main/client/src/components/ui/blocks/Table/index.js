@@ -24,6 +24,19 @@ const Table = styled.div`
         left: 460px;
         width: calc(100% - 400px);
     `};
+    
+    @media only screen and (max-width: 768px) {
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        
+        ${props => props.toggleTable && css`
+            height: 100%;
+            transition: height 0.25s;
+        `};
+    }
 `;
 
 Table.Link = LinkToggle;
