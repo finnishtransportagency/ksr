@@ -6,7 +6,16 @@ import MapLayersActiveView from '../MapLayersActiveView';
 
 const setup = (prop) => {
     const minProps = {
-        layerList: [],
+        layerList: [
+            {
+                id: 1,
+                opacity: 1,
+            },
+            {
+                id: 2,
+                opacity: 1,
+            },
+        ],
         fetching: true,
         setLayerList: jest.fn(),
     };
@@ -25,11 +34,9 @@ describe('<MapLayersActive />', () => {
 
     it('should render view if fetching completed', () => {
         const props = {
-            layerGroups: {
-                activeLayers: [],
-                layerGroups: [],
-                fetching: false,
-            },
+            activeLayers: [],
+            layerGroups: [],
+            fetching: false,
         };
 
         const { wrapper } = setup(props);
@@ -51,5 +58,18 @@ describe('<MapLayersActive />', () => {
 
         wrapper.instance().onDragEnd(result);
         expect(setLayerList).toHaveBeenCalled();
+    });
+
+    it('should handle onOpacityChange correctly', () => {
+        const { wrapper } = setup();
+        const { setLayerList, layerList } = wrapper.instance().props;
+        const newOpacity = 0.7;
+        const id = 2;
+        const foundIndex = layerList.findIndex(layer => layer.id === id);
+
+        expect(layerList[foundIndex].opacity).toBe(1);
+        wrapper.instance().onOpacityChange(newOpacity, id);
+        expect(setLayerList).toHaveBeenCalled();
+        expect(layerList[foundIndex].opacity).toBe(0.7);
     });
 });
