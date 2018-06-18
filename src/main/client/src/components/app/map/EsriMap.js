@@ -10,6 +10,8 @@ type Props = {
     layerList: Array<any>,
     fetching: boolean,
     isOpenTable: boolean,
+    mapCenter: Array<number>,
+    mapScale: number,
 };
 
 type State = {
@@ -84,7 +86,7 @@ class EsriMap extends Component<Props, State> {
                 Extent,
             ]) => {
                 const { container } = this.state.options;
-                const { layerList } = this.props;
+                const { layerList, mapCenter, mapScale } = this.props;
                 const layers = [];
 
                 const addWmsLayer = layer =>
@@ -143,6 +145,8 @@ class EsriMap extends Component<Props, State> {
                     map,
                     spatialReference: epsg3067,
                     extent,
+                    center: mapCenter,
+                    scale: mapScale,
                 });
 
                 const search = new Search({
