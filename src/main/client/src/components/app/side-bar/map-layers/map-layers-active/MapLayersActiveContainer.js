@@ -4,7 +4,7 @@ import { setLayerList } from '../../../../../reducers/map/actions';
 import MapLayersActive from './MapLayersActive';
 
 const mapStateToProps = state => ({
-    layerList: state.map.layerGroups.layerList,
+    layerList: state.map.layerGroups.layerList.filter(l => l.active),
     fetching: state.map.layerGroups.fetching,
 });
 
