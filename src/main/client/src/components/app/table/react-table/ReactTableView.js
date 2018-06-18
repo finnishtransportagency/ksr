@@ -17,9 +17,13 @@ const ReactTableView = ({ data, columns }: Props) => (
             data={data}
             columns={columns}
             filterable
-            defaultPageSize={20}
+            defaultFilterMethod={(filter, row) => {
+                const id = filter.pivotId || filter.id;
+                return row[id] !== undefined ? String(row[id].toLowerCase())
+                    .startsWith(filter.value.toLowerCase()) : true;
+            }}
             style={{
-                height: '400px',
+                height: '100%',
                 textAlign: 'center',
             }}
             previousText={strings.reactTable.previousText}
