@@ -3,7 +3,7 @@ import * as styles from '../../../ui/defaultStyles';
 
 export const MeasurementBox = styled.div`
     position: absolute;
-    right: 1rem;
+    right: 4rem;
     bottom: 2rem;
     background: ${styles.colorBackgroundDark};
     color: ${styles.colorFontLight};

@@ -21,6 +21,10 @@ export const Wrapper = styled.div`
             height: calc(100% - 400px);
         `};
         
+        .esri-scale-bar, .esri-attribution {
+            margin-left: 60px;
+        }
+        
         @media only screen and (max-width: 768px) {
             left: 0;
             width: 100%;
@@ -28,11 +32,13 @@ export const Wrapper = styled.div`
             .esri-ui-bottom-left {
                 bottom: 2rem;
             }
+            
+            .esri-scale-bar, .esri-attribution {
+            bottom: 60px;
+            margin-left: 0;
+            margin-right: 60px;
+            }
         };
-        
-        .esri-scale-bar__bar-container, .esri-attribution {
-            margin-left: 60px;
-        }
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
         .esri-popup__button, .esri-popup__header-title {

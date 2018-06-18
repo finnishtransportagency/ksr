@@ -13,7 +13,7 @@ const SideNav = styled.div`
     left: 0;
     width: 60px;
     color: ${styles.colorFontLight};
-    z-index: 2;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     -webkit-box-shadow: ${styles.shadowDefault};

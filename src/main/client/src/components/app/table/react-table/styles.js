@@ -8,12 +8,15 @@ export const WrapperReactTable = styled.div`
     color: ${styles.colorFontDark};
     width: calc(100% - 60px);
     bottom: 0;
-    
-    .ReactTable .rt-table {
-      overflow: scroll
-    }
+
     .ReactTable div[class^="rt-th"]:focus {
       outline: 0
-    }    
+    }
+    
+    @media only screen and (max-width: 768px) {
+      width: 100%;
+      top: 60px;
+      height: calc(100% - 120px);
+    }
 }
 `;
