@@ -1,5 +1,5 @@
 // @flow
-import { fetchLayerGroups } from '../../api/map-layers/layerGroups';
+import { fetchLayerGroups } from '../../api/map/layerGroups';
 import * as types from '../../constants/actionTypes';
 
 export const getLayerGroups = () => (dispatch: Function) => {
