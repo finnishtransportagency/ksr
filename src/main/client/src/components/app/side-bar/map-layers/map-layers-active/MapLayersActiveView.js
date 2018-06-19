@@ -14,7 +14,10 @@ type Props = {
 };
 
 const MapLayersView = ({
-    activeLayers, onDragEnd, onOpacityChange, onToggleVisibility,
+    activeLayers,
+    onDragEnd,
+    onOpacityChange,
+    onToggleVisibility,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -29,39 +32,53 @@ const MapLayersView = ({
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                     >
-                                        <LayerSettings toggledHidden={!l.visible}>
-                                            <LayerSettings.Content>
-                                                <LayerSettings.Toggle
-                                                    onClick={() => onToggleVisibility(l.id)}
-                                                >
-                                                    <i className={l.visible ? 'fas fa-toggle-on' : 'fas fa-toggle-off'} />
-                                                </LayerSettings.Toggle>
-                                                <LayerSettings.ContentMain>
-                                                    <LayerSettings.ContentTop>
-                                                        <LayerSettings.Title>
-                                                            {l.name}
-                                                        </LayerSettings.Title>
-                                                        <LayerSettings.Icons>
-                                                            <i className="fas fa-edit" />
-                                                        </LayerSettings.Icons>
-                                                    </LayerSettings.ContentTop>
-                                                    <LayerSettings.Slider>
-                                                        <Slider
-                                                            min={0}
-                                                            max={1}
-                                                            step={0.01}
-                                                            defaultValue={l.opacity}
-                                                            onChange={evt =>
-                                                                onOpacityChange(
-                                                                    evt,
-                                                                    l.id,
-                                                                )
+                                        {l.active && (
+                                            <LayerSettings
+                                                toggledHidden={!l.visible}
+                                            >
+                                                <LayerSettings.Content>
+                                                    <LayerSettings.Toggle
+                                                        onClick={() =>
+                                                            onToggleVisibility(l.id)
+                                                        }
+                                                    >
+                                                        <i
+                                                            className={
+                                                                l.visible
+                                                                    ? 'fas fa-toggle-on'
+                                                                    : 'fas fa-toggle-off'
                                                             }
                                                         />
-                                                    </LayerSettings.Slider>
-                                                </LayerSettings.ContentMain>
-                                            </LayerSettings.Content>
-                                        </LayerSettings>
+                                                    </LayerSettings.Toggle>
+                                                    <LayerSettings.ContentMain>
+                                                        <LayerSettings.ContentTop >
+                                                            <LayerSettings.Title >
+                                                                {l.name}
+                                                            </LayerSettings.Title>
+                                                            <LayerSettings.Icons >
+                                                                <i className="fas fa-edit" />
+                                                            </LayerSettings.Icons>
+                                                        </LayerSettings.ContentTop>
+                                                        <LayerSettings.Slider>
+                                                            <Slider
+                                                                min={0}
+                                                                max={1}
+                                                                step={0.01}
+                                                                defaultValue={
+                                                                    l.opacity
+                                                                }
+                                                                onChange={evt =>
+                                                                    onOpacityChange(
+                                                                        evt,
+                                                                        l.id,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </LayerSettings.Slider>
+                                                    </LayerSettings.ContentMain>
+                                                </LayerSettings.Content>
+                                            </LayerSettings>
+                                        )}
                                     </div>
                                 )}
                             </Draggable>
