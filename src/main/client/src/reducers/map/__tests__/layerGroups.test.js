@@ -12,7 +12,7 @@ describe('Layer group reducer', () => {
         expect(reducer(undefined, {})).toEqual(initialState);
     });
 
-    it('should handle GET_GROUP_LAYERS', () => {
+    it('should handle GET_LAYER_GROUPS', () => {
         const initialState = {
             layerGroups: [],
             layerList: [],
@@ -20,19 +20,36 @@ describe('Layer group reducer', () => {
         };
 
         expect(reducer(undefined, {
-            type: types.GET_GROUP_LAYERS,
+            type: types.GET_LAYER_GROUPS,
         })).toEqual(initialState);
     });
 
-    it('should handle GET_GROUP_LAYERS_FULFILLED', () => {
-        const initialState = {
-            layerGroups: [],
-            layerList: [],
-            fetching: true,
+    it('should handle GET_LAYER_GROUPS_FULFILLED', () => {
+        const result = {
+            layerGroups: [
+                {
+                    id: 1,
+                    layers: [
+                        {
+                            id: 3,
+                            name: 'mapLayer',
+                        },
+                    ],
+                },
+            ],
+            layerList: [
+                {
+                    id: 3,
+                    name: 'mapLayer',
+                },
+            ],
+            fetching: false,
         };
 
         expect(reducer(undefined, {
-            type: types.GET_GROUP_LAYERS,
-        })).toEqual(initialState);
+            type: types.GET_LAYER_GROUPS_FULFILLED,
+            layerGroups: result.layerGroups,
+            layerList: result.layerList,
+        })).toEqual(result);
     });
 });

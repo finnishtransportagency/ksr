@@ -25,14 +25,16 @@ describe('Map config reducer', () => {
     });
 
     it('should handle GET_MAP_CONFIG_FULFILLED', () => {
-        const initialState = {
-            mapCenter: [],
-            mapScale: 0,
-            fetching: true,
+        const expectedResult = {
+            mapCenter: [425574, 7051264],
+            mapScale: 9244648,
+            fetching: false,
         };
 
         expect(reducer(undefined, {
-            type: types.GET_MAP_CONFIG,
-        })).toEqual(initialState);
+            type: types.GET_MAP_CONFIG_FULFILLED,
+            mapCenter: expectedResult.mapCenter,
+            mapScale: expectedResult.mapScale,
+        })).toEqual(expectedResult);
     });
 });
