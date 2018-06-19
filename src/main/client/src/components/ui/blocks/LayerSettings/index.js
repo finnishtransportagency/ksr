@@ -1,13 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Content from './Content';
 import ContentTop from './ContentTop';
 import ContentMain from './ContentMain';
+import Slider from './Slider';
 
 const LayerSettings = styled.div`
     display: flex;
     justify-content: space-between;
     margin: 0 1rem;
+    
+    ${props => props.toggledHidden && css`
+        opacity: 0.5;
+    `}
 `;
 
 const Icons = styled.div`
@@ -21,10 +26,6 @@ const Drag = styled.div`
     text-align: center;
 `;
 
-const Slider = styled.div`
-    padding-top: 1rem;
-`;
-
 const Title = styled.div`
     flex: 8;
 `;
@@ -32,6 +33,7 @@ const Title = styled.div`
 const Toggle = styled.div`
     align-self: center;
     padding: 1rem;
+    cursor: pointer;
 `;
 
 LayerSettings.Content = Content;

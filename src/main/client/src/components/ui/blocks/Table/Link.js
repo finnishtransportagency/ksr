@@ -17,6 +17,7 @@ const LinkToggle = styled.div`
     justify-content: center;
     font-size: 1.25em;
     transition: 0.3s;
+    z-index: 1;
     
     &:hover {
         cursor: pointer;
@@ -29,19 +30,27 @@ const LinkToggle = styled.div`
     `};
     
     @media only screen and (max-width: 768px) {
+        position: fixed;
+        top: initial;
+        bottom: 60px;
+        left: initial;
+        right: 0;
+    
         border-left: none;
         border-right: none;
         border-bottom: 5px solid transparent;
         border-top: 5px solid transparent;
-        
+
         &:hover {
             cursor: pointer;
             background: ${styles.colorBackgroundDarkSecondary};
         };
-        
+
         ${props => props.toggleTable && css`
-            border-bottom: 5px solid ${styles.colorMain};
-        `};
+            top: 400px;
+            transform: translateY(-400px);
+            transition: 0.3s;
+        `};   
     }
 `;
 
