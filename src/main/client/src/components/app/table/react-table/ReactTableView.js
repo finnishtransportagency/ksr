@@ -4,7 +4,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { WrapperReactTable } from './styles';
 import strings from '../../../../translations';
-import { colorTableHiglightSelected as colorHighlight } from '../../../ui/defaultStyles';
+import { colorMainHighlight } from '../../../ui/defaultStyles';
 
 type Props = {
     data: Array<any>,
@@ -45,7 +45,7 @@ const ReactTableView = ({ data, columns }: Props) => (
                 {
                     style: {
                         /* eslint-disable-next-line no-underscore-dangle */
-                        background: r && r.row && r.row._original._selected ? colorHighlight : null,
+                        background: r && r.row && r.row._original._selected ? colorMainHighlight : null,
                     },
                 }
             )}
