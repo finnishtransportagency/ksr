@@ -13,3 +13,6 @@ export const colorBackgroundDarkSecondary = '#4B4B4B';
 export const shadowLight = '0 2px 4px 0 hsla(0, 0%, 0%, 0.2)';
 export const shadowDefault = '0 2px 4px 0 hsla(0, 0%, 0%, 0.4)';
 export const shadowDark = '0 2px 6px 0 hsla(0, 0%, 0%, 0.6)';
+
+// Table highlight
+export const colorTableHiglightSelected = '#FACE00';
