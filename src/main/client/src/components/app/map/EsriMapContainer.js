@@ -2,6 +2,8 @@
 import { connect } from 'react-redux';
 import EsriMap from './EsriMap';
 
+import { selectFeatures } from './../../../reducers/table/actions';
+
 const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
     layerList: state.map.layerGroups.layerList,
@@ -11,6 +13,12 @@ const mapStateToProps = state => ({
     mapScale: state.map.mapConfig.mapScale,
 });
 
-const EsriMapContainer = connect(mapStateToProps)(EsriMap);
+const mapDispatchToProps = dispatch => ({
+    selectFeatures: (features) => {
+        dispatch(selectFeatures(features));
+    },
+});
+
+const EsriMapContainer = connect(mapStateToProps, mapDispatchToProps)(EsriMap);
 
 export default EsriMapContainer;

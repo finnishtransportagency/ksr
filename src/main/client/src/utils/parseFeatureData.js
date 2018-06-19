@@ -1,22 +1,102 @@
-export default {
-    parseData: (data) => {
-        if (!data && !data.layers && !data.layers.features && !data.features.layers) return [];
-        const parsedData = [];
-        data.layers.forEach(l => (l.features.forEach(f => parsedData.push(f.attributes))));
-        return parsedData;
-    },
-    parseColumns: (data) => {
-        if (!data && !data.layers && !data.layers.features && !data.features.layers) return [];
-        const parsedColumns = [];
-        data.layers.forEach(l =>
-            (l.fields.forEach((f) => {
-                if (parsedColumns.findIndex(item => item.accessor === f.name) === -1) {
-                    parsedColumns.push({
-                        Header: f.alias, accessor: f.name, show: true,
-                    });
-                }
-            })));
+export const parseData = (data, selected, source) => {
+    if (!data && !data.layers && !data.layers.features && !data.features.layers) return [];
+    const parsedData = new Map();
+    data.layers.forEach((l) => {
+        l.features.forEach((f) => {
+            const key = `${l.id}/${f.attributes[l.objectIdFieldName]}`;
+            parsedData.set(key, {
+                ...f.attributes,
+                _id: f.attributes[l.objectIdFieldName],
+                _layerId: l.id,
+                _selected: selected,
+                _key: key,
+                _source: source,
+            });
+        });
+    });
+    return parsedData;
+};
 
-        return parsedColumns;
-    },
+export const parseColumns = (data) => {
+    if (!data && !data.layers && !data.layers.features && !data.features.layers) return [];
+    const parsedColumns = new Map();
+    data.layers.forEach(l =>
+        (l.fields.forEach((f) => {
+            const key = f.name;
+            parsedColumns.set(key, {
+                Header: f.alias,
+                accessor: f.name,
+                show: true,
+            });
+        })));
+
+    return parsedColumns;
+};
+
+/**
+* Merge a Map into another Map.
+*
+* @param currentFeatures Map containing currentFeatures
+* @param newFeatures Map containing incoming features. Will be merged with currentFeatures
+* @param dataFromPreviousSelect Set containing keys of objects,
+*                                that were added in previous select-action
+*
+* @returns {data, dataFromSelect}   Data: values, that currently must be shown in the table
+*                                   DataFromSelect: newly added features
+*/
+export const mergeData = (currentFeatures, newFeatures, dataFromPreviousSelect) => {
+    const data = new Map(currentFeatures);
+    const dataFromSelect = new Set(dataFromPreviousSelect);
+
+    dataFromSelect.forEach((ds) => {
+        const feat = data.get(ds);
+        switch (feat._source) { // eslint-disable-line no-underscore-dangle
+            case 'search':
+                // Set previously selected features to unselected
+                feat._selected = false; // eslint-disable-line no-underscore-dangle
+                break;
+            case 'select':
+                // Remove features added by previous selection
+                data.delete(ds);
+                break;
+            default:
+                break;
+        }
+    });
+    dataFromSelect.clear();
+
+    newFeatures.forEach((val, key) => {
+        if (data.has(key)) {
+            const cVal = data.get(key);
+            cVal._selected = val._selected; // eslint-disable-line no-underscore-dangle
+        } else {
+            data.set(key, val);
+        }
+        dataFromSelect.add(key);
+    });
+
+    return { data, dataFromSelect };
+};
+
+/**
+* Merge a Map into another Map.
+* Will merge two Maps containing column definitions.
+*
+* @param currentColumns Map containing current columns
+* @param newColumns Map containing incoming columns. Will be merged with currentColumns
+* @param columnsFromSelect Columns added in previous select-action
+*
+* @returns {columns, columnsFromSelect} Columns: Columns that should be shown in the table
+*                                       ColumnsFromSelect: Columns added in select-action
+*/
+export const mergeColumns = (currentColumns, newColumns, columnsFromSelect) => {
+    columnsFromSelect.forEach(currentColumns.delete, currentColumns);
+    columnsFromSelect.clear();
+    newColumns.forEach((val, key) => {
+        if (!currentColumns.has(key)) {
+            currentColumns.set(key, val);
+            columnsFromSelect.add(key);
+        }
+    });
+    return { columns: currentColumns, columnsFromSelect };
 };

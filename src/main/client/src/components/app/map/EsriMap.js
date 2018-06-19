@@ -16,6 +16,7 @@ type Props = {
     isOpenTable: boolean,
     mapCenter: Array<number>,
     mapScale: number,
+    selectFeatures: Function,
 };
 
 type State = {
@@ -142,6 +143,7 @@ class EsriMap extends Component<Props, State> {
                         copyright: layer.attribution,
                         maxScale: layer.maxScale,
                         minScale: layer.minScale,
+                        outFields: ['*'],
                     }));
 
                 layerList.map((l) => {
@@ -222,10 +224,9 @@ class EsriMap extends Component<Props, State> {
                         };
 
                         view.hitTest(point).then(({ results }) => {
-                            if (results.length) {
-                                const graphics = results.map(re => re.graphic);
-                                graphicsToEsriJSON(graphics);
-                            }
+                            const graphics = results.map(re => re.graphic);
+                            const features = graphicsToEsriJSON(graphics);
+                            this.props.selectFeatures(features);
                         });
                     }
                 });

@@ -1,5 +1,6 @@
 // @flow
-import { GET_FEATURES, GET_FEATURES_FULFILLED } from '../../constants/actionTypes';
+import { GET_FEATURES, GET_FEATURES_FULFILLED, SELECT_FEATURES } from '../../constants/actionTypes';
+import { mergeColumns, mergeData } from '../../utils/parseFeatureData';
 
 type State = {
     features: Object,
@@ -9,15 +10,17 @@ type State = {
 type Action = {
     type: string,
     payload: Object,
-    data: Array<any>,
-    columns: Array<any>,
+    data: Map,
+    columns: Map,
 };
 
 const initialState = {
     features: {},
     fetching: true,
-    data: [],
-    columns: [],
+    data: new Map(),
+    columns: new Map(),
+    dataFromSelect: new Set(),
+    columnsFromSelect: new Set(),
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -34,6 +37,12 @@ export default (state: State = initialState, action: Action) => {
                 data: action.data,
                 columns: action.columns,
                 fetching: false,
+            };
+        case SELECT_FEATURES:
+            return {
+                ...state,
+                ...mergeColumns(state.columns, action.columns, state.columnsFromSelect),
+                ...mergeData(state.data, action.data, state.dataFromSelect),
             };
         default:
             return state;
