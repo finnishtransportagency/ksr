@@ -53,12 +53,18 @@ class EsriMap extends Component<Props, State> {
 
                 // Update layer settings
                 layerListReversed.forEach((l, i) => {
+                    // Add layer to map
+                    if (l.active && !view.map.findLayerById(l.id.toString())) {
+                        this.addActiveLayer(l, i);
+                        layerListReversed[i].visible = true;
+                    }
                     // Change layer opacity and visibility
                     view.map.allLayers.forEach((layer) => {
-                        if (parseInt(l.id, 10) === parseInt(layer.id, 10)) {
+                        if (layer && l.id.toString() === layer.id) {
                             const newLayer = layer;
                             newLayer.visible = l.visible;
                             newLayer.opacity = l.opacity;
+                            if (!l.active) view.map.layers.remove(layer);
                             return newLayer;
                         }
                         return null;
@@ -70,6 +76,55 @@ class EsriMap extends Component<Props, State> {
             }
         }
     }
+
+    addActiveLayer = (activeLayer, layerIndex) => {
+        esriLoader
+            .loadModules([
+                'esri/config',
+                'esri/layers/WMSLayer',
+                'esri/layers/WMTSLayer',
+            ])
+            .then(([
+                esriConfig,
+                WMSLayer,
+                WMTSLayer,
+            ]) => {
+                const addWmsLayer = layer =>
+                    this.state.view.map.add(new WMSLayer({
+                        id: layer.id,
+                        url: layer.url,
+                        copyright: layer.attribution,
+                        maxScale: layer.maxScale,
+                        minScale: layer.minScale,
+                        opacity: layer.opacity,
+                        visible: true,
+                        sublayers: [
+                            {
+                                name: layer.layers,
+                            },
+                        ],
+                    }), layerIndex);
+
+                const addWmtsLayer = layer =>
+                    this.state.view.map.add(new WMTSLayer({
+                        id: layer.id,
+                        url: layer.url,
+                        copyright: layer.attribution,
+                        maxScale: layer.maxScale,
+                        minScale: layer.minScale,
+                        opacity: layer.opacity,
+                        visible: true,
+                        activeLayer: {
+                            id: layer.layers,
+                        },
+                    }), layerIndex);
+
+                esriConfig.request.corsEnabledServers.push(activeLayer.url);
+
+                if (activeLayer.type === 'wms') addWmsLayer(activeLayer);
+                if (activeLayer.type === 'wmts') addWmtsLayer(activeLayer);
+            });
+    };
 
     initMap = () => {
         esriLoader.loadCss('https://js.arcgis.com/4.7/esri/css/main.css');
