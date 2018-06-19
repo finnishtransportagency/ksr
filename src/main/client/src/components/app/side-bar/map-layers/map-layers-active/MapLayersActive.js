@@ -21,6 +21,7 @@ class MapLayersActive extends Component<Props, State> {
 
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onToggleVisibility = this.onToggleVisibility.bind(this);
+        this.onOpacityChange = this.onOpacityChange.bind(this);
     }
 
     onDragEnd = (result: DropResult) => {
@@ -48,6 +49,15 @@ class MapLayersActive extends Component<Props, State> {
         setLayerList(layerListChanged);
     };
 
+    onOpacityChange = (evt: Number, id: Number) => {
+        const { layerList, setLayerList } = this.props;
+        const layerListChanged = [...layerList];
+        const foundIndex = layerList.findIndex(layer => layer.id === id);
+
+        layerListChanged[foundIndex].opacity = evt;
+        setLayerList(layerListChanged);
+    };
+
     render() {
         const { layerList, fetching } = this.props;
         if (!fetching) {
@@ -56,6 +66,7 @@ class MapLayersActive extends Component<Props, State> {
                     activeLayers={layerList}
                     onDragEnd={this.onDragEnd}
                     onToggleVisibility={this.onToggleVisibility}
+                    onOpacityChange={this.onOpacityChange}
                 />
             );
         }

@@ -2,6 +2,7 @@
 import esriLoader from 'esri-loader';
 import proj4 from 'proj4';
 import React, { Component } from 'react';
+import strings from '../../../translations';
 import EsriMapView from './EsriMapView';
 import { defs } from '../../../utils/proj4Defs';
 
@@ -55,6 +56,7 @@ class EsriMap extends Component<Props, State> {
                         if (parseInt(l.id, 10) === parseInt(layer.id, 10)) {
                             const newLayer = layer;
                             newLayer.visible = l.visible;
+                            newLayer.opacity = l.opacity;
                             return newLayer;
                         }
                         return null;
@@ -197,10 +199,10 @@ class EsriMap extends Component<Props, State> {
 
                     view.popup.collapseEnabled = false;
                     view.popup.open({
-                        title: 'Kohteen tiedot',
+                        title: strings.esriMap.destinationDetails,
                         location: event.mapPoint,
                         content: `
-                            <a href=${streetViewUrl} target="blank">Avaa Google Street View</a>
+                            <a href=${streetViewUrl} target="blank">${strings.esriMap.openGoogleStreetView}</a>
                         `,
                     });
                 });

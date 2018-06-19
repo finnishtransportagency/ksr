@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import Content from './Content';
 import ContentTop from './ContentTop';
 import ContentMain from './ContentMain';
+import Slider from './Slider';
 
 const LayerSettings = styled.div`
     display: flex;
@@ -23,10 +24,6 @@ const Drag = styled.div`
     flex: 1;
     align-self: center;
     text-align: center;
-`;
-
-const Slider = styled.div`
-    padding-top: 1rem;
 `;
 
 const Title = styled.div`

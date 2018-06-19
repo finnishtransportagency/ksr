@@ -73,4 +73,17 @@ describe('<MapLayersActive />', () => {
         expect(setLayerList).toHaveBeenCalled();
         expect(layerList[foundIndex].visible).toBe(false);
     });
+
+    it('should handle onOpacityChange correctly', () => {
+        const { wrapper } = setup();
+        const { setLayerList, layerList } = wrapper.instance().props;
+        const newOpacity = 0.7;
+        const id = 2;
+        const foundIndex = layerList.findIndex(layer => layer.id === id);
+
+        expect(layerList[foundIndex].opacity).toBe(1);
+        wrapper.instance().onOpacityChange(newOpacity, id);
+        expect(setLayerList).toHaveBeenCalled();
+        expect(layerList[foundIndex].opacity).toBe(0.7);
+    });
 });
