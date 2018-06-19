@@ -1,7 +1,7 @@
-import { getHeadersLayerGroup } from '../config';
+import { getHeaders } from '../config';
 
 export const fetchLayerGroups = () => (
-    fetch('api/layergroup', { headers: getHeadersLayerGroup() })
+    fetch('api/layergroup', { headers: getHeaders() })
         .then(r => r.json())
         .then(layerGroups => layerGroups.map(lg => (
             {

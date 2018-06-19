@@ -6,6 +6,7 @@ import HomeView from '../HomeView';
 const setup = () => {
     const props = {
         getLayerGroups: () => {},
+        getMapConfig: () => {},
     };
     const wrapper = shallow(<Home {...props} />);
 

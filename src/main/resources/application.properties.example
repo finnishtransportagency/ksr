@@ -38,7 +38,7 @@ proxy.socketTimeout=20000
 #Map
 map.center.lng=425574
 map.center.lat=7051264
-map.zoom=3
+map.scale=9244648
 
 #AES
 aes.key=

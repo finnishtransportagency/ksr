@@ -19,8 +19,8 @@ public class MapConfigController {
     @Value("${map.center.lat}")
     private int centerLat;
 
-    @Value("${map.zoom}")
-    private int zoomLevel;
+    @Value("${map.scale}")
+    private int scale;
 
     /**
      * Gets map information.
@@ -31,7 +31,7 @@ public class MapConfigController {
     public MapConfig getMapInformation() {
         MapConfig mapConfigInformation = new MapConfig();
         mapConfigInformation.setCenter(new int[]{centerLng, centerLat});
-        mapConfigInformation.setZoom(zoomLevel);
+        mapConfigInformation.setScale(scale);
         return mapConfigInformation;
     }
 }

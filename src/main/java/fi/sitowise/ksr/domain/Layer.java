@@ -255,36 +255,36 @@ public class Layer implements Serializable {
     }
 
     /**
-     * Get the min zoom.
+     * Get minimum scale.
      *
-     * @return min zoom
+     * @return minimum scale
      */
     public Integer getMinScale() {
         return minScale;
     }
 
     /**
-     * Set the min zoom.
+     * Set the minimum scale.
      *
-     * @param minScale min zoom
+     * @param minScale minimum scale
      */
     public void setMinScale(Integer minScale) {
         this.minScale = minScale;
     }
 
     /**
-     * Get the max zoom.
+     * Get maximum scale.
      *
-     * @return max zoom
+     * @return maximum scale
      */
     public Integer getMaxScale() {
         return maxScale;
     }
 
     /**
-     * Set the max zoom
+     * Set maximum scale.
      *
-     * @param maxScale max zoom
+     * @param maxScale maximum scale
      */
     public void setMaxScale(Integer maxScale) {
         this.maxScale = maxScale;

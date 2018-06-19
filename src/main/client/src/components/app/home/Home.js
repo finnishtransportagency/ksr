@@ -4,6 +4,7 @@ import HomeView from './HomeView';
 
 type Props = {
     getLayerGroups: Function,
+    getMapConfig: Function,
 };
 
 type State = {
@@ -12,9 +13,10 @@ type State = {
 
 class Home extends Component<Props, State> {
     componentDidMount() {
-        const { getLayerGroups } = this.props;
+        const { getLayerGroups, getMapConfig } = this.props;
 
         getLayerGroups();
+        getMapConfig();
     }
 
     render() {
