@@ -33,6 +33,7 @@ const Title = styled.div`
 const Toggle = styled.div`
     align-self: center;
     padding: 1rem;
+    cursor: pointer;
 `;
 
 LayerSettings.Content = Content;
