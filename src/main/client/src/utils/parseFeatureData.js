@@ -46,34 +46,38 @@ export const parseColumns = (data) => {
 */
 export const mergeData = (currentFeatures, newFeatures, dataFromPreviousSelect) => {
     const data = new Map(currentFeatures);
-    const dataFromSelect = new Set(dataFromPreviousSelect);
 
-    dataFromSelect.forEach((ds) => {
-        const feat = data.get(ds);
-        switch (feat._source) { // eslint-disable-line no-underscore-dangle
-            case 'search':
-                // Set previously selected features to unselected
-                feat._selected = false; // eslint-disable-line no-underscore-dangle
-                break;
-            case 'select':
-                // Remove features added by previous selection
-                data.delete(ds);
-                break;
-            default:
-                break;
-        }
-    });
-    dataFromSelect.clear();
+    if (dataFromPreviousSelect) {
+        dataFromPreviousSelect.forEach((ds) => {
+            const feat = data.get(ds);
+            switch (feat._source) { // eslint-disable-line no-underscore-dangle
+                case 'search':
+                    // Set previously selected features to unselected
+                    feat._selected = false; // eslint-disable-line no-underscore-dangle
+                    break;
+                case 'select':
+                    // Remove features added by previous selection
+                    data.delete(ds);
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
 
-    newFeatures.forEach((val, key) => {
-        if (data.has(key)) {
-            const cVal = data.get(key);
-            cVal._selected = val._selected; // eslint-disable-line no-underscore-dangle
-        } else {
-            data.set(key, val);
-        }
-        dataFromSelect.add(key);
-    });
+    const dataFromSelect = new Set();
+
+    if (newFeatures) {
+        newFeatures.forEach((val, key) => {
+            if (data.has(key)) {
+                const cVal = data.get(key);
+                cVal._selected = val._selected; // eslint-disable-line no-underscore-dangle
+            } else {
+                data.set(key, val);
+            }
+            dataFromSelect.add(key);
+        });
+    }
 
     return { data, dataFromSelect };
 };
@@ -89,14 +93,19 @@ export const mergeData = (currentFeatures, newFeatures, dataFromPreviousSelect) 
 * @returns {columns, columnsFromSelect} Columns: Columns that should be shown in the table
 *                                       ColumnsFromSelect: Columns added in select-action
 */
-export const mergeColumns = (currentColumns, newColumns, columnsFromSelect) => {
-    columnsFromSelect.forEach(currentColumns.delete, currentColumns);
-    columnsFromSelect.clear();
-    newColumns.forEach((val, key) => {
-        if (!currentColumns.has(key)) {
-            currentColumns.set(key, val);
-            columnsFromSelect.add(key);
-        }
-    });
-    return { columns: currentColumns, columnsFromSelect };
+export const mergeColumns = (currentColumns, newColumns, columnsFromPreviousSelect) => {
+    const columns = new Map(currentColumns);
+    columnsFromPreviousSelect.forEach(columns.delete, columns);
+
+    const columnsFromSelect = new Set();
+
+    if (newColumns) {
+        newColumns.forEach((val, key) => {
+            if (!columns.has(key)) {
+                columns.set(key, val);
+                columnsFromSelect.add(key);
+            }
+        });
+    }
+    return { columns, columnsFromSelect };
 };
