@@ -10,12 +10,20 @@ const setup = () => {
                 name: 'layer group 1',
                 layers: [
                     {
-                        visible: 1, name: 'layer 1',
+                        visible: true, name: 'layer 1', active: true,
                     },
                     {
-                        visible: 1, name: 'layer 2',
+                        visible: true, name: 'layer 2', active: true,
                     },
                 ],
+            },
+        ],
+        layerList: [
+            {
+                visible: true, name: 'Layer 1', active: true,
+            },
+            {
+                visible: true, name: 'Layer 2', active: true,
             },
         ],
         handleGroupClick: () => {},
