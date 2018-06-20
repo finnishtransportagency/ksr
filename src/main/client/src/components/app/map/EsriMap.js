@@ -142,8 +142,8 @@ class EsriMap extends Component<Props, State> {
                 'esri/layers/WMSLayer',
                 'esri/layers/WMTSLayer',
                 'esri/geometry/SpatialReference',
-                'esri/geometry/Extent',
                 'esri/widgets/Compass',
+                'esri/geometry/Point',
             ])
             .then(([
                 esriConfig,
@@ -156,8 +156,8 @@ class EsriMap extends Component<Props, State> {
                 WMSLayer,
                 WMTSLayer,
                 SpatialReference,
-                Extent,
                 Compass,
+                Point,
             ]) => {
                 const { container } = this.state.options;
                 const { layerList, mapCenter, mapScale } = this.props;
@@ -204,22 +204,16 @@ class EsriMap extends Component<Props, State> {
 
                 const epsg3067 = new SpatialReference(3067);
 
-                const extent = new Extent({
-                    xmin: -548576,
-                    ymin: 6291456,
-                    xmax: 1548576,
-                    ymax: 8388608,
-                    spatialReference: {
-                        wkid: 3067,
-                    },
+                const point = new Point({
+                    x: mapCenter[0],
+                    y: mapCenter[1],
+                    spatialReference: epsg3067,
                 });
 
                 const view = new MapView({
                     container,
                     map,
-                    spatialReference: epsg3067,
-                    extent,
-                    center: mapCenter,
+                    center: point,
                     scale: mapScale,
                 });
 
