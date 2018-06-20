@@ -58,6 +58,7 @@ class EsriMap extends Component<Props, State> {
                         this.addActiveLayer(l, i);
                         layerListReversed[i].visible = true;
                     }
+
                     // Change layer opacity and visibility
                     view.map.allLayers.forEach((layer) => {
                         if (layer && l.id.toString() === layer.id) {
@@ -77,7 +78,7 @@ class EsriMap extends Component<Props, State> {
         }
     }
 
-    addActiveLayer = (activeLayer, layerIndex) => {
+    addActiveLayer = (activeLayer: any, layerIndex: number) => {
         esriLoader
             .loadModules([
                 'esri/config',
@@ -142,6 +143,7 @@ class EsriMap extends Component<Props, State> {
                 'esri/layers/WMTSLayer',
                 'esri/geometry/SpatialReference',
                 'esri/geometry/Extent',
+                'esri/widgets/Compass',
             ])
             .then(([
                 esriConfig,
@@ -155,6 +157,7 @@ class EsriMap extends Component<Props, State> {
                 WMTSLayer,
                 SpatialReference,
                 Extent,
+                Compass,
             ]) => {
                 const { container } = this.state.options;
                 const { layerList, mapCenter, mapScale } = this.props;
@@ -224,6 +227,10 @@ class EsriMap extends Component<Props, State> {
                     view,
                 });
 
+                const compass = new Compass({
+                    view,
+                });
+
                 const locate = new Locate({
                     view,
                 });
@@ -239,7 +246,7 @@ class EsriMap extends Component<Props, State> {
 
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
-                    [locate, track, 'draw-polygon', 'draw-line'],
+                    [compass, locate, track, 'draw-polygon', 'draw-line'],
                     'top-right',
                 );
                 view.ui.add([search], 'top-left');
