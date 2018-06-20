@@ -46,35 +46,34 @@ class EsriMap extends Component<Props, State> {
 
         if (
             prevProps.layerList.length > 0 &&
-            prevProps.layerList !== layerList
+            prevProps.layerList !== layerList &&
+            view && view.map
         ) {
-            if (view.map) {
-                const layerListReversed = [...layerList].reverse();
+            const layerListReversed = [...layerList].reverse();
 
-                // Update layer settings
-                layerListReversed.forEach((l, i) => {
-                    // Add layer to map
-                    if (l.active && !view.map.findLayerById(l.id.toString())) {
-                        this.addActiveLayer(l, i);
-                        layerListReversed[i].visible = true;
+            // Update layer settings
+            layerListReversed.forEach((l, i) => {
+                // Add layer to map
+                if (l.active && !view.map.findLayerById(l.id.toString())) {
+                    this.addActiveLayer(l, i);
+                    layerListReversed[i].visible = true;
+                }
+
+                // Change layer opacity and visibility
+                view.map.allLayers.forEach((layer) => {
+                    if (layer && l.id.toString() === layer.id) {
+                        const newLayer = layer;
+                        newLayer.visible = l.visible;
+                        newLayer.opacity = l.opacity;
+                        if (!l.active) view.map.layers.remove(layer);
+                        return newLayer;
                     }
-
-                    // Change layer opacity and visibility
-                    view.map.allLayers.forEach((layer) => {
-                        if (layer && l.id.toString() === layer.id) {
-                            const newLayer = layer;
-                            newLayer.visible = l.visible;
-                            newLayer.opacity = l.opacity;
-                            if (!l.active) view.map.layers.remove(layer);
-                            return newLayer;
-                        }
-                        return null;
-                    });
-
-                    // Change layer order
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, i));
+                    return null;
                 });
-            }
+
+                // Change layer order
+                view.map.reorder(view.map.findLayerById(`${l.id}`, i));
+            });
         }
     }
 
