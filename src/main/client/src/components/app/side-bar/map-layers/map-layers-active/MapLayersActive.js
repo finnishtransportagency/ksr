@@ -63,7 +63,7 @@ class MapLayersActive extends Component<Props, State> {
         if (!fetching) {
             return (
                 <MapLayersActiveView
-                    activeLayers={layerList}
+                    layerList={layerList}
                     onDragEnd={this.onDragEnd}
                     onToggleVisibility={this.onToggleVisibility}
                     onOpacityChange={this.onOpacityChange}

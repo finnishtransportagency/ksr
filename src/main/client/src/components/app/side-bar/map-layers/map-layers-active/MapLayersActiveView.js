@@ -7,14 +7,14 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import LayerSettings from '../../../../ui/blocks/LayerSettings';
 
 type Props = {
-    activeLayers: Array<any>,
+    layerList: Array<any>,
     onDragEnd: (DropResult) => void,
     onToggleVisibility: (Number) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
 };
 
 const MapLayersView = ({
-    activeLayers,
+    layerList,
     onDragEnd,
     onOpacityChange,
     onToggleVisibility,
@@ -24,7 +24,7 @@ const MapLayersView = ({
             <Droppable droppableId="droppable">
                 {dropProvided => (
                     <div ref={dropProvided.innerRef}>
-                        {activeLayers.map((l, i) => (
+                        {layerList.map((l, i) => (
                             <Draggable key={l.id} draggableId={l.id} index={i}>
                                 {provided => (
                                     <div
