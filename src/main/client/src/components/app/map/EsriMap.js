@@ -134,7 +134,6 @@ class EsriMap extends Component<Props, State> {
                 'esri/config',
                 'esri/views/MapView',
                 'esri/Map',
-                'esri/widgets/Search',
                 'esri/widgets/Locate',
                 'esri/widgets/Track',
                 'esri/widgets/ScaleBar',
@@ -148,7 +147,6 @@ class EsriMap extends Component<Props, State> {
                 esriConfig,
                 MapView,
                 Map,
-                Search,
                 Locate,
                 Track,
                 ScaleBar,
@@ -216,10 +214,6 @@ class EsriMap extends Component<Props, State> {
                     scale: mapScale,
                 });
 
-                const search = new Search({
-                    view,
-                });
-
                 const compass = new Compass({
                     view,
                 });
@@ -242,7 +236,6 @@ class EsriMap extends Component<Props, State> {
                     [compass, locate, track, 'draw-polygon', 'draw-line'],
                     'top-right',
                 );
-                view.ui.add([search], 'top-left');
                 view.ui.add([scaleBar], 'bottom-left');
 
                 proj4.defs(defs);
