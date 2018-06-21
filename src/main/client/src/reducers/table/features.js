@@ -16,7 +16,7 @@ type Action = {
 
 const initialState = {
     features: {},
-    fetching: true,
+    fetching: false,
     data: new Map(),
     columns: new Map(),
     dataFromSelect: new Set(),

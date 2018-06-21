@@ -5,7 +5,6 @@ import ReactTableView from './ReactTableView';
 import LoadingIcon from '../../shared/LoadingIcon';
 
 type Props = {
-    getFeatureData: () => void,
     fetching: boolean,
     data: Array<any>,
     columns: Array<any>,
@@ -20,10 +19,6 @@ class ReactTable extends Component<Props, State> {
         super(props);
 
         this.renderEditable = this.renderEditable.bind(this);
-    }
-
-    componentDidMount() {
-        this.props.getFeatureData();
     }
 
     renderEditable = (cellInfo: any) => (
