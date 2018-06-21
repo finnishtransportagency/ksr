@@ -10,6 +10,6 @@ describe('<LayerGroup.Content />', () => {
 
     it('has correct style rules', () => {
         const wrapper = renderer.create(<Content />).toJSON();
-        expect(wrapper).toHaveStyleRule('padding', '0 1rem');
+        expect(wrapper).toHaveStyleRule('padding', '0 1rem 1rem');
     });
 });

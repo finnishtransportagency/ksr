@@ -60,6 +60,7 @@ export const Wrapper = styled.div`
     
     .esri-track,
     .esri-locate,
+    .esri-compass,
     .esri-zoom .esri-interactive,
     #draw-polygon,
     #draw-line {

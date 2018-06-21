@@ -6,10 +6,19 @@ import MapLayersAllView from '../MapLayersAllView';
 
 const setup = (prop) => {
     const minProps = {
-        layerGroups: {
-            layerGroups: [],
-            fetching: true,
-        },
+        layerGroups: [],
+        layerList: [
+            {
+                id: 1,
+                active: true,
+            },
+            {
+                id: 1,
+                active: true,
+            },
+        ],
+        fetching: true,
+        setLayerList: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -26,13 +35,30 @@ describe('<MapLayersAll />', () => {
 
     it('should render view if fetching completed', () => {
         const props = {
-            layerGroups: {
-                layerGroups: [],
-                fetching: false,
-            },
+            layerGroups: [],
+            layerList: [],
+            fetching: false,
         };
 
         const { wrapper } = setup(props);
         expect(wrapper.find(MapLayersAllView).exists()).toBe(true);
+    });
+
+    it('should handle handleGroupClick correctly', () => {
+        const { wrapper } = setup();
+        const id = 1;
+
+        wrapper.instance().handleGroupClick(id);
+        expect(wrapper.state('activeGroup')).toBe(1);
+    });
+
+    it('should handle handleLayerClick correctly', () => {
+        const { wrapper } = setup();
+        const { setLayerList } = wrapper.instance().props;
+
+        const id = 1;
+
+        wrapper.instance().handleLayerClick(id);
+        expect(setLayerList).toHaveBeenCalled();
     });
 });
