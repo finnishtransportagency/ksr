@@ -139,6 +139,7 @@ class EsriMap extends Component<Props, State> {
 
                 const addAgfsLayer = layer =>
                     layers.push(new FeatureLayer({
+                        id: layer.id,
                         url: layer.url,
                         copyright: layer.attribution,
                         maxScale: layer.maxScale,
