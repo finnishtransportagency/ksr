@@ -1,15 +1,13 @@
 import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
-const LinkToggle = styled.div`
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
+const Filter = styled.div`
     background: ${styles.colorBackgroundDark};
     width: 60px;
     display: flex;
     flex-direction: column;
     position: relative;
-    left: 0;
+    left: 60px;
     top: -60px;
     height: 60px;
     box-sizing: border-box;
@@ -17,24 +15,24 @@ const LinkToggle = styled.div`
     justify-content: center;
     font-size: 1.25em;
     transition: 0.3s;
-    z-index: 1;
     
     &:hover {
         cursor: pointer;
         background: ${styles.colorBackgroundDarkSecondary};
     };
     
-    ${props => props.toggleTable && css`
-        top: -60px;
+    ${props => props.toggleFilter && css`
+        top: -120px;
         bottom: 0;
     `};
     
     @media only screen and (max-width: 768px) {
         position: fixed;
         top: unset;
-        bottom: 60px;
-        left: initial;
-        right: 0;
+        transform: unset;
+        bottom: 0;
+        left: unset;
+        right: 60px;
     
         border-left: none;
         border-right: none;
@@ -46,10 +44,10 @@ const LinkToggle = styled.div`
             background: ${styles.colorBackgroundDarkSecondary};
         };
 
-        ${props => props.toggleTable && css`
+        ${props => props.toggleFilter && css`
             bottom: calc(100% - 60px);
-        `};   
+        `};
     }
 `;
 
-export default LinkToggle;
+export default Filter;

@@ -2,12 +2,13 @@ import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
 import LinkToggle from './Link';
+import Filter from './Filter';
 
 const Table = styled.div`
     background: ${styles.colorBackgroundDark};
     position: fixed;
     height: 400px;
-    bottom: -540px;
+    bottom: -400px;
     left: 60px;
     width: 100%;
     color: ${styles.colorFontLight};
@@ -34,11 +35,11 @@ const Table = styled.div`
         
         ${props => props.toggleTable && css`
             height: 100%;
-            transition: height 0.25s;
         `};
     }
 `;
 
 Table.Link = LinkToggle;
+Table.Filter = Filter;
 
 export default Table;

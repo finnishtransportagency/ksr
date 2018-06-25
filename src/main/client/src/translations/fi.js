@@ -21,6 +21,11 @@ const fi = {
         openGoogleStreetView: 'Avaa Google Street View',
         destinationDetails: 'Kohteen tiedot',
     },
+    modalView: {
+        title: 'Suodata sarakkeita',
+        submit: 'Suodata',
+        cancel: 'Peruuta',
+    },
 };
 
 export default fi;

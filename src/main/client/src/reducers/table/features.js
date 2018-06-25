@@ -1,16 +1,17 @@
 // @flow
-import { GET_FEATURES, GET_FEATURES_FULFILLED } from '../../constants/actionTypes';
+import { GET_FEATURES, GET_FEATURES_FULFILLED, SET_FEATURES } from '../../constants/actionTypes';
 
 type State = {
     features: Object,
     fetching: boolean,
+    columns: Array<Object>,
 };
 
 type Action = {
     type: string,
     payload: Object,
     data: Array<any>,
-    columns: Array<any>,
+    columns: Array<Object>,
 };
 
 const initialState = {
@@ -34,6 +35,11 @@ export default (state: State = initialState, action: Action) => {
                 data: action.data,
                 columns: action.columns,
                 fetching: false,
+            };
+        case SET_FEATURES:
+            return {
+                ...state,
+                columns: action.payload,
             };
         default:
             return state;
