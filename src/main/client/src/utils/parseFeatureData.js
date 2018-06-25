@@ -88,7 +88,7 @@ export const mergeData = (currentFeatures, newFeatures, dataFromPreviousSelect) 
 *
 * @param currentColumns Map containing current columns
 * @param newColumns Map containing incoming columns. Will be merged with currentColumns
-* @param columnsFromSelect Columns added in previous select-action
+* @param columnsFromPreviousSelect Columns added in previous select-action
 *
 * @returns {columns, columnsFromSelect} Columns: Columns that should be shown in the table
 *                                       ColumnsFromSelect: Columns added in select-action

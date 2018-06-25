@@ -44,8 +44,11 @@ const ReactTableView = ({ data, columns }: Props) => (
             getTrProps={(state, r) => (
                 {
                     style: {
-                        /* eslint-disable-next-line no-underscore-dangle */
-                        background: r && r.row && r.row._original._selected ? colorMainHighlight : null,
+                        background: (
+                            r &&
+                            r.row &&
+                            /* eslint-disable-next-line no-underscore-dangle */
+                            r.row._original._selected ? colorMainHighlight : null),
                     },
                 }
             )}
