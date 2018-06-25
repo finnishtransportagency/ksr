@@ -17,14 +17,18 @@ export const Wrapper = styled.div`
             width: calc(100% - 460px);
         `};
         
-         ${props => props.toggleTable && css`
-            height: calc(100% - 400px);
-        `};
-        
-        .esri-scale-bar, .esri-attribution {
+         .esri-scale-bar, .esri-attribution {
             margin-left: 60px;
         }
         
+         ${props => props.toggleTable && css`
+            height: calc(100% - 400px);
+            
+            .esri-scale-bar, .esri-attribution {
+                margin-left: 120px;
+            }
+        `};
+
         @media only screen and (max-width: 768px) {
             left: 0;
             width: 100%;
@@ -56,6 +60,7 @@ export const Wrapper = styled.div`
     
     .esri-track,
     .esri-locate,
+    .esri-compass,
     .esri-zoom .esri-interactive,
     #draw-polygon,
     #draw-line {

@@ -36,9 +36,8 @@ class ReactTable extends Component<Props, State> {
 
     render() {
         const { fetching, data, columns } = this.props;
-
         // eslint-disable-next-line no-param-reassign,no-return-assign
-        columns.map(a => a.Cell = this.renderEditable);
+        Array.from(columns.values()).map(a => a.Cell = this.renderEditable);
 
         if (!fetching) {
             return <ReactTableView data={data} columns={columns} />;

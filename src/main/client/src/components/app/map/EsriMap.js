@@ -50,30 +50,85 @@ class EsriMap extends Component<Props, State> {
 
         if (
             prevProps.layerList.length > 0 &&
-            prevProps.layerList !== layerList
+            prevProps.layerList !== layerList &&
+            view && view.map
         ) {
-            if (view.map) {
-                const layerListReversed = [...layerList].reverse();
+            const layerListReversed = [...layerList].reverse();
 
-                // Update layer settings
-                layerListReversed.forEach((l, i) => {
-                    // Change layer opacity and visibility
-                    view.map.allLayers.forEach((layer) => {
-                        if (parseInt(l.id, 10) === parseInt(layer.id, 10)) {
-                            const newLayer = layer;
-                            newLayer.visible = l.visible;
-                            newLayer.opacity = l.opacity;
-                            return newLayer;
-                        }
-                        return null;
-                    });
+            // Update layer settings
+            layerListReversed.forEach((l, i) => {
+                // Add layer to map
+                if (l.active && !view.map.findLayerById(l.id.toString())) {
+                    this.addActiveLayer(l, i);
+                    layerListReversed[i].visible = true;
+                }
 
-                    // Change layer order
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, i));
+                // Change layer opacity and visibility
+                view.map.allLayers.forEach((layer) => {
+                    if (layer && l.id.toString() === layer.id) {
+                        const newLayer = layer;
+                        newLayer.visible = l.visible;
+                        newLayer.opacity = l.opacity;
+                        if (!l.active) view.map.layers.remove(layer);
+                        return newLayer;
+                    }
+                    return null;
                 });
-            }
+
+                // Change layer order
+                view.map.reorder(view.map.findLayerById(`${l.id}`, i));
+            });
         }
     }
+
+    addActiveLayer = (activeLayer: any, layerIndex: number) => {
+        esriLoader
+            .loadModules([
+                'esri/config',
+                'esri/layers/WMSLayer',
+                'esri/layers/WMTSLayer',
+            ])
+            .then(([
+                esriConfig,
+                WMSLayer,
+                WMTSLayer,
+            ]) => {
+                const addWmsLayer = layer =>
+                    this.state.view.map.add(new WMSLayer({
+                        id: layer.id,
+                        url: layer.url,
+                        copyright: layer.attribution,
+                        maxScale: layer.maxScale,
+                        minScale: layer.minScale,
+                        opacity: layer.opacity,
+                        visible: true,
+                        sublayers: [
+                            {
+                                name: layer.layers,
+                            },
+                        ],
+                    }), layerIndex);
+
+                const addWmtsLayer = layer =>
+                    this.state.view.map.add(new WMTSLayer({
+                        id: layer.id,
+                        url: layer.url,
+                        copyright: layer.attribution,
+                        maxScale: layer.maxScale,
+                        minScale: layer.minScale,
+                        opacity: layer.opacity,
+                        visible: true,
+                        activeLayer: {
+                            id: layer.layers,
+                        },
+                    }), layerIndex);
+
+                esriConfig.request.corsEnabledServers.push(activeLayer.url);
+
+                if (activeLayer.type === 'wms') addWmsLayer(activeLayer);
+                if (activeLayer.type === 'wmts') addWmtsLayer(activeLayer);
+            });
+    };
 
     initMap = () => {
         esriLoader.loadCss('https://js.arcgis.com/4.7/esri/css/main.css');
@@ -83,7 +138,6 @@ class EsriMap extends Component<Props, State> {
                 'esri/config',
                 'esri/views/MapView',
                 'esri/Map',
-                'esri/widgets/Search',
                 'esri/widgets/Locate',
                 'esri/widgets/Track',
                 'esri/widgets/ScaleBar',
@@ -91,13 +145,13 @@ class EsriMap extends Component<Props, State> {
                 'esri/layers/WMTSLayer',
                 'esri/layers/FeatureLayer',
                 'esri/geometry/SpatialReference',
-                'esri/geometry/Extent',
+                'esri/widgets/Compass',
+                'esri/geometry/Point',
             ])
             .then(([
                 esriConfig,
                 MapView,
                 Map,
-                Search,
                 Locate,
                 Track,
                 ScaleBar,
@@ -105,7 +159,8 @@ class EsriMap extends Component<Props, State> {
                 WMTSLayer,
                 FeatureLayer,
                 SpatialReference,
-                Extent,
+                Compass,
+                Point,
             ]) => {
                 const { container } = this.state.options;
                 const { layerList, mapCenter, mapScale } = this.props;
@@ -162,26 +217,20 @@ class EsriMap extends Component<Props, State> {
 
                 const epsg3067 = new SpatialReference(3067);
 
-                const extent = new Extent({
-                    xmin: -548576,
-                    ymin: 6291456,
-                    xmax: 1548576,
-                    ymax: 8388608,
-                    spatialReference: {
-                        wkid: 3067,
-                    },
+                const point = new Point({
+                    x: mapCenter[0],
+                    y: mapCenter[1],
+                    spatialReference: epsg3067,
                 });
 
                 const view = new MapView({
                     container,
                     map,
-                    spatialReference: epsg3067,
-                    extent,
-                    center: mapCenter,
+                    center: point,
                     scale: mapScale,
                 });
 
-                const search = new Search({
+                const compass = new Compass({
                     view,
                 });
 
@@ -200,10 +249,9 @@ class EsriMap extends Component<Props, State> {
 
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
-                    [locate, track, 'draw-polygon', 'draw-line'],
+                    [compass, locate, track, 'draw-polygon', 'draw-line'],
                     'top-right',
                 );
-                view.ui.add([search], 'top-left');
                 view.ui.add([scaleBar], 'bottom-left');
 
                 view.on('click', (event) => {

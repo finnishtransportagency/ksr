@@ -41,10 +41,10 @@ const testState = {
 };
 
 describe('<MapLayersActiveContainer />', () => {
-    it('should filter only active layers', () => {
+    it('should include all layers in layerList', () => {
         const store = createMockStore(testState);
         const container = shallow(<MapLayersActiveContainer store={store} />);
         expect(container.find(MapLayersActive).exists()).toBe(true);
-        expect(container.find(MapLayersActive).props().layerList.length).toBe(3);
+        expect(container.find(MapLayersActive).props().layerList.length).toBe(5);
     });
 });

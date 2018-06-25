@@ -1,5 +1,5 @@
 export const parseData = (data, selected, source) => {
-    if (!data && !data.layers && !data.layers.features && !data.features.layers) return [];
+    if (!data && !data.layers && !data.layers.features && !data.features.layers) return new Map();
     const parsedData = new Map();
     data.layers.forEach((l) => {
         l.features.forEach((f) => {
@@ -17,8 +17,8 @@ export const parseData = (data, selected, source) => {
     return parsedData;
 };
 
-export const parseColumns = (data) => {
-    if (!data && !data.layers && !data.layers.features && !data.features.layers) return [];
+export const parseFeatureColumns = (data) => {
+    if (!data && !data.layers && !data.layers.features && !data.features.layers) return new Map();
     const parsedColumns = new Map();
     data.layers.forEach(l =>
         (l.fields.forEach((f) => {
@@ -29,6 +29,21 @@ export const parseColumns = (data) => {
                 show: true,
             });
         })));
+
+    return parsedColumns;
+};
+
+export const parseColumns = (data) => {
+    if (!data) return new Map();
+    const parsedColumns = new Map();
+    data.forEach((f) => {
+        const key = f.accessor;
+        parsedColumns.set(key, {
+            Header: f.Header,
+            accessor: f.accessor,
+            show: f.show,
+        });
+    });
 
     return parsedColumns;
 };
