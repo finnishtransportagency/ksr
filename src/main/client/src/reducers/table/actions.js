@@ -6,7 +6,7 @@ export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
 });
 
-export const selectFeatures = (features) => {
+export const selectFeatures = (features: {}) => {
     const data = parseData(features, true, 'select');
     const columns = parseColumns(features);
     return {

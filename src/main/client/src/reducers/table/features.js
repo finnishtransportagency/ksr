@@ -5,13 +5,17 @@ import { mergeColumns, mergeData } from '../../utils/parseFeatureData';
 type State = {
     features: Object,
     fetching: boolean,
+    data: Map<string, {}>,
+    columns: Map<string, {}>,
+    dataFromSelect: Set<string>,
+    columnsFromSelect: Set<string>,
 };
 
 type Action = {
     type: string,
     payload: Object,
-    data: Map,
-    columns: Map,
+    data: Map<string, {}>,
+    columns: Map<string, {}>,
 };
 
 const initialState = {
