@@ -217,7 +217,7 @@ class EsriMap extends Component<Props, State> {
 
                 const epsg3067 = new SpatialReference(3067);
 
-                const point = new Point({
+                const center = new Point({
                     x: mapCenter[0],
                     y: mapCenter[1],
                     spatialReference: epsg3067,
@@ -226,8 +226,9 @@ class EsriMap extends Component<Props, State> {
                 const view = new MapView({
                     container,
                     map,
-                    center: point,
+                    center,
                     scale: mapScale,
+                    spatialReference: epsg3067,
                 });
 
                 const compass = new Compass({
