@@ -22,11 +22,13 @@ type Action = {
     type: string,
     layerGroups: Array<any>,
     layerList: Array<any>,
+    queryableLayers: Array<Object>,
 };
 
 const initialState = {
     layerGroups: [],
     layerList: [],
+    queryableLayers: [],
     fetching: true,
 };
 
@@ -41,12 +43,14 @@ export default (state: State = initialState, action: Action) => {
             return {
                 layerGroups: action.layerGroups,
                 layerList: action.layerList,
+                queryableLayers: action.queryableLayers,
                 fetching: false,
             };
         case SET_LAYER_LIST:
             return {
                 ...state,
                 layerList: action.layerList,
+                queryableLayers: action.queryableLayers,
             };
         default:
             return state;
