@@ -27,6 +27,7 @@ public class Layer implements Serializable {
     private String attribution;
     private Boolean desktopVisible;
     private Boolean mobileVisible;
+    private boolean queryable;
 
     /**
      * Construct a Layer
@@ -54,6 +55,7 @@ public class Layer implements Serializable {
         this.setAttribution(lr.getAttribution());
         this.setDesktopVisible(lr.getDesktopVisible());
         this.setMobileVisible(lr.getMobileVisible());
+        this.setQueryable(lr.getQueryable());
     }
 
     /**
@@ -371,4 +373,21 @@ public class Layer implements Serializable {
         this.mobileVisible = "1".equals(mobileVisible);
     }
 
+    /**
+     * Is the layer queryable or not.
+     *
+     * @return layer's queryability
+     */
+    public boolean isQueryable() {
+        return queryable;
+    }
+
+    /**
+     * Sets layer queryability.
+     *
+     * @param queryable is the layer queryable
+     */
+    public void setQueryable(String queryable) {
+        this.queryable = "1".equals(queryable);
+    }
 }
