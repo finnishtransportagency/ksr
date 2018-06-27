@@ -7,7 +7,7 @@ import EsriMapView from './EsriMapView';
 
 import { graphicsToEsriJSON } from '../../../utils/arcFormats';
 import { getStreetViewLink } from '../../../utils/streetView';
-
+import { addLayer, highlight } from '../../../utils/map';
 
 type Props = {
     activeNav: string,
@@ -17,6 +17,7 @@ type Props = {
     mapCenter: Array<number>,
     mapScale: number,
     selectFeatures: Function,
+    selectedFeatures: Array<Object>
 };
 
 type State = {
@@ -59,160 +60,58 @@ class EsriMap extends Component<Props, State> {
             layerListReversed.forEach((l, i) => {
                 // Add layer to map
                 if (l.active && !view.map.findLayerById(l.id.toString())) {
-                    this.addActiveLayer(l, i);
-                    layerListReversed[i].visible = true;
+                    l.visible = true; // eslint-disable-line no-param-reassign
+                    addLayer(l, this.state.view, i);
                 }
 
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
                     if (layer && l.id.toString() === layer.id) {
-                        const newLayer = layer;
-                        newLayer.visible = l.visible;
-                        newLayer.opacity = l.opacity;
+                        layer.visible = l.visible; // eslint-disable-line no-param-reassign
+                        layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
                         if (!l.active) view.map.layers.remove(layer);
-                        return newLayer;
                     }
-                    return null;
                 });
 
                 // Change layer order
                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
             });
         }
+
+        if (prevProps.selectedFeatures !== this.props.selectedFeatures) {
+            highlight(view, this.props.selectedFeatures);
+        }
     }
-
-    addActiveLayer = (activeLayer: any, layerIndex: number) => {
-        esriLoader
-            .loadModules([
-                'esri/config',
-                'esri/layers/WMSLayer',
-                'esri/layers/WMTSLayer',
-            ])
-            .then(([
-                esriConfig,
-                WMSLayer,
-                WMTSLayer,
-            ]) => {
-                const addWmsLayer = layer =>
-                    this.state.view.map.add(new WMSLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        opacity: layer.opacity,
-                        visible: true,
-                        sublayers: [
-                            {
-                                name: layer.layers,
-                            },
-                        ],
-                    }), layerIndex);
-
-                const addWmtsLayer = layer =>
-                    this.state.view.map.add(new WMTSLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        opacity: layer.opacity,
-                        visible: true,
-                        activeLayer: {
-                            id: layer.layers,
-                        },
-                    }), layerIndex);
-
-                esriConfig.request.corsEnabledServers.push(activeLayer.url);
-
-                if (activeLayer.type === 'wms') addWmsLayer(activeLayer);
-                if (activeLayer.type === 'wmts') addWmtsLayer(activeLayer);
-            });
-    };
 
     initMap = () => {
         esriLoader.loadCss('https://js.arcgis.com/4.7/esri/css/main.css');
 
         esriLoader
             .loadModules([
-                'esri/config',
                 'esri/views/MapView',
                 'esri/Map',
                 'esri/widgets/Locate',
                 'esri/widgets/Track',
                 'esri/widgets/ScaleBar',
-                'esri/layers/WMSLayer',
-                'esri/layers/WMTSLayer',
-                'esri/layers/FeatureLayer',
                 'esri/geometry/SpatialReference',
                 'esri/widgets/Compass',
                 'esri/geometry/Point',
             ])
             .then(([
-                esriConfig,
                 MapView,
                 Map,
                 Locate,
                 Track,
                 ScaleBar,
-                WMSLayer,
-                WMTSLayer,
-                FeatureLayer,
                 SpatialReference,
                 Compass,
                 Point,
             ]) => {
                 const { container } = this.state.options;
                 const { layerList, mapCenter, mapScale } = this.props;
-                const layers = [];
-
-                const addWmsLayer = layer =>
-                    layers.push(new WMSLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        sublayers: [
-                            {
-                                name: layer.layers,
-                            },
-                        ],
-                    }));
-
-                const addWmtsLayer = layer =>
-                    layers.push(new WMTSLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        activeLayer: {
-                            id: layer.layers,
-                        },
-                    }));
-
-                const addAgfsLayer = layer =>
-                    layers.push(new FeatureLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        outFields: ['*'],
-                    }));
-
-                layerList.map((l) => {
-                    esriConfig.request.corsEnabledServers.push(l.url);
-
-                    if (l.visible && l.type === 'wms') addWmsLayer(l);
-                    if (l.visible && l.type === 'wmts') addWmtsLayer(l);
-                    if (l.visible && l.type === 'agfs') addAgfsLayer(l);
-                    return null;
-                });
 
                 const map = new Map({
-                    layers: [...layers].reverse(),
+                    layers: [],
                 });
 
                 const epsg3067 = new SpatialReference(3067);
@@ -229,6 +128,10 @@ class EsriMap extends Component<Props, State> {
                     center,
                     scale: mapScale,
                     spatialReference: epsg3067,
+                });
+
+                [...layerList].reverse().forEach((l, i) => {
+                    addLayer(l, view, i);
                 });
 
                 const compass = new Compass({
