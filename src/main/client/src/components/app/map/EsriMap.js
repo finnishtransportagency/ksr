@@ -7,7 +7,7 @@ import EsriMapView from './EsriMapView';
 
 import { graphicsToEsriJSON } from '../../../utils/arcFormats';
 import { getStreetViewLink } from '../../../utils/streetView';
-import { addLayer } from '../../../utils/map';
+import { addLayer, highlight } from '../../../utils/map';
 
 type Props = {
     activeNav: string,
@@ -17,6 +17,7 @@ type Props = {
     mapCenter: Array<number>,
     mapScale: number,
     selectFeatures: Function,
+    selectedFeatures: Array<Object>
 };
 
 type State = {
@@ -59,15 +60,15 @@ class EsriMap extends Component<Props, State> {
             layerListReversed.forEach((l, i) => {
                 // Add layer to map
                 if (l.active && !view.map.findLayerById(l.id.toString())) {
-                    l.visible = true;
+                    l.visible = true; // eslint-disable-line no-param-reassign
                     addLayer(l, this.state.view, i);
                 }
 
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
                     if (layer && l.id.toString() === layer.id) {
-                        layer.visible = l.visible;
-                        layer.opacity = l.opacity;
+                        layer.visible = l.visible; // eslint-disable-line no-param-reassign
+                        layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
                         if (!l.active) view.map.layers.remove(layer);
                     }
                 });
@@ -75,6 +76,10 @@ class EsriMap extends Component<Props, State> {
                 // Change layer order
                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
             });
+        }
+
+        if (prevProps.selectedFeatures !== this.props.selectedFeatures) {
+            highlight(view, this.props.selectedFeatures);
         }
     }
 

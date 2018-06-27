@@ -12,6 +12,8 @@ export const colorBackgroundWhite = '#FFFFFF';
 export const colorBackgroundDark = '#444444';
 export const colorBackgroundDarkSecondary = '#4B4B4B';
 
+export const mapHighlightStroke = '#DA1414';
+
 // Shadows
 export const shadowLight = '0 2px 4px 0 hsla(0, 0%, 0%, 0.2)';
 export const shadowDefault = '0 2px 4px 0 hsla(0, 0%, 0%, 0.4)';
