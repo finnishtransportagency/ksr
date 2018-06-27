@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 
 import java.io.Serializable;
@@ -357,6 +358,7 @@ public class Layer implements Serializable {
      *
      * @param desktopVisible the desktop visible
      */
+    @JsonIgnore
     public void setDesktopVisible(String desktopVisible) {
         this.desktopVisible = "1".equals(desktopVisible);
     }
@@ -375,6 +377,7 @@ public class Layer implements Serializable {
      *
      * @param mobileVisible the mobile visible
      */
+    @JsonIgnore
     public void setMobileVisible(String mobileVisible) {
         this.mobileVisible = "1".equals(mobileVisible);
     }
