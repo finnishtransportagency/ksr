@@ -4,6 +4,7 @@ import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 import static java.lang.Math.toIntExact;
 
@@ -28,6 +29,7 @@ public class Layer implements Serializable {
     private Boolean desktopVisible;
     private Boolean mobileVisible;
     private boolean queryable;
+    private List<String> queryColumns;
 
     /**
      * Construct a Layer
@@ -56,6 +58,10 @@ public class Layer implements Serializable {
         this.setDesktopVisible(lr.getDesktopVisible());
         this.setMobileVisible(lr.getMobileVisible());
         this.setQueryable(lr.getQueryable());
+
+        if (lr.getQueryColumns() != null) {
+            this.setQueryColumns(lr.getQueryColumns());
+        }
     }
 
     /**
@@ -389,5 +395,23 @@ public class Layer implements Serializable {
      */
     public void setQueryable(String queryable) {
         this.queryable = "1".equals(queryable);
+    }
+
+    /**
+     * Gets layer's columns that can be queried with free word search.
+     *
+     * @return layer's queryable columns
+     */
+    public List<String> getQueryColumns() {
+        return queryColumns;
+    }
+
+    /**
+     * Sets layer's columns that can be queried with free word search.
+     *
+     * @param queryColumns layer's queryable columns
+     */
+    public void setQueryColumns(List<String> queryColumns) {
+        this.queryColumns = queryColumns;
     }
 }
