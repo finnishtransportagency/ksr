@@ -33,7 +33,7 @@ public class LayerGroup implements Serializable {
         this.id = toIntExact(lrr.getId());
         this.name = lrr.getName();
         this.groupOrder = lrr.getGroupOrder();
-        this.layers = llr.stream().map(l -> new Layer(l)).collect(Collectors.toList());
+        this.layers = llr.stream().map(Layer::new).collect(Collectors.toList());
     }
 
     /**
