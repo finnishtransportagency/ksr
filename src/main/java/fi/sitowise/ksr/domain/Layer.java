@@ -13,22 +13,22 @@ import static java.lang.Math.toIntExact;
  * A Layer-POJO which represents a map layer.
  */
 public class Layer implements Serializable {
-    private Integer id;
+    private int id;
     private String name;
     private String type;
     private String url;
     private String layers;
     private String styles;
-    private Boolean visible;
-    private Double opacity;
+    private boolean visible;
+    private double opacity;
     private String authentication;
-    private Integer layerOrder;
-    private Integer minScale;
-    private Integer maxScale;
-    private Boolean transparent;
+    private int layerOrder;
+    private int minScale;
+    private int maxScale;
+    private boolean transparent;
     private String attribution;
-    private Boolean desktopVisible;
-    private Boolean mobileVisible;
+    private boolean desktopVisible;
+    private boolean mobileVisible;
     private boolean queryable;
     private List<String> queryColumns;
 
@@ -70,7 +70,7 @@ public class Layer implements Serializable {
      *
      * @return id id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -88,7 +88,7 @@ public class Layer implements Serializable {
      *
      * @param id id
      */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -187,7 +187,7 @@ public class Layer implements Serializable {
      *
      * @return the visible
      */
-    public Boolean getVisible() {
+    public boolean getVisible() {
         return visible;
     }
 
@@ -196,7 +196,7 @@ public class Layer implements Serializable {
      *
      * @param visible the visible
      */
-    public void setVisible(Boolean visible) {
+    public void setVisible(boolean visible) {
         this.visible = visible;
     }
 
@@ -205,7 +205,7 @@ public class Layer implements Serializable {
      *
      * @return opacity opacity
      */
-    public Double getOpacity() {
+    public double getOpacity() {
         return opacity;
     }
 
@@ -215,7 +215,7 @@ public class Layer implements Serializable {
      * @param opacity opacity
      */
     public void setOpacity(BigDecimal opacity) {
-        this.opacity = opacity == null ? null : opacity.doubleValue();
+        this.opacity = opacity == null ? 0.0 : opacity.doubleValue();
     }
 
     /**
@@ -223,7 +223,7 @@ public class Layer implements Serializable {
      *
      * @param opacity opacity
      */
-    public void setOpacity(Double opacity) {
+    public void setOpacity(double opacity) {
         this.opacity = opacity;
     }
 
@@ -250,7 +250,7 @@ public class Layer implements Serializable {
      *
      * @return layer order
      */
-    public Integer getLayerOrder() {
+    public int getLayerOrder() {
         return layerOrder;
     }
 
@@ -259,7 +259,7 @@ public class Layer implements Serializable {
      *
      * @param layerOrder layer order
      */
-    public void setLayerOrder(Integer layerOrder) {
+    public void setLayerOrder(int layerOrder) {
         this.layerOrder = layerOrder;
     }
 
@@ -268,7 +268,7 @@ public class Layer implements Serializable {
      *
      * @return minimum scale
      */
-    public Integer getMinScale() {
+    public int getMinScale() {
         return minScale;
     }
 
@@ -277,7 +277,7 @@ public class Layer implements Serializable {
      *
      * @param minScale minimum scale
      */
-    public void setMinScale(Integer minScale) {
+    public void setMinScale(int minScale) {
         this.minScale = minScale;
     }
 
@@ -286,7 +286,7 @@ public class Layer implements Serializable {
      *
      * @return maximum scale
      */
-    public Integer getMaxScale() {
+    public int getMaxScale() {
         return maxScale;
     }
 
@@ -295,7 +295,7 @@ public class Layer implements Serializable {
      *
      * @param maxScale maximum scale
      */
-    public void setMaxScale(Integer maxScale) {
+    public void setMaxScale(int maxScale) {
         this.maxScale = maxScale;
     }
 
@@ -304,7 +304,7 @@ public class Layer implements Serializable {
      *
      * @return transparent transparent
      */
-    public Boolean getTransparent() {
+    public boolean getTransparent() {
         return transparent;
     }
 
@@ -313,7 +313,7 @@ public class Layer implements Serializable {
      *
      * @param transparent transparent
      */
-    public void setTransparent(Boolean transparent) {
+    public void setTransparent(boolean transparent) {
         this.transparent = transparent;
     }
 
@@ -349,7 +349,7 @@ public class Layer implements Serializable {
      *
      * @return the desktop visible
      */
-    public Boolean getDesktopVisible() {
+    public boolean getDesktopVisible() {
         return desktopVisible;
     }
 
@@ -368,7 +368,7 @@ public class Layer implements Serializable {
      *
      * @return the mobile visible
      */
-    public Boolean getMobileVisible() {
+    public boolean getMobileVisible() {
         return mobileVisible;
     }
 
