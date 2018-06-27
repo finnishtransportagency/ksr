@@ -11,6 +11,7 @@ const mapStateToProps = state => ({
     isOpenTable: state.table.toggleTable,
     mapCenter: state.map.mapConfig.mapCenter,
     mapScale: state.map.mapConfig.mapScale,
+    selectedFeatures: Array.from(state.table.features.data.values()).filter(v => v._selected),
 });
 
 const mapDispatchToProps = dispatch => ({
