@@ -98,7 +98,7 @@ public class ProxyControllerTests {
         Layer l = new Layer();
         l.setUrl("http://test.example.com/arcgis/services/WMS/MapServer/WMSServer?");
 
-        Mockito.when(layerService.getLayer(Mockito.anyInt())).thenReturn(l);
+        Mockito.when(layerService.getLayer(Mockito.anyInt(), Mockito.anyBoolean())).thenReturn(l);
 
         mockMvc.perform(get("/api/proxy/layer/134/1.00/GetCapalibites.xml").header("OAM_REMOTE_USER", "TestUser")
                 .header("OAM_USER_FIRST_NAME", "firstName")

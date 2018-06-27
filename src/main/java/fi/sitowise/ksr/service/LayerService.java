@@ -29,17 +29,18 @@ public class LayerService {
     }
 
     /**
-     * Gets layer
+     * Gets layer.
      *
-     * @param id the layer id
+     * @param id layer's id
+     * @param isQuery whether the layer is requested for a search request or not
      * @return the layer
      */
     @Cacheable("get_layer")
-    public Layer getLayer(int id) {
+    public Layer getLayer(int id, boolean isQuery) {
         List<String> userGroups = layerGroupService.getUserGroups();
         if (userGroups == null) {
             return null;
         }
-        return layerRepository.getLayer(id, userGroups);
+        return layerRepository.getLayer(id, userGroups, isQuery);
     }
 }
