@@ -42,6 +42,10 @@ export const Wrapper = styled.div`
                 margin-left: 0;
                 margin-right: 60px;
             }
+            
+            .esri-scale-bar {
+                margin-bottom: 20px;
+            }
         }
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
