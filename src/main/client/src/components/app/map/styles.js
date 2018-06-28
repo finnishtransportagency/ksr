@@ -45,7 +45,7 @@ export const Wrapper = styled.div`
         };
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
-        .esri-popup__button, .esri-popup__header-title {
+        .esri-popup__button, .esri-popup__header-title, .esri-attribution__sources {
             outline: none;
         }
     
