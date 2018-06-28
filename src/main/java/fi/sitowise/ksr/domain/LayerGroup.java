@@ -13,9 +13,9 @@ import static java.lang.Math.toIntExact;
  * LayerGroup POJO representing LayerGroup which holds unspecified amount of Layers.
  */
 public class LayerGroup implements Serializable {
-    private Integer id;
+    private int id;
     private String name;
-    private Integer groupOrder;
+    private int groupOrder;
     private List<Layer> layers;
 
     /**
@@ -33,7 +33,7 @@ public class LayerGroup implements Serializable {
         this.id = toIntExact(lrr.getId());
         this.name = lrr.getName();
         this.groupOrder = lrr.getGroupOrder();
-        this.layers = llr.stream().map(l -> new Layer(l)).collect(Collectors.toList());
+        this.layers = llr.stream().map(Layer::new).collect(Collectors.toList());
     }
 
     /**
@@ -41,7 +41,7 @@ public class LayerGroup implements Serializable {
      *
      * @return id id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -50,7 +50,7 @@ public class LayerGroup implements Serializable {
      *
      * @param id Id
      */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -77,7 +77,7 @@ public class LayerGroup implements Serializable {
      *
      * @return groupOrder group order
      */
-    public Integer getGroupOrder() {
+    public int getGroupOrder() {
         return groupOrder;
     }
 
@@ -86,7 +86,7 @@ public class LayerGroup implements Serializable {
      *
      * @param groupOrder GroupOrder.
      */
-    public void setGroupOrder(Integer groupOrder) {
+    public void setGroupOrder(int groupOrder) {
         this.groupOrder = groupOrder;
     }
 

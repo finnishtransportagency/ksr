@@ -3,6 +3,7 @@ package fi.sitowise.ksr.repository;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,11 +32,12 @@ public class LayerRepository {
     /**
      * Gets layer.
      *
-     * @param id         the layer id
-     * @param userGroups the user groups
+     * @param id layer's id
+     * @param userGroups user groups
+     * @param isQuery whether the layer is requested for a search request or not
      * @return the layer
      */
-    public Layer getLayer(int id, List<String> userGroups) {
+    public Layer getLayer(int id, List<String> userGroups, boolean isQuery) {
         LayerRecord lr = context.select(LAYER.fields())
                 .from(LAYER)
                 .join(LAYER_PERMISSION)
@@ -43,6 +45,7 @@ public class LayerRepository {
                 .where(LAYER.ID.equal(Long.valueOf(id)))
                     .and(LAYER_PERMISSION.READ_LAYER.equal("1"))
                     .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
+                    .and(isQuery ? LAYER.TYPE.equal("agfs") : DSL.trueCondition())
                 .fetchOneInto(LayerRecord.class);
 
         return lr == null ? null : new Layer(lr);

@@ -42,8 +42,8 @@ public class LayerServiceTests {
     public  void testGetLayerUrlWithResponse() {
         Layer l = new Layer();
         l.setUrl("http://test.example.com/arcgis/services/WMS/MapServer/WMSServer?");
-        Mockito.when(layerService.getLayer(1)).thenReturn(l);
-        Assert.assertEquals(l, layerService.getLayer(1));
+        Mockito.when(layerService.getLayer(1, false)).thenReturn(l);
+        Assert.assertEquals(l, layerService.getLayer(1, false));
     }
 
     /**
@@ -51,7 +51,7 @@ public class LayerServiceTests {
      */
     @Test
     public  void testGetLayerUrlWithoutResponse() {
-        Mockito.when(layerService.getLayer(1)).thenReturn(null);
-        Assert.assertNull(layerService.getLayer(1));
+        Mockito.when(layerService.getLayer(1, false)).thenReturn(null);
+        Assert.assertNull(layerService.getLayer(1, false));
     }
 }
