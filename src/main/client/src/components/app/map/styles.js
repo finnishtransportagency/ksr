@@ -22,7 +22,7 @@ export const Wrapper = styled.div`
         }
         
          ${props => props.toggleTable && css`
-            height: calc(100% - 400px);
+            height: calc(100% - 50%);
             
             .esri-scale-bar, .esri-attribution {
                 margin-left: 120px;
@@ -63,7 +63,9 @@ export const Wrapper = styled.div`
     .esri-compass,
     .esri-zoom .esri-interactive,
     #draw-polygon,
-    #draw-line {
+    #draw-line,
+    #draw-rectangle,
+    #remove-selection {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
         outline: none;
@@ -72,5 +74,11 @@ export const Wrapper = styled.div`
             background: ${styles.colorMainHighlight};
             color: ${styles.colorFontLight};
         }
+    }
+    #remove-selection {
+        visibility: hidden;
+        position: relative;
+        right: 3em;
+        bottom: 3em;
     }
 `;

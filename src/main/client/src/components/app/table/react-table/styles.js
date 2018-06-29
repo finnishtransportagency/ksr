@@ -3,7 +3,7 @@ import * as styles from '../../../ui/defaultStyles';
 
 export const WrapperReactTable = styled.div`
     background-color: ${styles.colorBackgroundLight};
-    height: inherit;
+    height: 100%;
     position: absolute;
     color: ${styles.colorFontDark};
     width: calc(100% - 60px);
