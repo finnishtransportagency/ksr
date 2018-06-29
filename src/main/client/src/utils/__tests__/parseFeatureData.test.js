@@ -56,17 +56,10 @@ describe('parseFeatureData', () => {
             }],
         ]);
 
-        const c = new Set(['a', 'c']);
+        const { data } = mergeData(a, b);
 
-        const { data, dataFromSelect } = mergeData(a, b, c);
-
-        expect(data.size).toBe(5);
-        expect(dataFromSelect.size).toBe(4);
-        expect(dataFromSelect.has('b')).toBe(true);
-        expect(dataFromSelect.has('d')).toBe(true);
-        expect(dataFromSelect.has('e')).toBe(true);
-        expect(dataFromSelect.has('f')).toBe(true);
-        expect(Array.from(data.values()).filter(o => o._selected).length).toBe(4);
+        expect(data.size).toBe(6);
+        expect(Array.from(data.values()).filter(o => o._selected).length).toBe(6);
     });
 
     it('mergeColumns - it should merge columns', () => {
@@ -85,20 +78,15 @@ describe('parseFeatureData', () => {
             ['f', 6],
         ]);
 
-        const c = new Set(['a', 'g']);
+        const { columns } = mergeColumns(a, b);
 
-        const { columns, columnsFromSelect } = mergeColumns(a, b, c);
-
-        expect(columns.size).toBe(5);
-        expect(columns.has('a')).toBe(false);
-        expect(columns.has('g')).toBe(false);
+        expect(columns.size).toBe(7);
+        expect(columns.has('a')).toBe(true);
+        expect(columns.has('g')).toBe(true);
         expect(columns.has('b')).toBe(true);
         expect(columns.has('c')).toBe(true);
         expect(columns.has('d')).toBe(true);
         expect(columns.has('e')).toBe(true);
         expect(columns.has('f')).toBe(true);
-        expect(columnsFromSelect.size).toBe(2);
-        expect(columnsFromSelect.has('e')).toBe(true);
-        expect(columnsFromSelect.has('f')).toBe(true);
     });
 });

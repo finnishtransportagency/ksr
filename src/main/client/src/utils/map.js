@@ -110,6 +110,7 @@ export const createGraphic = (
                         width: 1,
                     },
                 },
+                id: 'highlight',
             });
         case 'polygon':
             return new Graphic({
@@ -122,6 +123,7 @@ export const createGraphic = (
                         width: 1,
                     },
                 },
+                id: 'highlight',
             });
         case 'polyline':
             return new Graphic({
@@ -132,6 +134,7 @@ export const createGraphic = (
                     color: highlightStroke,
                     width: 1,
                 },
+                id: 'highlight',
             });
         default:
             return null;
@@ -160,34 +163,34 @@ export const highlight = (view: Object, selectedFeatures: Array<Object>) => {
             SpatialReference,
         ]) => {
             if (view) {
-                view.graphics.removeAll();
+                view.graphics.map(g => g.id === 'highlight' && view.graphics.remove(g));
                 view.allLayerViews.forEach((lv) => {
                     const { layer } = lv;
                     if (layer.queryFeatures) {
-                        const ids = selectedFeatures
-                            // eslint-disable-next-line no-underscore-dangle
-                            .filter(f => f._layerId === layer.id)
-                            // eslint-disable-next-line no-underscore-dangle
-                            .map(f => parseInt(f._id, 10));
+                        if (layer.visible) {
+                            const ids = selectedFeatures
+                                .filter(f => f._layerId === layer.id)
+                                .map(f => parseInt(f._id, 10));
 
-                        const query = {
-                            objectIds: ids,
-                            outFields: ['*'],
-                            returnGeometry: true,
-                        };
-                        layer.queryFeatures(query).then((res) => {
-                            if (res) {
-                                const graphics = res.features
-                                    .map(rf => createGraphic(
-                                        rf.geometry,
-                                        view.spatialReference.wkid || 3067,
-                                        Graphic,
-                                        SpatialReference,
-                                    ))
-                                    .filter(g => g !== null);
-                                view.graphics.addMany(graphics);
-                            }
-                        });
+                            const query = {
+                                objectIds: ids,
+                                outFields: ['*'],
+                                returnGeometry: true,
+                            };
+                            layer.queryFeatures(query).then((res) => {
+                                if (res) {
+                                    const graphics = res.features
+                                        .map(rf => createGraphic(
+                                            rf.geometry,
+                                            view.spatialReference.wkid || 3067,
+                                            Graphic,
+                                            SpatialReference,
+                                        ))
+                                        .filter(g => g !== null);
+                                    view.graphics.addMany(graphics);
+                                }
+                            });
+                        }
                     }
                 });
             }
