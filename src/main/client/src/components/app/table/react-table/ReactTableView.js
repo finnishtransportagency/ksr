@@ -47,7 +47,6 @@ const ReactTableView = ({ data, columns }: Props) => (
                         background: (
                             r &&
                             r.row &&
-                            /* eslint-disable-next-line no-underscore-dangle */
                             r.row._original._selected ? colorMainHighlight : null),
                     },
                 }
