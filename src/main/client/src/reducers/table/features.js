@@ -7,8 +7,6 @@ type State = {
     fetching: boolean,
     data: Map<string, {}>,
     columns: Map<string, {}>,
-    dataFromSelect: Set<string>,
-    columnsFromSelect: Set<string>,
 };
 
 type Action = {
@@ -16,6 +14,7 @@ type Action = {
     payload: Object,
     data: Map<string, {}>,
     columns: Map<string, {}>,
+    optionSet: string,
 };
 
 const initialState = {
@@ -23,8 +22,6 @@ const initialState = {
     fetching: false,
     data: new Map(),
     columns: new Map(),
-    dataFromSelect: new Set(),
-    columnsFromSelect: new Set(),
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -45,8 +42,8 @@ export default (state: State = initialState, action: Action) => {
         case SELECT_FEATURES:
             return {
                 ...state,
-                ...mergeColumns(state.columns, action.columns, state.columnsFromSelect),
-                ...mergeData(state.data, action.data, state.dataFromSelect),
+                ...mergeColumns(state.columns, action.columns, action.optionSet),
+                ...mergeData(state.data, action.data, action.optionSet),
             };
         case SET_FEATURES:
             return {
