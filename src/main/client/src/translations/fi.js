@@ -26,6 +26,14 @@ const fi = {
         submit: 'Suodata',
         cancel: 'Peruuta',
     },
+    SketchTool: {
+        drawRectangle: 'Suorakulmiovalinta',
+        removeSelection: 'Poista valinnat',
+    },
+    MapMeasure: {
+        drawLine: 'Piirrä ja mittaa viiva',
+        drawPolygon: 'Piirrä ja mittaa polygoni',
+    },
 };
 
 export default fi;
