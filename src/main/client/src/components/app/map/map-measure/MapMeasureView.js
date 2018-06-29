@@ -1,6 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
 import { MeasurementBox } from './styles';
+import strings from '../../../../translations';
 
 type Props = {
     value: string,
@@ -13,14 +14,14 @@ const MapMeasureView = ({ value, active, removeMeasurement }: Props) => (
         <div
             id="draw-polygon"
             className="esri-widget-button esri-widget esri-interactive"
-            title="Draw and measure polygon"
+            title={strings.MapMeasure.drawPolygon}
         >
             <span className="esri-icon-polygon" />
         </div>
         <div
             id="draw-line"
             className="esri-widget-button esri-widget esri-interactive"
-            title="Draw and measure line"
+            title={strings.MapMeasure.drawLine}
         >
             <span className="esri-icon-polyline" />
         </div>
