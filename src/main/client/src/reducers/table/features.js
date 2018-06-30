@@ -1,5 +1,5 @@
 // @flow
-import { GET_FEATURES, GET_FEATURES_FULFILLED, SELECT_FEATURES, SET_FEATURES } from '../../constants/actionTypes';
+import { GET_FEATURES, GET_FEATURES_FULFILLED, SELECT_FEATURES, SET_FEATURES, SEARCH_FEATURES_FULFILLED } from '../../constants/actionTypes';
 import { mergeColumns, mergeData } from '../../utils/parseFeatureData';
 
 type State = {
@@ -43,6 +43,12 @@ export default (state: State = initialState, action: Action) => {
                 fetching: false,
             };
         case SELECT_FEATURES:
+            return {
+                ...state,
+                ...mergeColumns(state.columns, action.columns, state.columnsFromSelect),
+                ...mergeData(state.data, action.data, state.dataFromSelect),
+            };
+        case SEARCH_FEATURES_FULFILLED:
             return {
                 ...state,
                 ...mergeColumns(state.columns, action.columns, state.columnsFromSelect),
