@@ -69,6 +69,8 @@ export const mergeData = (currentFeatures, newFeatures, dataFromPreviousSelect) 
                 case 'search':
                     // Set previously selected features to unselected
                     feat._selected = false; // eslint-disable-line no-underscore-dangle
+                    // Remove previous data
+                    data.delete(ds);
                     break;
                 case 'select':
                     // Remove features added by previous selection
