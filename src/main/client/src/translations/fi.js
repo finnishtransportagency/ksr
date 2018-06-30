@@ -7,6 +7,9 @@ const fi = {
     search: {
         title: 'Haku',
         buttonSearch: 'Hae',
+        chooseLayer: 'Valitse taso',
+        searchAllFields: 'Hae kaikista kentistä',
+        addField: 'Lisää hakukenttä',
     },
     reactTable: {
         previousText: 'Edellinen',
