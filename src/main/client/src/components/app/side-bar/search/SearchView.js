@@ -1,19 +1,116 @@
-import React, { Fragment } from 'react';
+// @flow
+import React from 'react';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 import strings from '../../../../translations';
-import { H1, Button } from '../../../ui/elements';
+import { H1, Button, TextInput } from '../../../ui/elements';
 import SideBar from '../../../ui/blocks/SideBar';
+import LoadingIcon from '../../shared/LoadingIcon';
+import SearchFieldView from './search-field/SearchFieldView';
+import { SearchWrapper } from './styles';
 
-const SearchView = () => (
-    <Fragment>
+type Props = {
+    handleLayerChange: Function,
+    handleAddField: Function,
+    handleTextChange: Function,
+    handleChangeField: Function,
+    handleSubmit: Function,
+    handleRemoveField: Function,
+    selectedLayer: number,
+    queryableLayers: Array<Object>,
+    searchFieldValues: Array<Object>,
+    textSearch: string,
+    optionsField: Array<Object>,
+    optionsExpression: Array<Object>,
+    fetching: boolean,
+};
+
+const SearchView = ({
+    handleLayerChange,
+    handleAddField,
+    handleTextChange,
+    handleChangeField,
+    handleSubmit,
+    handleRemoveField,
+    selectedLayer,
+    queryableLayers,
+    searchFieldValues,
+    textSearch,
+    optionsField,
+    optionsExpression,
+    fetching,
+}: Props) => (
+    <SearchWrapper>
         <SideBar.Header>
             <H1>{strings.search.title}</H1>
         </SideBar.Header>
         <SideBar.Content>
-            <input type="text" />
-            <br />
-            <Button>{strings.search.buttonSearch}</Button>
+            <form onSubmit={handleSubmit}>
+                <p>{strings.search.chooseLayer}</p>
+                <label htmlFor="layer">
+                    <Select
+                        disabled={fetching}
+                        onBlurResetsInput={false}
+                        onSelectResetsInput={false}
+                        options={queryableLayers}
+                        simpleValue
+                        name="layer"
+                        placeholder=""
+                        value={selectedLayer}
+                        onChange={handleLayerChange}
+                        searchable={false}
+                    />
+                </label>
+                <label
+                    htmlFor="allFields"
+                    hidden={!selectedLayer || searchFieldValues.length > 0}
+                >
+                    <p>{strings.search.searchAllFields}</p>
+                    <TextInput
+                        disabled={fetching}
+                        type="text"
+                        value={textSearch}
+                        onChange={handleTextChange}
+                        placeholder=""
+                        name="allFields"
+                        required={!searchFieldValues.length}
+                        minLength={2}
+                    />
+                </label>
+                {searchFieldValues.map((a, i) => (
+                    <SearchFieldView
+                        key={a.id}
+                        field={a}
+                        index={i}
+                        handleChangeField={handleChangeField}
+                        optionsExpression={optionsExpression}
+                        handleRemoveField={handleRemoveField}
+                        fetching={fetching}
+                    />
+                ))}
+                <Button disabled={!selectedLayer || fetching}>
+                    {strings.search.buttonSearch}
+                </Button>
+                <div hidden={!selectedLayer}>
+                    <p>{strings.search.addField}</p>
+                    <label htmlFor="selectField" hidden={!selectedLayer}>
+                        <Select
+                            disabled={fetching}
+                            onBlurResetsInput={false}
+                            onSelectResetsInput={false}
+                            options={optionsField}
+                            simpleValue
+                            name="selectField"
+                            placeholder=""
+                            onChange={handleAddField}
+                            searchable={false}
+                        />
+                    </label>
+                </div>
+                <LoadingIcon loading={fetching} />
+            </form>
         </SideBar.Content>
-    </Fragment>
+    </SearchWrapper>
 );
 
 export default SearchView;
