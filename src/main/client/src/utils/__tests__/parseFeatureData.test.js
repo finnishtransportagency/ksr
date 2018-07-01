@@ -60,7 +60,7 @@ describe('parseFeatureData', () => {
 
         const { data, dataFromSelect } = mergeData(a, b, c);
 
-        expect(data.size).toBe(5);
+        expect(data.size).toBe(4);
         expect(dataFromSelect.size).toBe(4);
         expect(dataFromSelect.has('b')).toBe(true);
         expect(dataFromSelect.has('d')).toBe(true);

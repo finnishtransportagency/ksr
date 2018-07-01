@@ -6,6 +6,7 @@ describe('Layer group reducer', () => {
         const initialState = {
             layerGroups: [],
             layerList: [],
+            queryableLayers: [],
             fetching: true,
         };
 
@@ -16,6 +17,7 @@ describe('Layer group reducer', () => {
         const initialState = {
             layerGroups: [],
             layerList: [],
+            queryableLayers: [],
             fetching: true,
         };
 
