@@ -3,8 +3,9 @@ import {
     SELECT_FEATURES,
     SET_ACTIVE_TABLE,
     SET_COLUMNS,
+    SET_LAYER_LIST,
 } from '../../constants/actionTypes';
-import { mergeLayers, updateLayerColumns } from '../../utils/parseFeatureData';
+import { mergeLayers, updateLayerColumns, syncWithLayersList } from '../../utils/parseFeatureData';
 
 type State = {
     fetching: boolean,
@@ -41,6 +42,11 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 layers: updateLayerColumns(state.activeTable, action.columns, state.layers),
+            };
+        case SET_LAYER_LIST:
+            return {
+                ...state,
+                ...syncWithLayersList(state.layers, action.layerList, state.activeTable),
             };
         default:
             return state;

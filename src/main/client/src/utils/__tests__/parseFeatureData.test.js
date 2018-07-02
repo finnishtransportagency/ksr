@@ -4,6 +4,8 @@ import {
     parseColumns,
     mergeLayers,
     parseData,
+    getActiveTable,
+    syncWithLayersList,
 } from '../parseFeatureData';
 
 describe('parseFeatureData', () => {
@@ -268,5 +270,34 @@ describe('parseFeatureData', () => {
         expect(parseData(null, null, null)).toEqual([]);
         expect(parseData(null, true, 'select')).toEqual([]);
         expect(parseData(data, false, 'select')).toEqual(expect.arrayContaining(expectedData));
+    });
+
+    it('getActiveTable - should return correct table id', () => {
+        const a = [{ id: '1' }, { id: '2'}, { id: '3' }];
+        expect(getActiveTable(a, '2')).toBe('2');
+
+        const b = [{ id: '1' }, { id: '2'}, { id: '3' }];
+        expect(getActiveTable(b, '10')).toBe('1');
+
+        const c = [];
+        expect(getActiveTable(c, '2120')).toBe('');
+    });
+
+    it('syncWithLayersList', () => {
+        const currentLayers = [{ id: '123' }, { id: '456' }, { id: '789' }];
+        const layersList = [
+            { id: '123', active: true },
+            { id: '456', active: false },
+            { id: '789', active: true },
+        ];
+
+        const currentActiveTable = '654';
+
+        const r = syncWithLayersList(currentLayers, layersList, currentActiveTable);
+        const { layers, activeTable } = r;
+
+        expect(activeTable).toBe('123');
+        expect(layers).toEqual(expect.arrayContaining([{ id: '123' }, { id: '789' }]));
+
     });
 });

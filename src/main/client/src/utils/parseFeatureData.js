@@ -67,6 +67,29 @@ export const mergeData = (currentData, newData) => {
 };
 
 /**
+* Returns id of active table.
+* If layer matching current id does not exists in layers,
+* then return id of first layer in layers-array or
+* if layers is empty then return empty string.
+*
+* @param layers Array of layers
+* @param currentActiveTable Id of currently active table
+*
+* @returns Id of active table
+*/
+export const getActiveTable = (layers, currentActiveTable) => {
+    if (
+        layers.find(l => l.id === currentActiveTable) === undefined
+        || currentActiveTable === ''
+    ) {
+        if (layers.length > 0) {
+            return layers[0].id;
+        }
+    }
+    return layers.length === 0 ? '' : currentActiveTable;
+};
+
+/**
 * Merge two array of layers.
 *
 * @param currentLayers Array of current layers
@@ -98,13 +121,7 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
         }
     });
 
-    let activeTable = currentActiveTable;
-
-    if (layers.find(l => l.id === activeTable) === undefined || activeTable === null) {
-        if (layers.length > 0) {
-            activeTable = layers[0].id;
-        }
-    }
+    const activeTable = getActiveTable(layers, currentActiveTable);
 
     return { layers, activeTable };
 };
@@ -121,3 +138,26 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
 export const updateLayerColumns = (activeTable, columns, currentLayers) => (
     currentLayers.map(l => (l.id === activeTable ? { ...l, columns } : { ...l }))
 );
+
+/**
+* Remove layers which are currently not active on the map. (layer.active === false)
+*
+* @param currentLayers Array of layers (table-reducer)
+* @param layerList Array of map-layres (layerGroup-reducer)
+* @param currentActiveTable Id of the currently active layer in table
+*
+* @returns { layers, activeTable }
+* layers: Filtered layers,
+* activeTable: id of active table.
+*/
+export const syncWithLayersList = (currentLayers, layersList, currentActiveTable) => {
+    const layers = currentLayers.filter(l =>
+        layersList
+            .find(ll =>
+                (ll.id.toString() === l.id.toString() && ll.active === true))
+                !== undefined);
+
+    const activeTable = getActiveTable(layers, currentActiveTable);
+
+    return { layers, activeTable };
+};
