@@ -28,6 +28,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                         minScale: layer.minScale,
                         opacity: layer.opacity,
                         visible: layer.visible,
+                        title: layer.name,
                         sublayers: [
                             {
                                 name: layer.layers,
@@ -44,6 +45,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                         minScale: layer.minScale,
                         opacity: layer.opacity,
                         visible: layer.visible,
+                        title: layer.name,
                         activeLayer: {
                             id: layer.layers,
                         },
@@ -58,6 +60,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                         minScale: layer.minScale,
                         opacity: layer.opacity,
                         visible: layer.visible,
+                        title: layer.name,
                         outFields: ['*'],
                     }), index);
                     break;

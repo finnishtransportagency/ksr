@@ -20,6 +20,7 @@ const featureFromGraphic = (graphic: Graphic) => (
 const layerFromGraphic = (graphic: Graphic) => (
     {
         id: graphic.layer.id,
+        title: graphic.layer.title,
         objectIdFieldName: graphic.layer.objectIdField,
         globalIdFieldName: '',
         geometryType: graphic.layer.geometryType,
