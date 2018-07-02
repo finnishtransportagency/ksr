@@ -13,8 +13,8 @@ type Props = {
 class SketchTool extends Component<Props> {
     constructor(props: Props) {
         super(props);
-        (this: any).buttonVisibility = createRef();
-        (this: any).drawRectangleButton = createRef();
+        this.buttonVisibility = createRef();
+        this.drawRectangleButton = createRef();
         this.removeSelection = this.removeSelection.bind(this);
     }
 
@@ -26,15 +26,14 @@ class SketchTool extends Component<Props> {
         }
 
         if (data.length > 0) {
-            // eslint-disable-next-line no-plusplus
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i += 1) {
                 if (data[i]._source === 'select') {
-                    (this: any).buttonVisibility.current.style.visibility = 'visible';
+                    this.buttonVisibility.current.style.visibility = 'visible';
                     break;
                 }
             }
         } else {
-            (this: any).buttonVisibility.current.style.visibility = 'hidden';
+            this.buttonVisibility.current.style.visibility = 'hidden';
         }
     }
 
@@ -48,7 +47,7 @@ class SketchTool extends Component<Props> {
                     view,
                 });
 
-                const drawRectangleButton = (this: any).drawRectangleButton.current;
+                const drawRectangleButton = this.drawRectangleButton.current;
                 drawRectangleButton.addEventListener('click', () => {
                     drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     sketchViewModel.create('rectangle');
@@ -81,12 +80,16 @@ class SketchTool extends Component<Props> {
         this.props.selectFeaturesFromArea([], 'remove');
     };
 
+    // Assign constructor ref flowtypes
+    buttonVisibility: any;
+    drawRectangleButton: any;
+
     render() {
         return (
             <SketchToolView
                 removeSelection={this.removeSelection}
-                buttonVisibilityRef={(this: any).buttonVisibility}
-                drawRectangleButtonRef={(this: any).drawRectangleButton}
+                buttonVisibilityRef={this.buttonVisibility}
+                drawRectangleButtonRef={this.drawRectangleButton}
             />
         );
     }
