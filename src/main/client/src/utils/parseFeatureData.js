@@ -96,9 +96,9 @@ export const getActiveTable = (layers, currentActiveTable) => {
 * @param newLayers Array of new layers
 * @param currentActiveTable Id of currently active table
 *
-* @returns {mergedLayers, activeTable}
+* @returns {layers, activeTable}
 *
-* MergedLayers: newLayers merged with currentLayers.
+* Layers: newLayers merged with currentLayers.
 * ActiveTable: id of active table.
 */
 export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
@@ -143,16 +143,16 @@ export const updateLayerColumns = (activeTable, columns, currentLayers) => (
 * Remove layers which are currently not active on the map. (layer.active === false)
 *
 * @param currentLayers Array of layers (table-reducer)
-* @param layerList Array of map-layres (layerGroup-reducer)
+* @param layerList Array of map-layers (layerGroup-reducer)
 * @param currentActiveTable Id of the currently active layer in table
 *
 * @returns { layers, activeTable }
 * layers: Filtered layers,
 * activeTable: id of active table.
 */
-export const syncWithLayersList = (currentLayers, layersList, currentActiveTable) => {
+export const syncWithLayersList = (currentLayers, layerList, currentActiveTable) => {
     const layers = currentLayers.filter(l =>
-        layersList
+        layerList
             .find(ll =>
                 (ll.id.toString() === l.id.toString() && ll.active === true))
                 !== undefined);

@@ -18,6 +18,7 @@ type Action = {
     layers: Array<Object>,
     columns: Array<Object>,
     activeTable: string,
+    layerList: Array<Object>,
 };
 
 const initialState = {

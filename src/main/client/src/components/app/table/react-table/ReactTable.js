@@ -40,7 +40,6 @@ class ReactTable extends Component<Props, State> {
 
     render() {
         const { fetching, layer } = this.props;
-        // eslint-disable-next-line no-param-reassign,no-return-assign
         if (layer === null) {
             return (
                 <WrapperReactTableNoTable>

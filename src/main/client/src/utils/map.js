@@ -166,7 +166,7 @@ export const highlight = (view: Object, selectedFeatures: Array<Object>) => {
                 view.graphics.removeAll();
                 view.allLayerViews.forEach((lv) => {
                     const { layer } = lv;
-                    if (layer.queryFeatures) {
+                    if (layer.visible && layer.queryFeatures) {
                         const ids = selectedFeatures
                             // eslint-disable-next-line no-underscore-dangle
                             .filter(f => f._layerId === layer.id)
