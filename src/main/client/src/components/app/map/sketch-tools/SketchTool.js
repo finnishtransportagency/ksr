@@ -62,7 +62,10 @@ class SketchTool extends Component<Props> {
                     };
                     view.map.layers.forEach((layer) => {
                         if (layer.queryFeatures) {
-                            if (layer.visible) {
+                            if (layer.visible &&
+                                view.scale < layer.minScale &&
+                                view.scale > layer.maxScale
+                            ) {
                                 layer.queryFeatures(query).then((results) => {
                                     this.props.selectFeaturesFromArea(results);
                                 });
@@ -70,8 +73,8 @@ class SketchTool extends Component<Props> {
                         }
                     });
                     drawRectangleButton.style.backgroundColor = styles.colorMain;
-                    sketchViewModel.reset();
                 };
+
                 sketchViewModel.on('draw-complete', selectFeaturesFromDraw);
             });
     };
