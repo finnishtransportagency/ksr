@@ -1,126 +1,123 @@
-export const parseData = (data, selected, source) => {
-    if (!data && !data.layers && !data.layers.features && !data.features.layers) return new Map();
-    const parsedData = new Map();
-    data.layers.forEach((l) => {
-        l.features.forEach((f) => {
-            const key = `${l.id}/${f.attributes[l.objectIdFieldName]}`;
-            parsedData.set(key, {
-                ...f.attributes,
-                _id: f.attributes[l.objectIdFieldName],
-                _layerId: l.id,
-                _selected: selected,
-                _key: key,
-                _source: source,
-            });
-        });
-    });
-    return parsedData;
-};
-
-export const parseFeatureColumns = (data) => {
-    if (!data && !data.layers && !data.layers.features && !data.features.layers) return new Map();
-    const parsedColumns = new Map();
-    data.layers.forEach(l =>
-        (l.fields.forEach((f) => {
-            const key = f.name;
-            parsedColumns.set(key, {
-                Header: f.alias,
-                accessor: f.name,
-                show: true,
-            });
-        })));
-
-    return parsedColumns;
-};
-
+/**
+* Parse columns from Esri's fields Array. Returns
+* react-table compatible columns Array.
+*
+* @param data Esri's fields Array
+*
+* @returns Array React-table compatible Array
+*/
 export const parseColumns = (data) => {
-    if (!data) return new Map();
-    const parsedColumns = new Map();
-    data.forEach((f) => {
-        const key = f.accessor;
-        parsedColumns.set(key, {
-            Header: f.Header,
-            accessor: f.accessor,
-            show: f.show,
-        });
+    if (!data) return [];
+    return data.map(f => ({
+        Header: f.alias,
+        accessor: f.name,
+        show: true,
+    }));
+};
+
+/**
+* Parse data from Esri's FeatureService JSON-response.
+*
+* @param data Content of FeatureService JSON-response
+* @param selected Whether features should be marked as selected
+* @param source Origin of features. 'select': map select action. 'search': search action
+*
+* @returns Array of layers holding respective features and columns
+*/
+export const parseData = (data, selected, source) => {
+    if (data === undefined || data === null || data.layers === undefined) return [];
+    return data.layers.map(l => ({
+        id: l.id,
+        title: l.title,
+        columns: parseColumns(l.fields),
+        data: l.features.map(f => ({
+            ...f.attributes,
+            _id: f.attributes[l.objectIdFieldName],
+            _layerId: l.id,
+            _selected: selected,
+            _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
+            _source: source,
+        })),
+    }));
+};
+
+/**
+* Merge two arrays of features. If features does not exists in
+* currentData (matching done with '_id') then add it, otherwise
+* only update its '_selected' attribute.
+*
+* @param currentData Array of current features
+* @param newData Array of incoming features
+*
+* @returns Array of merged input arrays
+*/
+export const mergeData = (currentData, newData) => {
+    // Remove features added in previous selection
+    const data = currentData.filter(f => f._source !== 'select');
+    newData.forEach((newFeature) => {
+        const matchingFeature = data.find(f => f._id === newFeature._id);
+        if (matchingFeature) {
+            matchingFeature._selected = newFeature._selected;
+        } else {
+            data.push(newFeature);
+        }
     });
 
-    return parsedColumns;
+    return data;
 };
 
 /**
-* Merge a Map into another Map.
+* Merge two array of layers.
 *
-* @param currentFeatures Map containing currentFeatures
-* @param newFeatures Map containing incoming features. Will be merged with currentFeatures
-* @param dataFromPreviousSelect Set containing keys of objects,
-*                                that were added in previous select-action
+* @param currentLayers Array of current layers
+* @param newLayers Array of new layers
+* @param currentActiveTable Id of currently active table
 *
-* @returns {data, dataFromSelect}   Data: values, that currently must be shown in the table
-*                                   DataFromSelect: newly added features
+* @returns {mergedLayers, activeTable}
+*
+* MergedLayers: newLayers merged with currentLayers.
+* ActiveTable: id of active table.
 */
-export const mergeData = (currentFeatures, newFeatures, dataFromPreviousSelect) => {
-    const data = new Map(currentFeatures);
+export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
+    const layers = currentLayers.reduce((filtered, cl) => {
+        const data = cl.data.filter(f => f._source !== 'select');
+        if (data.length > 0) {
+            filtered.push({ ...cl, data });
+        }
+        return filtered;
+    }, []);
 
-    if (dataFromPreviousSelect) {
-        dataFromPreviousSelect.forEach((ds) => {
-            const feat = data.get(ds);
-            switch (feat._source) { // eslint-disable-line no-underscore-dangle
-                case 'search':
-                    // Set previously selected features to unselected
-                    feat._selected = false; // eslint-disable-line no-underscore-dangle
-                    break;
-                case 'select':
-                    // Remove features added by previous selection
-                    data.delete(ds);
-                    break;
-                default:
-                    break;
-            }
-        });
+    newLayers.forEach((nl) => {
+        // Matching layer from current layers
+        const matchingLayer = layers.find(c => c.id === nl.id);
+        if (matchingLayer) {
+            // Add or replace features in this layer
+            matchingLayer.data = mergeData(matchingLayer.data, nl.data);
+        } else {
+            layers.push(nl);
+        }
+    });
+
+    let activeTable = currentActiveTable;
+
+    if (layers.find(l => l.id === activeTable) === undefined || activeTable === null) {
+        if (layers.length > 0) {
+            activeTable = layers[0].id;
+        }
     }
 
-    const dataFromSelect = new Set();
-
-    if (newFeatures) {
-        newFeatures.forEach((val, key) => {
-            if (data.has(key)) {
-                const cVal = data.get(key);
-                cVal._selected = val._selected; // eslint-disable-line no-underscore-dangle
-            } else {
-                data.set(key, val);
-            }
-            dataFromSelect.add(key);
-        });
-    }
-
-    return { data, dataFromSelect };
+    return { layers, activeTable };
 };
 
 /**
-* Merge a Map into another Map.
-* Will merge two Maps containing column definitions.
+* Update columns array of given layer id.
 *
-* @param currentColumns Map containing current columns
-* @param newColumns Map containing incoming columns. Will be merged with currentColumns
-* @param columnsFromPreviousSelect Columns added in previous select-action
+* @param activeTable Id of the layer, whose columns to update
+* @param columns Columns that should be placed in matching layer
+* @param currentLayers Array of layers
 *
-* @returns {columns, columnsFromSelect} Columns: Columns that should be shown in the table
-*                                       ColumnsFromSelect: Columns added in select-action
+* @returns Updated layers
 */
-export const mergeColumns = (currentColumns, newColumns, columnsFromPreviousSelect) => {
-    const columns = new Map(currentColumns);
-    columnsFromPreviousSelect.forEach(columns.delete, columns);
-
-    const columnsFromSelect = new Set();
-
-    if (newColumns) {
-        newColumns.forEach((val, key) => {
-            if (!columns.has(key)) {
-                columns.set(key, val);
-                columnsFromSelect.add(key);
-            }
-        });
-    }
-    return { columns, columnsFromSelect };
-};
+export const updateLayerColumns = (activeTable, columns, currentLayers) => (
+    currentLayers.map(l => (l.id === activeTable ? { ...l, columns } : { ...l }))
+);

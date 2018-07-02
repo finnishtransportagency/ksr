@@ -3,11 +3,15 @@ import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
 import ReactTableView from './ReactTableView';
 import LoadingIcon from '../../shared/LoadingIcon';
+import { WrapperReactTableNoTable } from './styles';
+import strings from './../../../../translations';
 
 type Props = {
     fetching: boolean,
-    data: Array<any>,
-    columns: Array<any>,
+    layer: {
+        data: Array<Object>,
+        columns: Array<Object>,
+    },
 };
 
 type State = {
@@ -26,23 +30,27 @@ class ReactTable extends Component<Props, State> {
             contentEditable
             suppressContentEditableWarning
             onBlur={(e) => {
-                this.props.data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
+                this.props.layer.data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
             }}
             dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(this.props.data[cellInfo.index][cellInfo.column.id]),
+                __html: DOMPurify.sanitize(this.props.layer.data[cellInfo.index][cellInfo.column.id]),
             }}
         />
     );
 
     render() {
-        const { fetching, data, columns } = this.props;
+        const { fetching, layer } = this.props;
         // eslint-disable-next-line no-param-reassign,no-return-assign
-        Array.from(columns.values()).map(a => a.Cell = this.renderEditable);
-
-        if (!fetching) {
+        if (layer === null) {
+            return (
+                <WrapperReactTableNoTable>
+                    {strings.table.noTableText}
+                </WrapperReactTableNoTable>
+            );
+        } else if (!fetching) {
+            const { columns, data } = layer;
             return <ReactTableView data={data} columns={columns} />;
         }
-
         return <LoadingIcon loading={fetching} />;
     }
 }
