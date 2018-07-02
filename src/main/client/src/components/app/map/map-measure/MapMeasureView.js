@@ -14,14 +14,14 @@ const MapMeasureView = ({ value, active, removeMeasurement }: Props) => (
         <div
             id="draw-polygon"
             className="esri-widget-button esri-widget esri-interactive"
-            title={strings.MapMeasure.drawPolygon}
+            title={strings.mapMeasure.drawPolygon}
         >
             <span className="esri-icon-polygon" />
         </div>
         <div
             id="draw-line"
             className="esri-widget-button esri-widget esri-interactive"
-            title={strings.MapMeasure.drawLine}
+            title={strings.mapMeasure.drawLine}
         >
             <span className="esri-icon-polyline" />
         </div>

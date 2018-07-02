@@ -17,7 +17,7 @@ const SketchToolView = ({
         <div
             id="draw-rectangle"
             className="esri-widget-button esri-widget esri-interactive"
-            title={strings.SketchTool.drawRectangle}
+            title={strings.sketchTool.drawRectangle}
             ref={drawRectangleButtonRef}
         >
             <span className="esri-icon-checkbox-unchecked" />
@@ -28,7 +28,7 @@ const SketchToolView = ({
             tabIndex={0}
             ref={buttonVisibilityRef}
             className="esri-widget-button esri-widget esri-interactive"
-            title={strings.SketchTool.removeSelection}
+            title={strings.sketchTool.removeSelection}
             onClick={removeSelection}
             onKeyPress={removeSelection}
         >

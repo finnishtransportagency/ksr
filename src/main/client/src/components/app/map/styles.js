@@ -22,7 +22,7 @@ export const Wrapper = styled.div`
         }
         
          ${props => props.toggleTable && css`
-            height: calc(100% - 50%);
+            height: 50%;
             
             .esri-scale-bar, .esri-attribution {
                 margin-left: 120px;
