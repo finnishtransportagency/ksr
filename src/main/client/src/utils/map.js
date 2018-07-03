@@ -163,7 +163,7 @@ export const highlight = (view: Object, selectedFeatures: Array<Object>) => {
             SpatialReference,
         ]) => {
             if (view) {
-                view.graphics.map(g => g.id === 'highlight' && view.graphics.remove(g));
+                view.graphics.removeMany(view.graphics.filter(g => g.id === 'highlight'));
                 view.allLayerViews.forEach((lv) => {
                     const { layer } = lv;
                     if (layer.queryFeatures) {
