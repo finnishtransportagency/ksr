@@ -4,7 +4,6 @@ import {
     SET_SEARCH_OPTIONS,
     SEARCH_FEATURES,
     SEARCH_FEATURES_FULFILLED,
-    SET_LAYER_LIST,
 } from '../../constants/actionTypes';
 
 type State = {
@@ -23,7 +22,6 @@ type Action = {
     searchFieldValues: Array<Object>,
     optionsField: Array<Object>,
     layerId: number,
-    queryableLayers: Array<Object>,
 };
 
 const initialState = {
@@ -80,13 +78,6 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 optionsField: action.optionsField,
             };
-        case SET_LAYER_LIST:
-            // Reset searchState if selected layers visibility or activity has been changed
-            if (action.queryableLayers.filter(ql =>
-                ql.value === state.selectedLayer).length === 0) {
-                return initialState;
-            }
-            return state;
         default:
             return state;
     }

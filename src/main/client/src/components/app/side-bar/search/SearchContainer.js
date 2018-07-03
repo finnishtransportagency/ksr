@@ -4,11 +4,17 @@ import { searchFeatures } from '../../../../reducers/table/actions';
 import { setSearchState, setSearchOptions } from '../../../../reducers/search/actions';
 import Search from './Search';
 
-const mapStateToProps = state => ({
-    queryableLayers: state.map.layerGroups.queryableLayers,
-    searchState: state.search.searchState,
-    layerList: state.map.layerGroups.layerList,
-});
+const mapStateToProps = (state) => {
+    const queryableLayers = state.map.layerGroups.layerList
+        .filter(l => l.visible && l.active && l.queryable)
+        .map(l => ({ value: l.id, label: l.name }));
+
+    return ({
+        queryableLayers,
+        searchState: state.search.searchState,
+        layerList: state.map.layerGroups.layerList,
+    });
+};
 
 const mapDispatchToProps = dispatch => ({
     searchFeatures: (selectedLayer, queryString) => {

@@ -5,14 +5,12 @@ export const setSearchState = (
     selectedLayer: number,
     textSearch: string,
     searchFieldValues: Array<Object>,
-) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_SEARCH_STATE,
-        selectedLayer,
-        textSearch,
-        searchFieldValues,
-    });
-};
+) => ({
+    type: types.SET_SEARCH_STATE,
+    selectedLayer,
+    textSearch,
+    searchFieldValues,
+});
 
 export const setSearchOptions = (
     selectedLayer: number,

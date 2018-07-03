@@ -35,6 +35,13 @@ class Search extends Component<Props, State> {
         this.handleRemoveField = this.handleRemoveField.bind(this);
     }
 
+    componentDidMount() {
+        const { queryableLayers, setSearchState } = this.props;
+        const { selectedLayer } = this.props.searchState;
+
+        if (selectedLayer && !queryableLayers.find(ql => ql.value === selectedLayer)) setSearchState(0, '', []);
+    }
+
     handleLayerChange = (layerId: number) => {
         const { setSearchState, setSearchOptions, layerList } = this.props;
         setSearchState(layerId, '', []);

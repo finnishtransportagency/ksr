@@ -7,7 +7,6 @@ import * as types from '../../constants/actionTypes';
 export const getLayerGroups = () => (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
     const layerList = [];
-    const queryableLayers = [];
     fetchLayerGroups()
         .then((r) => {
             r.map(lg => lg.layers.map(l => layerList.push(l)));
@@ -24,26 +23,18 @@ export const getLayerGroups = () => (dispatch: Function) => {
                         });
                 }
             });
-
-            // Add queryableLayers for search component
-            layerList.forEach(l => l.active && l.queryable &&
-                queryableLayers.push({ value: l.id, label: l.name }));
             return r;
         })
         .then(r => dispatch({
             type: types.GET_LAYER_GROUPS_FULFILLED,
             layerGroups: r,
             layerList,
-            queryableLayers,
         }))
         .catch(err => console.log(err));
 };
 
 export const setLayerList = (layerList: Array<any>) => (dispatch: Function) => {
-    const queryableLayers = [];
-    layerList.forEach(l => l.active && l.visible && l.queryable &&
-        queryableLayers.push({ value: l.id, label: l.name }));
-    dispatch({ type: types.SET_LAYER_LIST, layerList, queryableLayers });
+    dispatch({ type: types.SET_LAYER_LIST, layerList });
 };
 
 export const getActiveLayerTab = () => ({
