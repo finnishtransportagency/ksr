@@ -4,7 +4,7 @@ import LayerGroup from '../../../../ui/blocks/LayerGroup';
 
 type Props = {
     layerGroups: Array<any>,
-    layerList: Array<any>,
+    layerList: any,
     handleGroupClick: (number) => void,
     handleLayerClick: (number) => void,
     activeGroup: number,
@@ -39,8 +39,7 @@ const MapLayersAllView = ({
                         <label key={l.id} htmlFor={l.name}>
                             <input
                                 onChange={() => handleLayerClick(l.id)}
-                                checked={layerList[layerList.findIndex(layer =>
-                                    layer.id === l.id)].active}
+                                checked={layerList.find(layer => layer.id === l.id).active}
                                 type="checkbox"
                                 value={l.name}
                                 id={l.name}

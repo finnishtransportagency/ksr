@@ -5,7 +5,7 @@ import MapLayersAllView from './MapLayersAllView';
 
 type Props = {
     layerGroups: Array<any>,
-    layerList: Array<any>,
+    layerList: any,
     fetching: boolean,
     setLayerList: (Array<any>) => void,
 };
@@ -39,13 +39,12 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     handleLayerClick = (id: number) => {
-        const { layerList, setLayerList } = this.props;
-        const layerListChanged = [...layerList];
-        const foundIndex = layerList.findIndex(l => l.id === id);
+        const { setLayerList } = this.props;
+        const layerList = [...this.props.layerList];
+        const foundLayer = layerList.find(l => l.id === id);
 
-        layerListChanged[foundIndex].active = !layerListChanged[foundIndex].active;
-
-        setLayerList(layerListChanged);
+        foundLayer.active = !foundLayer.active;
+        setLayerList(layerList);
     };
 
     render() {

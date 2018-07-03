@@ -13,7 +13,7 @@ type Props = {
         selectedLayer: number,
         textSearch: string,
         searchFieldValues: Array<Object>,
-        optionsField: Array<Object>,
+        optionsField: any,
         optionsExpression: Array<Object>,
         fetching: boolean,
     },
@@ -64,10 +64,9 @@ class Search extends Component<Props, State> {
             textSearch,
         } = this.props.searchState;
 
-        const foundIndex = optionsField.findIndex(a => a.value === layerId);
         const newField = {
             id: searchFieldValues.length,
-            name: optionsField[foundIndex].label,
+            name: optionsField.find(a => a.value === layerId).label,
             queryExpression: '%',
             queryText: '',
         };

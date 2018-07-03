@@ -6,7 +6,7 @@ import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersActiveView from './MapLayersActiveView';
 
 type Props = {
-    layerList: Array<any>,
+    layerList: any,
     fetching: boolean,
     setLayerList: (Array<any>) => void,
 };
@@ -41,21 +41,21 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     onToggleVisibility = (id: Number) => {
-        const { layerList, setLayerList } = this.props;
-        const layerListChanged = [...layerList];
-        const foundIndex = layerListChanged.findIndex(l => l.id === id);
-        layerListChanged[foundIndex].visible = !layerListChanged[foundIndex].visible;
+        const { setLayerList } = this.props;
+        const layerList = [...this.props.layerList];
+        const foundLayer = layerList.find(l => l.id === id);
 
-        setLayerList(layerListChanged);
+        foundLayer.visible = !foundLayer.visible;
+        setLayerList(layerList);
     };
 
     onOpacityChange = (evt: Number, id: Number) => {
-        const { layerList, setLayerList } = this.props;
-        const layerListChanged = [...layerList];
-        const foundIndex = layerList.findIndex(layer => layer.id === id);
+        const { setLayerList } = this.props;
+        const layerList = [...this.props.layerList];
+        const foundLayer = layerList.find(l => l.id === id);
 
-        layerListChanged[foundIndex].opacity = evt;
-        setLayerList(layerListChanged);
+        foundLayer.opacity = evt;
+        setLayerList(layerList);
     };
 
     render() {
