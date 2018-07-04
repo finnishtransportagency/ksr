@@ -28,3 +28,8 @@ export const setActiveTable = (activeTable: string) => ({
 export const deSelectSelected = () => ({
     type: types.DE_SELECT_SELECTED_FEATURES,
 });
+
+export const toggleSelection = feature => ({
+    type: types.TOGGLE_SELECTION,
+    feature,
+});

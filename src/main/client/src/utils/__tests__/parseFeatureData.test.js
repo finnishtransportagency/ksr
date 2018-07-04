@@ -7,6 +7,7 @@ import {
     getActiveTable,
     syncWithLayersList,
     deSelectFeatures,
+    toggleSelection,
 } from '../parseFeatureData';
 
 describe('parseFeatureData', () => {
@@ -366,5 +367,85 @@ describe('parseFeatureData', () => {
 
         expect(layers).toEqual(expect.arrayContaining(expectedData));
         expect(activeTable).toBe('789');
+    });
+
+    it('toggleSelection', () => {
+        const data = [
+            {
+                id: '123',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a456',
+                        _layerId: '456',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '789',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a789',
+                        _layerId: '789',
+                        _selected: false,
+                    },
+                ],
+            },
+        ];
+
+        const expectedData = [
+            {
+                id: '123',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a456',
+                        _layerId: '456',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '789',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a789',
+                        _layerId: '789',
+                        _selected: true,
+                    },
+                ],
+            },
+        ];
+
+        const feature = { _id: 'a789', _layerId: '789' };
+
+        const layers = toggleSelection(data, feature);
+
+        expect(layers).toEqual(expect.arrayContaining(expectedData));
     });
 });

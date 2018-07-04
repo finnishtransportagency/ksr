@@ -2,6 +2,8 @@
 import { connect } from 'react-redux';
 import ReactTable from './ReactTable';
 
+import { toggleSelection } from '../../../../reducers/table/actions';
+
 const mapStateToProps = state => ({
     activeTable: state.table.features.activeTable,
     fetching: state.table.features.fetching,
@@ -12,6 +14,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    toggleSelection: (feature) => {
+        dispatch(toggleSelection(feature));
+    },
 });
 
 const ReactTableContainer = connect(mapStateToProps, mapDispatchToProps)(ReactTable);

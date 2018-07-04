@@ -5,12 +5,14 @@ import {
     SET_COLUMNS,
     SET_LAYER_LIST,
     DE_SELECT_SELECTED_FEATURES,
+    TOGGLE_SELECTION,
 } from '../../constants/actionTypes';
 import {
     mergeLayers,
     updateLayerColumns,
     syncWithLayersList,
     deSelectFeatures,
+    toggleSelection,
 } from '../../utils/parseFeatureData';
 
 type State = {
@@ -59,6 +61,11 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 ...deSelectFeatures(state.layers, state.activeTable),
+            };
+        case TOGGLE_SELECTION:
+            return {
+                ...state,
+                layers: toggleSelection(state.layers, action.feature),
             };
         default:
             return state;

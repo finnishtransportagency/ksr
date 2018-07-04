@@ -192,3 +192,28 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
 
     return { layers, activeTable };
 };
+
+
+/**
+* Toggles selected-state for given feature.
+* If feature is set unselected, it won't be remove from the table.
+*
+* @param currentLayers Array of layers (table-reducer)
+* @param currentActiveTable Id of the currently active layer in table
+*
+* @returns layers Layers updated with features selection
+*/
+export const toggleSelection = (currentLayers, feature) => (
+    currentLayers.map((layer) => {
+        if (layer.id === feature._layerId) {
+            return {
+                ...layer,
+                data: layer.data.map(d => ({
+                    ...d,
+                    _selected: d._id === feature._id ? !d._selected : d._selected,
+                })),
+            };
+        }
+        return { ...layer };
+    })
+);
