@@ -28,6 +28,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                         minScale: layer.minScale,
                         opacity: layer.opacity,
                         visible: layer.visible,
+                        title: layer.name,
                         sublayers: [
                             {
                                 name: layer.layers,
@@ -44,6 +45,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                         minScale: layer.minScale,
                         opacity: layer.opacity,
                         visible: layer.visible,
+                        title: layer.name,
                         activeLayer: {
                             id: layer.layers,
                         },
@@ -58,6 +60,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                         minScale: layer.minScale,
                         opacity: layer.opacity,
                         visible: layer.visible,
+                        title: layer.name,
                         outFields: ['*'],
                     }), index);
                     break;
@@ -166,31 +169,29 @@ export const highlight = (view: Object, selectedFeatures: Array<Object>) => {
                 view.graphics.removeMany(view.graphics.filter(g => g.id === 'highlight'));
                 view.allLayerViews.forEach((lv) => {
                     const { layer } = lv;
-                    if (layer.queryFeatures) {
-                        if (layer.visible) {
-                            const ids = selectedFeatures
-                                .filter(f => f._layerId === layer.id)
-                                .map(f => parseInt(f._id, 10));
+                    if (layer.visible && layer.queryFeatures) {
+                        const ids = selectedFeatures
+                            .filter(f => f._layerId === layer.id)
+                            .map(f => parseInt(f._id, 10));
 
-                            const query = {
-                                objectIds: ids,
-                                outFields: ['*'],
-                                returnGeometry: true,
-                            };
-                            layer.queryFeatures(query).then((res) => {
-                                if (res) {
-                                    const graphics = res.features
-                                        .map(rf => createGraphic(
-                                            rf.geometry,
-                                            view.spatialReference.wkid || 3067,
-                                            Graphic,
-                                            SpatialReference,
-                                        ))
-                                        .filter(g => g !== null);
-                                    view.graphics.addMany(graphics);
-                                }
-                            });
-                        }
+                        const query = {
+                            objectIds: ids,
+                            outFields: ['*'],
+                            returnGeometry: true,
+                        };
+                        layer.queryFeatures(query).then((res) => {
+                            if (res) {
+                                const graphics = res.features
+                                    .map(rf => createGraphic(
+                                        rf.geometry,
+                                        view.spatialReference.wkid || 3067,
+                                        Graphic,
+                                        SpatialReference,
+                                    ))
+                                    .filter(g => g !== null);
+                                view.graphics.addMany(graphics);
+                            }
+                        });
                     }
                 });
             }

@@ -7,7 +7,8 @@ import * as styles from '../../../ui/defaultStyles';
 
 type Props = {
     view: {},
-    selectFeaturesFromArea: Function,
+    selectFeatures: Function,
+    deSelectSelected: Function,
 };
 
 class SketchTool extends Component<Props> {
@@ -60,18 +61,25 @@ class SketchTool extends Component<Props> {
                         geometry,
                         outFields: ['*'],
                     };
+                    const queries = [];
                     view.map.layers.forEach((layer) => {
                         if (layer.queryFeatures) {
                             if (layer.visible &&
                                 view.scale < layer.minScale &&
                                 view.scale > layer.maxScale
                             ) {
-                                layer.queryFeatures(query).then((results) => {
-                                    this.props.selectFeaturesFromArea(results);
-                                });
+                                queries.push(layer.queryFeatures(query).then(results => ({
+                                    id: layer.id,
+                                    title: layer.title,
+                                    objectIdFieldName: layer.objectIdField,
+                                    features: results.features,
+                                    fields: layer.fields,
+                                })));
                             }
                         }
                     });
+                    Promise.all(queries).then(layers => this.props.selectFeatures({ layers }));
+
                     drawRectangleButton.style.backgroundColor = styles.colorMain;
                 };
 
@@ -80,7 +88,7 @@ class SketchTool extends Component<Props> {
     };
 
     removeSelection = () => {
-        this.props.selectFeaturesFromArea([], 'remove');
+        this.props.deSelectSelected();
     };
 
     // Assign constructor ref flowtypes

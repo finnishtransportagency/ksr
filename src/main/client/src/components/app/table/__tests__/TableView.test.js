@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import TableView from '../TableView';
-import ReactTableContainer from '../react-table/ReactTableContainer';
+import TabbedTableContainer from '../tabbed-table/TabbedTableContainer';
 import Table from '../../../ui/blocks/Table';
 
 const setup = () => {
@@ -21,6 +21,6 @@ describe('<TableView />', () => {
     it('should render self', () => {
         expect(wrapper.find(Table).length).toBe(1);
         expect(wrapper.find(Table.Link).length).toBe(1);
-        expect(wrapper.find(ReactTableContainer).length).toBe(1);
+        expect(wrapper.find(TabbedTableContainer).length).toBe(1);
     });
 });

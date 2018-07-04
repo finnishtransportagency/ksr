@@ -2,15 +2,19 @@
 import { connect } from 'react-redux';
 import SketchTool from './SketchTool';
 
-import { selectFeaturesFromArea } from './../../../../reducers/table/actions';
+import { selectFeatures, deSelectSelected } from './../../../../reducers/table/actions';
 
 const mapStateToProps = state => ({
-    data: Array.from(state.table.features.data.values()),
+    data: state.table.features.layers
+        .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []),
 });
 
 const mapDispatchToProps = dispatch => ({
-    selectFeaturesFromArea: (features, option) => {
-        dispatch(selectFeaturesFromArea(features, option));
+    selectFeatures: (features) => {
+        dispatch(selectFeatures(features));
+    },
+    deSelectSelected: () => {
+        dispatch(deSelectSelected());
     },
 });
 

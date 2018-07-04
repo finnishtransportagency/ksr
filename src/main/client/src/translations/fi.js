@@ -26,6 +26,9 @@ const fi = {
         submit: 'Suodata',
         cancel: 'Peruuta',
     },
+    table: {
+        noTableText: 'Ei näytettävää dataa.',
+    },
     sketchTool: {
         drawRectangle: 'Suorakulmiovalinta',
         removeSelection: 'Poista valinnat',

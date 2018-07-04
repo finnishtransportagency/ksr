@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Table from '../../ui/blocks/Table';
-import ReactTableContainer from './react-table/ReactTableContainer';
+import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
 import ModalContainer from './modal/ModalContainer';
 
 type Props = {
@@ -32,7 +32,7 @@ const TableView = ({
         >
             <i className="fas fa-filter" />
         </Table.Filter>
-        <ReactTableContainer />
+        <TabbedTableContainer />
         <ModalContainer modalOpen={isOpenFilter} />
     </Table>
 );
