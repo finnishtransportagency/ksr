@@ -8,6 +8,10 @@ const setup = () => {
         activeNav: '',
         layerList: [],
         fetching: true,
+        isOpenTable: true,
+        mapCenter: [425574, 7051264],
+        mapScale: 9244648,
+        selectFeatures: () => {},
     };
     const wrapper = shallow(<EsriMap {...props} />);
 

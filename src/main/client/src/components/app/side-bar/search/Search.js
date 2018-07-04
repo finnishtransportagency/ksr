@@ -8,7 +8,7 @@ type Props = {
     setSearchState: Function,
     setSearchOptions: Function,
     layerList: Array<Object>,
-    queryableLayers: Array<Object>,
+    queryableLayers: any,
     searchState: {
         selectedLayer: number,
         textSearch: string,
@@ -125,7 +125,7 @@ class Search extends Component<Props, State> {
 
     handleSubmit = (evt: Object) => {
         evt.preventDefault();
-        const { searchFeatures } = this.props;
+        const { searchFeatures, queryableLayers } = this.props;
         const {
             selectedLayer,
             searchFieldValues,
@@ -133,13 +133,18 @@ class Search extends Component<Props, State> {
             optionsField,
         } = this.props.searchState;
 
+        const title = queryableLayers.find(ql => ql.value === selectedLayer).label;
         const queryString: string = parseQueryString(
             searchFieldValues,
             textSearch,
             optionsField,
         );
 
-        searchFeatures(selectedLayer, queryString);
+        searchFeatures(
+            selectedLayer.toString(),
+            queryString,
+            title,
+        );
     };
 
     render() {

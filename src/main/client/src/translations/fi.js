@@ -29,6 +29,17 @@ const fi = {
         submit: 'Suodata',
         cancel: 'Peruuta',
     },
+    table: {
+        noTableText: 'Ei näytettävää dataa.',
+    },
+    sketchTool: {
+        drawRectangle: 'Suorakulmiovalinta',
+        removeSelection: 'Poista valinnat',
+    },
+    mapMeasure: {
+        drawLine: 'Piirrä ja mittaa viiva',
+        drawPolygon: 'Piirrä ja mittaa polygoni',
+    },
 };
 
 export default fi;

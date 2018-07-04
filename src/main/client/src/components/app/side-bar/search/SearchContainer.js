@@ -17,8 +17,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    searchFeatures: (selectedLayer, queryString) => {
-        dispatch(searchFeatures(selectedLayer, queryString));
+    searchFeatures: (selectedLayer, queryString, title) => {
+        dispatch(searchFeatures(selectedLayer, queryString, title));
     },
     setSearchState: (layerId, textSearch, searchFieldValues) => {
         dispatch(setSearchState(layerId, textSearch, searchFieldValues));
