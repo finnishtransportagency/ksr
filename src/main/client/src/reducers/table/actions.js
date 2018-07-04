@@ -24,3 +24,7 @@ export const setActiveTable = (activeTable: string) => ({
     type: types.SET_ACTIVE_TABLE,
     activeTable,
 });
+
+export const deSelectSelected = () => ({
+    type: types.DE_SELECT_SELECTED_FEATURES,
+});

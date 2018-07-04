@@ -7,8 +7,8 @@ import Filter from './Filter';
 const Table = styled.div`
     background: ${styles.colorBackgroundDark};
     position: fixed;
-    height: 400px;
-    bottom: -400px;
+    height: 50%;
+    bottom: -50%;
     left: 60px;
     width: 100%;
     color: ${styles.colorFontLight};

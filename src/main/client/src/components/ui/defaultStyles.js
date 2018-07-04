@@ -5,6 +5,7 @@ export const colorMainHighlight = '#27AFE1';
 export const colorFontDark = '#444444';
 export const colorFontLight = '#F1F1F1';
 
+export const colorBackgroundDarkBlue = '#0088CE';
 export const colorBackgroundLight = '#F1F1F1';
 export const colorBackgroundLightSecondary = '#c8c8c8';
 export const colorBackgroundGrey = '#97999b';

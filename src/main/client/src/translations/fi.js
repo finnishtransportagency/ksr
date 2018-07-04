@@ -29,6 +29,14 @@ const fi = {
     table: {
         noTableText: 'Ei näytettävää dataa.',
     },
+    sketchTool: {
+        drawRectangle: 'Suorakulmiovalinta',
+        removeSelection: 'Poista valinnat',
+    },
+    mapMeasure: {
+        drawLine: 'Piirrä ja mittaa viiva',
+        drawPolygon: 'Piirrä ja mittaa polygoni',
+    },
 };
 
 export default fi;

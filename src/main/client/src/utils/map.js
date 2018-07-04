@@ -113,6 +113,7 @@ export const createGraphic = (
                         width: 1,
                     },
                 },
+                id: 'highlight',
             });
         case 'polygon':
             return new Graphic({
@@ -125,6 +126,7 @@ export const createGraphic = (
                         width: 1,
                     },
                 },
+                id: 'highlight',
             });
         case 'polyline':
             return new Graphic({
@@ -135,6 +137,7 @@ export const createGraphic = (
                     color: highlightStroke,
                     width: 1,
                 },
+                id: 'highlight',
             });
         default:
             return null;
@@ -163,14 +166,12 @@ export const highlight = (view: Object, selectedFeatures: Array<Object>) => {
             SpatialReference,
         ]) => {
             if (view) {
-                view.graphics.removeAll();
+                view.graphics.removeMany(view.graphics.filter(g => g.id === 'highlight'));
                 view.allLayerViews.forEach((lv) => {
                     const { layer } = lv;
                     if (layer.visible && layer.queryFeatures) {
                         const ids = selectedFeatures
-                            // eslint-disable-next-line no-underscore-dangle
                             .filter(f => f._layerId === layer.id)
-                            // eslint-disable-next-line no-underscore-dangle
                             .map(f => parseInt(f._id, 10));
 
                         const query = {

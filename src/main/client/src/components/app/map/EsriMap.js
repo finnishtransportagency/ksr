@@ -76,6 +76,10 @@ class EsriMap extends Component<Props, State> {
                 // Change layer order
                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
             });
+            view.map.allLayers.forEach((l) => {
+                // Temporary fix for sketchViewModel index
+                if (l.id.indexOf('layer') >= 0) view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.allLayers.length));
+            });
         }
 
         if (prevProps.selectedFeatures !== this.props.selectedFeatures) {
@@ -153,7 +157,7 @@ class EsriMap extends Component<Props, State> {
 
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
-                    [compass, locate, track, 'draw-polygon', 'draw-line'],
+                    [compass, locate, track, 'draw-polygon', 'draw-line', 'draw-rectangle', 'remove-selection'],
                     'top-right',
                 );
                 view.ui.add([scaleBar], 'bottom-left');
