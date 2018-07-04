@@ -116,7 +116,7 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
         if (matchingLayer) {
             // Add or replace features in this layer
             matchingLayer.data = mergeData(matchingLayer.data, nl.data);
-        } else {
+        } else if (nl.data.length) {
             layers.push(nl);
         }
     });
