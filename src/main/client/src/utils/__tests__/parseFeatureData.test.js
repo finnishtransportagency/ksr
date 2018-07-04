@@ -6,6 +6,7 @@ import {
     parseData,
     getActiveTable,
     syncWithLayersList,
+    deSelectFeatures,
 } from '../parseFeatureData';
 
 describe('parseFeatureData', () => {
@@ -298,6 +299,72 @@ describe('parseFeatureData', () => {
 
         expect(activeTable).toBe('123');
         expect(layers).toEqual(expect.arrayContaining([{ id: '123' }, { id: '789' }]));
+    });
 
+    it('deSelectFeatures', () => {
+        const data = [
+            {
+                id: '123',
+                title: 'layer123',
+                columns: [
+                    { Header: 'L1A', accessor: 'l.1.a', show: true },
+                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                ],
+                data: [
+                    {
+                        _selected: true,
+                        _source: 'select',
+                    },
+                ],
+            },
+            {
+                id: '456',
+                title: 'layer456',
+                columns: [
+                    { Header: 'L1A', accessor: 'l.1.a', show: true },
+                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                ],
+                data: [
+                    {
+                        _selected: true,
+                        _source: 'select',
+                    },
+                ],
+            },
+            {
+                id: '789',
+                title: 'layer789',
+                columns: [
+                    { Header: 'L1A', accessor: 'l.1.a', show: true },
+                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                ],
+                data: [
+                    {
+                        _selected: true,
+                        _source: 'search',
+                    },
+                ],
+            },
+        ];
+
+        const expectedData = [{
+            id: '789',
+            title: 'layer789',
+            columns: [
+                { Header: 'L1A', accessor: 'l.1.a', show: true },
+                { Header: 'L2A', accessor: 'l.2.a', show: true },
+            ],
+            data: [
+                {
+                    _selected: false,
+                    _source: 'search',
+                },
+            ],
+        }];
+
+        const { layers, activeTable } = deSelectFeatures(data, '456');
+
+        expect(layers).toEqual(expect.arrayContaining(expectedData));
+        expect(activeTable).toBe('789');
     });
 });

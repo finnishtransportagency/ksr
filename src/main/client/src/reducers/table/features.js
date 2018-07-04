@@ -4,8 +4,14 @@ import {
     SET_ACTIVE_TABLE,
     SET_COLUMNS,
     SET_LAYER_LIST,
+    DE_SELECT_SELECTED_FEATURES,
 } from '../../constants/actionTypes';
-import { mergeLayers, updateLayerColumns, syncWithLayersList } from '../../utils/parseFeatureData';
+import {
+    mergeLayers,
+    updateLayerColumns,
+    syncWithLayersList,
+    deSelectFeatures,
+} from '../../utils/parseFeatureData';
 
 type State = {
     fetching: boolean,
@@ -48,6 +54,11 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 ...syncWithLayersList(state.layers, action.layerList, state.activeTable),
+            };
+        case DE_SELECT_SELECTED_FEATURES:
+            return {
+                ...state,
+                ...deSelectFeatures(state.layers, state.activeTable),
             };
         default:
             return state;

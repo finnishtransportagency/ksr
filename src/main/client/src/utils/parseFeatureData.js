@@ -161,3 +161,34 @@ export const syncWithLayersList = (currentLayers, layerList, currentActiveTable)
 
     return { layers, activeTable };
 };
+
+/**
+* Deselects selected features from layers.
+* If layer contains no features, it will also be removed from table.
+*
+* @param currentLayers Array of layers (table-reducer)
+* @param currentActiveTable Id of the currently active layer in table
+*
+* @returns { layers, activeTable }
+* layers: Filtered layers,
+* activeTable: id of active table.
+*/
+export const deSelectFeatures = (currentLayers, currentActiveTable) => {
+    const layers = currentLayers.reduce((filtered, layer) => {
+        const data = layer.data.reduce((fd, d) => {
+            if (d._source === 'search') {
+                fd.push({ ...d, _selected: false });
+            }
+            return fd;
+        }, []);
+
+        if (data.length > 0) {
+            filtered.push({ ...layer, data });
+        }
+        return filtered;
+    }, []);
+
+    const activeTable = getActiveTable(layers, currentActiveTable);
+
+    return { layers, activeTable };
+};
