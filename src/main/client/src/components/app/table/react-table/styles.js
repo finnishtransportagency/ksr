@@ -11,15 +11,14 @@ export const WrapperReactTable = styled.div`
     bottom: 0;
 
     .ReactTable div[class^="rt-th"]:focus {
-      outline: 0
+        outline: 0;
     }
     
     @media only screen and (max-width: 768px) {
-      width: 100%;
-      top: 60px;
-      height: calc(100% - 120px);
+        width: 100%;
+        top: 60px;
+        height: calc(100% - 120px);
     }
-}
 `;
 
 export const WrapperReactTableNoTable = styled.div`
