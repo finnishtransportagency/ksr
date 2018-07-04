@@ -5,6 +5,7 @@
   "dependencies": {
     "dompurify": "^1.0.4",
     "esri-loader": "^2.3.0",
+    "nano-equal": "^2.0.2",
     "proj4": "^2.4.4",
     "rc-slider": "^8.6.1",
     "react": "^16.3.1",
