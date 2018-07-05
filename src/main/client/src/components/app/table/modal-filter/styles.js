@@ -1,19 +1,28 @@
-import Modal from '../../../ui/blocks/Modal';
+import styled from 'styled-components';
 
-export const ModalFilter = Modal.extend`
-    
-    .content-filter {
-      display: flex;
-      flex-wrap: wrap;
+export const ModalFilterWrapper = styled.div`
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between; 
+  
+    &:after {
+        content: "";
+        width: 33%;
     }
+`;
+
+export const CheckboxWrapper = styled.div`
+    width: 33%;
+    display: inline-block;
+    vertical-align: bottom;
     
-    .content-checkbox {
-      flex: 1 0 20%;
+    label p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
     }
     
     @media only screen and (max-width: 768px) {
-        .content-filter {
-          display: block;
-        }
+        width: 100%;
     }
 `;
