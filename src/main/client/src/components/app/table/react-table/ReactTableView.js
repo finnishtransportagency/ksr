@@ -1,19 +1,28 @@
 // @flow
 import React from 'react';
-import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { WrapperReactTable } from './styles';
+import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
 import { colorMainHighlight } from '../../../ui/defaultStyles';
 
 type Props = {
     data: Array<any>,
     columns: Array<any>,
+    toggleSelection: Function,
+    toggleSelectAll: Function,
+    selectAll: boolean,
 };
 
-const ReactTableView = ({ data, columns }: Props) => (
+const ReactTableView = ({
+    data,
+    columns,
+    toggleSelection,
+    toggleSelectAll,
+    selectAll,
+}: Props) => (
     <WrapperReactTable>
-        <ReactTable
+        <SelectableTable
             className="-striped -highlight"
             data={data}
             columns={columns}
@@ -41,6 +50,11 @@ const ReactTableView = ({ data, columns }: Props) => (
             pageText={strings.reactTable.pageText}
             ofText={strings.reactTable.ofText}
             rowsText={strings.reactTable.rowsText}
+            selectType="checkbox"
+            isSelected={r => r._selected}
+            selectAll={selectAll}
+            toggleSelection={toggleSelection}
+            toggleAll={toggleSelectAll}
             getTrProps={(state, r) => (
                 {
                     style: {

@@ -12,6 +12,9 @@ type Props = {
         data: Array<Object>,
         columns: Array<Object>,
     },
+    toggleSelection: Function,
+    selectAll: boolean,
+    toggleSelectAll: Function,
 };
 
 type State = {
@@ -23,6 +26,7 @@ class ReactTable extends Component<Props, State> {
         super(props);
 
         this.renderEditable = this.renderEditable.bind(this);
+        this.toggleSelection = this.toggleSelection.bind(this);
     }
 
     renderEditable = (cellInfo: any) => (
@@ -38,6 +42,10 @@ class ReactTable extends Component<Props, State> {
         />
     );
 
+    toggleSelection = (id, shiftKey, row) => {
+        this.props.toggleSelection(row);
+    };
+
     render() {
         const { fetching, layer } = this.props;
         if (layer === null) {
@@ -48,7 +56,13 @@ class ReactTable extends Component<Props, State> {
             );
         } else if (!fetching) {
             const { columns, data } = layer;
-            return <ReactTableView data={data} columns={columns} />;
+            return (<ReactTableView
+                data={data}
+                toggleSelection={this.toggleSelection}
+                columns={columns}
+                selectAll={this.props.selectAll}
+                toggleSelectAll={() => this.props.toggleSelectAll(layer.id)}
+            />);
         }
         return <LoadingIcon loading={fetching} />;
     }
