@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 import Modal from '../../../ui/blocks/Modal/index';
 import Checkbox from '../../../ui/blocks/Checkbox/index';
 import { Button, H1 } from '../../../ui/elements/index';
@@ -29,25 +30,31 @@ const ModalView = ({
                 <i className="fas fa-times" />
             </button>
         </Modal.Header>
-        <Modal.Content className="content-filter">
-            {
-                columns.map(t => (
-                    <Checkbox className="content-checkbox" key={t.Header} htmlFor={t.Header}>
-                        {t.Header}
-                        <Checkbox.Input
-                            id={t.Header}
-                            name={t.Header}
-                            type="checkbox"
-                            checked={t.show}
-                            onChange={() => {
-                                handleOnChange(t.Header);
-                            }}
-                        />
-                        <Checkbox.Checkmark />
-                    </Checkbox>
-                ))
-            }
-        </Modal.Content>
+        <Scrollbars
+            autoHide
+            autoHeight
+            autoHeightMax={400}
+        >
+            <Modal.Content className="content-filter">
+                {
+                    columns.map(t => (
+                        <Checkbox className="content-checkbox" key={t.Header} htmlFor={t.Header}>
+                            {t.Header}
+                            <Checkbox.Input
+                                id={t.Header}
+                                name={t.Header}
+                                type="checkbox"
+                                checked={t.show}
+                                onChange={() => {
+                                    handleOnChange(t.Header);
+                                }}
+                            />
+                            <Checkbox.Checkmark />
+                        </Checkbox>
+                    ))
+                }
+            </Modal.Content>
+        </Scrollbars>
         <Modal.Footer>
             <Button onClick={handleModalSubmit}>{strings.modalView.submit}</Button>
             <Button flat onClick={toggleModal}>
