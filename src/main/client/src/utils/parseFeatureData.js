@@ -52,8 +52,7 @@ export const parseData = (data, selected, source) => {
 * @returns Array of merged input arrays
 */
 export const mergeData = (currentData, newData) => {
-    // Remove features added in previous selection
-    const data = currentData.filter(f => f._source !== 'select');
+    const data = [...currentData];
     newData.forEach((newFeature) => {
         const matchingFeature = data.find(f => f._id === newFeature._id);
         if (matchingFeature) {
@@ -102,13 +101,7 @@ export const getActiveTable = (layers, currentActiveTable) => {
 * ActiveTable: id of active table.
 */
 export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
-    const layers = currentLayers.reduce((filtered, cl) => {
-        const data = cl.data.filter(f => f._source !== 'select');
-        if (data.length > 0) {
-            filtered.push({ ...cl, data });
-        }
-        return filtered;
-    }, []);
+    const layers = currentLayers.map(l => ({ ...l, data: [...l.data] }));
 
     newLayers.forEach((nl) => {
         // Matching layer from current layers
