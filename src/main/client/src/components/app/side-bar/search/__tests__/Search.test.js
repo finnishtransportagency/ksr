@@ -9,7 +9,10 @@ const setup = (prop) => {
         setSearchState: jest.fn(),
         setSearchOptions: jest.fn(),
         layerList: [{}],
-        queryableLayers: [{}],
+        queryableLayers: [{
+            value: 0,
+            label: 'Layer 1',
+        }],
         searchState: {
             selectedLayer: 0,
             textSearch: '',

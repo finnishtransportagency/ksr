@@ -67,8 +67,8 @@ describe('parseFeatureData', () => {
 
         const data = mergeData(a, b);
 
-        expect(data.length).toBe(5);
-        expect(data.filter(o => o._selected).length).toBe(4);
+        expect(data.length).toBe(6);
+        expect(data.filter(o => o._selected).length).toBe(5);
     });
 
     it('updateColumns - should update layer columns', () => {
@@ -177,7 +177,7 @@ describe('parseFeatureData', () => {
 
         const { layers, activeTable } = mergeLayers(currentLayers, newLayers, '456');
 
-        expect(activeTable).toBe('123');
+        expect(activeTable).toBe('456');
         expect(layers).toEqual(expect.arrayContaining(expectedLayers));
     });
 
