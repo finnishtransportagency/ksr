@@ -41,7 +41,6 @@ public class ProxyController {
         generalProxyUrlPattern = Pattern.compile("^\\/api\\/proxy\\/layer\\/\\d{1,6}\\/(.*?)$");
     }
 
-    @CrossOrigin(origins = "http://localhost")
     @RequestMapping(value = "/{layerId}/**", method = RequestMethod.GET)
     public void generalProxy(@PathVariable int layerId, HttpServletRequest request,
                 HttpServletResponse response) {
