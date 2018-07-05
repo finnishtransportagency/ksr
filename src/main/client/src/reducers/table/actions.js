@@ -20,24 +20,26 @@ export const setColumns = (columns: Array<Object>) => ({
     type: types.SET_COLUMNS,
     columns,
 });
-export const searchFeatures = (
-    selectedLayer: number,
-    queryString: string,
-    title: string,
-) => (dispatch: Function) => {
-    const layerData = {
-        layers: [],
-    };
+export const searchFeatures = (selectedLayer: Object, queryString: string) => 
+    (dispatch: Function) => {
+        const layerData = {
+            layers: [],
+        };
 
-    dispatch({ type: types.SEARCH_FEATURES });
-    fetchSearchQuery(selectedLayer, queryString, title, layerData)
-        .then((r) => {
-            dispatch({
-                type: types.SEARCH_FEATURES_FULFILLED,
-                layers: parseData(r, false, 'search'),
+        dispatch({ type: types.SEARCH_FEATURES });
+        fetchSearchQuery(selectedLayer.id, queryString, selectedLayer.name, layerData)
+            .then((r) => {
+                // @TODO: Create a new maplayer from this results
+                dispatch({
+                    type: types.SEARCH_FEATURES_FULFILLED,
+                    layers: parseData(r, false, 'search'),
+                });
+                dispatch({
+                    type: types.HIDE_LAYER,
+                    layerId: selectedLayer.id,
+                });
             });
-        });
-};
+    };
 
 export const setFeatureData = (columnData: Array<Object>) => (dispatch: Function) => {
     dispatch({

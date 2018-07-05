@@ -133,18 +133,14 @@ class Search extends Component<Props, State> {
             optionsField,
         } = this.props.searchState;
 
-        const title = queryableLayers.find(ql => ql.value === selectedLayer).label;
+        const layer = queryableLayers.find(ql => ql.value === selectedLayer);
         const queryString: string = parseQueryString(
             searchFieldValues,
             textSearch,
             optionsField,
         );
 
-        searchFeatures(
-            selectedLayer.toString(),
-            queryString,
-            title,
-        );
+        searchFeatures(layer, queryString);
     };
 
     render() {
