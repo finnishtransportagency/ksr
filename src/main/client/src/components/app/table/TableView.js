@@ -2,8 +2,7 @@
 import React from 'react';
 import Table from '../../ui/blocks/Table';
 import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
-import ModalContainer from './modal/ModalContainer';
-import strings from '../../../translations';
+import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 
 type Props = {
     toggleFilter: Function,
@@ -26,7 +25,6 @@ const TableView = ({
             <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
         </Table.Link>
         <Table.Filter
-            title={strings.reactTable.filter}
             toggleFilter={isOpen}
             onClick={() => {
                 toggleFilter();
@@ -35,7 +33,7 @@ const TableView = ({
             <i className="fas fa-filter" />
         </Table.Filter>
         <TabbedTableContainer />
-        <ModalContainer modalOpen={isOpenFilter} />
+        <ModalFilterContainer modalOpen={isOpenFilter} />
     </Table>
 );
 
