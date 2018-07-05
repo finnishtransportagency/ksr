@@ -26,7 +26,7 @@ const fi = {
         openGoogleStreetView: 'Avaa Google Street View',
         destinationDetails: 'Kohteen tiedot',
     },
-    modalView: {
+    modalFilter: {
         title: 'Suodata sarakkeita',
         submit: 'Suodata',
         cancel: 'Peruuta',
