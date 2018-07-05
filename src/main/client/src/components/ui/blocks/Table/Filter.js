@@ -15,6 +15,7 @@ const Filter = styled.div`
     justify-content: center;
     font-size: 1.25em;
     transition: 0.3s;
+    z-index: 1;
     
     &:hover {
         cursor: pointer;
