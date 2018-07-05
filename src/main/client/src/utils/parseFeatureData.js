@@ -217,3 +217,27 @@ export const toggleSelection = (currentLayers, feature) => (
         return { ...layer };
     })
 );
+
+/**
+* Set's all features on given layer either selected or unselected.
+*
+* @param currentLayers Array of layers (table-reducer)
+* @param layerId Id of the layer to select/unselect all features
+*
+* @returns layers Layers updates with features selected
+*/
+export const toggleSelectAll = (currentLayers, layerId) => (
+    currentLayers.map((layer) => {
+        if (layer.id === layerId) {
+            const all = layer.data.find(d => !d._selected) === undefined;
+            return {
+                ...layer,
+                data: layer.data.map(d => ({
+                    ...d,
+                    _selected: !all,
+                })),
+            };
+        }
+        return { ...layer };
+    })
+);

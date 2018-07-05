@@ -33,3 +33,8 @@ export const toggleSelection = feature => ({
     type: types.TOGGLE_SELECTION,
     feature,
 });
+
+export const toggleSelectAll = layerId => ({
+    type: types.TOGGLE_SELECT_ALL,
+    layerId,
+});

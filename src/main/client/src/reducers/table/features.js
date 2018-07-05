@@ -6,6 +6,7 @@ import {
     SET_LAYER_LIST,
     DE_SELECT_SELECTED_FEATURES,
     TOGGLE_SELECTION,
+    TOGGLE_SELECT_ALL,
 } from '../../constants/actionTypes';
 import {
     mergeLayers,
@@ -13,6 +14,7 @@ import {
     syncWithLayersList,
     deSelectFeatures,
     toggleSelection,
+    toggleSelectAll,
 } from '../../utils/parseFeatureData';
 
 type State = {
@@ -66,6 +68,11 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 layers: toggleSelection(state.layers, action.feature),
+            };
+        case TOGGLE_SELECT_ALL:
+            return {
+                ...state,
+                layers: toggleSelectAll(state.layers, action.layerId),
             };
         default:
             return state;

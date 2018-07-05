@@ -10,9 +10,17 @@ type Props = {
     data: Array<any>,
     columns: Array<any>,
     toggleSelection: Function,
+    toggleSelectAll: Function,
+    selectAll: boolean,
 };
 
-const ReactTableView = ({ data, columns, toggleSelection }: Props) => (
+const ReactTableView = ({
+    data,
+    columns,
+    toggleSelection,
+    toggleSelectAll,
+    selectAll,
+}: Props) => (
     <WrapperReactTable>
         <SelectableTable
             className="-striped -highlight"
@@ -44,7 +52,9 @@ const ReactTableView = ({ data, columns, toggleSelection }: Props) => (
             rowsText={strings.reactTable.rowsText}
             selectType="checkbox"
             isSelected={r => r._selected}
+            selectAll={selectAll}
             toggleSelection={toggleSelection}
+            toggleAll={toggleSelectAll}
             getTrProps={(state, r) => (
                 {
                     style: {

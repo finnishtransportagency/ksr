@@ -13,6 +13,8 @@ type Props = {
         columns: Array<Object>,
     },
     toggleSelection: Function,
+    selectAll: boolean,
+    toggleSelectAll: Function,
 };
 
 type State = {
@@ -58,6 +60,8 @@ class ReactTable extends Component<Props, State> {
                 data={data}
                 toggleSelection={this.toggleSelection}
                 columns={columns}
+                selectAll={this.props.selectAll}
+                toggleSelectAll={() => this.props.toggleSelectAll(layer.id)}
             />);
         }
         return <LoadingIcon loading={fetching} />;
