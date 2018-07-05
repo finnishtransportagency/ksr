@@ -43,7 +43,6 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => (
                 </SideNav.Link>
             </div>
         </SideNav.LinkWrapper>
-
     </SideNav>
 );
 
