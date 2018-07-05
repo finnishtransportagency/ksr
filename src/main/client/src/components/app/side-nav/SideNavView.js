@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import SideNav from '../../ui/blocks/SideNav/index';
+import strings from '../../../translations';
 
 type Props = {
     setActiveNav: (string) => void,
@@ -14,18 +15,30 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => (
         </SideNav.Logo>
         <SideNav.LinkWrapper>
             <div>
-                <SideNav.Link active={activeNav === 'search'} onClick={() => { setActiveNav('search'); }}>
+                <SideNav.Link
+                    title={strings.sideNav.search}
+                    active={activeNav === 'search'}
+                    onClick={() => { setActiveNav('search'); }}
+                >
                     <i className="fas fa-search" />
                 </SideNav.Link>
-                <SideNav.Link active={activeNav === 'mapLayers'} onClick={() => { setActiveNav('mapLayers'); }}>
+                <SideNav.Link
+                    title={strings.sideNav.layerManagement}
+                    active={activeNav === 'mapLayers'}
+                    onClick={() => { setActiveNav('mapLayers'); }}
+                >
                     <i className="fas fa-map" />
                 </SideNav.Link>
-                <SideNav.Link active={activeNav === 'fileExport'} onClick={() => { setActiveNav('fileExport'); }}>
+                <SideNav.Link
+                    title={strings.sideNav.fileExport}
+                    active={activeNav === 'fileExport'}
+                    onClick={() => { setActiveNav('fileExport'); }}
+                >
                     <i className="fas fa-print" />
                 </SideNav.Link>
             </div>
             <div>
-                <SideNav.Link>
+                <SideNav.Link title={strings.sideNav.saveWorkspace}>
                     <i className="fas fa-save" />
                 </SideNav.Link>
             </div>

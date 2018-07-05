@@ -19,6 +19,7 @@ const fi = {
         pageText: 'Sivu',
         ofText: '/',
         rowsText: 'riviä',
+        filter: 'Suodata sarakkeita',
     },
     esriMap: {
         openGoogleStreetView: 'Avaa Google Street View',
@@ -28,6 +29,12 @@ const fi = {
         title: 'Suodata sarakkeita',
         submit: 'Suodata',
         cancel: 'Peruuta',
+    },
+    sideNav: {
+        search: 'Haku',
+        layerManagement: 'Karttatasojen hallinta',
+        fileExport: 'Tiedostojen vienti',
+        saveWorkspace: 'Tallenna työtila',
     },
     table: {
         noTableText: 'Ei näytettävää dataa.',
