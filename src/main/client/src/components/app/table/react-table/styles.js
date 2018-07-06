@@ -14,6 +14,15 @@ export const WrapperReactTable = styled.div`
         outline: 0;
     }
     
+    .ReactTable .rt-tr {
+        min-height: 32px;
+        align-items: center;
+    }
+    
+    .ReactTable .rt-thead.-filters .rt-tr {
+        min-height: 42px;
+    }
+    
     @media only screen and (max-width: 768px) {
         width: 100%;
         top: 60px;
