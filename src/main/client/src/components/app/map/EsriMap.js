@@ -70,6 +70,10 @@ class EsriMap extends Component<Props, State> {
                     if (layer && l.id.toString() === layer.id) {
                         layer.visible = l.visible; // eslint-disable-line no-param-reassign
                         layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
+                        if (l.type === 'agfs') {
+                            // eslint-disable-next-line no-param-reassign
+                            layer.definitionExpression = l.definitionExpression;
+                        }
                         if (!l.active) view.map.layers.remove(layer);
                     }
                 });

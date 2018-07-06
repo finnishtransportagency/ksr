@@ -3,8 +3,11 @@ import {
     GET_LAYER_GROUPS,
     GET_LAYER_GROUPS_FULFILLED,
     SET_LAYER_LIST,
-    HIDE_LAYER,    
+    HIDE_LAYER,
+    ADD_SEARCH_RESULTS_LAYER,
 } from '../../constants/actionTypes';
+
+import { addOrReplaceLayer } from '../../utils/layers';
 
 type SubLayers = {
     name: string,
@@ -61,6 +64,11 @@ export default (state: State = initialState, action: Action) => {
                         ...l,
                         visible: action.layerId === l.id ? false : l.visible,
                     })),
+            };
+        case ADD_SEARCH_RESULTS_LAYER:
+            return {
+                ...state,
+                layerList: addOrReplaceLayer(state.layerList, action.layer),
             };
         default:
             return state;

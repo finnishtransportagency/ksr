@@ -20,7 +20,7 @@ export const setColumns = (columns: Array<Object>) => ({
     type: types.SET_COLUMNS,
     columns,
 });
-export const searchFeatures = (selectedLayer: Object, queryString: string) => 
+export const searchFeatures = (selectedLayer: Object, queryString: string) =>
     (dispatch: Function) => {
         const layerData = {
             layers: [],
@@ -29,14 +29,33 @@ export const searchFeatures = (selectedLayer: Object, queryString: string) =>
         dispatch({ type: types.SEARCH_FEATURES });
         fetchSearchQuery(selectedLayer.id, queryString, selectedLayer.name, layerData)
             .then((r) => {
-                // @TODO: Create a new maplayer from this results
+                const newLayer = {
+                    ...selectedLayer,
+                    name: selectedLayer.name,
+                    definitionExpression: queryString,
+                    visible: true,
+                    id: `${selectedLayer.id}.s`,
+                };
+
+                const res = {
+                    layers: r.layers.map(l => ({
+                        ...l,
+                        id: newLayer.id,
+                        title: newLayer.name,
+                    })),
+                };
+
                 dispatch({
                     type: types.SEARCH_FEATURES_FULFILLED,
-                    layers: parseData(r, false, 'search'),
+                    layers: parseData(res, false, 'search'),
                 });
                 dispatch({
                     type: types.HIDE_LAYER,
                     layerId: selectedLayer.id,
+                });
+                dispatch({
+                    type: types.ADD_SEARCH_RESULTS_LAYER,
+                    layer: newLayer,
                 });
             });
     };

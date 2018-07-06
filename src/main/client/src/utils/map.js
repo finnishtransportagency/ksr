@@ -62,6 +62,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                         visible: layer.visible,
                         title: layer.name,
                         outFields: ['*'],
+                        definitionExpression: layer.definitionExpression,
                     }), index);
                     break;
                 default:
