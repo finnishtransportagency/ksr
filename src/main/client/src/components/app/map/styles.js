@@ -38,14 +38,18 @@ export const Wrapper = styled.div`
             }
             
             .esri-scale-bar, .esri-attribution {
-            bottom: 60px;
-            margin-left: 0;
-            margin-right: 60px;
+                bottom: 60px;
+                margin-left: 0;
+                margin-right: 60px;
             }
-        };
+            
+            .esri-scale-bar {
+                margin-bottom: 20px;
+            }
+        }
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
-        .esri-popup__button, .esri-popup__header-title {
+        .esri-popup__button, .esri-popup__header-title, .esri-attribution__sources {
             outline: none;
         }
     

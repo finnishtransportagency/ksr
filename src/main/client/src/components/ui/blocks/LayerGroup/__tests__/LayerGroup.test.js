@@ -17,6 +17,6 @@ describe('<LayerGroup />', () => {
         expect(wrapper).toHaveStyleRule('transition', '0.3s');
         expect(wrapper).toHaveStyleRule('box-shadow', '0 2px 4px 0 hsla(0,0%,0%,0.4)');
         expect(wrapper).toHaveStyleRule('user-select', 'none');
-        expect(wrapper).toHaveStyleRule('margin', '1rem 0');
+        expect(wrapper).toHaveStyleRule('margin', '1rem');
     });
 });

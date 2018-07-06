@@ -11,7 +11,7 @@ describe('<Content />', () => {
 
     it('has correct styles', () => {
         const wrapper = renderer.create(<Content />).toJSON();
-        expect(wrapper).toHaveStyleRule('padding', '0 1rem');
+        expect(wrapper).toMatchSnapshot();
     });
 });
 

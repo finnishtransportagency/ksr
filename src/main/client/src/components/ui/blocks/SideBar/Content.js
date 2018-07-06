@@ -1,11 +1,25 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const Content = styled.div`
-    padding: 0 1rem;
+    height: 100%;
     
-    ${props => props.layerSettings && css`
-        padding: 0;
-    `}
+    .sidebar-content-scroll-wrapper {
+        height: calc(100% - 80px) !important;
+    }
+    
+    .sidebar-content-scroll-inner {
+        padding: 0 1rem;
+    }
+    
+    .sidebar-content-scroll-thumb {
+        cursor: pointer;
+        border-radius: inherit;
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .layer-view-scroll-wrapper {
+        height: calc(100% - 160px) !important;
+    }
 `;
 
 export default Content;

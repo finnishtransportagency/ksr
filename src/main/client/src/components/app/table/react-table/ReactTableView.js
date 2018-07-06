@@ -5,6 +5,8 @@ import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
 import { colorMainHighlight } from '../../../ui/defaultStyles';
+import CustomTableView from './custom-table/CustomTableView';
+import CustomTableBodyView from './custom-table-body/CustomTableBodyView';
 
 type Props = {
     data: Array<any>,
@@ -25,6 +27,8 @@ const ReactTableView = ({
         <SelectableTable
             className="-striped -highlight"
             data={data}
+            TableComponent={CustomTableView}
+            TbodyComponent={CustomTableBodyView}
             columns={columns}
             filterable
             defaultFilterMethod={(filter, row) => {
