@@ -5,6 +5,7 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import LayerSettings from '../../../../ui/blocks/LayerSettings';
+import MapLayerTitle from '../../../shared/MapLayerTitle';
 
 type Props = {
     layerList: Array<any>,
@@ -53,7 +54,7 @@ const MapLayersView = ({
                                                     <LayerSettings.ContentMain>
                                                         <LayerSettings.ContentTop >
                                                             <LayerSettings.Title >
-                                                                {l.name}
+                                                                <MapLayerTitle layer={l} />
                                                             </LayerSettings.Title>
                                                             <LayerSettings.Icons >
                                                                 <i className="fas fa-edit" />

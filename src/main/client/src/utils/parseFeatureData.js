@@ -30,6 +30,7 @@ export const parseData = (data, selected, source) => {
         id: l.id,
         title: l.title,
         columns: parseColumns(l.fields),
+        _source: source,
         data: l.features.map(f => ({
             ...f.attributes,
             _id: f.attributes[l.objectIdFieldName],
