@@ -23,18 +23,18 @@ export const parseQueryString = (
                 : a.queryExpression;
 
             const text = a.queryExpression === '%'
-                ? `%27%25${a.queryText}%25%27`
-                : `%27${a.queryText}%27`;
+                ? `'%${a.queryText}%'`
+                : `'${a.queryText}'`;
 
-            queryString.push(`${a.name}+${escape(expression)}+${text}`);
+            queryString.push(`${a.name} ${expression} ${text}`);
         });
     } else {
-        const text = `%27%25${textSearch}%25%27`;
+        const text = `'%${textSearch}%'`;
 
         // TODO: get default search attributes from database (layer: QUERY_COLUMNS)
         fields.forEach(a =>
-            queryString.push(`${a.label}+LIKE+${text}`));
+            queryString.push(`${a.label} LIKE ${text}`));
     }
 
-    return searchFieldValues.length > 0 ? queryString.join('+AND+') : queryString.join('+OR+');
+    return searchFieldValues.length > 0 ? queryString.join(' AND ') : queryString.join(' OR ');
 };
