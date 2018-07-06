@@ -2,6 +2,60 @@
 import esriLoader from 'esri-loader';
 import { mapHighlightStroke as highlightStroke } from '../components/ui/defaultStyles';
 
+import { MAP_VIEW_MAX_SCALE, MAP_VIEW_FIT_SCALE } from '../constants/common';
+
+/**
+* Fit map on the extent of given layer.
+* But never zoom nearer than what is defined in MAP_VIEW_FIT_SCALE
+*
+* @param layer esri/layers/FeatureLayer
+* @param view esri/views/MapView
+*/
+export const fitExtent = (layer: Object, view: Object) => {
+    layer.queryExtent().then((response) => {
+        // Hacky, but this prevents map zooming beyond given scale.
+        view.constraints = {
+            ...view.constraints,
+            maxScale: MAP_VIEW_FIT_SCALE,
+        };
+        view.goTo(response.extent).then(() => {
+            view.constraints = {
+                ...view.constraints,
+                maxScale: MAP_VIEW_MAX_SCALE,
+            };
+        });
+    });
+};
+
+/**
+* A Helper function to create a FeatureLayer.
+* If source is 'search', then also fit's the bounds of this layer.
+*
+* @param FeatureLayer esri/layers/FeatureLayer reference
+* @param layer Layer object representing layer to be created
+* @param view esri/views/MapView
+*
+* @returns fl Created FeatureLayer
+*/
+const createFeatureLayer = (FeatureLayer, layer, view) => {
+    const fl = new FeatureLayer({
+        id: layer.id,
+        url: layer.url,
+        copyright: layer.attribution,
+        maxScale: layer.maxScale,
+        minScale: layer.minScale,
+        opacity: layer.opacity,
+        visible: layer.visible,
+        title: layer.name,
+        outFields: ['*'],
+        definitionExpression: layer.definitionExpression,
+    });
+    if (layer._source === 'search') {
+        fitExtent(fl, view);
+    }
+    return fl;
+};
+
 export const addLayer = (layer: Object, view: Object, index: number) => {
     esriLoader
         .loadModules([
@@ -52,18 +106,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                     }), index);
                     break;
                 case 'agfs':
-                    view.map.add(new FeatureLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        opacity: layer.opacity,
-                        visible: layer.visible,
-                        title: layer.name,
-                        outFields: ['*'],
-                        definitionExpression: layer.definitionExpression,
-                    }), index);
+                    view.map.add(createFeatureLayer(FeatureLayer, layer, view), index);
                     break;
                 default:
                     break;

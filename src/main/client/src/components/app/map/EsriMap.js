@@ -8,7 +8,9 @@ import EsriMapView from './EsriMapView';
 
 import { graphicsToEsriJSON } from '../../../utils/arcFormats';
 import { getStreetViewLink } from '../../../utils/streetView';
-import { addLayer, highlight } from '../../../utils/map';
+import { addLayer, highlight, fitExtent } from '../../../utils/map';
+
+import { MAP_VIEW_MAX_SCALE } from '../../../constants/common';
 
 type Props = {
     activeNav: string,
@@ -72,7 +74,12 @@ class EsriMap extends Component<Props, State> {
                         layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
                         if (l.type === 'agfs') {
                             // eslint-disable-next-line no-param-reassign
-                            layer.definitionExpression = l.definitionExpression;
+                            if (layer.definitionExpression !== l.definitionExpression) {
+                                layer.definitionExpression = l.definitionExpression;
+                                if (l._source === 'search') {
+                                    fitExtent(layer, view);
+                                }
+                            }
                         }
                         if (!l.active) view.map.layers.remove(layer);
                     }
@@ -137,6 +144,9 @@ class EsriMap extends Component<Props, State> {
                     center,
                     scale: mapScale,
                     spatialReference: epsg3067,
+                    constraints: {
+                        maxScale: MAP_VIEW_MAX_SCALE,
+                    },
                 });
 
                 [...layerList].reverse().forEach((l, i) => {
