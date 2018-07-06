@@ -35,6 +35,7 @@ export const searchFeatures = (selectedLayer: Object, queryString: string) =>
                     definitionExpression: queryString,
                     visible: true,
                     id: `${selectedLayer.id}.s`,
+                    _source: 'search',
                 };
 
                 const res = {
