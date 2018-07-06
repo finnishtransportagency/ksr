@@ -30,6 +30,8 @@ type Action = {
     columns: Array<Object>,
     activeTable: string,
     layerList: Array<Object>,
+    layerId: string,
+    feature: Object,
 };
 
 const initialState = {

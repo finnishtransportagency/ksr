@@ -76,12 +76,12 @@ export const deSelectSelected = () => ({
     type: types.DE_SELECT_SELECTED_FEATURES,
 });
 
-export const toggleSelection = feature => ({
+export const toggleSelection = (feature: Object) => ({
     type: types.TOGGLE_SELECTION,
     feature,
 });
 
-export const toggleSelectAll = layerId => ({
+export const toggleSelectAll = (layerId: string) => ({
     type: types.TOGGLE_SELECT_ALL,
     layerId,
 });

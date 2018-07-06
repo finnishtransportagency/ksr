@@ -23,6 +23,7 @@ type WmsLayer = {
 type State = {
     layerGroups: Array<WmsLayer>,
     fetching: boolean,
+    layerList: Array<Object>,
 };
 
 type Action = {
@@ -30,6 +31,8 @@ type Action = {
     type: string,
     layerGroups: Array<any>,
     layerList: Array<any>,
+    layerId: string,
+    layer: Object,
 };
 
 const initialState = {
@@ -59,11 +62,11 @@ export default (state: State = initialState, action: Action) => {
         case HIDE_LAYER:
             return {
                 ...state,
-                layerList: state.layerList.map(l => (
+                layerList: (state.layerList.map(l => (
                     {
                         ...l,
                         visible: action.layerId === l.id ? false : l.visible,
-                    })),
+                    })): Array<Object>),
             };
         case ADD_SEARCH_RESULTS_LAYER:
             return {
