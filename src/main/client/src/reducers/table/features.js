@@ -58,7 +58,7 @@ export default (state: State = initialState, action: Action) => {
         case SEARCH_FEATURES_FULFILLED:
             return {
                 ...state,
-                ...mergeLayers(state.layers, action.layers, state.activeTable),
+                ...mergeLayers(state.layers, action.layers, state.activeTable, true),
             };
         case SET_LAYER_LIST:
             return {

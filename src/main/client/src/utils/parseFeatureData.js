@@ -100,7 +100,7 @@ export const getActiveTable = (layers, currentActiveTable) => {
 * Layers: newLayers merged with currentLayers.
 * ActiveTable: id of active table.
 */
-export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
+export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear = false) => {
     const layers = currentLayers.map(l => ({ ...l, data: [...l.data] }));
 
     newLayers.forEach((nl) => {
@@ -108,7 +108,11 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
         const matchingLayer = layers.find(c => c.id === nl.id);
         if (matchingLayer) {
             // Add or replace features in this layer
-            matchingLayer.data = mergeData(matchingLayer.data, nl.data);
+            if (clear) {
+                matchingLayer.data = nl.data;
+            } else {
+                matchingLayer.data = mergeData(matchingLayer.data, nl.data);
+            }
         } else if (nl.data.length) {
             layers.push(nl);
         }
