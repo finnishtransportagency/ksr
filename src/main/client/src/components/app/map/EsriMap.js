@@ -1,5 +1,6 @@
 // @flow
 import esriLoader from 'esri-loader';
+import equals from 'nano-equal';
 
 import React, { Component } from 'react';
 import strings from '../../../translations';
@@ -82,7 +83,7 @@ class EsriMap extends Component<Props, State> {
             });
         }
 
-        if (prevProps.selectedFeatures !== this.props.selectedFeatures) {
+        if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
             highlight(view, this.props.selectedFeatures);
         }
     }

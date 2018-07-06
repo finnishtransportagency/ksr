@@ -7,6 +7,8 @@ import {
     getActiveTable,
     syncWithLayersList,
     deSelectFeatures,
+    toggleSelection,
+    toggleSelectAll,
 } from '../parseFeatureData';
 
 describe('parseFeatureData', () => {
@@ -366,5 +368,228 @@ describe('parseFeatureData', () => {
 
         expect(layers).toEqual(expect.arrayContaining(expectedData));
         expect(activeTable).toBe('789');
+    });
+
+    it('toggleSelection', () => {
+        const data = [
+            {
+                id: '123',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a456',
+                        _layerId: '456',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '789',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a789',
+                        _layerId: '789',
+                        _selected: false,
+                    },
+                ],
+            },
+        ];
+
+        const expectedData = [
+            {
+                id: '123',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a456',
+                        _layerId: '456',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '789',
+                columns: [],
+                data: [
+                    {
+                        _id: 'a789',
+                        _layerId: '789',
+                        _selected: true,
+                    },
+                ],
+            },
+        ];
+
+        const feature = { _id: 'a789', _layerId: '789' };
+
+        const layers = toggleSelection(data, feature);
+
+        expect(layers).toEqual(expect.arrayContaining(expectedData));
+    });
+
+    it('toggleSelectAll', () => {
+        const data1 = [
+            {
+                id: '123',
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: false,
+                    },
+                    {
+                        _id: 'a124',
+                        _layerId: '124',
+                        _selected: true,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                data: [],
+            },
+        ];
+
+        const expectedData1 = [
+            {
+                id: '123',
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: true,
+                    },
+                    {
+                        _id: 'a124',
+                        _layerId: '124',
+                        _selected: true,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                data: [],
+            },
+        ];
+
+        const data2 = [
+            {
+                id: '123',
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: false,
+                    },
+                    {
+                        _id: 'a124',
+                        _layerId: '124',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                data: [],
+            },
+        ];
+
+        const expectedData2 = [
+            {
+                id: '123',
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: true,
+                    },
+                    {
+                        _id: 'a124',
+                        _layerId: '124',
+                        _selected: true,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                data: [],
+            },
+        ];
+
+        const data3 = [
+            {
+                id: '123',
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: true,
+                    },
+                    {
+                        _id: 'a124',
+                        _layerId: '124',
+                        _selected: true,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                data: [],
+            },
+        ];
+
+        const expectedData3 = [
+            {
+                id: '123',
+                data: [
+                    {
+                        _id: 'a123',
+                        _layerId: '123',
+                        _selected: false,
+                    },
+                    {
+                        _id: 'a124',
+                        _layerId: '124',
+                        _selected: false,
+                    },
+                ],
+            },
+            {
+                id: '456',
+                data: [],
+            },
+        ];
+
+        const res1 = toggleSelectAll(data1, '123');
+        expect(res1).toEqual(expect.arrayContaining(expectedData1));
+
+        const res2 = toggleSelectAll(data2, '123');
+        expect(res2).toEqual(expect.arrayContaining(expectedData2));
+
+        const res3 = toggleSelectAll(data3, '123');
+        expect(res3).toEqual(expect.arrayContaining(expectedData3));
     });
 });
