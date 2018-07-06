@@ -25,6 +25,22 @@ class ReactTable extends Component<Props, State> {
         this.renderEditable = this.renderEditable.bind(this);
     }
 
+    componentDidUpdate() {
+        const paginationBottom = document.getElementsByClassName('pagination-bottom')[0];
+        if (paginationBottom) {
+            // React Table heights need to be set programmatically for scrollbars to show correctly.
+            const tableElement = document.getElementsByClassName('rt-rtable')[0];
+            const tableHeight = paginationBottom.clientHeight;
+            tableElement.style.height = `calc(100% - ${tableHeight}px)`;
+
+            const bodyElement = document.getElementsByClassName('rt-tbody')[0];
+            const headerElement = document.getElementsByClassName('rt-thead -header')[0];
+            const filterElement = document.getElementsByClassName('rt-thead -filters')[0];
+            const tbodyHeight = headerElement.clientHeight + filterElement.clientHeight;
+            bodyElement.style.height = `calc(100% - ${tbodyHeight}px)`;
+        }
+    }
+
     renderEditable = (cellInfo: any) => (
         <div
             contentEditable
