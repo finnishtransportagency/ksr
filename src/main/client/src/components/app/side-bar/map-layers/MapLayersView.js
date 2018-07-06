@@ -1,5 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
 import SideBar from '../../../ui/blocks/SideBar';
 import { H1 } from '../../../ui/elements';
@@ -18,7 +19,7 @@ const MapLayersView = ({ handleButtonClickLayers, activeTab }: Props) => (
             <H1>{strings.mapLayers.title}</H1>
         </SideBar.Header>
         <SideBar.Content layerSettings={activeTab === 'active'}>
-            <ButtonLayerNavWrapper layerSettings={activeTab === 'active'}>
+            <ButtonLayerNavWrapper>
                 <ButtonLayerNav
                     flat
                     activeLayer={activeTab === 'active'}
@@ -34,8 +35,15 @@ const MapLayersView = ({ handleButtonClickLayers, activeTab }: Props) => (
                     {strings.mapLayers.all}
                 </ButtonLayerNav>
             </ButtonLayerNavWrapper>
-            {activeTab === 'all' && <MapLayersAllContainer />}
-            {activeTab === 'active' && <MapLayersActiveContainer />}
+            <Scrollbars
+                autoHide
+                className="layer-view-scroll-wrapper"
+                renderThumbVertical={scrollProps =>
+                    <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
+            >
+                {activeTab === 'all' && <MapLayersAllContainer />}
+                {activeTab === 'active' && <MapLayersActiveContainer />}
+            </Scrollbars>
         </SideBar.Content>
     </Fragment>
 );

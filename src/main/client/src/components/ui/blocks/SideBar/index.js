@@ -17,7 +17,6 @@ const SideBar = styled.div`
     -webkit-box-shadow: ${styles.shadowDefault};
     -moz-box-shadow: ${styles.shadowDefault};
     box-shadow: ${styles.shadowDefault};
-    overflow: auto;
     z-index: 2;
     
     .loading-icon {

@@ -15,7 +15,7 @@ const LayerGroup = styled.div`
     box-shadow: ${styles.shadowDefault};
     border-left: 5px solid transparent;
     user-select: none;
-    margin: 1rem 0;
+    margin: 1rem;
     
     ${props => props.active && css`
         border-left: 5px solid ${styles.colorMain};

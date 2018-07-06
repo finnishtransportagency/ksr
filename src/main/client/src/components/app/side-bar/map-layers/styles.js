@@ -11,9 +11,5 @@ export const ButtonLayerNav = Button.extend`
 `;
 
 export const ButtonLayerNavWrapper = styled.div`
-    padding: 0;
-    
-    ${props => props.layerSettings && css`
-        padding: 0 1rem;
-    `}
+    padding: 0 1rem;
 `;
