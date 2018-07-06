@@ -7,7 +7,7 @@ import {
     ADD_SEARCH_RESULTS_LAYER,
 } from '../../constants/actionTypes';
 
-import { addOrReplaceLayer } from '../../utils/layers';
+import { addOrReplaceLayer, addOrReplaceLayerInSearchGroup } from '../../utils/layers';
 
 type SubLayers = {
     name: string,
@@ -69,6 +69,7 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 layerList: addOrReplaceLayer(state.layerList, action.layer),
+                layerGroups: addOrReplaceLayerInSearchGroup(state.layerGroups, action.layer),
             };
         default:
             return state;

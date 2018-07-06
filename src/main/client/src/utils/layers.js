@@ -17,3 +17,22 @@ export const addOrReplaceLayer = (layerList, layer) => {
     }
     return layers;
 };
+
+/**
+* Adds or replaces layer in layergroup for search-layers.
+* If layerGroup for search-features does not exists, then
+* no action will be taken.
+*
+* @param layerGroups Array of layergroups
+* @param layer layer to add
+*
+* @returns layerGroups Updated layerGroups
+*/
+export const addOrReplaceLayerInSearchGroup = (layerGroups, layer) => (
+    layerGroups.map((lg) => {
+        if (lg.type === 'search') {
+            return { ...lg, layers: addOrReplaceLayer(lg.layers, layer) };
+        }
+        return { ...lg };
+    })
+);
