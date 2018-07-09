@@ -18,7 +18,7 @@ const MapLayersAllView = ({
     activeGroup,
 }: Props) => (
     <Fragment>
-        {layerGroups.map(lg => (
+        {layerGroups.map(lg => lg.layers.length > 0 && (
             <LayerGroup key={lg.id} active={activeGroup === lg.id}>
                 <LayerGroup.Header onClick={() => handleGroupClick(lg.id)}>
                     <div>
