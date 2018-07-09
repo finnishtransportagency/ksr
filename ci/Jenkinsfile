@@ -89,8 +89,8 @@ pipeline {
                     ].join(" ")
 
                     STAGE_DEPLOY_PLAYBOOK = [
-                        inventory: "/data1/ansible/inventories/ksr",
-                        playbook: "/data1/ansible/ksr.yml",
+                        inventory: "/data/ansible/inventories/ksr",
+                        playbook: "/data/ansible/ksr.yml",
                         vaultCredentialsId: "vaultpass-ksr",
                         tags: "service-deploy",
                         extraVars: [
@@ -149,7 +149,7 @@ pipeline {
                 }
             }
             steps {
-                sh "cp /data1/ci/{maven,node,python}/* ci/confs/"
+                sh "cp /data/ci/{maven,node,python}/* ci/confs/"
                 script {
                     def jenkins_uid = sh(returnStdout: true, script: "id -u").trim()
                     def build_args = [
