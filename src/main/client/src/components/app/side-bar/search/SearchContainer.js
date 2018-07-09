@@ -6,7 +6,7 @@ import Search from './Search';
 
 const mapStateToProps = (state) => {
     const queryableLayers = state.map.layerGroups.layerList
-        .filter(l => l.visible && l.active && l.queryable && l._source !== 'search')
+        .filter(l => l.active && l.queryable && l._source !== 'search')
         .map(l => ({ ...l, value: l.id, label: l.name }));
 
     return ({
