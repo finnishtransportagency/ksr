@@ -1,0 +1,6 @@
+FROM python:2-alpine
+ARG JENKINS_UID=1000
+COPY confs/pip* /etc/
+RUN pip install --upgrade pip && pip install --requirement /etc/pip-requirements.txt
+RUN adduser -D -S -u ${JENKINS_UID} jenkins
+RUN chown -R jenkins /home/jenkins
