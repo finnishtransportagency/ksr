@@ -49,10 +49,10 @@ public class HttpRequestServiceTests {
 
     @Test
     public void testIsGetCapabilitiesRequest() {
-        Assert.assertEquals(true, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetCapabilities"));
-        Assert.assertEquals(true, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=getcapabilities"));
-        Assert.assertEquals(true, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wmts/1.0.0/WMTSCapabilities.xml"));
-        Assert.assertEquals(false, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetMap"));
+        Assert.assertTrue(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetCapabilities"));
+        Assert.assertTrue(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=getcapabilities"));
+        Assert.assertTrue(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wmts/1.0.0/WMTSCapabilities.xml"));
+        Assert.assertFalse(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetMap"));
     }
 
     @Test
