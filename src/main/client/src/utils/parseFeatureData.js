@@ -150,11 +150,10 @@ export const updateLayerColumns = (activeTable, columns, currentLayers) => (
 * activeTable: id of active table.
 */
 export const syncWithLayersList = (currentLayers, layerList, currentActiveTable) => {
-    const layers = currentLayers.filter(l =>
-        layerList
-            .find(ll =>
-                (ll.id.toString() === l.id.toString() && ll.active === true))
-                !== undefined);
+    const layers = currentLayers.filter(l => layerList
+        .find(ll => (
+            (ll.id.toString() === l.id.toString() && l.id.indexOf('.s') > 0) ||
+            (ll.id.toString() === l.id.toString() && ll.active === true))) !== undefined);
 
     const activeTable = getActiveTable(layers, currentActiveTable);
 
