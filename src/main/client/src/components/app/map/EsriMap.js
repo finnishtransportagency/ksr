@@ -10,7 +10,7 @@ import { graphicsToEsriJSON } from '../../../utils/arcFormats';
 import { getStreetViewLink } from '../../../utils/streetView';
 import { addLayer, highlight, fitExtent } from '../../../utils/map';
 
-import { MAP_VIEW_MAX_SCALE } from '../../../constants/common';
+import { MAP_VIEW_MAX_SCALE, MAP_VIEW_MIN_SCALE } from '../../../constants/common';
 
 type Props = {
     activeNav: string,
@@ -145,6 +145,7 @@ class EsriMap extends Component<Props, State> {
                     spatialReference: epsg3067,
                     constraints: {
                         maxScale: MAP_VIEW_MAX_SCALE,
+                        minScale: MAP_VIEW_MIN_SCALE,
                     },
                 });
 
