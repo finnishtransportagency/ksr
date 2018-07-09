@@ -164,25 +164,47 @@ class EsriMap extends Component<Props, State> {
                 view.ui.add([scaleBar], 'bottom-left');
 
                 view.on('click', (event) => {
-                    event.stopPropagation();
-
                     if (event.button === 0) { // Should be primary click both on mouse and touch.
                         const swLink = getStreetViewLink(event.mapPoint.x, event.mapPoint.y);
 
                         view.popup.collapseEnabled = false;
-                        view.popup.open({
-                            title: strings.esriMap.destinationDetails,
-                            location: event.mapPoint,
-                            content: swLink,
-                        });
 
                         const point = {
                             x: event.x,
                             y: event.y,
                         };
 
+                        // Select features on point and add popup data to the layers
                         view.hitTest(point).then(({ results }) => {
-                            const graphics = results.map(re => re.graphic);
+                            const newResults = [...results];
+
+                            results.forEach((layer, i) => {
+                                const fieldInfos = [];
+
+                                const queryColumns = this.props.layerList
+                                    .filter(ll => ll.id.toString() === layer.graphic.layer.id)
+                                    .map(ll => ll.queryColumns);
+
+                                queryColumns[0].forEach((r) => {
+                                    fieldInfos.push({
+                                        fieldName: r,
+                                        label: r,
+                                    });
+                                });
+
+                                newResults[i].graphic.layer.popupTemplate = {
+                                    title: layer.graphic.layer.title,
+                                    content: [{
+                                        type: 'text',
+                                        text: swLink,
+                                    }, {
+                                        type: 'fields',
+                                        fieldInfos,
+                                    }],
+                                };
+                            });
+
+                            const graphics = newResults.map(re => re.graphic);
                             const features = graphicsToEsriJSON(graphics);
                             this.props.selectFeatures(features);
                         });
