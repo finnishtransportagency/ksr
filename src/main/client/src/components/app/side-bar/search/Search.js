@@ -141,7 +141,7 @@ class Search extends Component<Props, State> {
         );
 
         searchFeatures(
-            selectedLayer.toString(),
+            selectedLayer,
             queryString,
             title,
         );

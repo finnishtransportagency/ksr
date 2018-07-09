@@ -147,7 +147,7 @@ export const syncWithLayersList = (currentLayers, layerList, currentActiveTable)
     const layers = currentLayers.filter(l =>
         layerList
             .find(ll =>
-                (ll.id.toString() === l.id.toString() && ll.active === true))
+                (ll.id === l.id && ll.active === true))
                 !== undefined);
 
     const activeTable = getActiveTable(layers, currentActiveTable);

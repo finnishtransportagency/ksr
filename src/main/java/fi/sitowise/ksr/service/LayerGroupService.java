@@ -48,7 +48,7 @@ public class LayerGroupService {
             if (lg.getLayers() != null) {
                 for (Layer l : lg.getLayers()) {
                     l.setVisible(isMobile ? l.getMobileVisible() : l.getDesktopVisible());
-                    l.setUrl(String.format("%s/%d/", ProxyController.PROXY_URL, l.getId()));
+                    l.setUrl(String.format("%s/%s/", ProxyController.PROXY_URL, l.getId()));
                 }
             }
         }
