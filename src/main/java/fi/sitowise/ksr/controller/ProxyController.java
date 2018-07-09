@@ -2,7 +2,6 @@ package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
-import fi.sitowise.ksr.service.AESService;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import org.apache.commons.lang3.StringUtils;
