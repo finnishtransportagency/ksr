@@ -62,11 +62,10 @@ export default (state: State = initialState, action: Action) => {
         case HIDE_LAYER:
             return {
                 ...state,
-                layerList: (state.layerList.map(l => (
-                    {
-                        ...l,
-                        visible: action.layerId === l.id ? false : l.visible,
-                    })): Array<Object>),
+                layerList: (state.layerList.map(l => ({
+                    ...l,
+                    visible: action.layerId === l.id ? false : l.visible,
+                })): Array<Object>),
             };
         case ADD_SEARCH_RESULTS_LAYER:
             return {

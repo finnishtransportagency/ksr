@@ -95,6 +95,7 @@ export const getActiveTable = (layers, currentActiveTable) => {
 * @param currentLayers Array of current layers
 * @param newLayers Array of new layers
 * @param currentActiveTable Id of currently active table
+* @param clear Boolean which tells if feature should be cleared
 *
 * @returns {layers, activeTable}
 *
@@ -197,7 +198,7 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
 * If feature is set unselected, it won't be remove from the table.
 *
 * @param currentLayers Array of layers (table-reducer)
-* @param currentActiveTable Id of the currently active layer in table
+* @param feature Object of selected feature
 *
 * @returns layers Layers updated with features selection
 */

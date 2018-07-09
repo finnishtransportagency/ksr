@@ -1,7 +1,7 @@
 // @flow
 import { fetchSearchQuery } from '../../api/search/searchQuery';
 import * as types from '../../constants/actionTypes';
-import { parseData, parseColumns } from '../../utils/parseFeatureData';
+import { parseData } from '../../utils/parseFeatureData';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -20,51 +20,48 @@ export const setColumns = (columns: Array<Object>) => ({
     type: types.SET_COLUMNS,
     columns,
 });
-export const searchFeatures = (selectedLayer: Object, queryString: string) =>
-    (dispatch: Function) => {
-        const layerData = {
-            layers: [],
-        };
 
-        dispatch({ type: types.SEARCH_FEATURES });
-        fetchSearchQuery(selectedLayer.id, queryString, selectedLayer.name, layerData)
-            .then((r) => {
-                const newLayer = {
-                    ...selectedLayer,
-                    name: selectedLayer.name,
-                    definitionExpression: queryString,
-                    visible: true,
-                    id: `${selectedLayer.id}.s`,
-                    _source: 'search',
-                };
-
-                const res = {
-                    layers: r.layers.map(l => ({
-                        ...l,
-                        id: newLayer.id,
-                        title: newLayer.name,
-                    })),
-                };
-
-                dispatch({
-                    type: types.SEARCH_FEATURES_FULFILLED,
-                    layers: parseData(res, false, 'search'),
-                });
-                dispatch({
-                    type: types.HIDE_LAYER,
-                    layerId: selectedLayer.id,
-                });
-                dispatch({
-                    type: types.ADD_SEARCH_RESULTS_LAYER,
-                    layer: newLayer,
-                });
-            });
+export const searchFeatures = (
+    selectedLayer: Object,
+    queryString: string,
+) => (dispatch: Function) => {
+    const layerData = {
+        layers: [],
     };
 
-export const setFeatureData = (columnData: Array<Object>) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_FEATURES, payload: parseColumns(columnData),
-    });
+    dispatch({ type: types.SEARCH_FEATURES });
+    fetchSearchQuery(selectedLayer.id, queryString, selectedLayer.name, layerData)
+        .then((r) => {
+            const newLayer = {
+                ...selectedLayer,
+                name: selectedLayer.name,
+                definitionExpression: queryString,
+                visible: true,
+                id: `${selectedLayer.id}.s`,
+                _source: 'search',
+            };
+
+            const res = {
+                layers: r.layers.map(l => ({
+                    ...l,
+                    id: newLayer.id,
+                    title: newLayer.name,
+                })),
+            };
+
+            dispatch({
+                type: types.SEARCH_FEATURES_FULFILLED,
+                layers: parseData(res, false, 'search'),
+            });
+            dispatch({
+                type: types.HIDE_LAYER,
+                layerId: selectedLayer.id,
+            });
+            dispatch({
+                type: types.ADD_SEARCH_RESULTS_LAYER,
+                layer: newLayer,
+            });
+        });
 };
 
 export const setActiveTable = (activeTable: string) => ({
