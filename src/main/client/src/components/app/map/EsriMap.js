@@ -63,17 +63,16 @@ class EsriMap extends Component<Props, State> {
             layerListReversed.forEach((l, i) => {
                 // Add layer to map
                 if (l.active && !view.map.findLayerById(l.id.toString())) {
-                    l.visible = true; // eslint-disable-line no-param-reassign
+                    l.visible = true;
                     addLayer(l, this.state.view, i);
                 }
 
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
                     if (layer && l.id.toString() === layer.id) {
-                        layer.visible = l.visible; // eslint-disable-line no-param-reassign
-                        layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
+                        layer.visible = l.visible;
+                        layer.opacity = l.opacity;
                         if (l.type === 'agfs') {
-                            // eslint-disable-next-line no-param-reassign
                             if (layer.definitionExpression !== l.definitionExpression) {
                                 layer.definitionExpression = l.definitionExpression;
                                 if (l._source === 'search') {
