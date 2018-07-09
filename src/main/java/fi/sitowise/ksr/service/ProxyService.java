@@ -5,6 +5,7 @@ import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -65,14 +66,15 @@ public class ProxyService {
      *
      * @param layer The layer that is requested
      * @param baseUrl Baseurl for proxy-service for given layer.
-     * @param queryString HTTP queryString without leading ?, separated by &
-     * @param method HTTP method, GET | POST | PUT etc.
      * @param serviceEndpoint Service specific endpoint, after mapLayers base url.
+     * @param request HTTP request interface.
      * @param response HttpServletResponse where to write the proxy-response
      */
-    public void get(Layer layer, String baseUrl, String queryString, String method, String serviceEndpoint, HttpServletResponse response) {
-        String endPointUrl = getEndpointUrl(layer.getUrl(), serviceEndpoint, queryString);
+    public void get(Layer layer, String baseUrl, String serviceEndpoint, HttpServletRequest request,
+            HttpServletResponse response) {
+        String endPointUrl = getEndpointUrl(layer.getUrl(), serviceEndpoint, request.getQueryString());
         String authentication = aesService.decrypt(layer.getAuthentication());
-        this.httpRequestService.fetchToResponse(layer.getUrl(), authentication, baseUrl, method, endPointUrl, response);
+        this.httpRequestService.fetchToResponse(layer.getUrl(), authentication, baseUrl, endPointUrl,
+                request, response);
     }
 }

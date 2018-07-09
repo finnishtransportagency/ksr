@@ -4,15 +4,20 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -20,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,6 +42,10 @@ import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Service to handle HTTP(S) requests to external servers.
@@ -76,14 +86,14 @@ public class HttpRequestService {
      *
      * @param layerUrl Layer URL that is requested.
      * @param baseUrl Baseurl for proxy-service for given layer.
-     * @param method HTTP method, GET | POST | PUT etc.
      * @param endPointUrl The url to be fetched.
+     * @param request HTTP request interface.
      * @param response HttpServletResponse, where to write the fetched content
      */
-    public void fetchToResponse(String layerUrl, String authentication, String baseUrl, String method, String endPointUrl, HttpServletResponse response) {
-        HttpRequestBase base = getRequestBase(method, authentication, endPointUrl, requestConfig);
-
+    public void fetchToResponse(String layerUrl, String authentication, String baseUrl,
+            String endPointUrl, HttpServletRequest request, HttpServletResponse response) {
         try {
+            HttpRequestBase base = getRequestBase(request, authentication, endPointUrl, requestConfig);
             CloseableHttpResponse cRes = closeableHttpClient.execute(base);
 
             response.setStatus(cRes.getStatusLine().getStatusCode());
@@ -95,8 +105,8 @@ public class HttpRequestService {
                 setResponseContent(response, cRes);
             }
             cRes.close();
-        }
-        catch (IOException e) {
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -115,16 +125,30 @@ public class HttpRequestService {
     /**
      * Returns a correct HttpRequestBase for given method, endpoint and config.
      *
-     * @param method String indicating HTTP method PUT | POST | GET etc.
+     * @param request interface for getting request method and POST request parameters.
      * @param endPointUrl The url to be fetched.
      * @param requestConfig Common requestconfiguration for this httpRequestService.
      * @return Correct HttpRequestBase or GET if no matches found for method.
+     * @throws UnsupportedEncodingException if adding POST parameters fails.
      */
-    public HttpRequestBase getRequestBase(String method, String authentication, String endPointUrl, RequestConfig requestConfig) {
+    public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
+            String endPointUrl, RequestConfig requestConfig) throws UnsupportedEncodingException {
         HttpRequestBase base;
-        switch (method) {
+        switch (request.getMethod()) {
             case "GET":
                 base = new HttpGet(endPointUrl);
+                break;
+            case "POST":
+                base = new HttpPost(endPointUrl);
+                if (!CollectionUtils.isEmpty(request.getParameterMap())) {
+                    List<NameValuePair> params = new ArrayList<>();
+                    for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+                        for (String value : entry.getValue()) {
+                            params.add(new BasicNameValuePair(entry.getKey(), value));
+                        }
+                    }
+                    ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
+                }
                 break;
             default:
                 base = new HttpGet(endPointUrl);
