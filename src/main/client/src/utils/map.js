@@ -1,29 +1,15 @@
 // @flow
 import esriLoader from 'esri-loader';
 import { mapHighlightStroke as highlightStroke } from '../components/ui/defaultStyles';
-
-import { MAP_VIEW_MAX_SCALE, MAP_VIEW_FIT_SCALE } from '../constants/common';
-
 /**
 * Fit map on the extent of given layer.
-* But never zoom nearer than what is defined in MAP_VIEW_FIT_SCALE
 *
 * @param layer esri/layers/FeatureLayer
 * @param view esri/views/MapView
 */
 export const fitExtent = (layer: Object, view: Object) => {
     layer.queryExtent().then((response) => {
-        // Hacky, but this prevents map zooming beyond given scale.
-        view.constraints = {
-            ...view.constraints,
-            maxScale: MAP_VIEW_FIT_SCALE,
-        };
-        view.goTo(response.extent).then(() => {
-            view.constraints = {
-                ...view.constraints,
-                maxScale: MAP_VIEW_MAX_SCALE,
-            };
-        });
+        if (response.count) view.goTo(response.extent);
     });
 };
 
