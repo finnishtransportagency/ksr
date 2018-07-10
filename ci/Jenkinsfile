@@ -14,8 +14,8 @@ def get_pollSCM_trigger() {
 def get_version(pom_version) {
     if (get_environment().equals("dev")) { return "${pom_version}-SNAPSHOT" }
     if (get_environment().equals("prod")) { return "${pom_version}" }
-	if (get_environment().equals("test")) { return "${pom_version}-RC-SNAPSHOT" }
-    return "-${get_environment().toUpperCase()}-SNAPSHOT"
+    if (get_environment().equals("test")) { return "${pom_version}-RC-SNAPSHOT" }
+    return "${version-${get_environment().toUpperCase()}-SNAPSHOT"
 }
 
 pipeline {
@@ -58,7 +58,7 @@ pipeline {
                     STAGE_PREPARE_CMD = [
                         "cd src/main/client",
                         "npm install",
-                        "npm run build"
+                        "npm run build -- -u" // this should be defined at package.json - for example npm run build-ci
                     ].join(" && ")
 
                     STAGE_BUILD_CMD = [
