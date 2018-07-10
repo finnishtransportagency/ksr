@@ -53,14 +53,18 @@ export const searchFeatures = (
                 type: types.SEARCH_FEATURES_FULFILLED,
                 layers: parseData(res, false, 'search'),
             });
-            dispatch({
-                type: types.HIDE_LAYER,
-                layerId: selectedLayer.id,
-            });
-            dispatch({
-                type: types.ADD_SEARCH_RESULTS_LAYER,
-                layer: newLayer,
-            });
+
+            if (res.layers.length) {
+                dispatch({
+                    type: types.HIDE_LAYER,
+                    layerId: selectedLayer.id,
+                });
+
+                dispatch({
+                    type: types.ADD_SEARCH_RESULTS_LAYER,
+                    layer: newLayer,
+                });
+            }
         });
 };
 
