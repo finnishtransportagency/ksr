@@ -36,13 +36,13 @@ const MapLayersAllView = ({
                 </LayerGroup.Header>
                 <LayerGroup.Content hidden={activeGroup !== lg.id}>
                     {lg.layers.map(l => (
-                        <label key={l.id} htmlFor={l.name}>
+                        <label key={l.id} htmlFor={l.id}>
                             <input
                                 onChange={() => handleLayerClick(l.id)}
                                 checked={layerList.find(layer => layer.id === l.id).active}
                                 type="checkbox"
                                 value={l.name}
-                                id={l.name}
+                                id={l.id}
                             />
                             <span>{l.name}</span>
                         </label>
