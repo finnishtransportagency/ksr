@@ -4,7 +4,7 @@ def get_environment() {
     if (BRANCH_NAME.equals("develop")) { return "dev" }
     if (BRANCH_NAME.equals("master")) { return "prod" }
     if (BRANCH_NAME.startsWith("release-")) { return "test" }
-    return "jenkinsfile" // TODO default value ""
+    return "dev" // TODO default value ""
 }
 def get_test_hosts()  {
     if (get_environment().equals("dev")) {
@@ -25,7 +25,7 @@ def get_test_hosts()  {
     return [] 
 }
 def get_pollSCM_trigger() {
-    if (get_environment().equals("jenkinsfile")) { return "H/5 * * * *" }
+    if (get_environment().equals("dev")) { return "H/5 * * * *" }
     return ""
 }
 
@@ -40,6 +40,10 @@ def get_version(pom_version) {
 pipeline {
     agent any
     environment {
+        DB_CRED = credentials("db_cred_${get_service_environment()}")
+        DB_HOST = credentials("db_host_${get_service_environment()}")
+        DB_NAME = credentials("db_name_${get_service_environment()}")
+        DB_PORT = credentials("db_port")
         NOTIFY_SLACK_SUBJECT = "${JOB_NAME} - <${RUN_DISPLAY_URL}|${BUILD_DISPLAY_NAME}>"
     }
     options {
@@ -86,7 +90,13 @@ pipeline {
                         "npm run build"
                     ].join(" && ")
 
+                    def properties = "src/main/resources/application-ci.properties"
                     STAGE_BUILD_CMD = [
+                        "sed -i 's/DB_CRED_USR/${DB_CRED_USR}/g' ${properties}",
+                        "sed -i 's/DB_CRED_PSW/${DB_CRED_PSW}/g' ${properties}",
+                        "sed -i 's/DB_HOST/${DB_HOST}/g' ${properties}",
+                        "sed -i 's/DB_NAME/${DB_NAME}/g' ${properties}",
+                        "sed -i 's/DB_PORT/${DB_PORT}/g' ${properties}",
                         [
                             "mvn",
                             "versions:set",
