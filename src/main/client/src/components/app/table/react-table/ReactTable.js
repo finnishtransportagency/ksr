@@ -11,6 +11,7 @@ type Props = {
     layer: {
         data: Array<Object>,
         columns: Array<Object>,
+        id: string,
     },
     toggleSelection: Function,
     selectAll: boolean,
@@ -58,7 +59,7 @@ class ReactTable extends Component<Props, State> {
         />
     );
 
-    toggleSelection = (id, shiftKey, row) => {
+    toggleSelection = (id: string, shiftKey: string, row: Object) => {
         this.props.toggleSelection(row);
     };
 
