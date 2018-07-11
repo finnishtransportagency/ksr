@@ -129,7 +129,7 @@ pipeline {
                                 "--name ${it}",
                                 "--nostatusrc",
                                 "--output output-${it}.xml",
-                                "--report NONE"
+                                "--report NONE",
                                 "test"
                             ].join(" ")
                         }.join(" && "),
