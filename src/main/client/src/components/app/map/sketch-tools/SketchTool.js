@@ -120,6 +120,7 @@ class SketchTool extends Component<Props, State> {
                     view.map.layers.forEach((layer) => {
                         if (layer.queryFeatures) {
                             if (layer.visible &&
+                                !layer.definitionExpression &&
                                 view.scale < layer.minScale &&
                                 view.scale > layer.maxScale
                             ) {

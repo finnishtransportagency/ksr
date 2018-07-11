@@ -133,6 +133,10 @@ class EsriMap extends Component<Props, State> {
                     center,
                     scale: mapScale,
                     spatialReference: epsg3067,
+                    constraints: {
+                        maxScale: 2000,
+                        minScale: 5000000,
+                    },
                 });
 
                 [...layerList].reverse().forEach((l, i) => {
@@ -170,7 +174,7 @@ class EsriMap extends Component<Props, State> {
                 );
                 view.ui.add([scaleBar], 'bottom-left');
 
-                document.getElementById('select-tool-outer-wrapper').classList
+                (document.getElementById: Function)('select-tool-outer-wrapper').classList
                     .remove('esri-component');
 
                 view.on('click', (event) => {

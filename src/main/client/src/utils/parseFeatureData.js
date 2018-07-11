@@ -30,6 +30,7 @@ export const parseData = (data, selected, source) => {
         id: l.id,
         title: l.title,
         columns: parseColumns(l.fields),
+        _source: source,
         data: l.features.map(f => ({
             ...f.attributes,
             _id: f.attributes[l.objectIdFieldName],
@@ -94,13 +95,14 @@ export const getActiveTable = (layers, currentActiveTable) => {
 * @param currentLayers Array of current layers
 * @param newLayers Array of new layers
 * @param currentActiveTable Id of currently active table
+* @param clear Boolean which tells if feature should be cleared
 *
 * @returns {layers, activeTable}
 *
 * Layers: newLayers merged with currentLayers.
 * ActiveTable: id of active table.
 */
-export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
+export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear = false) => {
     const layers = currentLayers.map(l => ({ ...l, data: [...l.data] }));
 
     newLayers.forEach((nl) => {
@@ -108,7 +110,11 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable) => {
         const matchingLayer = layers.find(c => c.id === nl.id);
         if (matchingLayer) {
             // Add or replace features in this layer
-            matchingLayer.data = mergeData(matchingLayer.data, nl.data);
+            if (clear) {
+                matchingLayer.data = nl.data;
+            } else {
+                matchingLayer.data = mergeData(matchingLayer.data, nl.data);
+            }
         } else if (nl.data.length) {
             layers.push(nl);
         }
@@ -144,11 +150,9 @@ export const updateLayerColumns = (activeTable, columns, currentLayers) => (
 * activeTable: id of active table.
 */
 export const syncWithLayersList = (currentLayers, layerList, currentActiveTable) => {
-    const layers = currentLayers.filter(l =>
-        layerList
-            .find(ll =>
-                (ll.id === l.id && ll.active === true))
-                !== undefined);
+    const layers = currentLayers.filter(l => layerList.find(ll => (
+        (ll.id === l.id && l.id.indexOf('.s') > 0) ||
+        (ll.id === l.id && ll.active === true))) !== undefined);
 
     const activeTable = getActiveTable(layers, currentActiveTable);
 
@@ -192,7 +196,7 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
 * If feature is set unselected, it won't be removed from the table.
 *
 * @param currentLayers Array of layers (table-reducer)
-* @param currentActiveTable Id of the currently active layer in table
+* @param feature Object of selected feature
 *
 * @returns layers Layers updated with features selection
 */

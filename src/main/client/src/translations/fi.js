@@ -10,6 +10,7 @@ const fi = {
         chooseLayer: 'Valitse taso',
         searchAllFields: 'Hae kaikista kentistä',
         addField: 'Lisää hakukenttä',
+        searchLayerGroupName: 'Hakutulokset',
     },
     reactTable: {
         previousText: 'Edellinen',

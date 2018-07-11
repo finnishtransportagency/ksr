@@ -214,6 +214,7 @@ describe('parseFeatureData', () => {
             {
                 id: '123',
                 title: 'layer123',
+                _source: 'select',
                 columns: [
                     { Header: 'L1A', accessor: 'l.1.a', show: true },
                     { Header: 'L2A', accessor: 'l.2.a', show: true },
@@ -233,6 +234,7 @@ describe('parseFeatureData', () => {
             {
                 id: '456',
                 title: 'layer456',
+                _source: 'select',
                 columns: [
                     { Header: 'L1A', accessor: 'l.1.a', show: true },
                     { Header: 'L2A', accessor: 'l.2.a', show: true },
@@ -252,6 +254,7 @@ describe('parseFeatureData', () => {
             {
                 id: '789',
                 title: 'layer789',
+                _source: 'select',
                 columns: [
                     { Header: 'L1A', accessor: 'l.1.a', show: true },
                     { Header: 'L2A', accessor: 'l.2.a', show: true },

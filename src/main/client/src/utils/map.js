@@ -1,6 +1,46 @@
 // @flow
 import esriLoader from 'esri-loader';
 import { mapHighlightStroke as highlightStroke } from '../components/ui/defaultStyles';
+/**
+* Fit map on the extent of given layer.
+*
+* @param layer esri/layers/FeatureLayer
+* @param view esri/views/MapView
+*/
+export const fitExtent = (layer: Object, view: Object) => {
+    layer.queryExtent().then((response) => {
+        if (response.count) view.goTo(response.extent);
+    });
+};
+
+/**
+* A Helper function to create a FeatureLayer.
+* If source is 'search', then also fit's the bounds of this layer.
+*
+* @param FeatureLayer esri/layers/FeatureLayer reference
+* @param layer Layer object representing layer to be created
+* @param view esri/views/MapView
+*
+* @returns fl Created FeatureLayer
+*/
+const createFeatureLayer = (FeatureLayer, layer, view) => {
+    const fl = new FeatureLayer({
+        id: layer.id,
+        url: layer.url,
+        copyright: layer.attribution,
+        maxScale: layer.maxScale,
+        minScale: layer.minScale,
+        opacity: layer.opacity,
+        visible: layer.visible,
+        title: layer.name,
+        outFields: ['*'],
+        definitionExpression: layer.definitionExpression,
+    });
+    if (layer._source === 'search') {
+        fitExtent(fl, view);
+    }
+    return fl;
+};
 
 export const addLayer = (layer: Object, view: Object, index: number) => {
     esriLoader
@@ -52,17 +92,7 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
                     }), index);
                     break;
                 case 'agfs':
-                    view.map.add(new FeatureLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        opacity: layer.opacity,
-                        visible: layer.visible,
-                        title: layer.name,
-                        outFields: ['*'],
-                    }), index);
+                    view.map.add(createFeatureLayer(FeatureLayer, layer, view), index);
                     break;
                 default:
                     break;

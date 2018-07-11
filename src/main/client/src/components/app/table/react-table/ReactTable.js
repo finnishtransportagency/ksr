@@ -9,6 +9,7 @@ import strings from './../../../../translations';
 type Props = {
     fetching: boolean,
     layer: {
+        id: string,
         data: Array<Object>,
         columns: Array<Object>,
         id: string,
@@ -62,6 +63,10 @@ class ReactTable extends Component<Props, State> {
             }}
         />
     );
+
+    toggleSelection = (id: string, shiftKey: boolean, row: Object) => {
+        this.props.toggleSelection(row);
+    };
 
     render() {
         const { fetching, layer } = this.props;
