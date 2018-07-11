@@ -2,7 +2,9 @@ package fi.sitowise.ksr.service;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -13,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,6 +30,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
 @RunWith(SpringRunner.class)
@@ -45,23 +49,40 @@ public class HttpRequestServiceTests {
 
     @Test
     public void testIsGetCapabilitiesRequest() {
-        Assert.assertEquals(true, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetCapabilities"));
-        Assert.assertEquals(true, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=getcapabilities"));
-        Assert.assertEquals(true, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wmts/1.0.0/WMTSCapabilities.xml"));
-        Assert.assertEquals(false, httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetMap"));
+        Assert.assertTrue(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetCapabilities"));
+        Assert.assertTrue(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=getcapabilities"));
+        Assert.assertTrue(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wmts/1.0.0/WMTSCapabilities.xml"));
+        Assert.assertFalse(httpRequestService.isGetCapabilitiesRequest("http://test.example.com/wms?service=wms&request=GetMap"));
     }
 
     @Test
-    public void testGetRequestBase() throws URISyntaxException {
-        HttpRequestBase getBase = httpRequestService.getRequestBase("GET", null, "http://test.example.com/wms?service=wms&request=GetCapabilities", null);
+    public void testGetRequestBase() throws URISyntaxException, UnsupportedEncodingException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod("GET");
+
+        HttpRequestBase getBase = httpRequestService.getRequestBase(request, null, "http://test.example.com/wms?service=wms&request=GetCapabilities", null);
         Assert.assertEquals("GET", getBase.getMethod());
         Assert.assertNull(getBase.getFirstHeader("Authorization"));
         Assert.assertEquals(new java.net.URI("http://test.example.com/wms?service=wms&request=GetCapabilities"), getBase.getURI());
 
-        HttpRequestBase getAuthBase = httpRequestService.getRequestBase("GET", "user:pass", "http://test.2.example.com/wms?service=wms&request=GetCapabilities", null);
+        HttpRequestBase getAuthBase = httpRequestService.getRequestBase(request, "user:pass", "http://test.2.example.com/wms?service=wms&request=GetCapabilities", null);
         Assert.assertEquals("GET", getAuthBase.getMethod());
         Assert.assertEquals("Basic user:pass", getAuthBase.getFirstHeader("Authorization").getValue());
         Assert.assertEquals(new java.net.URI("http://test.2.example.com/wms?service=wms&request=GetCapabilities"), getAuthBase.getURI());
+    }
+
+    @Test
+    public void testPostRequestBase() throws URISyntaxException, UnsupportedEncodingException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod("POST");
+        request.setParameter("test", "test");
+
+        HttpRequestBase postAuthBase = httpRequestService.getRequestBase(request, "user:pass",
+                "http://test.example.com/query", null);
+        Assert.assertEquals("POST", postAuthBase.getMethod());
+        Assert.assertEquals("Basic user:pass", postAuthBase.getFirstHeader("Authorization").getValue());
+        Assert.assertEquals(new java.net.URI("http://test.example.com/query"), postAuthBase.getURI());
+        Assert.assertTrue(((HttpPost) postAuthBase).getEntity() instanceof UrlEncodedFormEntity);
     }
 
     @Test

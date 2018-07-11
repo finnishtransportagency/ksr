@@ -150,10 +150,9 @@ export const updateLayerColumns = (activeTable, columns, currentLayers) => (
 * activeTable: id of active table.
 */
 export const syncWithLayersList = (currentLayers, layerList, currentActiveTable) => {
-    const layers = currentLayers.filter(l => layerList
-        .find(ll => (
-            (ll.id.toString() === l.id.toString() && l.id.indexOf('.s') > 0) ||
-            (ll.id.toString() === l.id.toString() && ll.active === true))) !== undefined);
+    const layers = currentLayers.filter(l => layerList.find(ll => (
+        (ll.id === l.id && l.id.indexOf('.s') > 0) ||
+        (ll.id === l.id && ll.active === true))) !== undefined);
 
     const activeTable = getActiveTable(layers, currentActiveTable);
 
@@ -194,7 +193,7 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
 
 /**
 * Toggles selected-state for given feature.
-* If feature is set unselected, it won't be remove from the table.
+* If feature is set unselected, it won't be removed from the table.
 *
 * @param currentLayers Array of layers (table-reducer)
 * @param feature Object of selected feature

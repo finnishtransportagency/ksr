@@ -87,11 +87,11 @@ public class LayerGroupServiceTests {
         lg.setId(123);
 
         Layer l1 = new Layer();
-        l1.setId(321);
+        l1.setId("321");
         l1.setUrl("https://test.example.com");
 
         Layer l2 = new Layer();
-        l2.setId(543);
+        l2.setId("543");
         l2.setUrl("https://2.test.example.com");
 
         lg.setLayers(Arrays.asList(l1, l2));
@@ -99,7 +99,7 @@ public class LayerGroupServiceTests {
         Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(Collections.singletonList(lg));
         for (LayerGroup lgr : layerGroupService.getLayerGroups(false)) {
             for (Layer lr : lgr.getLayers()) {
-                Assert.assertEquals(String.format("%s/%d/", ProxyController.PROXY_URL, lr.getId()), lr.getUrl());
+                Assert.assertEquals(String.format("%s/%s/", ProxyController.PROXY_URL, lr.getId()), lr.getUrl());
             }
         }
     }

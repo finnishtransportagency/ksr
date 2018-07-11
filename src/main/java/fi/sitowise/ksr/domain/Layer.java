@@ -13,7 +13,7 @@ import static java.lang.Math.toIntExact;
  * A Layer-POJO which represents a map layer.
  */
 public class Layer implements Serializable {
-    private int id;
+    private String id;
     private String name;
     private String type;
     private String url;
@@ -70,7 +70,7 @@ public class Layer implements Serializable {
      *
      * @return id id
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -80,7 +80,7 @@ public class Layer implements Serializable {
      * @param id id
      */
     public void setId(Long id) {
-        this.id = toIntExact(id);
+        this.id = String.valueOf(id);
     }
 
     /**
@@ -88,7 +88,7 @@ public class Layer implements Serializable {
      *
      * @param id id
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

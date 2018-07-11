@@ -12,6 +12,7 @@ type Props = {
         id: string,
         data: Array<Object>,
         columns: Array<Object>,
+        id: string,
     },
     toggleSelection: Function,
     selectAll: boolean,
@@ -45,6 +46,10 @@ class ReactTable extends Component<Props, State> {
             bodyElement.style.height = `calc(100% - ${tbodyHeight}px)`;
         }
     }
+
+    toggleSelection = (id: string, shiftKey: string, row: Object) => {
+        this.props.toggleSelection(row);
+    };
 
     renderEditable = (cellInfo: any) => (
         <div

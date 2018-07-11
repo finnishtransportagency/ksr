@@ -8,7 +8,7 @@ import EsriMapView from './EsriMapView';
 
 import { graphicsToEsriJSON } from '../../../utils/arcFormats';
 import { getStreetViewLink } from '../../../utils/streetView';
-import { addLayer, highlight, fitExtent } from '../../../utils/map';
+import { addLayer, highlight } from '../../../utils/map';
 
 type Props = {
     activeNav: string,
@@ -60,24 +60,16 @@ class EsriMap extends Component<Props, State> {
             // Update layer settings
             layerListReversed.forEach((l, i) => {
                 // Add layer to map
-                if (l.active && !view.map.findLayerById(l.id.toString())) {
-                    l.visible = true;
+                if (l.active && !view.map.findLayerById(l.id)) {
+                    l.visible = true; // eslint-disable-line no-param-reassign
                     addLayer(l, this.state.view, i);
                 }
 
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
-                    if (layer && l.id.toString() === layer.id) {
-                        layer.visible = l.visible;
-                        layer.opacity = l.opacity;
-                        if (l.type === 'agfs') {
-                            if (layer.definitionExpression !== l.definitionExpression) {
-                                layer.definitionExpression = l.definitionExpression;
-                                if (l._source === 'search') {
-                                    fitExtent(layer, view);
-                                }
-                            }
-                        }
+                    if (layer && l.id === layer.id) {
+                        layer.visible = l.visible; // eslint-disable-line no-param-reassign
+                        layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
                         if (!l.active) view.map.layers.remove(layer);
                     }
                 });
@@ -170,10 +162,20 @@ class EsriMap extends Component<Props, State> {
 
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
-                    [compass, locate, track, 'draw-polygon', 'draw-line', 'draw-rectangle', 'remove-selection'],
+                    [
+                        compass,
+                        locate,
+                        track,
+                        'draw-polygon',
+                        'draw-line',
+                        'select-tool-outer-wrapper',
+                    ],
                     'top-right',
                 );
                 view.ui.add([scaleBar], 'bottom-left');
+
+                (document.getElementById: Function)('select-tool-outer-wrapper').classList
+                    .remove('esri-component');
 
                 view.on('click', (event) => {
                     if (event.button === 0) { // Should be primary click both on mouse and touch.
@@ -194,7 +196,7 @@ class EsriMap extends Component<Props, State> {
                                 const fieldInfos = [];
 
                                 const queryColumns = this.props.layerList
-                                    .filter(ll => ll.id.toString() === layer.graphic.layer.id)
+                                    .filter(ll => ll.id === layer.graphic.layer.id)
                                     .map(ll => ll.queryColumns);
 
                                 queryColumns[0].forEach((r) => {
