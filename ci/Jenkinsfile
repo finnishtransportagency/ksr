@@ -298,7 +298,7 @@ pipeline {
             when {
                 beforeAgent true
                 expression {
-                    get_environment()?.trim() && params.action.equals("service-deploy")
+                    get_environment().equals("prod") && params.action.equals("service-deploy")
                 }
             }
             steps {
