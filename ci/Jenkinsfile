@@ -6,6 +6,24 @@ def get_environment() {
     if (BRANCH_NAME.startsWith("release-")) { return "test" }
     return "jenkinsfile" // TODO default value ""
 }
+def get_test_hosts()  {
+    if (get_environment().equals("dev")) {
+        return [ "http://livikeh13l.vally.local" ]
+    }
+    if (get_environment().equals("prod")) {
+        return [
+          "http://livikiso01.vally.local",
+          "http://livikiso02.vally.local"
+        ]
+    }
+    if (get_environment().equals("test")) {
+        return [
+          "http://livikisot03.vally.local",
+          "http://livikisot04.vally.local"
+        ]
+    }
+    return [ ] 
+}
 def get_pollSCM_trigger() {
     if (get_environment().equals("jenkinsfile")) { return "H/5 * * * *" }
     return ""
@@ -28,6 +46,13 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: "25"))
         disableConcurrentBuilds()
     }
+    parameter {
+        choice(
+            choices: "service-deploy\nservice-restart\nservice-start\nservice-stop",
+            description: "Action to execute.",
+            name: "action"
+        )
+    }
     stages {
         stage("Setup") {
             when {
@@ -40,7 +65,7 @@ pipeline {
 
                     def pom = readMavenPom()
 
-                    def deploy_target = get_environment()
+                    def target_environment = get_environment()
                     
                     def artifact_id = pom.artifactId
                     def artifact_version = get_version(pom.version)
@@ -50,10 +75,8 @@ pipeline {
                     def repository_url = "http://livibuild05.vally.local/nexus/repository/ksr"
 
                     STAGE_ACK_PARAMETERS = [
-                        choice(choices: deploy_target, description: "Deploy target.", name: "deploy_target"),
-                        choice(choices: artifact_id, description: "Artifact ID", name: "artifact_id"),
-                        choice(choices: artifact_version, description: "Artifact version", name: "artifact_version"),
-                        choice(choices: group_id, description: "Group ID", name: "group_id")
+                        choice(choices: target_environment, description: "Deploy target.", name: "target_environment"),
+                        choice(choices: params.action, description: "Action.", name: "action"
                     ]
 
                     STAGE_PREPARE_CMD = [
@@ -78,7 +101,7 @@ pipeline {
                         ].join(" ")
                     ].join(" && ")
 
-                    STAGE_CONFIRM_TEXT = "Create release ${group_id}:${artifact_id}@${artifact_version} and deploy to ${deploy_target}?"
+                    STAGE_CONFIRM_TEXT = "Create release ${group_id}:${artifact_id}@${artifact_version} and deploy to ${target_environment}?"
 
                     STAGE_PUBLISH_CMD = [
                         "mvn",
@@ -90,12 +113,44 @@ pipeline {
                         "--batch-mode"
                     ].join(" ")
 
-                    STAGE_DEPLOY_PLAYBOOK = [
+                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = [
                         inventory: "/data/ansible/inventories/ksr",
                         playbook: "/data/ansible/ksr.yml",
                         vaultCredentialsId: "vaultpass-ksr",
-                        tags: "service-deploy",
-                        extraVars: [
+                        tags: params.action
+                    ]
+
+                    STAGE_TEST_CMD = [
+                        get_robotframework_hosts().collect {
+                            [
+                                "robot",
+                                "--include Smoke",
+                                "--log NONE",
+                                "--name ${it}",
+                                "--nostatusrc",
+                                "--output output-${it}.xml",
+                                "--report NONE"
+                                "test"
+                            ].join(" ")
+                        }.join(" && "),
+                        [
+                            "rebot",
+                            "--name ${BUILD_TAG}",
+                            "--nostatusrc",
+                            "--output output.xml",
+                            "output-*.xml"
+                        ].join(" ")
+                    ].minus('').join(" && ")
+
+                    if (params.action.equals("service-deploy")) {
+                        
+                        STAGE_ACK_PARAMETERS.addAll([
+                            choice(choices: artifact_id, description: "Artifact ID", name: "artifact_id"),
+                            choice(choices: artifact_version, description: "Artifact version", name: "artifact_version"),
+                            choice(choices: group_id, description: "Group ID", name: "group_id")
+                        ])
+
+                        STAGE_EXECUTE_ANSIBLE_PARAMETERS.put("extraVars", [
                             ksr_target: get_environment(),
                             ksr_deploy_springboot: JsonOutput.toJson([
                                 artifact_id: artifact_id,
@@ -104,8 +159,9 @@ pipeline {
                                 version: artifact_version,
                                 repository_url: repository_url
                             ])
-                        ]
-                    ]
+                        ])
+
+                    }
                 }
             }
         }
@@ -116,7 +172,8 @@ pipeline {
             }
             when {
                 expression {
-                    get_environment()?.trim() && !get_pollSCM_trigger().trim()
+                    (get_environment()?.trim() && !get_pollSCM_trigger().trim()) ||
+                    (get_environment()?.trim() && !params.action.equals("service-deploy"))
                 }
             }
             steps {
@@ -147,7 +204,7 @@ pipeline {
         stage("Docker") {
             when {
                 expression {
-                    get_environment()?.trim()
+                    get_environment()?.trim() && params.action.equals("service-deploy")
                 }
             }
             steps {
@@ -193,7 +250,7 @@ pipeline {
             when {
                 beforeAgent true
                 expression {
-                    get_environment()?.trim()
+                    get_environment()?.trim() && params.action.equals("service-deploy")
                 }
             }
             steps {
@@ -217,7 +274,7 @@ pipeline {
             }
             when {
                 expression {
-                    get_environment()?.trim()
+                    get_environment()?.trim() && params.action.equals("service-deploy")
                 }
             }
             steps {
@@ -240,7 +297,7 @@ pipeline {
             when {
                 beforeAgent true
                 expression {
-                    get_environment().equals("prod")
+                    get_environment()?.trim() && params.action.equals("service-deploy")
                 }
             }
             steps {
@@ -275,7 +332,7 @@ pipeline {
             when {
                 beforeAgent true
                 expression {
-                    get_environment()?.trim()
+                    get_environment()?.trim() && params.action.equals("service-deploy")
                 }
             }
             steps {
@@ -290,7 +347,7 @@ pipeline {
                 }
             }
         }
-        stage("Deploy") {
+        stage("Execute") {
             when {
                 expression {
                     get_environment()?.trim()
@@ -298,7 +355,7 @@ pipeline {
             }
             steps {
                 echo "ansible"
-                //ansiblePlaybook(STAGE_DEPLOY_PLAYBOOK)
+                //ansiblePlaybook(STAGE_EXECUTE_ANSIBLE_PARAMETERS)
             }
             post {
                 failure {
@@ -318,7 +375,7 @@ pipeline {
             }
             when {
                 expression {
-                    get_environment()?.trim()
+                    get_environment()?.trim() && !params.action.equals("service-stop")
                 }
             }
             steps {
