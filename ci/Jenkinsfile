@@ -121,7 +121,7 @@ pipeline {
                     ]
 
                     STAGE_TEST_CMD = [
-                        get_robotframework_hosts().collect {
+                        get_test_hosts().collect {
                             [
                                 "robot",
                                 "--include Smoke",
