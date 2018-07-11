@@ -96,7 +96,7 @@ pipeline {
                             "mvn",
                             "clean",
                             "install",
-                            "-Dspring.profiles.active=ci",
+                            "--activate-profiles=ci",
                             "--batch-mode"
                         ].join(" ")
                     ].join(" && ")
