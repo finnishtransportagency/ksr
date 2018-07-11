@@ -3,11 +3,8 @@ import esriLoader from 'esri-loader';
 import equals from 'nano-equal';
 
 import React, { Component } from 'react';
-import strings from '../../../translations';
+import { mapSelectPopup } from '../../../utils/mapSelectPopup';
 import EsriMapView from './EsriMapView';
-
-import { graphicsToEsriJSON } from '../../../utils/arcFormats';
-import { getStreetViewLink } from '../../../utils/streetView';
 import { addLayer, highlight } from '../../../utils/map';
 
 type Props = {
@@ -113,7 +110,9 @@ class EsriMap extends Component<Props, State> {
                 Point,
             ]) => {
                 const { container } = this.state.options;
-                const { layerList, mapCenter, mapScale } = this.props;
+                const {
+                    layerList, mapCenter, mapScale, selectFeatures,
+                } = this.props;
 
                 const map = new Map({
                     layers: [],
@@ -178,51 +177,7 @@ class EsriMap extends Component<Props, State> {
                     .remove('esri-component');
 
                 view.on('click', (event) => {
-                    if (event.button === 0) { // Should be primary click both on mouse and touch.
-                        const swLink = getStreetViewLink(event.mapPoint.x, event.mapPoint.y);
-
-                        view.popup.collapseEnabled = false;
-
-                        const point = {
-                            x: event.x,
-                            y: event.y,
-                        };
-
-                        // Select features on point and add popup data to the layers
-                        view.hitTest(point).then(({ results }) => {
-                            const newResults = [...results];
-
-                            results.forEach((layer, i) => {
-                                const fieldInfos = [];
-
-                                const queryColumns = this.props.layerList
-                                    .filter(ll => ll.id === layer.graphic.layer.id)
-                                    .map(ll => ll.queryColumns);
-
-                                queryColumns[0].forEach((r) => {
-                                    fieldInfos.push({
-                                        fieldName: r,
-                                        label: r,
-                                    });
-                                });
-
-                                newResults[i].graphic.layer.popupTemplate = {
-                                    title: layer.graphic.layer.title,
-                                    content: [{
-                                        type: 'text',
-                                        text: swLink,
-                                    }, {
-                                        type: 'fields',
-                                        fieldInfos,
-                                    }],
-                                };
-                            });
-
-                            const graphics = newResults.map(re => re.graphic);
-                            const features = graphicsToEsriJSON(graphics);
-                            this.props.selectFeatures(features);
-                        });
-                    }
+                    mapSelectPopup(event, view, selectFeatures, layerList);
                 });
 
                 this.setState({ view });
