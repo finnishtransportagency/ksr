@@ -4,6 +4,13 @@ import React, { Component, createRef } from 'react';
 import SketchToolView from './SketchToolView';
 import * as styles from '../../../ui/defaultStyles';
 
+type State = {
+    isOpen: boolean,
+};
+
+const initialState = {
+    isOpen: false,
+};
 
 type Props = {
     view: {},
@@ -11,12 +18,18 @@ type Props = {
     deSelectSelected: Function,
 };
 
-class SketchTool extends Component<Props> {
+class SketchTool extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.buttonVisibility = createRef();
         this.drawRectangleButton = createRef();
+        this.drawPolygonButton = createRef();
+        this.drawCircleButton = createRef();
+        this.toggleSelectToolsButton = createRef();
         this.removeSelection = this.removeSelection.bind(this);
+
+        this.state = { ...initialState };
+        this.toggleSelectTools = this.toggleSelectTools.bind(this);
     }
 
     componentWillReceiveProps(newProps: any) {
@@ -49,9 +62,28 @@ class SketchTool extends Component<Props> {
                 });
 
                 const drawRectangleButton = this.drawRectangleButton.current;
+                const drawPolygonButton = this.drawPolygonButton.current;
+                const drawCircleButton = this.drawCircleButton.current;
+
                 drawRectangleButton.addEventListener('click', () => {
                     drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                    drawPolygonButton.style.backgroundColor = styles.colorMain;
+                    drawCircleButton.style.backgroundColor = styles.colorMain;
                     sketchViewModel.create('rectangle');
+                });
+
+                drawPolygonButton.addEventListener('click', () => {
+                    drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                    drawRectangleButton.style.backgroundColor = styles.colorMain;
+                    drawCircleButton.style.backgroundColor = styles.colorMain;
+                    sketchViewModel.create('polygon');
+                });
+
+                drawCircleButton.addEventListener('click', () => {
+                    drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                    drawRectangleButton.style.backgroundColor = styles.colorMain;
+                    drawPolygonButton.style.backgroundColor = styles.colorMain;
+                    sketchViewModel.create('circle');
                 });
 
                 const selectFeaturesFromDraw = (evt) => {
@@ -81,6 +113,8 @@ class SketchTool extends Component<Props> {
                     Promise.all(queries).then(layers => this.props.selectFeatures({ layers }));
 
                     drawRectangleButton.style.backgroundColor = styles.colorMain;
+                    drawPolygonButton.style.backgroundColor = styles.colorMain;
+                    drawCircleButton.style.backgroundColor = styles.colorMain;
                 };
 
                 sketchViewModel.on('draw-complete', selectFeaturesFromDraw);
@@ -91,9 +125,16 @@ class SketchTool extends Component<Props> {
         this.props.deSelectSelected();
     };
 
+    toggleSelectTools = () => {
+        this.setState({ isOpen: !this.state.isOpen });
+    };
+
     // Assign constructor ref flowtypes
     buttonVisibility: any;
     drawRectangleButton: any;
+    drawPolygonButton: any;
+    drawCircleButton: any;
+    toggleSelectToolsButton: any;
 
     render() {
         return (
@@ -101,6 +142,11 @@ class SketchTool extends Component<Props> {
                 removeSelection={this.removeSelection}
                 buttonVisibilityRef={this.buttonVisibility}
                 drawRectangleButtonRef={this.drawRectangleButton}
+                drawPolygonButtonRef={this.drawPolygonButton}
+                drawCircleButtonRef={this.drawCircleButton}
+                toggleSelectToolsButtonRef={this.toggleSelectToolsButton}
+                toggleTools={this.toggleSelectTools}
+                isOpen={this.state.isOpen}
             />
         );
     }

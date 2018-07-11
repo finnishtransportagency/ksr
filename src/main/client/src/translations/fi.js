@@ -40,7 +40,10 @@ const fi = {
         noTableText: 'Ei näytettävää dataa.',
     },
     sketchTool: {
+        selectTool: 'Valintatyökalut',
         drawRectangle: 'Suorakulmiovalinta',
+        drawPolygonSelect: 'Lassovalinta',
+        drawCircle: 'Ympyrävalinta',
         removeSelection: 'Poista valinnat',
     },
     mapMeasure: {

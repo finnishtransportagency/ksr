@@ -158,10 +158,20 @@ class EsriMap extends Component<Props, State> {
 
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
-                    [compass, locate, track, 'draw-polygon', 'draw-line', 'draw-rectangle', 'remove-selection'],
+                    [
+                        compass,
+                        locate,
+                        track,
+                        'draw-polygon',
+                        'draw-line',
+                        'select-tool-outer-wrapper',
+                    ],
                     'top-right',
                 );
                 view.ui.add([scaleBar], 'bottom-left');
+
+                document.getElementById('select-tool-outer-wrapper').classList
+                    .remove('esri-component');
 
                 view.on('click', (event) => {
                     if (event.button === 0) { // Should be primary click both on mouse and touch.

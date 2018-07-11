@@ -68,7 +68,10 @@ export const Wrapper = styled.div`
     .esri-zoom .esri-interactive,
     #draw-polygon,
     #draw-line,
+    #toggle-select-tools,
     #draw-rectangle,
+    #draw-polygon-select,
+    #draw-circle,
     #remove-selection {
         background: ${styles.colorMain};
         color: ${styles.colorFontLight};
@@ -79,10 +82,29 @@ export const Wrapper = styled.div`
             color: ${styles.colorFontLight};
         }
     }
+    
+    #select-tool-outer-wrapper,
+    #toggle-select-tools,
+    #draw-rectangle,
+    #draw-polygon-select,
+    #draw-circle,
+    #remove-selection {
+        display: inline-flex;
+    }
+    
+    #draw-rectangle {
+        margin-right: 4px;
+    }
+    
+    #draw-circle {
+        margin-left: 4px;
+    }
+    
+    #toggle-select-tools, #select-tool-wrapper {
+        margin-left: 10px;
+    }
+    
     #remove-selection {
         visibility: hidden;
-        position: relative;
-        right: 3em;
-        bottom: 3em;
     }
 `;

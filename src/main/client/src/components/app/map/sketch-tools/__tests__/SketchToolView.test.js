@@ -12,7 +12,10 @@ describe('<SketchToolView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {
-        expect(wrapper.find('#draw-rectangle').exists()).toBe(true);
         expect(wrapper.find('#remove-selection').exists()).toBe(true);
+        expect(wrapper.find('#draw-rectangle').exists()).toBe(true);
+        expect(wrapper.find('#draw-polygon-select').exists()).toBe(true);
+        expect(wrapper.find('#draw-circle').exists()).toBe(true);
+        expect(wrapper.find('#toggle-select-tools').exists()).toBe(true);
     });
 });
