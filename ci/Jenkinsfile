@@ -240,31 +240,31 @@ pipeline {
                 }
             }
         }
-        stage("Prepare") {
-            agent {
-                docker {
-                    image "ksr-node"
-                    reuseNode true
-                }
-            }
-            when {
-                beforeAgent true
-                expression {
-                    get_environment()?.trim() && params.action.equals("service-deploy")
-                }
-            }
-            steps {
-                sh STAGE_PREPARE_CMD
-            }
-            post {
-                failure {
-                    slackSend(
-                        color: "danger",
-                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
-                    )
-                }
-            }
-        }
+//        stage("Prepare") {
+//            agent {
+//                docker {
+//                    image "ksr-node"
+//                    reuseNode true
+//                }
+//            }
+//            when {
+//                beforeAgent true
+//                expression {
+//                    get_environment()?.trim() && params.action.equals("service-deploy")
+//                }
+//            }
+//            steps {
+//                sh STAGE_PREPARE_CMD
+//            }
+//            post {
+//                failure {
+//                    slackSend(
+//                        color: "danger",
+//                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+//                    )
+//                }
+//            }
+//        }
         stage("Build") {
             agent {
                 docker {
