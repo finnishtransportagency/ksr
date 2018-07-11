@@ -3,7 +3,7 @@ import esriLoader from 'esri-loader';
 import equals from 'nano-equal';
 
 import React, { Component } from 'react';
-import { mapSelectPopup } from '../../../utils/mapSelectPopup';
+import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import EsriMapView from './EsriMapView';
 import { addLayer, highlight } from '../../../utils/map';
 

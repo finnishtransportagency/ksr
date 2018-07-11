@@ -1,4 +1,22 @@
-export const getIntersectFeatures = (layerId, geometry, view, selectFeatures) => {
+// @flow
+
+/**
+ * Feature query that selects all intersecting features with currently active feature in popup
+ *
+ * Selecting ignores features in same layer
+ *
+ * @param layerId Number current features layer ID
+ * @param geometry Object current features geometry
+ * @param view Object esri map view
+ * @param selectFeatures Function redux function that selects features
+ *
+ */
+export const getIntersectFeatures = (
+    layerId: Number,
+    geometry: Object,
+    view: Object,
+    selectFeatures: Function,
+) => {
     const query = {
         geometry,
         outFields: ['*'],
@@ -23,5 +41,6 @@ export const getIntersectFeatures = (layerId, geometry, view, selectFeatures) =>
             }
         }
     });
+
     Promise.all(queries).then(layers => selectFeatures({ layers }));
 };

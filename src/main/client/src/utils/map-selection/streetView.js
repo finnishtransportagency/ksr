@@ -1,6 +1,6 @@
 import proj4 from 'proj4';
-import { defs } from './proj4Defs';
-import strings from './../translations';
+import { defs } from '../proj4Defs';
+import strings from '../../translations';
 
 proj4.defs(defs);
 

@@ -1,6 +1,6 @@
 // @flow
-import strings from '../translations';
-import { graphicsToEsriJSON } from './arcFormats';
+import strings from '../../translations';
+import { graphicsToEsriJSON } from '../arcFormats';
 import { getIntersectFeatures } from './getIntersectFeatures';
 import { getStreetViewLink } from './streetView';
 
@@ -52,7 +52,7 @@ export const mapSelectPopup = (
                 const selectIntersectAction = {
                     title: strings.esriMap.selectIntersectFeatures,
                     id: 'select-intersect',
-                    className: 'far fa-object-group',
+                    className: 'esri-icon-maps',
                 };
 
                 layer.graphic.layer.popupTemplate = {
