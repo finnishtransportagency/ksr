@@ -6,8 +6,8 @@ import Search from './Search';
 
 const mapStateToProps = (state) => {
     const queryableLayers = state.map.layerGroups.layerList
-        .filter(l => l.visible && l.active && l.queryable)
-        .map(l => ({ value: l.id, label: l.name }));
+        .filter(l => l.active && l.queryable && l._source !== 'search')
+        .map(l => ({ ...l, value: l.id, label: l.name }));
 
     return ({
         queryableLayers,
@@ -17,8 +17,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    searchFeatures: (selectedLayer, queryString, title) => {
-        dispatch(searchFeatures(selectedLayer, queryString, title));
+    searchFeatures: (selectedLayer, queryString) => {
+        dispatch(searchFeatures(selectedLayer, queryString));
     },
     setSearchState: (layerId, textSearch, searchFieldValues) => {
         dispatch(setSearchState(layerId, textSearch, searchFieldValues));

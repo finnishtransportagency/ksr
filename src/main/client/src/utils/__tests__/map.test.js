@@ -89,6 +89,6 @@ describe('map - createGraphic', () => {
     });
 
     it('should return null if no geometry or srid is defined', () => {
-        expect(createGraphic(null, 3067, GraphicHelper, SpatialReferenceHelper)).toBe(null)
+        expect(createGraphic(null, 3067, GraphicHelper, SpatialReferenceHelper)).toBe(null);
     });
 });

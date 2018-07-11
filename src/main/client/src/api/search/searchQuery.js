@@ -11,7 +11,7 @@ import { getHeaders } from '../config';
  * @returns Data that can be used in parseData method to add it to the table
  */
 export const fetchSearchQuery = (layerId, queryString, title, data) =>
-    fetch(`api/proxy/layer/${layerId}/query?where=${queryString}&f=pjson&outFields=*`, { headers: getHeaders() })
+    fetch(`api/proxy/layer/${layerId}/query?where=${encodeURIComponent(queryString)}&f=pjson&outFields=*`, { headers: getHeaders() })
         .then(r => r.json())
         .then((r) => {
             if (!r.error && r.features.length > 0) data.layers.push({ ...r, id: layerId, title });

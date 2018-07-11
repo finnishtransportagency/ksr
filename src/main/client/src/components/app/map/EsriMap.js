@@ -8,7 +8,7 @@ import EsriMapView from './EsriMapView';
 
 import { graphicsToEsriJSON } from '../../../utils/arcFormats';
 import { getStreetViewLink } from '../../../utils/streetView';
-import { addLayer, highlight } from '../../../utils/map';
+import { addLayer, highlight, fitExtent } from '../../../utils/map';
 
 type Props = {
     activeNav: string,
@@ -61,15 +61,23 @@ class EsriMap extends Component<Props, State> {
             layerListReversed.forEach((l, i) => {
                 // Add layer to map
                 if (l.active && !view.map.findLayerById(l.id.toString())) {
-                    l.visible = true; // eslint-disable-line no-param-reassign
+                    l.visible = true;
                     addLayer(l, this.state.view, i);
                 }
 
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
                     if (layer && l.id.toString() === layer.id) {
-                        layer.visible = l.visible; // eslint-disable-line no-param-reassign
-                        layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
+                        layer.visible = l.visible;
+                        layer.opacity = l.opacity;
+                        if (l.type === 'agfs') {
+                            if (layer.definitionExpression !== l.definitionExpression) {
+                                layer.definitionExpression = l.definitionExpression;
+                                if (l._source === 'search') {
+                                    fitExtent(layer, view);
+                                }
+                            }
+                        }
                         if (!l.active) view.map.layers.remove(layer);
                     }
                 });
@@ -133,6 +141,10 @@ class EsriMap extends Component<Props, State> {
                     center,
                     scale: mapScale,
                     spatialReference: epsg3067,
+                    constraints: {
+                        maxScale: 2000,
+                        minScale: 5000000,
+                    },
                 });
 
                 [...layerList].reverse().forEach((l, i) => {

@@ -1,7 +1,7 @@
 // @flow
 import { fetchSearchQuery } from '../../api/search/searchQuery';
 import * as types from '../../constants/actionTypes';
-import { parseData, parseColumns } from '../../utils/parseFeatureData';
+import { parseData } from '../../utils/parseFeatureData';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -20,29 +20,52 @@ export const setColumns = (columns: Array<Object>) => ({
     type: types.SET_COLUMNS,
     columns,
 });
+
 export const searchFeatures = (
-    selectedLayer: number,
+    selectedLayer: Object,
     queryString: string,
-    title: string,
 ) => (dispatch: Function) => {
     const layerData = {
         layers: [],
     };
 
     dispatch({ type: types.SEARCH_FEATURES });
-    fetchSearchQuery(selectedLayer, queryString, title, layerData)
+    fetchSearchQuery(selectedLayer.id, queryString, selectedLayer.name, layerData)
         .then((r) => {
+            const newLayer = {
+                ...selectedLayer,
+                name: selectedLayer.name,
+                definitionExpression: queryString,
+                visible: true,
+                id: `${selectedLayer.id}.s`,
+                _source: 'search',
+            };
+
+            const res = {
+                layers: r.layers.map(l => ({
+                    ...l,
+                    id: newLayer.id,
+                    title: newLayer.name,
+                })),
+            };
+
             dispatch({
                 type: types.SEARCH_FEATURES_FULFILLED,
-                layers: parseData(r, false, 'search'),
+                layers: parseData(res, false, 'search'),
             });
-        });
-};
 
-export const setFeatureData = (columnData: Array<Object>) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_FEATURES, payload: parseColumns(columnData),
-    });
+            if (res.layers.length) {
+                dispatch({
+                    type: types.HIDE_LAYER,
+                    layerId: selectedLayer.id,
+                });
+
+                dispatch({
+                    type: types.ADD_SEARCH_RESULTS_LAYER,
+                    layer: newLayer,
+                });
+            }
+        });
 };
 
 export const setActiveTable = (activeTable: string) => ({
@@ -54,12 +77,12 @@ export const deSelectSelected = () => ({
     type: types.DE_SELECT_SELECTED_FEATURES,
 });
 
-export const toggleSelection = feature => ({
+export const toggleSelection = (feature: Object) => ({
     type: types.TOGGLE_SELECTION,
     feature,
 });
 
-export const toggleSelectAll = layerId => ({
+export const toggleSelectAll = (layerId: string) => ({
     type: types.TOGGLE_SELECT_ALL,
     layerId,
 });
