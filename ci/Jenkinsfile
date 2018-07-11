@@ -271,12 +271,12 @@ pipeline {
                     image "ksr-maven"
                     reuseNode true
                 }
-                branch "master" // TODO
             }
             when {
                 expression {
                     get_environment()?.trim() && params.action.equals("service-deploy")
                 }
+                branch "master" // TODO
             }
             steps {
                 sh STAGE_BUILD_CMD
