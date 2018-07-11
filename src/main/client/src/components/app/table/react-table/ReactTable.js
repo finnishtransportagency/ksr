@@ -46,6 +46,10 @@ class ReactTable extends Component<Props, State> {
         }
     }
 
+    toggleSelection = (id: string, shiftKey: string, row: Object) => {
+        this.props.toggleSelection(row);
+    };
+
     renderEditable = (cellInfo: any) => (
         <div
             contentEditable
@@ -58,10 +62,6 @@ class ReactTable extends Component<Props, State> {
             }}
         />
     );
-
-    toggleSelection = (id: string, shiftKey: string, row: Object) => {
-        this.props.toggleSelection(row);
-    };
 
     render() {
         const { fetching, layer } = this.props;
