@@ -6,10 +6,12 @@ import * as styles from '../../../ui/defaultStyles';
 
 type State = {
     isOpen: boolean,
+    prevSelectTool: Object,
 };
 
 const initialState = {
     isOpen: false,
+    prevSelectTool: {},
 };
 
 type Props = {
@@ -66,24 +68,45 @@ class SketchTool extends Component<Props, State> {
                 const drawCircleButton = this.drawCircleButton.current;
 
                 drawRectangleButton.addEventListener('click', () => {
-                    drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                    drawPolygonButton.style.backgroundColor = styles.colorMain;
-                    drawCircleButton.style.backgroundColor = styles.colorMain;
-                    sketchViewModel.create('rectangle');
+                    if (drawRectangleButton === this.state.prevSelectTool) {
+                        sketchViewModel.reset();
+                        drawRectangleButton.style.backgroundColor = styles.colorMain;
+                        this.setState({ prevSelectTool: {} });
+                    } else {
+                        drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawPolygonButton.style.backgroundColor = styles.colorMain;
+                        drawCircleButton.style.backgroundColor = styles.colorMain;
+                        this.setState({ prevSelectTool: drawRectangleButton });
+                        sketchViewModel.create('rectangle');
+                    }
                 });
 
                 drawPolygonButton.addEventListener('click', () => {
-                    drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                    drawRectangleButton.style.backgroundColor = styles.colorMain;
-                    drawCircleButton.style.backgroundColor = styles.colorMain;
-                    sketchViewModel.create('polygon');
+                    if (drawPolygonButton === this.state.prevSelectTool) {
+                        sketchViewModel.reset();
+                        drawPolygonButton.style.backgroundColor = styles.colorMain;
+                        this.setState({ prevSelectTool: {} });
+                    } else {
+                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawRectangleButton.style.backgroundColor = styles.colorMain;
+                        drawCircleButton.style.backgroundColor = styles.colorMain;
+                        this.setState({ prevSelectTool: drawPolygonButton });
+                        sketchViewModel.create('polygon');
+                    }
                 });
 
                 drawCircleButton.addEventListener('click', () => {
-                    drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                    drawRectangleButton.style.backgroundColor = styles.colorMain;
-                    drawPolygonButton.style.backgroundColor = styles.colorMain;
-                    sketchViewModel.create('circle');
+                    if (drawCircleButton === this.state.prevSelectTool) {
+                        sketchViewModel.reset();
+                        drawCircleButton.style.backgroundColor = styles.colorMain;
+                        this.setState({ prevSelectTool: {} });
+                    } else {
+                        drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawRectangleButton.style.backgroundColor = styles.colorMain;
+                        drawPolygonButton.style.backgroundColor = styles.colorMain;
+                        this.setState({ prevSelectTool: drawCircleButton });
+                        sketchViewModel.create('circle');
+                    }
                 });
 
                 const selectFeaturesFromDraw = (evt) => {
@@ -115,6 +138,7 @@ class SketchTool extends Component<Props, State> {
                     drawRectangleButton.style.backgroundColor = styles.colorMain;
                     drawPolygonButton.style.backgroundColor = styles.colorMain;
                     drawCircleButton.style.backgroundColor = styles.colorMain;
+                    this.setState({ prevSelectTool: {} });
                 };
 
                 sketchViewModel.on('draw-complete', selectFeaturesFromDraw);
