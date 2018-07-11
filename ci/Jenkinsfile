@@ -22,8 +22,7 @@ def get_test_hosts()  {
           "http://livikisot04.vally.local"
         ]
     }
-    return [ "http://livikeh13l.vally.local","testihost" ]
-    // TODOreturn [ ] 
+    return [] 
 }
 def get_pollSCM_trigger() {
     if (get_environment().equals("jenkinsfile")) { return "H/5 * * * *" }
@@ -294,7 +293,6 @@ pipeline {
                 expression {
                     get_environment()?.trim() && params.action.equals("service-deploy")
                 }
-                branch "master" // TODO
             }
             steps {
                 sh STAGE_BUILD_CMD
@@ -353,7 +351,6 @@ pipeline {
                 expression {
                     get_environment()?.trim() && params.action.equals("service-deploy")
                 }
-                branch "master" // TODO
             }
             steps {
                 sh STAGE_PUBLISH_CMD
