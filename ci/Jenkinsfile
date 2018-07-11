@@ -59,7 +59,7 @@ pipeline {
                     STAGE_PREPARE_CMD = [
                         "cd src/main/client",
                         "npm install",
-                        "npm run build -- -u" // this should be defined at package.json - for example npm run build-ci
+                        "npm run build"
                     ].join(" && ")
 
                     STAGE_BUILD_CMD = [
