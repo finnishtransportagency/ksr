@@ -189,7 +189,7 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
 
 /**
 * Toggles selected-state for given feature.
-* If feature is set unselected, it won't be remove from the table.
+* If feature is set unselected, it won't be removed from the table.
 *
 * @param currentLayers Array of layers (table-reducer)
 * @param currentActiveTable Id of the currently active layer in table
