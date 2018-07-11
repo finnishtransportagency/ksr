@@ -387,7 +387,7 @@ pipeline {
                 }
             }
             steps {
-                sh "pip --version"
+                sh STAGE_TEST_CMD
             }
             post {
                 failure {
