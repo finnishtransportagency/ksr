@@ -339,6 +339,7 @@ pipeline {
                 expression {
                     get_environment()?.trim() && params.action.equals("service-deploy")
                 }
+                branch "master" // TODO
             }
             steps {
                 sh STAGE_PUBLISH_CMD
