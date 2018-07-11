@@ -22,7 +22,8 @@ def get_test_hosts()  {
           "http://livikisot04.vally.local"
         ]
     }
-    return [ ] 
+    return [ "http://livikeh13l.vally.local" ]
+    // TODOreturn [ ] 
 }
 def get_pollSCM_trigger() {
     if (get_environment().equals("jenkinsfile")) { return "H/5 * * * *" }
