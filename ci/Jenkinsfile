@@ -144,6 +144,19 @@ pipeline {
                         ].join(" ")
                     ].minus('').join(" && ")
 
+                    STAGE_TEST_STEP = [
+                        $class: "RobotPublisher",
+                        disableArchiveOutput: false,
+                        logFileName: "log.html",
+                        onlyCritical: true,
+                        otherFiles: "",
+                        outputFileName: "output.xml",
+                        outputPath: ".",
+                        passThreshold: 100,
+                        reportFileName: "report.html",
+                        unstableThreshold: 0
+                    ]
+
                     if (params.action.equals("service-deploy")) {
                         
                         STAGE_ACK_PARAMETERS.addAll([
@@ -389,8 +402,15 @@ pipeline {
             }
             steps {
                 sh STAGE_TEST_CMD
+                step(STAGE_TEST_STEP)
             }
             post {
+                 always {
+                    archiveArtifacts(
+                        allowEmptyArchive: true,
+                        artifacts: "*.html"
+                    )
+                }
                 failure {
                     slackSend(
                         color: "danger",
