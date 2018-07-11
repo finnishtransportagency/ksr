@@ -76,7 +76,7 @@ pipeline {
 
                     STAGE_ACK_PARAMETERS = [
                         choice(choices: target_environment, description: "Deploy target.", name: "target_environment"),
-                        choice(choices: params.action, description: "Action.", name: "action"
+                        choice(choices: params.action, description: "Action.", name: "action")
                     ]
 
                     STAGE_PREPARE_CMD = [
