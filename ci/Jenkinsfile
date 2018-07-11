@@ -128,9 +128,9 @@ pipeline {
                                 "robot",
                                 "--include Smoke",
                                 "--log NONE",
-                                "--name ${it}",
+                                "--name ${it.tokenize('/').last()}",
                                 "--nostatusrc",
-                                "--output output-${it}.xml",
+                                "--output output-${it.tokenize('/').last()}.xml",
                                 "--report NONE",
                                 "src/test"
                             ].join(" ")
