@@ -279,6 +279,75 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<build.profile.id>dev</build.profile.id>
+				<profileActive>dev</profileActive>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources</directory>
+						<excludes>
+							<exclude>application-ci.properties</exclude>
+							<exclude>application-prod.properties</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>ci</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<build.profile.id>ci</build.profile.id>
+				<profileActive>ci</profileActive>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources</directory>
+						<excludes>
+							<exclude>application-dev.properties</exclude>
+							<exclude>application-prod.properties</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<build.profile.id>prod</build.profile.id>
+				<profileActive>prod</profileActive>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources</directory>
+						<excludes>
+							<exclude>application-dev.properties</exclude>
+							<exclude>application-ci.properties</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
+
     <repositories>
         <repository>
             <id>maven.oracle.com</id>
