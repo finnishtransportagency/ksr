@@ -46,7 +46,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: "25"))
         disableConcurrentBuilds()
     }
-    parameter {
+    parameters {
         choice(
             choices: "service-deploy\nservice-restart\nservice-start\nservice-stop",
             description: "Action to execute.",
