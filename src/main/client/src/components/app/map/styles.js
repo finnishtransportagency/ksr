@@ -57,8 +57,8 @@ export const Wrapper = styled.div`
             margin-right: 60px;
         }
         
-        .esri-popup--is-docked-bottom-center {
-            margin-bottom: 60px;
+        .esri-popup--is-docked-bottom-center > .esri-popup__main-container {
+            top: 0;
         }
     }
     
