@@ -221,10 +221,10 @@ pipeline {
                         "ksr-maven",
                         "${build_args} -f ci/Dockerfile.maven ci"
                     )
-                    docker.build(
-                        "ksr-node",
-                        "${build_args} -f ci/Dockerfile.node ci"
-                    )
+                    //docker.build(
+                    //    "ksr-node",
+                    //    "${build_args} -f ci/Dockerfile.node ci"
+                    //)
                     docker.build(
                         "ksr-python",
                         "${build_args} -f ci/Dockerfile.python ci"
@@ -271,6 +271,7 @@ pipeline {
                     image "ksr-maven"
                     reuseNode true
                 }
+                branch "master" // TODO
             }
             when {
                 expression {
