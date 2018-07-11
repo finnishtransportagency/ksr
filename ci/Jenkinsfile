@@ -22,7 +22,7 @@ def get_test_hosts()  {
           "http://livikisot04.vally.local"
         ]
     }
-    return [ "http://livikeh13l.vally.local" ]
+    return [ "http://livikeh13l.vally.local","testihost" ]
     // TODOreturn [ ] 
 }
 def get_pollSCM_trigger() {
