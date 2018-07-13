@@ -23,6 +23,7 @@ const Modal = styled.div`
     border: none;
     transition: 0.6s;
     background: #FFFFFF;
+    overflow: hidden;
     
     @media only screen and (max-width: 768px) {
         width: 90%;

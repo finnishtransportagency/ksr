@@ -6,9 +6,8 @@ export const WrapperTabbedTable = styled.div`
     height: 52px;
     position: absolute;
     top: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
     white-space: nowrap;
+    overflow: hidden;
 `;
 
 export const ButtonTabbedTableTab = Button.extend`
