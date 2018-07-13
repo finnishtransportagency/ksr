@@ -3,6 +3,7 @@ import React from 'react';
 import Table from '../../ui/blocks/Table';
 import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
+import strings from '../../../translations';
 
 type Props = {
     toggleTable: Function,
@@ -30,6 +31,7 @@ const TableView = ({
                 <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
             </Table.Button>
             <Table.Button
+                title={strings.reactTable.filter}
                 tableOpen={isOpen}
                 onClick={() => {
                     setActiveModal('filter');

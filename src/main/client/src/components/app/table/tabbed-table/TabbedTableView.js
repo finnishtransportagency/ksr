@@ -3,6 +3,7 @@ import React, { Fragment } from 'react';
 
 import ReactTableContainer from './../react-table/ReactTableContainer';
 import { WrapperTabbedTable, ButtonTabbedTableTab } from './styles';
+import MapLayerTitle from '../../shared/MapLayerTitle';
 
 type Props = {
     layers: Array<Object>,
@@ -22,10 +23,11 @@ const TabbedTableView = ({ layers, activeTable, setActiveTable }: Props) => (
                         active={activeTable === l.id}
                         onClick={() => setActiveTable(l.id)}
                     >
-                        {l.title}
+                        <MapLayerTitle layer={l} />
                     </ButtonTabbedTableTab>
                 ))
             }
+
         </WrapperTabbedTable>
         <ReactTableContainer />
     </Fragment>

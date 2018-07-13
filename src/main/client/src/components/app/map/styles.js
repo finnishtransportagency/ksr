@@ -33,6 +33,59 @@ export const Wrapper = styled.div`
             margin-bottom: 60px;
         };
         
+        .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
+        .esri-popup__button, .esri-popup__header-title, .esri-attribution__sources {
+            outline: none;
+        }
+        
+        #select-tool-outer-wrapper,
+        #toggle-select-tools,
+        #draw-rectangle,
+        #draw-polygon-select,
+        #draw-circle,
+        #remove-selection {
+            display: inline-flex;
+        }
+        
+        #draw-rectangle {
+            margin-right: 4px;
+        }
+        
+        #draw-circle {
+            margin-left: 4px;
+        }
+        
+        #toggle-select-tools, #select-tool-wrapper {
+            margin-left: 10px;
+        }
+        
+        #remove-selection {
+            visibility: hidden;
+            position: relative;
+        };
+        
+        .esri-track,
+        .esri-locate,
+        .esri-compass,
+        .esri-zoom .esri-interactive,
+        .esri-disabled,
+        #draw-polygon,
+        #draw-line,
+        #toggle-select-tools,
+        #draw-rectangle,
+        #draw-polygon-select,
+        #draw-circle,
+        #remove-selection {
+            background: ${styles.colorMain};
+            color: ${styles.colorFontLight};
+            outline: none;
+    
+            &:hover {
+                background: ${styles.colorMainHighlight};
+                color: ${styles.colorFontLight};
+            };
+        };
+        
         ${props => props.sideBar && css`
             left: 460px;
             width: calc(100% - 460px);
@@ -69,30 +122,5 @@ export const Wrapper = styled.div`
             margin-right: 60px;
             };
         };
-    };
-    
-    .esri-track,
-    .esri-locate,
-    .esri-compass,
-    .esri-zoom .esri-interactive,
-    #draw-polygon,
-    #draw-line,
-    #draw-rectangle,
-    #remove-selection {
-        background: ${styles.colorMain};
-        color: ${styles.colorFontLight};
-        outline: none;
-
-        &:hover {
-            background: ${styles.colorMainHighlight};
-            color: ${styles.colorFontLight};
-        };
-    };
-    
-    #remove-selection {
-        visibility: hidden;
-        position: relative;
-        right: 3em;
-        bottom: 3em;
-    };
+    }; 
 `;
