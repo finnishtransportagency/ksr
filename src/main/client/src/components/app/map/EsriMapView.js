@@ -12,7 +12,7 @@ type Props = {
 };
 
 const EsriMapView = ({ activeNav, view, isOpenTable }: Props) => (
-    <Wrapper sideBar={activeNav} toggleTable={isOpenTable}>
+    <Wrapper sideBar={activeNav} tableOpen={isOpenTable}>
         <div id="mapView">
             <MapMeasure view={view} />
             <SketchToolContainer view={view} />
