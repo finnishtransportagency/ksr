@@ -5,35 +5,41 @@ import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 
 type Props = {
-    toggleFilter: Function,
-    isOpenFilter: boolean,
     toggleTable: Function,
     isOpen: boolean,
     activeNav: string,
+    setActiveModal: (modal: string) => void,
+    activeModal: string,
 };
 
 const TableView = ({
-    toggleFilter, isOpenFilter, toggleTable, isOpen, activeNav,
+    toggleTable,
+    isOpen,
+    activeNav,
+    setActiveModal,
+    activeModal,
 }: Props) => (
-    <Table sideBar={activeNav} toggleTable={isOpen}>
-        <Table.Link
-            toggleTable={isOpen}
-            onClick={() => {
-                toggleTable();
-            }}
-        >
-            <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
-        </Table.Link>
-        <Table.Filter
-            toggleFilter={isOpen}
-            onClick={() => {
-                toggleFilter();
-            }}
-        >
-            <i className="fas fa-filter" />
-        </Table.Filter>
+    <Table sideBar={activeNav} tableOpen={isOpen}>
+        <Table.ButtonWrapper tableOpen={isOpen}>
+            <Table.Button
+                toggleButton
+                onClick={() => {
+                    toggleTable();
+                }}
+            >
+                <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
+            </Table.Button>
+            <Table.Button
+                tableOpen={isOpen}
+                onClick={() => {
+                    setActiveModal('filter');
+                }}
+            >
+                <i className="fas fa-filter" />
+            </Table.Button>
+        </Table.ButtonWrapper>
         <TabbedTableContainer />
-        <ModalFilterContainer modalOpen={isOpenFilter} />
+        {activeModal === 'filter' && <ModalFilterContainer />}
     </Table>
 );
 
