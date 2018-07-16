@@ -8,7 +8,7 @@ import EsriMapView from './EsriMapView';
 
 import { graphicsToEsriJSON } from '../../../utils/arcFormats';
 import { getStreetViewLink } from '../../../utils/streetView';
-import { addLayer, highlight } from '../../../utils/map';
+import { addLayer, highlight, fitExtent } from '../../../utils/map';
 
 type Props = {
     activeNav: string,
@@ -68,8 +68,16 @@ class EsriMap extends Component<Props, State> {
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
                     if (layer && l.id === layer.id) {
-                        layer.visible = l.visible; // eslint-disable-line no-param-reassign
-                        layer.opacity = l.opacity; // eslint-disable-line no-param-reassign
+                        layer.visible = l.visible;
+                        layer.opacity = l.opacity;
+                        if (l.type === 'agfs') {
+                            if (layer.definitionExpression !== l.definitionExpression) {
+                                layer.definitionExpression = l.definitionExpression;
+                                if (l._source === 'search') {
+                                    fitExtent(layer, view);
+                                }
+                            }
+                        }
                         if (!l.active) view.map.layers.remove(layer);
                     }
                 });
