@@ -1,10 +1,10 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Link from '../Link';
+import Button from '../Button';
 
-describe('<Link />', () => {
+describe('<Button />', () => {
     it('works', () => {
-        const wrapper = renderer.create(<Link />).toJSON();
+        const wrapper = renderer.create(<Button />).toJSON();
         expect(wrapper).toMatchSnapshot();
     });
 });
