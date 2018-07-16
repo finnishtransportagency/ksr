@@ -3,7 +3,6 @@ import esriLoader from 'esri-loader';
 import equals from 'nano-equal';
 
 import React, { Component } from 'react';
-import strings from '../../../translations';
 import EsriMapView from './EsriMapView';
 
 import { graphicsToEsriJSON } from '../../../utils/arcFormats';
