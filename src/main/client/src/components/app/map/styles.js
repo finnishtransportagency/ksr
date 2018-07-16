@@ -52,14 +52,6 @@ export const Wrapper = styled.div`
         .esri-popup__button, .esri-popup__header-title, .esri-attribution__sources {
             outline: none;
         }
-    
-        .esri-popup--is-docked-top-right {
-            margin-right: 60px;
-        }
-        
-        .esri-popup--is-docked-bottom-center > .esri-popup__main-container {
-            top: 0;
-        }
     }
     
     .esri-track,

@@ -25,7 +25,12 @@ export const mapSelectPopup = (
     if (event.button === 0) {
         const swLink = getStreetViewLink(event.mapPoint.x, event.mapPoint.y);
 
-        view.popup.collapseEnabled = false;
+        view.popup = {
+            collapseEnabled: false,
+            dockOptions: {
+                position: 'top-left',
+            },
+        };
 
         const point = {
             x: event.x,
