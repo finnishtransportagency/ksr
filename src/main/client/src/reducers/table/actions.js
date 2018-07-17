@@ -86,3 +86,7 @@ export const toggleSelectAll = (layerId: string) => ({
     type: types.TOGGLE_SELECT_ALL,
     layerId,
 });
+
+export const clearTableData = () => ({
+    type: types.CLEAR_TABLE_DATA,
+});
