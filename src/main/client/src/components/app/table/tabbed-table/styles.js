@@ -12,12 +12,10 @@ export const WrapperTabbedTable = styled.div`
 
 export const ButtonTabbedTableTab = Button.extend`
     width: 120px;
-    display: inline-block;
-    white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     margin: 0;
-    box-sizing: border-box;
+    border-bottom: 5px solid transparent;
 
     ${props => props.active && css`
         border-bottom: 5px solid;
