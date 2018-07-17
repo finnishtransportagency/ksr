@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import Table from '../../ui/blocks/Table';
+import ModalClearTableContainer from './modal-clear-table/ModalClearTableContainer';
 import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 import strings from '../../../translations';
@@ -39,9 +40,19 @@ const TableView = ({
             >
                 <i className="fas fa-filter" />
             </Table.Button>
+            <Table.Button
+                title={strings.reactTable.clearTableData}
+                tableOpen={isOpen}
+                onClick={() => {
+                    setActiveModal('clearTable');
+                }}
+            >
+                <i className="fas fa-trash" />
+            </Table.Button>
         </Table.ButtonWrapper>
         <TabbedTableContainer />
         {activeModal === 'filter' && <ModalFilterContainer />}
+        {activeModal === 'clearTable' && <ModalClearTableContainer />}
     </Table>
 );
 
