@@ -8,6 +8,7 @@ import {
     SEARCH_FEATURES_FULFILLED,
     TOGGLE_SELECTION,
     TOGGLE_SELECT_ALL,
+    CLEAR_TABLE_DATA,
 } from '../../constants/actionTypes';
 import {
     mergeLayers,
@@ -82,6 +83,8 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layers: toggleSelectAll(state.layers, action.layerId),
             };
+        case CLEAR_TABLE_DATA:
+            return initialState;
         default:
             return state;
     }
