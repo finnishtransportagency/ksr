@@ -76,7 +76,7 @@ pipeline {
                     def artifact_version = get_version(pom.version)
                     def group_id = pom.groupId
                     def extension = pom.packaging
-                    def filename = "target/${artifact_id}-${artifact_version}.${extension}"
+                    def filename = "target/${artifact_id.toUpperCase()}.${extension}"
                     def repository_url = "http://livibuild05.vally.local/nexus/repository/ksr"
 
                     STAGE_ACK_PARAMETERS = [
