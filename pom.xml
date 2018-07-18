@@ -143,7 +143,7 @@
 			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
-			                <arguments>update</arguments>
+			                <arguments>updatea</arguments>
 			            </configuration>
 			        </execution>
 			
