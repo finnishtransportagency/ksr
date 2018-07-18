@@ -143,10 +143,21 @@
 			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
-			                <arguments>--userconfig=${basedir}/ci/confs/npmrc update</arguments>
+			                <arguments>update</arguments>
 			            </configuration>
 			        </execution>
 			
+			        <execution>
+			            <id>npm install</id>
+			            <phase>compile</phase>
+			            <goals>
+			                <goal>npm</goal>
+			            </goals>
+			            <configuration>
+			                <arguments>--userconfig=${basedir}/ci/confs/npmrc install</arguments>
+			            </configuration>
+			        </execution>
+				    
 			        <execution>
 			            <id>Frontend production build</id>
 			            <phase>compile</phase>
@@ -154,7 +165,7 @@
 			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
-			                <arguments>--userconfig=${basedir}/ci/confs/npmrc run build</arguments>
+			                <arguments>run build</arguments>
 			            </configuration>
 			        </execution>
 			    </executions>
