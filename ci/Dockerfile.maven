@@ -1,5 +1,6 @@
 FROM maven:latest
 ARG JENKINS_UID=1000
+ENV TZ=EEST
 RUN adduser --system --uid ${JENKINS_UID} jenkins
 RUN mkdir /home/jenkins/.m2
 COPY confs/settings.xml /home/jenkins/.m2/settings.xml
