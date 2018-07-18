@@ -143,7 +143,8 @@
 			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
-			                <arguments>--userConfig=${basedir}/ci/confs/npmrc update</arguments>
+			                <arguments>update</arguments>
+					<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
 			        </execution>
 				    
@@ -155,6 +156,7 @@
 			            </goals>
 			            <configuration>
 			                <arguments>run build</arguments>
+					<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
 			        </execution>
 			    </executions>
