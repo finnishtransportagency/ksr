@@ -143,7 +143,7 @@
 			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
-			                <arguments>--userconfig ${basedir}/ci/confs/npmrc update</arguments>
+			                <arguments>--userconfig=${basedir}/ci/confs/npmrc update</arguments>
 			            </configuration>
 			        </execution>
 			
@@ -154,7 +154,7 @@
 			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
-			                <arguments>run build</arguments>
+			                <arguments>--userconfig=${basedir}/ci/confs/npmrc run build</arguments>
 			            </configuration>
 			        </execution>
 			    </executions>
