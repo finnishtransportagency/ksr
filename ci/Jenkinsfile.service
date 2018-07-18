@@ -111,6 +111,8 @@ pipeline {
                             "--batch-mode"
                         ].join(" ")
                     ].join(" && ")
+                    
+                    STAGE_BUILD_JUNIT_RESULTS = "target/*-reports/*.xml"
 
                     STAGE_CONFIRM_TEXT = "Create release ${group_id}:${artifact_id}@${artifact_version} and deploy to ${target_environment}?"
 
@@ -308,6 +310,12 @@ pipeline {
                 sh STAGE_BUILD_CMD
             }
             post {
+                always {
+                    junit(
+                        allowEmptyResults: true,
+                        testResults: STAGE_BUILD_JUNIT_RESULTS
+                    )
+                }
                 failure {
                     slackSend(
                         color: "danger",
