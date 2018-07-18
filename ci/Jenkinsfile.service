@@ -92,6 +92,9 @@ pipeline {
 
                     def properties = "src/main/resources/application-ci.properties"
                     STAGE_BUILD_CMD = [
+                        "export http_proxy=${http_proxy}",
+                        "export https_proxy=${http_proxy}",
+                        "export no_proxy=${no_proxy}",
                         "sed -i 's/DB_CRED_USR/${DB_CRED_USR}/g' ${properties}",
                         "sed -i 's/DB_CRED_PSW/${DB_CRED_PSW}/g' ${properties}",
                         "sed -i 's/DB_HOST/${DB_HOST}/g' ${properties}",
