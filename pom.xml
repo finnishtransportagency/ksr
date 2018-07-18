@@ -172,7 +172,7 @@
 			    <configuration>
 			        <nodeVersion>v8.11.1</nodeVersion>
 			        <npmVersion>3.10.10</npmVersion>
-			        <installDirectory>.mvn</installDirectory>
+			        <!-- <installDirectory>.mvn</installDirectory> -->
 			        <workingDirectory>src/main/client</workingDirectory>
 			    </configuration>
 			</plugin>
