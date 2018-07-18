@@ -140,7 +140,7 @@
 			            <id>npm update</id>
 			            <phase>compile</phase>
 			            <goals>
-			                <goal>node/npm</goal>
+			                <goal>npm</goal>
 			            </goals>
 			            <configuration>
 			                <arguments>update</arguments>
