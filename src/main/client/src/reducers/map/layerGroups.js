@@ -5,32 +5,52 @@ import {
     SET_LAYER_LIST,
     HIDE_LAYER,
     ADD_SEARCH_RESULTS_LAYER,
+    CLEAR_TABLE_DATA,
 } from '../../constants/actionTypes';
 
 import { addOrReplaceLayer, addOrReplaceLayerInSearchGroup } from '../../utils/layers';
 
-type SubLayers = {
+type LayerGroups = {
+    id: number,
     name: string,
-};
+    layers: Array<Object>,
+    type: string,
+    groupOrder: number,
+}
 
-type WmsLayer = {
-    server: string,
+type LayerList = {
+    active: boolean,
+    attribution: string,
+    authentication: any,
+    fields: Array<Object>,
+    id: string,
+    layerOrder: number,
+    layers: string,
+    maxScale: number,
+    minScale: number,
+    name: string,
+    opacity: number,
+    queryColumns: Array<string>,
+    queryable: boolean,
+    styles: string,
+    transparent: boolean,
+    type: string,
     url: string,
-    copyright: string,
-    sublayers: Array<SubLayers>
+    visible: boolean,
+    _source: string,
 }
 
 type State = {
-    layerGroups: Array<WmsLayer>,
+    layerGroups: Array<LayerGroups>,
     fetching: boolean,
-    layerList: Array<Object>,
+    layerList: Array<LayerList>,
 };
 
 type Action = {
     selectedNav: string,
     type: string,
-    layerGroups: Array<any>,
-    layerList: Array<any>,
+    layerGroups: Array<LayerGroups>,
+    layerList: Array<LayerList>,
     layerId: string,
     layer: Object,
 };
@@ -72,6 +92,15 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerList: addOrReplaceLayer(state.layerList, action.layer),
                 layerGroups: addOrReplaceLayerInSearchGroup(state.layerGroups, action.layer),
+            };
+        case CLEAR_TABLE_DATA:
+            return {
+                ...state,
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: lg.type === 'search' ? [] : lg.layers,
+                })): Array<LayerGroups>),
+                layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
             };
         default:
             return state;

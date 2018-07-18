@@ -21,6 +21,7 @@ const fi = {
         ofText: '/',
         rowsText: 'riviä',
         filter: 'Suodata sarakkeita',
+        clearTableData: 'Valintojen ja hakujen tyhjennys',
     },
     esriMap: {
         openGoogleStreetView: 'Avaa Google Street View',
@@ -31,6 +32,12 @@ const fi = {
         title: 'Suodata sarakkeita',
         submit: 'Suodata',
         cancel: 'Peruuta',
+    },
+    modalClearTable: {
+        title: 'Valintojen ja hakujen tyhjennys',
+        submit: 'Tyhjennä',
+        cancel: 'Peruuta',
+        content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
     },
     sideNav: {
         search: 'Haku',
