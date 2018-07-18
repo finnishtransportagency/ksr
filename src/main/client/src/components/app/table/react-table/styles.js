@@ -3,8 +3,8 @@ import * as styles from '../../../ui/defaultStyles';
 
 export const WrapperReactTable = styled.div`
     background-color: ${styles.colorBackgroundLight};
-    height: calc(100% - 80px);
-    top: 80px;
+    height: calc(100% - 52px);
+    top: 52px;
     position: absolute;
     color: ${styles.colorFontDark};
     width: calc(100% - 60px);
@@ -24,9 +24,9 @@ export const WrapperReactTable = styled.div`
     }
     
     @media only screen and (max-width: 768px) {
-        width: 100%;
-        top: 60px;
-        height: calc(100% - 120px);
+      width: 100%;
+      top: 52px;
+      height: calc(100% - 60px - 52px);
     }
 `;
 

@@ -20,7 +20,7 @@ describe('<TableView />', () => {
 
     it('should render self', () => {
         expect(wrapper.find(Table).length).toBe(1);
-        expect(wrapper.find(Table.Link).length).toBe(1);
+        expect(wrapper.find(Table.Button).length).toBe(2);
         expect(wrapper.find(TabbedTableContainer).length).toBe(1);
     });
 });

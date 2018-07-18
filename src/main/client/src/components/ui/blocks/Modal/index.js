@@ -6,24 +6,24 @@ import Footer from './Footer';
 import Header from './Header';
 
 const Modal = styled.div`
-    background: ${styles.colorBackgroundLight};
+    background: ${styles.colorBackgroundWhite};
     color: ${styles.colorFontDark};
     position: fixed;
     right: 0;
     left: 0;
-    top: ${props => (props.modalOpen ? '2rem' : '0')};
-    opacity: ${props => (props.modalOpen ? '1' : '0')};
-    visibility: ${props => (props.modalOpen ? 'visible' : 'hidden')};
+    top: 2rem;
+    visibility: visible;
     margin: 0 auto;
     max-height: 90%;
-    max-width: 90%;
-    overflow: auto;
+    width: 700px;
     z-index: 1050;
     -webkit-box-shadow: ${styles.shadowDefault};
     -moz-box-shadow: ${styles.shadowDefault};
     box-shadow: ${styles.shadowDefault};
     border: none;
     transition: 0.6s;
+    background: #FFFFFF;
+    overflow: hidden;
     
     @media only screen and (max-width: 768px) {
         width: 90%;

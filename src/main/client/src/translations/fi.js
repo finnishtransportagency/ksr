@@ -27,7 +27,7 @@ const fi = {
         destinationDetails: 'Kohteen tiedot',
         selectIntersectFeatures: 'Aluevalinta',
     },
-    modalView: {
+    modalFilter: {
         title: 'Suodata sarakkeita',
         submit: 'Suodata',
         cancel: 'Peruuta',

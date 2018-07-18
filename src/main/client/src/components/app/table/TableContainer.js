@@ -1,12 +1,14 @@
 // @flow
 import { connect } from 'react-redux';
 import { toggleFilter, toggleTable } from '../../../reducers/table/actions';
+import { setActiveModal } from '../../../reducers/modal/actions';
 import TableView from './TableView';
 
 const mapStateToProps = state => ({
     isOpen: state.table.toggleTable,
     isOpenFilter: state.table.toggleFilter,
     activeNav: state.navigation.activeNav,
+    activeModal: state.modal.activeModal,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -15,6 +17,9 @@ const mapDispatchToProps = dispatch => ({
     },
     toggleFilter: () => {
         dispatch(toggleFilter());
+    },
+    setActiveModal: (activeModal) => {
+        dispatch(setActiveModal(activeModal));
     },
 });
 

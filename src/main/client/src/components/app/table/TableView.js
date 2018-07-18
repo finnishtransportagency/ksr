@@ -2,40 +2,46 @@
 import React from 'react';
 import Table from '../../ui/blocks/Table';
 import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
-import ModalContainer from './modal/ModalContainer';
+import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 import strings from '../../../translations';
 
 type Props = {
-    toggleFilter: Function,
-    isOpenFilter: boolean,
     toggleTable: Function,
     isOpen: boolean,
     activeNav: string,
+    setActiveModal: (modal: string) => void,
+    activeModal: string,
 };
 
 const TableView = ({
-    toggleFilter, isOpenFilter, toggleTable, isOpen, activeNav,
+    toggleTable,
+    isOpen,
+    activeNav,
+    setActiveModal,
+    activeModal,
 }: Props) => (
-    <Table sideBar={activeNav} toggleTable={isOpen}>
-        <Table.Link
-            toggleTable={isOpen}
-            onClick={() => {
-                toggleTable();
-            }}
-        >
-            <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
-        </Table.Link>
-        <Table.Filter
-            title={strings.reactTable.filter}
-            toggleFilter={isOpen}
-            onClick={() => {
-                toggleFilter();
-            }}
-        >
-            <i className="fas fa-filter" />
-        </Table.Filter>
+    <Table sideBar={activeNav} tableOpen={isOpen}>
+        <Table.ButtonWrapper tableOpen={isOpen}>
+            <Table.Button
+                toggleButton
+                onClick={() => {
+                    toggleTable();
+                }}
+            >
+                <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
+            </Table.Button>
+            <Table.Button
+                title={strings.reactTable.filter}
+                tableOpen={isOpen}
+                onClick={() => {
+                    setActiveModal('filter');
+                }}
+            >
+                <i className="fas fa-filter" />
+            </Table.Button>
+        </Table.ButtonWrapper>
         <TabbedTableContainer />
-        <ModalContainer modalOpen={isOpenFilter} />
+        {activeModal === 'filter' && <ModalFilterContainer />}
     </Table>
 );
 

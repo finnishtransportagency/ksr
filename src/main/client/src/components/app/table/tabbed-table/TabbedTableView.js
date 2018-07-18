@@ -1,5 +1,6 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import ReactTableContainer from './../react-table/ReactTableContainer';
 import { WrapperTabbedTable, ButtonTabbedTableTab } from './styles';
@@ -12,22 +13,30 @@ type Props = {
 };
 
 const TabbedTableView = ({ layers, activeTable, setActiveTable }: Props) => (
-    <WrapperTabbedTable>
-        {
-            layers.map(l => (
-                <ButtonTabbedTableTab
-                    key={l.id}
-                    flat
-                    title={l.title}
-                    active={activeTable === l.id}
-                    onClick={() => setActiveTable(l.id)}
-                >
-                    <MapLayerTitle layer={l} />
-                </ButtonTabbedTableTab>
-            ))
-        }
+    <Fragment>
+        <WrapperTabbedTable>
+            <Scrollbars
+                autoHide
+                renderThumbHorizontal={scrollProps =>
+                    <div {...scrollProps} style={{ backgroundColor: 'rgba(255, 255, 255, 0.4', height: '3px' }} />}
+            >
+                {
+                    layers.map(l => (
+                        <ButtonTabbedTableTab
+                            key={l.id}
+                            flat
+                            title={l.title}
+                            active={activeTable === l.id}
+                            onClick={() => setActiveTable(l.id)}
+                        >
+                            <MapLayerTitle layer={l} />
+                        </ButtonTabbedTableTab>
+                    ))
+                }
+            </Scrollbars>
+        </WrapperTabbedTable>
         <ReactTableContainer />
-    </WrapperTabbedTable>
+    </Fragment>
 );
 
 export default TabbedTableView;

@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
-import LinkToggle from './Link';
-import Filter from './Filter';
+import Button from './Button';
+import ButtonWrapper from './ButtonWrapper';
 
 const Table = styled.div`
     background: ${styles.colorBackgroundDark};
@@ -17,7 +17,7 @@ const Table = styled.div`
     -moz-box-shadow: ${styles.shadowDefault};
     box-shadow: ${styles.shadowDefault};
    
-    ${props => props.toggleTable && css`
+    ${props => props.tableOpen && css`
         bottom: 0;
     `};
 
@@ -28,18 +28,19 @@ const Table = styled.div`
     
     @media only screen and (max-width: 768px) {
         right: 0;
-        bottom: 0;
         left: 0;
+        bottom: 60px;
         width: 100%;
-        height: 60px;
+        height: 0;
         
-        ${props => props.toggleTable && css`
-            height: 100%;
+        ${props => props.tableOpen && css`
+            height: calc(100% - 60px);
+            bottom: 60px;
         `};
     }
 `;
 
-Table.Link = LinkToggle;
-Table.Filter = Filter;
+Table.Button = Button;
+Table.ButtonWrapper = ButtonWrapper;
 
 export default Table;

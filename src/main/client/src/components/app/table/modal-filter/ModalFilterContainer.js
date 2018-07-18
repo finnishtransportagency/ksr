@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Modal from './Modal';
+import ModalFilter from './ModalFilter';
 import { setColumns } from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
@@ -14,11 +14,11 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    handleModalSubmit: (data) => {
+    setColumns: (data) => {
         dispatch(setColumns(data));
     },
 });
 
-const ModalContainer = connect(mapStateToProps, mapDispatchToProps)(Modal);
+const ModalFilterContainer = connect(mapStateToProps, mapDispatchToProps)(ModalFilter);
 
-export default ModalContainer;
+export default ModalFilterContainer;
