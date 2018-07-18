@@ -439,7 +439,7 @@ pipeline {
                 color: currentBuild.currentResult.equals("SUCCESS") ? "good" : "danger",
                 message: "${NOTIFY_SLACK_SUBJECT}\nJob ${currentBuild.currentResult}! More info <${BUILD_URL}|here>."
             )
-            //deleteDir()
+            deleteDir()
         }
     }
 }
