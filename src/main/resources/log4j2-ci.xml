@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info">
     <Properties>
-        <Property name="basePath">${catalina.home}/logs</Property>
+        <Property name="basePath">logs</Property>
     </Properties>
     <Appenders>
         <!-- Console Appender -->
