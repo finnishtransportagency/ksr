@@ -17,7 +17,7 @@ type Props = {
     handleChangeField: Function,
     handleSubmit: Function,
     handleRemoveField: Function,
-    selectedLayer: number,
+    selectedLayer: string,
     queryableLayers: Array<Object>,
     searchFieldValues: Array<Object>,
     textSearch: string,

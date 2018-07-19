@@ -10,7 +10,7 @@ type Props = {
     layerList: Array<Object>,
     queryableLayers: any,
     searchState: {
-        selectedLayer: number,
+        selectedLayer: string,
         textSearch: string,
         searchFieldValues: Array<Object>,
         optionsField: any,
@@ -44,7 +44,7 @@ class Search extends Component<Props, State> {
         }
     }
 
-    handleLayerChange = (layerId: number) => {
+    handleLayerChange = (layerId: string) => {
         const { setSearchState, setSearchOptions, layerList } = this.props;
         setSearchState(layerId, '', []);
         if (layerId) setSearchOptions(layerId, layerList);
@@ -64,7 +64,7 @@ class Search extends Component<Props, State> {
         );
     };
 
-    handleAddField = (layerId: number) => {
+    handleAddField = (layerId: string) => {
         const { setSearchState } = this.props;
         const {
             optionsField,
