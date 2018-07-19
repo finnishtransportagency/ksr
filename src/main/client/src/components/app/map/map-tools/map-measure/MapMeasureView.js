@@ -20,7 +20,7 @@ const MapMeasureView = ({
                 role="button"
                 tabIndex={0}
                 className="esri-component esri-widget--button esri-widget esri-interactive"
-                title={strings.sketchTool.selectTool}
+                title={strings.mapMeasure.selectTool}
                 onClick={() => { toggleDrawTools(); }}
                 onKeyPress={() => { toggleDrawTools(); }}
             >
@@ -48,7 +48,7 @@ const MapMeasureView = ({
                 role="button"
                 tabIndex={0}
                 className="esri-component esri-widget--button esri-widget esri-interactive"
-                title={strings.sketchTool.removeSelection}
+                title={strings.mapMeasure.removeDraw}
                 onClick={removeMeasurement}
                 onKeyPress={removeMeasurement}
             >

@@ -58,6 +58,8 @@ const fi = {
     mapMeasure: {
         drawLine: 'Piirrä ja mittaa viiva',
         drawPolygon: 'Piirrä ja mittaa polygoni',
+        selectTool: 'Piirtotyökalut',
+        removeDraw: 'Poista piirretty alue',
     },
 };
 
