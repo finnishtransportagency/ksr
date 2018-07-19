@@ -390,8 +390,7 @@ pipeline {
                 }
             }
             steps {
-                echo "ansible"
-                //ansiblePlaybook(STAGE_EXECUTE_ANSIBLE_PARAMETERS)
+                ansiblePlaybook(STAGE_EXECUTE_ANSIBLE_PARAMETERS)
             }
             post {
                 failure {
