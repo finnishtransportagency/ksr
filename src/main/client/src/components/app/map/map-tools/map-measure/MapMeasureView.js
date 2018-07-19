@@ -16,7 +16,7 @@ const MapMeasureView = ({
     <Fragment>
         <DrawToolOuterWrapper id="draw-tool-outer-wrapper">
             <div
-                id="toggle-select-tools"
+                id="toggle-draw-tools"
                 role="button"
                 tabIndex={0}
                 className="esri-component esri-widget--button esri-widget esri-interactive"

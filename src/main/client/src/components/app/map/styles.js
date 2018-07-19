@@ -43,7 +43,8 @@ export const Wrapper = styled.div`
             margin-left: 4px;
         };
         
-        #toggle-select-tools {
+        #toggle-select-tools, 
+        #toggle-draw-tools {
             margin-left: 10px;
         };
         
@@ -64,6 +65,7 @@ export const Wrapper = styled.div`
         #draw-polygon,
         #draw-line,
         #toggle-select-tools,
+        #toggle-draw-tools,
         #draw-rectangle,
         #draw-polygon-select,
         #draw-circle,
