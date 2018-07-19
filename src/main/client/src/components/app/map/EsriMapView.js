@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import MapMeasure from './map-measure/MapMeasure';
-import SketchToolContainer from './sketch-tools/SketchToolContainer';
+import LoadingIcon from '../shared/LoadingIcon';
+import MapToolsContainer from './map-tools/MapToolsContainer';
 
 import { Wrapper } from './styles';
 
@@ -12,10 +12,10 @@ type Props = {
 };
 
 const EsriMapView = ({ activeNav, view, isOpenTable }: Props) => (
-    <Wrapper sideBar={activeNav} tableOpen={isOpenTable}>
+    <Wrapper sideBar={activeNav} tableOpen={isOpenTable} loading={!view.initialized}>
+        <LoadingIcon loading={!view.initialized} />
         <div id="mapView">
-            <MapMeasure view={view} />
-            <SketchToolContainer view={view} />
+            <MapToolsContainer view={view} />
         </div>
     </Wrapper>
 );
