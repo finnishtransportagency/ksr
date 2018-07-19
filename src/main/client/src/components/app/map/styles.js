@@ -83,7 +83,7 @@ export const Wrapper = styled.div`
             
             // Button width multiplied by number of buttons
             .esri-attribution {
-                margin-left: calc(60px * 2);
+                margin-left: calc(60px * 3);
             };
             
             @media only screen and (max-width: 768px) {
