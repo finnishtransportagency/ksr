@@ -25,7 +25,6 @@ const fi = {
     },
     esriMap: {
         openGoogleStreetView: 'Avaa Google Street View',
-        destinationDetails: 'Kohteen tiedot',
         selectIntersectFeatures: 'Aluevalinta',
     },
     modalFilter: {
