@@ -3,7 +3,11 @@ import { shallow } from 'enzyme';
 import SketchToolView from '../SketchToolView';
 
 const setup = () => {
-    const wrapper = shallow(<SketchToolView />);
+    const props = {
+        data: [],
+    };
+
+    const wrapper = shallow(<SketchToolView {...props} />);
 
     return { wrapper };
 };
