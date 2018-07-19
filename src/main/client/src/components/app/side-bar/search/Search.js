@@ -39,7 +39,9 @@ class Search extends Component<Props, State> {
         const { queryableLayers, setSearchState } = this.props;
         const { selectedLayer } = this.props.searchState;
 
-        if (selectedLayer && !queryableLayers.find(ql => ql.value === selectedLayer)) setSearchState(0, '', []);
+        if (selectedLayer && !activeQueryableLayers.find(ql => ql.value === selectedLayer)) {
+            setSearchState(0, '', []);
+        }
     }
 
     handleLayerChange = (layerId: number) => {

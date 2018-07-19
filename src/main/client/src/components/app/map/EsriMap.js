@@ -84,7 +84,9 @@ class EsriMap extends Component<Props, State> {
             });
             view.map.allLayers.forEach((l) => {
                 // Temporary fix for sketchViewModel index
-                if (l.id.indexOf('layer') >= 0) view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.allLayers.length));
+                if (l.id.indexOf('layer') >= 0) {
+                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.allLayers.length));
+                }
             });
         }
 
