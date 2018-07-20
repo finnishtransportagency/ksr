@@ -52,7 +52,7 @@ pipeline {
     }
     parameters {
         choice(
-            choices: "service-deploy\nservice-restart\nservice-start\nservice-stop",
+            choices: "service-deploy\nservice-configure\nservice-restart\nservice-start\nservice-stop\nall",
             description: "Action to execute.",
             name: "action"
         )
