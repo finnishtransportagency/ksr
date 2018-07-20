@@ -144,7 +144,7 @@
 			            </goals>
 			            <configuration>
 			                <arguments>update</arguments>
-					<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+							<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
 			        </execution>
 				    
@@ -156,14 +156,14 @@
 			            </goals>
 			            <configuration>
 			                <arguments>run build</arguments>
-					<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+							<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
 			        </execution>
 			    </executions>
 			    <configuration>
 			        <nodeVersion>v8.11.1</nodeVersion>
 			        <npmVersion>3.10.10</npmVersion>
-				<installDirectory>.mvn</installDirectory>
+					<installDirectory>.mvn</installDirectory>
 			        <workingDirectory>src/main/client</workingDirectory>
 			    </configuration>
 			</plugin>
