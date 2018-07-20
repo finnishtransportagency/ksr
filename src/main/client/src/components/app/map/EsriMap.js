@@ -58,7 +58,7 @@ class EsriMap extends Component<Props, State> {
             layerListReversed.forEach((l, i) => {
                 // Add layer to map
                 if (l.active && !view.map.findLayerById(l.id)) {
-                    l.visible = true; // eslint-disable-line no-param-reassign
+                    l.visible = true;
                     addLayer(l, this.state.view, i);
                 }
 
