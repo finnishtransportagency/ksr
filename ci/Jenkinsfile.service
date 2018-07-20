@@ -90,8 +90,7 @@ pipeline {
                         choice(choices: params.action, description: "Action.", name: "action")
                     ]
 
-                    STAGE_PREPARE_ANSIBLE_PARAMETERS = ansible_base
-                    STAGE_PREPARE_ANSIBLE_PARAMETERS.put("tags","service-deploy")
+                    STAGE_PREPARE_ANSIBLE_PARAMETERS = ansible_base + [ tags: "service-stop" ]
 
                     def properties = "src/main/resources/application-ci.properties"
                     STAGE_BUILD_CMD = [
@@ -129,8 +128,7 @@ pipeline {
                         "--batch-mode"
                     ].join(" ")
 
-                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base
-                    STAGE_EXECUTE_ANSIBLE_PARAMETERS.put("tags",params.action)
+                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base + [ tags: params.action ]
 
                     STAGE_TEST_CMD = [
                         get_test_hosts().collect {
