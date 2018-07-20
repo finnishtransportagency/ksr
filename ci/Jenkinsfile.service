@@ -82,7 +82,7 @@ pipeline {
                     def ansible_base = [
                         extraVars: [ 
                             ksr_target: get_environment(),
-                            ksr_deploy", JsonOutput.toJson([
+                            ksr_deploy: JsonOutput.toJson([
                                 artifact_id: artifact_id,
                                 group_id: group_id,
                                 extension: extension,
