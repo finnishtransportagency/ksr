@@ -79,16 +79,18 @@ pipeline {
                     def filename = "target/${artifact_id.toUpperCase()}.${extension}"
                     def repository_url = "http://livibuild05.vally.local/nexus/repository/ksr"
 
+                    def ansible_base = [
+                        inventory: "/data/ansible/inventories/ksr",
+                        playbook: "/data/ansible/ksr.yml",
+                        vaultCredentialsId: "vaultpass-ksr"
+                    ]
+
                     STAGE_ACK_PARAMETERS = [
                         choice(choices: target_environment, description: "Deploy target.", name: "target_environment"),
                         choice(choices: params.action, description: "Action.", name: "action")
                     ]
 
-                    STAGE_PREPARE_CMD = [
-                        "cd src/main/client",
-                        "npm install",
-                        "npm run build"
-                    ].join(" && ")
+                    STAGE_PREPARE_ANSIBLE_PARAMETERS = ansible_base.put("tags","service-deploy")
 
                     def properties = "src/main/resources/application-ci.properties"
                     STAGE_BUILD_CMD = [
@@ -126,12 +128,7 @@ pipeline {
                         "--batch-mode"
                     ].join(" ")
 
-                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = [
-                        inventory: "/data/ansible/inventories/ksr",
-                        playbook: "/data/ansible/ksr.yml",
-                        vaultCredentialsId: "vaultpass-ksr",
-                        tags: params.action
-                    ]
+                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base.put("tags",params.action)
 
                     STAGE_TEST_CMD = [
                         get_test_hosts().collect {
@@ -268,31 +265,25 @@ pipeline {
                 }
             }
         }
-//        stage("Prepare") {
-//            agent {
-//                docker {
-//                    image "ksr-node"
-//                    reuseNode true
-//                }
-//            }
-//            when {
-//                beforeAgent true
-//                expression {
-//                    get_environment()?.trim() && params.action.equals("service-deploy")
-//                }
-//            }
-//            steps {
-//                sh STAGE_PREPARE_CMD
-//            }
-//            post {
-//                failure {
-//                    slackSend(
-//                        color: "danger",
-//                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
-//                    )
-//                }
-//            }
-//        }
+        stage("Prepare") {
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim() && params.action.equals("service-deploy")
+                }
+            }
+            steps {
+                ansiblePlaybook(STAGE_PREPARE_ANSIBLE_PARAMETERS)
+            }
+            post {
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
         stage("Build") {
             agent {
                 docker {
