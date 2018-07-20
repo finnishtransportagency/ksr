@@ -80,6 +80,7 @@ pipeline {
                     def repository_url = "http://livibuild05.vally.local/nexus/repository/ksr"
 
                     def ansible_base = [
+                        extraVars: [ ksr_target: get_environment() ],
                         inventory: "/data/ansible/inventories/ksr",
                         playbook: "/data/ansible/ksr.yml",
                         vaultCredentialsId: "vaultpass-ksr"
@@ -173,16 +174,13 @@ pipeline {
                             choice(choices: group_id, description: "Group ID", name: "group_id")
                         ])
 
-                        STAGE_EXECUTE_ANSIBLE_PARAMETERS.put("extraVars", [
-                            ksr_target: get_environment(),
-                            ksr_deploy_springboot: JsonOutput.toJson([
-                                artifact_id: artifact_id,
-                                group_id: group_id,
-                                extension: extension,
-                                version: artifact_version,
-                                repository_url: repository_url
-                            ])
-                        ])
+                        STAGE_EXECUTE_ANSIBLE_PARAMETERS.extraVars.put("ksr_deploy", JsonOutput.toJson([
+                            artifact_id: artifact_id,
+                            group_id: group_id,
+                            extension: extension,
+                            version: artifact_version,
+                            repository_url: repository_url
+                        ]))
 
                     }
                 }
