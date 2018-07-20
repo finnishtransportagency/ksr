@@ -80,9 +80,19 @@ pipeline {
                     def repository_url = "http://livibuild05.vally.local/nexus/repository/ksr"
 
                     def ansible_base = [
-                        extraVars: [ ksr_target: get_environment() ],
+                        extraVars: [ 
+                            ksr_target: get_environment(),
+                            ksr_deploy", JsonOutput.toJson([
+                                artifact_id: artifact_id,
+                                group_id: group_id,
+                                extension: extension,
+                                version: artifact_version,
+                                repository_url: repository_url
+                            ])
+                        ],
                         inventory: "/data/ansible/inventories/ksr",
                         playbook: "/data/ansible/ksr.yml",
+                        tags: params.action,
                         vaultCredentialsId: "vaultpass-ksr"
                     ]
 
@@ -92,7 +102,7 @@ pipeline {
                     ]
 
                     STAGE_PREPARE_ANSIBLE_PARAMETERS = ansible_base + [ tags: "service-stop" ]
-
+                    println STAGE_PREPARE_ANSIBLE_PARAMETERS
                     def properties = "src/main/resources/application-ci.properties"
                     STAGE_BUILD_CMD = [
                         "sed -i 's/DB_CRED_USR/${DB_CRED_USR}/g' ${properties}",
@@ -129,7 +139,7 @@ pipeline {
                         "--batch-mode"
                     ].join(" ")
 
-                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base + [ tags: params.action ]
+                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base 
 
                     STAGE_TEST_CMD = [
                         get_test_hosts().collect {
@@ -173,14 +183,6 @@ pipeline {
                             choice(choices: artifact_version, description: "Artifact version", name: "artifact_version"),
                             choice(choices: group_id, description: "Group ID", name: "group_id")
                         ])
-
-                        STAGE_EXECUTE_ANSIBLE_PARAMETERS.extraVars.put("ksr_deploy", JsonOutput.toJson([
-                            artifact_id: artifact_id,
-                            group_id: group_id,
-                            extension: extension,
-                            version: artifact_version,
-                            repository_url: repository_url
-                        ]))
 
                     }
                 }
