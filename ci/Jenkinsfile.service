@@ -90,7 +90,7 @@ pipeline {
                         choice(choices: params.action, description: "Action.", name: "action")
                     ]
 
-                    STAGE_PREPARE_ANSIBLE_PARAMETERS = ansible_base + [ tags: "service-stop" ]
+                    STAGE_PREPARE_ANSIBLE_PARAMETERS = ansible_base + [ tags: "service-stop" ]
 
                     def properties = "src/main/resources/application-ci.properties"
                     STAGE_BUILD_CMD = [
