@@ -67,16 +67,16 @@ class MapMeasure extends Component<Props, State> {
                         spatialReference: view.spatialReference,
                     });
 
-                const createGraphic = (geometry, style, value): any =>
+                const createGraphic = (geometry, style): any =>
                     new Graphic({
-                        geometry,
+                        geometry: geometry.extent.width ? geometry : null,
                         symbol: {
                             type: 'simple-fill',
                             style,
                             color: [60, 180, 200, 0.5],
                             outline: {
                                 color: '#444444',
-                                width: value ? 2 : 0,
+                                width: 2,
                             },
                         },
                         id: 'drawMeasure',
@@ -128,7 +128,7 @@ class MapMeasure extends Component<Props, State> {
                         area = '';
                     }
 
-                    const graphic = createGraphic(polygon, 'solid', area);
+                    const graphic = createGraphic(polygon, 'solid');
                     const graphicLabelMeasure = labelMeasure(polygon, area);
                     view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.map(g => g.id === 'labelMeasure' && view.graphics.remove(g));
@@ -152,7 +152,7 @@ class MapMeasure extends Component<Props, State> {
                         length = '';
                     }
 
-                    const graphic = createGraphic(line, 'none', length);
+                    const graphic = createGraphic(line, 'none');
                     const graphicLabelMeasure = labelMeasure(line, length);
                     view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.map(g => g.id === 'labelMeasure' && view.graphics.remove(g));
