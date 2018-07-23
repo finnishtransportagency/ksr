@@ -60,43 +60,33 @@ class SketchTool extends Component<Props, State> {
                 drawRectangleButton.addEventListener('click', () => {
                     if (this.props.active === 'sketchRectangle') {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
-                        drawRectangleButton.style.backgroundColor = styles.colorMain;
                     } else {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchRectangle');
-                        drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                        drawPolygonButton.style.backgroundColor = styles.colorMain;
-                        drawCircleButton.style.backgroundColor = styles.colorMain;
                         sketchViewModel.create('rectangle');
+                        drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
 
                 drawPolygonButton.addEventListener('click', () => {
                     if (this.props.active === 'sketchPolygon') {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
-                        drawPolygonButton.style.backgroundColor = styles.colorMain;
                     } else {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchPolygon');
-                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                        drawRectangleButton.style.backgroundColor = styles.colorMain;
-                        drawCircleButton.style.backgroundColor = styles.colorMain;
                         sketchViewModel.create('polygon');
+                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
 
                 drawCircleButton.addEventListener('click', () => {
                     if (this.props.active === 'sketchCircle') {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
-                        sketchViewModel.reset();
-                        drawCircleButton.style.backgroundColor = styles.colorMain;
                     } else {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchCircle');
-                        drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                        drawRectangleButton.style.backgroundColor = styles.colorMain;
-                        drawPolygonButton.style.backgroundColor = styles.colorMain;
                         sketchViewModel.create('circle');
+                        drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
 
@@ -127,9 +117,7 @@ class SketchTool extends Component<Props, State> {
                     });
                     Promise.all(queries).then(layers => this.props.selectFeatures({ layers }));
 
-                    drawRectangleButton.style.backgroundColor = styles.colorMain;
-                    drawPolygonButton.style.backgroundColor = styles.colorMain;
-                    drawCircleButton.style.backgroundColor = styles.colorMain;
+                    resetMapTools(draw, sketchViewModel, setActiveTool);
                     setActiveTool('');
                 };
 
