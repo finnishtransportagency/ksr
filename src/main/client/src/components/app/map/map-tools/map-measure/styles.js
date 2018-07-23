@@ -6,7 +6,6 @@ export const DrawToolOuterWrapper = styled.div`
     
     .esri-widget--button {
         margin-left: 4px;
-        z-index: 1;
     }
 `;
 
