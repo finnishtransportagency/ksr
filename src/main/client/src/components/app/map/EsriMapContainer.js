@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+import { setMapView } from '../../../reducers/map/actions';
 import EsriMap from './EsriMap';
 
 import { selectFeatures } from './../../../reducers/table/actions';
@@ -9,6 +10,7 @@ const mapStateToProps = (state) => {
         .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []);
 
     return ({
+        view: state.map.mapView,
         activeNav: state.navigation.activeNav,
         layerList: state.map.layerGroups.layerList,
         fetching: state.map.layerGroups.fetching || state.map.mapConfig.fetching,
@@ -22,6 +24,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     selectFeatures: (features) => {
         dispatch(selectFeatures(features));
+    },
+    setMapView: (view) => {
+        dispatch(setMapView(view));
     },
 });
 

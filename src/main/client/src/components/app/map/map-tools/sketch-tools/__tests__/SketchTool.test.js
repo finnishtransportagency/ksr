@@ -6,7 +6,6 @@ import SketchToolView from '../SketchToolView';
 const setup = () => {
     const props = {
         view: {},
-        selectFeaturesFromArea: () => {},
         data: [],
     };
     const wrapper = mount(<SketchTool {...props} />);
@@ -21,10 +20,11 @@ describe('<SketchTool />', () => {
         expect(wrapper.find(SketchToolView).exists()).toBe(true);
     });
 
-    it('should invoke SketchTool when prop received', () => {
+    it('should invoke SketchTool when sketchViewModel completed', () => {
         const newProps = {
-            data: [],
-            view: {},
+            sketchViewModel: {
+                initialized: true,
+            },
         };
         const spy = jest.spyOn(wrapper.instance(), 'sketchTool');
         wrapper.instance().componentWillReceiveProps(newProps);

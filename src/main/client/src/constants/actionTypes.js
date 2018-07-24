@@ -2,7 +2,12 @@
 export const GET_ACTIVE_NAV = 'GET_ACTIVE_NAV';
 export const SET_ACTIVE_NAV = 'SET_ACTIVE_NAV';
 
-// Map layers
+// Map
+export const SET_MAP_VIEW = 'SET_MAP_VIEW';
+export const SET_MAP_TOOLS = 'SET_MAP_TOOLS';
+export const SET_ACTIVE_TOOL = 'SET_ACTIVE_TOOL';
+
+// Layers
 export const GET_LAYER_GROUPS = 'GET_LAYER_GROUPS';
 export const GET_LAYER_GROUPS_FULFILLED = 'GET_LAYER_GROUPS_FULFILLED';
 
