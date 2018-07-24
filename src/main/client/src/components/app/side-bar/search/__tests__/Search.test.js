@@ -9,7 +9,19 @@ const setup = (prop) => {
         setSearchState: jest.fn(),
         setSearchOptions: jest.fn(),
         layerList: [{}],
-        queryableLayers: [{
+        allQueryableLayers: [{
+            value: 0,
+            label: 'Layer 1',
+            id: 0,
+            queryColumns: [],
+        }],
+        activeQueryableLayers: [{
+            value: 0,
+            label: 'Layer 1',
+            id: 0,
+            queryColumns: [],
+        }],
+        queryOptions: [{
             value: 0,
             label: 'Layer 1',
             id: 0,
@@ -32,7 +44,6 @@ const setup = (prop) => {
 };
 
 describe('<Search />', () => {
-
     it('should render self', () => {
         const { wrapper } = setup();
 

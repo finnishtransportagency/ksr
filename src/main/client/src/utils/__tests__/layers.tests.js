@@ -1,28 +1,28 @@
-import { addOrReplaceLayer, addOrReplaceLayerInSearchGroup } from '../layers';
+import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../layers';
 
 describe('layers', () => {
-    it('addOrReplaceLayer', () => {
+    it('addOrReplaceLayers', () => {
         const layerList = [{ id: 1, v: 1 }, { id: 2, v: 2 }, { id: 3, v: 3 }];
 
-        const layer1 = { id: 3, v: 4 };
+        const layers1 = [{ id: 3, v: 4 }];
         const expected1 = [{ id: 1, v: 1 }, { id: 2, v: 2 }, { id: 3, v: 4 }];
 
-        const layer2 = { id: 8, v: 8 };
-        const expected2 = [{ id: 8, v: 8 }, { id: 1, v: 1 }, { id: 2, v: 2 }, { id: 3, v: 3 }];
+        const layers2 = [{ id: 8, v: 8 }, { id: 2, v: 5 }];
+        const expected2 = [{ id: 8, v: 8 }, { id: 1, v: 1 }, { id: 2, v: 5 }, { id: 3, v: 3 }];
 
-        expect(addOrReplaceLayer(layerList, layer1)).toEqual(expect.arrayContaining(expected1));
-        expect(addOrReplaceLayer(layerList, layer2)).toEqual(expect.arrayContaining(expected2));
+        expect(addOrReplaceLayers(layerList, layers1)).toEqual(expect.arrayContaining(expected1));
+        expect(addOrReplaceLayers(layerList, layers2)).toEqual(expect.arrayContaining(expected2));
     });
 
-    it('addOrReplaceLayerInSearchGroup', () => {
+    it('addOrReplaceLayersInSearchGroup', () => {
         const layerGroups1 = [
             { id: 1 },
             { id: 2, type: 'search', layers: [{ id: 1, v: 1 }] },
         ];
         const layerGroups2 = [{ id: 1 }];
 
-        const layer1 = { id: 1, v: 2 };
-        const layer2 = { id: 2, v: 2 };
+        const layers1 = [{ id: 1, v: 2 }];
+        const layers2 = [{ id: 2, v: 2 }, { id: 3, v: 3 }];
 
         const expected1 = [
             { id: 1 },
@@ -31,12 +31,12 @@ describe('layers', () => {
 
         const expected2 = [
             { id: 1 },
-            { id: 2, type: 'search', layers: [{ id: 2, v: 2 }, { id: 1, v: 1 }] },
+            { id: 2, type: 'search', layers: [{ id: 3, v: 3 }, { id: 2, v: 2 }, { id: 1, v: 1 }] },
         ];
 
-        const res1 = addOrReplaceLayerInSearchGroup(layerGroups1, layer1);
-        const res2 = addOrReplaceLayerInSearchGroup(layerGroups1, layer2);
-        const res3 = addOrReplaceLayerInSearchGroup(layerGroups2, layer1);
+        const res1 = addOrReplaceLayersInSearchGroup(layerGroups1, layers1);
+        const res2 = addOrReplaceLayersInSearchGroup(layerGroups1, layers2);
+        const res3 = addOrReplaceLayersInSearchGroup(layerGroups2, layers1);
 
         expect(res1).toEqual(expect.arrayContaining(expected1));
         expect(res2).toEqual(expect.arrayContaining(expected2));

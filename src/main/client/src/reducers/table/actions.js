@@ -21,52 +21,65 @@ export const setColumns = (columns: Array<Object>) => ({
     columns,
 });
 
-export const searchFeatures = (
-    selectedLayer: Object,
-    queryString: string,
-) => (dispatch: Function) => {
-    const layerData = {
+export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Function) => {
+    const layersToBeAdded = {
         layers: [],
     };
 
+    const searchQueries = [];
     dispatch({ type: types.SEARCH_FEATURES });
-    fetchSearchQuery(selectedLayer.id, queryString, selectedLayer.name, layerData)
-        .then((r) => {
-            const newLayer = {
-                ...selectedLayer,
-                name: selectedLayer.name,
-                definitionExpression: queryString,
-                visible: true,
-                active: true,
-                id: `${selectedLayer.id}.s`,
-                _source: 'search',
-            };
+    queryMap.forEach((queryString, selectedLayer) => {
+        const layerData = {
+            layers: [],
+        };
+        searchQueries.push(fetchSearchQuery(
+            selectedLayer.id,
+            queryString,
+            selectedLayer.name,
+            layerData,
+        )
+            .then((r) => {
+                if (r.layers.length) {
+                    r.layers.forEach((fetchedLayer) => {
+                        const newLayer = {
+                            ...selectedLayer,
+                            name: selectedLayer.name,
+                            definitionExpression: queryString,
+                            visible: true,
+                            active: true,
+                            id: `${selectedLayer.id}.s`,
+                            _source: 'search',
+                            title: fetchedLayer.title,
+                            fields: fetchedLayer.fields,
+                            features: fetchedLayer.features,
+                            objectIdFieldName: fetchedLayer.objectIdFieldName,
+                        };
 
-            const res = {
-                layers: r.layers.map(l => ({
-                    ...l,
-                    id: newLayer.id,
-                    title: newLayer.name,
-                })),
-            };
+                        layersToBeAdded.layers.push(newLayer);
+                    });
+                }
+            }));
+    });
 
+    Promise.all(searchQueries).then(() => {
+        dispatch({
+            type: types.SEARCH_FEATURES_FULFILLED,
+            layers: parseData(layersToBeAdded, false, 'search'),
+        });
+
+        if (layersToBeAdded.layers.length) {
             dispatch({
-                type: types.SEARCH_FEATURES_FULFILLED,
-                layers: parseData(res, false, 'search'),
+                type: types.HIDE_LAYER,
+                // Remove '.s' at the end of layer id.
+                layerIds: layersToBeAdded.layers.map(newLayer => newLayer.id.slice(0, -2)),
             });
 
-            if (res.layers.length) {
-                dispatch({
-                    type: types.HIDE_LAYER,
-                    layerId: selectedLayer.id,
-                });
-
-                dispatch({
-                    type: types.ADD_SEARCH_RESULTS_LAYER,
-                    layer: newLayer,
-                });
-            }
-        });
+            dispatch({
+                type: types.ADD_SEARCH_RESULTS_LAYER,
+                layers: layersToBeAdded.layers,
+            });
+        }
+    });
 };
 
 export const setActiveTable = (activeTable: string) => ({

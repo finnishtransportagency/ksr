@@ -11,6 +11,8 @@ const fi = {
         searchAllFields: 'Hae kaikista kentistä',
         addField: 'Lisää hakukenttä',
         searchLayerGroupName: 'Hakutulokset',
+        allQueryableLayers: 'Kaikki tasot',
+        allActiveLayers: 'Kaikki aktiiviset tasot',
     },
     reactTable: {
         previousText: 'Edellinen',

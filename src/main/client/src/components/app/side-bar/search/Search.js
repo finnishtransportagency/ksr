@@ -8,7 +8,9 @@ type Props = {
     setSearchState: Function,
     setSearchOptions: Function,
     layerList: Array<Object>,
-    queryableLayers: any,
+    allQueryableLayers: any,
+    activeQueryableLayers: any,
+    queryOptions: any,
     searchState: {
         selectedLayer: string,
         textSearch: string,
@@ -36,10 +38,11 @@ class Search extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { queryableLayers, setSearchState } = this.props;
+        const { activeQueryableLayers, setSearchState } = this.props;
         const { selectedLayer } = this.props.searchState;
 
-        if (selectedLayer && !activeQueryableLayers.find(ql => ql.value === selectedLayer)) {
+        if (selectedLayer && selectedLayer !== 'queryAll' && selectedLayer !== 'queryActive' &&
+            !activeQueryableLayers.find(ql => ql.value === selectedLayer)) {
             setSearchState(0, '', []);
         }
     }
@@ -47,7 +50,9 @@ class Search extends Component<Props, State> {
     handleLayerChange = (layerId: string) => {
         const { setSearchState, setSearchOptions, layerList } = this.props;
         setSearchState(layerId, '', []);
-        if (layerId) setSearchOptions(layerId, layerList);
+        if (layerId && layerId !== 'queryAll' && layerId !== 'queryActive') {
+            setSearchOptions(layerId, layerList);
+        }
     };
 
     handleTextChange = (evt: Object) => {
@@ -127,7 +132,7 @@ class Search extends Component<Props, State> {
 
     handleSubmit = (evt: Object) => {
         evt.preventDefault();
-        const { searchFeatures, queryableLayers } = this.props;
+        const { searchFeatures, allQueryableLayers, activeQueryableLayers } = this.props;
         const {
             selectedLayer,
             searchFieldValues,
@@ -135,15 +140,29 @@ class Search extends Component<Props, State> {
             optionsField,
         } = this.props.searchState;
 
-        const layer = queryableLayers.find(ql => ql.value === selectedLayer);
-        const queryString: string = parseQueryString(
-            searchFieldValues,
-            textSearch,
-            optionsField,
-            layer.queryColumns,
-        );
+        const buildQueryString = layer =>
+            parseQueryString(
+                searchFieldValues,
+                textSearch,
+                optionsField,
+                layer.queryColumns,
+            );
 
-        searchFeatures(layer, queryString);
+        const queryMap = new Map();
+        if (selectedLayer === 'queryAll') {
+            allQueryableLayers.forEach((layer) => {
+                queryMap.set(layer, buildQueryString(layer));
+            });
+        } else if (selectedLayer === 'queryActive') {
+            activeQueryableLayers.forEach((layer) => {
+                queryMap.set(layer, buildQueryString(layer));
+            });
+        } else {
+            const layer = activeQueryableLayers.find(ql => ql.value === selectedLayer);
+            queryMap.set(layer, buildQueryString(layer));
+        }
+
+        searchFeatures(queryMap);
     };
 
     render() {
@@ -155,7 +174,7 @@ class Search extends Component<Props, State> {
             optionsExpression,
             fetching,
         } = this.props.searchState;
-        const { queryableLayers } = this.props;
+        const { queryOptions } = this.props;
 
         return (
             <SearchView
@@ -166,7 +185,7 @@ class Search extends Component<Props, State> {
                 handleTextChange={this.handleTextChange}
                 handleRemoveField={this.handleRemoveField}
                 selectedLayer={selectedLayer}
-                queryableLayers={queryableLayers}
+                queryableLayers={queryOptions}
                 searchFieldValues={searchFieldValues}
                 textSearch={textSearch}
                 optionsField={optionsField}
