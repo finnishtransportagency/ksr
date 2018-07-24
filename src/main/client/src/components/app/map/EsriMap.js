@@ -5,7 +5,7 @@ import equals from 'nano-equal';
 import React, { Component } from 'react';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import EsriMapView from './EsriMapView';
-import { addLayer, highlight, fitExtent } from '../../../utils/map';
+import { addLayers, highlight, fitExtent } from '../../../utils/map';
 
 type Props = {
     activeNav: string,
@@ -53,15 +53,11 @@ class EsriMap extends Component<Props, State> {
             view && view.map
         ) {
             const layerListReversed = [...layerList].reverse();
+            const searchLayers = [];
+            const newLayers = [];
 
             // Update layer settings
             layerListReversed.forEach((l, i) => {
-                // Add layer to map
-                if (l.active && !view.map.findLayerById(l.id)) {
-                    l.visible = true;
-                    addLayer(l, this.state.view, i);
-                }
-
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
                     if (layer && l.id === layer.id) {
@@ -71,7 +67,7 @@ class EsriMap extends Component<Props, State> {
                             if (layer.definitionExpression !== l.definitionExpression) {
                                 layer.definitionExpression = l.definitionExpression;
                                 if (l._source === 'search') {
-                                    fitExtent(layer, view);
+                                    searchLayers.push(layer);
                                 }
                             }
                         }
@@ -79,9 +75,23 @@ class EsriMap extends Component<Props, State> {
                     }
                 });
 
+                if (l.active && !view.map.findLayerById(l.id)) {
+                    l.visible = true;
+                    l.index = i;
+                    newLayers.push(l);
+                }
+
                 // Change layer order
                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
             });
+
+            if (newLayers.length) {
+                // Add new layers to map
+                addLayers(newLayers, this.state.view, searchLayers);
+            } else if (searchLayers.length) {
+                fitExtent(searchLayers, view);
+            }
+
             view.map.allLayers.forEach((l) => {
                 // Temporary fix for sketchViewModel index
                 if (l.id.indexOf('layer') >= 0) {
@@ -148,9 +158,8 @@ class EsriMap extends Component<Props, State> {
                     },
                 });
 
-                [...layerList].reverse().forEach((l, i) => {
-                    addLayer(l, view, i);
-                });
+                const layers = [...layerList].reverse().map((l, index) => ({ ...l, index }));
+                addLayers(layers, view, []);
 
                 const compass = new Compass({
                     view,
