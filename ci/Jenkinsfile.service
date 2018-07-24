@@ -1,0 +1,443 @@
+import groovy.json.JsonOutput
+
+def get_environment() {
+    if (BRANCH_NAME.equals("develop")) { return "dev" }
+    if (BRANCH_NAME.equals("master")) { return "prod" }
+    if (BRANCH_NAME.startsWith("release-")) { return "test" }
+    return ""
+}
+def get_test_hosts()  {
+    if (get_environment().equals("dev")) {
+        return [ "http://livikeh13l.vally.local" ]
+    }
+    if (get_environment().equals("prod")) {
+        return [
+          "http://livikiso01.vally.local",
+          "http://livikiso02.vally.local"
+        ]
+    }
+    if (get_environment().equals("test")) {
+        return [
+          "http://livikisot03.vally.local",
+          "http://livikisot04.vally.local"
+        ]
+    }
+    return [] 
+}
+def get_pollSCM_trigger() {
+    if (get_environment().equals("dev")) { return "H/5 * * * *" }
+    return ""
+}
+
+def get_version(pom_version) {
+    def version = pom_version.tokenize("-").first()
+    if (get_environment().equals("dev")) { return "${version}-SNAPSHOT" }
+    if (get_environment().equals("prod")) { return "${version}" }
+    if (get_environment().equals("test")) { return "${version}-RC-SNAPSHOT" }
+    return "${version}-${get_environment().toUpperCase()}-SNAPSHOT"
+}
+
+pipeline {
+    agent any
+    environment {
+        DB_CRED = credentials("db_cred_${get_environment()}")
+        DB_HOST = credentials("db_host_${get_environment()}")
+        DB_NAME = credentials("db_name_${get_environment()}")
+        DB_PORT = credentials("db_port")
+        NOTIFY_SLACK_SUBJECT = "${JOB_NAME} - <${RUN_DISPLAY_URL}|${BUILD_DISPLAY_NAME}>"
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: "25"))
+        disableConcurrentBuilds()
+    }
+    parameters {
+        choice(
+            choices: "service-deploy\nservice-configure\nservice-restart\nservice-start\nservice-stop\nall",
+            description: "Action to execute.",
+            name: "action"
+        )
+    }
+    stages {
+        stage("Setup") {
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim()
+                }
+            }
+            steps {
+                script {
+
+                    def pom = readMavenPom()
+
+                    def target_environment = get_environment()
+                    
+                    def artifact_id = pom.artifactId
+                    def artifact_version = get_version(pom.version)
+                    def group_id = pom.groupId
+                    def extension = pom.packaging
+                    def filename = "target/${artifact_id.toUpperCase()}.${extension}"
+                    def repository_url = "http://livibuild05.vally.local/nexus/repository/ksr"
+
+                    def ansible_base = [
+                        extraVars: [ 
+                            ksr_target: get_environment(),
+                            ksr_deploy: JsonOutput.toJson([
+                                artifact_id: artifact_id,
+                                group_id: group_id,
+                                extension: extension,
+                                version: artifact_version,
+                                repository_url: repository_url
+                            ])
+                        ],
+                        inventory: "/data/ansible/inventories/ksr",
+                        playbook: "/data/ansible/ksr.yml",
+                        tags: params.action,
+                        vaultCredentialsId: "vaultpass-ksr"
+                    ]
+
+                    STAGE_ACK_PARAMETERS = [
+                        choice(choices: target_environment, description: "Deploy target.", name: "target_environment"),
+                        choice(choices: params.action, description: "Action.", name: "action")
+                    ]
+
+                    STAGE_PREPARE_ANSIBLE_PARAMETERS = ansible_base + [ tags: "service-stop" ]
+                    println STAGE_PREPARE_ANSIBLE_PARAMETERS
+                    def properties = "src/main/resources/application-ci.properties"
+                    STAGE_BUILD_CMD = [
+                        "sed -i 's/DB_CRED_USR/${DB_CRED_USR}/g' ${properties}",
+                        "sed -i 's/DB_CRED_PSW/${DB_CRED_PSW}/g' ${properties}",
+                        "sed -i 's/DB_HOST/${DB_HOST}/g' ${properties}",
+                        "sed -i 's/DB_NAME/${DB_NAME}/g' ${properties}",
+                        "sed -i 's/DB_PORT/${DB_PORT}/g' ${properties}",
+                        [
+                            "mvn",
+                            "versions:set",
+                            "-DnewVersion=${artifact_version}",
+                            "--batch-mode"
+                        ].join(" "),
+                        [
+                            "mvn",
+                            "clean",
+                            "install",
+                            "--activate-profiles=ci",
+                            "--batch-mode"
+                        ].join(" ")
+                    ].join(" && ")
+                    
+                    STAGE_BUILD_JUNIT_RESULTS = "target/*-reports/*.xml"
+
+                    STAGE_CONFIRM_TEXT = "Create release ${group_id}:${artifact_id}@${artifact_version} and deploy to ${target_environment}?"
+
+                    STAGE_PUBLISH_CMD = [
+                        "mvn",
+                        "deploy:deploy-file",
+                        "-Dfile=${filename}",
+                        "-DpomFile=pom.xml",
+                        "-DrepositoryId=nexus3",
+                        "-Durl=${repository_url}",
+                        "--batch-mode"
+                    ].join(" ")
+
+                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base 
+
+                    STAGE_TEST_CMD = [
+                        get_test_hosts().collect {
+                            [
+                                "robot",
+                                "--include Smoke",
+                                "--log NONE",
+                                "--name ${it.tokenize('/').last()}",
+                                "--nostatusrc",
+                                "--output output-${it.tokenize('/').last()}.xml",
+                                "--report NONE",
+                                "src/test"
+                            ].join(" ")
+                        }.join(" && "),
+                        [
+                            "rebot",
+                            "--name ${BUILD_TAG}",
+                            "--nostatusrc",
+                            "--output output.xml",
+                            "output-*.xml"
+                        ].join(" ")
+                    ].minus('').join(" && ")
+
+                    STAGE_TEST_STEP = [
+                        $class: "RobotPublisher",
+                        disableArchiveOutput: false,
+                        logFileName: "log.html",
+                        onlyCritical: true,
+                        otherFiles: "",
+                        outputFileName: "output.xml",
+                        outputPath: ".",
+                        passThreshold: 100,
+                        reportFileName: "report.html",
+                        unstableThreshold: 0
+                    ]
+
+                    if (params.action.equals("service-deploy")) {
+                        
+                        STAGE_ACK_PARAMETERS.addAll([
+                            choice(choices: artifact_id, description: "Artifact ID", name: "artifact_id"),
+                            choice(choices: artifact_version, description: "Artifact version", name: "artifact_version"),
+                            choice(choices: group_id, description: "Group ID", name: "group_id")
+                        ])
+
+                    }
+                }
+            }
+        }
+        stage("Ack") {
+            agent none
+            options {
+                timeout(time: 5, unit: "MINUTES")
+            }
+            when {
+                beforeAgent true
+                expression {
+                    (get_environment()?.trim() && !get_pollSCM_trigger().trim()) ||
+                    (get_environment()?.trim() && !params.action.equals("service-deploy"))
+                }
+            }
+            steps {
+                slackSend(
+                    color: "warning",
+                    message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} requires acknowledgement! Visit <${RUN_DISPLAY_URL}|here> and verify!"
+                )
+                input(
+                    message: "Proceed with following settings?",
+                    parameters: STAGE_ACK_PARAMETERS
+                )
+            }
+            post {
+                aborted {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} aborted because acknowledgement timeout exceeded or user action!"
+                    )
+                }
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} aborted! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+        stage("Docker") {
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim() && params.action.equals("service-deploy")
+                }
+            }
+            steps {
+                sh "cp /data/ci/{maven,node,python}/* ci/confs/"
+                script {
+                    def jenkins_uid = sh(returnStdout: true, script: "id -u").trim()
+                    def build_args = [
+                        "--build-arg http_proxy=${http_proxy}",
+                        "--build-arg https_proxy=${http_proxy}",
+                        "--build-arg no_proxy=${no_proxy}",
+                        "--build-arg JENKINS_UID=${jenkins_uid}"
+                    ].join(" ")
+                    docker.build(
+                        "ksr-maven",
+                        "${build_args} -f ci/Dockerfile.maven ci"
+                    )
+                    //docker.build(
+                    //    "ksr-node",
+                    //    "${build_args} -f ci/Dockerfile.node ci"
+                    //)
+                    docker.build(
+                        "ksr-python",
+                        "${build_args} -f ci/Dockerfile.python ci"
+                    )
+                }
+            }
+            post {
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+        stage("Prepare") {
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim() && params.action.equals("service-deploy")
+                }
+            }
+            steps {
+                ansiblePlaybook(STAGE_PREPARE_ANSIBLE_PARAMETERS)
+            }
+            post {
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+        stage("Build") {
+            agent {
+                docker {
+                    image "ksr-maven"
+                    reuseNode true
+                }
+            }
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim() && params.action.equals("service-deploy")
+                }
+            }
+            steps {
+                sh STAGE_BUILD_CMD
+            }
+            post {
+                always {
+                    junit(
+                        allowEmptyResults: true,
+                        testResults: STAGE_BUILD_JUNIT_RESULTS
+                    )
+                }
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+        stage("Confirm") {
+            agent none
+            options {
+                timeout(time: 5, unit: "MINUTES")
+            }
+            when {
+                beforeAgent true
+                expression {
+                    get_environment().equals("prod") && params.action.equals("service-deploy")
+                }
+            }
+            steps {
+                slackSend(
+                    color: "warning",
+                    message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} requires confirmation! Visit <${RUN_DISPLAY_URL}|here> and verify!"
+                )
+                input STAGE_CONFIRM_TEXT
+            }
+            post {
+                aborted {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} aborted because confirmation timeout exceeded or user action!"
+                    )
+                }
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+        stage("Publish") {
+            agent {
+                docker {
+                    image "ksr-maven"
+                    reuseNode true
+                }
+            }
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim() && params.action.equals("service-deploy")
+                }
+            }
+            steps {
+                sh STAGE_PUBLISH_CMD
+            }
+            post {
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+        stage("Execute") {
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim()
+                }
+            }
+            steps {
+                ansiblePlaybook(STAGE_EXECUTE_ANSIBLE_PARAMETERS)
+            }
+            post {
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT}\nStage ${STAGE_NAME} failure! Check <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+        stage("Test") {
+            agent {
+                docker {
+                    image "ksr-python"
+                    reuseNode true
+                }
+            }
+            when {
+                beforeAgent true
+                expression {
+                    get_environment()?.trim() && !params.action.equals("service-stop")
+                }
+            }
+            steps {
+                sh STAGE_TEST_CMD
+                step(STAGE_TEST_STEP)
+            }
+            post {
+                 always {
+                    archiveArtifacts(
+                        allowEmptyArchive: true,
+                        artifacts: "*.html"
+                    )
+                }
+                failure {
+                    slackSend(
+                        color: "danger",
+                        message: "${NOTIFY_SLACK_SUBJECT} - Stage ${STAGE_NAME} failure!\nCheck <${BUILD_URL}console|console>!"
+                    )
+                }
+                unstable {
+                    slackSend(
+                        color: "warning",
+                        message: "${NOTIFY_SLACK_SUBJECT} - Stage ${STAGE_NAME} failure!\nCheck <${BUILD_URL}console|console>!"
+                    )
+                }
+            }
+        }
+    }
+    post {
+        always {
+            slackSend(
+                color: currentBuild.currentResult.equals("SUCCESS") ? "good" : "danger",
+                message: "${NOTIFY_SLACK_SUBJECT}\nJob ${currentBuild.currentResult}! More info <${BUILD_URL}|here>."
+            )
+            deleteDir()
+        }
+    }
+}

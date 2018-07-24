@@ -26,6 +26,7 @@ export const Wrapper = styled.div`
         };
         
         #select-tool-outer-wrapper,
+        #draw-tool-outer-wrapper,
         #toggle-select-tools,
         #draw-rectangle,
         #draw-polygon-select,
@@ -42,9 +43,14 @@ export const Wrapper = styled.div`
             margin-left: 4px;
         };
         
-        #toggle-select-tools, #select-tool-wrapper {
+        #toggle-select-tools, 
+        #toggle-draw-tools {
             margin-left: 10px;
         };
+        
+        #select-tool-wrapper {
+            margin-left: 4px;
+        }
         
         #remove-selection {
             visibility: hidden;
@@ -59,9 +65,11 @@ export const Wrapper = styled.div`
         #draw-polygon,
         #draw-line,
         #toggle-select-tools,
+        #toggle-draw-tools,
         #draw-rectangle,
         #draw-polygon-select,
         #draw-circle,
+        #remove-measurement,
         #remove-selection {
             background: ${styles.colorMain};
             color: ${styles.colorFontLight};
@@ -109,5 +117,27 @@ export const Wrapper = styled.div`
                 margin-bottom: 1em;
             };
         };
+    };
+    
+    .loading-icon {
+        visibility: hidden;
+        
+        ${props => props.loading && css`
+            visibility: visible;
+            background: ${styles.colorBackgroundLight};
+            position: absolute;
+            width: calc(100% - 60px);
+            height: 100%;
+            left: 60px;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            
+            @media only screen and (max-width: 768px) {
+                width: 100%;
+                height: calc(100% - 60px);
+                left: 0;
+            }
+        `};
     };
 `;

@@ -1,29 +1,32 @@
 // @flow
 import esriLoader from 'esri-loader';
 import React, { Component, createRef } from 'react';
+import { resetMapTools } from '../../../../../utils/mapTools';
+import * as styles from '../../../../ui/defaultStyles';
 import SketchToolView from './SketchToolView';
-import * as styles from '../../../ui/defaultStyles';
 
 type State = {
     isOpen: boolean,
-    prevSelectTool: Object,
 };
 
 const initialState = {
     isOpen: false,
-    prevSelectTool: {},
 };
 
 type Props = {
-    view: {},
+    view: Object,
+    draw: Object,
+    sketchViewModel: Object,
     selectFeatures: Function,
     deSelectSelected: Function,
+    active: string,
+    setActiveTool: Function,
+    data: Array<Object>,
 };
 
 class SketchTool extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.buttonVisibility = createRef();
         this.drawRectangleButton = createRef();
         this.drawPolygonButton = createRef();
         this.drawCircleButton = createRef();
@@ -35,77 +38,55 @@ class SketchTool extends Component<Props, State> {
     }
 
     componentWillReceiveProps(newProps: any) {
-        const { view, data } = newProps;
+        const { sketchViewModel } = this.props;
 
-        if (view !== this.props.view) {
-            this.sketchTool(view);
-        }
-
-        if (data.length > 0) {
-            for (let i = 0; i < data.length; i += 1) {
-                if (data[i]._source === 'select') {
-                    this.buttonVisibility.current.style.visibility = 'visible';
-                    break;
-                }
-            }
-        } else {
-            this.buttonVisibility.current.style.visibility = 'hidden';
+        if (sketchViewModel !== newProps.sketchViewModel && newProps.sketchViewModel.initialized) {
+            this.sketchTool();
         }
     }
 
-    sketchTool = (view: any) => {
+    sketchTool = () => {
         esriLoader
-            .loadModules([
-                'esri/widgets/Sketch/SketchViewModel',
-            ])
-            .then(([SketchViewModel]) => {
-                const sketchViewModel = new SketchViewModel({
-                    view,
-                });
+            .loadModules([])
+            .then(() => {
+                const {
+                    view, draw, sketchViewModel, setActiveTool,
+                } = this.props;
 
                 const drawRectangleButton = this.drawRectangleButton.current;
                 const drawPolygonButton = this.drawPolygonButton.current;
                 const drawCircleButton = this.drawCircleButton.current;
 
                 drawRectangleButton.addEventListener('click', () => {
-                    if (drawRectangleButton === this.state.prevSelectTool) {
-                        sketchViewModel.reset();
-                        drawRectangleButton.style.backgroundColor = styles.colorMain;
-                        this.setState({ prevSelectTool: {} });
+                    if (this.props.active === 'sketchRectangle') {
+                        resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else {
-                        drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                        drawPolygonButton.style.backgroundColor = styles.colorMain;
-                        drawCircleButton.style.backgroundColor = styles.colorMain;
-                        this.setState({ prevSelectTool: drawRectangleButton });
+                        resetMapTools(draw, sketchViewModel, setActiveTool);
+                        setActiveTool('sketchRectangle');
                         sketchViewModel.create('rectangle');
+                        drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
 
                 drawPolygonButton.addEventListener('click', () => {
-                    if (drawPolygonButton === this.state.prevSelectTool) {
-                        sketchViewModel.reset();
-                        drawPolygonButton.style.backgroundColor = styles.colorMain;
-                        this.setState({ prevSelectTool: {} });
+                    if (this.props.active === 'sketchPolygon') {
+                        resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else {
-                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                        drawRectangleButton.style.backgroundColor = styles.colorMain;
-                        drawCircleButton.style.backgroundColor = styles.colorMain;
-                        this.setState({ prevSelectTool: drawPolygonButton });
+                        resetMapTools(draw, sketchViewModel, setActiveTool);
+                        setActiveTool('sketchPolygon');
                         sketchViewModel.create('polygon');
+                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
 
                 drawCircleButton.addEventListener('click', () => {
-                    if (drawCircleButton === this.state.prevSelectTool) {
-                        sketchViewModel.reset();
-                        drawCircleButton.style.backgroundColor = styles.colorMain;
-                        this.setState({ prevSelectTool: {} });
+                    if (this.props.active === 'sketchCircle') {
+                        resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else {
-                        drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                        drawRectangleButton.style.backgroundColor = styles.colorMain;
-                        drawPolygonButton.style.backgroundColor = styles.colorMain;
-                        this.setState({ prevSelectTool: drawCircleButton });
+                        resetMapTools(draw, sketchViewModel, setActiveTool);
+                        setActiveTool('sketchCircle');
                         sketchViewModel.create('circle');
+                        drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
 
@@ -136,13 +117,11 @@ class SketchTool extends Component<Props, State> {
                     });
                     Promise.all(queries).then(layers => this.props.selectFeatures({ layers }));
 
-                    drawRectangleButton.style.backgroundColor = styles.colorMain;
-                    drawPolygonButton.style.backgroundColor = styles.colorMain;
-                    drawCircleButton.style.backgroundColor = styles.colorMain;
-                    this.setState({ prevSelectTool: {} });
+                    resetMapTools(draw, sketchViewModel, setActiveTool);
+                    setActiveTool('');
                 };
 
-                sketchViewModel.on('draw-complete', selectFeaturesFromDraw);
+                sketchViewModel.on('create-complete', selectFeaturesFromDraw);
             });
     };
 
@@ -155,23 +134,25 @@ class SketchTool extends Component<Props, State> {
     };
 
     // Assign constructor ref flowtypes
-    buttonVisibility: any;
     drawRectangleButton: any;
     drawPolygonButton: any;
     drawCircleButton: any;
     toggleSelectToolsButton: any;
 
     render() {
+        const { data, view } = this.props;
+
         return (
             <SketchToolView
                 removeSelection={this.removeSelection}
-                buttonVisibilityRef={this.buttonVisibility}
                 drawRectangleButtonRef={this.drawRectangleButton}
                 drawPolygonButtonRef={this.drawPolygonButton}
                 drawCircleButtonRef={this.drawCircleButton}
                 toggleSelectToolsButtonRef={this.toggleSelectToolsButton}
                 toggleTools={this.toggleSelectTools}
                 isOpen={this.state.isOpen}
+                data={data}
+                view={view}
             />
         );
     }

@@ -56,3 +56,23 @@ export const getMapConfig = () => (dispatch: Function) => {
         }))
         .catch(err => console.log(err));
 };
+
+export const setMapView = (view: any) => (dispatch: Function) => {
+    dispatch({
+        type: types.SET_MAP_VIEW,
+        view,
+    });
+};
+
+export const setMapTools = (draw: Object, sketchViewModel: Object) => (dispatch: Function) => {
+    dispatch({
+        type: types.SET_MAP_TOOLS,
+        draw,
+        sketchViewModel,
+    });
+};
+
+export const setActiveTool = (active: string) => ({
+    type: types.SET_ACTIVE_TOOL,
+    active,
+});

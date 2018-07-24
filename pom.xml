@@ -144,9 +144,10 @@
 			            </goals>
 			            <configuration>
 			                <arguments>update</arguments>
+							<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
 			        </execution>
-			
+				    
 			        <execution>
 			            <id>Frontend production build</id>
 			            <phase>compile</phase>
@@ -155,13 +156,14 @@
 			            </goals>
 			            <configuration>
 			                <arguments>run build</arguments>
+							<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
 			        </execution>
 			    </executions>
 			    <configuration>
 			        <nodeVersion>v8.11.1</nodeVersion>
 			        <npmVersion>3.10.10</npmVersion>
-			        <installDirectory>.mvn</installDirectory>
+					<installDirectory>.mvn</installDirectory>
 			        <workingDirectory>src/main/client</workingDirectory>
 			    </configuration>
 			</plugin>
@@ -205,7 +207,7 @@
 						</goals>
 						<configuration>
 							<files>
-								<file>src/main/resources/application-${spring-boot.run.profiles}.properties</file>
+								<file>src/main/resources/application-${build.profile.id}.properties</file>
 							</files>
 						</configuration>
 					</execution>
@@ -226,7 +228,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+            </plugin>
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
@@ -289,62 +291,13 @@
 				<build.profile.id>dev</build.profile.id>
 				<profileActive>dev</profileActive>
 			</properties>
-			<build>
-				<resources>
-					<resource>
-						<filtering>true</filtering>
-						<directory>src/main/resources</directory>
-						<excludes>
-							<exclude>application-ci.properties</exclude>
-							<exclude>application-prod.properties</exclude>
-						</excludes>
-					</resource>
-				</resources>
-			</build>
 		</profile>
 		<profile>
 			<id>ci</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
 			<properties>
 				<build.profile.id>ci</build.profile.id>
 				<profileActive>ci</profileActive>
 			</properties>
-			<build>
-				<resources>
-					<resource>
-						<filtering>true</filtering>
-						<directory>src/main/resources</directory>
-						<excludes>
-							<exclude>application-dev.properties</exclude>
-							<exclude>application-prod.properties</exclude>
-						</excludes>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-		<profile>
-			<id>prod</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<build.profile.id>prod</build.profile.id>
-				<profileActive>prod</profileActive>
-			</properties>
-			<build>
-				<resources>
-					<resource>
-						<filtering>true</filtering>
-						<directory>src/main/resources</directory>
-						<excludes>
-							<exclude>application-dev.properties</exclude>
-							<exclude>application-ci.properties</exclude>
-						</excludes>
-					</resource>
-				</resources>
-			</build>
 		</profile>
 	</profiles>
 

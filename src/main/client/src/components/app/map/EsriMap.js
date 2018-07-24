@@ -8,6 +8,7 @@ import EsriMapView from './EsriMapView';
 import { addLayers, highlight, fitExtent } from '../../../utils/map';
 
 type Props = {
+    view: Object,
     activeNav: string,
     layerList: Array<any>,
     fetching: boolean,
@@ -15,33 +16,13 @@ type Props = {
     mapCenter: Array<number>,
     mapScale: number,
     selectFeatures: Function,
-    selectedFeatures: Array<Object>
+    selectedFeatures: Array<Object>,
+    setMapView: (view: Object) => void,
 };
 
-type State = {
-    options: {
-        container: string,
-    },
-    view: any,
-};
-
-const initialState = {
-    options: {
-        container: 'mapView',
-    },
-    view: null,
-};
-
-class EsriMap extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-
-        this.state = { ...initialState };
-    }
-
+class EsriMap extends Component<Props> {
     componentDidUpdate(prevProps: Props) {
-        const { fetching, layerList } = this.props;
-        const { view } = this.state;
+        const { fetching, layerList, view } = this.props;
 
         if (prevProps.fetching !== fetching) {
             this.initMap();
@@ -106,7 +87,7 @@ class EsriMap extends Component<Props, State> {
     }
 
     initMap = () => {
-        esriLoader.loadCss('https://js.arcgis.com/4.7/esri/css/main.css');
+        esriLoader.loadCss('https://js.arcgis.com/4.8/esri/css/main.css');
 
         esriLoader
             .loadModules([
@@ -129,9 +110,8 @@ class EsriMap extends Component<Props, State> {
                 Compass,
                 Point,
             ]) => {
-                const { container } = this.state.options;
                 const {
-                    layerList, mapCenter, mapScale, selectFeatures,
+                    layerList, mapCenter, mapScale, setMapView, selectFeatures,
                 } = this.props;
 
                 const map = new Map({
@@ -147,7 +127,7 @@ class EsriMap extends Component<Props, State> {
                 });
 
                 const view = new MapView({
-                    container,
+                    container: 'mapView',
                     map,
                     center,
                     scale: mapScale,
@@ -184,8 +164,7 @@ class EsriMap extends Component<Props, State> {
                         compass,
                         locate,
                         track,
-                        'draw-polygon',
-                        'draw-line',
+                        'draw-tool-outer-wrapper',
                         'select-tool-outer-wrapper',
                     ],
                     'top-right',
@@ -195,17 +174,20 @@ class EsriMap extends Component<Props, State> {
                 (document.getElementById: Function)('select-tool-outer-wrapper').classList
                     .remove('esri-component');
 
+                (document.getElementById: Function)('draw-tool-outer-wrapper').classList
+                    .remove('esri-component');
+
                 view.on('click', (event) => {
                     mapSelectPopup(event, view, selectFeatures, layerList);
                 });
 
-                this.setState({ view });
-            });
+                return { setMapView, view };
+            })
+            .then(r => r.setMapView(r.view));
     };
 
     render() {
-        const { activeNav, isOpenTable } = this.props;
-        const { view } = this.state;
+        const { activeNav, isOpenTable, view } = this.props;
 
         return <EsriMapView activeNav={activeNav} isOpenTable={isOpenTable} view={view} />;
     }
