@@ -68,7 +68,7 @@ class EsriMap extends Component<Props> {
 
             if (newLayers.length) {
                 // Add new layers to map
-                addLayers(newLayers, this.state.view, searchLayers);
+                addLayers(newLayers, view, searchLayers);
             } else if (searchLayers.length) {
                 fitExtent(searchLayers, view);
             }
