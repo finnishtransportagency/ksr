@@ -2,47 +2,34 @@
 import esriLoader from 'esri-loader';
 import { mapHighlightStroke as highlightStroke } from '../components/ui/defaultStyles';
 /**
-* Fit map on the extent of given layer.
+* Fit map on the extent of given layers.
 *
-* @param layer esri/layers/FeatureLayer
+* @param layers esri/layers/FeatureLayer
 * @param view esri/views/MapView
 */
-export const fitExtent = (layer: Object, view: Object) => {
-    layer.queryExtent().then((response) => {
-        if (response.count) view.goTo(response.extent);
+export const fitExtent = (layers: Array<Object>, view: Object) => {
+    const extentQueries = [];
+    const extents = [];
+    layers.forEach((layer) => {
+        extentQueries.push(layer.queryExtent().then((response) => {
+            if (response.count) extents.push(response.extent);
+        }));
+    });
+
+    Promise.all(extentQueries).then(() => {
+        view.goTo(extents);
     });
 };
 
 /**
-* A Helper function to create a FeatureLayer.
-* If source is 'search', then also fit's the bounds of this layer.
-*
-* @param FeatureLayer esri/layers/FeatureLayer reference
-* @param layer Layer object representing layer to be created
-* @param view esri/views/MapView
-*
-* @returns fl Created FeatureLayer
-*/
-const createFeatureLayer = (FeatureLayer, layer, view) => {
-    const fl = new FeatureLayer({
-        id: layer.id,
-        url: layer.url,
-        copyright: layer.attribution,
-        maxScale: layer.maxScale,
-        minScale: layer.minScale,
-        opacity: layer.opacity,
-        visible: layer.visible,
-        title: layer.name,
-        outFields: ['*'],
-        definitionExpression: layer.definitionExpression,
-    });
-    if (layer._source === 'search') {
-        fitExtent(fl, view);
-    }
-    return fl;
-};
-
-export const addLayer = (layer: Object, view: Object, index: number) => {
+ * Add new layers to map view.
+ * If search layers are present or added also fit map on the extent of search layers.
+ *
+ * @param layers Array of layers to be added
+ * @param view Map view to which the layers are added
+ * @param searchLayers Array of search layers that already exist in map view
+ */
+export const addLayers = (layers: Array<Object>, view: Object, searchLayers: Array<Object>) => {
     esriLoader
         .loadModules([
             'esri/config',
@@ -56,47 +43,68 @@ export const addLayer = (layer: Object, view: Object, index: number) => {
             WMTSLayer,
             FeatureLayer,
         ]) => {
-            esriConfig.request.corsEnabledServers.push(layer.url);
-
-            switch (layer.type) {
-                case 'wms':
-                    view.map.add(new WMSLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        opacity: layer.opacity,
-                        visible: layer.visible,
-                        title: layer.name,
-                        sublayers: [
-                            {
-                                name: layer.layers,
+            layers.forEach((layer) => {
+                esriConfig.request.corsEnabledServers.push(layer.url);
+                switch (layer.type) {
+                    case 'wms':
+                        view.map.add(new WMSLayer({
+                            id: layer.id,
+                            url: layer.url,
+                            copyright: layer.attribution,
+                            maxScale: layer.maxScale,
+                            minScale: layer.minScale,
+                            opacity: layer.opacity,
+                            visible: layer.visible,
+                            title: layer.name,
+                            sublayers: [
+                                {
+                                    name: layer.layers,
+                                },
+                            ],
+                        }), layer.index);
+                        break;
+                    case 'wmts':
+                        view.map.add(new WMTSLayer({
+                            id: layer.id,
+                            url: layer.url,
+                            copyright: layer.attribution,
+                            maxScale: layer.maxScale,
+                            minScale: layer.minScale,
+                            opacity: layer.opacity,
+                            visible: layer.visible,
+                            title: layer.name,
+                            activeLayer: {
+                                id: layer.layers,
                             },
-                        ],
-                    }), index);
-                    break;
-                case 'wmts':
-                    view.map.add(new WMTSLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        opacity: layer.opacity,
-                        visible: layer.visible,
-                        title: layer.name,
-                        activeLayer: {
-                            id: layer.layers,
-                        },
-                    }), index);
-                    break;
-                case 'agfs':
-                    view.map.add(createFeatureLayer(FeatureLayer, layer, view), index);
-                    break;
-                default:
-                    break;
-            }
+                        }), layer.index);
+                        break;
+                    case 'agfs': {
+                        const fl = new FeatureLayer({
+                            id: layer.id,
+                            url: layer.url,
+                            copyright: layer.attribution,
+                            maxScale: layer.maxScale,
+                            minScale: layer.minScale,
+                            opacity: layer.opacity,
+                            visible: layer.visible,
+                            title: layer.name,
+                            outFields: ['*'],
+                            definitionExpression: layer.definitionExpression,
+                        });
+
+                        if (layer._source === 'search') {
+                            searchLayers.push(fl);
+                        }
+
+                        view.map.add(fl, layer.index);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            });
+
+            if (searchLayers.length) fitExtent(searchLayers, view);
         });
 };
 

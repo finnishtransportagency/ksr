@@ -5,7 +5,7 @@ import equals from 'nano-equal';
 import React, { Component } from 'react';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import EsriMapView from './EsriMapView';
-import { addLayer, highlight, fitExtent } from '../../../utils/map';
+import { addLayers, highlight, fitExtent } from '../../../utils/map';
 
 type Props = {
     view: Object,
@@ -34,15 +34,11 @@ class EsriMap extends Component<Props> {
             view && view.map
         ) {
             const layerListReversed = [...layerList].reverse();
+            const searchLayers = [];
+            const newLayers = [];
 
             // Update layer settings
             layerListReversed.forEach((l, i) => {
-                // Add layer to map
-                if (l.active && !view.map.findLayerById(l.id)) {
-                    l.visible = true; // eslint-disable-line no-param-reassign
-                    addLayer(l, view, i);
-                }
-
                 // Change layer opacity and visibility
                 view.map.allLayers.forEach((layer) => {
                     if (layer && l.id === layer.id) {
@@ -52,7 +48,7 @@ class EsriMap extends Component<Props> {
                             if (layer.definitionExpression !== l.definitionExpression) {
                                 layer.definitionExpression = l.definitionExpression;
                                 if (l._source === 'search') {
-                                    fitExtent(layer, view);
+                                    searchLayers.push(layer);
                                 }
                             }
                         }
@@ -60,12 +56,28 @@ class EsriMap extends Component<Props> {
                     }
                 });
 
+                if (l.active && !view.map.findLayerById(l.id)) {
+                    l.visible = true;
+                    l.index = i;
+                    newLayers.push(l);
+                }
+
                 // Change layer order
                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
             });
+
+            if (newLayers.length) {
+                // Add new layers to map
+                addLayers(newLayers, view, searchLayers);
+            } else if (searchLayers.length) {
+                fitExtent(searchLayers, view);
+            }
+
             view.map.allLayers.forEach((l) => {
                 // Temporary fix for sketchViewModel index
-                if (l.id.indexOf('layer') >= 0) view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.allLayers.length));
+                if (l.id.indexOf('layer') >= 0) {
+                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.allLayers.length));
+                }
             });
         }
 
@@ -126,9 +138,8 @@ class EsriMap extends Component<Props> {
                     },
                 });
 
-                [...layerList].reverse().forEach((l, i) => {
-                    addLayer(l, view, i);
-                });
+                const layers = [...layerList].reverse().map((l, index) => ({ ...l, index }));
+                addLayers(layers, view, []);
 
                 const compass = new Compass({
                     view,

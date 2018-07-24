@@ -8,7 +8,7 @@ import {
     CLEAR_TABLE_DATA,
 } from '../../constants/actionTypes';
 
-import { addOrReplaceLayer, addOrReplaceLayerInSearchGroup } from '../../utils/layers';
+import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
 
 type LayerGroups = {
     id: number,
@@ -51,8 +51,8 @@ type Action = {
     type: string,
     layerGroups: Array<LayerGroups>,
     layerList: Array<LayerList>,
-    layerId: string,
-    layer: Object,
+    layerIds: Array<string>,
+    layers: Array<Object>,
 };
 
 const initialState = {
@@ -84,14 +84,14 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerList: (state.layerList.map(l => ({
                     ...l,
-                    visible: action.layerId === l.id ? false : l.visible,
+                    visible: action.layerIds.find(id => id === l.id) ? false : l.visible,
                 })): Array<Object>),
             };
         case ADD_SEARCH_RESULTS_LAYER:
             return {
                 ...state,
-                layerList: addOrReplaceLayer(state.layerList, action.layer),
-                layerGroups: addOrReplaceLayerInSearchGroup(state.layerGroups, action.layer),
+                layerList: addOrReplaceLayers(state.layerList, action.layers),
+                layerGroups: addOrReplaceLayersInSearchGroup(state.layerGroups, action.layers),
             };
         case CLEAR_TABLE_DATA:
             return {

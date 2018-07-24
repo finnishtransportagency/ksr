@@ -27,9 +27,18 @@ const Expression = styled.div`
     flex: 1;
     margin-right: 0.5rem;
     
-    .Select-control {
+    .Select--single .Select-control {
         height: unset;
         border: 2px solid transparent;
+    
+        .Select-value {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        
+        .Select-arrow-zone {
+            padding-right: 0;
+        }
     }
 `;
 

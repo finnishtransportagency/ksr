@@ -17,7 +17,7 @@ type Props = {
     handleChangeField: Function,
     handleSubmit: Function,
     handleRemoveField: Function,
-    selectedLayer: number,
+    selectedLayer: string,
     queryableLayers: Array<Object>,
     searchFieldValues: Array<Object>,
     textSearch: string,
@@ -100,7 +100,9 @@ const SearchView = ({
                     <Button disabled={!selectedLayer || fetching}>
                         {strings.search.buttonSearch}
                     </Button>
-                    <div hidden={!selectedLayer}>
+                    <div hidden={!selectedLayer || selectedLayer === 'queryAll' ||
+                        selectedLayer === 'queryActive'}
+                    >
                         <p>{strings.search.addField}</p>
                         <label htmlFor="selectField" hidden={!selectedLayer}>
                             <Select

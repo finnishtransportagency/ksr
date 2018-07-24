@@ -18,4 +18,3 @@ export const fetchSearchQuery = (layerId, queryString, title, data) =>
             return data;
         })
         .catch(err => console.log(err));
-

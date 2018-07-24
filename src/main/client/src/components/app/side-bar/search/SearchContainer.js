@@ -3,22 +3,29 @@ import { connect } from 'react-redux';
 import { searchFeatures } from '../../../../reducers/table/actions';
 import { setSearchState, setSearchOptions } from '../../../../reducers/search/actions';
 import Search from './Search';
+import strings from '../../../../translations';
 
 const mapStateToProps = (state) => {
-    const queryableLayers = state.map.layerGroups.layerList
-        .filter(l => l.active && l.queryable && l._source !== 'search')
+    const allQueryableLayers = state.map.layerGroups.layerList
+        .filter(l => l.queryable && l._source !== 'search')
         .map(l => ({ ...l, value: l.id, label: l.name }));
+    const activeQueryableLayers = allQueryableLayers.filter(l => l.active);
+    const queryOptions = [{ value: 'queryAll', label: strings.search.allQueryableLayers }]
+        .concat([{ value: 'queryActive', label: strings.search.allActiveLayers }])
+        .concat(activeQueryableLayers);
 
     return ({
-        queryableLayers,
+        allQueryableLayers,
+        activeQueryableLayers,
+        queryOptions,
         searchState: state.search.searchState,
         layerList: state.map.layerGroups.layerList,
     });
 };
 
 const mapDispatchToProps = dispatch => ({
-    searchFeatures: (selectedLayer, queryString) => {
-        dispatch(searchFeatures(selectedLayer, queryString));
+    searchFeatures: (queryMap) => {
+        dispatch(searchFeatures(queryMap));
     },
     setSearchState: (layerId, textSearch, searchFieldValues) => {
         dispatch(setSearchState(layerId, textSearch, searchFieldValues));

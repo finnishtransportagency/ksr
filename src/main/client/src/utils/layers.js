@@ -1,37 +1,39 @@
 /**
-* Add or replace a layer in layerlist.
+* Add or replace layers in layerlist.
 * If there is already a layer with same id, then replace that with new one.
 *
 * @param layerList Array of layers
-* @param layer layer to add
+* @param layersToBeAdded Array of layers to be added
 *
 * @returns layers Array of layers with new layer
 */
-export const addOrReplaceLayer = (layerList, layer) => {
-    const i = layerList.findIndex(l => l.id === layer.id);
+export const addOrReplaceLayers = (layerList, layersToBeAdded) => {
     let layers = [...layerList];
-    if (i !== -1) {
-        layers[i] = layer;
-    } else {
-        layers = [layer, ...layerList];
-    }
+    layersToBeAdded.forEach((layer) => {
+        const i = layers.findIndex(l => l.id === layer.id);
+        if (i !== -1) {
+            layers[i] = layer;
+        } else {
+            layers = [layer, ...layers];
+        }
+    });
     return layers;
 };
 
 /**
-* Adds or replaces layer in layergroup for search-layers.
+* Add or replace layers in layergroup for search-layers.
 * If layerGroup for search-features does not exists, then
 * no action will be taken.
 *
 * @param layerGroups Array of layergroups
-* @param layer layer to add
+* @param layers Array of layers to be added
 *
 * @returns layerGroups Updated layerGroups
 */
-export const addOrReplaceLayerInSearchGroup = (layerGroups, layer) => (
+export const addOrReplaceLayersInSearchGroup = (layerGroups, layers) => (
     layerGroups.map((lg) => {
         if (lg.type === 'search') {
-            return { ...lg, layers: addOrReplaceLayer(lg.layers, layer) };
+            return { ...lg, layers: addOrReplaceLayers(lg.layers, layers) };
         }
         return { ...lg };
     })

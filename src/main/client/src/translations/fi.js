@@ -11,6 +11,8 @@ const fi = {
         searchAllFields: 'Hae kaikista kentistä',
         addField: 'Lisää hakukenttä',
         searchLayerGroupName: 'Hakutulokset',
+        allQueryableLayers: 'Kaikki tasot',
+        allActiveLayers: 'Kaikki aktiiviset tasot',
     },
     reactTable: {
         previousText: 'Edellinen',
@@ -25,7 +27,6 @@ const fi = {
     },
     esriMap: {
         openGoogleStreetView: 'Avaa Google Street View',
-        destinationDetails: 'Kohteen tiedot',
         selectIntersectFeatures: 'Aluevalinta',
     },
     modalFilter: {
