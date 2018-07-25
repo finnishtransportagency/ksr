@@ -9,8 +9,9 @@ const setup = () => {
         setToggleTable: () => {},
         toggleTable: false,
         activeNav: '',
+        originalLayers: [],
     };
-    const wrapper = shallow(<TableView />);
+    const wrapper = shallow(<TableView {...props} />);
 
     return { props, wrapper };
 };
@@ -20,7 +21,7 @@ describe('<TableView />', () => {
 
     it('should render self', () => {
         expect(wrapper.find(Table).length).toBe(1);
-        expect(wrapper.find(Table.Button).length).toBe(3);
+        expect(wrapper.find(Table.Button).length).toBe(4);
         expect(wrapper.find(TabbedTableContainer).length).toBe(1);
     });
 });
