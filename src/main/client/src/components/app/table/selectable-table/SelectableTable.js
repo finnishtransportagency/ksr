@@ -11,7 +11,7 @@ class SelectableTable extends CheckboxTableHOC {
             checked,
             onClick: this.props.toggleSelection,
             selectType: this.props.selectType,
-            id: row._id, // eslint-disable-line no-underscore-dangle
+            id: row._id,
             row,
         };
         return React.createElement(this.props.SelectInputComponent, inputProps);
