@@ -36,6 +36,7 @@ export const parseData = (data, selected, source) => {
             _id: f.attributes[l.objectIdFieldName],
             _layerId: l.id,
             _selected: selected,
+            _edited: [],
             _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
             _source: source,
         })),
@@ -121,8 +122,9 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear 
     });
 
     const activeTable = getActiveTable(layers, currentActiveTable);
+    const editedLayers = JSON.parse(JSON.stringify(layers));
 
-    return { layers, activeTable };
+    return { layers, activeTable, editedLayers };
 };
 
 /**
@@ -174,7 +176,7 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
     const layers = currentLayers.reduce((filtered, layer) => {
         const data = layer.data.reduce((fd, d) => {
             if (d._source === 'search') {
-                fd.push({ ...d, _selected: false });
+                fd.push({ ...d, _selected: false, _edited: [] });
             }
             return fd;
         }, []);
