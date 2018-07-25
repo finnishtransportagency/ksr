@@ -24,8 +24,16 @@ const Button = styled.div`
     `};
     
     ${props => props.toggleButton && css`
-        position: unset;
         visibility: visible;
+    `};
+    
+    ${props => props.disabled && css`
+        color: ${styles.colorFontDisabled};
+        
+        &:hover {
+            cursor: default;
+            background: ${styles.colorBackgroundDark};
+        };
     `};
 `;
 
