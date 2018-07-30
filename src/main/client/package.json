@@ -61,6 +61,7 @@
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./config/setupTests.js",
+    "testURL": "http://localhost",
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     }
