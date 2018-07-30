@@ -18,6 +18,7 @@ const mapStateToProps = (state) => {
         mapCenter: state.map.mapConfig.mapCenter,
         mapScale: state.map.mapConfig.mapScale,
         selectedFeatures,
+        adminToolActive: state.adminTool.active,
     });
 };
 
