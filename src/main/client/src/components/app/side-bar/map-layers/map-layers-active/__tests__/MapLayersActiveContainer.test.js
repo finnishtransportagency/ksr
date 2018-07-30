@@ -38,6 +38,9 @@ const testState = {
         },
         fetching: false,
     },
+    adminTool: {
+        active: '',
+    },
 };
 
 describe('<MapLayersActiveContainer />', () => {
