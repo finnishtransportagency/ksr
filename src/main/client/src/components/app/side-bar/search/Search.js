@@ -97,11 +97,13 @@ class Search extends Component<Props, State> {
             queryExpression: '%',
             queryText: '',
         };
+        const searchFields = [...searchFieldValues, newField]
+            .map((field, index) => ({ ...field, id: index }));
 
         setSearchState(
             selectedLayer,
             textSearch,
-            [...searchFieldValues, newField],
+            searchFields,
             [],
         );
     };
