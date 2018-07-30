@@ -25,7 +25,12 @@ const SearchFieldView = ({
     <SearchFieldWrapper>
         <SearchFieldWrapper.Title>
             <div>{field.name}</div>
-            <SearchFieldWrapper.Remove role="button" tabIndex={index} onClick={() => handleRemoveField(index)} onKeyUp={() => handleRemoveField(index)}>
+            <SearchFieldWrapper.Remove
+                role="button"
+                tabIndex={index}
+                onClick={() => handleRemoveField(index)}
+                onKeyUp={() => handleRemoveField(index)}
+            >
                 <i className="fas fa-times" />
             </SearchFieldWrapper.Remove>
         </SearchFieldWrapper.Title>
