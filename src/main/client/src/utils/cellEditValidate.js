@@ -45,7 +45,7 @@ export const cellEditValidate = (
         } else if (cellField.type === 'esriFieldTypeSmallInteger' || cellField.type === 'esriFieldTypeInteger') {
             const value = parseInt(evt.target.innerText, 10);
             if (cellValue !== value) {
-                if (evt.target.innerText) {
+                if (evt.target.innerText.trim()) {
                     newValue(value);
                     data[cellInfo.index][cellInfo.column.id] = value;
                 } else if (cellValue) {
@@ -67,7 +67,7 @@ export const cellEditValidate = (
         }
     } else if (editedRow.editedData !== editedRow.originalData) {
         if (cellField.type === 'esriFieldTypeString') {
-            if (editedRow.originalData === ' ' && !evt.target.innerText) {
+            if (editedRow.originalData === ' ' && !evt.target.innerText.trim()) {
                 const value = ' ';
                 editedRow.editedData = value;
                 data[cellInfo.index][cellInfo.column.id] = value;
@@ -100,4 +100,38 @@ export const cellEditValidate = (
     }
 
     return data;
+};
+
+/**
+ * Prevents some keypresses depending on cell type
+ * String cells allow everything
+ * Int cells allow numbers only
+ * Double cells allow numbers and dots
+ *
+ * @param e Object edited cells event
+ * @param cellField Object contains info about edited field
+ *
+ * @returns prevents keypress or null
+ */
+export const preventKeyPress = (e: Object, cellField: Object) => {
+    switch (cellField.type) {
+        case ('esriFieldTypeSmallInteger'):
+            if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ') {
+                return e.preventDefault();
+            }
+            break;
+        case ('esriFieldTypeInteger'):
+            if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ') {
+                return e.preventDefault();
+            }
+            break;
+        case ('esriFieldTypeDouble'):
+            if (e.key !== '.' && (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ')) {
+                return e.preventDefault();
+            }
+            break;
+        default:
+            break;
+    }
+    return null;
 };
