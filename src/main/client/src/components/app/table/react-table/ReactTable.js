@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
-import { cellEditValidate } from '../../../../utils/cellEditValidate';
+import { cellEditValidate, preventKeyPress } from '../../../../utils/cellEditValidate';
 import ReactTableView from './ReactTableView';
 import LoadingIcon from '../../shared/LoadingIcon';
 import { WrapperReactTableNoTable } from './styles';
@@ -51,27 +51,24 @@ class ReactTable extends Component<Props> {
         this.props.toggleSelection(row);
     };
 
-    // TODO: Make int / double cells to only accept numbers, currently all cells are strings
     renderEditable = (cellInfo: Object) => {
         const {
             layer, setEditedLayer, layerList, activeTable,
         } = this.props;
 
         const currentLayer = layerList.find(l => l.id === activeTable);
+
         if (currentLayer) {
             const cellField = currentLayer.fields.find(f => f.name === cellInfo.column.Header);
-            const cellNumber = cellField.type === 'esriFieldTypeSmallInteger' || cellField.type === 'esriFieldTypeInteger';
-            const cellDouble = cellField.type === 'esriFieldTypeDouble';
-
             return (
                 <div
+                    style={{ minHeight: '1rem' }}
                     role="textbox"
                     tabIndex={0}
                     contentEditable={cellField.type !== 'esriFieldTypeOID'}
                     suppressContentEditableWarning
                     onKeyPress={(e) => {
-                        if (cellNumber && (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ')) e.preventDefault();
-                        if (cellDouble && e.key !== '.' && (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ')) e.preventDefault();
+                        preventKeyPress(e, cellField);
                     }}
                     onBlur={(e) => {
                         const data = cellEditValidate(e, layer.data, cellField, cellInfo);
