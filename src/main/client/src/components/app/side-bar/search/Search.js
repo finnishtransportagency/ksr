@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { parseQueryString } from '../../../../utils/search/parseQueryString';
 import SearchView from './SearchView';
+import { fetchSearchSuggestions } from '../../../../api/search/searchQuery';
 
 type Props = {
     searchFeatures: Function,
@@ -23,17 +24,27 @@ type Props = {
 };
 
 type State = {
-    /* ... */
+    abortController: Object,
+    fetchingSuggestions: boolean,
+    suggestionQuery: number,
+};
+
+const initialState = {
+    abortController: undefined,
+    fetchingSuggestions: false,
+    suggestionQuery: 0,
 };
 
 class Search extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
+        this.state = { ...initialState };
 
         this.handleLayerChange = this.handleLayerChange.bind(this);
         this.handleAddField = this.handleAddField.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
         this.handleChangeField = this.handleChangeField.bind(this);
+        this.handleFieldBlur = this.handleFieldBlur.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRemoveField = this.handleRemoveField.bind(this);
     }
@@ -104,9 +115,46 @@ class Search extends Component<Props, State> {
         ];
 
         switch (type) {
-            case 'text':
+            case 'text': {
                 searchFieldValues[index].queryText = evt.target.value;
+                const text = `'${evt.target.value}%'`;
+                const queryColumn = searchFieldValues[index].name;
+                const queryString = `${queryColumn} LIKE ${text}`;
+                window.clearTimeout(this.state.suggestionQuery);
+                if (this.state.abortController) {
+                    this.state.abortController.abort();
+                }
+                if (evt.target.value.trim().length > 0) {
+                    this.setState({
+                        abortController: new window.AbortController(),
+                        fetchingSuggestions: true,
+                        suggestionQuery: window.setTimeout(() => {
+                            fetchSearchSuggestions(
+                                selectedLayer,
+                                queryString,
+                                queryColumn,
+                                this.state.abortController.signal,
+                            ).then((suggestions) => {
+                                if (suggestions) {
+                                    // Sort array and remove duplicates.
+                                    const sortedSuggestions = suggestions
+                                        .sort()
+                                        .filter((elem, ind, array) => ind === array.indexOf(elem));
+
+                                    this.props.setSearchState(
+                                        selectedLayer,
+                                        textSearch,
+                                        searchFieldValues,
+                                        sortedSuggestions,
+                                    );
+                                }
+                                this.setState({ fetchingSuggestions: false });
+                            });
+                        }, 200),
+                    });
+                }
                 break;
+            }
             case 'expression':
                 searchFieldValues[index].queryExpression = evt;
                 break;
@@ -114,12 +162,20 @@ class Search extends Component<Props, State> {
                 break;
         }
 
-        setSearchState(
-            selectedLayer,
-            textSearch,
-            searchFieldValues,
-            [],
-        );
+        if (!this.state.fetchingSuggestions) {
+            setSearchState(
+                selectedLayer,
+                textSearch,
+                searchFieldValues,
+                [],
+            );
+        }
+    };
+
+    handleFieldBlur = () => {
+        if (this.state.abortController) {
+            this.state.abortController.abort();
+        }
     };
 
     handleRemoveField = (index: number) => {

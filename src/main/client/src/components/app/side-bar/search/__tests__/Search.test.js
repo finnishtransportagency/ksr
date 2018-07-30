@@ -139,6 +139,7 @@ describe('<Search />', () => {
             },
         };
         wrapper.instance().handleChangeField('text', evt, 1);
+        wrapper.setState({ fetchingSuggestions: false });
 
         evt = {
             target: {
@@ -147,7 +148,7 @@ describe('<Search />', () => {
         };
         wrapper.instance().handleChangeField('expression', evt, 0);
 
-        expect(setSearchState).toHaveBeenCalledTimes(2);
+        expect(setSearchState).toHaveBeenCalled();
     });
 
     it('should invoke handleRemoveField correctly', () => {
