@@ -1,6 +1,4 @@
 import * as types from '../../../constants/actionTypes';
-import { searchFeatures } from '../../table/actions';
-import { setSearchState } from '../actions';
 import reducer from '../searchState';
 
 const initialState = {
