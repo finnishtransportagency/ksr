@@ -27,13 +27,13 @@ type Props = {
 class SketchTool extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
+        this.state = { ...initialState };
+
         this.drawRectangleButton = createRef();
         this.drawPolygonButton = createRef();
         this.drawCircleButton = createRef();
         this.toggleSelectToolsButton = createRef();
         this.removeSelection = this.removeSelection.bind(this);
-
-        this.state = { ...initialState };
         this.toggleSelectTools = this.toggleSelectTools.bind(this);
     }
 
