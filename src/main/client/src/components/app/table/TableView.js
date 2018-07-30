@@ -2,6 +2,7 @@
 import React from 'react';
 import Table from '../../ui/blocks/Table';
 import ModalClearTableContainer from './modal-clear-table/ModalClearTableContainer';
+import ModalDeleteSelectedContainer from './modal-delete-selected/ModalDeleteSelectedContainer';
 import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 import strings from '../../../translations';
@@ -12,6 +13,7 @@ type Props = {
     activeNav: string,
     setActiveModal: (modal: string) => void,
     activeModal: string,
+    adminToolActive: string,
 };
 
 const TableView = ({
@@ -20,6 +22,7 @@ const TableView = ({
     activeNav,
     setActiveModal,
     activeModal,
+    adminToolActive,
 }: Props) => (
     <Table sideBar={activeNav} tableOpen={isOpen}>
         <Table.ButtonWrapper tableOpen={isOpen}>
@@ -49,10 +52,20 @@ const TableView = ({
             >
                 <i className="fas fa-trash" />
             </Table.Button>
+            <Table.Button
+                title={strings.reactTable.deleteSelected}
+                tableOpen={isOpen && adminToolActive}
+                onClick={() => {
+                    setActiveModal('deleteSelected');
+                }}
+            >
+                <i className="fas fa-eraser" />
+            </Table.Button>
         </Table.ButtonWrapper>
         <TabbedTableContainer />
         {activeModal === 'filter' && <ModalFilterContainer />}
         {activeModal === 'clearTable' && <ModalClearTableContainer />}
+        {activeModal === 'deleteSelected' && <ModalDeleteSelectedContainer />}
     </Table>
 );
 

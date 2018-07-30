@@ -9,6 +9,7 @@ const mapStateToProps = state => ({
     isOpenFilter: state.table.toggleFilter,
     activeNav: state.navigation.activeNav,
     activeModal: state.modal.activeModal,
+    adminToolActive: state.adminTool.active,
 });
 
 const mapDispatchToProps = dispatch => ({
