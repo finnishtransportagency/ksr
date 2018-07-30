@@ -18,6 +18,7 @@ type Props = {
         optionsField: any,
         optionsExpression: Array<Object>,
         fetching: boolean,
+        suggestions: Array<string>,
     },
 };
 
@@ -43,13 +44,13 @@ class Search extends Component<Props, State> {
 
         if (selectedLayer && selectedLayer !== 'queryAll' && selectedLayer !== 'queryActive' &&
             !activeQueryableLayers.find(ql => ql.value === selectedLayer)) {
-            setSearchState(0, '', []);
+            setSearchState(0, '', [], []);
         }
     }
 
     handleLayerChange = (layerId: string) => {
         const { setSearchState, setSearchOptions, layerList } = this.props;
-        setSearchState(layerId, '', []);
+        setSearchState(layerId, '', [], []);
         if (layerId && layerId !== 'queryAll' && layerId !== 'queryActive') {
             setSearchOptions(layerId, layerList);
         }
@@ -66,6 +67,7 @@ class Search extends Component<Props, State> {
             selectedLayer,
             evt.target.value,
             searchFieldValues,
+            [],
         );
     };
 
@@ -89,6 +91,7 @@ class Search extends Component<Props, State> {
             selectedLayer,
             textSearch,
             [...searchFieldValues, newField],
+            [],
         );
     };
 
@@ -115,6 +118,7 @@ class Search extends Component<Props, State> {
             selectedLayer,
             textSearch,
             searchFieldValues,
+            [],
         );
     };
 
@@ -127,7 +131,7 @@ class Search extends Component<Props, State> {
         ];
 
         searchFieldValues.splice(index, 1);
-        setSearchState(selectedLayer, textSearch, searchFieldValues);
+        setSearchState(selectedLayer, textSearch, searchFieldValues, []);
     };
 
     handleSubmit = (evt: Object) => {

@@ -34,6 +34,7 @@ const setup = (prop) => {
             optionsField: [{}],
             optionsExpression: [{}],
             fetching: false,
+            suggestions: [],
         },
     };
 

@@ -13,6 +13,7 @@ type State = {
     optionsField: Array<Object>,
     optionsExpression: Array<Object>,
     fetching: boolean,
+    suggestions: Array<string>,
 };
 
 type Action = {
@@ -22,6 +23,7 @@ type Action = {
     searchFieldValues: Array<Object>,
     optionsField: Array<Object>,
     layerId: number,
+    suggestions: Array<string>,
 };
 
 const initialState = {
@@ -52,6 +54,7 @@ const initialState = {
         },
     ],
     fetching: false,
+    suggestions: [],
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -72,6 +75,7 @@ export default (state: State = initialState, action: Action) => {
                 selectedLayer: action.selectedLayer,
                 textSearch: action.textSearch,
                 searchFieldValues: action.searchFieldValues,
+                suggestions: action.suggestions,
             };
         case SET_SEARCH_OPTIONS:
             return {
