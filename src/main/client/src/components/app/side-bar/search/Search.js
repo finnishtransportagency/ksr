@@ -235,17 +235,20 @@ class Search extends Component<Props, State> {
             optionsField,
             optionsExpression,
             fetching,
+            suggestions,
         } = this.props.searchState;
-        const { queryOptions } = this.props;
+        const { setSearchState, queryOptions } = this.props;
 
         return (
             <SearchView
                 handleLayerChange={this.handleLayerChange}
                 handleAddField={this.handleAddField}
                 handleChangeField={this.handleChangeField}
+                handleFieldBlur={this.handleFieldBlur}
                 handleSubmit={this.handleSubmit}
                 handleTextChange={this.handleTextChange}
                 handleRemoveField={this.handleRemoveField}
+                setSearchState={setSearchState}
                 selectedLayer={selectedLayer}
                 queryableLayers={queryOptions}
                 searchFieldValues={searchFieldValues}
@@ -253,6 +256,7 @@ class Search extends Component<Props, State> {
                 optionsField={optionsField}
                 optionsExpression={optionsExpression}
                 fetching={fetching}
+                suggestions={suggestions}
             />
         );
     }

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import * as styles from '../../../../ui/defaultStyles';
 
 const SearchFieldWrapper = styled.div``;
 
@@ -44,6 +45,27 @@ const Expression = styled.div`
 
 const Text = styled.div`
     flex: 6;
+    
+    .suggestion-outer-wrapper {
+        position: relative;
+    }
+    
+    .suggestion-inner-wrapper {
+        background-color: ${styles.colorBackgroundWhite};
+        position: absolute;
+        z-index: 1;
+        color: ${styles.colorFontDark};
+        width: 100%;
+        border: 1px solid ${styles.colorBackgroundGrey};
+    }
+    
+    .suggestion {
+        padding: 3px;
+    }
+    
+    .suggestion.highlight {
+        background-color: ${styles.colorMainHighlight};
+    }
 `;
 
 SearchFieldWrapper.Title = Title;
