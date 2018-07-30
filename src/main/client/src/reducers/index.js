@@ -5,6 +5,7 @@ import map from './map';
 import table from './table';
 import search from './search';
 import modal from './modal';
+import adminTool from './adminTool';
 
 export default combineReducers({
     navigation,
@@ -12,4 +13,5 @@ export default combineReducers({
     table,
     search,
     modal,
+    adminTool,
 });
