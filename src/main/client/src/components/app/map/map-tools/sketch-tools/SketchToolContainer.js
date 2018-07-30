@@ -11,6 +11,7 @@ const mapStateToProps = state => ({
     sketchViewModel: state.map.mapTools.sketchViewModel,
     data: state.table.features.layers
         .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []),
+    activeAdminTool: state.adminTool.active,
 });
 
 const mapDispatchToProps = dispatch => ({
