@@ -94,7 +94,7 @@ export default (state: State = initialState, action: Action) => {
         case CLEAR_TABLE_DATA:
             return initialState;
         case SET_EDITED_LAYER:
-            editedLayers.find(l => l.id === state.activeTable).data = action.data;
+            if (editedLayers) editedLayers.find(l => l.id === state.activeTable).data = action.data;
             return {
                 ...state,
                 editedLayers,
