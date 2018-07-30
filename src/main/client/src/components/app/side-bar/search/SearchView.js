@@ -84,6 +84,7 @@ const SearchView = ({
                             name="allFields"
                             required={!searchFieldValues.length}
                             minLength={2}
+                            autoComplete="off"
                         />
                     </label>
                     {searchFieldValues.map((a, i) => (
