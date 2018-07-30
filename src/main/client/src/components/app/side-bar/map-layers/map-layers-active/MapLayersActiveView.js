@@ -12,6 +12,8 @@ type Props = {
     onDragEnd: (DropResult) => void,
     onToggleVisibility: (Number) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
+    setActiveAdminTool: (layerId: string) => void,
+    adminToolActive: string,
 };
 
 const MapLayersView = ({
@@ -19,6 +21,8 @@ const MapLayersView = ({
     onDragEnd,
     onOpacityChange,
     onToggleVisibility,
+    setActiveAdminTool,
+    adminToolActive,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -56,8 +60,25 @@ const MapLayersView = ({
                                                             <LayerSettings.Title >
                                                                 <MapLayerTitle layer={l} />
                                                             </LayerSettings.Title>
-                                                            <LayerSettings.Icons >
-                                                                <i className="fas fa-edit" />
+                                                            <LayerSettings.Icons
+                                                                activeAdminTool={
+                                                                    adminToolActive === l.id
+                                                                }
+                                                            >
+                                                                { l._source !== 'search' &&
+                                                                l.type === 'agfs' &&
+                                                                <i
+                                                                    role="button"
+                                                                    tabIndex={0}
+                                                                    onKeyPress={() =>
+                                                                        setActiveAdminTool(l.id)
+                                                                    }
+                                                                    onClick={() =>
+                                                                        setActiveAdminTool(l.id)
+                                                                    }
+                                                                    className="fas fa-edit"
+                                                                />
+                                                                }
                                                             </LayerSettings.Icons>
                                                         </LayerSettings.ContentTop>
                                                         <LayerSettings.Slider>
