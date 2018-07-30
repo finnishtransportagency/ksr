@@ -9,6 +9,7 @@ import {
     TOGGLE_SELECTION,
     TOGGLE_SELECT_ALL,
     CLEAR_TABLE_DATA,
+    SET_ACTIVE_ADMIN_TOOL,
 } from '../../constants/actionTypes';
 import {
     mergeLayers,
@@ -21,18 +22,19 @@ import {
 
 type State = {
     fetching: boolean,
-    layers: Array<Object>,
+    layers: any,
     activeTable: string,
 };
 
 type Action = {
     type: string,
-    layers: Array<Object>,
+    layers: any,
     columns: Array<Object>,
     activeTable: string,
     layerList: Array<Object>,
     layerId: string,
     feature: Object,
+    search: boolean,
 };
 
 const initialState = {
@@ -83,6 +85,8 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layers: toggleSelectAll(state.layers, action.layerId),
             };
+        case SET_ACTIVE_ADMIN_TOOL:
+            return initialState;
         case CLEAR_TABLE_DATA:
             return initialState;
         default:
