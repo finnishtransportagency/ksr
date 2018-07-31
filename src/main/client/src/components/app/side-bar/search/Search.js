@@ -48,6 +48,7 @@ class Search extends Component<Props, State> {
         this.handleFieldBlur = this.handleFieldBlur.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRemoveField = this.handleRemoveField.bind(this);
+        this.toggleSearchSuggestions = this.toggleSearchSuggestions.bind(this);
     }
 
     componentDidMount() {
@@ -125,45 +126,48 @@ class Search extends Component<Props, State> {
         switch (type) {
             case 'text': {
                 searchFieldValues[index].queryText = evt.target.value;
-                const text = `'${evt.target.value}%'`;
-                const queryColumn = searchFieldValues[index].name;
-                const queryString = `${queryColumn} LIKE ${text}`;
-                window.clearTimeout(this.state.suggestionQuery);
-                if (this.state.abortController) {
-                    this.state.abortController.abort();
-                }
-                if (evt.target.value.trim().length > 0) {
-                    this.setState({
-                        // Workaround for IE since it does not support aborting yet at least.
-                        abortController: (window.AbortController ?
-                            new window.AbortController() : undefined),
-                        fetchingSuggestions: true,
-                        suggestionQuery: window.setTimeout(() => {
-                            fetchSearchSuggestions(
-                                selectedLayer,
-                                queryString,
-                                queryColumn,
-                                (window.AbortController ?
-                                    this.state.abortController.signal : undefined),
-                            ).then((suggestions) => {
-                                if (suggestions) {
-                                    // Sort array and remove duplicates.
-                                    const sortedSuggestions = suggestions
-                                        .sort()
-                                        .filter((elem, ind, array) => ind === array.indexOf(elem));
+                if (suggestionsActive) {
+                    const text = `'${evt.target.value}%'`;
+                    const queryColumn = searchFieldValues[index].name;
+                    const queryString = `${queryColumn} LIKE ${text}`;
+                    window.clearTimeout(this.state.suggestionQuery);
+                    if (this.state.abortController) {
+                        this.state.abortController.abort();
+                    }
+                    if (evt.target.value.trim().length > 0) {
+                        this.setState({
+                            // Workaround for IE since it does not support aborting yet at least.
+                            abortController: (window.AbortController ?
+                                new window.AbortController() : undefined),
+                            fetchingSuggestions: true,
+                            suggestionQuery: window.setTimeout(() => {
+                                fetchSearchSuggestions(
+                                    selectedLayer,
+                                    queryString,
+                                    queryColumn,
+                                    (window.AbortController ?
+                                        this.state.abortController.signal : undefined),
+                                ).then((suggestions) => {
+                                    if (suggestions) {
+                                        // Sort array and remove duplicates.
+                                        const sortedSuggestions = suggestions
+                                            .sort()
+                                            .filter((elem, ind, array) =>
+                                                ind === array.indexOf(elem));
 
-                                    this.props.setSearchState(
-                                        selectedLayer,
-                                        textSearch,
-                                        searchFieldValues,
-                                        sortedSuggestions,
-                                        suggestionsActive,
-                                    );
-                                }
-                                this.setState({ fetchingSuggestions: false });
-                            });
-                        }, 200),
-                    });
+                                        this.props.setSearchState(
+                                            selectedLayer,
+                                            textSearch,
+                                            searchFieldValues,
+                                            sortedSuggestions,
+                                            suggestionsActive,
+                                        );
+                                    }
+                                    this.setState({ fetchingSuggestions: false });
+                                });
+                            }, 200),
+                        });
+                    }
                 }
                 break;
             }
@@ -238,6 +242,25 @@ class Search extends Component<Props, State> {
         searchFeatures(queryMap);
     };
 
+    toggleSearchSuggestions = () => {
+        const { setSearchState } = this.props;
+        const {
+            selectedLayer,
+            textSearch,
+            searchFieldValues,
+            suggestions,
+            suggestionsActive,
+        } = this.props.searchState;
+
+        setSearchState(
+            selectedLayer,
+            textSearch,
+            searchFieldValues,
+            suggestions,
+            !suggestionsActive,
+        );
+    };
+
     render() {
         const {
             selectedLayer,
@@ -270,6 +293,7 @@ class Search extends Component<Props, State> {
                 fetching={fetching}
                 suggestions={suggestions}
                 suggestionsActive={suggestionsActive}
+                toggleSearchSuggestions={this.toggleSearchSuggestions}
             />
         );
     }

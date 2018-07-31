@@ -28,6 +28,7 @@ type Props = {
     fetching: boolean,
     suggestions: Array<string>,
     suggestionsActive: boolean,
+    toggleSearchSuggestions: Function,
 };
 
 const SearchView = ({
@@ -48,10 +49,27 @@ const SearchView = ({
     fetching,
     suggestions,
     suggestionsActive,
+    toggleSearchSuggestions,
 }: Props) => (
     <SearchWrapper>
         <SideBar.Header>
             <H1>{strings.search.title}</H1>
+            <div
+                className="search-suggestions-toggle"
+                tabIndex="0"
+                role="button"
+                onClick={toggleSearchSuggestions}
+                onKeyPress={toggleSearchSuggestions}
+            >
+                <span>{strings.search.suggestions}</span>
+                <i
+                    className={
+                        suggestionsActive
+                            ? 'fas fa-toggle-on'
+                            : 'fas fa-toggle-off'
+                    }
+                />
+            </div>
         </SideBar.Header>
         <SideBar.Content>
             <Scrollbars
