@@ -128,14 +128,17 @@ class Search extends Component<Props, State> {
                 }
                 if (evt.target.value.trim().length > 0) {
                     this.setState({
-                        abortController: new window.AbortController(),
+                        // Workaround for IE since it does not support aborting yet at least.
+                        abortController: (window.AbortController ?
+                            new window.AbortController() : undefined),
                         fetchingSuggestions: true,
                         suggestionQuery: window.setTimeout(() => {
                             fetchSearchSuggestions(
                                 selectedLayer,
                                 queryString,
                                 queryColumn,
-                                this.state.abortController.signal,
+                                (window.AbortController ?
+                                    this.state.abortController.signal : undefined),
                             ).then((suggestions) => {
                                 if (suggestions) {
                                     // Sort array and remove duplicates.
