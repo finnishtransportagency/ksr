@@ -20,6 +20,7 @@ type Props = {
         optionsExpression: Array<Object>,
         fetching: boolean,
         suggestions: Array<string>,
+        suggestionsActive: boolean,
     },
 };
 
@@ -51,17 +52,18 @@ class Search extends Component<Props, State> {
 
     componentDidMount() {
         const { activeQueryableLayers, setSearchState } = this.props;
-        const { selectedLayer } = this.props.searchState;
+        const { selectedLayer, suggestionsActive } = this.props.searchState;
 
         if (selectedLayer && selectedLayer !== 'queryAll' && selectedLayer !== 'queryActive' &&
             !activeQueryableLayers.find(ql => ql.value === selectedLayer)) {
-            setSearchState(0, '', [], []);
+            setSearchState(0, '', [], [], suggestionsActive);
         }
     }
 
     handleLayerChange = (layerId: string) => {
         const { setSearchState, setSearchOptions, layerList } = this.props;
-        setSearchState(layerId, '', [], []);
+        const { suggestionsActive } = this.props.searchState;
+        setSearchState(layerId, '', [], [], suggestionsActive);
         if (layerId && layerId !== 'queryAll' && layerId !== 'queryActive') {
             setSearchOptions(layerId, layerList);
         }
@@ -72,6 +74,7 @@ class Search extends Component<Props, State> {
         const {
             selectedLayer,
             searchFieldValues,
+            suggestionsActive,
         } = this.props.searchState;
 
         setSearchState(
@@ -79,6 +82,7 @@ class Search extends Component<Props, State> {
             evt.target.value,
             searchFieldValues,
             [],
+            suggestionsActive,
         );
     };
 
@@ -89,6 +93,7 @@ class Search extends Component<Props, State> {
             searchFieldValues,
             selectedLayer,
             textSearch,
+            suggestionsActive,
         } = this.props.searchState;
 
         const newField = {
@@ -105,12 +110,13 @@ class Search extends Component<Props, State> {
             textSearch,
             searchFields,
             [],
+            suggestionsActive,
         );
     };
 
     handleChangeField = (type: string, evt: Object, index: number) => {
         const { setSearchState } = this.props;
-        const { selectedLayer, textSearch } = this.props.searchState;
+        const { selectedLayer, textSearch, suggestionsActive } = this.props.searchState;
 
         const searchFieldValues = [
             ...this.props.searchState.searchFieldValues,
@@ -151,6 +157,7 @@ class Search extends Component<Props, State> {
                                         textSearch,
                                         searchFieldValues,
                                         sortedSuggestions,
+                                        suggestionsActive,
                                     );
                                 }
                                 this.setState({ fetchingSuggestions: false });
@@ -173,6 +180,7 @@ class Search extends Component<Props, State> {
                 textSearch,
                 searchFieldValues,
                 [],
+                suggestionsActive,
             );
         }
     };
@@ -185,14 +193,14 @@ class Search extends Component<Props, State> {
 
     handleRemoveField = (index: number) => {
         const { setSearchState } = this.props;
-        const { selectedLayer, textSearch } = this.props.searchState;
+        const { selectedLayer, textSearch, suggestionsActive } = this.props.searchState;
 
         const searchFieldValues = [
             ...this.props.searchState.searchFieldValues,
         ];
 
         searchFieldValues.splice(index, 1);
-        setSearchState(selectedLayer, textSearch, searchFieldValues, []);
+        setSearchState(selectedLayer, textSearch, searchFieldValues, [], suggestionsActive);
     };
 
     handleSubmit = (evt: Object) => {
@@ -239,6 +247,7 @@ class Search extends Component<Props, State> {
             optionsExpression,
             fetching,
             suggestions,
+            suggestionsActive,
         } = this.props.searchState;
         const { setSearchState, queryOptions } = this.props;
 
@@ -260,6 +269,7 @@ class Search extends Component<Props, State> {
                 optionsExpression={optionsExpression}
                 fetching={fetching}
                 suggestions={suggestions}
+                suggestionsActive={suggestionsActive}
             />
         );
     }

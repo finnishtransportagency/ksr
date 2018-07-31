@@ -27,6 +27,7 @@ type Props = {
     optionsExpression: Array<Object>,
     fetching: boolean,
     suggestions: Array<string>,
+    suggestionsActive: boolean,
 };
 
 const SearchView = ({
@@ -46,6 +47,7 @@ const SearchView = ({
     optionsExpression,
     fetching,
     suggestions,
+    suggestionsActive,
 }: Props) => (
     <SearchWrapper>
         <SideBar.Header>
@@ -108,6 +110,7 @@ const SearchView = ({
                             handleRemoveField={handleRemoveField}
                             fetching={fetching}
                             suggestions={suggestions}
+                            suggestionsActive={suggestionsActive}
                         />
                     ))}
                     <Button disabled={!selectedLayer || fetching}>

@@ -30,6 +30,7 @@ const initialState = {
     ],
     fetching: false,
     suggestions: [],
+    suggestionsActive: true,
 };
 
 describe('Search state reducer', () => {
@@ -69,6 +70,7 @@ describe('Search state reducer', () => {
                 },
             ],
             suggestions: ['Helsinki'],
+            suggestionsActive: true,
         };
 
         expect(reducer(undefined, {
@@ -77,12 +79,14 @@ describe('Search state reducer', () => {
             textSearch: action.textSearch,
             searchFieldValues: action.searchFieldValues,
             suggestions: action.suggestions,
+            suggestionsActive: action.suggestionsActive,
         })).toEqual({
             ...initialState,
             selectedLayer: action.selectedLayer,
             textSearch: action.textSearch,
             searchFieldValues: action.searchFieldValues,
             suggestions: action.suggestions,
+            suggestionsActive: action.suggestionsActive,
         });
     });
 

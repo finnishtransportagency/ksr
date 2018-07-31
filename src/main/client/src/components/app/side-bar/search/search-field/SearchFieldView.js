@@ -20,6 +20,7 @@ type Props = {
     handleRemoveField: Function,
     fetching: boolean,
     suggestions: Array<string>,
+    suggestionsActive: boolean,
 };
 
 const SearchFieldView = ({
@@ -35,6 +36,7 @@ const SearchFieldView = ({
     handleRemoveField,
     fetching,
     suggestions,
+    suggestionsActive,
 }: Props) => (
     <SearchFieldWrapper>
         <SearchFieldWrapper.Title>
@@ -65,7 +67,13 @@ const SearchFieldView = ({
             <SearchFieldWrapper.Text>
                 <Downshift onSelect={(selectedItem) => {
                     searchFieldValues[index].queryText = selectedItem;
-                    setSearchState(selectedLayer, textSearch, searchFieldValues, []);
+                    setSearchState(
+                        selectedLayer,
+                        textSearch,
+                        searchFieldValues,
+                        [],
+                        suggestionsActive,
+                    );
                 }}
                 >
                     {({
