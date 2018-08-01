@@ -48,6 +48,8 @@ const fi = {
         submit: 'Poista',
         cancel: 'Peruuta',
         content: 'Poista valitut kohteet?',
+        commentLabel: 'Syy kohteiden poistamiseen (ei pakollinen)',
+        deleteAmount: 'Poistettavien kohteiden määrä',
     },
     modalSaveEditedData: {
         title: 'Tallenna muutokset',
