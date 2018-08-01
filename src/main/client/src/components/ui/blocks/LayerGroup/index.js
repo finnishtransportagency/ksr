@@ -17,6 +17,10 @@ const LayerGroup = styled.div`
     user-select: none;
     margin: 1rem;
     
+    label:hover {
+        cursor: pointer;
+    }
+    
     ${props => props.active && css`
         border-left: 5px solid ${styles.colorMain};
     `};

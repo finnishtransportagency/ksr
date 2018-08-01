@@ -9,8 +9,9 @@ const setup = () => {
         setToggleTable: () => {},
         toggleTable: false,
         activeNav: '',
+        originalLayers: [],
     };
-    const wrapper = shallow(<TableView />);
+    const wrapper = shallow(<TableView {...props} />);
 
     return { props, wrapper };
 };

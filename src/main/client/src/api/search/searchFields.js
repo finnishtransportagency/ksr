@@ -10,5 +10,7 @@ import { getHeaders } from '../config';
 export const fetchSearchFields = layerId =>
     fetch(`api/proxy/layer/${layerId}?f=pjson`, { headers: getHeaders() })
         .then(r => r.json())
-        .then(r => r.fields.map((f, i) => ({ value: i, label: f.alias })))
+        .then(r => r.fields.map((f, i) => ({
+            value: i, label: f.alias, type: f.type, name: f.name,
+        })))
         .catch(err => console.log(err));

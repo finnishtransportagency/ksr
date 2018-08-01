@@ -4,6 +4,7 @@ export const colorMainHighlight = '#27AFE1';
 
 export const colorFontDark = '#444444';
 export const colorFontLight = '#F1F1F1';
+export const colorFontDisabled = '#97999B';
 
 export const colorBackgroundDarkBlue = '#0088CE';
 export const colorBackgroundLight = '#F1F1F1';
@@ -14,6 +15,8 @@ export const colorBackgroundDark = '#444444';
 export const colorBackgroundDarkSecondary = '#4B4B4B';
 
 export const mapHighlightStroke = '#DA1414';
+export const colorTableEdited = '#F79421';
+export const colorTableEditedDarker = '#EC8921';
 
 // Shadows
 export const shadowLight = '0 2px 4px 0 hsla(0, 0%, 0%, 0.2)';
