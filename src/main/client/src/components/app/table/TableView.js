@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import Table from '../../ui/blocks/Table';
 import equals from 'nano-equal';
+import Table from '../../ui/blocks/Table';
 import ModalClearTableContainer from './modal-clear-table/ModalClearTableContainer';
 import ModalDeleteSelectedContainer from './modal-delete-selected/ModalDeleteSelectedContainer';
 import ModalSaveEditedDataContainer from './modal-save-edited-data/ModalSaveEditedDataContainer';
@@ -63,15 +63,6 @@ const TableView = ({
                 <i className="fas fa-trash" />
             </Table.Button>
             <Table.Button
-                title={strings.reactTable.deleteSelected}
-                tableOpen={isOpen && adminToolActive}
-                onClick={() => {
-                    setActiveModal('deleteSelected');
-                }}
-            >
-                <i className="fas fa-eraser" />
-            </Table.Button>
-            <Table.Button
                 title={strings.reactTable.saveEditedData}
                 tableOpen={isOpen}
                 disabled={!originalLayers.length || equals(originalLayers, editedLayers)}
@@ -81,6 +72,15 @@ const TableView = ({
                     } : null}
             >
                 <i className="fas fa-save" />
+            </Table.Button>
+            <Table.Button
+                title={strings.reactTable.deleteSelected}
+                tableOpen={isOpen && adminToolActive}
+                onClick={() => {
+                    setActiveModal('deleteSelected');
+                }}
+            >
+                <i className="fas fa-eraser" />
             </Table.Button>
         </Table.ButtonWrapper>
         <TabbedTableContainer />
