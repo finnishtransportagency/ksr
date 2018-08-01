@@ -14,6 +14,7 @@ import { getStreetViewLink } from './streetView';
  * @param view Object esri map view
  * @param selectFeatures Function redux function that selects features
  * @param layerList Array of layers
+ * @param adminToolActive string id of current admin tool layer
  *
  */
 export const mapSelectPopup = (
@@ -21,6 +22,7 @@ export const mapSelectPopup = (
     view: Object,
     selectFeatures: Function,
     layerList: Array<Object>,
+    adminToolActive: string,
 ) => {
     if (event.button === 0) {
         const swLink = getStreetViewLink(event.mapPoint.x, event.mapPoint.y);
@@ -38,9 +40,11 @@ export const mapSelectPopup = (
         };
 
         view.hitTest(point).then(({ results }) => {
-            const newResults = [...results];
+            const newResults = adminToolActive
+                ? [...results.filter(r => r.graphic.layer.id === adminToolActive)]
+                : [...results];
 
-            results.forEach((layer) => {
+            newResults.forEach((layer) => {
                 const fieldInfos = [];
 
                 const queryColumns = layerList
@@ -79,7 +83,7 @@ export const mapSelectPopup = (
                 if (evt.action.id === 'select-intersect') {
                     const layerId = view.popup.viewModel.selectedFeature.layer.id;
                     const featureGeom = view.popup.viewModel.selectedFeature.geometry;
-                    getIntersectFeatures(layerId, featureGeom, view, selectFeatures);
+                    getIntersectFeatures(layerId, featureGeom, view, selectFeatures, adminToolActive);
                 }
             });
 

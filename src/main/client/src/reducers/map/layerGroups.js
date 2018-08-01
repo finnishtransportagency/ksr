@@ -6,6 +6,7 @@ import {
     HIDE_LAYER,
     ADD_SEARCH_RESULTS_LAYER,
     CLEAR_TABLE_DATA,
+    SET_ACTIVE_ADMIN_TOOL,
 } from '../../constants/actionTypes';
 
 import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -53,6 +54,7 @@ type Action = {
     layerList: Array<LayerList>,
     layerIds: Array<string>,
     layers: Array<Object>,
+    layerId: string,
 };
 
 const initialState = {
@@ -92,6 +94,20 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerList: addOrReplaceLayers(state.layerList, action.layers),
                 layerGroups: addOrReplaceLayersInSearchGroup(state.layerGroups, action.layers),
+            };
+        case SET_ACTIVE_ADMIN_TOOL:
+            return {
+                ...state,
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: lg.type === 'search' ? [] : lg.layers,
+                })): Array<LayerGroups>),
+                layerList: (state.layerList
+                    .filter(l => l._source !== 'search')
+                    .map(l => ({
+                        ...l,
+                        visible: l.id === action.layerId ? true : l.visible,
+                    })): any),
             };
         case CLEAR_TABLE_DATA:
             return {

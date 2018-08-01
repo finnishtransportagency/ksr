@@ -47,3 +47,7 @@ export const SET_SEARCH_OPTIONS = 'SET_SEARCH_OPTIONS';
 
 // Modal
 export const SET_ACTIVE_MODAL = 'SET_ACTIVE_MODAL';
+
+// Admin tools
+export const SET_ACTIVE_ADMIN_TOOL = 'SET_ACTIVE_ADMIN_TOOL';
+export const DELETE_SELECTED_DATA = 'DELETE_SELECTED_DATA';

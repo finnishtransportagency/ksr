@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
-import Table from '../../ui/blocks/Table';
 import equals from 'nano-equal';
+import Table from '../../ui/blocks/Table';
 import ModalClearTableContainer from './modal-clear-table/ModalClearTableContainer';
+import ModalDeleteSelectedContainer from './modal-delete-selected/ModalDeleteSelectedContainer';
 import ModalSaveEditedDataContainer from './modal-save-edited-data/ModalSaveEditedDataContainer';
 import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
@@ -14,6 +15,7 @@ type Props = {
     activeNav: string,
     setActiveModal: (modal: string) => void,
     activeModal: string,
+    adminToolActive: string,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
 };
@@ -24,6 +26,7 @@ const TableView = ({
     activeNav,
     setActiveModal,
     activeModal,
+    adminToolActive,
     originalLayers,
     editedLayers,
 }: Props) => (
@@ -70,10 +73,20 @@ const TableView = ({
             >
                 <i className="fas fa-save" />
             </Table.Button>
+            <Table.Button
+                title={strings.reactTable.deleteSelected}
+                tableOpen={isOpen && adminToolActive}
+                onClick={() => {
+                    setActiveModal('deleteSelected');
+                }}
+            >
+                <i className="fas fa-eraser" />
+            </Table.Button>
         </Table.ButtonWrapper>
         <TabbedTableContainer />
         {activeModal === 'filter' && <ModalFilterContainer />}
         {activeModal === 'clearTable' && <ModalClearTableContainer />}
+        {activeModal === 'deleteSelected' && <ModalDeleteSelectedContainer />}
         {activeModal === 'saveEditedData' && <ModalSaveEditedDataContainer />}
     </Table>
 );

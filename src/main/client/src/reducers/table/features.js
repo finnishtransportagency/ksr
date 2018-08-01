@@ -9,6 +9,7 @@ import {
     TOGGLE_SELECTION,
     TOGGLE_SELECT_ALL,
     CLEAR_TABLE_DATA,
+    SET_ACTIVE_ADMIN_TOOL,
     SET_EDITED_LAYER,
 } from '../../constants/actionTypes';
 import {
@@ -29,12 +30,13 @@ type State = {
 
 type Action = {
     type: string,
-    layers: Array<Object>,
+    layers: any,
     columns: Array<Object>,
     activeTable: string,
     layerList: Array<Object>,
     layerId: string,
     feature: Object,
+    search: boolean,
     data: Object,
 };
 
@@ -91,6 +93,8 @@ export default (state: State = initialState, action: Action) => {
                 layers: toggleSelectAll(state.layers, action.layerId),
                 editedLayers: toggleSelectAll(state.editedLayers, action.layerId),
             };
+        case SET_ACTIVE_ADMIN_TOOL:
+            return initialState;
         case CLEAR_TABLE_DATA:
             return initialState;
         case SET_EDITED_LAYER:
