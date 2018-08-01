@@ -26,6 +26,11 @@ const mapStateToProps = (state) => {
 
     const editedLayers = state.table.features.editedLayers.map(l => removeUnderscore(l));
     const originalLayers = state.table.features.layers.map(l => removeUnderscore(l));
+    const selectedData = [];
+
+    state.table.features.layers.forEach((l) => {
+        l.data.forEach(d => d._selected && selectedData.push(d));
+    });
 
     return {
         isOpen: state.table.toggleTable,
@@ -35,6 +40,7 @@ const mapStateToProps = (state) => {
         adminToolActive: state.adminTool.active,
         originalLayers,
         editedLayers,
+        selectedData: selectedData.length > 0,
     };
 };
 

@@ -18,6 +18,7 @@ type Props = {
     adminToolActive: string,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
+    selectedData: boolean,
 };
 
 const TableView = ({
@@ -29,6 +30,7 @@ const TableView = ({
     adminToolActive,
     originalLayers,
     editedLayers,
+    selectedData,
 }: Props) => (
     <Table sideBar={activeNav} tableOpen={isOpen}>
         <Table.ButtonWrapper tableOpen={isOpen}>
@@ -76,9 +78,12 @@ const TableView = ({
             <Table.Button
                 title={strings.reactTable.deleteSelected}
                 tableOpen={isOpen && adminToolActive}
-                onClick={() => {
-                    setActiveModal('deleteSelected');
-                }}
+                disabled={!selectedData}
+                onClick={
+                    selectedData ? () => {
+                        setActiveModal('deleteSelected');
+                    } : null
+                }
             >
                 <i className="fas fa-eraser" />
             </Table.Button>
