@@ -83,7 +83,13 @@ export const mapSelectPopup = (
                 if (evt.action.id === 'select-intersect') {
                     const layerId = view.popup.viewModel.selectedFeature.layer.id;
                     const featureGeom = view.popup.viewModel.selectedFeature.geometry;
-                    getIntersectFeatures(layerId, featureGeom, view, selectFeatures, adminToolActive);
+                    getIntersectFeatures(
+                        layerId,
+                        featureGeom,
+                        view,
+                        selectFeatures,
+                        adminToolActive,
+                    );
                 }
             });
 
