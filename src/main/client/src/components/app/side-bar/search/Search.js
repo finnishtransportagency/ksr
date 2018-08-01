@@ -24,18 +24,18 @@ type Props = {
 };
 
 type State = {
-    abortController: Object,
     fetchingSuggestions: boolean,
     suggestionQuery: number,
 };
 
 const initialState = {
-    abortController: undefined,
     fetchingSuggestions: false,
     suggestionQuery: 0,
 };
 
 class Search extends Component<Props, State> {
+    abortController: ?Object = null; // eslint-disable-line react/sort-comp
+
     constructor(props: Props) {
         super(props);
         this.state = { ...initialState };
@@ -123,22 +123,24 @@ class Search extends Component<Props, State> {
                 const queryColumn = searchFieldValues[index].name;
                 const queryString = `${queryColumn} LIKE ${text}`;
                 window.clearTimeout(this.state.suggestionQuery);
-                if (this.state.abortController) {
-                    this.state.abortController.abort();
+                if (this.abortController != null) {
+                    this.abortController.abort();
                 }
                 if (evt.target.value.trim().length > 0) {
+                    this.abortController = (window.AbortController ?
+                        new window.AbortController() : null);
                     this.setState({
                         // Workaround for IE since it does not support aborting yet at least.
-                        abortController: (window.AbortController ?
-                            new window.AbortController() : undefined),
                         fetchingSuggestions: true,
                         suggestionQuery: window.setTimeout(() => {
+                            const signal = this.abortController != null ?
+                                this.abortController.signal : undefined;
+
                             fetchSearchSuggestions(
                                 selectedLayer,
                                 queryString,
                                 queryColumn,
-                                (window.AbortController ?
-                                    this.state.abortController.signal : undefined),
+                                signal,
                             ).then((suggestions) => {
                                 if (suggestions) {
                                     // Sort array and remove duplicates.
@@ -178,8 +180,8 @@ class Search extends Component<Props, State> {
     };
 
     handleFieldBlur = () => {
-        if (this.state.abortController) {
-            this.state.abortController.abort();
+        if (this.abortController != null) {
+            this.abortController.abort();
         }
     };
 
