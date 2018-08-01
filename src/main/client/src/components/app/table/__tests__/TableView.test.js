@@ -21,7 +21,7 @@ describe('<TableView />', () => {
 
     it('should render self', () => {
         expect(wrapper.find(Table).length).toBe(1);
-        expect(wrapper.find(Table.Button).length).toBe(4);
+        expect(wrapper.find(Table.Button).length).toBe(5);
         expect(wrapper.find(TabbedTableContainer).length).toBe(1);
     });
 });
