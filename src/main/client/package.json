@@ -70,6 +70,7 @@
   "proxy": {
     "/api": {
       "target": "http://localhost:8080",
+      "testURL": "http://localhost/",
       "headers": {
         "OAM_REMOTE_USER": "dev_user",
         "OAM_GROUPS": "KSR_ROLE_ADMIN"
