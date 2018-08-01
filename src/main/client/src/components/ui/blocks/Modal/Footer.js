@@ -4,7 +4,7 @@ const Footer = styled.div`
     display: flex;
     flex-direction: row-reverse;
     position: relative;
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     background: #FFFFFF;
     
     button {
@@ -16,7 +16,7 @@ const Footer = styled.div`
         
         button {
             align-self: stretch;
-            margin: 0;
+            margin: 0.5rem 0;
         }
     }
 `;
