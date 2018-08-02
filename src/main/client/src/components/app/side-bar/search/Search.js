@@ -131,22 +131,22 @@ class Search extends Component<Props, State> {
                     const queryColumn = searchFieldValues[index].name;
                     const queryString = `${queryColumn} LIKE ${text}`;
                     window.clearTimeout(this.state.suggestionQuery);
-                    if (this.state.abortController) {
-                        this.state.abortController.abort();
+                    if (this.abortController) {
+                        this.abortController.abort();
                     }
                     if (evt.target.value.trim().length > 0) {
                         this.setState({
                             // Workaround for IE since it does not support aborting yet at least.
-                            abortController: (window.AbortController ?
-                                new window.AbortController() : undefined),
                             fetchingSuggestions: true,
                             suggestionQuery: window.setTimeout(() => {
+                                const signal = this.abortController != null ?
+                                    this.abortController.signal : undefined;
+
                                 fetchSearchSuggestions(
                                     selectedLayer,
                                     queryString,
                                     queryColumn,
-                                    (window.AbortController ?
-                                        this.state.abortController.signal : undefined),
+                                    signal,
                                 ).then((suggestions) => {
                                     if (suggestions) {
                                         // Sort array and remove duplicates.
