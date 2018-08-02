@@ -1,6 +1,4 @@
 import * as types from '../../../constants/actionTypes';
-import { searchFeatures } from '../../table/actions';
-import { setSearchState } from '../actions';
 import reducer from '../searchState';
 
 const initialState = {
@@ -31,6 +29,7 @@ const initialState = {
         },
     ],
     fetching: false,
+    suggestions: [],
 };
 
 describe('Search state reducer', () => {
@@ -69,6 +68,7 @@ describe('Search state reducer', () => {
                     queryText: 'helsinki',
                 },
             ],
+            suggestions: ['Helsinki'],
         };
 
         expect(reducer(undefined, {
@@ -76,11 +76,13 @@ describe('Search state reducer', () => {
             selectedLayer: action.selectedLayer,
             textSearch: action.textSearch,
             searchFieldValues: action.searchFieldValues,
+            suggestions: action.suggestions,
         })).toEqual({
             ...initialState,
             selectedLayer: action.selectedLayer,
             textSearch: action.textSearch,
             searchFieldValues: action.searchFieldValues,
+            suggestions: action.suggestions,
         });
     });
 

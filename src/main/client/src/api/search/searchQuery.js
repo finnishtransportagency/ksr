@@ -18,3 +18,28 @@ export const fetchSearchQuery = (layerId, queryString, title, data) =>
             return data;
         })
         .catch(err => console.log(err));
+
+/**
+ * Fetch search suggestions for given column.
+ *
+ * @param layerId Layer id (ID in database) that is used in fetch URL
+ * @param queryString Parsed query string that is used in fetch URL
+ * @param queryColumn Column which the suggestions are fetched for
+ * @param signal Request signal which can be used to abort the request
+ *
+ * @returns Suggested search words
+ */
+export const fetchSearchSuggestions = (layerId, queryString, queryColumn, signal) => {
+    const suggestions = [];
+    return fetch(`api/proxy/layer/${layerId}/query?where=${encodeURIComponent(queryString)}&f=pjson&outFields=${queryColumn}&resultRecordCount=10`, { headers: getHeaders(), signal })
+        .then(r => r.json())
+        .then((r) => {
+            if (!r.error && r.features.length) {
+                r.features.forEach((feature) => {
+                    suggestions.push(feature.attributes[queryColumn]);
+                });
+            }
+            return suggestions;
+        })
+        .catch(err => console.log(err));
+};
