@@ -165,6 +165,9 @@
 			        <npmVersion>3.10.10</npmVersion>
 					<installDirectory>.mvn</installDirectory>
 			        <workingDirectory>src/main/client</workingDirectory>
+					<environmentVariables>
+						<PUBLIC_URL>${server.servlet.context-path}</PUBLIC_URL>
+					</environmentVariables>
 			    </configuration>
 			</plugin>
 			<plugin>

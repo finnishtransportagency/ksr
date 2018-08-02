@@ -8,7 +8,7 @@ import HomeContainer from './home/HomeContainer';
 
 const App = ({ store }: any) => (
     <Provider store={store}>
-        <Router>
+        <Router basename={`${process.env.PUBLIC_URL}`}>
             <Switch>
                 <Route path="/" component={HomeContainer} />
             </Switch>
