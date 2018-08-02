@@ -57,6 +57,9 @@ pipeline {
             name: "action"
         )
     }
+    triggers {
+        pollSCM(get_pollSCM_trigger())
+    }
     stages {
         stage("Setup") {
             when {
