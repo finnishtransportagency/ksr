@@ -6,9 +6,17 @@ import Search from './Search';
 import strings from '../../../../translations';
 
 const mapStateToProps = (state) => {
-    const allQueryableLayers = state.map.layerGroups.layerList
-        .filter(l => l.queryable && l._source !== 'search')
-        .map(l => ({ ...l, value: l.id, label: l.name }));
+    let allQueryableLayers = [];
+
+    if (state.adminTool.active) {
+        allQueryableLayers = state.map.layerGroups.layerList
+            .filter(l => l.queryable && l.id === state.adminTool.active && l._source !== 'search')
+            .map(l => ({ ...l, value: l.id, label: l.name }));
+    } else {
+        allQueryableLayers = state.map.layerGroups.layerList
+            .filter(l => l.queryable && l._source !== 'search')
+            .map(l => ({ ...l, value: l.id, label: l.name }));
+    }
     const activeQueryableLayers = allQueryableLayers.filter(l => l.active);
     const queryOptions = [{ value: 'queryAll', label: strings.search.allQueryableLayers }]
         .concat([{ value: 'queryActive', label: strings.search.allActiveLayers }])

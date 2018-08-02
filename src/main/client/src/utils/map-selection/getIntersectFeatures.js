@@ -9,6 +9,7 @@
  * @param geometry Object current features geometry
  * @param view Object esri map view
  * @param selectFeatures Function redux function that selects features
+ * @param adminToolActive string id of current admin tool layer
  *
  */
 export const getIntersectFeatures = (
@@ -16,6 +17,7 @@ export const getIntersectFeatures = (
     geometry: Object,
     view: Object,
     selectFeatures: Function,
+    adminToolActive: string,
 ) => {
     const query = {
         geometry,
@@ -31,13 +33,23 @@ export const getIntersectFeatures = (
                 view.scale > layer.maxScale &&
                 layer.id !== layerId
             ) {
-                queries.push(layer.queryFeatures(query).then(results => ({
-                    id: layer.id,
-                    title: layer.title,
-                    objectIdFieldName: layer.objectIdField,
-                    features: results.features,
-                    fields: layer.fields,
-                })));
+                if (adminToolActive && adminToolActive === layer.id) {
+                    queries.push(layer.queryFeatures(query).then(results => ({
+                        id: layer.id,
+                        title: layer.title,
+                        objectIdFieldName: layer.objectIdField,
+                        features: results.features,
+                        fields: layer.fields,
+                    })));
+                } else if (!adminToolActive) {
+                    queries.push(layer.queryFeatures(query).then(results => ({
+                        id: layer.id,
+                        title: layer.title,
+                        objectIdFieldName: layer.objectIdField,
+                        features: results.features,
+                        fields: layer.fields,
+                    })));
+                }
             }
         }
     });

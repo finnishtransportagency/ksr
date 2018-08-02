@@ -22,6 +22,7 @@ type Props = {
     active: string,
     setActiveTool: Function,
     data: Array<Object>,
+    activeAdminTool: string,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -92,6 +93,7 @@ class SketchTool extends Component<Props, State> {
 
                 const selectFeaturesFromDraw = (evt) => {
                     const { geometry } = evt;
+                    const { activeAdminTool } = this.props;
 
                     const query = {
                         geometry,
@@ -105,13 +107,23 @@ class SketchTool extends Component<Props, State> {
                                 view.scale < layer.minScale &&
                                 view.scale > layer.maxScale
                             ) {
-                                queries.push(layer.queryFeatures(query).then(results => ({
-                                    id: layer.id,
-                                    title: layer.title,
-                                    objectIdFieldName: layer.objectIdField,
-                                    features: results.features,
-                                    fields: layer.fields,
-                                })));
+                                if (activeAdminTool && activeAdminTool === layer.id) {
+                                    queries.push(layer.queryFeatures(query).then(results => ({
+                                        id: layer.id,
+                                        title: layer.title,
+                                        objectIdFieldName: layer.objectIdField,
+                                        features: results.features,
+                                        fields: layer.fields,
+                                    })));
+                                } else if (!activeAdminTool) {
+                                    queries.push(layer.queryFeatures(query).then(results => ({
+                                        id: layer.id,
+                                        title: layer.title,
+                                        objectIdFieldName: layer.objectIdField,
+                                        features: results.features,
+                                        fields: layer.fields,
+                                    })));
+                                }
                             }
                         }
                     });

@@ -104,3 +104,8 @@ export const toggleSelectAll = (layerId: string) => ({
 export const clearTableData = () => ({
     type: types.CLEAR_TABLE_DATA,
 });
+
+export const setEditedLayer = (data: Array<Object>) => ({
+    type: types.SET_EDITED_LAYER,
+    data,
+});

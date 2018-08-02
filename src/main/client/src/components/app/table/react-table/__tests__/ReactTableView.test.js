@@ -8,7 +8,7 @@ const setup = () => {
         data: [],
         columns: [],
     };
-    const wrapper = shallow(<ReactTableView />);
+    const wrapper = shallow(<ReactTableView {...props} />);
 
     return { props, wrapper };
 };

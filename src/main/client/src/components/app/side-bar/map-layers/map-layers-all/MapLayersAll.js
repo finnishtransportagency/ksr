@@ -8,6 +8,8 @@ type Props = {
     layerList: any,
     fetching: boolean,
     setLayerList: (Array<any>) => void,
+    adminToolActive: string,
+    setActiveAdminTool: (layerId: string) => void,
 };
 
 type State = {
@@ -39,10 +41,11 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     handleLayerClick = (id: number) => {
-        const { setLayerList } = this.props;
+        const { setLayerList, adminToolActive, setActiveAdminTool } = this.props;
         const layerList = [...this.props.layerList];
         const foundLayer = layerList.find(l => l.id === id);
 
+        if (foundLayer.id === adminToolActive) setActiveAdminTool('');
         foundLayer.active = !foundLayer.active;
         setLayerList(layerList);
     };

@@ -25,18 +25,18 @@ type Props = {
 };
 
 type State = {
-    abortController: Object,
     fetchingSuggestions: boolean,
     suggestionQuery: number,
 };
 
 const initialState = {
-    abortController: undefined,
     fetchingSuggestions: false,
     suggestionQuery: 0,
 };
 
 class Search extends Component<Props, State> {
+    abortController: ?Object = null; // eslint-disable-line react/sort-comp
+
     constructor(props: Props) {
         super(props);
         this.state = { ...initialState };
@@ -190,8 +190,8 @@ class Search extends Component<Props, State> {
     };
 
     handleFieldBlur = () => {
-        if (this.state.abortController) {
-            this.state.abortController.abort();
+        if (this.abortController != null) {
+            this.abortController.abort();
         }
     };
 
