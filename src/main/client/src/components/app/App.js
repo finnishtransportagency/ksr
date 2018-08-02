@@ -8,7 +8,8 @@ import HomeContainer from './home/HomeContainer';
 
 const App = ({ store }: any) => (
     <Provider store={store}>
-        <Router>
+        {/* $FlowFixMe */}
+        <Router basename={`${process.env.PUBLIC_URL}`}>
             <Switch>
                 <Route path="/" component={HomeContainer} />
             </Switch>
@@ -16,6 +17,7 @@ const App = ({ store }: any) => (
     </Provider>
 );
 
+// eslint-disable-next-line
 injectGlobal`
   body {
     margin: 0;
