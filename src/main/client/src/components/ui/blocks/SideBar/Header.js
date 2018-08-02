@@ -9,6 +9,15 @@ const Header = styled.div`
     h2 {
         margin: 0;
     }
+    
+    .search-suggestions-toggle {
+        outline: none;
+        cursor: pointer;
+        
+        i {
+            margin-left: 1rem;
+        }
+    }
 `;
 
 export default Header;

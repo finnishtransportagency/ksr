@@ -15,8 +15,10 @@ type Props = {
     handleAddField: Function,
     handleTextChange: Function,
     handleChangeField: Function,
+    handleFieldBlur: Function,
     handleSubmit: Function,
     handleRemoveField: Function,
+    setSearchState: Function,
     selectedLayer: string,
     queryableLayers: Array<Object>,
     searchFieldValues: Array<Object>,
@@ -24,6 +26,9 @@ type Props = {
     optionsField: Array<Object>,
     optionsExpression: Array<Object>,
     fetching: boolean,
+    suggestions: Array<string>,
+    suggestionsActive: boolean,
+    toggleSearchSuggestions: Function,
 };
 
 const SearchView = ({
@@ -31,8 +36,10 @@ const SearchView = ({
     handleAddField,
     handleTextChange,
     handleChangeField,
+    handleFieldBlur,
     handleSubmit,
     handleRemoveField,
+    setSearchState,
     selectedLayer,
     queryableLayers,
     searchFieldValues,
@@ -40,10 +47,29 @@ const SearchView = ({
     optionsField,
     optionsExpression,
     fetching,
+    suggestions,
+    suggestionsActive,
+    toggleSearchSuggestions,
 }: Props) => (
     <SearchWrapper>
         <SideBar.Header>
             <H1>{strings.search.title}</H1>
+            <div
+                className="search-suggestions-toggle"
+                tabIndex="0"
+                role="button"
+                onClick={toggleSearchSuggestions}
+                onKeyPress={toggleSearchSuggestions}
+            >
+                <span>{strings.search.suggestions}</span>
+                <i
+                    className={
+                        suggestionsActive
+                            ? 'fas fa-toggle-on'
+                            : 'fas fa-toggle-off'
+                    }
+                />
+            </div>
         </SideBar.Header>
         <SideBar.Content>
             <Scrollbars
@@ -84,6 +110,7 @@ const SearchView = ({
                             name="allFields"
                             required={!searchFieldValues.length}
                             minLength={2}
+                            autoComplete="off"
                         />
                     </label>
                     {searchFieldValues.map((a, i) => (
@@ -91,10 +118,17 @@ const SearchView = ({
                             key={a.id}
                             field={a}
                             index={i}
+                            searchFieldValues={searchFieldValues}
+                            setSearchState={setSearchState}
+                            selectedLayer={selectedLayer}
+                            textSearch={textSearch}
                             handleChangeField={handleChangeField}
+                            handleFieldBlur={handleFieldBlur}
                             optionsExpression={optionsExpression}
                             handleRemoveField={handleRemoveField}
                             fetching={fetching}
+                            suggestions={suggestions}
+                            suggestionsActive={suggestionsActive}
                         />
                     ))}
                     <Button disabled={!selectedLayer || fetching}>
