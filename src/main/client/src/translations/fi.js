@@ -6,6 +6,7 @@ const fi = {
     },
     search: {
         title: 'Haku',
+        suggestions: 'Hakuehdotukset',
         buttonSearch: 'Hae',
         chooseLayer: 'Valitse taso',
         searchAllFields: 'Hae kaikista kentistä',

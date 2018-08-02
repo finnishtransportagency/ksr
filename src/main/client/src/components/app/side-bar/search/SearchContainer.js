@@ -35,8 +35,14 @@ const mapDispatchToProps = dispatch => ({
     searchFeatures: (queryMap) => {
         dispatch(searchFeatures(queryMap));
     },
-    setSearchState: (layerId, textSearch, searchFieldValues, suggestions) => {
-        dispatch(setSearchState(layerId, textSearch, searchFieldValues, suggestions));
+    setSearchState: (layerId, textSearch, searchFieldValues, suggestions, suggestionsActive) => {
+        dispatch(setSearchState(
+            layerId,
+            textSearch,
+            searchFieldValues,
+            suggestions,
+            suggestionsActive,
+        ));
     },
     setSearchOptions: (layerId, layerList) => {
         dispatch(setSearchOptions(layerId, layerList));

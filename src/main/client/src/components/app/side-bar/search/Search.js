@@ -20,6 +20,7 @@ type Props = {
         optionsExpression: Array<Object>,
         fetching: boolean,
         suggestions: Array<string>,
+        suggestionsActive: boolean,
     },
 };
 
@@ -47,21 +48,23 @@ class Search extends Component<Props, State> {
         this.handleFieldBlur = this.handleFieldBlur.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRemoveField = this.handleRemoveField.bind(this);
+        this.toggleSearchSuggestions = this.toggleSearchSuggestions.bind(this);
     }
 
     componentDidMount() {
         const { activeQueryableLayers, setSearchState } = this.props;
-        const { selectedLayer } = this.props.searchState;
+        const { selectedLayer, suggestionsActive } = this.props.searchState;
 
         if (selectedLayer && selectedLayer !== 'queryAll' && selectedLayer !== 'queryActive' &&
             !activeQueryableLayers.find(ql => ql.value === selectedLayer)) {
-            setSearchState(0, '', [], []);
+            setSearchState(0, '', [], [], suggestionsActive);
         }
     }
 
     handleLayerChange = (layerId: string) => {
         const { setSearchState, setSearchOptions, layerList } = this.props;
-        setSearchState(layerId, '', [], []);
+        const { suggestionsActive } = this.props.searchState;
+        setSearchState(layerId, '', [], [], suggestionsActive);
         if (layerId && layerId !== 'queryAll' && layerId !== 'queryActive') {
             setSearchOptions(layerId, layerList);
         }
@@ -72,6 +75,7 @@ class Search extends Component<Props, State> {
         const {
             selectedLayer,
             searchFieldValues,
+            suggestionsActive,
         } = this.props.searchState;
 
         setSearchState(
@@ -79,6 +83,7 @@ class Search extends Component<Props, State> {
             evt.target.value,
             searchFieldValues,
             [],
+            suggestionsActive,
         );
     };
 
@@ -89,6 +94,7 @@ class Search extends Component<Props, State> {
             searchFieldValues,
             selectedLayer,
             textSearch,
+            suggestionsActive,
         } = this.props.searchState;
 
         const newField = {
@@ -105,12 +111,13 @@ class Search extends Component<Props, State> {
             textSearch,
             searchFields,
             [],
+            suggestionsActive,
         );
     };
 
     handleChangeField = (type: string, evt: Object, index: number) => {
         const { setSearchState } = this.props;
-        const { selectedLayer, textSearch } = this.props.searchState;
+        const { selectedLayer, textSearch, suggestionsActive } = this.props.searchState;
 
         const searchFieldValues = [
             ...this.props.searchState.searchFieldValues,
@@ -119,46 +126,48 @@ class Search extends Component<Props, State> {
         switch (type) {
             case 'text': {
                 searchFieldValues[index].queryText = evt.target.value;
-                const text = `'${evt.target.value}%'`;
-                const queryColumn = searchFieldValues[index].name;
-                const queryString = `${queryColumn} LIKE ${text}`;
-                window.clearTimeout(this.state.suggestionQuery);
-                if (this.abortController != null) {
-                    this.abortController.abort();
-                }
-                if (evt.target.value.trim().length > 0) {
-                    this.abortController = (window.AbortController ?
-                        new window.AbortController() : null);
-                    this.setState({
-                        // Workaround for IE since it does not support aborting yet at least.
-                        fetchingSuggestions: true,
-                        suggestionQuery: window.setTimeout(() => {
-                            const signal = this.abortController != null ?
-                                this.abortController.signal : undefined;
+                if (suggestionsActive) {
+                    const text = `'${evt.target.value}%'`;
+                    const queryColumn = searchFieldValues[index].name;
+                    const queryString = `${queryColumn} LIKE ${text}`;
+                    window.clearTimeout(this.state.suggestionQuery);
+                    if (this.abortController) {
+                        this.abortController.abort();
+                    }
+                    if (evt.target.value.trim().length > 0) {
+                        this.setState({
+                            // Workaround for IE since it does not support aborting yet at least.
+                            fetchingSuggestions: true,
+                            suggestionQuery: window.setTimeout(() => {
+                                const signal = this.abortController != null ?
+                                    this.abortController.signal : undefined;
 
-                            fetchSearchSuggestions(
-                                selectedLayer,
-                                queryString,
-                                queryColumn,
-                                signal,
-                            ).then((suggestions) => {
-                                if (suggestions) {
-                                    // Sort array and remove duplicates.
-                                    const sortedSuggestions = suggestions
-                                        .sort()
-                                        .filter((elem, ind, array) => ind === array.indexOf(elem));
+                                fetchSearchSuggestions(
+                                    selectedLayer,
+                                    queryString,
+                                    queryColumn,
+                                    signal,
+                                ).then((suggestions) => {
+                                    if (suggestions) {
+                                        // Sort array and remove duplicates.
+                                        const sortedSuggestions = suggestions
+                                            .sort()
+                                            .filter((elem, ind, array) =>
+                                                ind === array.indexOf(elem));
 
-                                    this.props.setSearchState(
-                                        selectedLayer,
-                                        textSearch,
-                                        searchFieldValues,
-                                        sortedSuggestions,
-                                    );
-                                }
-                                this.setState({ fetchingSuggestions: false });
-                            });
-                        }, 200),
-                    });
+                                        this.props.setSearchState(
+                                            selectedLayer,
+                                            textSearch,
+                                            searchFieldValues,
+                                            sortedSuggestions,
+                                            suggestionsActive,
+                                        );
+                                    }
+                                    this.setState({ fetchingSuggestions: false });
+                                });
+                            }, 200),
+                        });
+                    }
                 }
                 break;
             }
@@ -175,6 +184,7 @@ class Search extends Component<Props, State> {
                 textSearch,
                 searchFieldValues,
                 [],
+                suggestionsActive,
             );
         }
     };
@@ -187,14 +197,14 @@ class Search extends Component<Props, State> {
 
     handleRemoveField = (index: number) => {
         const { setSearchState } = this.props;
-        const { selectedLayer, textSearch } = this.props.searchState;
+        const { selectedLayer, textSearch, suggestionsActive } = this.props.searchState;
 
         const searchFieldValues = [
             ...this.props.searchState.searchFieldValues,
         ];
 
         searchFieldValues.splice(index, 1);
-        setSearchState(selectedLayer, textSearch, searchFieldValues, []);
+        setSearchState(selectedLayer, textSearch, searchFieldValues, [], suggestionsActive);
     };
 
     handleSubmit = (evt: Object) => {
@@ -232,6 +242,25 @@ class Search extends Component<Props, State> {
         searchFeatures(queryMap);
     };
 
+    toggleSearchSuggestions = () => {
+        const { setSearchState } = this.props;
+        const {
+            selectedLayer,
+            textSearch,
+            searchFieldValues,
+            suggestions,
+            suggestionsActive,
+        } = this.props.searchState;
+
+        setSearchState(
+            selectedLayer,
+            textSearch,
+            searchFieldValues,
+            suggestions,
+            !suggestionsActive,
+        );
+    };
+
     render() {
         const {
             selectedLayer,
@@ -241,6 +270,7 @@ class Search extends Component<Props, State> {
             optionsExpression,
             fetching,
             suggestions,
+            suggestionsActive,
         } = this.props.searchState;
         const { setSearchState, queryOptions } = this.props;
 
@@ -262,6 +292,8 @@ class Search extends Component<Props, State> {
                 optionsExpression={optionsExpression}
                 fetching={fetching}
                 suggestions={suggestions}
+                suggestionsActive={suggestionsActive}
+                toggleSearchSuggestions={this.toggleSearchSuggestions}
             />
         );
     }
