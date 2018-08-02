@@ -4,7 +4,7 @@ import 'react-table/react-table.css';
 import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
-import { colorMainHighlight } from '../../../ui/defaultStyles';
+import { colorMainHighlight, colorMain, colorTableEdited, colorTableEditedDarker } from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
 import CustomTableBodyView from './custom-table-body/CustomTableBodyView';
 
@@ -14,6 +14,7 @@ type Props = {
     toggleSelection: Function,
     toggleSelectAll: Function,
     selectAll: boolean,
+    renderEditable: Function,
 };
 
 const ReactTableView = ({
@@ -22,6 +23,7 @@ const ReactTableView = ({
     toggleSelection,
     toggleSelectAll,
     selectAll,
+    renderEditable,
 }: Props) => (
     <WrapperReactTable>
         <SelectableTable
@@ -29,7 +31,10 @@ const ReactTableView = ({
             data={data}
             TableComponent={CustomTableView}
             TbodyComponent={CustomTableBodyView}
-            columns={columns}
+            columns={columns.map(c => ({
+                ...c,
+                Cell: renderEditable,
+            }))}
             filterable
             defaultFilterMethod={(filter, row) => {
                 const id = filter.pivotId || filter.id;
@@ -59,16 +64,27 @@ const ReactTableView = ({
             selectAll={selectAll}
             toggleSelection={toggleSelection}
             toggleAll={toggleSelectAll}
-            getTrProps={(state, r) => (
-                {
+            getTdProps={(state, r, c) => {
+                const color = r && r.index % 2 === 0 ? colorTableEditedDarker : colorTableEdited;
+                return {
+                    style: {
+                        background: r && r.original._edited && r.original._edited
+                            .find(t => t.title === c.Header) ? color : null,
+                    },
+                };
+            }}
+            getTrProps={(state, r) => {
+                const color = r && r.index % 2 === 0 ? colorMainHighlight : colorMain;
+                return {
                     style: {
                         background: (
                             r &&
                             r.row &&
-                            r.row._original._selected ? colorMainHighlight : null),
+                            r.row._original._selected ? color : null
+                        ),
                     },
-                }
-            )}
+                };
+            }}
         />
     </WrapperReactTable>
 );

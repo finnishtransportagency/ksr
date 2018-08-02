@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
+import { cellEditValidate, preventKeyPress } from '../../../../utils/cellEditValidate';
 import ReactTableView from './ReactTableView';
 import LoadingIcon from '../../shared/LoadingIcon';
 import { WrapperReactTableNoTable } from './styles';
@@ -17,13 +18,12 @@ type Props = {
     toggleSelection: Function,
     selectAll: boolean,
     toggleSelectAll: Function,
+    setEditedLayer: Function,
+    layerList: Array<Object>,
+    activeTable: string,
 };
 
-type State = {
-    /* ... */
-};
-
-class ReactTable extends Component<Props, State> {
+class ReactTable extends Component<Props> {
     constructor(props: Props) {
         super(props);
 
@@ -51,25 +51,44 @@ class ReactTable extends Component<Props, State> {
         this.props.toggleSelection(row);
     };
 
-    renderEditable = (cellInfo: any) => (
-        <div
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={(e) => {
-                this.props.layer.data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
-            }}
-            dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(this.props.layer.data[cellInfo.index][cellInfo.column.id]),
-            }}
-        />
-    );
+    renderEditable = (cellInfo: Object) => {
+        const {
+            layer, setEditedLayer, layerList, activeTable,
+        } = this.props;
 
-    toggleSelection = (id: string, shiftKey: boolean, row: Object) => {
-        this.props.toggleSelection(row);
+        const currentLayer = layerList.find(l => l.id === activeTable);
+
+        if (currentLayer) {
+            const cellField = currentLayer.fields.find(f => f.name === cellInfo.column.Header);
+            return (
+                <div
+                    style={{ minHeight: '1rem' }}
+                    role="textbox"
+                    tabIndex={0}
+                    contentEditable={cellField.type !== 'esriFieldTypeOID'}
+                    suppressContentEditableWarning
+                    onKeyPress={(e) => {
+                        preventKeyPress(e, cellField);
+                    }}
+                    onBlur={(e) => {
+                        const data = cellEditValidate(e, layer.data, cellField, cellInfo);
+                        setEditedLayer(data);
+                    }}
+                    dangerouslySetInnerHTML={{ // eslint-disable-line
+                        __html: DOMPurify.sanitize(layer.data[cellInfo.index][cellInfo.column.id]),
+                    }}
+                />
+            );
+        }
+
+        return null;
     };
 
     render() {
-        const { fetching, layer } = this.props;
+        const {
+            fetching, layer, selectAll, toggleSelectAll,
+        } = this.props;
+
         if (layer === null) {
             return (
                 <WrapperReactTableNoTable>
@@ -82,8 +101,9 @@ class ReactTable extends Component<Props, State> {
                 data={data}
                 toggleSelection={this.toggleSelection}
                 columns={columns}
-                selectAll={this.props.selectAll}
-                toggleSelectAll={() => this.props.toggleSelectAll(layer.id)}
+                selectAll={selectAll}
+                toggleSelectAll={() => toggleSelectAll(layer.id)}
+                renderEditable={this.renderEditable}
             />);
         }
         return <LoadingIcon loading={fetching} />;

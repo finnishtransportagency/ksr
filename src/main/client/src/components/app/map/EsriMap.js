@@ -18,6 +18,7 @@ type Props = {
     selectFeatures: Function,
     selectedFeatures: Array<Object>,
     setMapView: (view: Object) => void,
+    adminToolActive: string,
 };
 
 class EsriMap extends Component<Props> {
@@ -178,7 +179,8 @@ class EsriMap extends Component<Props> {
                     .remove('esri-component');
 
                 view.on('click', (event) => {
-                    mapSelectPopup(event, view, selectFeatures, layerList);
+                    const { adminToolActive } = this.props;
+                    mapSelectPopup(event, view, selectFeatures, layerList, adminToolActive);
                 });
 
                 return { setMapView, view };

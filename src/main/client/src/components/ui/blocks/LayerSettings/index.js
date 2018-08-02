@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import * as styles from '../../defaultStyles';
 
 import Content from './Content';
 import ContentTop from './ContentTop';
@@ -18,6 +19,14 @@ const LayerSettings = styled.div`
 const Icons = styled.div`
     flex: 2;
     text-align: right;
+    
+    ${props => props.activeAdminTool && css`
+        color: ${styles.mapHighlightStroke};
+    `}
+    
+    i:hover {
+        cursor: pointer;
+    }
 `;
 
 const Drag = styled.div`

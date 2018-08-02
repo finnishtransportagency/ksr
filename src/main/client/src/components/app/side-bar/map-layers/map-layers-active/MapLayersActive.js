@@ -9,6 +9,8 @@ type Props = {
     layerList: any,
     fetching: boolean,
     setLayerList: (Array<any>) => void,
+    setActiveAdminTool: (layerId: string) => void,
+    adminToolActive: string,
 };
 
 type State = {
@@ -59,7 +61,7 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     render() {
-        const { layerList, fetching } = this.props;
+        const { layerList, fetching, setActiveAdminTool, adminToolActive } = this.props;
         if (!fetching) {
             return (
                 <MapLayersActiveView
@@ -67,6 +69,8 @@ class MapLayersActive extends Component<Props, State> {
                     onDragEnd={this.onDragEnd}
                     onToggleVisibility={this.onToggleVisibility}
                     onOpacityChange={this.onOpacityChange}
+                    setActiveAdminTool={setActiveAdminTool}
+                    adminToolActive={adminToolActive}
                 />
             );
         }

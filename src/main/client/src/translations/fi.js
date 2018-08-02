@@ -24,6 +24,8 @@ const fi = {
         rowsText: 'riviä',
         filter: 'Suodata sarakkeita',
         clearTableData: 'Valintojen ja hakujen tyhjennys',
+        deleteSelected: 'Poista kohteita',
+        saveEditedData: 'Tallenna muutokset',
     },
     esriMap: {
         openGoogleStreetView: 'Avaa Google Street View',
@@ -39,6 +41,18 @@ const fi = {
         submit: 'Tyhjennä',
         cancel: 'Peruuta',
         content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
+    },
+    modalDeleteSelected: {
+        title: 'Kohteiden poistaminen',
+        submit: 'Poista',
+        cancel: 'Peruuta',
+        content: 'Poista valitut kohteet?',
+    },
+    modalSaveEditedData: {
+        title: 'Tallenna muutokset',
+        submit: 'Tallenna',
+        cancel: 'Peruuta',
+        content: 'Haluatko tallentaa taulukkoon tekemät muutokset?',
     },
     sideNav: {
         search: 'Haku',
