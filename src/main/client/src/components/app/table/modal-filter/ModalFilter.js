@@ -1,9 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import strings from '../../../../translations';
-import Checkbox from '../../../ui/blocks/Checkbox';
 import ModalContainer from '../../shared/Modal/ModalContainer';
-import { ModalFilterWrapper, CheckboxWrapper } from './styles';
+import ModalFilterView from './ModalFilterView';
 
 type Props = {
     columns: any,
@@ -35,7 +34,7 @@ class ModalFilter extends Component<Props, State> {
         this.setState({ columns: columns.map(c => ({ ...c })) });
     };
 
-    handleOnChange = (name: any) => {
+    handleOnChange = (name: string) => {
         const columns = [...this.state.columns];
         const column = columns.find((obj => obj.Header === name));
         column.show = !column.show;
@@ -54,27 +53,10 @@ class ModalFilter extends Component<Props, State> {
                 cancelText={strings.modalFilter.cancel}
                 columns={columns}
             >
-                <ModalFilterWrapper>
-                    {
-                        columns.map(c => (
-                            <CheckboxWrapper key={c.Header}>
-                                <Checkbox className="content-checkbox" htmlFor={c.Header}>
-                                    <p title={c.Header}>{c.Header}</p>
-                                    <Checkbox.Input
-                                        id={c.Header}
-                                        name={c.Header}
-                                        type="checkbox"
-                                        checked={c.show}
-                                        onChange={() => {
-                                            this.handleOnChange(c.Header);
-                                        }}
-                                    />
-                                    <Checkbox.Checkmark />
-                                </Checkbox>
-                            </CheckboxWrapper>
-                        ))
-                    }
-                </ModalFilterWrapper>
+                <ModalFilterView
+                    columns={columns}
+                    handleOnChange={this.handleOnChange}
+                />
             </ModalContainer>
         );
     }

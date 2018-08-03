@@ -11,14 +11,30 @@ const mapStateToProps = (state) => {
             .find(sd => sd._id === d._id) && selectedData.push(d));
     });
 
+    const { queryColumns } = state.map.layerGroups.layerList
+        .find(lg => lg.id === state.adminTool.active);
+
+    const filteredData = [];
+    selectedData.map((d) => {
+        const filtered = Object.keys(d)
+            .filter(key => queryColumns.find(qc => qc === key || key === '_id'))
+            .reduce((obj, key) => {
+                obj[key] = d[key];
+                return obj;
+            }, {});
+
+        return filteredData.push(filtered);
+    });
+
     return {
         selectedData,
+        filteredData,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteSelectedData: (selectedData: Array<Object>) => {
-        dispatch(deleteSelectedData(selectedData));
+    deleteSelectedData: (selectedData: Array<Object>, deleteComment: string) => {
+        dispatch(deleteSelectedData(selectedData, deleteComment));
     },
 });
 

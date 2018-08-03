@@ -3,7 +3,7 @@ import * as styles from '../../defaultStyles';
 
 const Header = styled.div`
     position: relative;
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     display: flex;
     justify-content: space-between;
     background: #FFFFFF;

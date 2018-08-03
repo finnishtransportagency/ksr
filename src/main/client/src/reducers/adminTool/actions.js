@@ -6,9 +6,11 @@ export const setActiveAdminTool = (layerId: string) => ({
     layerId,
 });
 
-export const deleteSelectedData = (selectedData: Array<Object>) => {
-    // TODO: remove data from arcgis server
+export const deleteSelectedData = (selectedData: Array<Object>, deleteComment: string) => {
+    // TODO: Change data to 'removed' in arcgis server
+    // TODO: Add comment to deletion history?
     console.log(selectedData);
+    console.log(deleteComment);
     return {
         type: types.DELETE_SELECTED_DATA,
         selectedData,
