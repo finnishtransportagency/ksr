@@ -2,7 +2,10 @@ package fi.sitowise.ksr.authentication;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -53,7 +56,7 @@ public class OAMFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-    	
+
         String username = request.getHeader(this.oamUserHeader);
         String firstname = request.getHeader(this.oamUserFirstNameHeader);
         String lastname = request.getHeader(this.oamUserLastNameHeader);
@@ -71,6 +74,10 @@ public class OAMFilter extends OncePerRequestFilter {
         	User user = new User(username, firstname, lastname, email, mobile, organization, oamGroups);
         	OAMAuthenticationToken token = new OAMAuthenticationToken(user, oamGroups);
             SecurityContextHolder.getContext().setAuthentication(token);
+        } else {
+            List<String> headerNames = Collections.list(request.getHeaderNames());
+            String headerNamesCSV = headerNames.stream().collect(Collectors.joining(","));
+            LOG.info(String.format("Authentication error using headers: %s", headerNamesCSV));
         }
 
         filterChain.doFilter(request, response);
