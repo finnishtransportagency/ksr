@@ -60,14 +60,16 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
     	if (groups != null) {
-    		String[] groupNames = groups.stream().filter(this::groupNameFilter).toArray(size -> new String[size]);
+    		String[] groupNames = groups.stream()
+                    .filter(this::groupNameFilter)
+                    .map(String::toUpperCase).toArray(size -> new String[size]);
     		return AuthorityUtils.createAuthorityList(groupNames);
     	}
     	return AuthorityUtils.createAuthorityList();
     }
     
     private boolean groupNameFilter(String groupName) {
-    	switch (groupName) {
+    	switch (groupName.toUpperCase()) {
     		case Role.ROLE_ADMIN:
     			return true;
     		case Role.ROLE_EXTERNAL_UPDATER:
