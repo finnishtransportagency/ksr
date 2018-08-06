@@ -29,7 +29,15 @@ public class KsrStringUtils {
         return str + (str.endsWith("/") ? "" : "/");
     }
 
-    public static String replaceMultipleSlashes(String url) {
-        return url.replaceAll("(?<!(http:|https:))[//]+", "/");
+    /**
+     * Returns a new string with unnecessary slashes removed
+     * @param str String to format
+     * @return String with unnecessary slashes removed
+     */
+    public static String replaceMultipleSlashes(String str) {
+        if (str == null) {
+            return null;
+        }
+        return str.replaceAll("(?<!(http:|https:))[//]+", "/");
     }
 }

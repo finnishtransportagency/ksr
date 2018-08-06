@@ -22,4 +22,14 @@ public class KsrStringUtilsTests {
         Assert.assertEquals("aqwerty/", KsrStringUtils.addTrailingSlash("aqwerty"));
         Assert.assertEquals("/", KsrStringUtils.addTrailingSlash(""));
     }
+
+    @Test
+    public void testWithMultipleSlahes() {
+        Assert.assertEquals("http://localhost/ksr/api/layergroup", KsrStringUtils.replaceMultipleSlashes("http://localhost//ksr///api/layergroup"));
+        Assert.assertEquals("https://localhost/ksr/api/layergroup", KsrStringUtils.replaceMultipleSlashes("https://localhost//ksr/api//layergroup"));
+        Assert.assertNull(KsrStringUtils.replaceMultipleSlashes(null));
+        Assert.assertEquals("/", KsrStringUtils.replaceMultipleSlashes("/"));
+        Assert.assertEquals("/", KsrStringUtils.replaceMultipleSlashes("///"));
+        Assert.assertEquals("", KsrStringUtils.replaceMultipleSlashes(""));
+    }
 }

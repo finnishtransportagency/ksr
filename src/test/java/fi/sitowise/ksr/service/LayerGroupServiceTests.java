@@ -4,6 +4,7 @@ import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,6 +84,8 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetLayerGroupsModifyLayerUrl() {
+        String contextPath = "${server.servlet.context-path}";
+
         LayerGroup lg = new LayerGroup();
         lg.setId(123);
 
@@ -99,7 +102,8 @@ public class LayerGroupServiceTests {
         Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(Collections.singletonList(lg));
         for (LayerGroup lgr : layerGroupService.getLayerGroups(false)) {
             for (Layer lr : lgr.getLayers()) {
-                Assert.assertEquals(String.format("%s/%s/", ProxyController.PROXY_URL, lr.getId()), lr.getUrl());
+                String formatUrl = String.format("%s/%s/%s/", contextPath, ProxyController.PROXY_URL, lr.getId());
+                Assert.assertEquals(KsrStringUtils.replaceMultipleSlashes(formatUrl), lr.getUrl());
             }
         }
     }
