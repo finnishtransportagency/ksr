@@ -42,7 +42,8 @@ public class ProxyController {
 
     @PostConstruct
     public void setUpGeneralProxyUrlMatcher() {
-        generalProxyUrlPattern = Pattern.compile("^\\/api\\/proxy\\/layer\\/\\d{1,6}\\/(.*?)$");
+        String patternToMatch = "^" + contextPath + "/api/proxy/layer/\\d{1,6}/(.*?)$";
+        generalProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(patternToMatch));
     }
 
     @RequestMapping(value = "/{layerId}/**", method = { RequestMethod.GET, RequestMethod.POST })
