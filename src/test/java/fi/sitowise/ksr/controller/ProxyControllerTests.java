@@ -5,12 +5,14 @@ import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,6 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ComponentScan(basePackages =
         {"fi.sitowise.ksr.authentication", "fi.sitowise.ksr.config", "fi.sitowise.ksr.controller", "fi.sitowise.ksr.service"})
 public class ProxyControllerTests {
+
+    @Value("${server.servlet.context-path}")
+    String contextPath;
 
     @Autowired
     private WebApplicationContext context;
@@ -122,13 +127,20 @@ public class ProxyControllerTests {
     @Test
     public void testGetServiceEndpoint() {
         Assert.assertNull(proxyController.getServiceEndpoint(null));
+        String requestUri = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/134/1.00/GetCapalibites.xml");
         Assert.assertEquals(
                 "1.00/GetCapalibites.xml",
-                proxyController.getServiceEndpoint("/api/proxy/layer/134/1.00/GetCapalibites.xml"));
+                proxyController.getServiceEndpoint(requestUri));
+
+        String requestUri2 = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/134/a/b/c/D?e=f&g=h");
         Assert.assertEquals(
                 "a/b/c/D?e=f&g=h",
-                proxyController.getServiceEndpoint("/api/proxy/layer/321/a/b/c/D?e=f&g=h"));
-        Assert.assertEquals("", proxyController.getServiceEndpoint("/api/proxy/layer/321/"));
-        Assert.assertNull(proxyController.getServiceEndpoint("/api/proxy/layer/321"));
+                proxyController.getServiceEndpoint(requestUri2));
+
+        String requestUri3 = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/321/");
+        Assert.assertEquals("", proxyController.getServiceEndpoint(requestUri3));
+
+        String requestUri4 = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/321");
+        Assert.assertNull(proxyController.getServiceEndpoint(requestUri4));
     }
 }
