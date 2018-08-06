@@ -28,4 +28,8 @@ public class KsrStringUtils {
         }
         return str + (str.endsWith("/") ? "" : "/");
     }
+
+    public static String replaceMultipleSlashes(String url) {
+        return url.replaceAll("(?<!(http:|https:))[//]+", "/");
+    }
 }
