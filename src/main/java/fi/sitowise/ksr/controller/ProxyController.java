@@ -4,8 +4,10 @@ import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -26,6 +28,9 @@ public class ProxyController {
     private final LayerService layerService;
 
     private final ProxyService proxyService;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     public static final String PROXY_URL = "/api/proxy/layer";
 
@@ -51,7 +56,7 @@ public class ProxyController {
             throw new KsrApiException.NotFoundErrorException("No Layer can be found.");
         }
 
-        String baseUrl = "/api/proxy/layer/" + layerId;
+        String baseUrl = KsrStringUtils.replaceMultipleSlashes("/" + contextPath + "/api/proxy/layer/" + layerId);
 
         proxyService.get(layer, baseUrl, serviceEndpoint, request, response);
     }
