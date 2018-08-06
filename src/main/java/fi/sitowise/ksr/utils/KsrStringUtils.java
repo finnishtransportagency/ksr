@@ -31,10 +31,13 @@ public class KsrStringUtils {
 
     /**
      * Returns a new string with unnecessary slashes removed
-     * @param url String to format
+     * @param str String to format
      * @return String with unnecessary slashes removed
      */
-    public static String replaceMultipleSlashes(String url) {
-        return url.replaceAll("(?<!(http:|https:))[//]+", "/");
+    public static String replaceMultipleSlashes(String str) {
+        if (str == null) {
+            return null;
+        }
+        return str.replaceAll("(?<!(http:|https:))[//]+", "/");
     }
 }
