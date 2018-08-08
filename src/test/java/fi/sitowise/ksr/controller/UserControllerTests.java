@@ -39,7 +39,7 @@ public class UserControllerTests extends AuthControllerTestBase {
         this.mockMvc.perform(get("/api/user")).andExpect(status().isForbidden());
 
         this.mockMvc.perform(get("/api/user")
-                .headers(this.getHeadersWithGroup("KSR_ROLE_USER,KSR_ROLE_ADMIN"))).andExpect(status().isOk());
+                .headers(this.getHeadersWithGroup("KSR_ROLE_USER"))).andExpect(status().isOk());
 
     }
 }

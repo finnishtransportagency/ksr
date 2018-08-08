@@ -111,14 +111,14 @@ public class ProxyControllerTests {
                 .header("OAM_USER_MAIL", "test@test.com")
                 .header("OAM_USER_MOBILE", "+123456789")
                 .header("OAM_ORGANIZATION", "sitowise")
-                .header("OAM_GROUPS", "KSR_ROLE_USER,KSR_ROLE_ADMIN")).andExpect(status().isOk());
+                .header("OAM_GROUPS", "KSR_ROLE_USER")).andExpect(status().isOk());
         mockMvc.perform(get("/api/proxy").header("OAM_REMOTE_USER", "TestUser")
                 .header("OAM_USER_FIRST_NAME", "firstName")
                 .header("OAM_USER_LAST_NAME", "lastName")
                 .header("OAM_USER_MAIL", "test@test.com")
                 .header("OAM_USER_MOBILE", "+123456789")
                 .header("OAM_ORGANIZATION", "sitowise")
-                .header("OAM_GROUPS", "KSR_ROLE_USER,KSR_ROLE_ADMIN")).andExpect(status().isNotFound());
+                .header("OAM_GROUPS", "KSR_ROLE_USER")).andExpect(status().isNotFound());
     }
 
     /**
