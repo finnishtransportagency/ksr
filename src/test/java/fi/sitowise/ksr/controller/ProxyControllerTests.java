@@ -120,4 +120,27 @@ public class ProxyControllerTests {
                 .header("OAM_ORGANIZATION", "sitowise")
                 .header("OAM_GROUPS", "KSR_ROLE_USER")).andExpect(status().isNotFound());
     }
+
+    /**
+     * Test get service endpoint.
+     */
+    @Test
+    public void testGetServiceEndpoint() {
+        Assert.assertNull(proxyController.getServiceEndpoint(null));
+        String requestUri = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/134/1.00/GetCapalibites.xml");
+        Assert.assertEquals(
+                "1.00/GetCapalibites.xml",
+                proxyController.getServiceEndpoint(requestUri));
+
+        String requestUri2 = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/134/a/b/c/D?e=f&g=h");
+        Assert.assertEquals(
+                "a/b/c/D?e=f&g=h",
+                proxyController.getServiceEndpoint(requestUri2));
+
+        String requestUri3 = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/321/");
+        Assert.assertEquals("", proxyController.getServiceEndpoint(requestUri3));
+
+        String requestUri4 = KsrStringUtils.replaceMultipleSlashes(contextPath + "/api/proxy/layer/321");
+        Assert.assertNull(proxyController.getServiceEndpoint(requestUri4));
+    }
 }

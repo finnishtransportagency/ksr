@@ -52,7 +52,13 @@ public class OAMAuthenticationProviderImpl implements OAMAuthenticationProvider 
             user.setGroups(usergroups);
 
             if (usergroups.isEmpty()) {
-                log.info(String.format("Authentication error. No usergroups for user: <%s>.", authentication.getName()));
+                log.info(String.format("Authentication error. No usergroups for user: <%s>.", user.getUsername()));
+                return null;
+            } else if (user.getAuthorities().size() > 1) {
+                log.info(
+                        String.format("Authentication error. Only one (1) usergroup allowed per user. User: <%s>.",
+                                user.getUsername()
+                        ));
                 return null;
             } else if (user.getAuthorities().size() > 1) {
                 log.info(
