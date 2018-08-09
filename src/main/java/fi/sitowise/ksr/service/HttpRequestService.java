@@ -210,9 +210,9 @@ public class HttpRequestService {
         for (int i = 0; i < nodes.getLength(); i++) {
             Node attr = nodes.item(i).getAttributes().getNamedItem(attributeName);
             if (attr != null) {
-                String val = attr.getNodeValue();
+                String val = attr.getNodeValue().toLowerCase();
                 if (replaceValue != null && replaceWith != null) {
-                    attr.setNodeValue(val.replaceFirst(replaceValue, replaceWith));
+                    attr.setNodeValue(val.replaceFirst(replaceValue.toLowerCase(), replaceWith.toLowerCase()));
                 }
             }
         }
