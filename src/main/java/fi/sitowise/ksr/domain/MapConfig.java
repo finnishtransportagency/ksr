@@ -8,6 +8,29 @@ import java.io.Serializable;
 public class MapConfig implements Serializable {
     private int scale;
     private int[] center;
+    private String printServiceUrl;
+
+    /**
+     * Gets printServiceUrl
+     *
+     * PrintServiceUrl is an url pointing into a ArcGIS Server Web Map Task -service
+     *
+     * @return printServiceUrl
+     */
+    public String getPrintServiceUrl() {
+        return printServiceUrl;
+    }
+
+    /**
+     * Sets printServiceUrl
+     *
+     * PrintServiceUrl is an url pointing into a ArcGIS Server Web Map Task -service
+     *
+     * @param printServiceUrl printServiceUrl
+     */
+    public void setPrintServiceUrl(String printServiceUrl) {
+        this.printServiceUrl = printServiceUrl;
+    }
 
     /**
      * Gets scale.
