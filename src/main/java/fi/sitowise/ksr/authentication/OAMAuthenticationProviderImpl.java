@@ -3,8 +3,8 @@ package fi.sitowise.ksr.authentication;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OAMAuthenticationProviderImpl implements OAMAuthenticationProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(OAMAuthenticationProviderImpl.class);
+    private static final Logger log = LogManager.getLogger(OAMAuthenticationProviderImpl.class);
 
     /**
      * Supports.
@@ -50,7 +50,7 @@ public class OAMAuthenticationProviderImpl implements OAMAuthenticationProvider 
             }
 
             if (usergroups.isEmpty()) {
-                LOG.info(String.format("Authentication error. No usergroups for user: <%s>.", authentication.getName()));
+                log.info(String.format("Authentication error. No usergroups for user: <%s>.", authentication.getName()));
                 return null;
             }
 
@@ -60,11 +60,11 @@ public class OAMAuthenticationProviderImpl implements OAMAuthenticationProvider 
             oamAuthentication.setAuthenticated(true);
             return oamAuthentication;
         } else if (authentication.getName() == null && authentication.getCredentials() != null) {
-            LOG.info("Authentication error. No username found.");
+            log.info("Authentication error. No username found.");
         } else if (authentication.getName() == null && authentication.getCredentials() == null) {
-            LOG.info("Authentication error. Neither username or credentials found.");
+            log.info("Authentication error. Neither username or credentials found.");
         } else if (authentication.getName() != null && authentication.getCredentials() == null){
-            LOG.info(
+            log.info(
                 String.format("Authentication error. No credentials found for user: <%s>.", authentication.getName())
             );
         }
