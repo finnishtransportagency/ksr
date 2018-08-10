@@ -12,7 +12,7 @@ type Props = {
 };
 
 const EsriMapView = ({ activeNav, view, isOpenTable }: Props) => (
-    <Wrapper sideBar={activeNav} tableOpen={isOpenTable} loading={!view.initialized}>
+    <Wrapper sideBar={activeNav === 'search' || activeNav === 'mapLayers'} tableOpen={isOpenTable} loading={!view.initialized}>
         <LoadingIcon loading={!view.initialized} />
         <div id="mapView">
             <MapToolsContainer view={view} />

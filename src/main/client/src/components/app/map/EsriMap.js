@@ -15,6 +15,7 @@ type Props = {
     isOpenTable: boolean,
     mapCenter: Array<number>,
     mapScale: number,
+    printServiceUrl: ?string,
     selectFeatures: Function,
     selectedFeatures: Array<Object>,
     setMapView: (view: Object) => void,
@@ -22,8 +23,12 @@ type Props = {
 };
 
 class EsriMap extends Component<Props> {
+    printWidget: ?Object = null; // eslint-disable-line react/sort-comp
+
     componentDidUpdate(prevProps: Props) {
-        const { fetching, layerList, view } = this.props;
+        const {
+            fetching, layerList, view, activeNav,
+        } = this.props;
 
         if (prevProps.fetching !== fetching) {
             this.initMap();
@@ -82,6 +87,14 @@ class EsriMap extends Component<Props> {
             });
         }
 
+        if (activeNav !== prevProps.activeNav && this.printWidget) {
+            if (activeNav === 'fileExport') {
+                view.ui.add(this.printWidget, 'top-left');
+            } else {
+                view.ui.remove(this.printWidget);
+            }
+        }
+
         if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
             highlight(view, this.props.selectedFeatures);
         }
@@ -100,6 +113,7 @@ class EsriMap extends Component<Props> {
                 'esri/geometry/SpatialReference',
                 'esri/widgets/Compass',
                 'esri/geometry/Point',
+                'esri/widgets/Print',
             ])
             .then(([
                 MapView,
@@ -110,9 +124,16 @@ class EsriMap extends Component<Props> {
                 SpatialReference,
                 Compass,
                 Point,
+                Print,
             ]) => {
                 const {
-                    layerList, mapCenter, mapScale, setMapView, selectFeatures,
+                    layerList,
+                    mapCenter,
+                    mapScale,
+                    setMapView,
+                    selectFeatures,
+                    printServiceUrl,
+                    activeNav,
                 } = this.props;
 
                 const map = new Map({
@@ -159,6 +180,11 @@ class EsriMap extends Component<Props> {
                     unit: 'metric',
                 });
 
+                this.printWidget = new Print({
+                    view,
+                    printServiceUrl,
+                });
+
                 view.ui.move('zoom', 'top-right');
                 view.ui.add(
                     [
@@ -171,6 +197,10 @@ class EsriMap extends Component<Props> {
                     'top-right',
                 );
                 view.ui.add([scaleBar], 'bottom-left');
+
+                if (activeNav === 'fileExport') {
+                    view.ui.add(this.printWidget, 'top-left');
+                }
 
                 (document.getElementById: Function)('select-tool-outer-wrapper').classList
                     .remove('esri-component');

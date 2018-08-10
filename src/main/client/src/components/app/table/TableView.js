@@ -32,7 +32,7 @@ const TableView = ({
     editedLayers,
     selectedData,
 }: Props) => (
-    <Table sideBar={activeNav} tableOpen={isOpen}>
+    <Table sideBar={activeNav === 'search' || activeNav === 'mapLayers'} tableOpen={isOpen}>
         <Table.ButtonWrapper tableOpen={isOpen}>
             <Table.Button
                 toggleButton

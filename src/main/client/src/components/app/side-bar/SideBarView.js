@@ -9,10 +9,9 @@ type Props = {
 };
 
 const SideBarView = ({ activeNav }: Props) => (
-    <SideBar active={activeNav}>
+    <SideBar active={activeNav === 'search' || activeNav === 'mapLayers'}>
         {activeNav === 'search' && <SearchContainer />}
         {activeNav === 'mapLayers' && <MapLayersContainer />}
-        {activeNav === 'fileExport' && <h3>Tiedostojen vienti</h3>}
     </SideBar>
 );
 
