@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import strings from '../../../../translations';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import ModalDeleteSelectedView from './ModalDeleteSelectedView';
-import { TextArea, Text } from './styles';
 
 type Props = {
     selectedData: Array<Object>,
