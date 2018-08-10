@@ -42,7 +42,7 @@ public class ProxyController {
 
     @PostConstruct
     public void setUpGeneralProxyUrlMatcher() {
-        String patternToMatch = "^" + contextPath + "/api/proxy/layer/\\d{1,6}/(.*?)$";
+        String patternToMatch = "^" + contextPath + "/api/proxy/layer/\\d{1,6}/(.*?)/*?$";
         generalProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(patternToMatch));
     }
 
