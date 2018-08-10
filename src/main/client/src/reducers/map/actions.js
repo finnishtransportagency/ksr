@@ -53,6 +53,7 @@ export const getMapConfig = () => (dispatch: Function) => {
             type: types.GET_MAP_CONFIG_FULFILLED,
             mapCenter: r.center,
             mapScale: r.scale,
+            printServiceUrl: r.printServiceUrl,
         }))
         .catch(err => console.log(err));
 };

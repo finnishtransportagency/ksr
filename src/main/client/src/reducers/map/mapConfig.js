@@ -4,18 +4,21 @@ import { GET_MAP_CONFIG, GET_MAP_CONFIG_FULFILLED } from '../../constants/action
 type State = {
     mapCenter: Array<number>,
     mapScale: number,
+    printServiceUrl: ?string,
     fetching: boolean,
 };
 
 type Action = {
     mapCenter: Array<number>,
     mapScale: number,
+    printServiceUrl: ?string,
     type: string,
 };
 
 const initialState = {
     mapCenter: [],
     mapScale: 0,
+    printServiceUrl: null,
     fetching: true,
 };
 
@@ -30,6 +33,7 @@ export default (state: State = initialState, action: Action) => {
             return {
                 mapCenter: action.mapCenter,
                 mapScale: action.mapScale,
+                printServiceUrl: action.printServiceUrl,
                 fetching: false,
             };
         default:
