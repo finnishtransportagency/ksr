@@ -1,4 +1,4 @@
-import { getHeaders } from '../config';
+import { config } from '../config';
 
 /**
  * Finds all fields connected to layer
@@ -8,7 +8,7 @@ import { getHeaders } from '../config';
  * @returns All fields found from layer, that will be passed to layerList
 */
 export const fetchSearchFields = layerId =>
-    fetch(`api/proxy/layer/${layerId}?f=pjson`, { headers: getHeaders() })
+    fetch(`api/proxy/layer/${layerId}?f=pjson`, config())
         .then(r => r.json())
         .then(r => r.fields.map((f, i) => ({
             value: i, label: f.alias, type: f.type, name: f.name,
