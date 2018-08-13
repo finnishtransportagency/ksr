@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.controller;
 
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.PrintService;
 import fi.sitowise.ksr.utils.KsrRequestUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
@@ -44,12 +45,13 @@ public class PrintController {
     }
 
     @RequestMapping(value = "/**", method = { RequestMethod.GET, RequestMethod.POST })
-    public void printProxy(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void printProxy(HttpServletRequest request, HttpServletResponse response) {
         String serviceEndpoint = KsrRequestUtils.getServiceEndpoint(printProxyUrlPattern, request.getRequestURI());
         try {
             printService.getPrintRequest(serviceEndpoint, request, response);
-        } catch (ParseException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (ParseException | IOException e) {
+            String msg = "Error handling print request";
+            throw new KsrApiException.InternalServerErrorException(msg, e);
         }
     }
 }

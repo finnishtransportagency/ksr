@@ -198,32 +198,17 @@ public class HttpRequestService {
      * @param requestConfig Common requestconfiguration for this httpRequestService.
      * @param editedParams edited parameters / querystring from print request.
      * @return Correct HttpRequestBase or GET if no matches found for method.
-     * @throws UnsupportedEncodingException if adding POST parameters fails.
      */
     public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
-            String endPointUrl, RequestConfig requestConfig, List<NameValuePair> editedParams) throws UnsupportedEncodingException {
+            String endPointUrl, RequestConfig requestConfig, List<NameValuePair> editedParams) {
         HttpRequestBase base;
         List<NameValuePair> params = new ArrayList<>();
         switch (request.getMethod()) {
             case "GET":
-                base = new HttpGet(endPointUrl);
+                base = requestBaseGet(params, editedParams, endPointUrl);
                 break;
             case "POST":
-                base = new HttpPost(endPointUrl);
-                if (!CollectionUtils.isEmpty(request.getParameterMap())) {
-                    if (editedParams != null) {
-                        for (NameValuePair entry : editedParams) {
-                            params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
-                        }
-                    } else {
-                        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-                            for (String value : entry.getValue()) {
-                                params.add(new BasicNameValuePair(entry.getKey(), value));
-                            }
-                        }
-                    }
-                    ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
-                }
+                base = requestBasePost(request, params, editedParams, endPointUrl);
                 break;
             default:
                 base = new HttpGet(endPointUrl);
@@ -390,10 +375,11 @@ public class HttpRequestService {
      * @param cRes CloseableHttpResponse from where to read contents.
      */
     @SuppressWarnings("unchecked")
-    private void setPrintOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) throws IOException {
-        String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + PrintOutputController.PRINT_OUTPUT_URL);
-        String responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
+    private void setPrintOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
         try {
+            String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + PrintOutputController.PRINT_OUTPUT_URL);
+            String responseString;
+            responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
             JSONParser parser = new JSONParser();
             JSONObject responseJson = (JSONObject) parser.parse(responseString);
             JSONArray responseArray = (JSONArray) (responseJson != null ? responseJson.get("results") : null);
@@ -409,8 +395,71 @@ public class HttpRequestService {
             if (responseJson != null) {
                 response.getWriter().write(responseJson.toString());
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (ParseException | IOException e) {
+            String msg = "Error creating print output response";
+            throw new KsrApiException.InternalServerErrorException(msg, e);
         }
+    }
+
+    /**
+     * Returns a correct HttpRequestBase from POST request.
+     *
+     * @param request interface for getting request method and POST request parameters.
+     * @param params List<NameValuePair> empty list
+     * @param editedParams edited parameters / querystring from print request.
+     *
+     * @return base
+     */
+    private HttpRequestBase requestBasePost(HttpServletRequest request, List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+        HttpRequestBase base = new HttpPost(endPointUrl);
+        if (!CollectionUtils.isEmpty(request.getParameterMap())) {
+            if (editedParams != null) {
+                for (NameValuePair entry : editedParams) {
+                    params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
+                }
+            } else {
+                for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+                    for (String value : entry.getValue()) {
+                        params.add(new BasicNameValuePair(entry.getKey(), value));
+                    }
+                }
+            }
+            try {
+                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
+            } catch (UnsupportedEncodingException e) {
+                String msg = "Error creating base from POST request";
+                throw new KsrApiException.InternalServerErrorException(msg, e);
+            }
+        }
+        return base;
+    }
+
+    /**
+     * Returns a correct HttpRequestBase from GET request.
+     * Print GET request gets changed to HttpPost
+     *
+     * @param params List<NameValuePair> empty list
+     * @param editedParams edited parameters / querystring from print request.
+     * @param endPointUrl The url to be fetched.
+     *
+     * @return base
+     */
+    private HttpRequestBase requestBaseGet(List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+        HttpRequestBase base;
+        if (editedParams != null) {
+            base = new HttpPost(endPointUrl.split("\\?")[0]);
+            for (NameValuePair entry : editedParams) {
+                params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
+            }
+            try {
+                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
+            } catch (UnsupportedEncodingException e) {
+                String msg = "Error creating base from GET request";
+                throw new KsrApiException.InternalServerErrorException(msg, e);
+            }
+        } else {
+            base = new HttpGet(endPointUrl);
+        }
+        return base;
     }
 }
