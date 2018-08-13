@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.utils;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.repository.LayerRepository;
 import fi.sitowise.ksr.service.LayerGroupService;
 import fi.sitowise.ksr.service.LayerService;
@@ -66,7 +67,7 @@ public class KsrPrintUtilsTests {
 
         Layer l = new Layer();
         l.setUrl("http://test.example.com/api/print/output/_ags_123.pdf");
-        Mockito.when(layerService.getLayer(1, false)).thenReturn(l);
+        Mockito.when(layerService.getLayer(1, false, LayerAction.READ_LAYER)).thenReturn(l);
 
         params.add(new BasicNameValuePair("Format", "PDF"));
         params.add(new BasicNameValuePair("f", "json"));

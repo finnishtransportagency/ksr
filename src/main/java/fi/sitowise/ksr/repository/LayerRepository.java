@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.repository;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -37,13 +38,28 @@ public class LayerRepository {
      * @param isQuery whether the layer is requested for a search request or not
      * @return the layer
      */
-    public Layer getLayer(int id, List<String> userGroups, boolean isQuery) {
+    public Layer getLayer(int id, List<String> userGroups, boolean isQuery, LayerAction actionType) {
         LayerRecord lr = context.select(LAYER.fields())
                 .from(LAYER)
                 .join(LAYER_PERMISSION)
                     .on(LAYER_PERMISSION.LAYER_ID.equal(LAYER.ID))
                 .where(LAYER.ID.equal(Long.valueOf(id)))
-                    .and(LAYER_PERMISSION.READ_LAYER.equal("1"))
+                    .and(
+                            actionType.equals(LayerAction.READ_LAYER) ?
+                                    LAYER_PERMISSION.READ_LAYER.equal("1") : DSL.trueCondition()
+                    )
+                    .and(
+                            actionType.equals(LayerAction.DELETE_LAYER) ?
+                                    LAYER_PERMISSION.DELETE_LAYER.equal("1") : DSL.trueCondition()
+                    )
+                    .and(
+                            actionType.equals(LayerAction.CREATE_LAYER) ?
+                                    LAYER_PERMISSION.CREATE_LAYER.equal("1") : DSL.trueCondition()
+                    )
+                    .and(
+                            actionType.equals(LayerAction.UPDATE_LAYER) ?
+                                    LAYER_PERMISSION.UPDATE_LAYER.equal("1") : DSL.trueCondition()
+                    )
                     .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
                     .and(isQuery ? LAYER.TYPE.equal("agfs") : DSL.trueCondition())
                 .fetchOneInto(LayerRecord.class);

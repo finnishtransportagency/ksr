@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.repository.LayerRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -36,11 +37,11 @@ public class LayerService {
      * @return the layer
      */
     @Cacheable("get_layer")
-    public Layer getLayer(int id, boolean isQuery) {
+    public Layer getLayer(int id, boolean isQuery, LayerAction actionType) {
         List<String> userGroups = layerGroupService.getUserGroups();
         if (userGroups == null) {
             return null;
         }
-        return layerRepository.getLayer(id, userGroups, isQuery);
+        return layerRepository.getLayer(id, userGroups, isQuery, actionType);
     }
 }

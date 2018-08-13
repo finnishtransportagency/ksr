@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.utils;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.service.LayerService;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -48,7 +49,7 @@ public class KsrPrintUtils {
                 if (((JSONObject) entry).get("url") != null) {
                     String layerId = KsrStringUtils.replaceSearchId(((JSONObject) entry).get("id").toString());
                     Integer id = Integer.parseInt(layerId);
-                    Layer layer = layerService.getLayer(id, false);
+                    Layer layer = layerService.getLayer(id, false, LayerAction.READ_LAYER);
                     String url = layer.getUrl();
                     ((JSONObject) entry).replace("url", url);
                 }

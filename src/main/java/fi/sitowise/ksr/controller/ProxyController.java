@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
@@ -51,8 +52,41 @@ public class ProxyController {
                 HttpServletResponse response) {
 
         String serviceEndpoint = getServiceEndpoint(request.getRequestURI());
-        Layer layer = layerService.getLayer(layerId, StringUtils.isNotEmpty(serviceEndpoint) &&
-                serviceEndpoint.equals("query"));
+
+        Layer layer = null;
+
+        if (StringUtils.isNotEmpty(serviceEndpoint)) {
+            switch (serviceEndpoint.toLowerCase()) {
+                case "addfeatures":
+                    if ("POST".equalsIgnoreCase(request.getMethod())) {
+                        layer = layerService.getLayer(layerId, true, LayerAction.CREATE_LAYER);
+                    }
+                    break;
+                case "deletefeatures":
+                    if ("POST".equalsIgnoreCase(request.getMethod())) {
+                        layer = layerService.getLayer(layerId, true, LayerAction.DELETE_LAYER);
+                    }
+                    break;
+                case "query":
+                    layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);
+                    break;
+                case "updatefeatures":
+                    if ("POST".equalsIgnoreCase(request.getMethod())) {
+                        layer = layerService.getLayer(layerId, true, LayerAction.UPDATE_LAYER);
+                    }
+                    break;
+                default:
+                    layer = layerService.getLayer(layerId, false, LayerAction.READ_LAYER);
+                    if (layer != null && layer.getType().equalsIgnoreCase("agfs")) {
+                        // For agfs layers allow only separately defined actions, nothing more.
+                        layer = null;
+                    }
+                    break;
+            }
+        } else {
+            layer = layerService.getLayer(layerId, false, LayerAction.READ_LAYER);
+        }
+
         if (layer == null) {
             throw new KsrApiException.NotFoundErrorException("No Layer can be found.");
         }
