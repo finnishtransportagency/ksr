@@ -139,14 +139,15 @@ public class HttpRequestService {
             setResponseHeaders(response, cRes);
 
             if (isGetCapabilitiesRequest(endPointUrl)) {
-                setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes);
+                setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes, endPointUrl);
             } else {
                 setResponseContent(response, cRes);
             }
             cRes.close();
 
         } catch (Exception e) {
-            throw new KsrApiException.InternalServerErrorException("Error handling request.", e);
+            String msg = String.format("Error handling request. URL: [%s]. Proxy: [%b]", endPointUrl, useProxy);
+            throw new KsrApiException.InternalServerErrorException(msg, e);
         }
     }
 
@@ -311,8 +312,15 @@ public class HttpRequestService {
      * @param baseUrl Baseurl for proxy-service for given layer.
      * @param response HttpServletResponse, where to write the fetched content
      * @param cRes CloseableHttpResponse from where to read contents.
+     * @param requestUrl Url where the response is from
      */
-    public void setGetCapabilitiesResponse(String layerUrl, String baseUrl, HttpServletResponse response, CloseableHttpResponse cRes) {
+    public void setGetCapabilitiesResponse(
+            String layerUrl,
+            String baseUrl,
+            HttpServletResponse response,
+            CloseableHttpResponse cRes,
+            String requestUrl
+    ) {
         HttpEntity entity = cRes.getEntity();
 
         try {
@@ -332,7 +340,9 @@ public class HttpRequestService {
 
         } catch (SAXException | IOException | ParserConfigurationException |
                 XPathExpressionException | TransformerException e ) {
-            throw new KsrApiException.InternalServerErrorException("Error handling reponse from remote-service.", e);
+            String msg = String.format(
+                    "Error handling response from remote-service. URL: [%s]", requestUrl);
+            throw new KsrApiException.InternalServerErrorException(msg, e);
         }
     }
 }
