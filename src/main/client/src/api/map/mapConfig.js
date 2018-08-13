@@ -1,6 +1,6 @@
-import { getHeaders } from '../config';
+import { config } from '../config';
 
 export const fetchMapConfig = () => (
-    fetch('api/map', { headers: getHeaders() })
+    fetch('api/map', config())
         .then(r => r.json())
 );
