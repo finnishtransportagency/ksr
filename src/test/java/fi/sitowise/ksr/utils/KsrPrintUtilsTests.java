@@ -53,32 +53,9 @@ public class KsrPrintUtilsTests {
     LayerGroupService layerGroupService;
 
     @Test
-    public void testCreateEditedParametersFromGETRequest() throws ParseException {
+    public void testCreateEditedParameters() throws ParseException {
         List<NameValuePair> params = new ArrayList<>();
         MockHttpServletRequest request = new MockHttpServletRequest();
-        String serviceEndpoint = "execute";
-        String webMapAsJSON = "{\"layoutOptions\":{\"titleText\":\"\",\"legendOptions\":{\"operationalLayers\":[{\"id\":\"1\"}]},\"authorText\":\"\",\"copyrightText\":\"\",\"scaleBarOptions\":{}},\"exportOptions\":{\"dpi\":96},\"operationalLayers\":[{\"tileMatrixSet\":\"ETRS-TM35FIN\",\"maxScale\":1128,\"format\":\"image\\/png\",\"style\":\"default\",\"id\":\"1\",\"minScale\":18489297,\"title\":\"Taustakartta\",\"opacity\":1,\"type\":\"wmts\",\"url\":\"http:\\/\\/http://192.168.0.110:6080\\/arcgis\\/rest\\/directories\\/arcgisoutput\\/Utilities\\/PrintingTools_GPServer\\/_ags_123.pdf\",\"layer\":\"taustakartta\",\"token\":null}],\"mapOptions\":{\"extent\":{\"ymin\":6448739.432859199,\"xmin\":-11859.958809584263,\"ymax\":7653788.567140801,\"xmax\":863007.9588095843,\"spatialReference\":{\"wkid\":3067}},\"scale\":4244648,\"spatialReference\":{\"wkid\":3067},\"showAttribution\":true}}";
-        String webMapAsJSONChangedURL = "{\"layoutOptions\":{\"titleText\":\"\",\"legendOptions\":{\"operationalLayers\":[{\"id\":\"1\"}]},\"authorText\":\"\",\"copyrightText\":\"\",\"scaleBarOptions\":{}},\"exportOptions\":{\"dpi\":96},\"operationalLayers\":[{\"tileMatrixSet\":\"ETRS-TM35FIN\",\"maxScale\":1128,\"format\":\"image\\/png\",\"style\":\"default\",\"id\":\"1\",\"minScale\":18489297,\"title\":\"Taustakartta\",\"opacity\":1,\"type\":\"wmts\",\"url\":\"http:\\/\\/test.example.com\\/api\\/print\\/output\\/_ags_123.pdf\",\"layer\":\"taustakartta\",\"token\":null}],\"mapOptions\":{\"extent\":{\"ymin\":6448739.432859199,\"xmin\":-11859.958809584263,\"ymax\":7653788.567140801,\"xmax\":863007.9588095843,\"spatialReference\":{\"wkid\":3067}},\"scale\":4244648,\"spatialReference\":{\"wkid\":3067},\"showAttribution\":true}}";
-
-        request.setMethod("GET");
-        request.setQueryString("Format=PDF&f=json&Web_Map_as_JSON=" + webMapAsJSON);
-
-        Layer l = new Layer();
-        l.setUrl("http://test.example.com/api/print/output/_ags_123.pdf");
-        Mockito.when(layerService.getLayer(1, false)).thenReturn(l);
-
-        params.add(new BasicNameValuePair("Format", "PDF"));
-        params.add(new BasicNameValuePair("f", "json"));
-        params.add(new BasicNameValuePair("Web_Map_as_JSON", webMapAsJSONChangedURL));
-
-        Assert.assertEquals(params, KsrPrintUtils.createEditedParams(request, serviceEndpoint, layerService));
-    }
-
-    @Test
-    public void testCreateEditedParametersFromPOSTRequest() throws ParseException {
-        List<NameValuePair> params = new ArrayList<>();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        String serviceEndpoint = "execute";
         String webMapAsJSON = "{\"layoutOptions\":{\"titleText\":\"\",\"legendOptions\":{\"operationalLayers\":[{\"id\":\"1\"}]},\"authorText\":\"\",\"copyrightText\":\"\",\"scaleBarOptions\":{}},\"exportOptions\":{\"dpi\":96},\"operationalLayers\":[{\"tileMatrixSet\":\"ETRS-TM35FIN\",\"maxScale\":1128,\"format\":\"image\\/png\",\"style\":\"default\",\"id\":\"1\",\"minScale\":18489297,\"title\":\"Taustakartta\",\"opacity\":1,\"type\":\"wmts\",\"url\":\"http:\\/\\/http://192.168.0.110:6080\\/arcgis\\/rest\\/directories\\/arcgisoutput\\/Utilities\\/PrintingTools_GPServer\\/_ags_123.pdf\",\"layer\":\"taustakartta\",\"token\":null}],\"mapOptions\":{\"extent\":{\"ymin\":6448739.432859199,\"xmin\":-11859.958809584263,\"ymax\":7653788.567140801,\"xmax\":863007.9588095843,\"spatialReference\":{\"wkid\":3067}},\"scale\":4244648,\"spatialReference\":{\"wkid\":3067},\"showAttribution\":true}}";
         String webMapAsJSONChangedURL = "{\"layoutOptions\":{\"titleText\":\"\",\"legendOptions\":{\"operationalLayers\":[{\"id\":\"1\"}]},\"authorText\":\"\",\"copyrightText\":\"\",\"scaleBarOptions\":{}},\"exportOptions\":{\"dpi\":96},\"operationalLayers\":[{\"tileMatrixSet\":\"ETRS-TM35FIN\",\"maxScale\":1128,\"format\":\"image\\/png\",\"style\":\"default\",\"id\":\"1\",\"minScale\":18489297,\"title\":\"Taustakartta\",\"opacity\":1,\"type\":\"wmts\",\"url\":\"http:\\/\\/test.example.com\\/api\\/print\\/output\\/_ags_123.pdf\",\"layer\":\"taustakartta\",\"token\":null}],\"mapOptions\":{\"extent\":{\"ymin\":6448739.432859199,\"xmin\":-11859.958809584263,\"ymax\":7653788.567140801,\"xmax\":863007.9588095843,\"spatialReference\":{\"wkid\":3067}},\"scale\":4244648,\"spatialReference\":{\"wkid\":3067},\"showAttribution\":true}}";
 
@@ -95,6 +72,6 @@ public class KsrPrintUtilsTests {
         params.add(new BasicNameValuePair("f", "json"));
         params.add(new BasicNameValuePair("Web_Map_as_JSON", webMapAsJSONChangedURL));
 
-        Assert.assertEquals(params, KsrPrintUtils.createEditedParams(request, serviceEndpoint, layerService));
+        Assert.assertEquals(params, KsrPrintUtils.createEditedParams(request, layerService));
     }
 }
