@@ -51,8 +51,8 @@ public class OAMAuthenticationProviderImpl implements OAMAuthenticationProvider 
             User user = oamAuthentication.getUser();
             user.setGroups(usergroups);
 
-            if (user.getAuthorities().isEmpty()) {
-                log.info(String.format("Authentication error. No usergroups for user: <%s>.", user.getUsername()));
+            if (usergroups.isEmpty()) {
+                log.info(String.format("Authentication error. No usergroups for user: <%s>.", authentication.getName()));
                 return null;
             } else if (user.getAuthorities().size() > 1) {
                 log.info(

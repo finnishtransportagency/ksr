@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 public abstract class KsrApiException extends RuntimeException {
     private static final long serialVersionUID = 1L;
-    private static Logger log = LogManager.getLogger(KsrApiException.class);
+    private static final Logger log = LogManager.getLogger(KsrApiException.class);
 
     /**
      * Instantiates a new Ksr api exception.
@@ -29,7 +29,7 @@ public abstract class KsrApiException extends RuntimeException {
      */
     public KsrApiException(String message, Exception e) {
         super(message);
-        log.error(message, e.getStackTrace());
+        log.error(message, e);
     }
 
     /**
