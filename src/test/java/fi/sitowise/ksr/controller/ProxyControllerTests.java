@@ -1,7 +1,7 @@
 package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.LayerAction;
-import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
+import fi.sitowise.ksr.helper.OAMHeaderHelper;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -81,15 +82,7 @@ public class ProxyControllerTests {
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity()).build();
-    }
 
-    /**
-     * Test general proxy.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void testGeneralProxy() throws Exception {
         Mockito.doNothing().when(proxyService).get(
                 Mockito.any(Layer.class),
                 Mockito.anyString(),
@@ -97,30 +90,169 @@ public class ProxyControllerTests {
                 Mockito.any(HttpServletRequest.class),
                 Mockito.any(HttpServletResponse.class));
 
+        Layer layer1 = new Layer();
+        layer1.setId("1");
+        layer1.setUrl("https://agfs.example.com/");
+        layer1.setType("agfs");
 
-        LayerRecord lr = new LayerRecord();
-        lr.setUrl("http://test.example.com");
+        Layer layer2 = new Layer();
+        layer2.setId("2");
+        layer2.setUrl("https://wms.example.com");
+        layer2.setType("wms");
 
-        Layer l = new Layer();
-        l.setUrl("http://test.example.com/arcgis/services/WMS/MapServer/WMSServer?");
 
-        Mockito.when(layerService.getLayer(Mockito.anyInt(), Mockito.anyBoolean(), Mockito.any(LayerAction.class))).thenReturn(l);
-
-        mockMvc.perform(get("/api/proxy/layer/134/1.00/GetCapalibites.xml").header("OAM_REMOTE_USER", "TestUser")
-                .header("OAM_USER_FIRST_NAME", "firstName")
-                .header("OAM_USER_LAST_NAME", "lastName")
-                .header("OAM_USER_MAIL", "test@test.com")
-                .header("OAM_USER_MOBILE", "+123456789")
-                .header("OAM_ORGANIZATION", "sitowise")
-                .header("OAM_GROUPS", "KSR_ROLE_USER")).andExpect(status().isOk());
-        mockMvc.perform(get("/api/proxy").header("OAM_REMOTE_USER", "TestUser")
-                .header("OAM_USER_FIRST_NAME", "firstName")
-                .header("OAM_USER_LAST_NAME", "lastName")
-                .header("OAM_USER_MAIL", "test@test.com")
-                .header("OAM_USER_MOBILE", "+123456789")
-                .header("OAM_ORGANIZATION", "sitowise")
-                .header("OAM_GROUPS", "KSR_ROLE_USER")).andExpect(status().isNotFound());
+        Mockito.when(
+                layerService.getLayer(Mockito.eq(1),
+                        Mockito.anyBoolean(),
+                        Mockito.any(LayerAction.class))).thenReturn(layer1);
+        Mockito.when(
+                layerService.getLayer(Mockito.eq(2),
+                        Mockito.anyBoolean(),
+                        Mockito.any(LayerAction.class))).thenReturn(layer2);
     }
+
+    /**
+     * Test proxy for WMS/WMTS GetCapabilities.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testProxyWMSCapabilities() throws Exception {
+        mockMvc.perform(
+            get("/api/proxy/layer/2/1.00/GetCapalibites.xml").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/2/?service=wms&request=GetCapabilities").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testProxyAgfsCapabilities() throws Exception {
+        mockMvc.perform(
+                get("/api/proxy/layer/1/?f=json").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/1/?f=pjson").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testProxyAgfsAddFeaturesPOST() throws Exception {
+        mockMvc.perform(
+                post("/api/proxy/layer/1/addFeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/addFeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/addfeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/addfeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testProxyAgfsAddFeaturesGET() throws Exception {
+        mockMvc.perform(
+                get("/api/proxy/layer/1/addFeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/1/addFeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testProxyAgfsDeleteFeaturesPOST() throws Exception {
+        mockMvc.perform(
+                post("/api/proxy/layer/1/deleteFeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/deleteFeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/deletefeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/deletefeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testProxyAgfsDeleteFeaturesGET() throws Exception {
+        mockMvc.perform(
+                get("/api/proxy/layer/1/deleteFeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/1/deleteFeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testProxyAgfsQueryFeatures() throws Exception {
+        mockMvc.perform(
+                post("/api/proxy/layer/1/query/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/1/query").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+    }
+    @Test
+    public void testProxyAgfsUpdateFeaturesPOST() throws Exception {
+        mockMvc.perform(
+                post("/api/proxy/layer/1/updateFeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/updateFeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/updatefeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/api/proxy/layer/1/updatefeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testProxyAgfsUpdateFeaturesGET() throws Exception {
+        mockMvc.perform(
+                get("/api/proxy/layer/1/updateFeatures/").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/1/updateFeatures").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testProxyAgfsUnsupportedAction() throws Exception {
+        mockMvc.perform(
+                get("/api/proxy/layer/1/deleteAttachments").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/1/addAttachment").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+
+        mockMvc.perform(
+                get("/api/proxy/layer/1/anything").headers(OAMHeaderHelper.getAdminHeaders())
+        ).andExpect(status().isNotFound());
+    }
+
 
     /**
      * Test get service endpoint.
