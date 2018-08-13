@@ -4,6 +4,7 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -11,10 +12,13 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -43,6 +47,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +60,8 @@ import java.util.Map;
 @Service
 public class HttpRequestService {
     private CloseableHttpClient closeableHttpClient;
-    private RequestConfig requestConfig;
+    private RequestConfig nonProxyRequestConfig;
+    private RequestConfig proxyRequestConfig;
 
     @Value("${proxy.maxDefaultPerRoute}")
     private int maxDefaultPerRoute;
@@ -66,6 +72,12 @@ public class HttpRequestService {
     @Value("${proxy.socketTimeout}")
     private int socketTimeout;
 
+    @Value("${http.proxyHost:#{null}}")
+    private String proxyHost;
+
+    @Value("${http.proxyPort:#{null}}")
+    private Integer proxyPort;
+
     @PostConstruct
     public void setClient() {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
@@ -75,10 +87,24 @@ public class HttpRequestService {
     }
 
     @PostConstruct
-    public void setRequestConfig() {
+    public void setNonProxyRequestConfig() {
+        this.nonProxyRequestConfig = getRequestConfigBase().build();
+    }
+
+    @PostConstruct
+    public void setProxyRequestConfig() {
+        RequestConfig.Builder configBase = getRequestConfigBase();
+        if (proxyHost != null && proxyPort != null) {
+            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+            configBase.setProxy(proxy);
+        }
+        this.proxyRequestConfig = configBase.build();
+    }
+
+    public RequestConfig.Builder getRequestConfigBase() {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(socketTimeout);
-        this.requestConfig = requestConfigBuilder.build();
+        return requestConfigBuilder;
     }
 
     /**
@@ -91,10 +117,23 @@ public class HttpRequestService {
      * @param response HttpServletResponse, where to write the fetched content
      */
     public void fetchToResponse(String layerUrl, String authentication, String baseUrl,
-            String endPointUrl, HttpServletRequest request, HttpServletResponse response) {
+            String endPointUrl, HttpServletRequest request, HttpServletResponse response, boolean useProxy) {
         try {
-            HttpRequestBase base = getRequestBase(request, authentication, endPointUrl, requestConfig);
-            CloseableHttpResponse cRes = closeableHttpClient.execute(base);
+            URI endpointURI = new URI(endPointUrl);
+            String path = endpointURI.getRawPath();
+            String query = endpointURI.getRawQuery();
+            HttpHost target = URIUtils.extractHost(endpointURI);
+
+            HttpRequestBase base = getRequestBase(
+                    request,
+                    authentication,
+                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)));
+            if (useProxy) {
+                base.setConfig(proxyRequestConfig);
+            } else {
+                base.setConfig(nonProxyRequestConfig);
+            }
+            CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
 
             response.setStatus(cRes.getStatusLine().getStatusCode());
             setResponseHeaders(response, cRes);
@@ -106,8 +145,8 @@ public class HttpRequestService {
             }
             cRes.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new KsrApiException.InternalServerErrorException("Error handling request.", e);
         }
     }
 
@@ -127,12 +166,11 @@ public class HttpRequestService {
      *
      * @param request interface for getting request method and POST request parameters.
      * @param endPointUrl The url to be fetched.
-     * @param requestConfig Common requestconfiguration for this httpRequestService.
      * @return Correct HttpRequestBase or GET if no matches found for method.
      * @throws UnsupportedEncodingException if adding POST parameters fails.
      */
     public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
-            String endPointUrl, RequestConfig requestConfig) throws UnsupportedEncodingException {
+            String endPointUrl) throws UnsupportedEncodingException {
         HttpRequestBase base;
         switch (request.getMethod()) {
             case "GET":
@@ -153,7 +191,6 @@ public class HttpRequestService {
             default:
                 base = new HttpGet(endPointUrl);
         }
-        base.setConfig(requestConfig);
         if (authentication != null) {
             base.setHeader("Authorization", String.format("Basic %s", authentication));
         }
@@ -210,9 +247,9 @@ public class HttpRequestService {
         for (int i = 0; i < nodes.getLength(); i++) {
             Node attr = nodes.item(i).getAttributes().getNamedItem(attributeName);
             if (attr != null) {
-                String val = attr.getNodeValue();
+                String val = attr.getNodeValue().toLowerCase();
                 if (replaceValue != null && replaceWith != null) {
-                    attr.setNodeValue(val.replaceFirst(replaceValue, replaceWith));
+                    attr.setNodeValue(val.replaceFirst(replaceValue.toLowerCase(), replaceWith.toLowerCase()));
                 }
             }
         }

@@ -3,7 +3,6 @@ package fi.sitowise.ksr.authentication;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,8 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class OAMFilter extends OncePerRequestFilter {
 
     @SuppressWarnings("unused")
-    private static final Logger LOG = LoggerFactory.getLogger(OAMFilter.class);
+    private static final Logger log = LogManager.getLogger(OAMFilter.class);
 
     @Value("${authorization.oam.authorized_groups_header}")
     private String oamGroupHeader;
@@ -77,7 +76,7 @@ public class OAMFilter extends OncePerRequestFilter {
         } else {
             List<String> headerNames = Collections.list(request.getHeaderNames());
             String headerNamesCSV = headerNames.stream().collect(Collectors.joining(","));
-            LOG.info(String.format("Authentication error using headers: %s", headerNamesCSV));
+            log.info(String.format("Authentication error using headers: %s", headerNamesCSV));
         }
 
         filterChain.doFilter(request, response);

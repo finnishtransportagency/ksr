@@ -60,12 +60,12 @@ public class HttpRequestServiceTests {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setMethod("GET");
 
-        HttpRequestBase getBase = httpRequestService.getRequestBase(request, null, "http://test.example.com/wms?service=wms&request=GetCapabilities", null);
+        HttpRequestBase getBase = httpRequestService.getRequestBase(request, null, "http://test.example.com/wms?service=wms&request=GetCapabilities");
         Assert.assertEquals("GET", getBase.getMethod());
         Assert.assertNull(getBase.getFirstHeader("Authorization"));
         Assert.assertEquals(new java.net.URI("http://test.example.com/wms?service=wms&request=GetCapabilities"), getBase.getURI());
 
-        HttpRequestBase getAuthBase = httpRequestService.getRequestBase(request, "user:pass", "http://test.2.example.com/wms?service=wms&request=GetCapabilities", null);
+        HttpRequestBase getAuthBase = httpRequestService.getRequestBase(request, "user:pass", "http://test.2.example.com/wms?service=wms&request=GetCapabilities");
         Assert.assertEquals("GET", getAuthBase.getMethod());
         Assert.assertEquals("Basic user:pass", getAuthBase.getFirstHeader("Authorization").getValue());
         Assert.assertEquals(new java.net.URI("http://test.2.example.com/wms?service=wms&request=GetCapabilities"), getAuthBase.getURI());
@@ -78,7 +78,7 @@ public class HttpRequestServiceTests {
         request.setParameter("test", "test");
 
         HttpRequestBase postAuthBase = httpRequestService.getRequestBase(request, "user:pass",
-                "http://test.example.com/query", null);
+                "http://test.example.com/query");
         Assert.assertEquals("POST", postAuthBase.getMethod());
         Assert.assertEquals("Basic user:pass", postAuthBase.getFirstHeader("Authorization").getValue());
         Assert.assertEquals(new java.net.URI("http://test.example.com/query"), postAuthBase.getURI());
