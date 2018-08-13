@@ -48,14 +48,20 @@ public class OAMAuthenticationProviderImpl implements OAMAuthenticationProvider 
             for (String entity : oamGroups) {
                 usergroups.add(entity.trim());
             }
+            User user = oamAuthentication.getUser();
+            user.setGroups(usergroups);
 
             if (usergroups.isEmpty()) {
                 log.info(String.format("Authentication error. No usergroups for user: <%s>.", authentication.getName()));
                 return null;
+            } else if (user.getAuthorities().size() > 1) {
+                log.info(
+                        String.format("Authentication error. Only one (1) usergroup allowed per user. User: <%s>.",
+                                user.getUsername()
+                        ));
+                return null;
             }
 
-            User user = oamAuthentication.getUser();
-            user.setGroups(usergroups);
             oamAuthentication = new OAMAuthenticationToken(user, oamGroups, user.getAuthorities());
             oamAuthentication.setAuthenticated(true);
             return oamAuthentication;
