@@ -51,13 +51,13 @@ public class PrintService {
         String decodedServiceEndpoint = serviceEndpoint == null ? null : URLDecoder.decode(serviceEndpoint, "UTF-8");
 
         if (decodedServiceEndpoint == null) {
-            this.httpRequestService.fetchToResponse(null, null, printServiceUrl, endPointUrl, request, response, null);
+            this.httpRequestService.fetchToResponse(null, null, printServiceUrl, endPointUrl, request, response, false, null);
         } else if (request.getParameterMap().containsKey("Web_Map_as_JSON")) {
             List<NameValuePair> editedParams = KsrPrintUtils.createEditedParams(request, layerService);
-            this.httpRequestService.fetchToResponse(null, null, printServiceUrl, endPointUrl, request, response, editedParams);
+            this.httpRequestService.fetchToResponse(null, null, printServiceUrl, endPointUrl, request, response, false, editedParams);
         } else if (request.getQueryString().equals("f=json")) {
             this.httpRequestService.fetchToResponse(null, null, printServiceUrl,
-                    endPointUrl, request, response, null);
+                    endPointUrl, request, response, false, null);
         }
     }
 
@@ -70,6 +70,6 @@ public class PrintService {
      */
     public void getPrintOutput(String serviceEndpoint, HttpServletRequest request, HttpServletResponse response) {
         String endPointUrl = proxyService.getEndpointUrl(printOutputUrl, serviceEndpoint, request.getQueryString());
-        this.httpRequestService.fetchToResponse(null, null, printOutputUrl, endPointUrl, request, response, null);
+        this.httpRequestService.fetchToResponse(null, null, printOutputUrl, endPointUrl, request, response, false, null);
     }
 }

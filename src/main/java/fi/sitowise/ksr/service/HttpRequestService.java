@@ -23,8 +23,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -140,22 +138,20 @@ public class HttpRequestService {
             HttpRequestBase base = getRequestBase(
                     request,
                     authentication,
-                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)));
+                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)),
+                    editedParams);
             if (useProxy) {
                 base.setConfig(proxyRequestConfig);
             } else {
                 base.setConfig(nonProxyRequestConfig);
             }
             CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
-            HttpRequestBase base = getRequestBase(request, authentication, endPointUrl, requestConfig, editedParams);
-            CloseableHttpResponse cRes = closeableHttpClient.execute(base);
 
             response.setStatus(cRes.getStatusLine().getStatusCode());
             setResponseHeaders(response, cRes);
 
             if (isGetCapabilitiesRequest(endPointUrl)) {
                 setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes, endPointUrl);
-                setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes);
             } else if (isPrintOutputRequest(endPointUrl)) {
                 setPrintOutputResponse(response, cRes);
             } else {
@@ -194,13 +190,13 @@ public class HttpRequestService {
      * Returns a correct HttpRequestBase for given method, endpoint and config.
      *
      * @param request interface for getting request method and POST request parameters.
+     * @param authentication authentication
      * @param endPointUrl The url to be fetched.
-     * @param requestConfig Common requestconfiguration for this httpRequestService.
      * @param editedParams edited parameters / querystring from print request.
      * @return Correct HttpRequestBase or GET if no matches found for method.
      */
     public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
-            String endPointUrl, RequestConfig requestConfig, List<NameValuePair> editedParams) {
+            String endPointUrl, List<NameValuePair> editedParams) {
         HttpRequestBase base;
         List<NameValuePair> params = new ArrayList<>();
         switch (request.getMethod()) {
@@ -213,7 +209,6 @@ public class HttpRequestService {
             default:
                 base = new HttpGet(endPointUrl);
         }
-        base.setConfig(requestConfig);
         if (authentication != null) {
             base.setHeader("Authorization", String.format("Basic %s", authentication));
         }
