@@ -44,6 +44,7 @@ pipeline {
         DB_HOST = credentials("db_host_${get_environment()}")
         DB_NAME = credentials("db_name_${get_environment()}")
         DB_PORT = credentials("db_port")
+        CACHE_CAFFEINE_SPEC = credentials("cache_caffeine_spec")
         NOTIFY_SLACK_SUBJECT = "${JOB_NAME} - <${RUN_DISPLAY_URL}|${BUILD_DISPLAY_NAME}>"
     }
     options {
@@ -115,6 +116,7 @@ pipeline {
                         "sed -i 's/DB_PORT/${DB_PORT}/g' ${properties}",
                         "sed -i 's/HTTP_PROXY_HOST/${http_proxy.tokenize(':').first().tokenize('/').last()}/g' ${properties}",
                         "sed -i 's/HTTP_PROXY_PORT/${http_proxy.tokenize(':').last()}/g' ${properties}",
+                        "sed -i 's/CACHE_CAFFEINE_SPEC/${CACHE_CAFFEINE_SPEC}/g' ${properties}",
                         [
                             "mvn",
                             "versions:set",
