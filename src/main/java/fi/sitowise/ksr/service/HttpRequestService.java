@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.controller.PrintOutputController;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.http.Header;
@@ -17,8 +18,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -72,6 +76,12 @@ public class HttpRequestService {
     @Value("${proxy.socketTimeout}")
     private int socketTimeout;
 
+    @Value("${print.service.url}")
+    private String printServiceUrl;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
     @Value("${http.proxyHost:#{null}}")
     private String proxyHost;
 
@@ -115,9 +125,10 @@ public class HttpRequestService {
      * @param endPointUrl The url to be fetched.
      * @param request HTTP request interface.
      * @param response HttpServletResponse, where to write the fetched content
+     * @param editedParams List, which contains edited Web_Map_as_JSON for printing
      */
     public void fetchToResponse(String layerUrl, String authentication, String baseUrl,
-            String endPointUrl, HttpServletRequest request, HttpServletResponse response, boolean useProxy) {
+            String endPointUrl, HttpServletRequest request, HttpServletResponse response, boolean useProxy, List<NameValuePair> editedParams) {
         try {
             URI endpointURI = new URI(endPointUrl);
             String path = endpointURI.getRawPath();
@@ -127,7 +138,8 @@ public class HttpRequestService {
             HttpRequestBase base = getRequestBase(
                     request,
                     authentication,
-                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)));
+                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)),
+                    editedParams);
             if (useProxy) {
                 base.setConfig(proxyRequestConfig);
             } else {
@@ -140,6 +152,8 @@ public class HttpRequestService {
 
             if (isGetCapabilitiesRequest(endPointUrl)) {
                 setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes, endPointUrl);
+            } else if (isPrintOutputRequest(endPointUrl)) {
+                setPrintOutputResponse(response, cRes);
             } else {
                 setResponseContent(response, cRes);
             }
@@ -163,31 +177,34 @@ public class HttpRequestService {
     }
 
     /**
+     * Returns whether given URL should be treated as a Print Output Request.
+     *
+     * @param endPointUrl URL that should be inspected.
+     * @return boolean whether URL should be treated as a Print Output Request.
+     */
+    private boolean isPrintOutputRequest(String endPointUrl) {
+        return endPointUrl.contains("Export%20Web%20Map%20Task/execute");
+    }
+
+    /**
      * Returns a correct HttpRequestBase for given method, endpoint and config.
      *
      * @param request interface for getting request method and POST request parameters.
+     * @param authentication authentication
      * @param endPointUrl The url to be fetched.
+     * @param editedParams edited parameters / querystring from print request.
      * @return Correct HttpRequestBase or GET if no matches found for method.
-     * @throws UnsupportedEncodingException if adding POST parameters fails.
      */
     public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
-            String endPointUrl) throws UnsupportedEncodingException {
+            String endPointUrl, List<NameValuePair> editedParams) {
         HttpRequestBase base;
+        List<NameValuePair> params = new ArrayList<>();
         switch (request.getMethod()) {
             case "GET":
-                base = new HttpGet(endPointUrl);
+                base = requestBaseGet(params, editedParams, endPointUrl);
                 break;
             case "POST":
-                base = new HttpPost(endPointUrl);
-                if (!CollectionUtils.isEmpty(request.getParameterMap())) {
-                    List<NameValuePair> params = new ArrayList<>();
-                    for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-                        for (String value : entry.getValue()) {
-                            params.add(new BasicNameValuePair(entry.getKey(), value));
-                        }
-                    }
-                    ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
-                }
+                base = requestBasePost(request, params, editedParams, endPointUrl);
                 break;
             default:
                 base = new HttpGet(endPointUrl);
@@ -344,5 +361,100 @@ public class HttpRequestService {
                     "Error handling response from remote-service. URL: [%s]", requestUrl);
             throw new KsrApiException.InternalServerErrorException(msg, e);
         }
+    }
+
+    /**
+     * Replace print output response body url to proxy url
+     *
+     * @param response HttpServletResponse, where to write the fetched content
+     * @param cRes CloseableHttpResponse from where to read contents.
+     */
+    @SuppressWarnings("unchecked")
+    private void setPrintOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
+        try {
+            String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + PrintOutputController.PRINT_OUTPUT_URL);
+            String responseString;
+            responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
+            JSONParser parser = new JSONParser();
+            JSONObject responseJson = (JSONObject) parser.parse(responseString);
+            JSONArray responseArray = (JSONArray) (responseJson != null ? responseJson.get("results") : null);
+            if (responseArray != null) {
+                for (Object entry : responseArray) {
+                    String value = ((JSONObject) entry).get("value").toString();
+                    JSONObject valueJson = (JSONObject) parser.parse(value);
+                    String url = valueJson.get("url").toString();
+                    valueJson.replace("url", url.replaceAll(url.split("/_ags_")[0], printOutputUrl));
+                    ((JSONObject) entry).replace("value", valueJson);
+                }
+            }
+            if (responseJson != null) {
+                response.getWriter().write(responseJson.toString());
+            }
+        } catch (ParseException | IOException e) {
+            String msg = "Error creating print output response";
+            throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
+    }
+
+    /**
+     * Returns a correct HttpRequestBase from POST request.
+     *
+     * @param request interface for getting request method and POST request parameters.
+     * @param params List<NameValuePair> empty list
+     * @param editedParams edited parameters / querystring from print request.
+     *
+     * @return base
+     */
+    private HttpRequestBase requestBasePost(HttpServletRequest request, List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+        HttpRequestBase base = new HttpPost(endPointUrl);
+        if (!CollectionUtils.isEmpty(request.getParameterMap())) {
+            if (editedParams != null) {
+                for (NameValuePair entry : editedParams) {
+                    params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
+                }
+            } else {
+                for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+                    for (String value : entry.getValue()) {
+                        params.add(new BasicNameValuePair(entry.getKey(), value));
+                    }
+                }
+            }
+            try {
+                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
+            } catch (UnsupportedEncodingException e) {
+                String msg = "Error creating base from POST request";
+                throw new KsrApiException.InternalServerErrorException(msg, e);
+            }
+        }
+        return base;
+    }
+
+    /**
+     * Returns a correct HttpRequestBase from GET request.
+     * Print GET request gets changed to HttpPost
+     *
+     * @param params List<NameValuePair> empty list
+     * @param editedParams edited parameters / querystring from print request.
+     * @param endPointUrl The url to be fetched.
+     *
+     * @return base
+     */
+    private HttpRequestBase requestBaseGet(List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+        HttpRequestBase base;
+        if (editedParams != null) {
+            base = new HttpPost(endPointUrl.split("\\?")[0]);
+            for (NameValuePair entry : editedParams) {
+                params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
+            }
+            try {
+                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
+            } catch (UnsupportedEncodingException e) {
+                String msg = "Error creating base from GET request";
+                throw new KsrApiException.InternalServerErrorException(msg, e);
+            }
+        } else {
+            base = new HttpGet(endPointUrl);
+        }
+        return base;
     }
 }

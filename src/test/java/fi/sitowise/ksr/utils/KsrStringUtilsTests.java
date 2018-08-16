@@ -32,4 +32,12 @@ public class KsrStringUtilsTests {
         Assert.assertEquals("/", KsrStringUtils.replaceMultipleSlashes("///"));
         Assert.assertEquals("", KsrStringUtils.replaceMultipleSlashes(""));
     }
+
+    @Test
+    public void testReplaceSearchId() {
+        Assert.assertEquals("2", KsrStringUtils.replaceSearchId("2.s"));
+        Assert.assertEquals("17", KsrStringUtils.replaceSearchId("17.s"));
+        Assert.assertEquals("15", KsrStringUtils.replaceSearchId("15"));
+        Assert.assertNull(KsrStringUtils.replaceSearchId(null));
+    }
 }

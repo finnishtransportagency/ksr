@@ -31,6 +31,9 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
     @Value("${map.scale}")
     private int scale;
 
+    @Value("${print.service.url}")
+    private String printServiceUrl;
+
     /**
      * Sets webAppContext and springSecurity.
      */
@@ -49,6 +52,7 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
         MapConfig mapConfigData = new MapConfig();
         mapConfigData.setCenter(new int[]{centerLng, centerLat});
         mapConfigData.setScale(scale);
+        mapConfigData.setPrintServiceUrl(PrintController.PRINT_CONTROLLER_URL);
 
         MvcResult result = this.mockMvc.perform(get("/api/map")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))

@@ -75,6 +75,6 @@ public class ProxyService {
         String endPointUrl = getEndpointUrl(layer.getUrl(), serviceEndpoint, request.getQueryString());
         String authentication = aesService.decrypt(layer.getAuthentication());
         this.httpRequestService.fetchToResponse(layer.getUrl(), authentication, baseUrl, endPointUrl,
-                request, response, layer.getUseInternalProxy());
+                request, response, layer.getUseInternalProxy(), null);
     }
 }

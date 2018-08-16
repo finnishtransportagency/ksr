@@ -17,6 +17,7 @@ const mapStateToProps = (state) => {
         isOpenTable: state.table.toggleTable,
         mapCenter: state.map.mapConfig.mapCenter,
         mapScale: state.map.mapConfig.mapScale,
+        printServiceUrl: state.map.mapConfig.printServiceUrl,
         selectedFeatures,
         adminToolActive: state.adminTool.active,
     });

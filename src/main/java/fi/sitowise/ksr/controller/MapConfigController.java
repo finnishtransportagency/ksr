@@ -32,6 +32,7 @@ public class MapConfigController {
         MapConfig mapConfigInformation = new MapConfig();
         mapConfigInformation.setCenter(new int[]{centerLng, centerLat});
         mapConfigInformation.setScale(scale);
+        mapConfigInformation.setPrintServiceUrl(PrintController.PRINT_CONTROLLER_URL);
         return mapConfigInformation;
     }
 }

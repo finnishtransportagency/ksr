@@ -40,4 +40,21 @@ public class KsrStringUtils {
         }
         return str.replaceAll("(?<!(http:|https:))[//]+", "/");
     }
+
+    /**
+     * Returns a new string that replaces search layers id to layers original id
+     * @param str String to format.
+     * @return String with search extension removed
+     */
+    static String replaceSearchId(String str) {
+        if (str == null) {
+            return null;
+        }
+
+        if (str.contains(".s")) {
+            return str.replace(".s", "");
+        } else {
+            return str;
+        }
+    }
 }
