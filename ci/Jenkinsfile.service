@@ -44,6 +44,8 @@ pipeline {
         DB_HOST = credentials("db_host_${get_environment()}")
         DB_NAME = credentials("db_name_${get_environment()}")
         DB_PORT = credentials("db_port")
+        PRINT_SERVICE_URL = credentials("print_service_url_${get_environment()")
+        PRINT_OUTPUT_URL = credentials("print_output_url_${get_environment()")
         NOTIFY_SLACK_SUBJECT = "${JOB_NAME} - <${RUN_DISPLAY_URL}|${BUILD_DISPLAY_NAME}>"
     }
     options {
@@ -115,6 +117,8 @@ pipeline {
                         "sed -i 's/DB_PORT/${DB_PORT}/g' ${properties}",
                         "sed -i 's/HTTP_PROXY_HOST/${http_proxy.tokenize(':').first().tokenize('/').last()}/g' ${properties}",
                         "sed -i 's/HTTP_PROXY_PORT/${http_proxy.tokenize(':').last()}/g' ${properties}",
+                        "sed -i 's/PRINT_SERVICE_URL/${PRINT_SERVICE_URL}/g' ${properties}",
+                        "sed -i 's/PRINT_OUTPUT_URL/${PRINT_OUTPUT_URL}/g' ${properties}",
                         [
                             "mvn",
                             "versions:set",
