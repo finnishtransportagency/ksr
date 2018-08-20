@@ -12,7 +12,7 @@ type Props = {
     onDragEnd: (DropResult) => void,
     onToggleVisibility: (Number) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
-    setActiveAdminTool: (layerId: string) => void,
+    setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     adminToolActive: string,
 };
 
@@ -71,10 +71,16 @@ const MapLayersView = ({
                                                                     role="button"
                                                                     tabIndex={0}
                                                                     onKeyPress={() =>
-                                                                        setActiveAdminTool(l.id)
+                                                                        setActiveAdminTool(
+                                                                            l.id,
+                                                                            layerList,
+                                                                        )
                                                                     }
                                                                     onClick={() =>
-                                                                        setActiveAdminTool(l.id)
+                                                                        setActiveAdminTool(
+                                                                            l.id,
+                                                                            layerList,
+                                                                        )
                                                                     }
                                                                     className="fas fa-edit"
                                                                 />

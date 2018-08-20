@@ -8,9 +8,9 @@ import strings from '../../../../translations';
 const mapStateToProps = (state) => {
     let allQueryableLayers = [];
 
-    if (state.adminTool.active) {
+    if (state.adminTool.active.layerId) {
         allQueryableLayers = state.map.layerGroups.layerList
-            .filter(l => l.queryable && l.id === state.adminTool.active && l._source !== 'search')
+            .filter(l => l.queryable && l.id === state.adminTool.active.layerId && l._source !== 'search')
             .map(l => ({ ...l, value: l.id, label: l.name }));
     } else {
         allQueryableLayers = state.map.layerGroups.layerList
