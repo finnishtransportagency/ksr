@@ -6,6 +6,7 @@ import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class LayerRepository {
      * @param isQuery whether the layer is requested for a search request or not
      * @return the layer
      */
+    @Cacheable("get_layer")
     public Layer getLayer(int id, List<String> userGroups, boolean isQuery, LayerAction actionType) {
         LayerRecord lr = context.select(LAYER.fields())
                 .from(LAYER)
