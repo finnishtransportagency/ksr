@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { setMapView } from '../../../reducers/map/actions';
+import { setEditMode, setMapView, setTempGrapLayer } from '../../../reducers/map/actions';
 import EsriMap from './EsriMap';
 
 import { selectFeatures } from './../../../reducers/table/actions';
@@ -10,7 +10,7 @@ const mapStateToProps = (state) => {
         .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []);
 
     return ({
-        view: state.map.mapView,
+        view: state.map.mapView.view,
         activeNav: state.navigation.activeNav,
         layerList: state.map.layerGroups.layerList,
         fetching: state.map.layerGroups.fetching || state.map.mapConfig.fetching,
@@ -19,7 +19,9 @@ const mapStateToProps = (state) => {
         mapScale: state.map.mapConfig.mapScale,
         printServiceUrl: state.map.mapConfig.printServiceUrl,
         selectedFeatures,
-        adminToolActive: state.adminTool.active,
+        adminToolActive: state.adminTool.active.layerId,
+        sketchViewModel: state.map.mapTools.sketchViewModel,
+        editMode: state.map.mapTools.editMode,
     });
 };
 
@@ -29,6 +31,12 @@ const mapDispatchToProps = dispatch => ({
     },
     setMapView: (view) => {
         dispatch(setMapView(view));
+    },
+    setTempGrapLayer: (graphicsLayer) => {
+        dispatch(setTempGrapLayer(graphicsLayer));
+    },
+    setEditMode: (editMode) => {
+        dispatch(setEditMode(editMode));
     },
 });
 
