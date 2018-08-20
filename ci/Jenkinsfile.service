@@ -119,8 +119,8 @@ pipeline {
                         "sed -i 's/HTTP_PROXY_HOST/${http_proxy.tokenize(':').first().tokenize('/').last()}/g' ${properties}",
                         "sed -i 's/HTTP_PROXY_PORT/${http_proxy.tokenize(':').last()}/g' ${properties}",
                         "sed -i 's/CACHE_CAFFEINE_SPEC/${CACHE_CAFFEINE_SPEC}/g' ${properties}",
-                        "sed -i 's/PRINT_SERVICE_URL/${PRINT_SERVICE_URL}/g' ${properties}",
-                        "sed -i 's/PRINT_OUTPUT_URL/${PRINT_OUTPUT_URL}/g' ${properties}",
+                        "sed -i 's,PRINT_SERVICE_URL,${PRINT_SERVICE_URL},g' ${properties}",
+                        "sed -i 's,PRINT_OUTPUT_URL,${PRINT_OUTPUT_URL},g' ${properties}",
                         [
                             "mvn",
                             "versions:set",
