@@ -6,6 +6,7 @@ export const SET_ACTIVE_NAV = 'SET_ACTIVE_NAV';
 export const SET_MAP_VIEW = 'SET_MAP_VIEW';
 export const SET_MAP_TOOLS = 'SET_MAP_TOOLS';
 export const SET_ACTIVE_TOOL = 'SET_ACTIVE_TOOL';
+export const SET_EDIT_MODE = 'SET_EDIT_MODE';
 
 // Layers
 export const GET_LAYER_GROUPS = 'GET_LAYER_GROUPS';
@@ -18,6 +19,8 @@ export const SET_ACTIVE_LAYER_TAB = 'SET_ACTIVE_LAYER_TAB';
 
 export const HIDE_LAYER = 'HIDE_LAYER';
 export const ADD_SEARCH_RESULTS_LAYER = 'ADD_SEARCH_RESULTS_LAYER';
+
+export const SET_GRAPH_LAYER = 'SET_GRAPH_LAYER';
 
 // Map config
 export const GET_MAP_CONFIG = 'GET_MAP_CONFIG';

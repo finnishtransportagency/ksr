@@ -57,6 +57,11 @@ const fi = {
         cancel: 'Peruuta',
         content: 'Haluatko tallentaa taulukkoon tekemät muutokset?',
     },
+    modalLayerDetails: {
+        title: 'Luo uusi kohde',
+        submit: 'Tallenna',
+        cancel: 'Peruuta',
+    },
     sideNav: {
         search: 'Haku',
         layerManagement: 'Karttatasojen hallinta',
@@ -72,6 +77,9 @@ const fi = {
         drawPolygonSelect: 'Lassovalinta',
         drawCircle: 'Ympyrävalinta',
         removeSelection: 'Poista valinnat',
+        rejectSelection: 'Hylkää kohde',
+        acceptSelection: 'Hyväksy kohde',
+        activeAdmin: 'Luontityökalu',
     },
     mapMeasure: {
         drawLine: 'Piirrä ja mittaa viiva',

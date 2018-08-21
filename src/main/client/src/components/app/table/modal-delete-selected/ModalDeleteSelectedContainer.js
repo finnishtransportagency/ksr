@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
     });
 
     const { queryColumns } = state.map.layerGroups.layerList
-        .find(lg => lg.id === state.adminTool.active);
+        .find(lg => lg.id === state.adminTool.active.layerId);
 
     const filteredData = [];
     selectedData.map((d) => {

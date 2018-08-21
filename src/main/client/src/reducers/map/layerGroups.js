@@ -23,6 +23,7 @@ type LayerList = {
     active: boolean,
     attribution: string,
     authentication: any,
+    geometryType: string,
     fields: Array<Object>,
     id: string,
     layerOrder: number,

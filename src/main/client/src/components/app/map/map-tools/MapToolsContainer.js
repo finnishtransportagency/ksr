@@ -4,7 +4,8 @@ import { setMapTools } from '../../../../reducers/map/actions';
 import MapTools from './MapTools';
 
 const mapStateToProps = state => ({
-    view: state.map.mapView,
+    view: state.map.mapView.view,
+    tempGraphicsLayer: state.map.mapView.graphicsLayer,
 });
 
 const mapDispatchToProps = dispatch => ({

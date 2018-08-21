@@ -37,7 +37,7 @@ const mapStateToProps = (state) => {
         isOpenFilter: state.table.toggleFilter,
         activeNav: state.navigation.activeNav,
         activeModal: state.modal.activeModal,
-        adminToolActive: state.adminTool.active,
+        adminToolActive: state.adminTool.active.layerId,
         originalLayers,
         editedLayers,
         selectedData: selectedData.length > 0,

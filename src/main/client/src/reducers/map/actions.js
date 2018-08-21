@@ -1,7 +1,7 @@
 // @flow
 import { fetchLayerGroups } from '../../api/map/layerGroups';
 import { fetchMapConfig } from '../../api/map/mapConfig';
-import { fetchSearchFields } from '../../api/search/searchFields';
+import { layerData } from '../../api/map/layerData';
 import * as types from '../../constants/actionTypes';
 
 export const getLayerGroups = () => (dispatch: Function) => {
@@ -16,10 +16,14 @@ export const getLayerGroups = () => (dispatch: Function) => {
         .then((r) => {
             layerList.forEach((l, i) => {
                 if (l.type === 'agfs') {
-                    // Add featurelayer fields to layer
-                    fetchSearchFields(l.id)
-                        .then((fields) => {
-                            layerList[i].fields = fields;
+                    // Add featurelayer fields and geometryType to layerList
+                    layerData(l.id)
+                        .then((layers) => {
+                            layerList[i].geometryType = layers.geometryType;
+                            layerList[i].fields =
+                                layers.fields && layers.fields.map((f, index) => ({
+                                    value: index, label: f.alias, type: f.type, name: f.name,
+                                }));
                         });
                 }
             });
@@ -65,6 +69,13 @@ export const setMapView = (view: any) => (dispatch: Function) => {
     });
 };
 
+export const setTempGrapLayer = (graphicsLayer: Object) => (dispatch: Function) => {
+    dispatch({
+        type: types.SET_GRAPH_LAYER,
+        graphicsLayer,
+    });
+};
+
 export const setMapTools = (draw: Object, sketchViewModel: Object) => (dispatch: Function) => {
     dispatch({
         type: types.SET_MAP_TOOLS,
@@ -76,4 +87,9 @@ export const setMapTools = (draw: Object, sketchViewModel: Object) => (dispatch:
 export const setActiveTool = (active: string) => ({
     type: types.SET_ACTIVE_TOOL,
     active,
+});
+
+export const setEditMode = (editMode: string) => ({
+    type: types.SET_EDIT_MODE,
+    editMode,
 });

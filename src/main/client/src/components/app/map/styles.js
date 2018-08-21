@@ -26,25 +26,33 @@ export const Wrapper = styled.div`
         };
         
         #select-tool-outer-wrapper,
+        #create-new-feature-wrapper,
         #draw-tool-outer-wrapper,
         #toggle-select-tools,
         #draw-rectangle,
         #draw-polygon-select,
         #draw-circle,
+        #draw-create-new-feature,
+        #accept-create-new-feature,
+        #reject-create-new-feature,        
         #remove-selection {
             display: inline-flex;
         };
         
-        #draw-rectangle {
+        #draw-rectangle
+         {
             margin-right: 4px;
         };
         
-        #draw-circle {
+        #draw-circle,
+         #accept-create-new-feature {
             margin-left: 4px;
         };
         
-        #toggle-select-tools, 
-        #toggle-draw-tools {
+        #toggle-select-tools,
+        #toggle-draw-tools,
+        #draw-create-new-feature
+         {
             margin-left: 10px;
         };
         
@@ -52,11 +60,12 @@ export const Wrapper = styled.div`
             margin-left: 4px;
         }
         
-        #remove-selection {
+        #remove-selection,
+        #reject-create-new-feature {
             visibility: hidden;
             position: relative;
         };
-        
+                
         .esri-track,
         .esri-locate,
         .esri-compass,
@@ -70,6 +79,9 @@ export const Wrapper = styled.div`
         #draw-polygon-select,
         #draw-circle,
         #remove-measurement,
+        #draw-create-new-feature,
+        #reject-create-new-feature,
+        #accept-create-new-feature,
         #remove-selection {
             background: ${styles.colorMain};
             color: ${styles.colorFontLight};
