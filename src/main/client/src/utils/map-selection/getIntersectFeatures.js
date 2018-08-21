@@ -22,6 +22,7 @@ export const getIntersectFeatures = (
     const query = {
         geometry,
         outFields: ['*'],
+        returnGeometry: true,
     };
     const queries = [];
 
