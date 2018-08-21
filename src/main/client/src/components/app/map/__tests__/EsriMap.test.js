@@ -12,6 +12,8 @@ const setup = () => {
         mapCenter: [425574, 7051264],
         mapScale: 9244648,
         selectFeatures: () => {},
+        layers: [],
+        view: {},
     };
     const wrapper = shallow(<EsriMap {...props} />);
 

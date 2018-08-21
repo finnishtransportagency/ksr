@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { setEditMode, setMapView, setTempGrapLayer } from '../../../reducers/map/actions';
 import EsriMap from './EsriMap';
 
-import { selectFeatures } from './../../../reducers/table/actions';
+import { selectFeatures, setSingleLayerGeometry } from './../../../reducers/table/actions';
+import { setActiveModal } from '../../../reducers/modal/actions';
 
 const mapStateToProps = (state) => {
     const selectedFeatures = state.table.features.layers
@@ -22,6 +23,7 @@ const mapStateToProps = (state) => {
         adminToolActive: state.adminTool.active.layerId,
         sketchViewModel: state.map.mapTools.sketchViewModel,
         editMode: state.map.mapTools.editMode,
+        layers: state.table.features.layers,
     });
 };
 
@@ -37,6 +39,12 @@ const mapDispatchToProps = dispatch => ({
     },
     setEditMode: (editMode) => {
         dispatch(setEditMode(editMode));
+    },
+    setActiveModal: (activeModal) => {
+        dispatch(setActiveModal(activeModal));
+    },
+    setSingleLayerGeometry: (geometry) => {
+        dispatch(setSingleLayerGeometry(geometry));
     },
 });
 
