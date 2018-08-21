@@ -201,6 +201,7 @@ class SketchTool extends Component<Props, State> {
                         const query = {
                             geometry,
                             outFields: ['*'],
+                            returnGeometry: true,
                         };
                         const queries = [];
                         view.map.layers.forEach((layer) => {

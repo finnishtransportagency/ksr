@@ -5,7 +5,7 @@ const graphic = {
         NAME: 'Feature name',
         ID: 531,
     },
-    geometry: null,
+    geometry: {},
     layer: {
         id: 'L1',
         objectIdField: 'ID',
@@ -14,6 +14,7 @@ const graphic = {
             wkid: 3067,
             latestWkid: 3067,
         },
+        title: 'TITLE',
         fields: [
             {
                 name: 'NAME',
@@ -70,11 +71,13 @@ describe('arcFormats', () => {
                         defaultValue: null,
                     },
                 ],
+                title: 'TITLE',
                 features: [{
                     attributes: {
                         ID: 531,
                         NAME: 'Feature name',
                     },
+                    geometry: {},
                 }],
             }],
         };

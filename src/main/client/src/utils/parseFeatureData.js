@@ -33,6 +33,7 @@ export const parseData = (data, selected, source) => {
         _source: source,
         data: l.features.map(f => ({
             ...f.attributes,
+            geometry: f.geometry,
             _id: f.attributes[l.objectIdFieldName],
             _layerId: l.id,
             _selected: selected,
