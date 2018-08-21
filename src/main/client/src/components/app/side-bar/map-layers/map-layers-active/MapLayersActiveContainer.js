@@ -7,15 +7,15 @@ import MapLayersActive from './MapLayersActive';
 const mapStateToProps = state => ({
     layerList: state.map.layerGroups.layerList,
     fetching: state.map.layerGroups.fetching,
-    adminToolActive: state.adminTool.active,
+    adminToolActive: state.adminTool.active.layerId,
 });
 
 const mapDispatchToProps = dispatch => ({
     setLayerList: (layerList) => {
         dispatch(setLayerList(layerList));
     },
-    setActiveAdminTool: (layerId) => {
-        dispatch(setActiveAdminTool(layerId));
+    setActiveAdminTool: (layerId, layerList) => {
+        dispatch(setActiveAdminTool(layerId, layerList));
     },
 });
 

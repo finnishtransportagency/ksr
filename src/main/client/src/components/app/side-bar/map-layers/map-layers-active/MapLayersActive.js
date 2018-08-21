@@ -9,7 +9,7 @@ type Props = {
     layerList: any,
     fetching: boolean,
     setLayerList: (Array<any>) => void,
-    setActiveAdminTool: (layerId: string) => void,
+    setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     adminToolActive: string,
 };
 
@@ -61,7 +61,9 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     render() {
-        const { layerList, fetching, setActiveAdminTool, adminToolActive } = this.props;
+        const {
+            layerList, fetching, setActiveAdminTool, adminToolActive,
+        } = this.props;
         if (!fetching) {
             return (
                 <MapLayersActiveView

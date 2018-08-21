@@ -1,9 +1,10 @@
 // @flow
 import * as types from '../../constants/actionTypes';
 
-export const setActiveAdminTool = (layerId: string) => ({
+export const setActiveAdminTool = (layerId: string, layerList: Array<any>) => ({
     type: types.SET_ACTIVE_ADMIN_TOOL,
     layerId,
+    layerList,
 });
 
 export const deleteSelectedData = (selectedData: Array<Object>, deleteComment: string) => {

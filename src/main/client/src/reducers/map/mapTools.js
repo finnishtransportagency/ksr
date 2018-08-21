@@ -1,10 +1,11 @@
 // @flow
-import { SET_MAP_TOOLS, SET_ACTIVE_TOOL } from '../../constants/actionTypes';
+import { SET_MAP_TOOLS, SET_ACTIVE_TOOL, SET_EDIT_MODE } from '../../constants/actionTypes';
 
 const initialState = {
     draw: {},
     sketchViewModel: {},
     active: '',
+    editMode: '',
 };
 
 type Action = {
@@ -12,6 +13,7 @@ type Action = {
     draw: Object,
     sketchViewModel: Object,
     active: string,
+    editMode: string,
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -26,6 +28,11 @@ export default (state: Object = initialState, action: Action) => {
             return {
                 ...state,
                 active: action.active,
+            };
+        case SET_EDIT_MODE:
+            return {
+                ...state,
+                editMode: action.editMode,
             };
         default:
             return state;

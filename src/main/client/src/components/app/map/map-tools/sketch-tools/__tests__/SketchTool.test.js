@@ -7,6 +7,14 @@ const setup = () => {
     const props = {
         view: {},
         data: [],
+        activeAdminTool: '',
+        draw: {},
+        tempGraphicsLayer: { graphics: { grap: {} } },
+        setTempGrapLayer: jest.fn(),
+        setActiveTool: jest.fn(),
+        sketchViewModel: {
+            reset: jest.fn(),
+        },
     };
     const wrapper = mount(<SketchTool {...props} />);
 
@@ -25,8 +33,28 @@ describe('<SketchTool />', () => {
             sketchViewModel: {
                 initialized: true,
             },
+            draw: {
+                initialized: false,
+            },
+            activeAdminTool: '',
         };
         const spy = jest.spyOn(wrapper.instance(), 'sketchTool');
+        wrapper.instance().componentWillReceiveProps(newProps);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should invoke removeSketch when draw completed', () => {
+        const newProps = {
+            sketchViewModel: {
+                initialized: true,
+            },
+            draw: {
+                initialized: true,
+                reset: jest.fn(),
+            },
+            activeAdminTool: 'sketchActiveAdmin',
+        };
+        const spy = jest.spyOn(wrapper.instance(), 'removeSketch');
         wrapper.instance().componentWillReceiveProps(newProps);
         expect(spy).toHaveBeenCalled();
     });

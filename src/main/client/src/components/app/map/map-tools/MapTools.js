@@ -7,6 +7,7 @@ import SketchToolContainer from './sketch-tools/SketchToolContainer';
 type Props = {
     view: Object,
     setMapTools: Function,
+    tempGraphicsLayer: Object,
 };
 
 class MapTools extends Component<Props> {
@@ -23,7 +24,7 @@ class MapTools extends Component<Props> {
                 'esri/widgets/Sketch/SketchViewModel',
             ])
             .then(([Draw, SketchViewModel]) => {
-                const { setMapTools, view } = this.props;
+                const { setMapTools, view, tempGraphicsLayer } = this.props;
 
                 const draw = new Draw({
                     view,
@@ -31,10 +32,13 @@ class MapTools extends Component<Props> {
 
                 const sketchViewModel = new SketchViewModel({
                     view,
+                    layer: tempGraphicsLayer,
                 });
 
                 setMapTools(draw, sketchViewModel);
-                return { setMapTools, draw, sketchViewModel };
+                return {
+                    setMapTools, draw, sketchViewModel,
+                };
             })
             .then(r => r.setMapTools(r.draw, r.sketchViewModel));
     };

@@ -20,6 +20,10 @@ type Props = {
     selectedFeatures: Array<Object>,
     setMapView: (view: Object) => void,
     adminToolActive: string,
+    sketchViewModel: Object,
+    setEditMode: (editMode: string) => void,
+    editMode: string,
+    setTempGrapLayer: (graphicsLayer: Object) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -114,6 +118,7 @@ class EsriMap extends Component<Props> {
                 'esri/widgets/Compass',
                 'esri/geometry/Point',
                 'esri/widgets/Print',
+                'esri/layers/GraphicsLayer',
             ])
             .then(([
                 MapView,
@@ -125,6 +130,7 @@ class EsriMap extends Component<Props> {
                 Compass,
                 Point,
                 Print,
+                GraphicsLayer,
             ]) => {
                 const {
                     layerList,
@@ -134,10 +140,13 @@ class EsriMap extends Component<Props> {
                     selectFeatures,
                     printServiceUrl,
                     activeNav,
+                    setTempGrapLayer,
                 } = this.props;
 
+                // GraphicsLayer to hold graphics created via sketch view model
+                const tempGraphicsLayer = new GraphicsLayer();
                 const map = new Map({
-                    layers: [],
+                    layers: [tempGraphicsLayer],
                 });
 
                 const epsg3067 = new SpatialReference(3067);
@@ -193,6 +202,7 @@ class EsriMap extends Component<Props> {
                         track,
                         'draw-tool-outer-wrapper',
                         'select-tool-outer-wrapper',
+                        'create-new-feature-wrapper',
                     ],
                     'top-right',
                 );
@@ -208,14 +218,49 @@ class EsriMap extends Component<Props> {
                 (document.getElementById: Function)('draw-tool-outer-wrapper').classList
                     .remove('esri-component');
 
+                (document.getElementById: Function)('create-new-feature-wrapper').classList
+                    .remove('esri-component');
+
                 view.on('click', (event) => {
-                    const { adminToolActive } = this.props;
-                    mapSelectPopup(event, view, selectFeatures, layerList, adminToolActive);
+                    // Return if update sketch is ongoing
+                    if (this.props.editMode === 'update') return;
+                    view.hitTest(event).then((response) => {
+                        const { results } = response;
+                        // Found results
+                        if (results.length) {
+                            const layer = results.find(l => l
+                                .graphic.layer.id.indexOf('layer') >= 0);
+
+                            // Check if we're already editing a graphic
+                            if (layer && this.props.editMode === '') {
+                                // Save a reference to the graphic we intend to update
+                                const { graphic } = layer;
+                                this.props.setEditMode('update');
+                                // Remove the graphic from the GraphicsLayer
+                                // Sketch will handle displaying the graphic while being updated
+                                tempGraphicsLayer.remove(graphic);
+                                this.props.sketchViewModel.update(graphic);
+                            } else if (this.props.editMode === 'finish') {
+                                this.props.setEditMode('');
+                            } else {
+                                const { adminToolActive } = this.props;
+                                mapSelectPopup(
+                                    event, view,
+                                    selectFeatures, layerList, adminToolActive,
+                                );
+                            }
+                        }
+                    });
                 });
 
-                return { setMapView, view };
+                return {
+                    setMapView, view, setTempGrapLayer, tempGraphicsLayer,
+                };
             })
-            .then(r => r.setMapView(r.view));
+            .then((r) => {
+                r.setMapView(r.view);
+                r.setTempGrapLayer(r.tempGraphicsLayer);
+            });
     };
 
     render() {
