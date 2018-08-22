@@ -40,7 +40,7 @@ public class PrintController {
 
     @PostConstruct
     public void setUpPrintProxyUrlMatcher() {
-        String patternToMatch = "^" + contextPath + "/api/GPServer/Export%20Web%20Map%20Task/(.*?)$";
+        String patternToMatch = "/api/GPServer/Export%20Web%20Map%20Task/(.*?)$";
         printProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(patternToMatch));
     }
 

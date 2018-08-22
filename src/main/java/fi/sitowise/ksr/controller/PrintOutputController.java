@@ -32,7 +32,7 @@ public class PrintOutputController {
 
     @PostConstruct
     public void setUpPrintProxyUrlMatcher() {
-        String patternToMatch = "^" + contextPath + "/api/print/output/(.*?)$";
+        String patternToMatch = "/api/print/output/(.*?)$";
         printOutputProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(patternToMatch));
     }
 
