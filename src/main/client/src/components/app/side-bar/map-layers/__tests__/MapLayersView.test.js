@@ -18,7 +18,7 @@ describe('<MapLayersView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {
-        expect(wrapper.find(ButtonLayerNav).length).toBe(2);
+        expect(wrapper.find(ButtonLayerNav).length).toBe(4);
         expect(wrapper.find(SideBar.Header).length).toBe(1);
         expect(wrapper.find(SideBar.Content).length).toBe(1);
     });

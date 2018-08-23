@@ -18,7 +18,7 @@ const Content = styled.div`
     }
     
     .layer-view-scroll-wrapper {
-        height: calc(100% - 160px) !important;
+        height: calc(100% - 230px) !important;
     }
 `;
 

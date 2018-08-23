@@ -6,14 +6,19 @@ import SideBar from '../../../ui/blocks/SideBar';
 import { H1 } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
 import MapLayersAllContainer from './map-layers-all/MapLayersAllContainer';
-import { ButtonLayerNav, ButtonLayerNavWrapper } from './styles';
+import ModalAddUserLayer from './modal-add-user-layer/ModalAddUserLayer';
+import { ButtonLayerNav, ButtonLayerNavWrapper, ButtonLayerAddWrapper } from './styles';
 
 type Props = {
     handleButtonClickLayers: (string) => void,
     activeTab: string,
+    activeModal: string,
+    setActiveModal: Function,
 };
 
-const MapLayersView = ({ handleButtonClickLayers, activeTab }: Props) => (
+const MapLayersView = ({
+    handleButtonClickLayers, activeTab, activeModal, setActiveModal,
+}: Props) => (
     <Fragment>
         <SideBar.Header>
             <H1>{strings.mapLayers.title}</H1>
@@ -44,7 +49,24 @@ const MapLayersView = ({ handleButtonClickLayers, activeTab }: Props) => (
                 {activeTab === 'all' && <MapLayersAllContainer />}
                 {activeTab === 'active' && <MapLayersActiveContainer />}
             </Scrollbars>
+            <ButtonLayerAddWrapper>
+                <ButtonLayerNav
+                    tabIndex={0}
+                    role="button"
+                    onKeyPress={() => setActiveModal('addUserLayer')}
+                    onClick={() => setActiveModal('addUserLayer')}
+                >
+                    {strings.mapLayers.addNewLayer}
+                </ButtonLayerNav>
+                <ButtonLayerNav
+                    disabled
+                    tabIndex={0}
+                    role="button"
+                >Shape?
+                </ButtonLayerNav>
+            </ButtonLayerAddWrapper>
         </SideBar.Content>
+        {activeModal === 'addUserLayer' && <ModalAddUserLayer />}
     </Fragment>
 );
 
