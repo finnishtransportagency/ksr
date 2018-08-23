@@ -3,7 +3,7 @@ import * as styles from '../defaultStyles';
 
 export const TextInput = styled.input`
     padding: 0.5rem;
-    outline: red;
+    outline: none;
     box-sizing: border-box;
     width: 100%;
     border: 2px solid transparent;
