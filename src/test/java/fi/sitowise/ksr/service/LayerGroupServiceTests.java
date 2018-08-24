@@ -4,6 +4,7 @@ import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
+import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,6 +39,12 @@ public class LayerGroupServiceTests {
     @MockBean
     LayerGroupRepository layerGroupRepository;
     private boolean isMobile = false;
+
+    /**
+     * The User Layer repository.
+     */
+    @MockBean
+    UserLayerRepository userLayerRepository;
 
     /**
      * Test get user groups with roles.
