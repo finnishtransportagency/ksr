@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.MapConfig;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,9 @@ public class MapConfigController {
     @Value("${map.scale}")
     private int scale;
 
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
     /**
      * Gets map information.
      *
@@ -32,7 +36,9 @@ public class MapConfigController {
         MapConfig mapConfigInformation = new MapConfig();
         mapConfigInformation.setCenter(new int[]{centerLng, centerLat});
         mapConfigInformation.setScale(scale);
-        mapConfigInformation.setPrintServiceUrl(PrintController.PRINT_CONTROLLER_URL);
+        mapConfigInformation.setPrintServiceUrl(
+                KsrStringUtils.replaceMultipleSlashes(contextPath + PrintController.PRINT_CONTROLLER_URL)
+        );
         return mapConfigInformation;
     }
 }

@@ -3,6 +3,7 @@ package fi.sitowise.ksr.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.sitowise.ksr.domain.MapConfig;
 import fi.sitowise.ksr.helper.AuthControllerTestBase;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +35,9 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
     @Value("${print.service.url}")
     private String printServiceUrl;
 
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
     /**
      * Sets webAppContext and springSecurity.
      */
@@ -52,7 +56,9 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
         MapConfig mapConfigData = new MapConfig();
         mapConfigData.setCenter(new int[]{centerLng, centerLat});
         mapConfigData.setScale(scale);
-        mapConfigData.setPrintServiceUrl(PrintController.PRINT_CONTROLLER_URL);
+        mapConfigData.setPrintServiceUrl(
+                KsrStringUtils.replaceMultipleSlashes(contextPath + PrintController.PRINT_CONTROLLER_URL)
+        );
 
         MvcResult result = this.mockMvc.perform(get("/api/map")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
