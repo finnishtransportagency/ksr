@@ -2,6 +2,7 @@ package fi.sitowise.ksr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
+import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -44,6 +45,35 @@ public class Layer implements Serializable {
      * @param lr LayerRecord
      */
     public Layer(LayerRecord lr) {
+        this.setId(lr.getId());
+        this.setName(lr.getName());
+        this.setType(lr.getType());
+        this.setUrl(lr.getUrl());
+        this.setLayers(lr.getLayers());
+        this.setStyles(lr.getStyles());
+        this.setOpacity(lr.getOpacity());
+        this.setAuthentication(lr.getAuthentication());
+        this.setLayerOrder(lr.getLayerOrder());
+        this.setMinScale(lr.getMinScale());
+        this.setMaxScale(lr.getMaxScale());
+        this.setTransparent(lr.getTransparent());
+        this.setAttribution(lr.getAttribution());
+        this.setDesktopVisible(lr.getDesktopVisible());
+        this.setMobileVisible(lr.getMobileVisible());
+        this.setQueryable(lr.getQueryable());
+        this.setUseInternalProxy(lr.getUseInternalProxy());
+
+        if (lr.getQueryColumns() != null) {
+            this.setQueryColumns(lr.getQueryColumns());
+        }
+    }
+
+    /**
+     * Construct a Layer from jOOQ UserLayerRecord.
+     *
+     * @param lr UserLayerRecord
+     */
+    public Layer(UserLayerRecord lr) {
         this.setId(lr.getId());
         this.setName(lr.getName());
         this.setType(lr.getType());
