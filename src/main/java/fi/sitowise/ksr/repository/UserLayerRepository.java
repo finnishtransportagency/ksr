@@ -1,7 +1,10 @@
 package fi.sitowise.ksr.repository;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,6 +20,7 @@ import static fi.sitowise.ksr.jooq.Tables.USER_LAYER;
  */
 @Repository
 public class UserLayerRepository {
+    private static Logger log = LogManager.getLogger(UserLayerRepository.class);
     private DSLContext context;
 
     /**
@@ -128,5 +132,28 @@ public class UserLayerRepository {
                         "0",
                         username
                 ).execute();
+    }
+
+    /**
+     * Remove user layer from database.
+     *
+     * Throws 404 Exception if layer not found for given user.
+     *
+     * @param username String username of the layer owner
+     * @param userLayerId int Id of the layer
+     */
+    public void removeUserLayer(String username, int userLayerId) throws KsrApiException {
+        Integer rowCount = context.select(USER_LAYER.fields())
+                .from(USER_LAYER)
+                .where(USER_LAYER.ID.eq(Long.valueOf(userLayerId)).and(USER_LAYER.USERNAME.eq(username))).execute();
+        if (rowCount.equals(1)) { // Check that layer exists
+            context.delete(USER_LAYER)
+                    .where(USER_LAYER.ID.eq(Long.valueOf(userLayerId)).and(USER_LAYER.USERNAME.eq(username))).execute();
+            log.info(String.format("Userlayer: [%d] succesfully removed by user: [%s].", userLayerId, username));
+        } else {
+            throw new KsrApiException.NotFoundErrorException(
+                    String.format("Userlayer: [%d] not found for user: [%s].", userLayerId, username)
+            );
+        }
     }
 }

@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +49,17 @@ public class UserLayerService {
                 mobileVisible,
                 username
         );
+    }
+
+    /**
+     * Remove user layer by id
+     * @param username String name of current user
+     * @param userLayerId int Id of the layer to be removed
+     */
+    public void removeUserLayer(String username, int userLayerId) throws KsrApiException {
+        if (username == null) {
+            throw new KsrApiException.ForbiddenException("Error authenticating user.");
+        }
+        userLayerRepository.removeUserLayer(username, userLayerId);
     }
 }

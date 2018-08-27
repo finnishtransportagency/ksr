@@ -5,10 +5,7 @@ import fi.sitowise.ksr.service.UserLayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Rest controller for user layer
@@ -32,5 +29,15 @@ public class UserLayerController {
     public void postUserLayer(@RequestBody Layer layer) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userLayerService.addUserLayer(authentication.getName(), layer);
+    }
+
+    /**
+     * Remove user layer from database
+     * @param userLayerId int Id of the layer to be deleted
+     */
+    @RequestMapping(value = "/{userLayerId}", method = RequestMethod.DELETE)
+    public void removeUserLayer(@PathVariable("userLayerId") int userLayerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userLayerService.removeUserLayer(authentication.getName(), userLayerId);
     }
 }
