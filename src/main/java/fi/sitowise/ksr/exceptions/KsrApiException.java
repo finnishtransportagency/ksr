@@ -102,4 +102,19 @@ public abstract class KsrApiException extends RuntimeException {
             super(message);
         }
     }
+
+    /**
+     * Raises a HTTP 403 - Forbidden Error
+     */
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    public static class ForbiddenException extends KsrApiException {
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Raises a HTTP 403 - Forbidden Error
+         *
+         * @param message Error message
+         */
+        public ForbiddenException(String message) { super(message); }
+    }
 }
