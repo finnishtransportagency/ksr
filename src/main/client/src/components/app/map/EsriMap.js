@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import EsriMapView from './EsriMapView';
 import { addLayers, highlight, fitExtent } from '../../../utils/map';
+import { setBuffer } from '../../../utils/buffer';
 
 type Props = {
     view: Object,
@@ -24,6 +25,9 @@ type Props = {
     setEditMode: (editMode: string) => void,
     editMode: string,
     setTempGrapLayer: (graphicsLayer: Object) => void,
+    layers: Array<Object>,
+    setActiveModal: Function,
+    setSingleLayerGeometry: Function,
 };
 
 class EsriMap extends Component<Props> {
@@ -102,6 +106,9 @@ class EsriMap extends Component<Props> {
         if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
             highlight(view, this.props.selectedFeatures);
         }
+        if (this.props.layers.length < 1 && view) {
+            setBuffer(view, [], 0);
+        }
     }
 
     initMap = () => {
@@ -141,6 +148,8 @@ class EsriMap extends Component<Props> {
                     printServiceUrl,
                     activeNav,
                     setTempGrapLayer,
+                    setActiveModal,
+                    setSingleLayerGeometry,
                 } = this.props;
 
                 // GraphicsLayer to hold graphics created via sketch view model
@@ -245,8 +254,13 @@ class EsriMap extends Component<Props> {
                             } else {
                                 const { adminToolActive } = this.props;
                                 mapSelectPopup(
-                                    event, view,
-                                    selectFeatures, layerList, adminToolActive,
+                                    event,
+                                    view,
+                                    selectFeatures,
+                                    layerList,
+                                    adminToolActive,
+                                    setActiveModal,
+                                    setSingleLayerGeometry,
                                 );
                             }
                         }

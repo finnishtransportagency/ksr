@@ -15,7 +15,8 @@ import { getStreetViewLink } from './streetView';
  * @param selectFeatures Function redux function that selects features
  * @param layerList Array of layers
  * @param adminToolActive string id of current admin tool layer
- *
+ * @param setActiveModal set active modal
+ * @param setSingleLayerGeometry geometry for single feature
  */
 export const mapSelectPopup = (
     event: Object,
@@ -23,6 +24,8 @@ export const mapSelectPopup = (
     selectFeatures: Function,
     layerList: Array<Object>,
     adminToolActive: string,
+    setActiveModal: Function,
+    setSingleLayerGeometry: Function,
 ) => {
     if (event.button === 0) {
         const swLink = getStreetViewLink(event.mapPoint.x, event.mapPoint.y);
@@ -46,7 +49,6 @@ export const mapSelectPopup = (
 
             newResults.forEach((layer) => {
                 const fieldInfos = [];
-
                 const queryColumns = layerList
                     .filter(ll => ll.id === layer.graphic.layer.id)
                     .map(ll => ll.queryColumns);
@@ -64,6 +66,12 @@ export const mapSelectPopup = (
                     className: 'esri-icon-maps',
                 };
 
+                const setBufferAction = {
+                    title: strings.esriMap.setBuffer,
+                    id: 'set-buffer',
+                    className: 'far fa-dot-circle',
+                };
+
                 layer.graphic.layer.popupTemplate = {
                     title: layer.graphic.layer.title,
                     content: [{
@@ -73,7 +81,7 @@ export const mapSelectPopup = (
                         type: 'fields',
                         fieldInfos,
                     }],
-                    actions: [selectIntersectAction],
+                    actions: [selectIntersectAction, setBufferAction],
                 };
             });
 
@@ -90,6 +98,9 @@ export const mapSelectPopup = (
                         selectFeatures,
                         adminToolActive,
                     );
+                } else if (evt.action.id === 'set-buffer') {
+                    setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
+                    setActiveModal('bufferSelectedData');
                 }
             });
 

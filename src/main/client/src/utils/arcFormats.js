@@ -14,6 +14,7 @@ type Graphic = {
 const featureFromGraphic = (graphic: Graphic) => (
     {
         attributes: { ...graphic.attributes },
+        geometry: graphic.geometry,
     }
 );
 

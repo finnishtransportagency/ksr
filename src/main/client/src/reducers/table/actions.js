@@ -109,3 +109,8 @@ export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
     data,
 });
+
+export const setSingleLayerGeometry = (geometry: Object) => ({
+    type: types.SET_SINGLE_LAYER_GEOMETRY,
+    geometry,
+});

@@ -1,24 +1,25 @@
 // @flow
 import {
-    SELECT_FEATURES,
-    SET_ACTIVE_TABLE,
-    SET_COLUMNS,
-    SET_LAYER_LIST,
+    CLEAR_TABLE_DATA,
     DE_SELECT_SELECTED_FEATURES,
     SEARCH_FEATURES_FULFILLED,
-    TOGGLE_SELECTION,
-    TOGGLE_SELECT_ALL,
-    CLEAR_TABLE_DATA,
+    SELECT_FEATURES,
     SET_ACTIVE_ADMIN_TOOL,
+    SET_ACTIVE_TABLE,
+    SET_COLUMNS,
     SET_EDITED_LAYER,
+    SET_LAYER_LIST,
+    SET_SINGLE_LAYER_GEOMETRY,
+    TOGGLE_SELECT_ALL,
+    TOGGLE_SELECTION,
 } from '../../constants/actionTypes';
 import {
-    mergeLayers,
-    updateLayerColumns,
-    syncWithLayersList,
     deSelectFeatures,
-    toggleSelection,
+    mergeLayers,
+    syncWithLayersList,
     toggleSelectAll,
+    toggleSelection,
+    updateLayerColumns,
 } from '../../utils/parseFeatureData';
 
 type State = {
@@ -26,6 +27,7 @@ type State = {
     layers: Array<Object>,
     editedLayers: Array<Object>,
     activeTable: string,
+    singleLayerGeometry: Object,
 };
 
 type Action = {
@@ -38,6 +40,7 @@ type Action = {
     feature: Object,
     search: boolean,
     data: Object,
+    geometry: Object,
 };
 
 const initialState = {
@@ -45,6 +48,7 @@ const initialState = {
     editedLayers: [],
     activeTable: '',
     fetching: false,
+    singleLayerGeometry: {},
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -102,6 +106,11 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 editedLayers,
+            };
+        case SET_SINGLE_LAYER_GEOMETRY:
+            return {
+                ...state,
+                singleLayerGeometry: action.geometry,
             };
         default:
             return state;

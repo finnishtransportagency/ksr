@@ -6,8 +6,8 @@ import MapToolsContainer from '../map-tools/MapToolsContainer';
 const setup = () => {
     const props = {
         activeNav: '',
-        view: {},
         isOpenTable: false,
+        view: {},
     };
     const wrapper = shallow(<EsriMapView {...props} />);
 

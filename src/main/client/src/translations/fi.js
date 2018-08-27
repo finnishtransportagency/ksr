@@ -27,10 +27,12 @@ const fi = {
         clearTableData: 'Valintojen ja hakujen tyhjennys',
         deleteSelected: 'Poista kohteita',
         saveEditedData: 'Tallenna muutokset',
+        bufferSelectedData: 'Puskurialue valituille kohteille',
     },
     esriMap: {
         openGoogleStreetView: 'Avaa Google Street View',
         selectIntersectFeatures: 'Aluevalinta',
+        setBuffer: 'Puskurialue',
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
@@ -56,6 +58,13 @@ const fi = {
         submit: 'Tallenna',
         cancel: 'Peruuta',
         content: 'Haluatko tallentaa taulukkoon tekemät muutokset?',
+    },
+    modalBufferSelectedData: {
+        title: 'Määritä valittujen kohteiden puskurialue',
+        singleTitle: 'Määritä valitun kohteen puskurialue',
+        submit: 'Laske',
+        cancel: 'Peruuta',
+        bufferLabel: 'Anna puskurialueen koko metreinä',
     },
     modalLayerDetails: {
         title: 'Luo uusi kohde',
