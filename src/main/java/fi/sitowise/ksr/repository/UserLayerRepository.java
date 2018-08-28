@@ -6,12 +6,15 @@ import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import static java.lang.Math.toIntExact;
 
 import static fi.sitowise.ksr.jooq.Tables.USER_LAYER;
 
@@ -78,8 +81,8 @@ public class UserLayerRepository {
      * @param layers String layer feature names
      * @param styles String layer styles
      * @param opacity Double layer opacity
-     * @param minScale Integer layer minScale
-     * @param maxScale Integer layer maxScale
+     * @param minScale int layer minScale
+     * @param maxScale int layer maxScale
      * @param transparent String layer transparent ("1" true, "0" false)
      * @param attribution String layer copyright info
      * @param desktopVisible String layer visibility on desktop ("1" true, "0" false)
@@ -93,14 +96,14 @@ public class UserLayerRepository {
             String layers,
             String styles,
             Double opacity,
-            Integer minScale,
-            Integer maxScale,
+            int minScale,
+            int maxScale,
             String transparent,
             String attribution,
             String desktopVisible,
             String mobileVisible,
             String username
-            ) {
+            ) throws DataAccessException {
         context.insertInto(USER_LAYER,
                 USER_LAYER.NAME,
                 USER_LAYER.TYPE,
@@ -132,6 +135,17 @@ public class UserLayerRepository {
                         "0",
                         username
                 ).execute();
+    }
+
+    /**
+     * Gets max layer ID from user layer table
+     *
+     * @return layer ID
+     */
+    public int getMaxUserLayerId() throws DataAccessException {
+        return toIntExact(context.select(DSL.max(USER_LAYER.ID))
+                .from(USER_LAYER)
+                .fetchOne(DSL.max(USER_LAYER.ID)));
     }
 
     /**

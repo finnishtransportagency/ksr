@@ -66,7 +66,7 @@ public class LayerGroupService {
                 }
             }
         }
-        return layerGroups;
+        return combinedLayerGroups;
     }
 
     /**
