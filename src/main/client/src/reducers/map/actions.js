@@ -2,6 +2,7 @@
 import { fetchLayerGroups } from '../../api/map/layerGroups';
 import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
+import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from  '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
 
@@ -94,6 +95,22 @@ export const setEditMode = (editMode: string) => ({
     type: types.SET_EDIT_MODE,
     editMode,
 });
+
+export const addUserLayer = (layer: Object) => (dispatch: Function) => {
+    fetchAddUserLayer(layer)
+        .then((r) => {
+            if (!r.error) {
+                dispatch({
+                    type: types.ADD_USER_LAYER,
+                    layer: {
+                        ...r,
+                        active: r.visible,
+                    },
+                });
+            }
+        })
+        .catch(err => console.log(err));
+};
 
 export const removeUserLayer = (layerId: string) => ({
     type: types.REMOVE_USER_LAYER,

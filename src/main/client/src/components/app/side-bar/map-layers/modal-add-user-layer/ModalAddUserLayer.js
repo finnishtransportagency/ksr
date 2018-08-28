@@ -1,12 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { fetchAddUserLayer } from '../../../../../api/user-layer/addUserLayer';
 import strings from '../../../../../translations';
 import ModalContainer from '../../../shared/Modal/ModalContainer';
 import ModalAddUserLayerView from './ModalAddUserLayerView';
 
 type Props = {
-    /* ... */
+    addUserLayer: (layerValues: Object) => void,
 };
 
 type State = {
@@ -102,8 +101,13 @@ class ModalAddUserLayer extends Component<Props, State> {
     };
 
     handleSubmit = () => {
-        const { layerValues } = this.state;
-        fetchAddUserLayer(layerValues);
+        const { addUserLayer } = this.props;
+        const layerValues = { ...this.state.layerValues };
+
+        layerValues.desktopVisible = layerValues.desktopVisible ? '1' : '0';
+        layerValues.mobileVisible = layerValues.mobileVisible ? '1' : '0';
+
+        addUserLayer(layerValues);
     };
 
     render() {

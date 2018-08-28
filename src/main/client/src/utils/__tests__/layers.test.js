@@ -1,4 +1,4 @@
-import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../layers';
+import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup, addLayerToUserGroup } from '../layers';
 
 describe('layers', () => {
     it('addOrReplaceLayers', () => {
@@ -41,5 +41,36 @@ describe('layers', () => {
         expect(res1).toEqual(expect.arrayContaining(expected1));
         expect(res2).toEqual(expect.arrayContaining(expected2));
         expect(res3).toEqual(expect.arrayContaining(layerGroups2));
+    });
+
+    it('addLayerToUserGroup', () => {
+        const layerGroups1 = [
+            { id: 1 },
+            { id: 2, name: 'Käyttäjätasot', layers: [] },
+        ];
+
+        const layerGroups2 = [
+            { id: 1 },
+            { id: 2, name: 'Käyttäjätasot', layers: [{ id: 1, v: 1 }] },
+        ];
+
+        const layer1 = { id: 1, v: 1 };
+        const layer2 = { id: 2, v: 2 };
+
+        const expected1 = [
+            { id: 1 },
+            { id: 2, name: 'Käyttäjätasot', layers: [{ id: 1, v: 1 }] },
+        ];
+
+        const expected2 = [
+            { id: 1 },
+            { id: 2, name: 'Käyttäjätasot', layers: [{ id: 1, v: 1 }, { id: 2, v: 2 }] },
+        ];
+
+        const res1 = addLayerToUserGroup(layerGroups1, layer1);
+        const res2 = addLayerToUserGroup(layerGroups2, layer2);
+
+        expect(res1).toEqual(expected1);
+        expect(res2).toEqual(expected2);
     });
 });

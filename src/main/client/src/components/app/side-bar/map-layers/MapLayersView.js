@@ -6,7 +6,7 @@ import SideBar from '../../../ui/blocks/SideBar';
 import { H1 } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
 import MapLayersAllContainer from './map-layers-all/MapLayersAllContainer';
-import ModalAddUserLayer from './modal-add-user-layer/ModalAddUserLayer';
+import ModalAddUserLayerContainer from './modal-add-user-layer/ModalAddUserLayerContainer';
 import ModalRemoveUserLayerContainer from './modal-remove-user-layer/ModalRemoveUserLayerContainer';
 import { ButtonLayerNav, ButtonLayerNavWrapper, ButtonLayerAddWrapper } from './styles';
 
@@ -67,7 +67,7 @@ const MapLayersView = ({
                 </ButtonLayerNav>
             </ButtonLayerAddWrapper>
         </SideBar.Content>
-        {activeModal === 'addUserLayer' && <ModalAddUserLayer />}
+        {activeModal === 'addUserLayer' && <ModalAddUserLayerContainer />}
         {activeModal === 'removeUserLayer' && <ModalRemoveUserLayerContainer />}
     </Fragment>
 );
