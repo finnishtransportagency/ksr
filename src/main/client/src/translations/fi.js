@@ -125,6 +125,9 @@ const fi = {
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirretty alue',
     },
+    mapLayerView: {
+        removeTooltip: 'Poista karttataso',
+    },
 };
 
 export default fi;
