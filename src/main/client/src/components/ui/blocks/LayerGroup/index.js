@@ -3,6 +3,9 @@ import * as styles from '../../defaultStyles';
 
 import Header from './Header';
 import Content from './Content';
+import Layer from './Layer';
+import Label from './Label';
+import RemoveIcon from './RemoveIcon';
 
 const LayerGroup = styled.div`
     background: ${styles.colorBackgroundLight};
@@ -28,5 +31,8 @@ const LayerGroup = styled.div`
 
 LayerGroup.Header = Header;
 LayerGroup.Content = Content;
+LayerGroup.Layer = Layer;
+LayerGroup.Layer.Label = Label;
+LayerGroup.Layer.RemoveIcon = RemoveIcon;
 
 export default LayerGroup;
