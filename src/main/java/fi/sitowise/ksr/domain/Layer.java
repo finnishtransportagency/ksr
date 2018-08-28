@@ -3,23 +3,34 @@ package fi.sitowise.ksr.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.lang.Math.toIntExact;
-
 /**
  * A Layer-POJO which represents a map layer.
  */
 public class Layer implements Serializable {
-    private String id;
+
+    @SafeHtml
     private String name;
-    private String type;
+
+    @SafeHtml
     private String url;
+
+    @SafeHtml
     private String layers;
+
+    @SafeHtml
     private String styles;
+
+    @SafeHtml
+    private String attribution;
+
+    private String id;
+    private String type;
     private boolean visible;
     private double opacity;
     private String authentication;
@@ -27,7 +38,6 @@ public class Layer implements Serializable {
     private int minScale;
     private int maxScale;
     private boolean transparent;
-    private String attribution;
     private boolean desktopVisible;
     private boolean mobileVisible;
     private boolean queryable;
@@ -393,7 +403,6 @@ public class Layer implements Serializable {
      *
      * @param desktopVisible the desktop visible
      */
-    @JsonIgnore
     public void setDesktopVisible(String desktopVisible) {
         this.desktopVisible = "1".equals(desktopVisible);
     }
@@ -412,7 +421,7 @@ public class Layer implements Serializable {
      *
      * @param mobileVisible the mobile visible
      */
-    @JsonIgnore
+//    @JsonIgnore
     public void setMobileVisible(String mobileVisible) {
         this.mobileVisible = "1".equals(mobileVisible);
     }
