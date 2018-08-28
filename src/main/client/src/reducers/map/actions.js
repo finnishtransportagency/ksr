@@ -2,6 +2,7 @@
 import { fetchLayerGroups } from '../../api/map/layerGroups';
 import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
+import { deleteUserLayer } from  '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
 
 export const getLayerGroups = () => (dispatch: Function) => {
@@ -93,3 +94,18 @@ export const setEditMode = (editMode: string) => ({
     type: types.SET_EDIT_MODE,
     editMode,
 });
+
+export const removeUserLayer = (layerId: string) => ({
+    type: types.REMOVE_USER_LAYER,
+    layerId,
+});
+
+export const removeUserLayerConfirmed = (layerId: string) => (dispatch: Function) => {
+    deleteUserLayer(layerId).then((res) => {
+        if (res.ok) {
+            dispatch({
+                type: types.REMOVE_USER_LAYER_FULFILLED,
+            });
+        }
+    }).catch(e => console.error(e));
+};

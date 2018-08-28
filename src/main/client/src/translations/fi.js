@@ -128,6 +128,12 @@ const fi = {
     mapLayerView: {
         removeTooltip: 'Poista karttataso',
     },
+    modalRemoveUserLayer: {
+        title: 'Karttatason poistaminen',
+        content: 'Haluatko varmasti poistaa karttatason? Karttatason poistaminen poistaa karttatason tietokannasta. Jos haluat vain piilottaa karttatason, paina "PERUUTA".',
+        submit: 'Poista',
+        cancel: 'Peruuta',
+    },
 };
 
 export default fi;
