@@ -33,6 +33,7 @@ public class Layer implements Serializable {
     private boolean queryable;
     private List<String> queryColumns;
     private boolean useInternalProxy;
+    private boolean userLayer;
 
     /**
      * Construct a Layer
@@ -62,6 +63,7 @@ public class Layer implements Serializable {
         this.setMobileVisible(lr.getMobileVisible());
         this.setQueryable(lr.getQueryable());
         this.setUseInternalProxy(lr.getUseInternalProxy());
+        this.setUserLayer(false);
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -91,6 +93,7 @@ public class Layer implements Serializable {
         this.setMobileVisible(lr.getMobileVisible());
         this.setQueryable(lr.getQueryable());
         this.setUseInternalProxy(lr.getUseInternalProxy());
+        this.setUserLayer(true);
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -464,5 +467,21 @@ public class Layer implements Serializable {
     @JsonIgnore
     public void setUseInternalProxy(String useInternalProxy) {
         this.useInternalProxy = "1".equals(useInternalProxy);
+    }
+
+    /**
+     * Returns if layer is user-defined layer
+     * @return is an user defined layer
+     */
+    public boolean isUserLayer() {
+        return userLayer;
+    }
+
+    /**
+     * Set's if layer is user-defined layer
+     * @param userLayer is an user defined layer
+     */
+    public void setUserLayer(boolean userLayer) {
+        this.userLayer = userLayer;
     }
 }
