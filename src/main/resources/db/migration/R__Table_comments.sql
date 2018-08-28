@@ -53,3 +53,12 @@ comment on column user_layer.mobile_visible is 'Whether the layer is visible or 
 comment on column user_layer.queryable is 'Whether the layer can be queried or not.';
 comment on column user_layer.query_columns is 'Columns which are used in free word query.';
 comment on column user_layer.username is 'Identifier of the user that the layer belongs to.';
+
+comment on table workspace is 'Saved workspaces.';
+comment on column workspace.id is 'Generated workspace identifier. Primary key.';
+comment on column workspace.name is 'Name of the workspace.';
+comment on column workspace.username is 'Username of the user that the workspace belongs to.';
+comment on column workspace.scale is 'Scale of the map.';
+comment on column workspace.center_longitude is 'Longitude of map''s center point.';
+comment on column workspace.center_latitude is 'Latitude of map''s center point.';
+comment on column workspace.updated is 'Time of last update on the workspace.';
