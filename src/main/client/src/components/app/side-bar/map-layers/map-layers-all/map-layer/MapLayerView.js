@@ -1,20 +1,26 @@
 // @flow
 import React from 'react';
 
-import LayerGroup from '../../../../ui/blocks/LayerGroup';
-import strings from '../../../../../translations';
+import LayerGroup from '../../../../../ui/blocks/LayerGroup';
+import strings from '../../../../../../translations';
 
 type Props = {
     layer: Object,
     handleLayerClick: (number) => void,
+    removeUserLayer: Function,
     checked: boolean,
 };
 
-const MapLayerView = ({ layer, handleLayerClick, checked }: Props) => (
+const MapLayerView = ({
+    layer,
+    handleLayerClick,
+    checked,
+    removeUserLayer,
+}: Props) => (
     <LayerGroup.Layer>
         <LayerGroup.Layer.Label htmlFor={layer.id}>
             <input
-                onChange={() => handleLayerClick(layer.id)}
+                onChange={handleLayerClick}
                 checked={checked}
                 type="checkbox"
                 value={layer.name}
@@ -29,6 +35,7 @@ const MapLayerView = ({ layer, handleLayerClick, checked }: Props) => (
                     <LayerGroup.Layer.RemoveIcon
                         data-balloon={strings.mapLayerView.removeTooltip}
                         data-balloon-pos="left"
+                        onClick={removeUserLayer}
                     >
                         <i className="fas fa-trash" />
                     </LayerGroup.Layer.RemoveIcon>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import MapLayerView from '../MapLayerView';
-import LayerGroup from '../../../../../ui/blocks/LayerGroup';
+import LayerGroup from '../../../../../../ui/blocks/LayerGroup';
 
 const setup = (prop) => {
     const minProps = {

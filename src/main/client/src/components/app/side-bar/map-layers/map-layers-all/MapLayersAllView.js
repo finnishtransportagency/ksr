@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 import LayerGroup from '../../../../ui/blocks/LayerGroup';
 
-import MapLayerView from './MapLayerView';
+import MapLayerContainer from './map-layer/MapLayerContainer';
 
 type Props = {
     layerGroups: Array<any>,
@@ -38,7 +38,7 @@ const MapLayersAllView = ({
                 </LayerGroup.Header>
                 <LayerGroup.Content hidden={activeGroup !== lg.id}>
                     {lg.layers.map(l => (
-                        <MapLayerView
+                        <MapLayerContainer
                             key={l.id}
                             layer={l}
                             handleLayerClick={handleLayerClick}

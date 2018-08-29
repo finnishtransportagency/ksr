@@ -7,6 +7,7 @@ import { H1 } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
 import MapLayersAllContainer from './map-layers-all/MapLayersAllContainer';
 import ModalAddUserLayer from './modal-add-user-layer/ModalAddUserLayer';
+import ModalRemoveUserLayerContainer from './modal-remove-user-layer/ModalRemoveUserLayerContainer';
 import { ButtonLayerNav, ButtonLayerNavWrapper, ButtonLayerAddWrapper } from './styles';
 
 type Props = {
@@ -67,6 +68,7 @@ const MapLayersView = ({
             </ButtonLayerAddWrapper>
         </SideBar.Content>
         {activeModal === 'addUserLayer' && <ModalAddUserLayer />}
+        {activeModal === 'removeUserLayer' && <ModalRemoveUserLayerContainer />}
     </Fragment>
 );
 
