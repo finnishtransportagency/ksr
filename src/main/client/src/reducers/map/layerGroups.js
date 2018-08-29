@@ -7,6 +7,7 @@ import {
     ADD_SEARCH_RESULTS_LAYER,
     CLEAR_TABLE_DATA,
     SET_ACTIVE_ADMIN_TOOL,
+    REMOVE_USER_LAYER_FULFILLED,
 } from '../../constants/actionTypes';
 
 import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -118,6 +119,15 @@ export default (state: State = initialState, action: Action) => {
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
                 layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
+            };
+        case REMOVE_USER_LAYER_FULFILLED:
+            return {
+                ...state,
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: lg.layers.filter(l => l.id !== action.layerId),
+                })): Array<LayerGroups>),
+                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<LayerList>),
             };
         default:
             return state;

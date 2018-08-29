@@ -105,6 +105,7 @@ export const removeUserLayerConfirmed = (layerId: string) => (dispatch: Function
         if (res.ok) {
             dispatch({
                 type: types.REMOVE_USER_LAYER_FULFILLED,
+                layerId,
             });
         }
     }).catch(e => console.error(e));
