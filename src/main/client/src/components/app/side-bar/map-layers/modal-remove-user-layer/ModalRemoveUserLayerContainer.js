@@ -6,11 +6,12 @@ import { removeUserLayerConfirmed } from '../../../../../reducers/map/actions';
 
 const mapStateToProps = state => ({
     layerId: state.map.userLayer.layerToRemove,
+    layerList: state.map.layerGroups.layerList,
 });
 
 const mapDispatchToProps = dispatch => ({
-    removeUserLayerConfirmed: (layerId) => {
-        dispatch(removeUserLayerConfirmed(layerId));
+    removeUserLayerConfirmed: (layerId, layerList) => {
+        dispatch(removeUserLayerConfirmed(layerId, layerList));
     },
 });
 

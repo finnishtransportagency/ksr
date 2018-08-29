@@ -6,12 +6,13 @@ import ModalContainer from '../../../shared/Modal/ModalContainer';
 type Props = {
     layerId: string,
     removeUserLayerConfirmed: Function,
+    layerList: Array<Object>,
 };
 
-const ModalRemoveUserLayer = ({ layerId, removeUserLayerConfirmed }: Props) => (
+const ModalRemoveUserLayer = ({ layerId, removeUserLayerConfirmed, layerList }: Props) => (
     <ModalContainer
         title={strings.modalRemoveUserLayer.title}
-        handleModalSubmit={() => removeUserLayerConfirmed(layerId)}
+        handleModalSubmit={() => removeUserLayerConfirmed(layerId, layerList)}
         submitText={strings.modalRemoveUserLayer.submit}
         cancelText={strings.modalRemoveUserLayer.cancel}
     >
