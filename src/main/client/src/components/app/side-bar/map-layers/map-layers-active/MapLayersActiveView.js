@@ -66,6 +66,7 @@ const MapLayersView = ({
                                                                 }
                                                             >
                                                                 { l._source !== 'search' &&
+                                                                !l.userLayer &&
                                                                 l.type === 'agfs' &&
                                                                 <i
                                                                     role="button"
