@@ -3,7 +3,7 @@ import { fetchLayerGroups } from '../../api/map/layerGroups';
 import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
 import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
-import { deleteUserLayer } from  '../../api/user-layer/deleteUserLayer';
+import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
 
 export const getLayerGroups = () => (dispatch: Function) => {
@@ -26,7 +26,8 @@ export const getLayerGroups = () => (dispatch: Function) => {
                                 layers.fields && layers.fields.map((f, index) => ({
                                     value: index, label: f.alias, type: f.type, name: f.name,
                                 }));
-                        });
+                        })
+                        .catch(err => console.log(err));
                 }
             });
             return r;
@@ -96,17 +97,38 @@ export const setEditMode = (editMode: string) => ({
     editMode,
 });
 
-export const addUserLayer = (layer: Object) => (dispatch: Function) => {
-    fetchAddUserLayer(layer)
-        .then((r) => {
-            if (!r.error) {
-                dispatch({
-                    type: types.ADD_USER_LAYER,
-                    layer: {
-                        ...r,
-                        active: r.visible,
-                    },
-                });
+export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
+    fetchAddUserLayer(layerValues)
+        .then((l) => {
+            if (!l.error) {
+                if (l.type === 'agfs') {
+                    layerData(l.id)
+                        .then((layer) => {
+                            l.fields =
+                                layer.fields && layer.fields.map((f, index) => ({
+                                    value: index, label: f.alias, type: f.type, name: f.name,
+                                }));
+                            return l;
+                        })
+                        .then((r) => {
+                            dispatch({
+                                type: types.ADD_USER_LAYER,
+                                layer: {
+                                    ...r,
+                                    active: r.visible,
+                                },
+                            });
+                        })
+                        .catch(err => console.log(err));
+                } else {
+                    dispatch({
+                        type: types.ADD_USER_LAYER,
+                        layer: {
+                            ...l,
+                            active: l.visible,
+                        },
+                    });
+                }
             }
         })
         .catch(err => console.log(err));
@@ -117,9 +139,20 @@ export const removeUserLayer = (layerId: string) => ({
     layerId,
 });
 
-export const removeUserLayerConfirmed = (layerId: string) => (dispatch: Function) => {
+export const removeUserLayerConfirmed = (
+    layerId: String,
+    layerList: Array<Object>,
+) => (dispatch: Function) => {
     deleteUserLayer(layerId).then((res) => {
         if (res.ok) {
+            dispatch({
+                type: types.REMOVE_LAYER_FROM_VIEW,
+                layerId,
+            });
+            dispatch({
+                type: types.SET_LAYER_LIST,
+                layerList: layerList.filter(l => l.id !== layerId),
+            });
             dispatch({
                 type: types.REMOVE_USER_LAYER_FULFILLED,
                 layerId,
