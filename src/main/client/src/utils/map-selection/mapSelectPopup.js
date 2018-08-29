@@ -53,12 +53,14 @@ export const mapSelectPopup = (
                     .filter(ll => ll.id === layer.graphic.layer.id)
                     .map(ll => ll.queryColumns);
 
-                queryColumns[0].forEach((r) => {
-                    fieldInfos.push({
-                        fieldName: r,
-                        label: r,
+                if (queryColumns[0]) {
+                    queryColumns[0].forEach((r) => {
+                        fieldInfos.push({
+                            fieldName: r,
+                            label: r,
+                        });
                     });
-                });
+                }
 
                 const selectIntersectAction = {
                     title: strings.esriMap.selectIntersectFeatures,
