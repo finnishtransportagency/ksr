@@ -38,12 +38,15 @@ const MapLayersAllView = ({
                 </LayerGroup.Header>
                 <LayerGroup.Content hidden={activeGroup !== lg.id}>
                     {lg.layers.map(l => (
-                        <MapLayerContainer
-                            key={l.id}
-                            layer={l}
-                            handleLayerClick={handleLayerClick}
-                            checked={layerList.find(layer => layer.id === l.id).active}
-                        />))
+                        layerList.find(layer => layer.id === l.id)
+                            ? <MapLayerContainer
+                                key={l.id}
+                                layer={l}
+                                handleLayerClick={handleLayerClick}
+                                checked={layerList.find(layer => layer.id === l.id).active}
+                            />
+                            : null
+                    ))
                     }
                 </LayerGroup.Content>
             </LayerGroup>
