@@ -27,7 +27,7 @@ export const Wrapper = styled.div`
         
         #select-tool-outer-wrapper,
         #create-new-feature-wrapper,
-        #draw-tool-outer-wrapper,
+        #measure-tool-outer-wrapper,
         #toggle-select-tools,
         #draw-rectangle,
         #draw-polygon-select,
@@ -50,7 +50,7 @@ export const Wrapper = styled.div`
         };
         
         #toggle-select-tools,
-        #toggle-draw-tools,
+        #toggle-measure-tools,
         #draw-create-new-feature
          {
             margin-left: 10px;
@@ -71,10 +71,10 @@ export const Wrapper = styled.div`
         .esri-compass,
         .esri-zoom .esri-interactive,
         .esri-disabled,
-        #draw-polygon,
-        #draw-line,
+        #draw-measure-polygon,
+        #draw-measure-line,
         #toggle-select-tools,
-        #toggle-draw-tools,
+        #toggle-measure-tools,
         #draw-rectangle,
         #draw-polygon-select,
         #draw-circle,

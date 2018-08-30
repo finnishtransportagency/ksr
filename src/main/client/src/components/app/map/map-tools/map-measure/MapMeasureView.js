@@ -14,9 +14,9 @@ const MapMeasureView = ({
     value, removeMeasurement, toggleDrawTools, drawTools,
 }: Props) => (
     <Fragment>
-        <DrawToolOuterWrapper id="draw-tool-outer-wrapper">
+        <DrawToolOuterWrapper id="measure-tool-outer-wrapper">
             <div
-                id="toggle-draw-tools"
+                id="toggle-measure-tools"
                 role="button"
                 tabIndex={0}
                 className="esri-component esri-widget--button esri-widget esri-interactive"
@@ -24,18 +24,18 @@ const MapMeasureView = ({
                 onClick={() => { toggleDrawTools(); }}
                 onKeyPress={() => { toggleDrawTools(); }}
             >
-                <span className="esri-icon-edit" />
+                <span className="esri-icon-line-chart" />
             </div>
             <DrawToolWrapper drawTools={drawTools}>
                 <div
-                    id="draw-polygon"
+                    id="draw-measure-polygon"
                     className="esri-component esri-widget--button esri-widget esri-interactive"
                     title={strings.mapMeasure.drawPolygon}
                 >
                     <span className="esri-icon-polygon" />
                 </div>
                 <div
-                    id="draw-line"
+                    id="draw-measure-line"
                     className="esri-component esri-widget--button esri-widget esri-interactive"
                     title={strings.mapMeasure.drawLine}
                 >

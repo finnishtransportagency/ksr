@@ -18,8 +18,8 @@ describe('<MapMeasureView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {
-        expect(wrapper.find('#draw-polygon').exists()).toBe(true);
-        expect(wrapper.find('#draw-line').exists()).toBe(true);
+        expect(wrapper.find('#draw-measure-polygon').exists()).toBe(true);
+        expect(wrapper.find('#draw-measure-line').exists()).toBe(true);
         expect(wrapper.find(DrawToolOuterWrapper).exists()).toBe(true);
         expect(wrapper.find(DrawToolWrapper).exists()).toBe(true);
     });

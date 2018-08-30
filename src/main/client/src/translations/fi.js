@@ -129,10 +129,10 @@ const fi = {
         activeAdmin: 'Luontityökalu',
     },
     mapMeasure: {
-        drawLine: 'Piirrä ja mittaa viiva',
-        drawPolygon: 'Piirrä ja mittaa polygoni',
-        selectTool: 'Piirtotyökalut',
-        removeDraw: 'Poista piirretty alue',
+        drawLine: 'Mittaa etäisyys',
+        drawPolygon: 'Mittaa pinta-ala',
+        selectTool: 'Mittaustyökalut',
+        removeDraw: 'Poista mittaukset',
     },
     mapLayerView: {
         removeTooltip: 'Poista karttataso',

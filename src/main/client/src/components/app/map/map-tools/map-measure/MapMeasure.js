@@ -52,8 +52,8 @@ class MapMeasure extends Component<Props, State> {
                     view, draw, setActiveTool,
                 } = this.props;
 
-                const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
-                const drawLineButton = (document.getElementById: Function)('draw-line');
+                const drawPolygonButton = (document.getElementById: Function)('draw-measure-polygon');
+                const drawLineButton = (document.getElementById: Function)('draw-measure-line');
 
                 const createPolygon = vertices =>
                     new Polygon({
@@ -201,8 +201,8 @@ class MapMeasure extends Component<Props, State> {
 
     removeHighlight = () => {
         const { setActiveTool } = this.props;
-        const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
-        const drawLineButton = (document.getElementById: Function)('draw-line');
+        const drawPolygonButton = (document.getElementById: Function)('draw-measure-polygon');
+        const drawLineButton = (document.getElementById: Function)('draw-measure-line');
         drawPolygonButton.style.backgroundColor = styles.colorMain;
         drawLineButton.style.backgroundColor = styles.colorMain;
         setActiveTool('');

@@ -210,7 +210,7 @@ class EsriMap extends Component<Props> {
                         compass,
                         locate,
                         track,
-                        'draw-tool-outer-wrapper',
+                        'measure-tool-outer-wrapper',
                         'select-tool-outer-wrapper',
                         'create-new-feature-wrapper',
                     ],
@@ -225,7 +225,7 @@ class EsriMap extends Component<Props> {
                 (document.getElementById: Function)('select-tool-outer-wrapper').classList
                     .remove('esri-component');
 
-                (document.getElementById: Function)('draw-tool-outer-wrapper').classList
+                (document.getElementById: Function)('measure-tool-outer-wrapper').classList
                     .remove('esri-component');
 
                 (document.getElementById: Function)('create-new-feature-wrapper').classList
