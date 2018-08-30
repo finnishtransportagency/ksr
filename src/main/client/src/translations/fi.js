@@ -166,6 +166,12 @@ const fi = {
         cancel: 'Peruuta',
         workspaceNameExists: 'Kyseisellä nimellä löytyy jo tallennettu työtila. Syötä uusi nimi tai korvaa olemassa oleva tila tallennettujen työtilojen listasta.',
     },
+    mapDraw: {
+        drawLine: 'Piirrä viiva',
+        drawPolygon: 'Piirrä alue',
+        selectTool: 'Piirtotyökalut',
+        removeDraw: 'Poista piirrokset',
+    },
 };
 
 export default fi;

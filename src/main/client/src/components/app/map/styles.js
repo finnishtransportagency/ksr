@@ -28,6 +28,7 @@ export const Wrapper = styled.div`
         #select-tool-outer-wrapper,
         #create-new-feature-wrapper,
         #measure-tool-outer-wrapper,
+        #draw-tool-outer-wrapper,
         #toggle-select-tools,
         #draw-rectangle,
         #draw-polygon-select,
@@ -51,6 +52,7 @@ export const Wrapper = styled.div`
         
         #toggle-select-tools,
         #toggle-measure-tools,
+        #toggle-draw-tools,
         #draw-create-new-feature
          {
             margin-left: 10px;
@@ -73,12 +75,16 @@ export const Wrapper = styled.div`
         .esri-disabled,
         #draw-measure-polygon,
         #draw-measure-line,
+        #draw-polygon,
+        #draw-line,
         #toggle-select-tools,
         #toggle-measure-tools,
+        #toggle-draw-tools,
         #draw-rectangle,
         #draw-polygon-select,
         #draw-circle,
         #remove-measurement,
+        #remove-draw,
         #draw-create-new-feature,
         #reject-create-new-feature,
         #accept-create-new-feature,

@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 import esriLoader from 'esri-loader';
 import MapMeasureContainer from './map-measure/MapMeasureContainer';
 import SketchToolContainer from './sketch-tools/SketchToolContainer';
+import MapDrawContainer from './map-draw/MapDrawContainer';
 
 type Props = {
     view: Object,
@@ -48,6 +49,7 @@ class MapTools extends Component<Props> {
             <Fragment>
                 <SketchToolContainer />
                 <MapMeasureContainer />
+                <MapDrawContainer />
             </Fragment>
         );
     }

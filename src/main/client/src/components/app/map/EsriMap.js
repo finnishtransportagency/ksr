@@ -211,6 +211,7 @@ class EsriMap extends Component<Props> {
                         locate,
                         track,
                         'measure-tool-outer-wrapper',
+                        'draw-tool-outer-wrapper',
                         'select-tool-outer-wrapper',
                         'create-new-feature-wrapper',
                     ],
@@ -226,6 +227,9 @@ class EsriMap extends Component<Props> {
                     .remove('esri-component');
 
                 (document.getElementById: Function)('measure-tool-outer-wrapper').classList
+                    .remove('esri-component');
+                
+                (document.getElementById: Function)('draw-tool-outer-wrapper').classList
                     .remove('esri-component');
 
                 (document.getElementById: Function)('create-new-feature-wrapper').classList
