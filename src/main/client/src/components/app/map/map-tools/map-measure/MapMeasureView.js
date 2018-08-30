@@ -1,6 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
-import { DrawToolOuterWrapper, DrawToolWrapper } from './styles';
+import { DrawToolOuterWrapper, DrawToolWrapper } from '../styles';
 import strings from '../../../../../translations';
 
 type Props = {

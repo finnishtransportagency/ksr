@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import MapMeasureView from '../MapMeasureView';
-import { DrawToolOuterWrapper, DrawToolWrapper } from '../styles';
+import { DrawToolOuterWrapper, DrawToolWrapper } from '../../styles';
 
 const setup = () => {
     const props = {
