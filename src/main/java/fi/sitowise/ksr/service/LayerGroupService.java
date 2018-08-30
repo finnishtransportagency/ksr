@@ -66,6 +66,7 @@ public class LayerGroupService {
                 }
             }
         }
+        System.out.println(combinedLayerGroups);
         return combinedLayerGroups;
     }
 
@@ -91,7 +92,7 @@ public class LayerGroupService {
      *
      * @return layerGroups list of LayerGroup that doesn't include user layers
      */
-     private LayerGroup createUserLayerGroup(List<LayerGroup> layerGroups) {
+     LayerGroup createUserLayerGroup(List<LayerGroup> layerGroups) {
          int maxId = Collections.max(layerGroups, Comparator.comparing(LayerGroup::getId)).getId();
          int maxGroupOrder = Collections.max(layerGroups, Comparator.comparing(LayerGroup::getGroupOrder)).getGroupOrder();
          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -100,7 +101,11 @@ public class LayerGroupService {
          layerGroup.setName("Käyttäjätasot");
          layerGroup.setId(maxId + 1);
          layerGroup.setGroupOrder(maxGroupOrder + 1);
-         layerGroup.setLayers(userLayerRepository.getUserLayers(authentication.getName()));
+
+         layerGroup.setLayers(authentication != null
+                 ? userLayerRepository.getUserLayers(authentication.getName())
+                 : new ArrayList<>()
+         );
 
          return layerGroup;
     }

@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import org.junit.Test;
@@ -24,6 +25,30 @@ public class UserLayerServiceTests {
 
     @MockBean
     UserLayerRepository userLayerRepository;
+
+    /**
+     * Test add user layer
+     */
+    @Test
+    public void testAddUserLayerOk() {
+        Layer layer = new Layer();
+        layer.setName("Layer name");
+        layer.setType("AGFS");
+        layer.setUrl("test.url.com");
+        layer.setLayers("layers");
+        layer.setStyles("default");
+        layer.setOpacity(1.0);
+        layer.setMinScale(0);
+        layer.setMaxScale(0);
+        layer.setTransparent("1");
+        layer.setAttribution("Test");
+        layer.setDesktopVisible("1");
+        layer.setMobileVisible("1");
+
+        Mockito.when(userLayerRepository.getMaxUserLayerId()).thenReturn(123);
+        Mockito.when(userLayerRepository.getUserLayer(123)).thenReturn(layer);
+        userLayerService.addUserLayer("test-user", layer, false);
+    }
 
     /**
      * Test remove a user layer, that does not exists.
