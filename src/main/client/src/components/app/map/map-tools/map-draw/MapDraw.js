@@ -48,15 +48,17 @@ class MapDraw extends Component<Props, State> {
             .loadModules([
                 'esri/geometry/Polygon',
                 'esri/geometry/Polyline',
+                'esri/geometry/Point',
                 'esri/Graphic',
             ])
-            .then(([Polygon, Polyline, Graphic]) => {
+            .then(([Polygon, Polyline, Point, Graphic]) => {
                 const {
                     view, draw, setActiveTool,
                 } = this.props;
 
                 const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
                 const drawLineButton = (document.getElementById: Function)('draw-line');
+                const drawPointButton = (document.getElementById: Function)('draw-point');
 
                 const createPolygon = vertices =>
                     new Polygon({
@@ -70,17 +72,38 @@ class MapDraw extends Component<Props, State> {
                         spatialReference: view.spatialReference,
                     });
 
+                const createPoint = coordinates =>
+                    new Point({
+                        x: coordinates[0],
+                        y: coordinates[1],
+                        spatialReference: view.spatialReference,
+                    });
+
                 const createGraphic = (geometry, style): any =>
                     new Graphic({
                         geometry: geometry.extent.width ? geometry : null,
                         symbol: {
                             type: 'simple-fill',
                             style,
-                            color: [60, 180, 200, 0.5],
+                            color: [102, 0, 102, 0.5],
                             outline: {
-                                color: '#444444',
+                                color: '#470047',
                                 width: 2,
                             },
+                        },
+                        type: 'draw-graphic',
+                        id: this.currentGraphicUUID,
+                    });
+
+                const createPointGraphic = (geometry): any =>
+                    new Graphic({
+                        geometry,
+                        symbol: {
+                            type: 'picture-marker',
+                            url: 'images/map-marker.png',
+                            width: '32px',
+                            height: '32px',
+                            yoffset: '16px',
                         },
                         type: 'draw-graphic',
                         id: this.currentGraphicUUID,
@@ -107,16 +130,31 @@ class MapDraw extends Component<Props, State> {
                     view.graphics.add(graphic);
                 };
 
+                const drawPoint = (evt) => {
+                    const { coordinates } = evt;
+                    const point = createPoint(coordinates);
+
+                    const graphic = createPointGraphic(point);
+
+                    view.graphics.forEach(g => g.id === this.currentGraphicUUID
+                        && view.graphics.remove(g));
+                    view.graphics.add(graphic);
+                };
+
                 const drawingMode = (geometry, drawGeometry) => {
                     const action = draw.create(geometry);
                     this.currentGraphicUUID = uuidv4();
 
                     view.focus();
 
-                    action.on(
-                        ['vertex-add', 'cursor-update', 'vertex-remove', 'draw-complete'],
-                        drawGeometry,
-                    );
+                    if (geometry === 'polygon' || geometry === 'polyline') {
+                        action.on(
+                            ['vertex-add', 'cursor-update', 'vertex-remove', 'draw-complete'],
+                            drawGeometry,
+                        );
+                    } else if (geometry === 'point') {
+                        action.on(['cursor-update'], drawGeometry);
+                    }
 
                     action.on('draw-complete', this.removeHighlight);
                 };
@@ -136,6 +174,14 @@ class MapDraw extends Component<Props, State> {
                         drawLineButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
+
+                drawPointButton.addEventListener('click', () => {
+                    if (this.props.active !== 'drawPoint') {
+                        setActiveTool('drawPoint');
+                        drawingMode('point', drawPoint);
+                        drawPointButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                    }
+                });
             });
     };
 
@@ -143,8 +189,10 @@ class MapDraw extends Component<Props, State> {
         const { setActiveTool, view } = this.props;
         const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
         const drawLineButton = (document.getElementById: Function)('draw-line');
+        const drawPointButton = (document.getElementById: Function)('draw-point');
         drawPolygonButton.style.backgroundColor = styles.colorMain;
         drawLineButton.style.backgroundColor = styles.colorMain;
+        drawPointButton.style.backgroundColor = styles.colorMain;
         setActiveTool('');
 
         const hasGraphics = view

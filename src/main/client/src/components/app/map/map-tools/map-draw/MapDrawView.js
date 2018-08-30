@@ -41,6 +41,13 @@ const MapDrawView = ({
                 >
                     <span className="esri-icon-polyline" />
                 </div>
+                <div
+                    id="draw-point"
+                    className="esri-component esri-widget--button esri-widget esri-interactive"
+                    title={strings.mapDraw.drawPoint}
+                >
+                    <span className="esri-icon-map-pin" />
+                </div>
             </DrawToolWrapper>
             <div
                 style={{ visibility: hasGraphics ? 'visible' : 'hidden' }}

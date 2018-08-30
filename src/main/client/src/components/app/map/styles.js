@@ -77,6 +77,7 @@ export const Wrapper = styled.div`
         #draw-measure-line,
         #draw-polygon,
         #draw-line,
+        #draw-point,
         #toggle-select-tools,
         #toggle-measure-tools,
         #toggle-draw-tools,

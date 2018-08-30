@@ -169,6 +169,7 @@ const fi = {
     mapDraw: {
         drawLine: 'Piirrä viiva',
         drawPolygon: 'Piirrä alue',
+        drawPoint: 'Piirrä piste',
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirrokset',
     },
