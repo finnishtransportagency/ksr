@@ -12,6 +12,14 @@ const MapLayerTitle = ({ layer }) => {
             );
         }
         default:
+            if (layer.userLayer) {
+                return (
+                    <MapLayerTitleWrapper>
+                        <i className="fas fa-user" />
+                        <span>{layer.name ? layer.name : layer.title}</span>
+                    </MapLayerTitleWrapper>
+                );
+            }
             return layer.name ? layer.name : layer.title;
     }
 };

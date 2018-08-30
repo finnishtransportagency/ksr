@@ -12,4 +12,13 @@ describe('<MapLayerTitle />', () => {
         expect(wrapper.find('.fa-search').length).toBe(1);
         expect(wrapper.find('span').text()).toBe(props.layer.name);
     });
+
+    it('renders correctly with user layer', () => {
+        const props = {
+            layer: { name: 'UL1', userLayer: true },
+        };
+        const wrapper = shallow(<MapLayerTitle {...props} />);
+        expect(wrapper.find('.fa-user').length).toBe(1);
+        expect(wrapper.find('span').text()).toBe(props.layer.name);
+    });
 });
