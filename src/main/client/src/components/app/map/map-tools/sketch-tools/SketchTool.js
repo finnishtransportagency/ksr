@@ -29,7 +29,7 @@ type Props = {
     data: Array<Object>,
     adminToolActive: string,
     setEditMode: (editMode: string) => void,
-    setTempGrapLayer: Function,
+    setTempGraphicsLayer: Function,
     geometryType: string,
     setActiveModal: (modal: string) => void,
 };
@@ -179,7 +179,7 @@ class SketchTool extends Component<Props, State> {
                         symbol: sketchViewModel.graphic.symbol,
                     });
                     tempGraphicsLayer.add(graphic);
-                    this.props.setTempGrapLayer(tempGraphicsLayer);
+                    this.props.setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
                 const updateGraphic = (event) => {
@@ -227,7 +227,7 @@ class SketchTool extends Component<Props, State> {
     removeSketch = () => {
         const layer = this.props.tempGraphicsLayer;
         layer.graphics = undefined;
-        this.props.setTempGrapLayer(layer);
+        this.props.setTempGraphicsLayer(layer);
     };
 
     // Assign constructor ref flowtypes

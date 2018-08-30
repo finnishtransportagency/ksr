@@ -72,7 +72,7 @@ export const setMapView = (view: any) => (dispatch: Function) => {
     });
 };
 
-export const setTempGrapLayer = (graphicsLayer: Object) => (dispatch: Function) => {
+export const setTempGraphicsLayer = (graphicsLayer: Object) => (dispatch: Function) => {
     dispatch({
         type: types.SET_GRAPH_LAYER,
         graphicsLayer,

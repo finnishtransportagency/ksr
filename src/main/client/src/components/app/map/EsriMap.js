@@ -25,7 +25,7 @@ type Props = {
     sketchViewModel: Object,
     setEditMode: (editMode: string) => void,
     editMode: string,
-    setTempGrapLayer: (graphicsLayer: Object) => void,
+    setTempGraphicsLayer: (graphicsLayer: Object) => void,
     layers: Array<Object>,
     setActiveModal: Function,
     setSingleLayerGeometry: Function,
@@ -148,7 +148,7 @@ class EsriMap extends Component<Props> {
                     selectFeatures,
                     printServiceUrl,
                     activeNav,
-                    setTempGrapLayer,
+                    setTempGraphicsLayer,
                     setActiveModal,
                     setSingleLayerGeometry,
                 } = this.props;
@@ -280,12 +280,12 @@ class EsriMap extends Component<Props> {
                 });
 
                 return {
-                    setMapView, view, setTempGrapLayer, tempGraphicsLayer,
+                    setMapView, view, setTempGraphicsLayer, tempGraphicsLayer,
                 };
             })
             .then((r) => {
                 r.setMapView(r.view);
-                r.setTempGrapLayer(r.tempGraphicsLayer);
+                r.setTempGraphicsLayer(r.tempGraphicsLayer);
             });
     };
 

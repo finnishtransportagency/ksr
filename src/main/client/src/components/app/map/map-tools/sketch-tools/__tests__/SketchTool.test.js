@@ -10,7 +10,7 @@ const setup = () => {
         adminToolActive: '',
         draw: {},
         tempGraphicsLayer: { graphics: { grap: {} } },
-        setTempGrapLayer: jest.fn(),
+        setTempGraphicsLayer: jest.fn(),
         setActiveTool: jest.fn(),
         sketchViewModel: {
             reset: jest.fn(),

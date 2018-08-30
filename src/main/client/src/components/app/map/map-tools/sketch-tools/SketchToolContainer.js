@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { setActiveTool, setEditMode, setTempGrapLayer } from '../../../../../reducers/map/actions';
+import { setActiveTool, setEditMode, setTempGraphicsLayer } from '../../../../../reducers/map/actions';
 import { selectFeatures, deSelectSelected } from '../../../../../reducers/table/actions';
 import SketchTool from './SketchTool';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
@@ -31,8 +31,8 @@ const mapDispatchToProps = dispatch => ({
     setEditMode: (editMode) => {
         dispatch(setEditMode(editMode));
     },
-    setTempGrapLayer: (graphicsLayer) => {
-        dispatch(setTempGrapLayer(graphicsLayer));
+    setTempGraphicsLayer: (graphicsLayer) => {
+        dispatch(setTempGraphicsLayer(graphicsLayer));
     },
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));

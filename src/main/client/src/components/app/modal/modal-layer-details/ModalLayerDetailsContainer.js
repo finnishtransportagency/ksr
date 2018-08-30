@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import ModalLayerDetails from './ModalLayerDetails';
-import { setTempGrapLayer } from '../../../../reducers/map/actions';
+import { setTempGraphicsLayer } from '../../../../reducers/map/actions';
 
 const mapStateToProps = (state) => {
     const activeLayer = (
@@ -17,8 +17,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    setTempGrapLayer: (graphicsLayer) => {
-        dispatch(setTempGrapLayer(graphicsLayer));
+    setTempGraphicsLayer: (graphicsLayer) => {
+        dispatch(setTempGraphicsLayer(graphicsLayer));
     },
 
 });

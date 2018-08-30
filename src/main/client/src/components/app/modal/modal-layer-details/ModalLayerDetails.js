@@ -9,7 +9,7 @@ import { parseGeometryType } from '../../../../utils/type';
 type Props = {
     fields: any,
     layer: Object,
-    setTempGrapLayer: Function,
+    setTempGraphicsLayer: Function,
 };
 
 type State = {
@@ -35,7 +35,7 @@ class ModalFilter extends Component<Props, State> {
     componentWillUnmount() {
         const { layer } = this.props;
         layer.graphics = undefined;
-        this.props.setTempGrapLayer(layer);
+        this.props.setTempGraphicsLayer(layer);
     }
 
     loadFields = () => {
