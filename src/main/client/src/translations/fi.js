@@ -170,6 +170,7 @@ const fi = {
         drawLine: 'Piirrä viiva',
         drawPolygon: 'Piirrä alue',
         drawPoint: 'Piirrä piste',
+        drawText: 'Lisää tekstiä',
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirrokset',
     },

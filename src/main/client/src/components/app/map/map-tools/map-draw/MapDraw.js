@@ -59,6 +59,7 @@ class MapDraw extends Component<Props, State> {
                 const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
                 const drawLineButton = (document.getElementById: Function)('draw-line');
                 const drawPointButton = (document.getElementById: Function)('draw-point');
+                const drawTextButton = (document.getElementById: Function)('draw-text');
 
                 const createPolygon = vertices =>
                     new Polygon({
@@ -109,6 +110,24 @@ class MapDraw extends Component<Props, State> {
                         id: this.currentGraphicUUID,
                     });
 
+                const createTextGraphic = (geometry): any =>
+                    new Graphic({
+                        geometry,
+                        symbol: {
+                            type: 'text',
+                            color: '#000',
+                            haloColor: '#fff',
+                            haloSize: '20px',
+                            text: 'Tekstiä',
+                            font: {
+                                size: 12,
+                                weight: 'bold',
+                            },
+                        },
+                        type: 'draw-graphic',
+                        id: this.currentGraphicUUID,
+                    });
+
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
                     const polygon = createPolygon(vertices);
@@ -135,6 +154,17 @@ class MapDraw extends Component<Props, State> {
                     const point = createPoint(coordinates);
 
                     const graphic = createPointGraphic(point);
+
+                    view.graphics.forEach(g => g.id === this.currentGraphicUUID
+                        && view.graphics.remove(g));
+                    view.graphics.add(graphic);
+                };
+
+                const drawText = (evt) => {
+                    const { coordinates } = evt;
+                    const point = createPoint(coordinates);
+
+                    const graphic = createTextGraphic(point);
 
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
@@ -182,6 +212,14 @@ class MapDraw extends Component<Props, State> {
                         drawPointButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
+
+                drawTextButton.addEventListener('click', () => {
+                    if (this.props.active !== 'drawText') {
+                        setActiveTool('drawText'); // dispatchaa actioni, joka 1) avaa modalin ja kysyy tekstin joka halutaan kirjoittaa 2) laittaa aktiiviseksi työkaluksi 'drawText'
+                        drawingMode('point', drawText);
+                        drawTextButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                    }
+                });
             });
     };
 
@@ -190,9 +228,11 @@ class MapDraw extends Component<Props, State> {
         const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
         const drawLineButton = (document.getElementById: Function)('draw-line');
         const drawPointButton = (document.getElementById: Function)('draw-point');
+        const drawTextButton = (document.getElementById: Function)('draw-text');
         drawPolygonButton.style.backgroundColor = styles.colorMain;
         drawLineButton.style.backgroundColor = styles.colorMain;
         drawPointButton.style.backgroundColor = styles.colorMain;
+        drawTextButton.style.backgroundColor = styles.colorMain;
         setActiveTool('');
 
         const hasGraphics = view

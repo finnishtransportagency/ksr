@@ -48,6 +48,13 @@ const MapDrawView = ({
                 >
                     <span className="esri-icon-map-pin" />
                 </div>
+                <div
+                    id="draw-text"
+                    className="esri-component esri-widget--button esri-widget esri-interactive"
+                    title={strings.mapDraw.drawText}
+                >
+                    <span className="esri-icon-comment" />
+                </div>
             </DrawToolWrapper>
             <div
                 style={{ visibility: hasGraphics ? 'visible' : 'hidden' }}
