@@ -10,7 +10,7 @@ export const WrapperTabbedTable = styled.div`
     overflow: hidden;
 `;
 
-export const ButtonTabbedTableTab = Button.extend`
+export const ButtonTabbedTableTab = styled(Button)`
     width: 120px;
     text-overflow: ellipsis;
     overflow: hidden;

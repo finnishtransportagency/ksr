@@ -4,6 +4,7 @@ import activeLayerTab from './activeLayerTab';
 import mapConfig from './mapConfig';
 import mapView from './mapView';
 import mapTools from './mapTools';
+import userLayer from './userLayer';
 
 export default combineReducers({
     layerGroups,
@@ -11,4 +12,5 @@ export default combineReducers({
     mapConfig,
     mapView,
     mapTools,
+    userLayer,
 });

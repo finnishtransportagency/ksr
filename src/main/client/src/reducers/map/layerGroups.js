@@ -7,9 +7,11 @@ import {
     ADD_SEARCH_RESULTS_LAYER,
     CLEAR_TABLE_DATA,
     SET_ACTIVE_ADMIN_TOOL,
+    ADD_USER_LAYER,
+    REMOVE_USER_LAYER_FULFILLED,
 } from '../../constants/actionTypes';
 
-import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
+import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup, addLayerToUserGroup } from '../../utils/layers';
 
 type LayerGroups = {
     id: number,
@@ -56,6 +58,7 @@ type Action = {
     layerIds: Array<string>,
     layers: Array<Object>,
     layerId: string,
+    layer: Object,
 };
 
 const initialState = {
@@ -118,6 +121,21 @@ export default (state: State = initialState, action: Action) => {
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
                 layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
+            };
+        case ADD_USER_LAYER:
+            return {
+                ...state,
+                layerList: [action.layer, ...state.layerList],
+                layerGroups: addLayerToUserGroup(state.layerGroups, action.layer),
+            };
+        case REMOVE_USER_LAYER_FULFILLED:
+            return {
+                ...state,
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: lg.layers.filter(l => l.id !== action.layerId),
+                })): Array<LayerGroups>),
+                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<LayerList>),
             };
         default:
             return state;

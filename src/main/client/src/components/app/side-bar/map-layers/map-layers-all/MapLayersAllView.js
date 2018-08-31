@@ -2,6 +2,8 @@
 import React, { Fragment } from 'react';
 import LayerGroup from '../../../../ui/blocks/LayerGroup';
 
+import MapLayerContainer from './map-layer/MapLayerContainer';
+
 type Props = {
     layerGroups: Array<any>,
     layerList: any,
@@ -36,17 +38,16 @@ const MapLayersAllView = ({
                 </LayerGroup.Header>
                 <LayerGroup.Content hidden={activeGroup !== lg.id}>
                     {lg.layers.map(l => (
-                        <label key={l.id} htmlFor={l.id}>
-                            <input
-                                onChange={() => handleLayerClick(l.id)}
+                        layerList.find(layer => layer.id === l.id)
+                            ? <MapLayerContainer
+                                key={l.id}
+                                layer={l}
+                                handleLayerClick={handleLayerClick}
                                 checked={layerList.find(layer => layer.id === l.id).active}
-                                type="checkbox"
-                                value={l.name}
-                                id={l.id}
                             />
-                            <span>{l.name}</span>
-                        </label>
-                    ))}
+                            : null
+                    ))
+                    }
                 </LayerGroup.Content>
             </LayerGroup>
         ))}

@@ -3,6 +3,7 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.helper.OAMHeaderHelper;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
+import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import fi.sitowise.ksr.domain.Layer;
@@ -74,6 +75,12 @@ public class ProxyControllerTests {
      */
     @MockBean
     LayerGroupRepository layerGroupRepository;
+
+    /**
+     * The User Layer repository.
+     */
+    @MockBean
+    UserLayerRepository userLayerRepository;
 
     /**
      * Sets webAppContext and adds springSecurity.

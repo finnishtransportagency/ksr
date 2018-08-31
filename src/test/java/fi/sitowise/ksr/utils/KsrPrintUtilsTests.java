@@ -3,6 +3,7 @@ package fi.sitowise.ksr.utils;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.repository.LayerRepository;
+import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.service.LayerGroupService;
 import fi.sitowise.ksr.service.LayerService;
 import org.apache.http.NameValuePair;
@@ -46,6 +47,12 @@ public class KsrPrintUtilsTests {
      */
     @MockBean
     LayerRepository layerRepository;
+
+    /**
+     * The User Layer repository.
+     */
+    @MockBean
+    UserLayerRepository userLayerRepository;
 
     /**
      * The Layer group service.

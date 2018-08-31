@@ -3,6 +3,7 @@ const fi = {
         title: 'Karttatasot',
         active: 'Aktiiviset',
         all: 'Kaikki',
+        addNewLayer: 'Uusi taso',
     },
     search: {
         title: 'Haku',
@@ -71,6 +72,34 @@ const fi = {
         submit: 'Tallenna',
         cancel: 'Peruuta',
     },
+    modalAddUserLayer: {
+        title: 'Lisää uusi taso',
+        submit: 'Lisää',
+        cancel: 'Peruuta',
+        name: 'Nimi',
+        type: 'Tyyppi',
+        url: 'URL-osoite',
+        layers: 'Tasot',
+        opacity: 'Läpinäkyvyys',
+        minScale: 'Minimi mittakaava',
+        maxScale: 'Maksimi mittakaava',
+        transparent: 'Läpinäkyvä',
+        attribution: 'Attribuutio',
+        desktopVisible: 'Työpöytänäkyvyys',
+        mobileVisible: 'Mobiilinäkyvyys',
+        styles: 'Tyylit',
+        infoTooltip: {
+            name: 'Tason näkyvä nimi',
+            type: 'Tason kohteiden tyyppi',
+            url: 'Karttapalvelun osoite',
+            layers: 'Karttapalvelun sisältämien tasojen nimet, erotellaan pilkulla mikäli monta tasoa',
+            opacity: 'Tason läpinäkyvyys kartalla',
+            minScale: 'Minimi mittakaava jolloin taso on näkyvillä kartalla',
+            maxScale: 'Maksimi mittakaava jolloin taso on näkyvillä kartalla',
+            attribution: 'Tason tekijänoikeus nimi',
+            styles: 'Tason tyylit',
+        },
+    },
     sideNav: {
         search: 'Haku',
         layerManagement: 'Karttatasojen hallinta',
@@ -95,6 +124,15 @@ const fi = {
         drawPolygon: 'Piirrä ja mittaa polygoni',
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirretty alue',
+    },
+    mapLayerView: {
+        removeTooltip: 'Poista karttataso',
+    },
+    modalRemoveUserLayer: {
+        title: 'Karttatason poistaminen',
+        content: 'Haluatko varmasti poistaa karttatason? Karttatason poistaminen poistaa karttatason tietokannasta. Jos haluat vain piilottaa karttatason, paina "PERUUTA".',
+        submit: 'Poista',
+        cancel: 'Peruuta',
     },
 };
 

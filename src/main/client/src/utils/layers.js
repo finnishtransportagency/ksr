@@ -38,3 +38,21 @@ export const addOrReplaceLayersInSearchGroup = (layerGroups, layers) => (
         return { ...lg };
     })
 );
+
+/**
+ * Add user layer to layergroup after POST request
+ *
+ * @param layerGroups Array of layergroups
+ * @param layer Object of user layer values
+ *
+ * @returns layerGroups Updated layerGroups
+ */
+export const addLayerToUserGroup = (layerGroups, layer) => layerGroups.map((lg) => {
+    if (lg.name === 'Käyttäjätasot') {
+        return {
+            ...lg,
+            layers: [...lg.layers, layer],
+        };
+    }
+    return { ...lg };
+});
