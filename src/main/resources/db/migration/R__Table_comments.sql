@@ -62,3 +62,13 @@ comment on column workspace.scale is 'Scale of the map.';
 comment on column workspace.center_longitude is 'Longitude of map''s center point.';
 comment on column workspace.center_latitude is 'Latitude of map''s center point.';
 comment on column workspace.updated is 'Time of last update on the workspace.';
+
+comment on table workspace_layer is 'Workspace layer details.';
+comment on column workspace_layer.workspace_id is 'Identifier of the workspace that the layer belongs to.';
+comment on column workspace_layer.layer_id is 'Identifier of the layer.';
+comment on column workspace_layer.user_layer_id is 'Identifier of the layer that user has added.';
+comment on column workspace_layer.visible is 'Whether the layer is visible or not.';
+comment on column workspace_layer.opacity is 'Opacity of the layer.';
+comment on column workspace_layer.layer_order is 'Order of the layers.';
+comment on column workspace_layer.definition_expression is 'Filter condition for the layer in case of a search layer.';
+comment on column workspace_layer.selected_features is 'Features selected from the layer and whether they are highlighted or not.';
