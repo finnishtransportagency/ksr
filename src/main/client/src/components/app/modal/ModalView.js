@@ -9,6 +9,7 @@ import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 import ModalAddUserLayerContainer from './modal-add-user-layer/ModalAddUserLayerContainer';
 import ModalRemoveUserLayerContainer from './modal-remove-user-layer/ModalRemoveUserLayerContainer';
 import ModalLayerDetailsContainer from './modal-layer-details/ModalLayerDetailsContainer';
+import ModalNewWorkspaceContainer from './modal-new-workspace/ModalNewWorkspaceContainer';
 
 type Props = {
     activeModal: string,
@@ -24,6 +25,7 @@ const ModalView = ({ activeModal }: Props) => (
         {activeModal === 'addUserLayer' && <ModalAddUserLayerContainer />}
         {activeModal === 'removeUserLayer' && <ModalRemoveUserLayerContainer />}
         {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
+        {activeModal === 'newWorkspace' && <ModalNewWorkspaceContainer />}
     </Fragment>
 );
 
