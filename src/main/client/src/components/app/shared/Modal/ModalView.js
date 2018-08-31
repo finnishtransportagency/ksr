@@ -11,6 +11,7 @@ type Props = {
     title: string,
     submitText: string,
     cancelText: string,
+    submitDisabled: boolean,
 };
 
 const ModalView = ({
@@ -20,6 +21,7 @@ const ModalView = ({
     title,
     submitText,
     cancelText,
+    submitDisabled,
 }: Props) => (
     <Modal>
         <Modal.Blur />
@@ -35,7 +37,7 @@ const ModalView = ({
             </Modal.Content>
         </Scrollbars>
         <Modal.Footer>
-            <Button onClick={handleModalSubmit}>
+            <Button disabled={submitDisabled} onClick={handleModalSubmit}>
                 {submitText}
             </Button>
             <Button flat onClick={toggleModal}>

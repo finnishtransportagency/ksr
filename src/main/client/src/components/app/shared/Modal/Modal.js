@@ -13,9 +13,14 @@ type Props = {
     handleModalSubmit: Function,
     activeModal: string,
     setActiveModal: (modal: string) => void,
+    submitDisabled: boolean,
 };
 
 class Modal extends Component<Props> {
+    static defaultProps = {
+        submitDisabled: false,
+    };
+
     constructor(props: any) {
         super(props);
 
@@ -43,6 +48,7 @@ class Modal extends Component<Props> {
             cancelText,
             children,
             activeModal,
+            submitDisabled,
         } = this.props;
 
         if (activeModal) {
@@ -54,6 +60,7 @@ class Modal extends Component<Props> {
                     cancelText={cancelText}
                     toggleModal={this.toggleModal}
                     handleModalSubmit={this.handleSubmit}
+                    submitDisabled={submitDisabled}
                 />,
                 modalRoot,
             );
