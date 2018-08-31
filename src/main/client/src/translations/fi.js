@@ -104,7 +104,7 @@ const fi = {
         search: 'Haku',
         layerManagement: 'Karttatasojen hallinta',
         fileExport: 'Tiedostojen vienti',
-        saveWorkspace: 'Tallenna työtila',
+        workspace: 'Työtilat',
     },
     table: {
         noTableText: 'Ei näytettävää dataa.',
@@ -133,6 +133,17 @@ const fi = {
         content: 'Haluatko varmasti poistaa karttatason? Karttatason poistaminen poistaa karttatason tietokannasta. Jos haluat vain piilottaa karttatason, paina "PERUUTA".',
         submit: 'Poista',
         cancel: 'Peruuta',
+    },
+    workspace: {
+        title: 'Työtilat',
+        newWorkspace: 'Luo uusi työtila',
+    },
+    modalNewWorkspace: {
+        title: 'Luo uusi työtila',
+        workspaceName: 'Työtilan nimi',
+        submit: 'Tallenna',
+        cancel: 'Peruuta',
+        workspaceNameExists: 'Kyseisellä nimellä löytyy jo tallennettu työtila. Syötä uusi nimi tai korvaa olemassa oleva tila tallennettujen työtilojen listasta.',
     },
 };
 

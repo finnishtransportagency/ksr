@@ -36,10 +36,12 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => (
                 >
                     <i className="fas fa-print" />
                 </SideNav.Link>
-            </div>
-            <div>
-                <SideNav.Link title={strings.sideNav.saveWorkspace}>
-                    <i className="fas fa-save" />
+                <SideNav.Link
+                    title={strings.sideNav.workspace}
+                    active={activeNav === 'workspace'}
+                    onClick={() => { setActiveNav('workspace'); }}
+                >
+                    <i className="fas fa-briefcase" />
                 </SideNav.Link>
             </div>
         </SideNav.LinkWrapper>
