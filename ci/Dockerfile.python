@@ -1,8 +1,8 @@
 FROM python:2-alpine
 ARG JENKINS_UID=1000
 COPY confs/pip* /etc/
+RUN apk add build-base jpeg-dev zlib-dev
 RUN pip install --upgrade pip
-ENV LIBRARY_PATH /lib:/usr/lib
-RUN pip install --requirement /etc/pip-requirements.txt
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install -r /etc/pip-requirements.txt"
 RUN adduser -D -S -u ${JENKINS_UID} jenkins
 RUN chown -R jenkins /home/jenkins
