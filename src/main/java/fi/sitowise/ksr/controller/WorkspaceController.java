@@ -42,4 +42,18 @@ public class WorkspaceController {
                     "Failed to save new workspace.", e);
         }
     }
+
+    /**
+     * Delete existing workspace from database.
+     *
+     * @param workspaceName name of the workspace to be deleted from database
+     */
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public void saveWorkspace(@RequestParam String workspaceName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!workspaceService.deleteWorkspace(workspaceName, authentication.getName())) {
+            throw new KsrApiException.NotFoundErrorException(
+                    "No workspace found with the given name to be deleted.");
+        }
+    }
 }
