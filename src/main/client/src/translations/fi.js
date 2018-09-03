@@ -171,6 +171,7 @@ const fi = {
         drawPolygon: 'Piirrä alue',
         drawPoint: 'Piirrä piste',
         drawText: 'Lisää tekstiä',
+        drawErase: 'Poista yksittäinen piirros',
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirrokset',
     },

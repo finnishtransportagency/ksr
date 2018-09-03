@@ -65,6 +65,7 @@ class MapDraw extends Component<Props, State> {
                 const drawLineButton = (document.getElementById: Function)('draw-line');
                 const drawPointButton = (document.getElementById: Function)('draw-point');
                 const drawTextButton = (document.getElementById: Function)('draw-text');
+                const drawEraseButton = (document.getElementById: Function)('draw-erase');
 
                 const createPolygon = vertices =>
                     new Polygon({
@@ -231,6 +232,16 @@ class MapDraw extends Component<Props, State> {
                         drawTextButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
+
+                drawEraseButton.addEventListener('click', () => {
+                    if (this.props.active !== 'drawErase') {
+                        setActiveTool('drawErase');
+                        drawEraseButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                    } else {
+                        setActiveTool('');
+                        this.removeHighlightFromButton('draw-erase');
+                    }
+                });
             });
     };
 
@@ -244,7 +255,7 @@ class MapDraw extends Component<Props, State> {
     removeHighlight = () => {
         const { setActiveTool, view } = this.props;
 
-        ['draw-polygon', 'draw-line', 'draw-point', 'draw-text']
+        ['draw-polygon', 'draw-line', 'draw-point', 'draw-text', 'draw-erase']
             .forEach(b => this.removeHighlightFromButton(b));
 
         setActiveTool('');

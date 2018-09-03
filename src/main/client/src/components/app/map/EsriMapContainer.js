@@ -24,6 +24,7 @@ const mapStateToProps = (state) => {
         sketchViewModel: state.map.mapTools.sketchViewModel,
         editMode: state.map.mapTools.editMode,
         layers: state.table.features.layers,
+        activeTool: state.map.mapTools.active,
     });
 };
 

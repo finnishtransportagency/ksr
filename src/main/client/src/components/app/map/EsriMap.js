@@ -29,6 +29,7 @@ type Props = {
     layers: Array<Object>,
     setActiveModal: Function,
     setSingleLayerGeometry: Function,
+    activeTool: string,
 };
 
 class EsriMap extends Component<Props> {
@@ -243,40 +244,50 @@ class EsriMap extends Component<Props> {
                         // Found results
                         if (results.length) {
                             // remove highlight because it is graphic not a layer
-                            results = results.filter(item => item.graphic.id !== 'highlight' && item.graphic.id !== 'buffer' && item.graphic.id !== 'drawMeasure');
-                            const layer = results.find(l => l
-                                .graphic.layer.id.indexOf('layer') >= 0);
+                            results = results.filter(item =>
+                                item.graphic.id !== 'highlight'
+                                && item.graphic.id !== 'buffer'
+                                && item.graphic.id !== 'drawMeasure');
+                            if (this.props.activeTool === 'drawErase') {
+                                results.forEach((r) => {
+                                    if (r.graphic && r.graphic.type === 'draw-graphic') {
+                                        view.graphics.remove(r.graphic);
+                                    }
+                                });
 
-                            // Check if we're already editing a graphic
-                            if (layer && this.props.editMode === '') {
-                                // Save a reference to the graphic we intend to update
-                                const { graphic } = layer;
-                                this.props.setEditMode('update');
-                                // Remove the graphic from the GraphicsLayer
-                                // Sketch will handle displaying the graphic while being updated
-                                tempGraphicsLayer.remove(graphic);
-                                this.props.sketchViewModel.update(graphic);
-                            } else if (this.props.editMode === 'finish') {
-                                this.props.setEditMode('');
                             } else {
-                                const { adminToolActive } = this.props;
+                                const layer = results.find(l => l
+                                    .graphic.layer.id.indexOf('layer') >= 0);
 
-                                if (event.button === 0) {
-                                    const swLink = getStreetViewLink(
-                                        event.mapPoint.x,
-                                        event.mapPoint.y,
-                                    );
-
-                                    mapSelectPopup(
-                                        results,
-                                        swLink,
-                                        view,
-                                        selectFeatures,
-                                        layerList,
-                                        adminToolActive,
-                                        setActiveModal,
-                                        setSingleLayerGeometry,
-                                    );
+                                // Check if we're already editing a graphic
+                                if (layer && this.props.editMode === '') {
+                                    // Save a reference to the graphic we intend to update
+                                    const { graphic } = layer;
+                                    this.props.setEditMode('update');
+                                    // Remove the graphic from the GraphicsLayer
+                                    // Sketch will handle displaying the graphic while being updated
+                                    tempGraphicsLayer.remove(graphic);
+                                    this.props.sketchViewModel.update(graphic);
+                                } else if (this.props.editMode === 'finish') {
+                                    this.props.setEditMode('');
+                                } else {
+                                    const { adminToolActive } = this.props;
+                                    if (event.button === 0) {
+                                        const swLink = getStreetViewLink(
+                                            event.mapPoint.x,
+                                            event.mapPoint.y,
+                                        );
+                                        mapSelectPopup(
+                                            results,
+                                            swLink,
+                                            view,
+                                            selectFeatures,
+                                            layerList,
+                                            adminToolActive,
+                                            setActiveModal,
+                                            setSingleLayerGeometry,
+                                        );
+                                    }
                                 }
                             }
                         }

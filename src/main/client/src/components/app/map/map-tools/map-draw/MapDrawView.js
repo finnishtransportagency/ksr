@@ -28,6 +28,13 @@ const MapDrawView = ({
             </div>
             <DrawToolWrapper drawTools={drawTools}>
                 <div
+                    id="draw-erase"
+                    className="esri-component esri-widget--button esri-widget esri-interactive"
+                    title={strings.mapDraw.drawErase}
+                >
+                    <span className="esri-icon-erase" />
+                </div>
+                <div
                     id="draw-polygon"
                     className="esri-component esri-widget--button esri-widget esri-interactive"
                     title={strings.mapDraw.drawPolygon}

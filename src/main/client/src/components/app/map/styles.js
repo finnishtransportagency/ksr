@@ -75,6 +75,7 @@ export const Wrapper = styled.div`
         .esri-disabled,
         #draw-measure-polygon,
         #draw-measure-line,
+        #draw-erase,
         #draw-polygon,
         #draw-line,
         #draw-point,
