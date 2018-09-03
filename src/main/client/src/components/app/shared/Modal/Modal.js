@@ -11,6 +11,7 @@ type Props = {
     cancelText: string,
     children: any,
     handleModalSubmit: Function,
+    handleModalCancel?: Function,
     activeModal: string,
     setActiveModal: (modal: string) => void,
     submitDisabled: boolean,
@@ -27,6 +28,7 @@ const initialState = {
 class Modal extends Component<Props, State> {
     static defaultProps = {
         submitDisabled: false,
+        handleModalCancel: undefined,
     };
 
     constructor(props: any) {
@@ -36,6 +38,7 @@ class Modal extends Component<Props, State> {
 
         this.toggleModal = this.toggleModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
     toggleModal = () => {
@@ -45,6 +48,12 @@ class Modal extends Component<Props, State> {
         setTimeout(() => {
             if (activeModal) setActiveModal('');
         }, 300);
+    };
+
+    handleCancel = () => {
+        const { handleModalCancel } = this.props;
+        if (handleModalCancel) handleModalCancel();
+        this.toggleModal();
     };
 
     handleSubmit = () => {
@@ -72,10 +81,10 @@ class Modal extends Component<Props, State> {
                     title={title}
                     submitText={submitText}
                     cancelText={cancelText}
-                    toggleModal={this.toggleModal}
                     handleModalSubmit={this.handleSubmit}
                     submitDisabled={submitDisabled}
                     fadeOut={fadeOut}
+                    handleModalCancel={this.handleCancel}
                 />,
                 modalRoot,
             );

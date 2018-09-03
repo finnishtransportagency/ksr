@@ -5,7 +5,7 @@ import Modal from '../../../ui/blocks/Modal/index';
 import { Button, H1 } from '../../../ui/elements/index';
 
 type Props = {
-    toggleModal: Function,
+    handleModalCancel: Function,
     handleModalSubmit: Function,
     content: any,
     title: string,
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const ModalView = ({
-    toggleModal,
+    handleModalCancel,
     handleModalSubmit,
     content,
     title,
@@ -29,7 +29,7 @@ const ModalView = ({
         <Modal.Blur />
         <Modal.Header>
             <H1 secondary>{title}</H1>
-            <button onClick={toggleModal}>
+            <button onClick={handleModalCancel}>
                 <i className="fas fa-times" />
             </button>
         </Modal.Header>
@@ -42,7 +42,7 @@ const ModalView = ({
             <Button disabled={submitDisabled} onClick={handleModalSubmit}>
                 {submitText}
             </Button>
-            <Button flat onClick={toggleModal}>
+            <Button flat onClick={handleModalCancel}>
                 {cancelText}
             </Button>
         </Modal.Footer>

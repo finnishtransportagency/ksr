@@ -6,7 +6,7 @@ import ModalView from '../ModalView';
 
 const setup = (prop) => {
     const minProps = {
-        toggleModal: jest.fn(),
+        handleModalCancel: jest.fn(),
         handleModalSubmit: jest.fn(),
         content: 'Example content text.',
         title: 'Modal Title',
@@ -56,11 +56,11 @@ describe('<ModalView />', () => {
         expect(handleModalSubmit).toHaveBeenCalled();
     });
 
-    it('should invoke toggle', () => {
-        const { toggleModal } = wrapper.props();
+    it('should invoke cancel', () => {
+        const { handleModalCancel } = wrapper.props();
         wrapper.find(Modal.Footer).find(Button).at(1).simulate('click');
         wrapper.find(Modal.Header).find('button').simulate('click');
 
-        expect(toggleModal).toHaveBeenCalledTimes(2);
+        expect(handleModalCancel).toHaveBeenCalledTimes(2);
     });
 });
