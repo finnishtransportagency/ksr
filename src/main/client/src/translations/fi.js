@@ -174,6 +174,13 @@ const fi = {
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirrokset',
     },
+    modalDrawText: {
+        title: 'Lisää tekstiä kartalle',
+        inputLabel: 'Aseta teksti',
+        inputPlaceholder: 'Kartan teksti',
+        submitText: 'Ok',
+        cancelText: 'Peruuta',
+    },
 };
 
 export default fi;
