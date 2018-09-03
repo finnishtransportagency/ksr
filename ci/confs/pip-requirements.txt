@@ -3,3 +3,4 @@ robotframework-requests
 robotframework-selenium2library
 robotframework-SikuliLibrary
 pyautogui
+python-xlib
