@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import static fi.sitowise.ksr.jooq.Tables.WORKSPACE;
 import static fi.sitowise.ksr.jooq.Tables.WORKSPACE_LAYER;
@@ -148,5 +150,23 @@ public class WorkspaceRepository {
                         .where(WORKSPACE.NAME.equal(name))
                         .and(WORKSPACE.USERNAME.equal(username))
         );
+    }
+
+    /**
+     * Fetch map of workspace names and update times for given user.
+     *
+     * @param username username of the user whose workspaces are fetched
+     * @return map of workspace names and update times
+     */
+    public Map<String, Timestamp> fetchWorkspaceListForUser(String username) {
+        return context
+                .select(
+                        WORKSPACE.NAME,
+                        WORKSPACE.UPDATED
+                )
+                .from(WORKSPACE)
+                .where(WORKSPACE.USERNAME.equal(username))
+                .orderBy(WORKSPACE.UPDATED.desc())
+                .fetchMap(WORKSPACE.NAME, WORKSPACE.UPDATED);
     }
 }
