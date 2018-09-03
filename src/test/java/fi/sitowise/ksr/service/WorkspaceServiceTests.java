@@ -2,8 +2,10 @@ package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Workspace;
 import fi.sitowise.ksr.repository.WorkspaceRepository;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,5 +41,23 @@ public class WorkspaceServiceTests {
         workspace.setLayers(new ArrayList<>());
 
         workspaceService.saveWorkspace(workspace, "test-user");
+    }
+
+    /**
+     * Test removing workspace that does not exist.
+     */
+    @Test
+    public void testRemoveWorkspaceNotFound() {
+        Assert.assertFalse(workspaceService.deleteWorkspace("test workspace", "test-user"));
+    }
+
+    /**
+     * Test removing workspace that exists.
+     */
+    @Test
+    public void testRemoveWorkspaceOk() {
+        Mockito.doReturn(true).when(workspaceRepository)
+                .deleteWorkspace("test workspace", "test-user");
+        Assert.assertTrue(workspaceService.deleteWorkspace("test workspace", "test-user"));
     }
 }

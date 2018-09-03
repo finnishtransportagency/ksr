@@ -53,13 +53,14 @@ public class WorkspaceRepository {
      *
      * @param name name of the workspace to be deleted
      * @param username username of the user whose workspace is being deleted
+     * @return whether a workspace is deleted or not
      */
-    private void deleteWorkspace(String name, String username) {
-        context
+    public boolean deleteWorkspace(String name, String username) {
+        return context
                 .deleteFrom(WORKSPACE)
                 .where(WORKSPACE.NAME.equal(name))
                     .and(WORKSPACE.USERNAME.equal(username))
-                .execute();
+                .execute() > 0;
     }
 
     /**

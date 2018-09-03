@@ -31,4 +31,15 @@ public class WorkspaceService {
     public void saveWorkspace(Workspace workspace, String username) {
         workspaceRepository.saveWorkspace(workspace, username);
     }
+
+    /**
+     * Delete existing workspace from database.
+     *
+     * @param workspaceName name of the workspace to be deleted
+     * @param username username of the user whose workspace is being deleted
+     * @return whether the workspace was found and deleted or not
+     */
+    public boolean deleteWorkspace(String workspaceName, String username) {
+        return workspaceRepository.deleteWorkspace(workspaceName, username);
+    }
 }
