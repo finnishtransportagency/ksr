@@ -17,6 +17,7 @@ type Props = {
     sketchViewModel: Object,
     active: string,
     setActiveTool: Function,
+    drawText: string,
 };
 
 const initialState = {
@@ -40,6 +41,10 @@ class MapDraw extends Component<Props, State> {
     componentWillReceiveProps(newProps: any) {
         if (this.props.draw !== newProps.draw && newProps.draw.initialized) {
             this.mapDraw();
+        } else if (this.props.active !== newProps.active
+                    && this.props.active === 'drawText'
+                    && newProps.active === '') {
+            this.removeHighlightFromButton('draw-text');
         }
     }
 
@@ -110,23 +115,26 @@ class MapDraw extends Component<Props, State> {
                         id: this.currentGraphicUUID,
                     });
 
-                const createTextGraphic = (geometry): any =>
-                    new Graphic({
-                        geometry,
-                        symbol: {
-                            type: 'text',
-                            color: '#000',
-                            haloColor: '#fff',
-                            haloSize: '20px',
-                            text: 'Tekstiä',
-                            font: {
-                                size: 12,
-                                weight: 'bold',
+                const createTextGraphic = (geometry): any => {
+                    const { drawText } = this.props;
+                    if (drawText && drawText.trim().length > 0) {
+                        return new Graphic({
+                            geometry,
+                            symbol: {
+                                type: 'text',
+                                color: '#000',
+                                text: this.props.drawText,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold',
+                                },
                             },
-                        },
-                        type: 'draw-graphic',
-                        id: this.currentGraphicUUID,
-                    });
+                            type: 'draw-graphic',
+                            id: this.currentGraphicUUID,
+                        });
+                    }
+                    return null;
+                };
 
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
@@ -168,7 +176,10 @@ class MapDraw extends Component<Props, State> {
 
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
-                    view.graphics.add(graphic);
+
+                    if (graphic !== null) {
+                        view.graphics.add(graphic);
+                    }
                 };
 
                 const drawingMode = (geometry, drawGeometry) => {
@@ -215,7 +226,7 @@ class MapDraw extends Component<Props, State> {
 
                 drawTextButton.addEventListener('click', () => {
                     if (this.props.active !== 'drawText') {
-                        setActiveTool('drawText'); // dispatchaa actioni, joka 1) avaa modalin ja kysyy tekstin joka halutaan kirjoittaa 2) laittaa aktiiviseksi työkaluksi 'drawText'
+                        setActiveTool('drawText');
                         drawingMode('point', drawText);
                         drawTextButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
@@ -223,16 +234,19 @@ class MapDraw extends Component<Props, State> {
             });
     };
 
+    removeHighlightFromButton = (id: ?string) => {
+        const button = (document.getElementById: Function)(id);
+        if (button) {
+            button.style.backgroundColor = styles.colorMain;
+        }
+    }
+
     removeHighlight = () => {
         const { setActiveTool, view } = this.props;
-        const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
-        const drawLineButton = (document.getElementById: Function)('draw-line');
-        const drawPointButton = (document.getElementById: Function)('draw-point');
-        const drawTextButton = (document.getElementById: Function)('draw-text');
-        drawPolygonButton.style.backgroundColor = styles.colorMain;
-        drawLineButton.style.backgroundColor = styles.colorMain;
-        drawPointButton.style.backgroundColor = styles.colorMain;
-        drawTextButton.style.backgroundColor = styles.colorMain;
+
+        ['draw-polygon', 'draw-line', 'draw-point', 'draw-text']
+            .forEach(b => this.removeHighlightFromButton(b));
+
         setActiveTool('');
 
         const hasGraphics = view
