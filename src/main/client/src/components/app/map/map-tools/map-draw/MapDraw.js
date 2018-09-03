@@ -205,6 +205,7 @@ class MapDraw extends Component<Props, State> {
                     if (this.props.active !== 'drawPolygon') {
                         setActiveTool('drawPolygon');
                         drawingMode('polygon', drawPolygon);
+                        this.removeHighlightsFromButtons('draw-polygon');
                         drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
@@ -213,6 +214,7 @@ class MapDraw extends Component<Props, State> {
                     if (this.props.active !== 'drawPolyline') {
                         setActiveTool('drawPolyline');
                         drawingMode('polyline', drawLine);
+                        this.removeHighlightsFromButtons('draw-line');
                         drawLineButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
@@ -221,6 +223,7 @@ class MapDraw extends Component<Props, State> {
                     if (this.props.active !== 'drawPoint') {
                         setActiveTool('drawPoint');
                         drawingMode('point', drawPoint);
+                        this.removeHighlightsFromButtons('draw-point');
                         drawPointButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
@@ -229,6 +232,7 @@ class MapDraw extends Component<Props, State> {
                     if (this.props.active !== 'drawText') {
                         setActiveTool('drawText');
                         drawingMode('point', drawText);
+                        this.removeHighlightsFromButtons('draw-text');
                         drawTextButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     }
                 });
@@ -236,6 +240,7 @@ class MapDraw extends Component<Props, State> {
                 drawEraseButton.addEventListener('click', () => {
                     if (this.props.active !== 'drawErase') {
                         setActiveTool('drawErase');
+                        this.removeHighlightsFromButtons('draw-erase');
                         drawEraseButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
                     } else {
                         setActiveTool('');
@@ -250,13 +255,18 @@ class MapDraw extends Component<Props, State> {
         if (button) {
             button.style.backgroundColor = styles.colorMain;
         }
-    }
+    };
+
+    removeHighlightsFromButtons = (exceptButton: ?string) => {
+        ['draw-polygon', 'draw-line', 'draw-point', 'draw-text', 'draw-erase']
+            .filter(i => i !== exceptButton)
+            .forEach(b => this.removeHighlightFromButton(b));
+    };
 
     removeHighlight = () => {
         const { setActiveTool, view } = this.props;
 
-        ['draw-polygon', 'draw-line', 'draw-point', 'draw-text', 'draw-erase']
-            .forEach(b => this.removeHighlightFromButton(b));
+        this.removeHighlightsFromButtons();
 
         setActiveTool('');
 
