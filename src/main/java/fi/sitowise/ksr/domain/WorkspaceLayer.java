@@ -2,6 +2,7 @@ package fi.sitowise.ksr.domain;
 
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceLayerRecord;
 import fi.sitowise.ksr.jooq.udt.records.FeatureTableTypeRecord;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,12 +11,19 @@ import java.math.BigDecimal;
  * POJO representing a workspace layer.
  */
 public class WorkspaceLayer implements Serializable {
+
+    @SafeHtml
     private String layerId;
+
+    @SafeHtml
     private String userLayerId;
+
+    @SafeHtml
+    private String definitionExpression;
+
     private boolean visible;
     private double opacity;
     private int layerOrder;
-    private String definitionExpression;
     private FeatureTableTypeRecord selectedFeatures;
 
     /**

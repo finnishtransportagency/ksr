@@ -2,6 +2,7 @@ package fi.sitowise.ksr.domain;
 
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceLayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceRecord;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -14,8 +15,11 @@ import static java.lang.Math.toIntExact;
  * POJO representing a workspace.
  */
 public class Workspace implements Serializable {
-    private int id;
+
+    @SafeHtml
     private String name;
+
+    private int id;
     private int scale;
     private int centerLongitude;
     private int centerLatitude;

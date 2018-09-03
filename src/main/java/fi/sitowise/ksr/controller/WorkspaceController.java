@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import java.sql.Timestamp;
 import java.util.Map;
 
@@ -36,7 +38,7 @@ public class WorkspaceController {
      * @param workspace workspace to be saved into database
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void saveWorkspace(@RequestBody Workspace workspace) {
+    public void saveWorkspace(@Valid @RequestBody Workspace workspace) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
             workspaceService.saveWorkspace(workspace, authentication.getName());
