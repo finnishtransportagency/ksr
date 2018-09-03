@@ -9,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.Map;
+
 /**
  * Workspace rest controller.
  */
@@ -70,5 +73,16 @@ public class WorkspaceController {
             throw new KsrApiException.NotFoundErrorException(
                     "No workspace found with the given name to be deleted.");
         }
+    }
+
+    /**
+     * Fetch map of workspace names and update times for current user.
+     *
+     * @return map of workspace names and update times
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public Map<String, Timestamp> getWorkspaceList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return workspaceService.getWorkspaceListForUser(authentication.getName());
     }
 }

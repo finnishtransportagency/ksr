@@ -14,6 +14,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.HashMap;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -89,10 +91,24 @@ public class WorkspaceControllerTests extends AuthControllerTestBase {
      */
     @Test
     public void testWorkspaceDoesExist() throws Exception {
-        Mockito.doReturn(true).when(workspaceService).getWorkspaceExistence("TestUser","workspaceName");
+        Mockito.doReturn(true).when(workspaceService).getWorkspaceExistence("TestUser", "workspaceName");
         MvcResult result = this.mockMvc.perform(get("/api/workspace/exists").headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
                 .param("name", "workspaceName")
         ).andExpect(status().isOk()).andReturn();
         Assert.assertEquals("true", result.getResponse().getContentAsString());
+    }
+
+    /**
+     * Test fetching workspace list.
+     *
+     * @throws Exception if mock request fails
+     */
+    @Test
+    public void testFetchWorkspaceListOk() throws Exception {
+        Mockito.when(workspaceService.getWorkspaceListForUser(Mockito.anyString()))
+                .thenReturn(new HashMap<>());
+        this.mockMvc.perform(
+                get("/api/workspace/list").headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
+        ).andExpect(status().isOk());
     }
 }
