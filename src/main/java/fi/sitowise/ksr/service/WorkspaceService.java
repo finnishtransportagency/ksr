@@ -5,6 +5,9 @@ import fi.sitowise.ksr.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Map;
+
 /**
  * Workspace service.
  */
@@ -52,5 +55,15 @@ public class WorkspaceService {
      */
     public boolean deleteWorkspace(String workspaceName, String username) {
         return workspaceRepository.deleteWorkspace(workspaceName, username);
+    }
+
+    /**
+     * Fetch map of workspace names and update times for given user.
+     *
+     * @param username username of the user whose workspaces are fetched
+     * @return map of workspace names and update times
+     */
+    public Map<String, Timestamp> getWorkspaceListForUser(String username) {
+        return workspaceRepository.fetchWorkspaceListForUser(username);
     }
 }
