@@ -12,6 +12,7 @@ import ModalLayerDetailsContainer from './modal-layer-details/ModalLayerDetailsC
 import ModalShapefileContainer from './modal-shapefile/ModalShapefileContainer';
 import ModalNewWorkspaceContainer from './modal-new-workspace/ModalNewWorkspaceContainer';
 import ConfirmModalContainer from '../shared/confirm-modal/ConfirmModalContainer';
+import ModalDrawTextContainer from './modal-draw-text/ModalDrawTextContainer';
 
 type Props = {
     activeModal: string,
@@ -30,6 +31,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
         {activeModal === 'newWorkspace' && <ModalNewWorkspaceContainer />}
         {activeModal === 'shapefile' && <ModalShapefileContainer />}
+        {activeModal === 'drawText' && <ModalDrawTextContainer />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );
