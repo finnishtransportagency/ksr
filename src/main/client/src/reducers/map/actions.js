@@ -165,3 +165,8 @@ export const addShapefile = (layer: Object) => ({
     type: types.ADD_SHAPEFILE_LAYER,
     layer,
 });
+
+export const setMapDrawText = (text: string) => ({
+    type: types.SET_MAP_DRAW_TEXT,
+    drawText: text,
+});

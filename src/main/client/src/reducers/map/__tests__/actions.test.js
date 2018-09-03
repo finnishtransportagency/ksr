@@ -11,4 +11,13 @@ describe('actions', () => {
         const expectedAction = { type: types.SET_ACTIVE_LAYER_TAB };
         expect(actions.setActiveLayerTab()).toEqual(expectedAction);
     });
+
+    it('should return action for setMapDrawText', () => {
+        const expectedAction = {
+            type: types.SET_MAP_DRAW_TEXT,
+            drawText: 'Should return this text',
+        };
+
+        expect(actions.setMapDrawText('Should return this text')).toEqual(expectedAction);
+    });
 });

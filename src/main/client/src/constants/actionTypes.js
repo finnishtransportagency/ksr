@@ -76,3 +76,6 @@ export const ADD_SHAPEFILE_LAYER = 'ADD_SHAPEFILE_LAYER';
 // Confirm modal
 export const SHOW_CONFIRM_MODAL = 'SHOW_CONFIRM_MODAL';
 export const HIDE_CONFIRM_MODAL = 'HIDE_CONFIRM_MODAL';
+
+// Map draw
+export const SET_MAP_DRAW_TEXT = 'SET_MAP_DRAW_TEXT';
