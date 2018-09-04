@@ -15,7 +15,6 @@ const mapStateToProps = state => ({
         .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []),
     activeAdminTool: state.adminTool.active.layerId,
     geometryType: state.adminTool.active.geometryType,
-    activeModal: state.modal.activeModal,
 });
 
 const mapDispatchToProps = dispatch => ({

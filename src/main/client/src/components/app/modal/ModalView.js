@@ -8,6 +8,7 @@ import ModalBufferSelectedContainer from './modal-buffer-selected/ModalBufferSel
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 import ModalAddUserLayerContainer from './modal-add-user-layer/ModalAddUserLayerContainer';
 import ModalRemoveUserLayerContainer from './modal-remove-user-layer/ModalRemoveUserLayerContainer';
+import ModalLayerDetailsContainer from './modal-layer-details/ModalLayerDetailsContainer';
 
 type Props = {
     activeModal: string,
@@ -22,6 +23,7 @@ const ModalView = ({ activeModal }: Props) => (
         {activeModal === 'bufferSelectedData' && <ModalBufferSelectedContainer />}
         {activeModal === 'addUserLayer' && <ModalAddUserLayerContainer />}
         {activeModal === 'removeUserLayer' && <ModalRemoveUserLayerContainer />}
+        {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
     </Fragment>
 );
 

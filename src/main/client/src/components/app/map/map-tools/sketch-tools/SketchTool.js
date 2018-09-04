@@ -31,7 +31,6 @@ type Props = {
     setTempGrapLayer: Function,
     geometryType: string,
     setActiveModal: (modal: string) => void,
-    activeModal: string,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -265,7 +264,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, activeAdminTool, tempGraphicsLayer, activeModal, setActiveModal,
+            data, view, activeAdminTool, tempGraphicsLayer, setActiveModal,
         } = this.props;
         return (
             <Fragment>
@@ -287,7 +286,6 @@ class SketchTool extends Component<Props, State> {
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
                     tempGraphicsLayer={tempGraphicsLayer}
                     setActiveModal={setActiveModal}
-                    activeModal={activeModal}
                 />
 
             </Fragment>
