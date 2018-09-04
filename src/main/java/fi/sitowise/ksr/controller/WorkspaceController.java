@@ -47,6 +47,7 @@ public class WorkspaceController {
                     "Failed to save new workspace.", e);
         }
     }
+    
     /**
      * Gets workspace name existence.
      *
