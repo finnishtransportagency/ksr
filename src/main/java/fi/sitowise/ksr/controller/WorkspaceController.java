@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Workspace controller.
+ * Workspace rest controller.
  */
 @RestController
 @RequestMapping(value = "/api/workspace")
@@ -40,6 +40,21 @@ public class WorkspaceController {
         } catch (DataAccessException e) {
             throw new KsrApiException.InternalServerErrorException(
                     "Failed to save new workspace.", e);
+        }
+    }
+    /**
+     * Gets workspace name existence.
+     *
+     * @param name name of workspace
+     * @return workspace name existence
+     */
+    @RequestMapping(value = "/exists", method = RequestMethod.GET)
+    public boolean getWorkspaceExistence(@RequestParam String name) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            return workspaceService.getWorkspaceExistence(authentication.getName(), name);
+        } catch (DataAccessException e) {
+            throw new KsrApiException.InternalServerErrorException("Error when checking workspace existence.", e);
         }
     }
 }

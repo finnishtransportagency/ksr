@@ -132,4 +132,19 @@ public class WorkspaceRepository {
             throw new DataAccessException("Saving workspace layers failed.", e);
         }
     }
+    /**
+     * Check workspace name existence in database for a user.
+     *
+     * @param username name of user
+     * @param name name of the workspace
+     * @return workspace name existence
+     */
+    public boolean getWorkspaceExistence(String username, String name) {
+        return context.fetchExists(
+                DSL.selectOne()
+                        .from(WORKSPACE)
+                        .where(WORKSPACE.NAME.equal(name))
+                        .and(WORKSPACE.USERNAME.equal(username))
+        );
+    }
 }

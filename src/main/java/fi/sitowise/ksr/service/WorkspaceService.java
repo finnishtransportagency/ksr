@@ -31,4 +31,15 @@ public class WorkspaceService {
     public void saveWorkspace(Workspace workspace, String username) {
         workspaceRepository.saveWorkspace(workspace, username);
     }
+
+    /**
+     * Check workspace name existence in database for a user.
+     *
+     * @param username name of user
+     * @param name name of workspace
+     * @return workspace name existence in database
+     */
+    public boolean getWorkspaceExistence(String username, String name) {
+        return workspaceRepository.getWorkspaceExistence(username, name);
+    }
 }

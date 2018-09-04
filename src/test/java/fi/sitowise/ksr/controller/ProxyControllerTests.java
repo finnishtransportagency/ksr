@@ -48,37 +48,37 @@ public class ProxyControllerTests {
     private WebApplicationContext context;
 
     /**
-     * The Proxy controller.
+     * Proxy controller.
      */
     @Autowired
     ProxyController proxyController;
 
     /**
-     * The Mock mvc.
+     * Mock mvc.
      */
     @Autowired
     MockMvc mockMvc;
 
     /**
-     * The Layer service.
+     * Layer service.
      */
     @MockBean
     LayerService layerService;
 
     /**
-     * The Proxy service.
+     * Proxy service.
      */
     @MockBean
     ProxyService proxyService;
 
     /**
-     * The Layer group repository.
+     * Layer group repository.
      */
     @MockBean
     LayerGroupRepository layerGroupRepository;
 
     /**
-     * The User Layer repository.
+     * User Layer repository.
      */
     @MockBean
     UserLayerRepository userLayerRepository;
