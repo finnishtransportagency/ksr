@@ -33,6 +33,17 @@ public class WorkspaceService {
     }
 
     /**
+     * Check workspace name existence in database for a user.
+     *
+     * @param username name of user
+     * @param name name of workspace
+     * @return workspace name existence in database
+     */
+    public boolean getWorkspaceExistence(String username, String name) {
+        return workspaceRepository.getWorkspaceExistence(username, name);
+    }
+
+    /**
      * Delete existing workspace from database.
      *
      * @param workspaceName name of the workspace to be deleted

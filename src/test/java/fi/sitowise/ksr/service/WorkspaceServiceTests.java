@@ -21,7 +21,6 @@ import java.util.ArrayList;
 @WebMvcTest(value = SpringRunner.class)
 @ContextConfiguration(classes = WorkspaceService.class)
 public class WorkspaceServiceTests {
-
     @Autowired
     WorkspaceService workspaceService;
 
@@ -41,6 +40,23 @@ public class WorkspaceServiceTests {
         workspace.setLayers(new ArrayList<>());
 
         workspaceService.saveWorkspace(workspace, "test-user");
+    }
+
+    /**
+     * Test workspace does not exist.
+     */
+    @Test
+    public void testWorkspaceDoesNotExist() {
+        Assert.assertFalse(workspaceService.getWorkspaceExistence("test", "workspace"));
+    }
+
+    /**
+     * Test workspace does exist.
+     */
+    @Test
+    public void testWorkspaceDoesExist() {
+        Mockito.when(workspaceService.getWorkspaceExistence("TestUser","workspaceName")).thenReturn(true);
+        Assert.assertTrue(workspaceService.getWorkspaceExistence("TestUser", "workspaceName"));
     }
 
     /**
