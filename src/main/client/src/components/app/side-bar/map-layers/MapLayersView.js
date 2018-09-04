@@ -6,19 +6,16 @@ import SideBar from '../../../ui/blocks/SideBar';
 import { H1 } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
 import MapLayersAllContainer from './map-layers-all/MapLayersAllContainer';
-import ModalAddUserLayerContainer from './modal-add-user-layer/ModalAddUserLayerContainer';
-import ModalRemoveUserLayerContainer from './modal-remove-user-layer/ModalRemoveUserLayerContainer';
 import { ButtonLayerNav, ButtonLayerNavWrapper, ButtonLayerAddWrapper } from './styles';
 
 type Props = {
     handleButtonClickLayers: (string) => void,
     activeTab: string,
-    activeModal: string,
     setActiveModal: Function,
 };
 
 const MapLayersView = ({
-    handleButtonClickLayers, activeTab, activeModal, setActiveModal,
+    handleButtonClickLayers, activeTab, setActiveModal,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
@@ -67,8 +64,6 @@ const MapLayersView = ({
                 </ButtonLayerNav>
             </ButtonLayerAddWrapper>
         </SideBar.Content>
-        {activeModal === 'addUserLayer' && <ModalAddUserLayerContainer />}
-        {activeModal === 'removeUserLayer' && <ModalRemoveUserLayerContainer />}
     </Fragment>
 );
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import ModalContainer from '../../../../shared/Modal/ModalContainer';
+import ModalContainer from '../../../shared/Modal/ModalContainer';
 import ModalAddUserLayer from '../ModalAddUserLayer';
 import ModalAddUserLayerView from '../ModalAddUserLayerView';
 

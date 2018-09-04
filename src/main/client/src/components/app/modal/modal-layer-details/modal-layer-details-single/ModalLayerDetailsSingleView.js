@@ -1,7 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
-import { TextInput } from '../../../../../../ui/elements';
-import { parseColumnType } from '../../../../../../../utils/parseType';
+import { TextInput } from '../../../../ui/elements';
+import { parseColumnType } from '../../../../../utils/parseType';
 
 type Props = {
     index: number,

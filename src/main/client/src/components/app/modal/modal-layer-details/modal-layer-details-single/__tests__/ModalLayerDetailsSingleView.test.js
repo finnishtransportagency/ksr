@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ModalLayerDetailsSingleView from '../ModalLayerDetailsSingleView';
-import { TextInput } from '../../../../../../../ui/elements';
+import { TextInput } from '../../../../../ui/elements';
 
 const setup = () => {
     const props = {

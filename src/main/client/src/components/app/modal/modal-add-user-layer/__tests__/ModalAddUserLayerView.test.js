@@ -1,8 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import Checkbox from '../../../../../ui/blocks/Checkbox';
-import { TextInput } from '../../../../../ui/elements';
-import { CheckboxWrapper } from '../../../../table/modal-filter/styles';
+import Checkbox from '../../../../ui/blocks/Checkbox';
+import { TextInput } from '../../../../ui/elements';
+import { CheckboxWrapper } from '../../modal-filter/styles';
 import ModalAddUserLayerView from '../ModalAddUserLayerView';
 import { InputWrapper, SliderWrapper } from '../styles';
 

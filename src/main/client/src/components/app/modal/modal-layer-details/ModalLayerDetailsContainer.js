@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import ModalLayerDetails from './ModalLayerDetails';
-import { setTempGrapLayer } from '../../../../../../reducers/map/actions';
+import { setTempGrapLayer } from '../../../../reducers/map/actions';
 
 const mapStateToProps = (state) => {
     const activeLayer = (

@@ -2,7 +2,6 @@
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations/index';
 import Wrapper from './styles';
-import ModalLayerDetailsContainer from '../modal-layer-details/ModalLayerDetailsContainer';
 
 type Props = {
     editSketchIcon: string,
@@ -11,7 +10,6 @@ type Props = {
     drawNewFeatureButtonRef: () => void,
     tempGraphicsLayer: Object,
     setActiveModal: (modal: string) => void,
-    activeModal: string,
 };
 
 const SketchActiveAdminView = ({
@@ -21,7 +19,6 @@ const SketchActiveAdminView = ({
     drawNewFeatureButtonRef,
     tempGraphicsLayer,
     setActiveModal,
-    activeModal,
 }: Props) => (
     <Fragment>
         <div id="create-new-feature-wrapper">
@@ -71,7 +68,6 @@ const SketchActiveAdminView = ({
                 </div>
             </Wrapper>
         </div>
-        {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
     </Fragment>
 );
 
