@@ -5,12 +5,17 @@ import * as styles from '../../ui/defaultStyles';
 
 type Props = {
     loading: boolean,
+    size?: number,
 };
 
-const LoadingIcon = ({ loading }: Props) => (
+const LoadingIcon = ({ loading, size }: Props) => (
     <div className="loading-icon">
-        <PulseLoader color={styles.colorMain} loading={loading} />
+        <PulseLoader color={styles.colorMain} size={size} loading={loading} />
     </div>
 );
+
+LoadingIcon.defaultProps = {
+    size: 12,
+};
 
 export default LoadingIcon;
