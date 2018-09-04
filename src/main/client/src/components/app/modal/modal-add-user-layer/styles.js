@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import * as styles from '../../../../ui/defaultStyles';
+import * as styles from '../../../ui/defaultStyles';
 
 export const InputInfo = styled.div`
     position: absolute;

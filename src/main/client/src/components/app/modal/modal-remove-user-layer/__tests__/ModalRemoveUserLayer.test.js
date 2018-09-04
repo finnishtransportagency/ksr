@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import ModalRemoveUserLayer from '../ModalRemoveUserLayer';
-import ModalContainer from '../../../../shared/Modal/ModalContainer';
+import ModalContainer from '../../../shared/Modal/ModalContainer';
 
 const setup = () => {
     const props = {

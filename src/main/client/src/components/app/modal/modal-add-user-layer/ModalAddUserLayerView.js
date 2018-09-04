@@ -2,10 +2,10 @@
 import Slider from 'rc-slider';
 import React, { Fragment } from 'react';
 import Select from 'react-select';
-import strings from '../../../../../translations';
-import Checkbox from '../../../../ui/blocks/Checkbox';
-import { TextInput } from '../../../../ui/elements';
-import { CheckboxWrapper } from '../../../table/modal-filter/styles';
+import strings from '../../../../translations';
+import Checkbox from '../../../ui/blocks/Checkbox';
+import { TextInput } from '../../../ui/elements';
+import { CheckboxWrapper } from '../modal-filter/styles';
 import { InputInfo, InputWrapper, SliderWrapper } from './styles';
 
 type Props = {

@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { addUserLayer } from '../../../../../reducers/map/actions';
+import { addUserLayer } from '../../../../reducers/map/actions';
 import ModalAddUserLayer from './ModalAddUserLayer';
 
 const mapDispatchToProps = dispatch => ({

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
-import strings from '../../../../../translations';
-import ModalContainer from '../../../shared/Modal/ModalContainer';
+import strings from '../../../../translations';
+import ModalContainer from '../../shared/Modal/ModalContainer';
 import ModalAddUserLayerView from './ModalAddUserLayerView';
 
 type Props = {

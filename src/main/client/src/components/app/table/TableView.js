@@ -2,20 +2,14 @@
 import React from 'react';
 import equals from 'nano-equal';
 import Table from '../../ui/blocks/Table';
-import ModalClearTableContainer from './modal-clear-table/ModalClearTableContainer';
-import ModalDeleteSelectedContainer from './modal-delete-selected/ModalDeleteSelectedContainer';
-import ModalSaveEditedDataContainer from './modal-save-edited-data/ModalSaveEditedDataContainer';
-import ModalBufferSelectedContainer from './modal-buffer-selected/ModalBufferSelectedContainer';
-import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
-import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 import strings from '../../../translations';
+import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
 
 type Props = {
     toggleTable: Function,
     isOpen: boolean,
     activeNav: string,
     setActiveModal: (modal: string) => void,
-    activeModal: string,
     adminToolActive: string,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
@@ -27,7 +21,6 @@ const TableView = ({
     isOpen,
     activeNav,
     setActiveModal,
-    activeModal,
     adminToolActive,
     originalLayers,
     editedLayers,
@@ -101,11 +94,6 @@ const TableView = ({
             </Table.Button>
         </Table.ButtonWrapper>
         <TabbedTableContainer />
-        {activeModal === 'filter' && <ModalFilterContainer />}
-        {activeModal === 'clearTable' && <ModalClearTableContainer />}
-        {activeModal === 'deleteSelected' && <ModalDeleteSelectedContainer />}
-        {activeModal === 'saveEditedData' && <ModalSaveEditedDataContainer />}
-        {activeModal === 'bufferSelectedData' && <ModalBufferSelectedContainer />}
     </Table>
 );
 
