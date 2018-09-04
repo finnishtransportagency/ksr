@@ -6,7 +6,8 @@ import strings from '../../../../translations';
 import Checkbox from '../../../ui/blocks/Checkbox';
 import { TextInput } from '../../../ui/elements';
 import { CheckboxWrapper } from '../modal-filter/styles';
-import { InputInfo, InputWrapper, SliderWrapper } from './styles';
+import { InputWithIcon, InputInfo } from '../../../ui/elements/TextInput';
+import { SliderWrapper } from './styles';
 
 type Props = {
     handleInputChange: Function,
@@ -28,7 +29,7 @@ const ModalAddUserLayerView = ({
     <Fragment>
         <label htmlFor={strings.modalAddUserLayer.name}>
             <span>{strings.modalAddUserLayer.name}</span>
-            <InputWrapper>
+            <InputWithIcon>
                 <TextInput
                     backgroundDarker
                     type="text"
@@ -44,12 +45,12 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
 
         <span>{strings.modalAddUserLayer.type}</span>
         <label htmlFor="selectType">
-            <InputWrapper>
+            <InputWithIcon>
                 <Select
                     onBlurResetsInput={false}
                     onSelectResetsInput={false}
@@ -67,11 +68,11 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
         <label htmlFor={strings.modalAddUserLayer.url}>
             <span>{strings.modalAddUserLayer.url}</span>
-            <InputWrapper>
+            <InputWithIcon>
                 <TextInput
                     backgroundDarker
                     type="text"
@@ -87,11 +88,11 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
         <label htmlFor={strings.modalAddUserLayer.layers}>
             <span>{strings.modalAddUserLayer.layers}</span>
-            <InputWrapper>
+            <InputWithIcon>
                 <TextInput
                     backgroundDarker
                     type="text"
@@ -108,11 +109,11 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
         <label htmlFor={strings.modalAddUserLayer.styles}>
             <span>{strings.modalAddUserLayer.styles}</span>
-            <InputWrapper>
+            <InputWithIcon>
                 <TextInput
                     backgroundDarker
                     type="text"
@@ -128,11 +129,11 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
         <label htmlFor={strings.modalAddUserLayer.minScale}>
             <span>{strings.modalAddUserLayer.minScale}</span>
-            <InputWrapper>
+            <InputWithIcon>
                 <TextInput
                     backgroundDarker
                     type="number"
@@ -149,11 +150,11 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
         <label htmlFor={strings.modalAddUserLayer.maxScale}>
             <span>{strings.modalAddUserLayer.maxScale}</span>
-            <InputWrapper>
+            <InputWithIcon>
                 <TextInput
                     backgroundDarker
                     type="number"
@@ -170,11 +171,11 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
         <label htmlFor={strings.modalAddUserLayer.attribution}>
             <span>{strings.modalAddUserLayer.attribution}</span>
-            <InputWrapper>
+            <InputWithIcon>
                 <TextInput
                     backgroundDarker
                     type="text"
@@ -190,7 +191,7 @@ const ModalAddUserLayerView = ({
                 >
                     <i className="fas fa-question-circle" />
                 </InputInfo>
-            </InputWrapper>
+            </InputWithIcon>
         </label>
         <SliderWrapper>
             <span>{strings.modalAddUserLayer.opacity}</span>

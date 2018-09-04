@@ -2,9 +2,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 import Checkbox from '../../../../ui/blocks/Checkbox';
 import { TextInput } from '../../../../ui/elements';
+import { InputWithIcon } from '../../../../ui/elements/TextInput';
 import { CheckboxWrapper } from '../../modal-filter/styles';
 import ModalAddUserLayerView from '../ModalAddUserLayerView';
-import { InputWrapper, SliderWrapper } from '../styles';
+import { SliderWrapper } from '../styles';
 
 const setup = () => {
     const props = {
@@ -58,7 +59,7 @@ describe('<ModalAddUserLayerView />', () => {
     const { wrapper } = setup();
 
     it('should render eight (8) InputWrappers', () => {
-        expect(wrapper.find(InputWrapper).length).toBe(8);
+        expect(wrapper.find(InputWithIcon).length).toBe(8);
     });
 
     it('should render three (3) CheckboxWrapper', () => {
