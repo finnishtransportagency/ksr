@@ -1,4 +1,5 @@
 // @flow
+import clone from 'clone';
 
 /**
  * Does validations about edited cell in table
@@ -17,7 +18,7 @@ export const cellEditValidate = (
     cellField: Object,
     cellInfo: Object,
 ) => {
-    const data = JSON.parse(JSON.stringify(layerData));
+    const data = clone(layerData, true, 2);
     const editedRow = data[cellInfo.index]._edited.find(d => d.title === cellInfo.column.id);
     const columnValue = data[cellInfo.index];
     const cellValue = data[cellInfo.index][cellInfo.column.id];

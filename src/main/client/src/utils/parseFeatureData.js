@@ -1,3 +1,5 @@
+import clone from 'clone';
+
 /**
 * Parse columns from Esri's fields Array. Returns
 * react-table compatible columns Array.
@@ -123,7 +125,7 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear 
     });
 
     const activeTable = getActiveTable(layers, currentActiveTable);
-    const editedLayers = JSON.parse(JSON.stringify(layers));
+    const editedLayers = clone(layers, true, 3);
 
     return { layers, activeTable, editedLayers };
 };

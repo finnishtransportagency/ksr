@@ -1,4 +1,6 @@
 // @flow
+import clone from 'clone';
+
 import {
     CLEAR_TABLE_DATA,
     DE_SELECT_SELECTED_FEATURES,
@@ -52,7 +54,7 @@ const initialState = {
 };
 
 export default (state: State = initialState, action: Action) => {
-    const editedLayers = JSON.parse(JSON.stringify(state.editedLayers));
+    const editedLayers = clone(state.editedLayers, true, 3);
     switch (action.type) {
         case SELECT_FEATURES:
             return {
