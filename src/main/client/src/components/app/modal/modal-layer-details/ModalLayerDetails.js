@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import ModalLayerDetailsView from './ModalLayerDetailsView';
-import strings from '../../../../translations/fi';
-import ModalContainer from '../../shared/Modal/ModalContainer';
+import strings from '../../../../translations';
 import { saveNewFeatureData } from '../../../../utils/saveNewFeatureData';
-import { parseGeometryType } from '../../../../utils/parseType';
+import ModalContainer from '../../shared/Modal/ModalContainer';
+import { parseGeometryType } from '../../../../utils/type';
 
 type Props = {
     fields: any,

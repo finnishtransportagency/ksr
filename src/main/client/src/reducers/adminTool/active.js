@@ -1,6 +1,6 @@
 // @flow
 import { SET_ACTIVE_ADMIN_TOOL } from '../../constants/actionTypes';
-import { findGeometryType } from '../../utils/geometryTypeFinder';
+import { findGeometryType } from '../../utils/type';
 
 const initialState = {
     layerId: '',
