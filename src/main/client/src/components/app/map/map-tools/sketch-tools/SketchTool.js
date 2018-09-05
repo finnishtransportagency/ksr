@@ -5,6 +5,7 @@ import { resetMapTools } from '../../../../../utils/mapTools';
 import * as styles from '../../../../ui/defaultStyles';
 import SketchToolView from './SketchToolView';
 import SketchActiveAdminView from './sketch-active-admin/SketchActiveAdminView';
+import { queryFeatures } from '../../../../../utils/queryFeatures';
 
 type State = {
     isOpen: boolean,
@@ -26,7 +27,7 @@ type Props = {
     setActiveTool: Function,
     tempGraphicsLayer: Object,
     data: Array<Object>,
-    activeAdminTool: string,
+    adminToolActive: string,
     setEditMode: (editMode: string) => void,
     setTempGrapLayer: Function,
     geometryType: string,
@@ -49,13 +50,13 @@ class SketchTool extends Component<Props, State> {
     }
 
     componentWillReceiveProps(newProps: any) {
-        const { sketchViewModel, activeAdminTool } = this.props;
+        const { sketchViewModel, adminToolActive } = this.props;
 
         if (sketchViewModel !== newProps.sketchViewModel && newProps.sketchViewModel.initialized) {
             this.sketchTool();
         }
 
-        if (activeAdminTool !== newProps.activeAdminTool) {
+        if (adminToolActive !== newProps.adminToolActive) {
             switch (newProps.geometryType) {
                 case 'esriGeometryPolygon':
                     this.setState({ editSketchIcon: 'polygon' });
@@ -191,46 +192,20 @@ class SketchTool extends Component<Props, State> {
 
                 const selectFeaturesFromDraw = (evt) => {
                     const { geometry } = evt;
-                    const { active, activeAdminTool } = this.props;
+                    const {
+                        active, adminToolActive, selectFeatures,
+                    } = this.props;
 
                     // Skip finding layers if Administrator editing is in use
                     if (active === 'sketchActiveAdmin') {
                         addGraphic(geometry);
                     } else {
-                        const query = {
+                        queryFeatures(
                             geometry,
-                            outFields: ['*'],
-                            returnGeometry: true,
-                        };
-                        const queries = [];
-                        view.map.layers.forEach((layer) => {
-                            if (layer.queryFeatures) {
-                                if (layer.visible &&
-                                    !layer.definitionExpression &&
-                                    view.scale < layer.minScale &&
-                                    view.scale > layer.maxScale
-                                ) {
-                                    if (activeAdminTool && activeAdminTool === layer.id) {
-                                        queries.push(layer.queryFeatures(query).then(results => ({
-                                            id: layer.id,
-                                            title: layer.title,
-                                            objectIdFieldName: layer.objectIdField,
-                                            features: results.features,
-                                            fields: layer.fields,
-                                        })));
-                                    } else if (!activeAdminTool) {
-                                        queries.push(layer.queryFeatures(query).then(results => ({
-                                            id: layer.id,
-                                            title: layer.title,
-                                            objectIdFieldName: layer.objectIdField,
-                                            features: results.features,
-                                            fields: layer.fields,
-                                        })));
-                                    }
-                                }
-                            }
-                        });
-                        Promise.all(queries).then(layers => this.props.selectFeatures({ layers }));
+                            adminToolActive,
+                            view,
+                            selectFeatures,
+                        );
                     }
                     resetMapTools(draw, sketchViewModel, setActiveTool);
                     setActiveTool('');
@@ -264,7 +239,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, activeAdminTool, tempGraphicsLayer, setActiveModal,
+            data, view, adminToolActive, tempGraphicsLayer, setActiveModal,
         } = this.props;
         return (
             <Fragment>
@@ -282,7 +257,7 @@ class SketchTool extends Component<Props, State> {
                 <SketchActiveAdminView
                     editSketchIcon={this.state.editSketchIcon}
                     removeSketch={this.removeSketch}
-                    activeAdminTool={activeAdminTool}
+                    activeAdminTool={adminToolActive}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
                     tempGraphicsLayer={tempGraphicsLayer}
                     setActiveModal={setActiveModal}
