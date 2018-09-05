@@ -3,7 +3,7 @@ import { setActiveModal } from '../../../../reducers/modal/actions';
 import Modal from './Modal';
 
 const mapStateToProps = state => ({
-    activeModal: state.modal.activeModal,
+    activeModal: state.modal.activeModal.activeModal,
 });
 
 const mapDispatchToProps = dispatch => ({
