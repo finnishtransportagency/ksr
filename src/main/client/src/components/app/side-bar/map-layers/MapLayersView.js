@@ -1,5 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
+import MediaQuery from 'react-responsive';
 import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
 import SideBar from '../../../ui/blocks/SideBar';
@@ -11,11 +12,12 @@ import { ButtonLayerNav, ButtonLayerNavWrapper, ButtonLayerAddWrapper } from './
 type Props = {
     handleButtonClickLayers: (string) => void,
     activeTab: string,
-    setActiveModal: Function,
+    setActiveModal: (modal: string) => void,
+    setDropzoneActive: () => void,
 };
 
 const MapLayersView = ({
-    handleButtonClickLayers, activeTab, setActiveModal,
+    handleButtonClickLayers, activeTab, setActiveModal, setDropzoneActive,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
@@ -56,12 +58,25 @@ const MapLayersView = ({
                 >
                     {strings.mapLayers.addNewLayer}
                 </ButtonLayerNav>
-                <ButtonLayerNav
-                    disabled
-                    tabIndex={0}
-                    role="button"
-                >Shape?
-                </ButtonLayerNav>
+                <MediaQuery query="(min-width: 769px)">
+                    <ButtonLayerNav
+                        activeLayer={activeTab === 'shape'}
+                        onClick={() => { setActiveModal('shapefile'); }}
+                    >
+                        {strings.mapLayers.shape}
+                    </ButtonLayerNav>
+                </MediaQuery>
+                <MediaQuery query="(max-width: 768px)">
+                    <ButtonLayerNav
+                        activeLayer={activeTab === 'shape'}
+                        onClick={() => {
+                            setActiveModal('shapefile');
+                            setDropzoneActive();
+                        }}
+                    >
+                        {strings.mapLayers.shape}
+                    </ButtonLayerNav>
+                </MediaQuery>
             </ButtonLayerAddWrapper>
         </SideBar.Content>
     </Fragment>

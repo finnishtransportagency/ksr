@@ -5,7 +5,9 @@ import MapLayersView from './MapLayersView';
 type Props = {
     setActiveLayerTab: (string) => void,
     activeTab: string,
-    setActiveModal: (string) => void,
+    activeModal: string,
+    setActiveModal: (modal: string) => void,
+    setDropzoneActive: () => void,
 };
 
 type State = {
@@ -25,13 +27,14 @@ class MapLayers extends Component<Props, State> {
     };
 
     render() {
-        const { activeTab, setActiveModal } = this.props;
+        const { activeTab, setActiveModal, setDropzoneActive } = this.props;
 
         return (
             <MapLayersView
                 handleButtonClickLayers={this.handleButtonClickLayers}
                 activeTab={activeTab}
                 setActiveModal={setActiveModal}
+                setDropzoneActive={setDropzoneActive}
             />
         );
     }

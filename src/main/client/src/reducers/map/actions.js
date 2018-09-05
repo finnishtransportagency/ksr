@@ -160,3 +160,8 @@ export const removeUserLayerConfirmed = (
         }
     }).catch(e => console.error(e));
 };
+
+export const addShapefile = (layer: Object) => ({
+    type: types.ADD_SHAPEFILE_LAYER,
+    layer,
+});

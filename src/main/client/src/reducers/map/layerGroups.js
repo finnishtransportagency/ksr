@@ -9,6 +9,7 @@ import {
     SET_ACTIVE_ADMIN_TOOL,
     ADD_USER_LAYER,
     REMOVE_USER_LAYER_FULFILLED,
+    ADD_SHAPEFILE_LAYER,
 } from '../../constants/actionTypes';
 
 import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup, addLayerToUserGroup } from '../../utils/layers';
@@ -41,7 +42,7 @@ type LayerList = {
     type: string,
     url: string,
     visible: boolean,
-    _source: string,
+    source: string,
 }
 
 type State = {
@@ -107,7 +108,7 @@ export default (state: State = initialState, action: Action) => {
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
                 layerList: (state.layerList
-                    .filter(l => l._source !== 'search')
+                    .filter(l => l.source !== 'search')
                     .map(l => ({
                         ...l,
                         visible: l.id === action.layerId ? true : l.visible,
@@ -120,7 +121,14 @@ export default (state: State = initialState, action: Action) => {
                     ...lg,
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
+                layerList: (state.layerList.filter(l => l.source !== 'search'): Array<LayerList>),
+            };
+        case ADD_SHAPEFILE_LAYER:
+            return {
+                ...state,
+                layerList: [action.layer, ...state.layerList],
+                layerGroups: addLayerToUserGroup(state.layerGroups, action.layer),
+
             };
         case ADD_USER_LAYER:
             return {
