@@ -61,7 +61,7 @@ const TableView = ({
             <Table.Button
                 title={strings.reactTable.saveEditedData}
                 tableOpen={isOpen}
-                disabled={!originalLayers.length || equals(originalLayers, editedLayers)}
+                disabled={originalLayers.every(o => o.source === 'shapefile') || !originalLayers.length || equals(originalLayers, editedLayers)}
                 onClick={
                     originalLayers.length && !equals(originalLayers, editedLayers) ? () => {
                         setActiveModal('saveEditedData');

@@ -40,6 +40,7 @@ const MapLayersAllView = ({
                     {lg.layers.map(l => (
                         layerList.find(layer => layer.id === l.id)
                             ? <MapLayerContainer
+                                inputDisabled={l.source === 'shapefile'}
                                 key={l.id}
                                 layer={l}
                                 handleLayerClick={handleLayerClick}
