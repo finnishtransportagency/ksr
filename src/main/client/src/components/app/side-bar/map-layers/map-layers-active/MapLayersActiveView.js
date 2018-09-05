@@ -65,8 +65,9 @@ const MapLayersView = ({
                                                                     adminToolActive === l.id
                                                                 }
                                                             >
-                                                                { l._source !== 'search' &&
+                                                                { l.source !== 'search' &&
                                                                 !l.userLayer &&
+                                                                l.source !== 'shapefile' &&
                                                                 l.type === 'agfs' &&
                                                                 <i
                                                                     role="button"

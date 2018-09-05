@@ -2,11 +2,19 @@ import React from 'react';
 import { MapLayerTitleWrapper } from './styles';
 
 const MapLayerTitle = ({ layer }) => {
-    switch (layer._source) {
+    switch (layer.source) {
         case 'search': {
             return (
                 <MapLayerTitleWrapper>
                     <i className="fas fa-search" />
+                    <span>{layer.name ? layer.name : layer.title}</span>
+                </MapLayerTitleWrapper>
+            );
+        }
+        case 'shapefile': {
+            return (
+                <MapLayerTitleWrapper>
+                    <i className="far fa-file" />
                     <span>{layer.name ? layer.name : layer.title}</span>
                 </MapLayerTitleWrapper>
             );
