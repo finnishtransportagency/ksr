@@ -40,10 +40,10 @@ export const addOrReplaceLayersInSearchGroup = (layerGroups, layers) => (
 );
 
 /**
- * Add user layer to layergroup after POST request
+ * Add user layer or shapefile to layergroup
  *
  * @param layerGroups Array of layergroups
- * @param layer Object of user layer values
+ * @param layer Object of layer values
  *
  * @returns layerGroups Updated layerGroups
  */
