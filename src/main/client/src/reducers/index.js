@@ -6,6 +6,7 @@ import table from './table';
 import search from './search';
 import modal from './modal';
 import adminTool from './adminTool';
+import workspace from './workspace';
 import confirmModal from './confirmModal';
 
 export default combineReducers({
@@ -15,5 +16,6 @@ export default combineReducers({
     search,
     modal,
     adminTool,
+    workspace,
     confirmModal,
 });
