@@ -5,18 +5,16 @@ import HomeView from './HomeView';
 type Props = {
     getLayerGroups: Function,
     getMapConfig: Function,
+    getWorkspaceList: Function,
 };
 
-type State = {
-    /* ... */
-};
-
-class Home extends Component<Props, State> {
+class Home extends Component<Props, null> {
     componentDidMount() {
-        const { getLayerGroups, getMapConfig } = this.props;
+        const { getLayerGroups, getMapConfig, getWorkspaceList } = this.props;
 
         getLayerGroups();
         getMapConfig();
+        getWorkspaceList();
     }
 
     render() {

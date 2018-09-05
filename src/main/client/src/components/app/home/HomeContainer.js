@@ -1,6 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import { getLayerGroups, getMapConfig } from '../../../reducers/map/actions';
+import { getWorkspaceList } from '../../../reducers/workspace/actions';
 import Home from './Home';
 
 const mapDispatchToProps = dispatch => ({
@@ -9,6 +10,9 @@ const mapDispatchToProps = dispatch => ({
     },
     getMapConfig: () => {
         dispatch(getMapConfig());
+    },
+    getWorkspaceList: () => {
+        dispatch(getWorkspaceList());
     },
 });
 
