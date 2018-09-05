@@ -34,7 +34,7 @@ export const cellEditValidate = (
 
     if (!editedRow) {
         if (cellField.type === 'esriFieldTypeString') {
-            if (cellValue.trim() !== evt.target.innerText) {
+            if (cellValue !== null && cellValue.trim() !== evt.target.innerText) {
                 if (evt.target.innerText) {
                     const value = evt.target.innerText;
                     newValue(value);
