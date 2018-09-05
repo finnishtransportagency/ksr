@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Footer = styled.div`
     display: flex;
@@ -10,6 +10,10 @@ const Footer = styled.div`
     button {
         margin-left: 1em;
     }
+    
+    ${props => props.hidden && css`
+        display: none;
+    `}
     
     @media only screen and (max-width: 768px) {
         flex-direction: column;

@@ -36,7 +36,7 @@ const ModalView = ({
                 {content}
             </Modal.Content>
         </Scrollbars>
-        <Modal.Footer>
+        <Modal.Footer hidden={!submitText}>
             <Button disabled={submitDisabled} onClick={handleModalSubmit}>
                 {submitText}
             </Button>
