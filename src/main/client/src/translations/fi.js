@@ -3,6 +3,7 @@ const fi = {
         title: 'Karttatasot',
         active: 'Aktiiviset',
         all: 'Kaikki',
+        shape: 'Avaa shape',
         addNewLayer: 'Uusi taso',
     },
     search: {
@@ -99,6 +100,14 @@ const fi = {
             attribution: 'Tason tekijänoikeus nimi',
             styles: 'Tason tyylit',
         },
+    },
+    modalShapefile: {
+        title: 'Avaa shape tiedosto',
+    },
+    dropzoneShape: {
+        browse: 'Selaa',
+        orText: 'tai',
+        dropText: 'Pudota .shp ja .dbf tiedostot tähän',
     },
     sideNav: {
         search: 'Haku',
