@@ -22,17 +22,17 @@ export const parseColumns = (data) => {
 *
 * @param data Content of FeatureService JSON-response
 * @param selected Whether features should be marked as selected
-* @param source Origin of features. 'select': map select action. 'search': search action
 *
 * @returns Array of layers holding respective features and columns
 */
-export const parseData = (data, selected, source) => {
+
+export const parseData = (data, selected) => {
     if (data === undefined || data === null || data.layers === undefined) return [];
     return data.layers.map(l => ({
         id: l.id,
         title: l.title,
         columns: parseColumns(l.fields),
-        _source: source,
+        source: l.source,
         data: l.features.map(f => ({
             ...f.attributes,
             geometry: f.geometry,
@@ -41,7 +41,7 @@ export const parseData = (data, selected, source) => {
             _selected: selected,
             _edited: [],
             _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
-            _source: source,
+            _source: l.source,
         })),
     }));
 };
