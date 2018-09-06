@@ -7,6 +7,7 @@ import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import EsriMapView from './EsriMapView';
 import { addLayers, highlight, fitExtent } from '../../../utils/map';
 import { setBuffer } from '../../../utils/buffer';
+import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 
 type Props = {
     view: Object,
@@ -104,7 +105,7 @@ class EsriMap extends Component<Props> {
         }
 
         if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
-            highlight(view, this.props.selectedFeatures);
+            highlight(view, this.props.selectedFeatures, this.props.adminToolActive);
         }
         if (this.props.layers.length < 1 && view) {
             setBuffer(view, [], 0);
@@ -234,9 +235,11 @@ class EsriMap extends Component<Props> {
                     // Return if update sketch is ongoing
                     if (this.props.editMode === 'update') return;
                     view.hitTest(event).then((response) => {
-                        const { results } = response;
+                        let { results } = response;
                         // Found results
                         if (results.length) {
+                            // remove highlight because it is graphic not a layer
+                            results = results.filter(item => item.graphic.id !== 'highlight' && item.graphic.id !== 'buffer' && item.graphic.id !== 'drawMeasure');
                             const layer = results.find(l => l
                                 .graphic.layer.id.indexOf('layer') >= 0);
 
@@ -253,15 +256,24 @@ class EsriMap extends Component<Props> {
                                 this.props.setEditMode('');
                             } else {
                                 const { adminToolActive } = this.props;
-                                mapSelectPopup(
-                                    event,
-                                    view,
-                                    selectFeatures,
-                                    layerList,
-                                    adminToolActive,
-                                    setActiveModal,
-                                    setSingleLayerGeometry,
-                                );
+
+                                if (event.button === 0) {
+                                    const swLink = getStreetViewLink(
+                                        event.mapPoint.x,
+                                        event.mapPoint.y,
+                                    );
+
+                                    mapSelectPopup(
+                                        results,
+                                        swLink,
+                                        view,
+                                        selectFeatures,
+                                        layerList,
+                                        adminToolActive,
+                                        setActiveModal,
+                                        setSingleLayerGeometry,
+                                    );
+                                }
                             }
                         }
                     });

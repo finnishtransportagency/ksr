@@ -9,6 +9,7 @@ type Props = {
     handleLayerClick: (number) => void,
     removeUserLayer: Function,
     checked: boolean,
+    inputDisabled: boolean,
 };
 
 const MapLayerView = ({
@@ -16,10 +17,12 @@ const MapLayerView = ({
     handleLayerClick,
     checked,
     removeUserLayer,
+    inputDisabled,
 }: Props) => (
     <LayerGroup.Layer>
         <LayerGroup.Layer.Label htmlFor={layer.id}>
             <input
+                disabled={inputDisabled}
                 onChange={handleLayerClick}
                 checked={checked}
                 type="checkbox"

@@ -1,9 +1,14 @@
 // @flow
-import { SET_ACTIVE_MODAL } from '../../constants/actionTypes';
+import { SET_ACTIVE_MODAL, SET_DROPZONE_ACTIVE } from '../../constants/actionTypes';
 
-const initialState = '';
+const initialState = {
+    activeModal: '',
+    dropzone: false,
+};
 
-type State = string;
+type State = {
+    dropzone: boolean,
+};
 
 type Action = {
     activeModal: string,
@@ -13,7 +18,15 @@ type Action = {
 export default (state: State = initialState, action: Action) => {
     switch (action.type) {
         case SET_ACTIVE_MODAL:
-            return action.activeModal;
+            return {
+                ...state,
+                activeModal: action.activeModal,
+            };
+        case SET_DROPZONE_ACTIVE:
+            return {
+                ...state,
+                dropzone: !state.dropzone,
+            };
         default:
             return state;
     }

@@ -1,4 +1,4 @@
-import { 
+import {
     mergeData,
     updateLayerColumns,
     parseColumns,
@@ -192,6 +192,7 @@ describe('parseFeatureData', () => {
                     title: 'layer123',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a123', name: 'f1' } }],
+                    source: 'select',
                 },
                 {
                     id: '456',
@@ -199,6 +200,7 @@ describe('parseFeatureData', () => {
                     title: 'layer456',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a456', name: 'f2' } }],
+                    source: 'search',
                 },
                 {
                     id: '789',
@@ -206,6 +208,7 @@ describe('parseFeatureData', () => {
                     title: 'layer789',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a789', name: 'f3' } }],
+                    source: 'select',
                 },
             ],
         };
@@ -214,7 +217,7 @@ describe('parseFeatureData', () => {
             {
                 id: '123',
                 title: 'layer123',
-                _source: 'select',
+                source: 'select',
                 columns: [
                     { Header: 'L1A', accessor: 'l.1.a', show: true },
                     { Header: 'L2A', accessor: 'l.2.a', show: true },
@@ -235,7 +238,7 @@ describe('parseFeatureData', () => {
             {
                 id: '456',
                 title: 'layer456',
-                _source: 'select',
+                source: 'search',
                 columns: [
                     { Header: 'L1A', accessor: 'l.1.a', show: true },
                     { Header: 'L2A', accessor: 'l.2.a', show: true },
@@ -248,7 +251,7 @@ describe('parseFeatureData', () => {
                         _layerId: '456',
                         _selected: false,
                         _key: '456/a456',
-                        _source: 'select',
+                        _source: 'search',
                         _edited: [],
                     },
                 ],
@@ -256,7 +259,7 @@ describe('parseFeatureData', () => {
             {
                 id: '789',
                 title: 'layer789',
-                _source: 'select',
+                source: 'select',
                 columns: [
                     { Header: 'L1A', accessor: 'l.1.a', show: true },
                     { Header: 'L2A', accessor: 'l.2.a', show: true },
@@ -276,16 +279,16 @@ describe('parseFeatureData', () => {
             },
         ];
 
-        expect(parseData(null, null, null)).toEqual([]);
-        expect(parseData(null, true, 'select')).toEqual([]);
-        expect(parseData(data, false, 'select')).toEqual(expect.arrayContaining(expectedData));
+        expect(parseData(null, null)).toEqual([]);
+        expect(parseData(null, true)).toEqual([]);
+        expect(parseData(data, false)).toEqual(expect.arrayContaining(expectedData));
     });
 
     it('getActiveTable - should return correct table id', () => {
-        const a = [{ id: '1' }, { id: '2'}, { id: '3' }];
+        const a = [{ id: '1' }, { id: '2' }, { id: '3' }];
         expect(getActiveTable(a, '2')).toBe('2');
 
-        const b = [{ id: '1' }, { id: '2'}, { id: '3' }];
+        const b = [{ id: '1' }, { id: '2' }, { id: '3' }];
         expect(getActiveTable(b, '10')).toBe('1');
 
         const c = [];

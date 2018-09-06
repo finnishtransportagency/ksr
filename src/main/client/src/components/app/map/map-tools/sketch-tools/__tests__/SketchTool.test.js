@@ -7,7 +7,7 @@ const setup = () => {
     const props = {
         view: {},
         data: [],
-        activeAdminTool: '',
+        adminToolActive: '',
         draw: {},
         tempGraphicsLayer: { graphics: { grap: {} } },
         setTempGrapLayer: jest.fn(),
@@ -52,7 +52,7 @@ describe('<SketchTool />', () => {
                 initialized: true,
                 reset: jest.fn(),
             },
-            activeAdminTool: 'sketchActiveAdmin',
+            adminToolActive: 'sketchActiveAdmin',
         };
         const spy = jest.spyOn(wrapper.instance(), 'removeSketch');
         wrapper.instance().componentWillReceiveProps(newProps);

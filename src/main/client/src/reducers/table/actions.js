@@ -13,7 +13,7 @@ export const toggleFilter = () => ({
 
 export const selectFeatures = (features: {}) => ({
     type: types.SELECT_FEATURES,
-    layers: parseData(features, true, 'select'),
+    layers: parseData(features, true),
 });
 
 export const setColumns = (columns: Array<Object>) => ({
@@ -48,7 +48,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             visible: true,
                             active: true,
                             id: `${selectedLayer.id}.s`,
-                            _source: 'search',
+                            source: 'search',
                             title: fetchedLayer.title,
                             fields: fetchedLayer.fields,
                             features: fetchedLayer.features,
@@ -64,7 +64,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
     Promise.all(searchQueries).then(() => {
         dispatch({
             type: types.SEARCH_FEATURES_FULFILLED,
-            layers: parseData(layersToBeAdded, false, 'search'),
+            layers: parseData(layersToBeAdded, false),
         });
 
         if (layersToBeAdded.layers.length) {

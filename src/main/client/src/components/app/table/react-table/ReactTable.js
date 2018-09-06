@@ -65,7 +65,7 @@ class ReactTable extends Component<Props> {
                     style={{ minHeight: '1rem' }}
                     role="textbox"
                     tabIndex={0}
-                    contentEditable={cellField.type !== 'esriFieldTypeOID'}
+                    contentEditable={cellField.type !== 'esriFieldTypeOID' && currentLayer.source !== 'shapefile'}
                     suppressContentEditableWarning
                     onKeyPress={(e) => {
                         preventKeyPress(e, cellField);

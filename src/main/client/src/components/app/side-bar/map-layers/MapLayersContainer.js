@@ -1,12 +1,13 @@
 // @flow
 import { connect } from 'react-redux';
 import { getLayerGroups, getActiveLayerTab, setActiveLayerTab } from '../../../../reducers/map/actions';
-import { setActiveModal } from '../../../../reducers/modal/actions';
+import { setActiveModal, setDropzoneActive } from '../../../../reducers/modal/actions';
 import MapLayers from './MapLayers';
 
 const mapStateToProps = state => ({
     layerGroups: state.map.layerGroups,
     activeTab: state.map.activeLayerTab,
+    activeModal: state.modal.activeModal.activeModal,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -21,6 +22,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));
+    },
+    setDropzoneActive: () => {
+        dispatch(setDropzoneActive());
     },
 });
 

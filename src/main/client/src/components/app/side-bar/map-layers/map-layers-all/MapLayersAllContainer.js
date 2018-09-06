@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { getLayerGroups, setLayerList } from '../../../../../reducers/map/actions';
+import { setLayerList } from '../../../../../reducers/map/actions';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
 import MapLayersAll from './MapLayersAll';
 
@@ -12,9 +12,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    getLayerGroups: () => {
-        dispatch(getLayerGroups());
-    },
     setLayerList: (layerList) => {
         dispatch(setLayerList(layerList));
     },

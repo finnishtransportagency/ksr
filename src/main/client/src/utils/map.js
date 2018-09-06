@@ -183,25 +183,32 @@ export const createGraphic = (
 };
 
 /**
-* Highlight given features on the map.
-*
-* Features are highlighted by drawing new Graphics
-* using the geometries of selected features.
-* Graphics are added straight to MapView, and therefore
-* they will always be the topmost layer with zero transparency.
-*
-* @param view esri.views.MapView
-* @param selectedFeatures Array of selected features
-*/
-export const highlight = (view: Object, selectedFeatures: Array<Object>) => {
+ * Highlight given features on the map.
+ *
+ * Features are highlighted by drawing new Graphics
+ * using the geometries of selected features.
+ * Graphics are added straight to MapView, and therefore
+ * they will always be the topmost layer with zero transparency.
+ *
+ * @param view esri.views.MapView
+ * @param selectedFeatures Array of selected features
+ * @param adminToolActive string id of current admin tool layer
+ */
+export const highlight = (
+    view: Object,
+    selectedFeatures: Array<Object>,
+    adminToolActive: string,
+) => {
     esriLoader
         .loadModules([
             'esri/Graphic',
             'esri/geometry/SpatialReference',
+            'esri/tasks/support/Query',
         ])
         .then(([
             Graphic,
             SpatialReference,
+            Query,
         ]) => {
             if (view) {
                 view.graphics.removeMany(view.graphics.filter(g => g.id === 'highlight'));
@@ -211,25 +218,91 @@ export const highlight = (view: Object, selectedFeatures: Array<Object>) => {
                         const ids = selectedFeatures
                             .filter(f => f._layerId === layer.id)
                             .map(f => parseInt(f._id, 10));
+                        if (adminToolActive && adminToolActive === layer.id) {
+                            if (layer.featureType === 'shapefile') {
+                                view.whenLayerView(layer).then((layerView) => {
+                                    const queryView = new Query();
+                                    queryView.returnGeometry = true;
+                                    queryView.objectIds = ids;
 
-                        const query = {
-                            objectIds: ids,
-                            outFields: ['*'],
-                            returnGeometry: true,
-                        };
-                        layer.queryFeatures(query).then((res) => {
-                            if (res) {
-                                const graphics = res.features
-                                    .map(rf => createGraphic(
-                                        rf.geometry,
-                                        view.spatialReference.wkid || 3067,
-                                        Graphic,
-                                        SpatialReference,
-                                    ))
-                                    .filter(g => g !== null);
-                                view.graphics.addMany(graphics);
+                                    layerView.queryFeatures(queryView)
+                                        .then((results) => {
+                                            if (results) {
+                                                const graphics = results.features
+                                                    .map(rf => createGraphic(
+                                                        rf.geometry,
+                                                        view.spatialReference.wkid || 3067,
+                                                        Graphic,
+                                                        SpatialReference,
+                                                    ))
+                                                    .filter(g => g !== null);
+                                                view.graphics.addMany(graphics);
+                                            }
+                                        });
+                                });
+                            } else {
+                                const query = {
+                                    objectIds: ids,
+                                    outFields: ['*'],
+                                    returnGeometry: true,
+                                };
+                                layer.queryFeatures(query).then((res) => {
+                                    if (res) {
+                                        const graphics = res.features
+                                            .map(rf => createGraphic(
+                                                rf.geometry,
+                                                view.spatialReference.wkid || 3067,
+                                                Graphic,
+                                                SpatialReference,
+                                            ))
+                                            .filter(g => g !== null);
+                                        view.graphics.addMany(graphics);
+                                    }
+                                });
                             }
-                        });
+                        } else if (!adminToolActive) {
+                            if (layer.featureType === 'shapefile') {
+                                view.whenLayerView(layer).then((layerView) => {
+                                    const queryView = new Query();
+                                    queryView.returnGeometry = true;
+                                    queryView.objectIds = ids;
+
+                                    layerView.queryFeatures(queryView)
+                                        .then((results) => {
+                                            if (results) {
+                                                const graphics = results.features
+                                                    .map(rf => createGraphic(
+                                                        rf.geometry,
+                                                        view.spatialReference.wkid || 3067,
+                                                        Graphic,
+                                                        SpatialReference,
+                                                    ))
+                                                    .filter(g => g !== null);
+                                                view.graphics.addMany(graphics);
+                                            }
+                                        });
+                                });
+                            } else {
+                                const query = {
+                                    objectIds: ids,
+                                    outFields: ['*'],
+                                    returnGeometry: true,
+                                };
+                                layer.queryFeatures(query).then((res) => {
+                                    if (res) {
+                                        const graphics = res.features
+                                            .map(rf => createGraphic(
+                                                rf.geometry,
+                                                view.spatialReference.wkid || 3067,
+                                                Graphic,
+                                                SpatialReference,
+                                            ))
+                                            .filter(g => g !== null);
+                                        view.graphics.addMany(graphics);
+                                    }
+                                });
+                            }
+                        }
                     }
                 });
             }
