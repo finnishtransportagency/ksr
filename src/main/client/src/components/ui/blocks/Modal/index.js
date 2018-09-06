@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 import Blur from './Blur';
 import Content from './Content';
@@ -24,6 +24,10 @@ const Modal = styled.div`
     transition: 0.6s;
     background: #FFFFFF;
     overflow: hidden;
+    
+    ${props => props.confirm && css`
+        width: 350px;
+    `};
     
     @media only screen and (max-width: 768px) {
         width: 90%;

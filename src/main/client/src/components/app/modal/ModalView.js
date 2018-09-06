@@ -11,12 +11,14 @@ import ModalRemoveUserLayerContainer from './modal-remove-user-layer/ModalRemove
 import ModalLayerDetailsContainer from './modal-layer-details/ModalLayerDetailsContainer';
 import ModalShapefileContainer from './modal-shapefile/ModalShapefileContainer';
 import ModalNewWorkspaceContainer from './modal-new-workspace/ModalNewWorkspaceContainer';
+import ConfirmModalContainer from '../shared/confirm-modal/ConfirmModalContainer';
 
 type Props = {
     activeModal: string,
+    confirmModal: boolean,
 };
 
-const ModalView = ({ activeModal }: Props) => (
+const ModalView = ({ activeModal, confirmModal }: Props) => (
     <Fragment>
         {activeModal === 'filter' && <ModalFilterContainer />}
         {activeModal === 'clearTable' && <ModalClearTableContainer />}
@@ -28,6 +30,7 @@ const ModalView = ({ activeModal }: Props) => (
         {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
         {activeModal === 'newWorkspace' && <ModalNewWorkspaceContainer />}
         {activeModal === 'shapefile' && <ModalShapefileContainer />}
+        {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );
 
