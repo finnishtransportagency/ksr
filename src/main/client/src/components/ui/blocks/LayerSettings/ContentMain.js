@@ -7,6 +7,7 @@ const ContentMain = styled.div`
     flex-direction: column;
     width: 100%;
     padding: 1rem;
+    overflow: hidden;
 `;
 
 export default ContentMain;

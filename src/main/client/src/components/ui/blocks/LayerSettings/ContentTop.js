@@ -5,6 +5,7 @@ const ContentTop = styled.div`
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    overflow: hidden;
 `;
 
 export default ContentTop;

@@ -37,6 +37,7 @@ const Drag = styled.div`
 
 const Title = styled.div`
     flex: 8;
+    max-width: 100%;
 `;
 
 const Toggle = styled.div`
