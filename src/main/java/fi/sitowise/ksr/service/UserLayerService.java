@@ -34,27 +34,7 @@ public class UserLayerService {
      */
     @Transactional
     public Layer addUserLayer(String username, Layer layer, boolean isMobile) {
-        String transparent = layer.getTransparent() ? "1" : "0";
-        String desktopVisible = layer.getDesktopVisible() ? "1" : "0";
-        String mobileVisible = layer.getMobileVisible() ? "1" : "0";
-        String styles = layer.getStyles().equals("") ? "default" : layer.getStyles();
-
-        int id = userLayerRepository.addUserLayer(
-                layer.getName(),
-                layer.getType(),
-                layer.getUrl(),
-                layer.getLayers(),
-                styles,
-                layer.getOpacity(),
-                layer.getMinScale(),
-                layer.getMaxScale(),
-                transparent,
-                layer.getAttribution(),
-                desktopVisible,
-                mobileVisible,
-                username
-        );
-
+        int id = userLayerRepository.addUserLayer(layer, username);
         Layer newLayer = userLayerRepository.getUserLayer(id);
         newLayer.setVisible(isMobile ? newLayer.getMobileVisible() : newLayer.getDesktopVisible());
 

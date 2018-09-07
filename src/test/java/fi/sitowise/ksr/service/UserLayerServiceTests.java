@@ -45,10 +45,8 @@ public class UserLayerServiceTests {
         layer.setDesktopVisible("1");
         layer.setMobileVisible("1");
 
-        Mockito.when(userLayerRepository.addUserLayer(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyDouble(),
-                Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(123);
+        Mockito.when(userLayerRepository.addUserLayer(Mockito.any(), Mockito.anyString()))
+                .thenReturn(123);
         Mockito.when(userLayerRepository.getUserLayer(123)).thenReturn(layer);
         userLayerService.addUserLayer("test-user", layer, false);
     }
