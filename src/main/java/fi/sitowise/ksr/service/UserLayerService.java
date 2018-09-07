@@ -39,7 +39,7 @@ public class UserLayerService {
         String mobileVisible = layer.getMobileVisible() ? "1" : "0";
         String styles = layer.getStyles().equals("") ? "default" : layer.getStyles();
 
-        userLayerRepository.addUserLayer(
+        int id = userLayerRepository.addUserLayer(
                 layer.getName(),
                 layer.getType(),
                 layer.getUrl(),
@@ -55,7 +55,6 @@ public class UserLayerService {
                 username
         );
 
-        int id = userLayerRepository.getMaxUserLayerId();
         Layer newLayer = userLayerRepository.getUserLayer(id);
         newLayer.setVisible(isMobile ? newLayer.getMobileVisible() : newLayer.getDesktopVisible());
 

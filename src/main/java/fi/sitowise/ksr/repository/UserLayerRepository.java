@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -88,8 +87,10 @@ public class UserLayerRepository {
      * @param desktopVisible String layer visibility on desktop ("1" true, "0" false)
      * @param mobileVisible String layer visibility on mobile ("1" true, "0" false)
      * @param username String name of current user
+     *
+     * @return id of the newly added layer
      */
-    public void addUserLayer(
+    public int addUserLayer(
             String name,
             String type,
             String url,
@@ -104,7 +105,7 @@ public class UserLayerRepository {
             String mobileVisible,
             String username
             ) throws DataAccessException {
-        context.insertInto(USER_LAYER,
+        Long workspaceId = context.insertInto(USER_LAYER,
                 USER_LAYER.NAME,
                 USER_LAYER.TYPE,
                 USER_LAYER.URL,
@@ -134,18 +135,12 @@ public class UserLayerRepository {
                         mobileVisible,
                         "0",
                         username
-                ).execute();
-    }
+                )
+                .returning(USER_LAYER.ID)
+                .fetchOne()
+                .getId();
 
-    /**
-     * Gets max layer ID from user layer table
-     *
-     * @return layer ID
-     */
-    public int getMaxUserLayerId() throws DataAccessException {
-        return toIntExact(context.select(DSL.max(USER_LAYER.ID))
-                .from(USER_LAYER)
-                .fetchOne(DSL.max(USER_LAYER.ID)));
+        return toIntExact(workspaceId);
     }
 
     /**
