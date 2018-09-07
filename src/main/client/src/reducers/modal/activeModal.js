@@ -7,6 +7,7 @@ const initialState = {
 };
 
 type State = {
+    activeModal: string,
     dropzone: boolean,
 };
 
