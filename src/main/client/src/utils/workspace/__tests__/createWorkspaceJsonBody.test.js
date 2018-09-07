@@ -176,6 +176,14 @@ describe('createWorkspaceJsonBody', () => {
                 opacity: 1,
                 definitionExpression: '',
                 userLayer: true,
+            }, {
+                id: '10050',
+                active: true,
+                visible: true,
+                opacity: 1,
+                definitionExpression: '',
+                userLayer: true,
+                source: 'shapefile',
             }];
         const selectedFeatures = [
             { id: '2', data: [{ _id: 44, _selected: true }, { _id: 52, _selected: false }] },
