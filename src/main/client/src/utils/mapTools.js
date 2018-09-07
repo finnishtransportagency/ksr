@@ -18,3 +18,15 @@ export const resetMapTools = (draw: Object, sketchViewModel: Object, setActiveTo
         element.style.background = styles.colorMain;
     });
 };
+
+/**
+* Removes temporary drawings from the view.
+* Temporary drawings are drawings where graphic.complete is false
+*
+* @param view Object Esri MapView
+*/
+export const removeTemporaryDrawings = (view: Object) => {
+    // Removes temporary drawings (graphic.complete === false)
+    const graphicsToRemove = view.graphics.filter(g => g.type === 'draw-graphic' && !g.complete);
+    view.graphics.removeMany(graphicsToRemove);
+};

@@ -2,7 +2,7 @@
 import uuidv4 from 'uuid/v4';
 import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
-import { resetMapTools } from '../../../../../utils/mapTools';
+import { resetMapTools, removeTemporaryDrawings } from '../../../../../utils/mapTools';
 import * as styles from '../../../../ui/defaultStyles';
 import MapDrawView from './MapDrawView';
 
@@ -86,7 +86,7 @@ class MapDraw extends Component<Props, State> {
                         spatialReference: view.spatialReference,
                     });
 
-                const createGraphic = (geometry, style): any =>
+                const createGraphic = (geometry, style, complete): any =>
                     new Graphic({
                         geometry: geometry.extent.width ? geometry : null,
                         symbol: {
@@ -99,10 +99,11 @@ class MapDraw extends Component<Props, State> {
                             },
                         },
                         type: 'draw-graphic',
+                        complete,
                         id: this.currentGraphicUUID,
                     });
 
-                const createPointGraphic = (geometry): any =>
+                const createPointGraphic = (geometry, complete): any =>
                     new Graphic({
                         geometry,
                         symbol: {
@@ -113,10 +114,11 @@ class MapDraw extends Component<Props, State> {
                             yoffset: '16px',
                         },
                         type: 'draw-graphic',
+                        complete,
                         id: this.currentGraphicUUID,
                     });
 
-                const createTextGraphic = (geometry): any => {
+                const createTextGraphic = (geometry, complete): any => {
                     const { drawText } = this.props;
                     if (drawText && drawText.trim().length > 0) {
                         return new Graphic({
@@ -131,6 +133,7 @@ class MapDraw extends Component<Props, State> {
                                 },
                             },
                             type: 'draw-graphic',
+                            complete,
                             id: this.currentGraphicUUID,
                         });
                     }
@@ -141,7 +144,7 @@ class MapDraw extends Component<Props, State> {
                     const { vertices } = evt;
                     const polygon = createPolygon(vertices);
 
-                    const graphic = createGraphic(polygon, 'solid');
+                    const graphic = createGraphic(polygon, 'solid', evt.type === 'draw-complete');
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
                     view.graphics.add(graphic);
@@ -151,7 +154,7 @@ class MapDraw extends Component<Props, State> {
                     const { vertices } = evt;
                     const line = createLine(vertices);
 
-                    const graphic = createGraphic(line, 'none');
+                    const graphic = createGraphic(line, 'none', evt.type === 'draw-complete');
 
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
@@ -162,7 +165,7 @@ class MapDraw extends Component<Props, State> {
                     const { coordinates } = evt;
                     const point = createPoint(coordinates);
 
-                    const graphic = createPointGraphic(point);
+                    const graphic = createPointGraphic(point, evt.type === 'draw-complete');
 
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
@@ -173,7 +176,7 @@ class MapDraw extends Component<Props, State> {
                     const { coordinates } = evt;
                     const point = createPoint(coordinates);
 
-                    const graphic = createTextGraphic(point);
+                    const graphic = createTextGraphic(point, evt.type === 'draw-complete');
 
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
@@ -195,7 +198,7 @@ class MapDraw extends Component<Props, State> {
                             drawGeometry,
                         );
                     } else if (geometry === 'point') {
-                        action.on(['cursor-update'], drawGeometry);
+                        action.on(['cursor-update', 'draw-complete'], drawGeometry);
                     }
 
                     action.on('draw-complete', this.removeHighlight);
@@ -261,6 +264,7 @@ class MapDraw extends Component<Props, State> {
         ['draw-polygon', 'draw-line', 'draw-point', 'draw-text', 'draw-erase']
             .filter(i => i !== exceptButton)
             .forEach(b => this.removeHighlightFromButton(b));
+        removeTemporaryDrawings(this.props.view);
     };
 
     removeHighlight = () => {
