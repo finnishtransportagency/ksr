@@ -13,6 +13,8 @@ const Content = styled.div`
     border-left: 5px solid transparent;
     user-select: none;
     margin: 0.5rem 0;
+    overflow: hidden;
+    white-space: nowrap;
 `;
 
 export default Content;
