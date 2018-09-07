@@ -73,7 +73,7 @@ public class WorkspaceRepository {
      * @return id of the inserted workspace
      */
     private Long insertWorkspace(Workspace workspace, String username) {
-        context
+        return context
                 .insertInto(
                         WORKSPACE,
                         WORKSPACE.NAME,
@@ -89,13 +89,9 @@ public class WorkspaceRepository {
                         workspace.getCenterLongitude(),
                         workspace.getCenterLatitude()
                 )
-                .execute();
-
-        return context
-                .select(DSL.max(WORKSPACE.ID))
-                .from(WORKSPACE)
-                .where(WORKSPACE.USERNAME.equal(username))
-                .fetchOne(DSL.max(WORKSPACE.ID));
+                .returning(WORKSPACE.ID)
+                .fetchOne()
+                .getId();
     }
 
     /**
