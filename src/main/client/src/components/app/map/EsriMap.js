@@ -229,7 +229,7 @@ class EsriMap extends Component<Props> {
 
                 (document.getElementById: Function)('measure-tool-outer-wrapper').classList
                     .remove('esri-component');
-                
+
                 (document.getElementById: Function)('draw-tool-outer-wrapper').classList
                     .remove('esri-component');
 
@@ -254,7 +254,6 @@ class EsriMap extends Component<Props> {
                                         view.graphics.remove(r.graphic);
                                     }
                                 });
-
                             } else {
                                 const layer = results.find(l => l
                                     .graphic.layer.id.indexOf('layer') >= 0);
