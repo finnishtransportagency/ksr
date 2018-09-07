@@ -146,6 +146,18 @@ const fi = {
     workspace: {
         title: 'Työtilat',
         newWorkspace: 'Luo uusi työtila',
+        replaceWorkspace: 'Korvaa työtila',
+        deleteWorkspace: 'Poista työtila',
+        confirmDelete: {
+            body: 'Haluatko varmasti poistaa valitun työtilan?',
+            acceptText: 'Poista',
+            cancelText: 'Peruuta',
+        },
+        confirmReplace: {
+            body: 'Haluatko varmasti korvata valitun työtilan?',
+            acceptText: 'Korvaa',
+            cancelText: 'Peruuta',
+        },
     },
     modalNewWorkspace: {
         title: 'Luo uusi työtila',
