@@ -1,19 +1,26 @@
 // @flow
 import { connect } from 'react-redux';
+import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
+import { getWorkspaceList } from '../../../../reducers/workspace/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
-import { setActiveNav } from '../../../../reducers/navigation/actions';
 import Workspace from './Workspace';
 
 const mapStateToProps = state => ({
-    activeNav: state.navigation.activeNav,
+    workspaceList: state.workspace.workspace.workspaceList,
+    selectedFeatures: state.table.features.layers,
+    view: state.map.mapView.view,
+    layerList: state.map.layerGroups.layerList,
 });
 
 const mapDispatchToProps = dispatch => ({
-    setActiveNav: (selectedNav) => {
-        dispatch(setActiveNav(selectedNav));
-    },
-    setActiveModal: (activeModal) => {
+    setActiveModal: (activeModal: string) => {
         dispatch(setActiveModal(activeModal));
+    },
+    getWorkspaceList: () => {
+        dispatch(getWorkspaceList());
+    },
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
 });
 
