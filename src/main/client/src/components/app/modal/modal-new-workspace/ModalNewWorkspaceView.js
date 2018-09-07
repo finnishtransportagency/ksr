@@ -34,15 +34,15 @@ const ModalNewWorkspaceView = ({
                     maxLength={30}
                 />
                 <InputInfo
-                    data-balloon={!fetching && submitDisabled && workspaceName
+                    data-balloon={!fetching && submitDisabled && workspaceName.trim()
                         ? strings.modalNewWorkspace.workspaceNameExists
                         : null
                     }
                     data-balloon-pos="left"
                     data-balloon-length="large"
                 >
-                    {!fetching && !submitDisabled && workspaceName && <i className="fas fa-check" />}
-                    {!fetching && submitDisabled && workspaceName && <i className="fas fa-exclamation-triangle" />}
+                    {!fetching && !submitDisabled && workspaceName.trim() && <i className="fas fa-check" />}
+                    {!fetching && submitDisabled && workspaceName.trim() && <i className="fas fa-exclamation-triangle" />}
                     <LoadingIcon size={7} loading={fetching} />
                 </InputInfo>
             </InputWithIcon>

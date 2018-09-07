@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+import { getWorkspaceList } from '../../../../reducers/workspace/actions';
 import ModalNewWorkspace from './ModalNewWorkspace';
 
 const mapStateToProps = state => ({
@@ -8,6 +9,12 @@ const mapStateToProps = state => ({
     layerList: state.map.layerGroups.layerList,
 });
 
-const ModalNewWorkspaceContainer = connect(mapStateToProps, null)(ModalNewWorkspace);
+const mapDispatchToProps = dispatch => ({
+    getWorkspaceList: () => {
+        dispatch(getWorkspaceList());
+    },
+});
+
+const ModalNewWorkspaceContainer = connect(mapStateToProps, mapDispatchToProps)(ModalNewWorkspace);
 
 export default ModalNewWorkspaceContainer;
