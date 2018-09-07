@@ -124,19 +124,20 @@ public class UserLayerRepository {
     /**
      * Remove user layer from database.
      *
-     * Throws 404 Exception if layer not found for given user.
-     *
-     * @param username String username of the layer owner
-     * @param userLayerId int Id of the layer
+     * @param username username of the layer owner
+     * @param userLayerId id of the layer
+     * @throws KsrApiException if layer is not found for given user
      */
     public void removeUserLayer(String username, int userLayerId) throws KsrApiException {
-        Integer rowCount = context.select(USER_LAYER.fields())
-                .from(USER_LAYER)
-                .where(USER_LAYER.ID.eq(Long.valueOf(userLayerId)).and(USER_LAYER.USERNAME.eq(username))).execute();
-        if (rowCount.equals(1)) { // Check that layer exists
-            context.delete(USER_LAYER)
-                    .where(USER_LAYER.ID.eq(Long.valueOf(userLayerId)).and(USER_LAYER.USERNAME.eq(username))).execute();
-            log.info(String.format("Userlayer: [%d] succesfully removed by user: [%s].", userLayerId, username));
+        int rowsRemoved = context
+                .delete(USER_LAYER)
+                .where(USER_LAYER.ID.equal(Long.valueOf(userLayerId))
+                    .and(USER_LAYER.USERNAME.equal(username)))
+                .execute();
+
+        if (rowsRemoved > 0) {
+            log.info(String.format("Userlayer: [%d] succesfully removed by user: [%s].",
+                    userLayerId, username));
         } else {
             throw new KsrApiException.NotFoundErrorException(
                     String.format("Userlayer: [%d] not found for user: [%s].", userLayerId, username)
