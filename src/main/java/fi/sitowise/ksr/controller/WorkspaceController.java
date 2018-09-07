@@ -83,7 +83,7 @@ public class WorkspaceController {
      * @return map of workspace names and update times
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public Map<String, Timestamp> getWorkspaceList() {
+    public Map<Timestamp, String> getWorkspaceList() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return workspaceService.getWorkspaceListForUser(authentication.getName());
     }

@@ -63,7 +63,7 @@ public class WorkspaceService {
      * @param username username of the user whose workspaces are fetched
      * @return map of workspace names and update times
      */
-    public Map<String, Timestamp> getWorkspaceListForUser(String username) {
+    public Map<Timestamp, String> getWorkspaceListForUser(String username) {
         return workspaceRepository.fetchWorkspaceListForUser(username);
     }
 }

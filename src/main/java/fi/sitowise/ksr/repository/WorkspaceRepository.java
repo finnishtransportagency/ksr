@@ -158,15 +158,15 @@ public class WorkspaceRepository {
      * @param username username of the user whose workspaces are fetched
      * @return map of workspace names and update times
      */
-    public Map<String, Timestamp> fetchWorkspaceListForUser(String username) {
+    public Map<Timestamp, String> fetchWorkspaceListForUser(String username) {
         return context
                 .select(
-                        WORKSPACE.NAME,
-                        WORKSPACE.UPDATED
+                        WORKSPACE.UPDATED,
+                        WORKSPACE.NAME
                 )
                 .from(WORKSPACE)
                 .where(WORKSPACE.USERNAME.equal(username))
                 .orderBy(WORKSPACE.UPDATED.desc())
-                .fetchMap(WORKSPACE.NAME, WORKSPACE.UPDATED);
+                .fetchMap(WORKSPACE.UPDATED, WORKSPACE.NAME);
     }
 }
