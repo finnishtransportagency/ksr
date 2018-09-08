@@ -16,13 +16,23 @@ type Props = {
     submitDisabled: boolean,
 };
 
-class Modal extends Component<Props> {
+type State = {
+    fadeOut: boolean,
+};
+
+const initialState = {
+    fadeOut: false,
+};
+
+class Modal extends Component<Props, State> {
     static defaultProps = {
         submitDisabled: false,
     };
 
     constructor(props: any) {
         super(props);
+
+        this.state = { ...initialState };
 
         this.toggleModal = this.toggleModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,7 +41,10 @@ class Modal extends Component<Props> {
     toggleModal = () => {
         const { activeModal, setActiveModal } = this.props;
 
-        if (activeModal) setActiveModal('');
+        this.setState({ fadeOut: true });
+        setTimeout(() => {
+            if (activeModal) setActiveModal('');
+        }, 300);
     };
 
     handleSubmit = () => {
@@ -50,6 +63,7 @@ class Modal extends Component<Props> {
             activeModal,
             submitDisabled,
         } = this.props;
+        const { fadeOut } = this.state;
 
         if (activeModal) {
             return createPortal(
@@ -61,6 +75,7 @@ class Modal extends Component<Props> {
                     toggleModal={this.toggleModal}
                     handleModalSubmit={this.handleSubmit}
                     submitDisabled={submitDisabled}
+                    fadeOut={fadeOut}
                 />,
                 modalRoot,
             );

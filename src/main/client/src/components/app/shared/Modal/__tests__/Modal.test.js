@@ -29,6 +29,7 @@ describe('<Modal />', () => {
 
         wrapper.instance().toggleModal();
         expect(activeModal).toBe('');
+        expect(wrapper.state('fadeOut')).toEqual(true);
     });
 
     it('should handle submitting properly', () => {

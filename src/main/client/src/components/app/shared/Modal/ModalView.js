@@ -12,6 +12,7 @@ type Props = {
     submitText: string,
     cancelText: string,
     submitDisabled: boolean,
+    fadeOut: boolean,
 };
 
 const ModalView = ({
@@ -22,8 +23,9 @@ const ModalView = ({
     submitText,
     cancelText,
     submitDisabled,
+    fadeOut,
 }: Props) => (
-    <Modal>
+    <Modal fadeOut={fadeOut}>
         <Modal.Blur />
         <Modal.Header>
             <H1 secondary>{title}</H1>

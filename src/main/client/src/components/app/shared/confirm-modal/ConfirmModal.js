@@ -14,9 +14,19 @@ type Props = {
     hideConfirmModal: Function,
 };
 
-class ConfirmModal extends Component<Props> {
+type State = {
+    fadeOut: boolean,
+};
+
+const initialState = {
+    fadeOut: false,
+};
+
+class ConfirmModal extends Component<Props, State> {
     constructor(props: any) {
         super(props);
+
+        this.state = { ...initialState };
 
         this.handleAccept = this.handleAccept.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
@@ -31,7 +41,11 @@ class ConfirmModal extends Component<Props> {
 
     handleCancel = () => {
         const { hideConfirmModal } = this.props;
-        hideConfirmModal();
+
+        this.setState({ fadeOut: true });
+        setTimeout(() => {
+            hideConfirmModal();
+        }, 300);
     };
 
     render() {
@@ -41,6 +55,7 @@ class ConfirmModal extends Component<Props> {
             acceptText,
             cancelText,
         } = this.props;
+        const { fadeOut } = this.state;
 
         if (show) {
             return createPortal(
@@ -50,6 +65,7 @@ class ConfirmModal extends Component<Props> {
                     cancelText={cancelText}
                     handleAccept={this.handleAccept}
                     handleCancel={this.handleCancel}
+                    fadeOut={fadeOut}
                 />,
                 modalRoot,
             );

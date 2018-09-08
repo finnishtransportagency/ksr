@@ -25,13 +25,12 @@ describe('<ConfirmModal />', () => {
     });
 
     it('should handleCancel properly', () => {
-        const { hideConfirmModal } = wrapper.instance().props;
         const spyHandleCancel = jest.spyOn(wrapper.instance(), 'handleCancel');
 
         wrapper.instance().handleCancel();
 
         expect(spyHandleCancel).toHaveBeenCalled();
-        expect(hideConfirmModal).toHaveBeenCalled();
+        expect(wrapper.state('fadeOut')).toEqual(true);
     });
 
     it('should handleAccept properly', () => {

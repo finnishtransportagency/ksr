@@ -9,6 +9,7 @@ type Props = {
     body: string,
     acceptText: string,
     cancelText: string,
+    fadeOut: boolean,
 };
 
 const ConfirmModalView = ({
@@ -17,8 +18,9 @@ const ConfirmModalView = ({
     body,
     acceptText,
     cancelText,
+    fadeOut,
 }: Props) => (
-    <Modal confirm>
+    <Modal confirm fadeOut={fadeOut}>
         <Modal.Blur />
         <Modal.Content>
             <p>{body}</p>
