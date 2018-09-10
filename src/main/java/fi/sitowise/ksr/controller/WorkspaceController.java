@@ -88,4 +88,23 @@ public class WorkspaceController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return workspaceService.getWorkspaceListForUser(authentication.getName());
     }
+
+    /**
+     * Fetch details for single workspace. If no workspace name is given
+     * the latest workspace is returned for the current user.
+     *
+     * @param workspaceName name of the workspace to be fetched
+     * @return details of the workspace
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public Workspace getWorkspaceDetails(@RequestParam (required = false) String workspaceName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Workspace workspace = workspaceService.getWorkspaceDetails(workspaceName, authentication.getName());
+
+        if (workspace == null) {
+            throw new KsrApiException.NotFoundErrorException("No workspace can be found.");
+        }
+
+        return workspace;
+    }
 }
