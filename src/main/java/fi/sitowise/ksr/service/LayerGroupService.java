@@ -66,7 +66,6 @@ public class LayerGroupService {
                 }
             }
         }
-        System.out.println(combinedLayerGroups);
         return combinedLayerGroups;
     }
 
