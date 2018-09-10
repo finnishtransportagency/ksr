@@ -70,7 +70,7 @@ public class WorkspaceLayer implements Serializable {
      * @param layerId id of the referenced layer
      */
     public void setLayerId(Long layerId) {
-        this.layerId = String.valueOf(layerId);
+        this.layerId = layerId != null ? String.valueOf(layerId) : null;
     }
 
     /**
@@ -86,7 +86,7 @@ public class WorkspaceLayer implements Serializable {
      * @param userLayerId id of the referenced user layer
      */
     public void setUserLayerId(Long userLayerId) {
-        this.userLayerId = String.valueOf(userLayerId);
+        this.userLayerId = userLayerId != null ? String.valueOf(userLayerId) : null;
     }
 
     /**
