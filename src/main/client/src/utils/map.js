@@ -46,6 +46,7 @@ export const addLayers = (layers: Array<Object>, view: Object, searchLayers: Arr
             layers.forEach((layer) => {
                 esriConfig.request.corsEnabledServers.push(layer.url);
                 switch (layer.type) {
+                    // sublayers split will work as long as name doesn't contain comma
                     case 'wms':
                         view.map.add(new WMSLayer({
                             id: layer.id,
@@ -56,11 +57,7 @@ export const addLayers = (layers: Array<Object>, view: Object, searchLayers: Arr
                             opacity: layer.opacity,
                             visible: layer.visible,
                             title: layer.name,
-                            sublayers: [
-                                {
-                                    name: layer.layers,
-                                },
-                            ],
+                            sublayers: layer.layers.split(',').map(l => ({ name: l })),
                         }), layer.index);
                         break;
                     case 'wmts':
