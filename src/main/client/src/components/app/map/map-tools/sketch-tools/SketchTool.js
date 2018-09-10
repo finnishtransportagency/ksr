@@ -31,9 +31,9 @@ type Props = {
     setTempGraphicsLayer: Function,
     geometryType: string,
     setActiveModal: (modal: string) => void,
-    activeModal: string,
     isOpen: boolean,
     setActiveToolMenu: Function,
+    activeAdminTool: string,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -179,6 +179,7 @@ class SketchTool extends Component<Props, State> {
                     const graphic = new Graphic({
                         geometry,
                         symbol: sketchViewModel.graphic.symbol,
+                        type: 'sketch-graphic',
                     });
                     tempGraphicsLayer.add(graphic);
                     this.props.setTempGraphicsLayer(tempGraphicsLayer);
@@ -246,8 +247,13 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, activeAdminTool, tempGraphicsLayer, activeModal, setActiveModal, isOpen,
+            data, view, activeAdminTool, tempGraphicsLayer, setActiveModal, isOpen,
         } = this.props;
+
+        const hasAdminGraphics = tempGraphicsLayer
+            && tempGraphicsLayer.graphics
+            && tempGraphicsLayer.graphics.filter(g => g.type === 'sketch-graphic').length > 0;
+
         return (
             <Fragment>
                 <SketchToolView
@@ -264,9 +270,9 @@ class SketchTool extends Component<Props, State> {
                 <SketchActiveAdminView
                     editSketchIcon={this.state.editSketchIcon}
                     removeSketch={this.removeSketch}
-                    activeAdminTool={adminToolActive}
+                    activeAdminTool={activeAdminTool}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
-                    tempGraphicsLayer={tempGraphicsLayer}
+                    hasAdminGraphics={hasAdminGraphics}
                     setActiveModal={setActiveModal}
                 />
 

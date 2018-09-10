@@ -9,7 +9,7 @@ const setup = () => {
         data: [],
         adminToolActive: '',
         draw: {},
-        tempGraphicsLayer: { graphics: { grap: {} } },
+        tempGraphicsLayer: { graphics: [] },
         setTempGraphicsLayer: jest.fn(),
         setActiveTool: jest.fn(),
         sketchViewModel: {
