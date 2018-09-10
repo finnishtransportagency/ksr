@@ -1,6 +1,10 @@
 // @flow
 import { connect } from 'react-redux';
-import { setActiveTool, setMapDrawText } from '../../../../../reducers/map/actions';
+import {
+    setActiveTool,
+    setMapDrawText,
+    setActiveToolMenu,
+} from '../../../../../reducers/map/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapDraw from './MapDraw';
 
@@ -11,6 +15,7 @@ const mapStateToProps = state => ({
     sketchViewModel: state.map.mapTools.sketchViewModel,
     drawText: state.map.mapDraw.drawText,
     drawTextModalActive: state.modal.activeModal === 'drawText',
+    isActive: state.map.mapTools.activeToolMenu === 'drawTools',
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -20,6 +25,9 @@ const mapDispatchToProps = dispatch => ({
         }
         dispatch(setMapDrawText(''));
         dispatch(setActiveTool(active));
+    },
+    setActiveToolMenu: (activeMenu) => {
+        dispatch(setActiveToolMenu(activeMenu));
     },
 });
 

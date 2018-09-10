@@ -1,6 +1,11 @@
 // @flow
 import { connect } from 'react-redux';
-import { setActiveTool, setEditMode, setTempGraphicsLayer } from '../../../../../reducers/map/actions';
+import {
+    setActiveTool,
+    setEditMode,
+    setTempGraphicsLayer,
+    setActiveToolMenu,
+} from '../../../../../reducers/map/actions';
 import { selectFeatures, deSelectSelected } from '../../../../../reducers/table/actions';
 import SketchTool from './SketchTool';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
@@ -15,7 +20,8 @@ const mapStateToProps = state => ({
         .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []),
     adminToolActive: state.adminTool.active.layerId,
     geometryType: state.adminTool.active.geometryType,
-    activeModal: state.modal.activeModal.activeModal,
+    activeModal: state.modal.activeModal,
+    isOpen: state.map.mapTools.activeToolMenu === 'sketchTools',
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -36,6 +42,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));
+    },
+    setActiveToolMenu: (activeMenu) => {
+        dispatch(setActiveToolMenu(activeMenu));
     },
 });
 

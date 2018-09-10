@@ -7,7 +7,6 @@ import MapMeasureView from './MapMeasureView';
 
 type State = {
     value: string,
-    drawTools: boolean,
 };
 
 type Props = {
@@ -16,11 +15,12 @@ type Props = {
     sketchViewModel: Object,
     active: string,
     setActiveTool: Function,
+    isActive: boolean,
+    setActiveToolMenu: Function,
 };
 
 const initialState = {
     value: '',
-    drawTools: false,
 };
 
 class MapMeasure extends Component<Props, State> {
@@ -221,14 +221,17 @@ class MapMeasure extends Component<Props, State> {
     };
 
     toggleDrawTools = () => {
-        const { drawTools } = this.state;
-
-        this.setState({ drawTools: !drawTools });
+        const { isActive, setActiveToolMenu } = this.props;
+        if (isActive) {
+            setActiveToolMenu('');
+        } else {
+            setActiveToolMenu('measureTools');
+        }
     };
 
     render() {
-        const { value, drawTools } = this.state;
-        const { view } = this.props;
+        const { value } = this.state;
+        const { view, isActive } = this.props;
 
         return (
             <MapMeasureView
@@ -236,7 +239,7 @@ class MapMeasure extends Component<Props, State> {
                 removeMeasurement={this.removeMeasurement}
                 view={view}
                 toggleDrawTools={this.toggleDrawTools}
-                drawTools={drawTools}
+                isActive={isActive}
             />
         );
     }

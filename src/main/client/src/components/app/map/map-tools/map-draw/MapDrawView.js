@@ -7,11 +7,11 @@ type Props = {
     hasGraphics: boolean,
     removeDrawings: () => void,
     toggleDrawTools: Function,
-    drawTools: boolean,
+    isActive: boolean,
 };
 
 const MapDrawView = ({
-    hasGraphics, removeDrawings, toggleDrawTools, drawTools,
+    hasGraphics, removeDrawings, toggleDrawTools, isActive,
 }: Props) => (
     <Fragment>
         <DrawToolOuterWrapper id="draw-tool-outer-wrapper">
@@ -26,7 +26,7 @@ const MapDrawView = ({
             >
                 <span className="esri-icon-edit" />
             </div>
-            <DrawToolWrapper drawTools={drawTools}>
+            <DrawToolWrapper drawTools={isActive}>
                 <div
                     id="draw-erase"
                     className="esri-component esri-widget--button esri-widget esri-interactive"

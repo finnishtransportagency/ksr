@@ -8,7 +8,6 @@ import MapDrawView from './MapDrawView';
 
 type State = {
     hasGraphics: boolean,
-    drawTools: boolean,
 };
 
 type Props = {
@@ -17,12 +16,13 @@ type Props = {
     sketchViewModel: Object,
     active: string,
     setActiveTool: Function,
+    setActiveToolMenu: Function,
     drawText: string,
+    isActive: boolean,
 };
 
 const initialState = {
     hasGraphics: false,
-    drawTools: false,
 };
 
 class MapDraw extends Component<Props, State> {
@@ -298,14 +298,17 @@ class MapDraw extends Component<Props, State> {
     };
 
     toggleDrawTools = () => {
-        const { drawTools } = this.state;
-
-        this.setState({ drawTools: !drawTools });
+        const { isActive, setActiveToolMenu } = this.props;
+        if (isActive) {
+            setActiveToolMenu('');
+        } else {
+            setActiveToolMenu('drawTools');
+        }
     };
 
     render() {
-        const { drawTools, hasGraphics } = this.state;
-        const { view } = this.props;
+        const { hasGraphics } = this.state;
+        const { view, isActive } = this.props;
 
         return (
             <MapDrawView
@@ -313,7 +316,7 @@ class MapDraw extends Component<Props, State> {
                 removeDrawings={this.removeDrawings}
                 view={view}
                 toggleDrawTools={this.toggleDrawTools}
-                drawTools={drawTools}
+                isActive={isActive}
             />
         );
     }

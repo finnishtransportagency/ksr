@@ -8,7 +8,6 @@ import SketchActiveAdminView from './sketch-active-admin/SketchActiveAdminView';
 import { queryFeatures } from '../../../../../utils/queryFeatures';
 
 type State = {
-    isOpen: boolean,
     editSketchIcon: string,
 };
 
@@ -32,6 +31,9 @@ type Props = {
     setTempGraphicsLayer: Function,
     geometryType: string,
     setActiveModal: (modal: string) => void,
+    activeModal: string,
+    isOpen: boolean,
+    setActiveToolMenu: Function,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -221,7 +223,12 @@ class SketchTool extends Component<Props, State> {
     };
 
     toggleSelectTools = () => {
-        this.setState({ isOpen: !this.state.isOpen });
+        const { isOpen, setActiveToolMenu } = this.props;
+        if (isOpen) {
+            setActiveToolMenu('');
+        } else {
+            setActiveToolMenu('sketchTools');
+        }
     };
 
     removeSketch = () => {
@@ -239,7 +246,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, adminToolActive, tempGraphicsLayer, setActiveModal,
+            data, view, activeAdminTool, tempGraphicsLayer, activeModal, setActiveModal, isOpen,
         } = this.props;
         return (
             <Fragment>
@@ -250,7 +257,7 @@ class SketchTool extends Component<Props, State> {
                     drawCircleButtonRef={this.drawCircleButton}
                     toggleSelectToolsButtonRef={this.toggleSelectToolsButton}
                     toggleTools={this.toggleSelectTools}
-                    isOpen={this.state.isOpen}
+                    isOpen={isOpen}
                     data={data}
                     view={view}
                 />
