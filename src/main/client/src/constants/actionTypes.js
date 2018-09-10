@@ -6,6 +6,7 @@ export const SET_ACTIVE_NAV = 'SET_ACTIVE_NAV';
 export const SET_MAP_VIEW = 'SET_MAP_VIEW';
 export const SET_MAP_TOOLS = 'SET_MAP_TOOLS';
 export const SET_ACTIVE_TOOL = 'SET_ACTIVE_TOOL';
+export const SET_ACTIVE_TOOL_MENU = 'SET_ACTIVE_TOOL_MENU';
 export const SET_EDIT_MODE = 'SET_EDIT_MODE';
 
 export const REMOVE_LAYER_FROM_VIEW = 'REMOVE_LAYER_FROM_VIEW';

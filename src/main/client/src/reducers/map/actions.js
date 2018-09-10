@@ -170,3 +170,8 @@ export const setMapDrawText = (text: string) => ({
     type: types.SET_MAP_DRAW_TEXT,
     drawText: text,
 });
+
+export const setActiveToolMenu = (activeToolMenu: string) => ({
+    type: types.SET_ACTIVE_TOOL_MENU,
+    activeToolMenu,
+});
