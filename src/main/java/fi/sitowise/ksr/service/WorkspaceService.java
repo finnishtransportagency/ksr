@@ -66,4 +66,16 @@ public class WorkspaceService {
     public Map<Timestamp, String> getWorkspaceListForUser(String username) {
         return workspaceRepository.fetchWorkspaceListForUser(username);
     }
+
+    /**
+     * Fetch details for single workspace. If no workspace name is given
+     * the latest workspace is returned for the user.
+     *
+     * @param workspaceName name of the workspace to be fetched
+     * @param username username of the user whose workspace is being fetched
+     * @return workspace details
+     */
+    public Workspace getWorkspaceDetails(String workspaceName, String username) {
+        return workspaceRepository.fetchWorkspaceDetails(workspaceName, username);
+    }
 }

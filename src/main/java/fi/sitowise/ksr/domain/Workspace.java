@@ -46,7 +46,10 @@ public class Workspace implements Serializable {
         this.centerLongitude = wsr.getCenterLongitude();
         this.centerLatitude = wsr.getCenterLatitude();
         this.updateTime = wsr.getUpdated();
-        this.layers = wslr.stream().map(WorkspaceLayer::new).collect(Collectors.toList());
+
+        if (wslr != null) {
+            this.layers = wslr.stream().map(WorkspaceLayer::new).collect(Collectors.toList());
+        }
     }
 
     /**

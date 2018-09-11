@@ -2,6 +2,8 @@ package fi.sitowise.ksr.repository;
 
 import fi.sitowise.ksr.domain.Workspace;
 import fi.sitowise.ksr.domain.WorkspaceLayer;
+import fi.sitowise.ksr.jooq.tables.records.WorkspaceLayerRecord;
+import fi.sitowise.ksr.jooq.tables.records.WorkspaceRecord;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
@@ -73,7 +75,7 @@ public class WorkspaceRepository {
      * @return id of the inserted workspace
      */
     private Long insertWorkspace(Workspace workspace, String username) {
-        context
+        return context
                 .insertInto(
                         WORKSPACE,
                         WORKSPACE.NAME,
@@ -89,13 +91,9 @@ public class WorkspaceRepository {
                         workspace.getCenterLongitude(),
                         workspace.getCenterLatitude()
                 )
-                .execute();
-
-        return context
-                .select(DSL.max(WORKSPACE.ID))
-                .from(WORKSPACE)
-                .where(WORKSPACE.USERNAME.equal(username))
-                .fetchOne(DSL.max(WORKSPACE.ID));
+                .returning(WORKSPACE.ID)
+                .fetchOne()
+                .getId();
     }
 
     /**
@@ -168,5 +166,43 @@ public class WorkspaceRepository {
                 .where(WORKSPACE.USERNAME.equal(username))
                 .orderBy(WORKSPACE.UPDATED.desc())
                 .fetchMap(WORKSPACE.UPDATED, WORKSPACE.NAME);
+    }
+
+    /**
+     * Fetch details for given workspace. If workspace name is not given
+     * return latest workspace for the user.
+     *
+     * @param workspaceName name of the workspace to be fetched
+     * @param username username of the user whose workspace is fetched
+     * @return workspace and layer details
+     */
+    @Transactional
+    public Workspace fetchWorkspaceDetails(String workspaceName, String username) {
+        WorkspaceRecord workspace = context
+                .selectFrom(WORKSPACE)
+                .where(WORKSPACE.USERNAME.equal(username))
+                    .and(workspaceName != null ?
+                            WORKSPACE.NAME.equal(workspaceName) : DSL.trueCondition())
+                .orderBy(WORKSPACE.UPDATED.desc())
+                .limit(1)
+                .fetchOne();
+
+        if (workspace != null) {
+            List<WorkspaceLayerRecord> layers = context
+                    .selectFrom(WORKSPACE_LAYER)
+                    .where(WORKSPACE_LAYER.WORKSPACE_ID.equal(workspace.getId()))
+                    .orderBy(WORKSPACE_LAYER.LAYER_ORDER)
+                    .fetch();
+
+            context
+                    .update(WORKSPACE)
+                    .set(WORKSPACE.UPDATED, DSL.currentTimestamp())
+                    .where(WORKSPACE.ID.equal(workspace.getId()))
+                    .execute();
+
+            return new Workspace(workspace, layers);
+        }
+
+        return null;
     }
 }

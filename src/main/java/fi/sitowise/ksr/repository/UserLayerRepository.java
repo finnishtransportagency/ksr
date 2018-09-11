@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -72,98 +71,73 @@ public class UserLayerRepository {
     }
 
     /**
-     * Adds new layer to USER_LAYER table
-     * Current users name used as identifier
+     * Adds new layer to USER_LAYER table.
+     * Current user's name is used as identifier.
      *
-     * @param name String layer name
-     * @param type String layer type
-     * @param url String layer url
-     * @param layers String layer feature names
-     * @param styles String layer styles
-     * @param opacity Double layer opacity
-     * @param minScale int layer minScale
-     * @param maxScale int layer maxScale
-     * @param transparent String layer transparent ("1" true, "0" false)
-     * @param attribution String layer copyright info
-     * @param desktopVisible String layer visibility on desktop ("1" true, "0" false)
-     * @param mobileVisible String layer visibility on mobile ("1" true, "0" false)
-     * @param username String name of current user
+     * @param layer user layer to be added
+     * @param username username of current user
+     *
+     * @return id of the newly added layer
      */
-    public void addUserLayer(
-            String name,
-            String type,
-            String url,
-            String layers,
-            String styles,
-            Double opacity,
-            int minScale,
-            int maxScale,
-            String transparent,
-            String attribution,
-            String desktopVisible,
-            String mobileVisible,
-            String username
-            ) throws DataAccessException {
-        context.insertInto(USER_LAYER,
-                USER_LAYER.NAME,
-                USER_LAYER.TYPE,
-                USER_LAYER.URL,
-                USER_LAYER.LAYERS,
-                USER_LAYER.STYLES,
-                USER_LAYER.OPACITY,
-                USER_LAYER.MIN_SCALE,
-                USER_LAYER.MAX_SCALE,
-                USER_LAYER.ATTRIBUTION,
-                USER_LAYER.TRANSPARENT,
-                USER_LAYER.DESKTOP_VISIBLE,
-                USER_LAYER.MOBILE_VISIBLE,
-                USER_LAYER.QUERYABLE,
-                USER_LAYER.USERNAME)
+    public int addUserLayer(Layer layer, String username) throws DataAccessException {
+        Long workspaceId = context
+                .insertInto(
+                        USER_LAYER,
+                        USER_LAYER.NAME,
+                        USER_LAYER.TYPE,
+                        USER_LAYER.URL,
+                        USER_LAYER.LAYERS,
+                        USER_LAYER.STYLES,
+                        USER_LAYER.OPACITY,
+                        USER_LAYER.MIN_SCALE,
+                        USER_LAYER.MAX_SCALE,
+                        USER_LAYER.ATTRIBUTION,
+                        USER_LAYER.TRANSPARENT,
+                        USER_LAYER.DESKTOP_VISIBLE,
+                        USER_LAYER.MOBILE_VISIBLE,
+                        USER_LAYER.QUERYABLE,
+                        USER_LAYER.USERNAME
+                    )
                 .values(
-                        name,
-                        type,
-                        url,
-                        layers,
-                        styles,
-                        BigDecimal.valueOf(opacity),
-                        minScale,
-                        maxScale,
-                        attribution,
-                        transparent,
-                        desktopVisible,
-                        mobileVisible,
+                        layer.getName(),
+                        layer.getType(),
+                        layer.getUrl(),
+                        layer.getLayers(),
+                        layer.getStyles().equals("") ? "default" : layer.getStyles(),
+                        BigDecimal.valueOf(layer.getOpacity()),
+                        layer.getMinScale(),
+                        layer.getMaxScale(),
+                        layer.getAttribution(),
+                        layer.getTransparent() ? "1" : "0",
+                        layer.getDesktopVisible() ? "1" : "0",
+                        layer.getMobileVisible() ? "1" : "0",
                         "0",
                         username
-                ).execute();
-    }
+                )
+                .returning(USER_LAYER.ID)
+                .fetchOne()
+                .getId();
 
-    /**
-     * Gets max layer ID from user layer table
-     *
-     * @return layer ID
-     */
-    public int getMaxUserLayerId() throws DataAccessException {
-        return toIntExact(context.select(DSL.max(USER_LAYER.ID))
-                .from(USER_LAYER)
-                .fetchOne(DSL.max(USER_LAYER.ID)));
+        return toIntExact(workspaceId);
     }
 
     /**
      * Remove user layer from database.
      *
-     * Throws 404 Exception if layer not found for given user.
-     *
-     * @param username String username of the layer owner
-     * @param userLayerId int Id of the layer
+     * @param username username of the layer owner
+     * @param userLayerId id of the layer
+     * @throws KsrApiException if layer is not found for given user
      */
     public void removeUserLayer(String username, int userLayerId) throws KsrApiException {
-        Integer rowCount = context.select(USER_LAYER.fields())
-                .from(USER_LAYER)
-                .where(USER_LAYER.ID.eq(Long.valueOf(userLayerId)).and(USER_LAYER.USERNAME.eq(username))).execute();
-        if (rowCount.equals(1)) { // Check that layer exists
-            context.delete(USER_LAYER)
-                    .where(USER_LAYER.ID.eq(Long.valueOf(userLayerId)).and(USER_LAYER.USERNAME.eq(username))).execute();
-            log.info(String.format("Userlayer: [%d] succesfully removed by user: [%s].", userLayerId, username));
+        int rowsRemoved = context
+                .delete(USER_LAYER)
+                .where(USER_LAYER.ID.equal(Long.valueOf(userLayerId))
+                    .and(USER_LAYER.USERNAME.equal(username)))
+                .execute();
+
+        if (rowsRemoved > 0) {
+            log.info(String.format("Userlayer: [%d] succesfully removed by user: [%s].",
+                    userLayerId, username));
         } else {
             throw new KsrApiException.NotFoundErrorException(
                     String.format("Userlayer: [%d] not found for user: [%s].", userLayerId, username)
