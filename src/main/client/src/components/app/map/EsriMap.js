@@ -21,7 +21,7 @@ type Props = {
     selectFeatures: Function,
     selectedFeatures: Array<Object>,
     setMapView: (view: Object) => void,
-    adminToolActive: string,
+    activeAdminTool: string,
     sketchViewModel: Object,
     setEditMode: (editMode: string) => void,
     editMode: string,
@@ -30,6 +30,7 @@ type Props = {
     setActiveModal: Function,
     setSingleLayerGeometry: Function,
     activeTool: string,
+    setHasGraphics: (hasGraphics: boolean) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -106,7 +107,7 @@ class EsriMap extends Component<Props> {
         }
 
         if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
-            highlight(view, this.props.selectedFeatures, this.props.adminToolActive);
+            highlight(view, this.props.selectedFeatures, this.props.activeAdminTool);
         }
         if (this.props.layers.length < 1 && view) {
             setBuffer(view, [], 0);
@@ -243,18 +244,23 @@ class EsriMap extends Component<Props> {
                         let { results } = response;
                         // Found results
                         if (results.length) {
-                            // remove highlight because it is graphic not a layer
-                            results = results.filter(item =>
-                                item.graphic.id !== 'highlight'
-                                && item.graphic.id !== 'buffer'
-                                && item.graphic.id !== 'drawMeasure');
                             if (this.props.activeTool === 'drawErase') {
                                 results.forEach((r) => {
                                     if (r.graphic && r.graphic.type === 'draw-graphic') {
                                         view.graphics.remove(r.graphic);
+                                        const hasGraphics = view
+                                            && view.graphics
+                                            && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
+                                        this.props.setHasGraphics(hasGraphics);
                                     }
                                 });
                             } else {
+                                results = results.filter(item =>
+                                    item.graphic.id !== 'highlight'
+                                    && item.graphic.id !== 'buffer'
+                                    && item.graphic.id !== 'drawMeasure'
+                                    && item.graphic.type !== 'draw-graphic');
+
                                 const layer = results.find(l => l
                                     .graphic.layer.id.indexOf('layer') >= 0);
 
@@ -270,7 +276,7 @@ class EsriMap extends Component<Props> {
                                 } else if (this.props.editMode === 'finish') {
                                     this.props.setEditMode('');
                                 } else {
-                                    const { adminToolActive } = this.props;
+                                    const { activeAdminTool } = this.props;
                                     if (event.button === 0) {
                                         const swLink = getStreetViewLink(
                                             event.mapPoint.x,
@@ -282,7 +288,7 @@ class EsriMap extends Component<Props> {
                                             view,
                                             selectFeatures,
                                             layerList,
-                                            adminToolActive,
+                                            activeAdminTool,
                                             setActiveModal,
                                             setSingleLayerGeometry,
                                         );
