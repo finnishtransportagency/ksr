@@ -245,6 +245,7 @@ class EsriMap extends Component<Props> {
                         // Found results
                         if (results.length) {
                             if (this.props.activeTool === 'drawErase') {
+                                view.popup = null;
                                 results.forEach((r) => {
                                     if (r.graphic && r.graphic.type === 'draw-graphic') {
                                         view.graphics.remove(r.graphic);
