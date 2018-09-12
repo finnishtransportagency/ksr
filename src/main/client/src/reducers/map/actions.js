@@ -4,6 +4,7 @@ import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
 import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
+import { SET_HAS_GRAPHICS } from '../../constants/actionTypes';
 import * as types from '../../constants/actionTypes';
 
 export const getLayerGroups = () => (dispatch: Function) => {
@@ -174,4 +175,9 @@ export const setMapDrawText = (text: string) => ({
 export const setActiveToolMenu = (activeToolMenu: string) => ({
     type: types.SET_ACTIVE_TOOL_MENU,
     activeToolMenu,
+});
+
+export const setHasGraphics = (hasGraphics: boolean) => ({
+    type: SET_HAS_GRAPHICS,
+    hasGraphics,
 });

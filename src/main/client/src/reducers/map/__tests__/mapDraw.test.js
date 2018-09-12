@@ -5,6 +5,7 @@ describe('mapDraw reducer', () => {
     it('should render initial state', () => {
         const initialState = {
             drawText: '',
+            hasGraphics: false,
         };
 
         expect(reducer(undefined, {})).toEqual(initialState);

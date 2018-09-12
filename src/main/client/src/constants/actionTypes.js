@@ -80,3 +80,4 @@ export const HIDE_CONFIRM_MODAL = 'HIDE_CONFIRM_MODAL';
 
 // Map draw
 export const SET_MAP_DRAW_TEXT = 'SET_MAP_DRAW_TEXT';
+export const SET_HAS_GRAPHICS = 'SET_HAS_GRAPHICS';
