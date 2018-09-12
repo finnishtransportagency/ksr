@@ -13,7 +13,7 @@ type Props = {
     onToggleVisibility: (Number) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
-    adminToolActive: string,
+    activeAdminTool: string,
 };
 
 const MapLayersView = ({
@@ -22,7 +22,7 @@ const MapLayersView = ({
     onOpacityChange,
     onToggleVisibility,
     setActiveAdminTool,
-    adminToolActive,
+    activeAdminTool,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -62,7 +62,7 @@ const MapLayersView = ({
                                                             </LayerSettings.Title>
                                                             <LayerSettings.Icons
                                                                 activeAdminTool={
-                                                                    adminToolActive === l.id
+                                                                    activeAdminTool === l.id
                                                                 }
                                                             >
                                                                 { l.source !== 'search' &&

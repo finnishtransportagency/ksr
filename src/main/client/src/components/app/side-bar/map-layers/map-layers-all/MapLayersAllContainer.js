@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
     layerGroups: state.map.layerGroups.layerGroups,
     layerList: state.map.layerGroups.layerList,
     fetching: state.map.layerGroups.fetching,
-    adminToolActive: state.adminTool.active.layerId,
+    activeAdminTool: state.adminTool.active.layerId,
 });
 
 const mapDispatchToProps = dispatch => ({

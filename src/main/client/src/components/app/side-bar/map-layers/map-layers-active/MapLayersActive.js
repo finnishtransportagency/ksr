@@ -10,7 +10,7 @@ type Props = {
     fetching: boolean,
     setLayerList: (Array<any>) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
-    adminToolActive: string,
+    activeAdminTool: string,
 };
 
 type State = {
@@ -62,7 +62,7 @@ class MapLayersActive extends Component<Props, State> {
 
     render() {
         const {
-            layerList, fetching, setActiveAdminTool, adminToolActive,
+            layerList, fetching, setActiveAdminTool, activeAdminTool,
         } = this.props;
         if (!fetching) {
             return (
@@ -72,7 +72,7 @@ class MapLayersActive extends Component<Props, State> {
                     onToggleVisibility={this.onToggleVisibility}
                     onOpacityChange={this.onOpacityChange}
                     setActiveAdminTool={setActiveAdminTool}
-                    adminToolActive={adminToolActive}
+                    activeAdminTool={activeAdminTool}
                 />
             );
         }

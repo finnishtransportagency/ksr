@@ -10,7 +10,7 @@ type Props = {
     isOpen: boolean,
     activeNav: string,
     setActiveModal: (modal: string) => void,
-    adminToolActive: string,
+    activeAdminTool: string,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
     selectedData: boolean,
@@ -21,7 +21,7 @@ const TableView = ({
     isOpen,
     activeNav,
     setActiveModal,
-    adminToolActive,
+    activeAdminTool,
     originalLayers,
     editedLayers,
     selectedData,
@@ -82,7 +82,7 @@ const TableView = ({
             </Table.Button>
             <Table.Button
                 title={strings.reactTable.deleteSelected}
-                tableOpen={isOpen && adminToolActive}
+                tableOpen={isOpen && activeAdminTool}
                 disabled={!selectedData}
                 onClick={
                     selectedData ? () => {

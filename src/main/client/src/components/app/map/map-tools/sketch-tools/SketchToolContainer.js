@@ -18,7 +18,7 @@ const mapStateToProps = state => ({
     sketchViewModel: state.map.mapTools.sketchViewModel,
     data: state.table.features.layers
         .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []),
-    adminToolActive: state.adminTool.active.layerId,
+    activeAdminTool: state.adminTool.active.layerId,
     geometryType: state.adminTool.active.geometryType,
     activeModal: state.modal.activeModal,
     isOpen: state.map.mapTools.activeToolMenu === 'sketchTools',

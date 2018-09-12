@@ -14,7 +14,7 @@ import { queryFeatures } from '../queryFeatures';
  * @param view Object esri map view
  * @param selectFeatures Function redux function that selects features
  * @param layerList Array of layers
- * @param adminToolActive string id of current admin tool layer
+ * @param activeAdminTool string id of current admin tool layer
  * @param setActiveModal set active modal
  * @param setSingleLayerGeometry geometry for single feature
  */
@@ -24,7 +24,7 @@ export const mapSelectPopup = (
     view: Object,
     selectFeatures: Function,
     layerList: Array<Object>,
-    adminToolActive: string,
+    activeAdminTool: string,
     setActiveModal: Function,
     setSingleLayerGeometry: Function,
 ) => {
@@ -35,8 +35,8 @@ export const mapSelectPopup = (
         },
     };
 
-    const newResults = adminToolActive
-        ? [...results.filter(r => r.graphic.layer.id === adminToolActive)]
+    const newResults = activeAdminTool
+        ? [...results.filter(r => r.graphic.layer.id === activeAdminTool)]
         : [...results];
 
     newResults.forEach((layer) => {
@@ -85,7 +85,7 @@ export const mapSelectPopup = (
         if (evt.action.id === 'select-intersect') {
             const layerId = view.popup.viewModel.selectedFeature.layer.id;
             const featureGeom = view.popup.viewModel.selectedFeature.geometry;
-            queryFeatures(featureGeom, adminToolActive, view, selectFeatures, layerId);
+            queryFeatures(featureGeom, activeAdminTool, view, selectFeatures, layerId);
         } else if (evt.action.id === 'set-buffer') {
             setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
             setActiveModal('bufferSelectedData');

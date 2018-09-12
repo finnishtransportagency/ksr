@@ -4,14 +4,14 @@ import esriLoader from 'esri-loader';
 /**
  * Select features from given geometry
  * @param geometry Object current features geometry
- * @param adminToolActive string id of current admin tool layer
+ * @param activeAdminTool string id of current admin tool layer
  * @param view Object esri map view
  * @param selectFeatures Function redux function that selects features
  * @param layerId Number current features layer ID
  */
 export const queryFeatures = (
     geometry: Object,
-    adminToolActive: string,
+    activeAdminTool: string,
     view: Object,
     selectFeatures: Function,
     layerId?: Number,
@@ -50,7 +50,7 @@ export const queryFeatures = (
                                     ymax: geometry.extent.ymax,
                                     spatialReference: epsg3067,
                                 });
-                                if (adminToolActive && adminToolActive === layer.id) {
+                                if (activeAdminTool && activeAdminTool === layer.id) {
                                     queries.push(layerView.queryFeatures(queryView)
                                         .then(results => ({
                                             id: layer.id,
@@ -60,7 +60,7 @@ export const queryFeatures = (
                                             fields: layer.fields,
                                             source: 'shapefile',
                                         })));
-                                } else if (!adminToolActive) {
+                                } else if (!activeAdminTool) {
                                     queries.push(layerView.queryFeatures(queryView)
                                         .then(results => ({
                                             id: layer.id,
@@ -77,7 +77,7 @@ export const queryFeatures = (
                             view.scale < layer.minScale &&
                             view.scale > layer.maxScale
                         ) {
-                            if (adminToolActive && adminToolActive === layer.id) {
+                            if (activeAdminTool && activeAdminTool === layer.id) {
                                 queries.push(layer.queryFeatures(query)
                                     .then(results => ({
                                         id: layer.id,
@@ -87,7 +87,7 @@ export const queryFeatures = (
                                         fields: layer.fields,
                                         source: 'select',
                                     })));
-                            } else if (!adminToolActive) {
+                            } else if (!activeAdminTool) {
                                 queries.push(layer.queryFeatures(query)
                                     .then(results => ({
                                         id: layer.id,
@@ -110,7 +110,7 @@ export const queryFeatures = (
                                 ymax: geometry.extent.ymax,
                                 spatialReference: epsg3067,
                             });
-                            if (adminToolActive && adminToolActive === layer.id) {
+                            if (activeAdminTool && activeAdminTool === layer.id) {
                                 queries.push(layerView.queryFeatures(queryView)
                                     .then(results => ({
                                         id: layer.id,
@@ -120,7 +120,7 @@ export const queryFeatures = (
                                         fields: layer.fields,
                                         source: 'shapefile',
                                     })));
-                            } else if (!adminToolActive) {
+                            } else if (!activeAdminTool) {
                                 queries.push(layerView.queryFeatures(queryView)
                                     .then(results => ({
                                         id: layer.id,
@@ -138,7 +138,7 @@ export const queryFeatures = (
                         view.scale > layer.maxScale &&
                         layer.id !== layerId
                     ) {
-                        if (adminToolActive && adminToolActive === layer.id) {
+                        if (activeAdminTool && activeAdminTool === layer.id) {
                             queries.push(layer.queryFeatures(query)
                                 .then(results => ({
                                     id: layer.id,
@@ -148,7 +148,7 @@ export const queryFeatures = (
                                     fields: layer.fields,
                                     source: 'select',
                                 })));
-                        } else if (!adminToolActive) {
+                        } else if (!activeAdminTool) {
                             queries.push(layer.queryFeatures(query)
                                 .then(results => ({
                                     id: layer.id,

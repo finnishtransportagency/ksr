@@ -189,12 +189,12 @@ export const createGraphic = (
  *
  * @param view esri.views.MapView
  * @param selectedFeatures Array of selected features
- * @param adminToolActive string id of current admin tool layer
+ * @param activeAdminTool string id of current admin tool layer
  */
 export const highlight = (
     view: Object,
     selectedFeatures: Array<Object>,
-    adminToolActive: string,
+    activeAdminTool: string,
 ) => {
     esriLoader
         .loadModules([
@@ -215,7 +215,7 @@ export const highlight = (
                         const ids = selectedFeatures
                             .filter(f => f._layerId === layer.id)
                             .map(f => parseInt(f._id, 10));
-                        if (adminToolActive && adminToolActive === layer.id) {
+                        if (activeAdminTool && activeAdminTool === layer.id) {
                             if (layer.featureType === 'shapefile') {
                                 view.whenLayerView(layer).then((layerView) => {
                                     const queryView = new Query();
@@ -257,7 +257,7 @@ export const highlight = (
                                     }
                                 });
                             }
-                        } else if (!adminToolActive) {
+                        } else if (!activeAdminTool) {
                             if (layer.featureType === 'shapefile') {
                                 view.whenLayerView(layer).then((layerView) => {
                                     const queryView = new Query();
