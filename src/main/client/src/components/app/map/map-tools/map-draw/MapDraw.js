@@ -6,10 +6,6 @@ import { resetMapTools, removeTemporaryDrawings } from '../../../../../utils/map
 import * as styles from '../../../../ui/defaultStyles';
 import MapDrawView from './MapDrawView';
 
-type State = {
-    hasGraphics: boolean,
-};
-
 type Props = {
     view: any,
     draw: Object,
@@ -19,19 +15,16 @@ type Props = {
     setActiveToolMenu: Function,
     drawText: string,
     isActive: boolean,
+    hasGraphics: boolean,
+    setHasGraphics: (hasGraphics: boolean) => void,
 };
 
-const initialState = {
-    hasGraphics: false,
-};
-
-class MapDraw extends Component<Props, State> {
+class MapDraw extends Component<Props, null> {
     currentGraphicUUID: ?string; // eslint-disable-line react/sort-comp
 
     constructor(props: Props) {
         super(props);
 
-        this.state = { ...initialState };
         this.currentGraphicUUID = null;
 
         this.removeDrawings = this.removeDrawings.bind(this);
@@ -205,7 +198,9 @@ class MapDraw extends Component<Props, State> {
                 };
 
                 drawPolygonButton.addEventListener('click', () => {
-                    if (this.props.active !== 'drawPolygon') {
+                    if (this.props.active === 'drawPolygon') {
+                        this.resetCurrentTool();
+                    } else {
                         setActiveTool('drawPolygon');
                         drawingMode('polygon', drawPolygon);
                         this.removeHighlightsFromButtons('draw-polygon');
@@ -214,7 +209,9 @@ class MapDraw extends Component<Props, State> {
                 });
 
                 drawLineButton.addEventListener('click', () => {
-                    if (this.props.active !== 'drawPolyline') {
+                    if (this.props.active === 'drawPolyline') {
+                        this.resetCurrentTool();
+                    } else {
                         setActiveTool('drawPolyline');
                         drawingMode('polyline', drawLine);
                         this.removeHighlightsFromButtons('draw-line');
@@ -223,7 +220,9 @@ class MapDraw extends Component<Props, State> {
                 });
 
                 drawPointButton.addEventListener('click', () => {
-                    if (this.props.active !== 'drawPoint') {
+                    if (this.props.active === 'drawPoint') {
+                        this.resetCurrentTool();
+                    } else {
                         setActiveTool('drawPoint');
                         drawingMode('point', drawPoint);
                         this.removeHighlightsFromButtons('draw-point');
@@ -232,7 +231,9 @@ class MapDraw extends Component<Props, State> {
                 });
 
                 drawTextButton.addEventListener('click', () => {
-                    if (this.props.active !== 'drawText') {
+                    if (this.props.active === 'drawText') {
+                        this.resetCurrentTool();
+                    } else {
                         setActiveTool('drawText');
                         drawingMode('point', drawText);
                         this.removeHighlightsFromButtons('draw-text');
@@ -241,13 +242,13 @@ class MapDraw extends Component<Props, State> {
                 });
 
                 drawEraseButton.addEventListener('click', () => {
-                    if (this.props.active !== 'drawErase') {
+                    if (this.props.active === 'drawErase') {
+                        this.resetCurrentTool();
+                    } else {
+                        this.resetCurrentTool();
                         setActiveTool('drawErase');
                         this.removeHighlightsFromButtons('draw-erase');
                         drawEraseButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
-                    } else {
-                        setActiveTool('');
-                        this.removeHighlightFromButton('draw-erase');
                     }
                 });
             });
@@ -268,7 +269,7 @@ class MapDraw extends Component<Props, State> {
     };
 
     removeHighlight = () => {
-        const { setActiveTool, view } = this.props;
+        const { setActiveTool, view, setHasGraphics } = this.props;
 
         this.removeHighlightsFromButtons();
 
@@ -277,12 +278,12 @@ class MapDraw extends Component<Props, State> {
         const hasGraphics = view
             && view.graphics
             && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
-        this.setState({ hasGraphics });
+        setHasGraphics(hasGraphics);
     };
 
     removeDrawings = () => {
         const {
-            view, draw, sketchViewModel, setActiveTool,
+            view, draw, sketchViewModel, setActiveTool, setHasGraphics,
         } = this.props;
         this.removeHighlight();
         resetMapTools(draw, sketchViewModel, setActiveTool);
@@ -294,7 +295,7 @@ class MapDraw extends Component<Props, State> {
         const hasGraphics = view
             && view.graphics
             && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
-        this.setState({ hasGraphics });
+        setHasGraphics(hasGraphics);
     };
 
     toggleDrawTools = () => {
@@ -306,9 +307,16 @@ class MapDraw extends Component<Props, State> {
         }
     };
 
+    resetCurrentTool = () => {
+        const { draw, setActiveTool } = this.props;
+
+        setActiveTool('');
+        draw.reset();
+        this.removeHighlightsFromButtons();
+    };
+
     render() {
-        const { hasGraphics } = this.state;
-        const { view, isActive } = this.props;
+        const { view, isActive, hasGraphics } = this.props;
 
         return (
             <MapDrawView
