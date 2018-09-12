@@ -182,6 +182,13 @@ const fi = {
         submitText: 'Ok',
         cancelText: 'Peruuta',
     },
+    saveFeatureData: {
+        newFeatureSaveSuccess: 'Kohteen luonti onnistui.',
+        newFeatureSaveError: 'Kohteen luonti epäonnistui.',
+        layerUpdateSaveSuccess: 'Muokkausten tallennus onnistui.',
+        layerUpdateSaveError: 'Muokkausten tallennus epäonnistui.',
+        errorLayerNotFound: 'Tallennus epäonnistui. Tasoa ei löydy.',
+    },
 };
 
 export default fi;
