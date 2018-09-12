@@ -26,7 +26,7 @@ type Props = {
     setActiveTool: Function,
     tempGraphicsLayer: Object,
     data: Array<Object>,
-    adminToolActive: string,
+    activeAdminTool: string,
     setEditMode: (editMode: string) => void,
     setTempGraphicsLayer: Function,
     geometryType: string,
@@ -52,13 +52,13 @@ class SketchTool extends Component<Props, State> {
     }
 
     componentWillReceiveProps(newProps: any) {
-        const { sketchViewModel, adminToolActive } = this.props;
+        const { sketchViewModel, activeAdminTool } = this.props;
 
         if (sketchViewModel !== newProps.sketchViewModel && newProps.sketchViewModel.initialized) {
             this.sketchTool();
         }
 
-        if (adminToolActive !== newProps.adminToolActive) {
+        if (activeAdminTool !== newProps.activeAdminTool) {
             switch (newProps.geometryType) {
                 case 'esriGeometryPolygon':
                     this.setState({ editSketchIcon: 'polygon' });
@@ -94,7 +94,12 @@ class SketchTool extends Component<Props, State> {
             .loadModules(['esri/Graphic'])
             .then(([Graphic]) => {
                 const {
-                    view, draw, sketchViewModel, setActiveTool, tempGraphicsLayer,
+                    view,
+                    draw,
+                    sketchViewModel,
+                    setActiveTool,
+                    tempGraphicsLayer,
+                    setActiveToolMenu,
                 } = this.props;
 
                 const drawNewFeatureButton = this.drawNewFeatureButton.current;
@@ -109,8 +114,10 @@ class SketchTool extends Component<Props, State> {
                         return;
                     }
                     if (this.props.active === 'sketchActiveAdmin') {
+                        setActiveToolMenu('');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
-                    } else {
+                    } else if (!this.props.active) {
+                        setActiveToolMenu('sketchActiveAdmin');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchActiveAdmin');
                         switch (this.props.geometryType) {
@@ -196,7 +203,7 @@ class SketchTool extends Component<Props, State> {
                 const selectFeaturesFromDraw = (evt) => {
                     const { geometry } = evt;
                     const {
-                        active, adminToolActive, selectFeatures,
+                        active, activeAdminTool, selectFeatures,
                     } = this.props;
 
                     // Skip finding layers if Administrator editing is in use
@@ -205,7 +212,7 @@ class SketchTool extends Component<Props, State> {
                     } else {
                         queryFeatures(
                             geometry,
-                            adminToolActive,
+                            activeAdminTool,
                             view,
                             selectFeatures,
                         );
