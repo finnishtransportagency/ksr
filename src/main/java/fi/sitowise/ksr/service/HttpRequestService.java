@@ -138,7 +138,7 @@ public class HttpRequestService {
             HttpRequestBase base = getRequestBase(
                     request,
                     authentication,
-                    query == null ? path : KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)),
+                    query == null ? path : KsrStringUtils.replaceMultipleSlashes(String.format("%s?%s", path, query)),
                     editedParams);
             if (useProxy) {
                 base.setConfig(proxyRequestConfig);
