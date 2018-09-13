@@ -1,18 +1,18 @@
 // @flow
 import React from 'react';
 import strings from '../../../../translations';
-import { saveEditedData } from '../../../../utils/saveEditedData';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 
 type Props = {
-    originalLayers: Array<Object>,
+    view: Object,
     editedLayers: Array<Object>,
+    saveEditedFeatures: Function,
 };
 
-const ModalSaveEditedData = ({ originalLayers, editedLayers }: Props) => (
+const ModalSaveEditedData = ({ view, editedLayers, saveEditedFeatures }: Props) => (
     <ModalContainer
         title={strings.modalSaveEditedData.title}
-        handleModalSubmit={() => saveEditedData(originalLayers, editedLayers)}
+        handleModalSubmit={() => saveEditedFeatures(view, editedLayers)}
         submitText={strings.modalSaveEditedData.submit}
         cancelText={strings.modalSaveEditedData.cancel}
     >
