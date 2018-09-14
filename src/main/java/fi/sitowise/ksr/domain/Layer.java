@@ -29,6 +29,9 @@ public class Layer implements Serializable {
     @SafeHtml
     private String attribution;
 
+    @SafeHtml
+    private String addressField;
+
     private String id;
     private String type;
     private boolean visible;
@@ -44,6 +47,7 @@ public class Layer implements Serializable {
     private List<String> queryColumns;
     private boolean useInternalProxy;
     private boolean userLayer;
+    private String featureType;
 
     /**
      * Construct a Layer
@@ -74,6 +78,8 @@ public class Layer implements Serializable {
         this.setQueryable(lr.getQueryable());
         this.setUseInternalProxy(lr.getUseInternalProxy());
         this.setUserLayer(false);
+        this.setAddressField(lr.getAddressField());
+        this.setFeatureType(lr.getFeatureType());
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -492,5 +498,41 @@ public class Layer implements Serializable {
      */
     public void setUserLayer(boolean userLayer) {
         this.userLayer = userLayer;
+    }
+
+    /**
+     * Gets layer's address field name
+     *
+     * @return layer's address field name
+     */
+    public String getAddressField() {
+        return addressField;
+    }
+
+    /**
+     * Sets layer's address field name
+     *
+     * @param addressField layer's address field name
+     */
+    public void setAddressField(String addressField) {
+        this.addressField = addressField;
+    }
+
+    /**
+     * Gets layer's feature type column that can be used in geo conversion
+     *
+     * @return layer's feature type column
+     */
+    public String getFeatureType() {
+        return featureType;
+    }
+
+    /**
+     * Sets layer's feature type column that can be used in geo conversion
+     *
+     * @param featureType layer's feature type column
+     */
+    public void setFeatureType(String featureType) {
+        this.featureType = featureType;
     }
 }

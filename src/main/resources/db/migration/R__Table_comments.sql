@@ -25,6 +25,8 @@ comment on column layer.mobile_visible is 'Whether the layer is visible or not o
 comment on column layer.queryable is 'Whether the layer can be queried or not.';
 comment on column layer.query_columns is 'Columns which are used in free word query.';
 comment on column layer.use_internal_proxy is 'Proxy requests on dev/test/prod -environments.';
+comment on column layer.address_field is 'Name of layers address field.';
+comment on column layer.feature_type is 'Type of the feature. Either road, water, railway or null.';
 
 comment on table layer_permission is 'Layer permissions.';
 comment on column layer_permission.layer_id is 'Identifier of the layer that the permissions belong to.';
