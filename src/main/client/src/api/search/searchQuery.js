@@ -1,3 +1,4 @@
+import querystring from 'querystring';
 import { config } from '../config';
 
 /**
@@ -11,7 +12,13 @@ import { config } from '../config';
  * @returns Data that can be used in parseData method to add it to the table
  */
 export const fetchSearchQuery = (layerId, queryString, title, data) =>
-    fetch(`api/proxy/layer/${layerId}/query?where=${encodeURIComponent(queryString)}&f=pjson&outFields=*`, config())
+    fetch(`api/proxy/layer/${layerId}/query?${
+        querystring.stringify({
+            where: encodeURIComponent(queryString),
+            f: 'pjson',
+            outFields: '*',
+        })
+    }`, config())
         .then(r => r.json())
         .then((r) => {
             if (!r.error && r.features.length > 0) data.layers.push({ ...r, id: layerId, title });
@@ -31,7 +38,14 @@ export const fetchSearchQuery = (layerId, queryString, title, data) =>
  */
 export const fetchSearchSuggestions = (layerId, queryString, queryColumn, signal) => {
     const suggestions = [];
-    return fetch(`api/proxy/layer/${layerId}/query?where=${encodeURIComponent(queryString)}&f=pjson&outFields=${queryColumn}&resultRecordCount=10`, { ...config(), signal })
+    return fetch(`api/proxy/layer/${layerId}/query?${
+        querystring.stringify({
+            where: encodeURIComponent(queryString),
+            f: 'pjson',
+            outFields: queryColumn,
+            resultRecordCount: 10,
+        })
+    }`, { ...config(), signal })
         .then(r => r.json())
         .then((r) => {
             if (!r.error && r.features.length) {

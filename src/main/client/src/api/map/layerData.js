@@ -1,3 +1,4 @@
+import querystring from 'querystring';
 import { config } from '../config';
 
 /**
@@ -8,6 +9,10 @@ import { config } from '../config';
  * @returns All data found from layer, that will be passed to layerList
  */
 export const layerData = layerId =>
-    fetch(`api/proxy/layer/${layerId}?f=pjson`, config())
+    fetch(`api/proxy/layer/${layerId}?${
+        querystring.stringify({
+            f: 'pjson',
+        })
+    }`, config())
         .then(r => r.json())
         .catch(err => console.log(err));

@@ -1,3 +1,4 @@
+import querystring from 'querystring';
 import { config } from '../config';
 
 /**
@@ -9,7 +10,11 @@ import { config } from '../config';
  * @return boolean of whether the name exists or not
  */
 export const fetchWorkspaceNameExists = (workspaceName, signal) => (
-    fetch(`api/workspace/exists?name=${workspaceName}`, config(), signal)
+    fetch(`api/workspace/exists?${
+        querystring.stringify({
+            name: workspaceName,
+        })
+    }`, config(), signal)
         .then(r => r.json())
         .catch(err => console.log(err))
 );

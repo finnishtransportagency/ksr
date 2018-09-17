@@ -1,3 +1,4 @@
+import querystring from 'querystring';
 import { getHeaders } from '../config';
 
 /**
@@ -5,7 +6,11 @@ import { getHeaders } from '../config';
  *
  * @param workspaceName workspace to be deleted
  */
-export const fetchDeleteWorkspace = workspaceName => fetch(`api/workspace?workspaceName=${encodeURIComponent(workspaceName)}`, {
+export const fetchDeleteWorkspace = workspaceName => fetch(`api/workspace?${
+    querystring.stringify({
+        workspaceName: encodeURIComponent(workspaceName),
+    })
+}`, {
     headers: getHeaders(),
     method: 'DELETE',
 });

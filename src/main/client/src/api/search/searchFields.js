@@ -1,3 +1,4 @@
+import querystring from 'querystring';
 import { config } from '../config';
 
 /**
@@ -6,9 +7,13 @@ import { config } from '../config';
  * @param layerId Layer id (ID in database) that is used in fetch URL
  *
  * @returns All fields found from layer, that will be passed to layerList
-*/
+ */
 export const fetchSearchFields = layerId =>
-    fetch(`api/proxy/layer/${layerId}?f=pjson`, config())
+    fetch(`api/proxy/layer/${layerId}?${
+        querystring.stringify({
+            f: 'pjson',
+        })
+    }`, config())
         .then(r => r.json())
         .then(r => r.fields.map((f, i) => ({
             value: i, label: f.alias, type: f.type, name: f.name,
