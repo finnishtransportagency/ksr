@@ -2,6 +2,7 @@
 import { fetchSearchQuery } from '../../api/search/searchQuery';
 import * as types from '../../constants/actionTypes';
 import { parseData } from '../../utils/parseFeatureData';
+import save from '../../utils/saveFeatureData';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -114,3 +115,19 @@ export const setSingleLayerGeometry = (geometry: Object) => ({
     type: types.SET_SINGLE_LAYER_GEOMETRY,
     geometry,
 });
+
+export const saveEditedFeatures = (
+    view: Object,
+    editedLayers: Object[],
+) => (dispatch: Function) => {
+    save.saveEditedFeatureData(view, editedLayers).then((edits) => {
+        dispatch({
+            type: types.APPLY_EDITS,
+            edits,
+        });
+    });
+
+    return {
+        type: 'none',
+    };
+};
