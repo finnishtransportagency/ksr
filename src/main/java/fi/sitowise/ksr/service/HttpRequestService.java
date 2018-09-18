@@ -138,13 +138,14 @@ public class HttpRequestService {
             HttpRequestBase base = getRequestBase(
                     request,
                     authentication,
-                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)),
+                    query == null ? path : KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)),
                     editedParams);
             if (useProxy) {
                 base.setConfig(proxyRequestConfig);
             } else {
                 base.setConfig(nonProxyRequestConfig);
             }
+            setBaseHeaders(request, base);
             CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
 
             response.setStatus(cRes.getStatusLine().getStatusCode());
@@ -162,6 +163,22 @@ public class HttpRequestService {
         } catch (Exception e) {
             String msg = String.format("Error handling request. URL: [%s]. Proxy: [%b]", endPointUrl, useProxy);
             throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
+    }
+
+    /**
+     * Sets specified headers from HttpServletRequest to HttpRequestBase
+     *
+     * @param request HttpServletRequest Request to read headers from
+     * @param base HttpRequestBase Target to write headers to
+     */
+    public void setBaseHeaders(HttpServletRequest request, HttpRequestBase base) {
+        String[] headerNames = { "Content-Type" };
+        for (String headerName: headerNames) {
+            String headerValue = request.getHeader(headerName);
+            if (headerValue != null) {
+                base.setHeader(headerName, headerValue);
+            }
         }
     }
 
@@ -420,7 +437,7 @@ public class HttpRequestService {
                 }
             }
             try {
-                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
+                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 String msg = "Error creating base from POST request";
                 throw new KsrApiException.InternalServerErrorException(msg, e);
@@ -447,7 +464,7 @@ public class HttpRequestService {
                 params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
             }
             try {
-                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
+                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 String msg = "Error creating base from GET request";
                 throw new KsrApiException.InternalServerErrorException(msg, e);

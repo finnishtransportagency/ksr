@@ -14,6 +14,7 @@ import {
     SET_SINGLE_LAYER_GEOMETRY,
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
+    APPLY_EDITS,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
@@ -23,6 +24,7 @@ import {
     toggleSelection,
     updateLayerColumns,
 } from '../../utils/parseFeatureData';
+import { applyEdits } from '../../utils/table';
 
 type State = {
     fetching: boolean,
@@ -43,6 +45,7 @@ type Action = {
     search: boolean,
     data: Object,
     geometry: Object,
+    edits: Array<Object>,
 };
 
 const initialState = {
@@ -113,6 +116,12 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 singleLayerGeometry: action.geometry,
+            };
+        case APPLY_EDITS:
+            return {
+                ...state,
+                layers: applyEdits(state.layers, action.edits),
+                editedLayers: applyEdits(state.editedLayers, action.edits),
             };
         default:
             return state;

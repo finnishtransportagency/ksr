@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import ModalLayerDetailsView from './ModalLayerDetailsView';
 import strings from '../../../../translations';
-import { saveNewFeatureData } from '../../../../utils/saveNewFeatureData';
+import save from '../../../../utils/saveFeatureData';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import { parseGeometryType } from '../../../../utils/type';
 
@@ -10,6 +10,8 @@ type Props = {
     fields: any,
     layer: Object,
     setTempGraphicsLayer: Function,
+    originalLayerId: string,
+    view: Object,
 };
 
 type State = {
@@ -24,8 +26,6 @@ class ModalFilter extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = { ...initialState };
-
-        this.handleOnChange = this.handleOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -56,14 +56,17 @@ class ModalFilter extends Component<Props, State> {
         this.setState({ data: newData });
     };
 
+    handleModalSubmit = () => {
+        save.saveData('add', this.props.view, this.props.originalLayerId, [this.state.data]);
+    };
+
     render() {
         const { fields } = this.props;
-        const { data } = this.state;
 
         return (
             <ModalContainer
                 title={strings.modalLayerDetails.title}
-                handleModalSubmit={() => saveNewFeatureData(data)}
+                handleModalSubmit={this.handleModalSubmit}
                 submitText={strings.modalLayerDetails.submit}
                 cancelText={strings.modalLayerDetails.cancel}
             >

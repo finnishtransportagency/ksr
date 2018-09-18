@@ -23,6 +23,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -172,5 +174,22 @@ public class HttpRequestServiceTests {
         httpRequestService.writeBytesArrayToResponse(testBytes, res);
 
         Assert.assertEquals(testBytes.length, Integer.parseInt(res.getHeader("Content-Length")));
+    }
+
+    @Test
+    public void testSetBaseHeaders() {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(
+                request.getHeader(Mockito.eq("Content-Type"))
+        ).thenReturn("application/x-www-form-urlencoded;charset=UTF-8");
+
+        HttpRequestBase base = new HttpPost();
+
+        httpRequestService.setBaseHeaders(request, base);
+
+        Assert.assertEquals(
+                base.getFirstHeader("Content-Type").getValue(),
+                "application/x-www-form-urlencoded;charset=UTF-8"
+        );
     }
 }

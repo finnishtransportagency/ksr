@@ -13,6 +13,8 @@ const mapStateToProps = (state) => {
     return {
         fields: activeLayer ? activeLayer.fields.filter(f => f.type !== 'esriFieldTypeOID') : [],
         layer: state.map.mapView.graphicsLayer,
+        originalLayerId: state.adminTool.active.layerId,
+        view: state.map.mapView.view,
     };
 };
 
