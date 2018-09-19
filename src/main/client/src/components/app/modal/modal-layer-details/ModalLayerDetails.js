@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { createAddressFields } from '../../../../utils/geoconvert/createAddressFields';
 import ModalLayerDetailsView from './ModalLayerDetailsView';
 import strings from '../../../../translations';
 import save from '../../../../utils/saveFeatureData';
@@ -12,6 +13,8 @@ type Props = {
     setTempGraphicsLayer: Function,
     originalLayerId: string,
     view: Object,
+    addressField: string,
+    featureType: string,
 };
 
 type State = {
@@ -50,14 +53,25 @@ class ModalFilter extends Component<Props, State> {
         this.setState({ data });
     };
 
-    handleOnChange = (field: Object, event: Object) => {
-        const newData = Object.assign({}, this.state.data);
-        newData.attributes[event.target.name] = event.target.value;
-        this.setState({ data: newData });
+    handleOnChange = (event: Object) => {
+        const data = Object.assign({}, this.state.data);
+        data.attributes[event.target.name] = event.target.value;
+        this.setState({ data });
     };
 
     handleModalSubmit = () => {
-        save.saveData('add', this.props.view, this.props.originalLayerId, [this.state.data]);
+        const {
+            layer,
+            addressField,
+            view,
+            originalLayerId,
+            featureType,
+        } = this.props;
+        const { data } = this.state;
+        const geometryType = layer.graphics.items[0].geometry.type;
+
+        createAddressFields(data, geometryType, featureType, addressField)
+            .then(r => save.saveData('add', view, originalLayerId, [r]));
     };
 
     render() {

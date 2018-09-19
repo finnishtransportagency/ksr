@@ -5,8 +5,22 @@ import ModalLayerDetailsView from '../ModalLayerDetailsView';
 
 const setup = () => {
     const props = {
-        fields: [],
-        layer: { graphics: { items: [{ geometry: [10, 10] }] } },
+        fields: [
+            { name: 'Field1' },
+            { name: 'Field2' },
+            { name: 'Field3' },
+        ],
+        layer: {
+            graphics: {
+                items: [{
+                    geometry: {
+                        x: 123,
+                        y: 123,
+                        type: 'point',
+                    },
+                }],
+            },
+        },
         setTempGraphicsLayer: jest.fn(),
     };
     const wrapper = shallow(<ModalLayerDetails {...props} />);
@@ -19,5 +33,47 @@ describe('<ModalLayerDetails />', () => {
 
     it('should render <ModalLayerDetailsView/> ', () => {
         expect(wrapper.find(ModalLayerDetailsView).exists()).toBe(true);
+    });
+
+    it('should handle loadFields', () => {
+        const expectedResult = {
+            attributes: {
+                Field1: '',
+                Field2: '',
+                Field3: '',
+            },
+            geometry: {
+                x: 123,
+                y: 123,
+            },
+        };
+
+        wrapper.instance().loadFields();
+        expect(wrapper.state('data')).toEqual(expectedResult);
+    });
+
+    it('should handle handleOnChange', () => {
+        const expectedResult = {
+            attributes: {
+                Field1: 'Test Value',
+                Field2: '',
+                Field3: '',
+            },
+            geometry: {
+                x: 123,
+                y: 123,
+            },
+        };
+
+        const evt = {
+            target: {
+                name: 'Field1',
+                value: 'Test Value',
+            },
+        };
+
+        wrapper.instance().handleOnChange(evt);
+
+        expect(wrapper.state('data')).toEqual(expectedResult);
     });
 });

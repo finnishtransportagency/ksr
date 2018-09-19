@@ -9,11 +9,15 @@ const mapStateToProps = (state) => {
             state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId) :
             null
     );
+    const { addressField, featureType } = state.map.layerGroups.layerList
+        .find(l => l.id === state.adminTool.active.layerId);
 
     return {
-        fields: activeLayer ? activeLayer.fields.filter(f => f.type !== 'esriFieldTypeOID') : [],
+        fields: activeLayer ? activeLayer.fields.filter(f => f.type !== 'esriFieldTypeOID' && f.name !== addressField) : [],
         layer: state.map.mapView.graphicsLayer,
         originalLayerId: state.adminTool.active.layerId,
+        addressField,
+        featureType,
         view: state.map.mapView.view,
     };
 };

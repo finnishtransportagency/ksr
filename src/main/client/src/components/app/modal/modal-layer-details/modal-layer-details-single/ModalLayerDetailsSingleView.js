@@ -20,7 +20,7 @@ const ModalLayerDetailsSingleView = ({
                 backgroundDarker
                 index={index}
                 type={parseColumnType(field.type)}
-                onChange={evt => handleOnChange(field, evt)}
+                onChange={evt => handleOnChange(evt)}
                 placeholder=""
                 name={field.name}
                 autoComplete="off"
