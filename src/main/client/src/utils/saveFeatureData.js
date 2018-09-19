@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import strings from '../translations';
 import { addFeatures } from '../api/map/addFeatures';
 import { updateFeatures } from '../api/map/updateFeatures';
+import { createAddressFields } from './geoconvert/createAddressFields';
 
 /**
 * Converts list of features into ArcGIS Server compliant formdata.
@@ -166,12 +167,21 @@ const formatToEsriCompliant = (obj: Object) => obj && Object.entries(obj).reduce
 );
 
 /**
-* Saves edited data coming from table into ArcGIS Server
-*
-* @param view MapView Esri ArcGIS JS MapView
-* @param editedData Object[] Array of customised Esri ArcGIS JS Layer-objects
-*/
-const saveEditedFeatureData = (view: Object, editedData: Object[]) => {
+ * Saves edited data coming from table into ArcGIS Server.
+ *
+ * @param {Object} view Esri ArcGIS JS MapView.
+ * @param {Object[]} editedData Array of customised Esri ArcGIS JS Layer-objects.
+ * @param {string} featureType Type of feature (road, water or railway)
+ * @param {string} addressField Name of layers address field.
+ *
+ * @returns {Promise} Promise of edited data.
+ */
+const saveEditedFeatureData = (
+    view: Object,
+    editedData: Object[],
+    featureType: string,
+    addressField: string,
+) => {
     if (view && Array.isArray(editedData)) {
         const promises = editedData.map((ed) => {
             const features = ed.data
@@ -180,7 +190,14 @@ const saveEditedFeatureData = (view: Object, editedData: Object[]) => {
                 .map(formatToEsriCompliant);
 
             const layerId = ed.id;
-            return save.saveData('update', view, layerId, features);
+
+            const promisesAddressField = features.map((feature) => {
+                const geometryType = feature.geometry.type;
+                return createAddressFields(feature, geometryType, featureType, addressField);
+            });
+
+            return Promise.all(promisesAddressField)
+                .then(r => save.saveData('update', view, layerId, r));
         });
         return Promise.all(promises);
     }
