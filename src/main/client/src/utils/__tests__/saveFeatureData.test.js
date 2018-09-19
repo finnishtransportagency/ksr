@@ -1,3 +1,4 @@
+import * as geoconvert from '../geoconvert/createAddressFields';
 import save from '../saveFeatureData';
 
 describe('saveFeatureData', () => {
@@ -124,6 +125,7 @@ describe('saveFeatureData', () => {
 
     it('saveEditedFeatureData - should invoke saveFeatureData -method', () => {
         save.saveData = jest.fn(); // eslint-disable-line import/no-named-as-default-member
+        geoconvert.createAddressFields = jest.fn();
 
         const editedData = [
             {
@@ -140,7 +142,10 @@ describe('saveFeatureData', () => {
             },
         ];
 
-        save.saveEditedFeatureData({}, editedData);
-        expect(save.saveData.mock.calls.length).toBe(1);
+        save.saveEditedFeatureData({}, editedData, 'road', 'test_address_field')
+            .then(() => {
+                expect(geoconvert.createAddressFields.mock.calls.length).toBe(1);
+                expect(save.saveData.mock.calls.length).toBe(1);
+            });
     });
 });

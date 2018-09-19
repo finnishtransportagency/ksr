@@ -119,13 +119,16 @@ export const setSingleLayerGeometry = (geometry: Object) => ({
 export const saveEditedFeatures = (
     view: Object,
     editedLayers: Object[],
+    featureType: string,
+    addressField: string,
 ) => (dispatch: Function) => {
-    save.saveEditedFeatureData(view, editedLayers).then((edits) => {
-        dispatch({
-            type: types.APPLY_EDITS,
-            edits,
+    save.saveEditedFeatureData(view, editedLayers, featureType, addressField)
+        .then((edits) => {
+            dispatch({
+                type: types.APPLY_EDITS,
+                edits,
+            });
         });
-    });
 
     return {
         type: 'none',

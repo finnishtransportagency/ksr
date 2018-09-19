@@ -171,7 +171,7 @@ const formatToEsriCompliant = (obj: Object) => obj && Object.entries(obj).reduce
  *
  * @param {Object} view Esri ArcGIS JS MapView.
  * @param {Object[]} editedData Array of customised Esri ArcGIS JS Layer-objects.
- * @param {string} featureType Type of feature (road, water or railway)
+ * @param {string} featureType Type of feature (road | water | railway)
  * @param {string} addressField Name of layers address field.
  *
  * @returns {Promise} Promise of edited data.
