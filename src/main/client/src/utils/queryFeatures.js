@@ -58,7 +58,7 @@ export const queryFeatures = (
                                             objectIdFieldName: layer.objectIdField,
                                             features: results.features,
                                             fields: layer.fields,
-                                            source: 'shapefile',
+                                            _source: 'shapefile',
                                         })));
                                 } else if (!activeAdminTool) {
                                     queries.push(layerView.queryFeatures(queryView)
@@ -68,7 +68,7 @@ export const queryFeatures = (
                                             objectIdFieldName: layer.objectIdField,
                                             features: results.features,
                                             fields: layer.fields,
-                                            source: 'shapefile',
+                                            _source: 'shapefile',
                                         })));
                                 }
                             });
@@ -85,7 +85,7 @@ export const queryFeatures = (
                                         objectIdFieldName: layer.objectIdField,
                                         features: results.features,
                                         fields: layer.fields,
-                                        source: 'select',
+                                        _source: 'select',
                                     })));
                             } else if (!activeAdminTool) {
                                 queries.push(layer.queryFeatures(query)
@@ -95,7 +95,7 @@ export const queryFeatures = (
                                         objectIdFieldName: layer.objectIdField,
                                         features: results.features,
                                         fields: layer.fields,
-                                        source: 'select',
+                                        _source: 'select',
                                     })));
                             }
                         }
@@ -118,7 +118,7 @@ export const queryFeatures = (
                                         objectIdFieldName: layer.objectIdField,
                                         features: results.features,
                                         fields: layer.fields,
-                                        source: 'shapefile',
+                                        _source: 'shapefile',
                                     })));
                             } else if (!activeAdminTool) {
                                 queries.push(layerView.queryFeatures(queryView)
@@ -128,7 +128,7 @@ export const queryFeatures = (
                                         objectIdFieldName: layer.objectIdField,
                                         features: results.features,
                                         fields: layer.fields,
-                                        source: 'shapefile',
+                                        _source: 'shapefile',
                                     })));
                             }
                         });
@@ -146,7 +146,7 @@ export const queryFeatures = (
                                     objectIdFieldName: layer.objectIdField,
                                     features: results.features,
                                     fields: layer.fields,
-                                    source: 'select',
+                                    _source: 'select',
                                 })));
                         } else if (!activeAdminTool) {
                             queries.push(layer.queryFeatures(query)
@@ -156,7 +156,7 @@ export const queryFeatures = (
                                     objectIdFieldName: layer.objectIdField,
                                     features: results.features,
                                     fields: layer.fields,
-                                    source: 'select',
+                                    _source: 'select',
                                 })));
                         }
                     }

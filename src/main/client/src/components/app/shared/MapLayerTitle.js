@@ -2,7 +2,7 @@ import React from 'react';
 import { MapLayerTitleWrapper } from './styles';
 
 const MapLayerTitle = ({ layer }) => {
-    switch (layer.source) {
+    switch (layer._source) {
         case 'search': {
             return (
                 <MapLayerTitleWrapper>

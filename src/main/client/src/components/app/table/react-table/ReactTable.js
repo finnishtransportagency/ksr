@@ -13,7 +13,6 @@ type Props = {
         id: string,
         data: Array<Object>,
         columns: Array<Object>,
-        id: string,
     },
     toggleSelection: Function,
     selectAll: boolean,
@@ -89,7 +88,7 @@ class ReactTable extends Component<Props> {
 
     render() {
         const {
-            fetching, layer, selectAll, toggleSelectAll,
+            fetching, layer, selectAll, toggleSelectAll, layerList,
         } = this.props;
 
         if (layer === null) {
@@ -98,7 +97,7 @@ class ReactTable extends Component<Props> {
                     {strings.table.noTableText}
                 </WrapperReactTableNoTable>
             );
-        } else if (!fetching) {
+        } else if (!fetching && layerList) {
             const { columns, data } = layer;
             return (<ReactTableView
                 data={data}

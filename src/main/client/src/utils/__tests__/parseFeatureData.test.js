@@ -192,7 +192,7 @@ describe('parseFeatureData', () => {
                     title: 'layer123',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a123', name: 'f1' } }],
-                    source: 'select',
+                    _source: 'select',
                 },
                 {
                     id: '456',
@@ -200,7 +200,7 @@ describe('parseFeatureData', () => {
                     title: 'layer456',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a456', name: 'f2' } }],
-                    source: 'search',
+                    _source: 'search',
                 },
                 {
                     id: '789',
@@ -208,7 +208,7 @@ describe('parseFeatureData', () => {
                     title: 'layer789',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a789', name: 'f3' } }],
-                    source: 'select',
+                    _source: 'select',
                 },
             ],
         };
@@ -217,7 +217,7 @@ describe('parseFeatureData', () => {
             {
                 id: '123',
                 title: 'layer123',
-                source: 'select',
+                _source: 'select',
                 columns: [
                     { Header: 'L1A', accessor: '123/l.1.a', show: true },
                     { Header: 'L2A', accessor: '123/l.2.a', show: true },
@@ -238,7 +238,7 @@ describe('parseFeatureData', () => {
             {
                 id: '456',
                 title: 'layer456',
-                source: 'search',
+                _source: 'search',
                 columns: [
                     { Header: 'L1A', accessor: '456/l.1.a', show: true },
                     { Header: 'L2A', accessor: '456/l.2.a', show: true },
@@ -259,7 +259,7 @@ describe('parseFeatureData', () => {
             {
                 id: '789',
                 title: 'layer789',
-                source: 'select',
+                _source: 'select',
                 columns: [
                     { Header: 'L1A', accessor: '789/l.1.a', show: true },
                     { Header: 'L2A', accessor: '789/l.2.a', show: true },

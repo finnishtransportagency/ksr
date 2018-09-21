@@ -25,7 +25,7 @@ const layerFromGraphic = (graphic: Graphic) => (
         objectIdFieldName: graphic.layer.objectIdField,
         globalIdFieldName: '',
         geometryType: graphic.layer.geometryType,
-        source: graphic.layer.featureType === 'shapefile' ? graphic.layer.featureType : 'select',
+        _source: graphic.layer.featureType === 'shapefile' ? graphic.layer.featureType : 'select',
         spatialReference: {
             wkid: graphic.layer.spatialReference.wkid,
             latestWkid: graphic.layer.spatialReference.latestWkid,

@@ -59,6 +59,17 @@ const TableView = ({
                 <i className="fas fa-trash" />
             </Table.Button>
             <Table.Button
+                title={strings.reactTable.saveEditedData}
+                tableOpen={isOpen}
+                disabled={originalLayers.every(o => o._source === 'shapefile') || !originalLayers.length || equals(originalLayers, editedLayers)}
+                onClick={
+                    originalLayers.length && !equals(originalLayers, editedLayers) ? () => {
+                        setActiveModal('saveEditedData');
+                    } : null}
+            >
+                <i className="fas fa-save" />
+            </Table.Button>
+            <Table.Button
                 title={strings.reactTable.bufferSelectedData}
                 tableOpen={isOpen}
                 disabled={!selectedData}

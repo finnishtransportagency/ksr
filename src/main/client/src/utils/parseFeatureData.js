@@ -49,16 +49,16 @@ export const parseData = (data, selected) => {
         id: l.id,
         title: l.title,
         columns: parseColumns(l.id, l.fields),
-        source: l.source,
+        _source: l._source,
         data: l.features.map(f => ({
             ...parseAttributes(l.id, f.attributes),
             geometry: f.geometry,
             _id: f.attributes[l.objectIdFieldName],
             _layerId: l.id,
-            _selected: selected,
+            _selected: f.selected !== undefined ? f.selected : selected,
             _edited: [],
             _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
-            _source: l.source,
+            _source: l._source,
         })),
     }));
 };

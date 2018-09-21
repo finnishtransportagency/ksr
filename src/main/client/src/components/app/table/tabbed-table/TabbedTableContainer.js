@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
     layers: state.table.features.layers.map(l => ({
         id: l.id,
         title: l.title,
-        source: l.source,
+        _source: l._source,
     })),
     activeTable: state.table.features.activeTable,
 });

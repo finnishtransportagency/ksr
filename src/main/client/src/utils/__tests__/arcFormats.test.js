@@ -47,7 +47,7 @@ describe('arcFormats', () => {
             layers: [{
                 id: 'L1',
                 objectIdFieldName: 'ID',
-                source: 'select',
+                _source: 'select',
                 globalIdFieldName: '',
                 geometryType: 'point',
                 spatialReference: {
