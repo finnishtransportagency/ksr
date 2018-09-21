@@ -40,12 +40,14 @@ public class WorkspaceController {
      * Save new workspace to database.
      *
      * @param workspace workspace to be saved into database
+     * @return map of workspace names and update times
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void saveWorkspace(@Valid @RequestBody Workspace workspace) {
+    public Map<Timestamp, String> saveWorkspace(@Valid @RequestBody Workspace workspace) {
         LOG.info(String.format("%s: Save new workspace to database.", getCurrentUsername()));
         try {
-            workspaceService.saveWorkspace(workspace, getCurrentUsername());
+            workspaceService.saveWorkspace(workspace,  getCurrentUsername());
+            return workspaceService.getWorkspaceListForUser(authentication.getName());
         } catch (DataAccessException e) {
             throw new KsrApiException.InternalServerErrorException(
                     "Failed to save new workspace.", e);
@@ -72,14 +74,16 @@ public class WorkspaceController {
      * Delete existing workspace from database.
      *
      * @param workspaceName name of the workspace to be deleted from database
+     * @return map of workspace names and update times
      */
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public void saveWorkspace(@RequestParam String workspaceName) {
+    public Map<Timestamp, String> deleteWorkspace(@RequestParam String workspaceName) {
         LOG.info(String.format("%s: Delete existing workspace from database.", getCurrentUsername()));
         if (!workspaceService.deleteWorkspace(workspaceName, getCurrentUsername())) {
             throw new KsrApiException.NotFoundErrorException(
                     "No workspace found with the given name to be deleted.");
         }
+        return workspaceService.getWorkspaceListForUser(authentication.getName());
     }
 
     /**

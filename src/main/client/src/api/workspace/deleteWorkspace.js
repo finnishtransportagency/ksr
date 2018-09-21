@@ -4,13 +4,18 @@ import { getHeaders } from '../config';
 /**
  * Deletes selected workspace from database.
  *
- * @param workspaceName workspace to be deleted
+ * @param {string} workspaceName Workspace to be deleted.
+ *
+ * @returns {Object} Contains workspace names and last updated times.
  */
-export const fetchDeleteWorkspace = workspaceName => fetch(`api/workspace?${
-    querystring.stringify({
-        workspaceName: encodeURIComponent(workspaceName),
+export const fetchDeleteWorkspace = workspaceName => (
+    fetch(`api/workspace?${
+        querystring.stringify({
+            workspaceName,
+        })
+    }`, {
+        headers: getHeaders(),
+        method: 'DELETE',
     })
-}`, {
-    headers: getHeaders(),
-    method: 'DELETE',
-});
+        .then(r => r.json())
+);
