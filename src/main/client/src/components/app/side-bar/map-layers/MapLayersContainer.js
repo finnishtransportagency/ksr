@@ -7,7 +7,6 @@ import MapLayers from './MapLayers';
 const mapStateToProps = state => ({
     layerGroups: state.map.layerGroups,
     activeTab: state.map.activeLayerTab,
-    activeModal: state.modal.activeModal.activeModal,
 });
 
 const mapDispatchToProps = dispatch => ({

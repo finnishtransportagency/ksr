@@ -5,7 +5,6 @@ import MapLayersView from './MapLayersView';
 type Props = {
     setActiveLayerTab: (string) => void,
     activeTab: string,
-    activeModal: string,
     setActiveModal: (modal: string) => void,
     setDropzoneActive: () => void,
 };
