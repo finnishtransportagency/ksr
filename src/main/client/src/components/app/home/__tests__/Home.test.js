@@ -7,7 +7,9 @@ const setup = () => {
     const props = {
         getLayerGroups: () => {},
         getMapConfig: () => {},
-        getWorkspaceList: () => {},
+        updateWorkspaces: () => {},
+        setWorkspace: () => {},
+        loadingWorkspace: false,
     };
     const wrapper = shallow(<Home {...props} />);
 

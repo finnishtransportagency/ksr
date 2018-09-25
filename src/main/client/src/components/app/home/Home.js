@@ -1,24 +1,31 @@
 // @flow
 import React, { Component } from 'react';
+import { fetchGetWorkspaceList } from '../../../api/workspace/getWorkspaceList';
 import HomeView from './HomeView';
 
 type Props = {
     getLayerGroups: Function,
     getMapConfig: Function,
-    getWorkspaceList: Function,
+    setWorkspace: Function,
+    updateWorkspaces: Function,
+    loadingWorkspace: boolean,
 };
 
 class Home extends Component<Props, null> {
     componentDidMount() {
-        const { getLayerGroups, getMapConfig, getWorkspaceList } = this.props;
+        const {
+            getLayerGroups, getMapConfig, updateWorkspaces, setWorkspace,
+        } = this.props;
 
+        setWorkspace();
         getLayerGroups();
         getMapConfig();
-        getWorkspaceList();
+        updateWorkspaces(fetchGetWorkspaceList);
     }
 
     render() {
-        return <HomeView />;
+        const { loadingWorkspace } = this.props;
+        return <HomeView loadingWorkspace={loadingWorkspace} />;
     }
 }
 

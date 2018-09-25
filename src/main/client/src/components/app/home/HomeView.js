@@ -2,11 +2,17 @@
 import React, { Fragment } from 'react';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import EsriMapContainer from '../map/EsriMapContainer';
+import InitMapContainer from '../map/InitMapContainer';
 import ModalContainer from '../modal/ModalContainer';
+import LoadingIcon from '../shared/LoadingIcon';
 import SideBarContainer from '../side-bar/SideBarContainer';
 import SideNavContainer from '../side-nav/SideNavContainer';
 import TableContainer from '../table/TableContainer';
+import { LoadingWrapper } from './styles';
+
+type Props = {
+    loadingWorkspace: boolean,
+};
 
 const toastProps = {
     position: 'bottom-right',
@@ -21,11 +27,16 @@ const toastProps = {
     transition: Slide,
 };
 
-const HomeView = () => (
+const HomeView = ({ loadingWorkspace }: Props) => (
     <Fragment>
+        { loadingWorkspace &&
+            <LoadingWrapper>
+                <LoadingIcon size={20} loading={loadingWorkspace} />
+            </LoadingWrapper>
+        }
         <SideNavContainer />
         <SideBarContainer />
-        <EsriMapContainer />
+        <InitMapContainer />
         <TableContainer />
         <ModalContainer />
         <ToastContainer {...toastProps} />
