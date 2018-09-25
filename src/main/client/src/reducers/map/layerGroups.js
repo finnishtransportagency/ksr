@@ -1,18 +1,20 @@
 // @flow
 import {
+    ADD_SEARCH_RESULTS_LAYER,
+    ADD_SHAPEFILE_LAYER,
+    ADD_USER_LAYER,
+    CLEAR_TABLE_DATA,
     GET_LAYER_GROUPS,
     GET_LAYER_GROUPS_FULFILLED,
-    SET_LAYER_LIST,
     HIDE_LAYER,
-    ADD_SEARCH_RESULTS_LAYER,
-    CLEAR_TABLE_DATA,
-    SET_ACTIVE_ADMIN_TOOL,
-    ADD_USER_LAYER,
     REMOVE_USER_LAYER_FULFILLED,
-    ADD_SHAPEFILE_LAYER,
+    SET_ACTIVE_ADMIN_TOOL,
+    SET_LAYER_LIST,
+    SET_WORKSPACE_FULFILLED,
 } from '../../constants/actionTypes';
 
-import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup, addLayerToUserGroup } from '../../utils/layers';
+import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
+import { updateLayerList } from '../../utils/workspace/loadWorkspace';
 
 type LayerGroups = {
     id: number,
@@ -42,7 +44,7 @@ type LayerList = {
     type: string,
     url: string,
     visible: boolean,
-    source: string,
+    _source: string,
 }
 
 type State = {
@@ -60,6 +62,7 @@ type Action = {
     layers: Array<Object>,
     layerId: string,
     layer: Object,
+    workspace: Object,
 };
 
 const initialState = {
@@ -108,7 +111,7 @@ export default (state: State = initialState, action: Action) => {
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
                 layerList: (state.layerList
-                    .filter(l => l.source !== 'search')
+                    .filter(l => l._source !== 'search')
                     .map(l => ({
                         ...l,
                         visible: l.id === action.layerId ? true : l.visible,
@@ -121,7 +124,7 @@ export default (state: State = initialState, action: Action) => {
                     ...lg,
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l.source !== 'search'): Array<LayerList>),
+                layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
             };
         case ADD_SHAPEFILE_LAYER:
             return {
@@ -144,6 +147,11 @@ export default (state: State = initialState, action: Action) => {
                     layers: lg.layers.filter(l => l.id !== action.layerId),
                 })): Array<LayerGroups>),
                 layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<LayerList>),
+            };
+        case SET_WORKSPACE_FULFILLED:
+            return {
+                ...state,
+                layerList: updateLayerList(action.workspace, state.layerList),
             };
         default:
             return state;

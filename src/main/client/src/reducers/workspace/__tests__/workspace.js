@@ -6,6 +6,7 @@ describe('workspace reducer', () => {
         const initialState = {
             workspaceList: [],
             fetching: false,
+            loadingWorkspace: false,
         };
 
         expect(reducer(undefined, {})).toEqual(initialState);
@@ -17,6 +18,7 @@ describe('workspace reducer', () => {
         })).toEqual({
             workspaceList: [],
             fetching: true,
+            loadingWorkspace: false,
         });
     });
 
@@ -27,6 +29,37 @@ describe('workspace reducer', () => {
         })).toEqual({
             workspaceList: [{ '02051991': 'Test 1' }],
             fetching: false,
+            loadingWorkspace: false,
+        });
+    });
+
+    it('should handle SET_WORKSPACE', () => {
+        expect(reducer(undefined, {
+            type: types.SET_WORKSPACE,
+        })).toEqual({
+            workspaceList: [],
+            fetching: false,
+            loadingWorkspace: true,
+        });
+    });
+
+    it('should handle SET_WORKSPACE_REJECTED', () => {
+        expect(reducer(undefined, {
+            type: types.SET_WORKSPACE_REJECTED,
+        })).toEqual({
+            workspaceList: [],
+            fetching: false,
+            loadingWorkspace: false,
+        });
+    });
+
+    it('should handle SET_WORKSPACE_FULFILLED', () => {
+        expect(reducer(undefined, {
+            type: types.SET_WORKSPACE_FULFILLED,
+        })).toEqual({
+            workspaceList: [],
+            fetching: false,
+            loadingWorkspace: false,
         });
     });
 });
