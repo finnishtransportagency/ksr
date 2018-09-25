@@ -47,6 +47,8 @@ class MapLayersActive extends Component<Props, State> {
 
         if (foundLayer.id === activeAdminTool) setActiveAdminTool('', layerList);
         foundLayer.active = !foundLayer.active;
+        // Set activated layer visible by default.
+        foundLayer.visible = true;
         setLayerList(layerList);
     };
 
