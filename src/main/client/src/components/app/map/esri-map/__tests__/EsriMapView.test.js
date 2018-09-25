@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import EsriMapView from '../EsriMapView';
-import MapToolsContainer from '../map-tools/MapToolsContainer';
+import MapToolsContainer from '../../map-tools/MapToolsContainer';
 
 const setup = () => {
     const props = {

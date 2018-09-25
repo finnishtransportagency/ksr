@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import * as styles from '../../ui/defaultStyles';
+import * as styles from '../../../ui/defaultStyles';
 
 export const Wrapper = styled.div`
     #mapView {

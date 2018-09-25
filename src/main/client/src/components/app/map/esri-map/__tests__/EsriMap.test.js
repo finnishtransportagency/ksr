@@ -26,16 +26,4 @@ describe('<EsriMap />', () => {
     it('should render self', () => {
         expect(wrapper.find(EsriMapView).exists()).toBe(true);
     });
-
-    it('should invoke initMap when fetching completed', () => {
-        const spy = jest.spyOn(wrapper.instance(), 'initMap');
-        const prevProps = {
-            activeNav: '',
-            layerList: [],
-            fetching: false,
-        };
-
-        wrapper.instance().componentDidUpdate(prevProps);
-        expect(spy).toHaveBeenCalled();
-    });
 });

@@ -1,128 +1,38 @@
 // @flow
 import esriLoader from 'esri-loader';
-import equals from 'nano-equal';
-
 import React, { Component } from 'react';
+import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
+import { addLayers } from '../../../utils/map';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
-import EsriMapView from './EsriMapView';
-import { addLayers, highlight, fitExtent } from '../../../utils/map';
-import { setBuffer } from '../../../utils/buffer';
+import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
+import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
-import { queryFeatures } from '../../../utils/queryFeatures';
 
 type Props = {
-    view: Object,
-    activeNav: string,
     layerList: Array<any>,
-    fetching: boolean,
-    isOpenTable: boolean,
     mapCenter: Array<number>,
     mapScale: number,
     printServiceUrl: ?string,
     selectFeatures: Function,
-    selectedFeatures: Array<Object>,
     setMapView: (view: Object) => void,
     activeAdminTool: string,
     sketchViewModel: Object,
     setEditMode: (editMode: string) => void,
     editMode: string,
     setTempGraphicsLayer: (graphicsLayer: Object) => void,
-    layers: Array<Object>,
     setActiveModal: Function,
     setSingleLayerGeometry: Function,
     activeTool: string,
     setHasGraphics: (hasGraphics: boolean) => void,
-    removeLayersView: (layerIds: Array<any>) => void,
+    searchWorkspaceFeatures: Function,
+    setWorkspaceRejected: Function,
 };
 
 class EsriMap extends Component<Props> {
     printWidget: ?Object = null; // eslint-disable-line react/sort-comp
 
-    componentDidUpdate(prevProps: Props) {
-        const {
-            fetching, layerList, view, activeNav,
-        } = this.props;
-
-        if (prevProps.fetching !== fetching) {
-            this.initMap();
-        }
-
-        if (
-            prevProps.layerList.length > 0 &&
-            prevProps.layerList !== layerList &&
-            view && view.map
-        ) {
-            const layerListReversed = [...layerList].reverse();
-            const searchLayers = [];
-            const newLayers = [];
-            const toBeRemoved = [];
-
-            // Update layer settings
-            layerListReversed.forEach((l, i) => {
-                // Change layer opacity and visibility
-                view.map.layers.forEach((layer) => {
-                    if (layer && l.id === layer.id) {
-                        layer.visible = l.visible;
-                        layer.opacity = l.opacity;
-                        if (l.type === 'agfs') {
-                            if (layer.definitionExpression !== l.definitionExpression) {
-                                layer.definitionExpression = l.definitionExpression;
-                                if (l._source === 'search') {
-                                    searchLayers.push(layer);
-                                }
-                            }
-                        }
-                        if (!l.active) toBeRemoved.push(layer.id);
-                    }
-                });
-
-                if (l.active && !view.map.findLayerById(l.id)) {
-                    l.visible = true;
-                    l.index = i;
-                    newLayers.push(l);
-                }
-
-                // Change layer order
-                view.map.reorder(view.map.findLayerById(`${l.id}`, i));
-            });
-
-            if (toBeRemoved.length > 0) {
-                this.props.removeLayersView(toBeRemoved);
-            }
-
-            if (newLayers.length) {
-                // Add new layers to map
-                addLayers(newLayers, view, searchLayers);
-            } else if (searchLayers.length) {
-                fitExtent(searchLayers, view);
-            }
-
-            view.map.layers.forEach((l) => {
-                // Temporary fix for sketchViewModel index
-                if (l.id.indexOf('layer') >= 0) {
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.layers.length));
-                }
-            });
-        }
-
-        if (activeNav !== prevProps.activeNav && this.printWidget) {
-            if (activeNav === 'fileExport') {
-                view.ui.add(this.printWidget, 'top-left');
-            } else {
-                view.ui.remove(this.printWidget);
-            }
-        }
-
-        if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
-            highlight(view, this.props.selectedFeatures, this.props.activeAdminTool);
-        }
-        if (this.props.layers.length < 1 && view) {
-            setBuffer(view, [], 0);
-        }
-
-        if (!equals(prevProps.activeAdminTool, this.props.activeAdminTool)) {
-            view.popup.close();
-        }
+    componentDidMount() {
+        this.initMap();
     }
 
     initMap = () => {
@@ -157,11 +67,8 @@ class EsriMap extends Component<Props> {
                     layerList,
                     mapCenter,
                     mapScale,
-                    setMapView,
                     selectFeatures,
                     printServiceUrl,
-                    activeNav,
-                    setTempGraphicsLayer,
                     setActiveModal,
                     setSingleLayerGeometry,
                 } = this.props;
@@ -190,16 +97,7 @@ class EsriMap extends Component<Props> {
                         maxScale: 2000,
                         minScale: 5000000,
                     },
-                    popup: {
-                        collapseEnabled: false,
-                        dockOptions: {
-                            position: 'top-left',
-                        },
-                    },
                 });
-
-                const layers = [...layerList].reverse().map((l, index) => ({ ...l, index }));
-                addLayers(layers, view, []);
 
                 const compass = new Compass({
                     view,
@@ -238,34 +136,6 @@ class EsriMap extends Component<Props> {
                 );
                 view.ui.add([scaleBar], 'bottom-left');
 
-                if (activeNav === 'fileExport') {
-                    view.ui.add(this.printWidget, 'top-left');
-                }
-
-                (document.getElementById: Function)('select-tool-outer-wrapper').classList
-                    .remove('esri-component');
-
-                (document.getElementById: Function)('measure-tool-outer-wrapper').classList
-                    .remove('esri-component');
-
-                (document.getElementById: Function)('draw-tool-outer-wrapper').classList
-                    .remove('esri-component');
-
-                (document.getElementById: Function)('create-new-feature-wrapper').classList
-                    .remove('esri-component');
-
-                view.popup.on('trigger-action', (evt) => {
-                    if (evt.action.id === 'select-intersect') {
-                        const layerId = view.popup.viewModel.selectedFeature.layer.id;
-                        const featureGeom = view.popup.viewModel.selectedFeature.geometry;
-                        const { activeAdminTool } = this.props;
-                        queryFeatures(featureGeom, activeAdminTool, view, selectFeatures, layerId);
-                    } else if (evt.action.id === 'set-buffer') {
-                        setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
-                        setActiveModal('bufferSelectedData');
-                    }
-                });
-
                 view.on('click', (event) => {
                     // Return if update sketch is ongoing
                     if (this.props.editMode === 'update') return;
@@ -274,7 +144,7 @@ class EsriMap extends Component<Props> {
                         // Found results
                         if (results.length) {
                             if (this.props.activeTool === 'drawErase') {
-                                view.popup.close();
+                                view.popup = null;
                                 results.forEach((r) => {
                                     if (r.graphic && r.graphic.type === 'draw-graphic') {
                                         view.graphics.remove(r.graphic);
@@ -305,40 +175,82 @@ class EsriMap extends Component<Props> {
                                     this.props.sketchViewModel.update(graphic);
                                 } else if (this.props.editMode === 'finish') {
                                     this.props.setEditMode('');
-                                } else if (event.button === 0) {
+                                } else {
                                     const { activeAdminTool } = this.props;
-                                    const swLink = getStreetViewLink(
-                                        event.mapPoint.x,
-                                        event.mapPoint.y,
-                                    );
-                                    mapSelectPopup(
-                                        results,
-                                        swLink,
-                                        view,
-                                        selectFeatures,
-                                        layerList,
-                                        activeAdminTool,
-                                    );
+                                    if (event.button === 0) {
+                                        const swLink = getStreetViewLink(
+                                            event.mapPoint.x,
+                                            event.mapPoint.y,
+                                        );
+                                        mapSelectPopup(
+                                            results,
+                                            swLink,
+                                            view,
+                                            selectFeatures,
+                                            layerList,
+                                            activeAdminTool,
+                                            setActiveModal,
+                                            setSingleLayerGeometry,
+                                        );
+                                    }
                                 }
                             }
                         }
                     });
                 });
 
-                return {
-                    setMapView, view, setTempGraphicsLayer, tempGraphicsLayer,
-                };
+                (document.getElementById: Function)('select-tool-outer-wrapper').classList
+                    .remove('esri-component');
+
+                (document.getElementById: Function)('measure-tool-outer-wrapper').classList
+                    .remove('esri-component');
+
+                (document.getElementById: Function)('draw-tool-outer-wrapper').classList
+                    .remove('esri-component');
+
+                (document.getElementById: Function)('create-new-feature-wrapper').classList
+                    .remove('esri-component');
+
+                return { view, tempGraphicsLayer };
             })
             .then((r) => {
-                r.setMapView(r.view);
-                r.setTempGraphicsLayer(r.tempGraphicsLayer);
+                const {
+                    setWorkspaceRejected,
+                    layerList,
+                    selectFeatures,
+                    searchWorkspaceFeatures,
+                    setMapView,
+                    setTempGraphicsLayer,
+                } = this.props;
+
+                // Set initial view and temp graphics layer to redux
+                setMapView(r.view);
+                setTempGraphicsLayer(r.tempGraphicsLayer);
+
+                // Initial workspace load, fetches users latest workspace.
+                fetchWorkspace(null)
+                    .then((workspace) => {
+                        if (workspace) {
+                            loadWorkspace(
+                                workspace,
+                                layerList,
+                                r.view,
+                                searchWorkspaceFeatures,
+                                selectFeatures,
+                            );
+                        } else {
+                            addLayers(layerList, r.view, []);
+                            setWorkspaceRejected();
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
             });
     };
 
     render() {
-        const { activeNav, isOpenTable, view } = this.props;
-
-        return <EsriMapView activeNav={activeNav} isOpenTable={isOpenTable} view={view} />;
+        return <EsriMapContainer printWidget={this.printWidget} />;
     }
 }
 
