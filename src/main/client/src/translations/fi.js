@@ -148,6 +148,7 @@ const fi = {
         newWorkspace: 'Luo uusi työtila',
         replaceWorkspace: 'Korvaa työtila',
         deleteWorkspace: 'Poista työtila',
+        workspaceLoaded: 'Ladattu työtila',
         confirmDelete: {
             body: 'Haluatko varmasti poistaa valitun työtilan?',
             acceptText: 'Poista',
@@ -156,6 +157,11 @@ const fi = {
         confirmReplace: {
             body: 'Haluatko varmasti korvata valitun työtilan?',
             acceptText: 'Korvaa',
+            cancelText: 'Peruuta',
+        },
+        confirmSelect: {
+            body: 'Haluatko avata valitun työtilan?',
+            acceptText: 'Avaa',
             cancelText: 'Peruuta',
         },
     },
