@@ -5,13 +5,15 @@ import { mapShapefileHighlight as highlight } from '../components/ui/defaultStyl
 import { convertEsriGeometryType, dataType } from './type';
 
 /**
- * Create Esri geometry type
- * @param geometry
- * @param Point
- * @param Polyline
- * @param Polygon
- * @param Multipoint
- * @returns Esri geometryType
+ * Create Esri geometry type.
+ *
+ * @param {Object} geometry Features geometry.
+ * @param {Function} Point esri/geometry/Point.
+ * @param {Function} Polyline esri/geometry/Polyline.
+ * @param {Function} Polygon esri/geometry/Polygon.
+ * @param {Function} Multipoint esri/geometry/Multipoint.
+ *
+ * @returns Esri geometryType.
  */
 export const createGeometry = (
     geometry: Object,
@@ -59,12 +61,14 @@ export const createGeometry = (
 };
 
 /**
- * Create Esri attribute information from geojson properties
- * @param properties
- * @param index
- * @returns attributes
+ * Create Esri attribute information from geojson properties.
+ *
+ * @param {Object[]} properties List of feature attributes.
+ * @param {number} index Running index number.
+ *
+ * @returns {Object[]} List of attributes.
  */
-export const createAttributes = (properties: Array<any>, index: number) => {
+export const createAttributes = (properties: Object[], index: number) => {
     const attributes = {};
     attributes.ObjectID = index;
     Object.entries(properties).forEach(([key, value]) => {
@@ -74,13 +78,15 @@ export const createAttributes = (properties: Array<any>, index: number) => {
 };
 
 /**
- * Create Graphics from geojson data
- * @param geoJson
- * @param Point
- * @param Polyline
- * @param Polygon
- * @param Multipoint
- * @returns geometry and attributes
+ * Create Graphics from geojson data.
+ *
+ * @param {Object} geoJson Shapefile as geojson.
+ * @param {Function} Point esri/geometry/Point.
+ * @param {Function} Polyline esri/geometry/Polyline.
+ * @param {Function} Polygon esri/geometry/Polygon.
+ * @param {Function} Multipoint esri/geometry/Multipoint.
+ *
+ * @returns {Object[]} List of geometries and attributes
  */
 export const createGraphics = (
     geoJson: Object,
@@ -92,14 +98,15 @@ export const createGraphics = (
     // Create an array of Graphics from each GeoJSON feature
     geoJson.features.map((feature, i) => ({
         geometry: createGeometry(feature.geometry, Point, Polyline, Polygon, Multipoint),
-        // select only the attributes you care about
         attributes: createAttributes(feature.properties, i),
     }));
 
 /**
- * Create symbol for renderer
- * @param geometry Object geometry of the feature
- * @returns renderer for featureLayer
+ * Create symbol for renderer.
+ *
+ * @param {Object} geometry Features geometry.
+ *
+ * @returns {Object} Renderer for featureLayer.
  */
 export const createSymbol = (geometry: Object) => {
     if (geometry === null || geometry === undefined) {
@@ -151,9 +158,11 @@ export const createSymbol = (geometry: Object) => {
 };
 
 /**
- * Create EsriFieldTypes
- * @param attributes geojson attributes
- * @returns Array of fields
+ * Create EsriFieldTypes.
+ *
+ * @param {Object} attributes Geojson attributes.
+ *
+ * @returns {Object[]} List of fields.
  */
 export const createFields = (attributes: Object) => {
     const fields = [];
@@ -172,49 +181,49 @@ export const createFields = (attributes: Object) => {
 
     return fields;
 };
+
 /**
- * Convert layer to LayerList format
- * @param layer
- * @param fileName
- * @returns new LayerList formatted Object
+ * Convert layer to LayerList format.
+ *
+ * @param {Object} layer Feature layer.
+ * @param {string} fileName Given layer name.
+ *
+ * @returns {Object} LayerList formatted Object.
  */
-export const convertLayerListFormat = (layer: Object, fileName: string) => {
-    const newLayer = {};
-
-    newLayer.active = true;
-    newLayer.attribution = '';
-    newLayer.authentication = '';
-    newLayer.geometryType = convertEsriGeometryType(layer.geometryType);
-    newLayer.fields = layer.fields && layer.fields.map((f, index) => ({
+export const convertLayerListFormat = (layer: Object, fileName: string) => ({
+    active: true,
+    attribution: '',
+    authentication: '',
+    geometryType: convertEsriGeometryType(layer.geometryType),
+    fields: layer.fields && layer.fields.map((f, index) => ({
         value: index, label: f.alias, type: f.type, name: f.name,
-    }));
-    newLayer.id = layer.id;
-    newLayer.layerOrder = layer.id;
-    newLayer.layers = fileName;
-    newLayer.maxScale = 0;
-    newLayer.minScale = 0;
-    newLayer.name = fileName;
-    newLayer.opacity = 1;
-    newLayer.queryColumns = null;
-    newLayer.queryable = false;
-    newLayer.styles = 'default';
-    newLayer.transparent = true;
-    newLayer.type = 'agfs';
-    newLayer.url = null;
-    newLayer.visible = true;
-    newLayer.source = 'shapefile';
-
-    return newLayer;
-};
+    })),
+    id: layer.id,
+    layerOrder: layer.id,
+    layers: fileName,
+    maxScale: 0,
+    minScale: 0,
+    name: fileName,
+    opacity: 1,
+    queryColumns: null,
+    queryable: false,
+    styles: 'default',
+    transparent: true,
+    type: 'agfs',
+    url: null,
+    visible: true,
+    _source: 'shapefile',
+});
 
 /**
- * Create FeatureLayer to MapView
- * @param graphics Object
- * @param fileName string name of the shapefile
- * @param FeatureLayer Function
- * @param view Object esri map view
- * @param layerList Array
- * @param addShapefile Function
+ * Create FeatureLayer to MapView.
+ *
+ * @param {Object[]} graphics List with graphics data.
+ * @param {string} fileName Name of the shapefile.
+ * @param {Function} FeatureLayer esri/layers/FeatureLayer.
+ * @param {Object} view esri/views/MapView.
+ * @param {Object[]} layerList List of layers.
+ * @param {Function} addShapefile Redux action to add shapefile layer to layerList.
  */
 export const createLayer = (
     graphics: Object,
@@ -250,14 +259,15 @@ export const createLayer = (
 
 /**
  * Tool for creating geojson from shapefile
- * @param contents
- * @param fileName
- * @param view
- * @param layerList
- * @param addShapefile
+ *
+ * @param {Object} contents Content of dbf and shp files.
+ * @param {string} fileName Name of the given layer name.
+ * @param {Object} view esri/views/MapView.
+ * @param {Object[]} layerList List of layers.
+ * @param {Function} addShapefile Redux action to add shapefile layer to layerList.
  */
 export const shape2geoJson = (
-    contents: any,
+    contents: Object,
     fileName: string,
     view: Object,
     layerList: Array<any>,
