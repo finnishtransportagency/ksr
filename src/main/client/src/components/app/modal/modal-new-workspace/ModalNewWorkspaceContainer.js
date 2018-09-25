@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { getWorkspaceList } from '../../../../reducers/workspace/actions';
+import { updateWorkspaces } from '../../../../reducers/workspace/actions';
 import ModalNewWorkspace from './ModalNewWorkspace';
 
 const mapStateToProps = state => ({
@@ -10,8 +10,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    getWorkspaceList: () => {
-        dispatch(getWorkspaceList());
+    updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string) => {
+        dispatch(updateWorkspaces(workspaceFetch, fetchParam));
     },
 });
 

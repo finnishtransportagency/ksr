@@ -11,7 +11,7 @@ type Props = {
     view: Object,
     layerList: Array<Object>,
     selectedFeatures: Array<Object>,
-    getWorkspaceList: Function,
+    updateWorkspaces: Function,
 };
 
 type State = {
@@ -74,7 +74,7 @@ class ModalNewWorkspace extends Component<Props, State> {
             layerList,
             view,
             selectedFeatures,
-            getWorkspaceList,
+            updateWorkspaces,
         } = this.props;
         const { workspaceName } = this.state;
 
@@ -85,10 +85,7 @@ class ModalNewWorkspace extends Component<Props, State> {
             selectedFeatures,
         );
 
-        fetchSaveWorkspace(workspaceJson)
-            .then(setTimeout(() => {
-                getWorkspaceList();
-            }, 500));
+        updateWorkspaces(fetchSaveWorkspace, workspaceJson);
     };
 
     render() {
