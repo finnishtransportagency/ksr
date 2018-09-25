@@ -15,6 +15,7 @@ const setup = (prop) => {
         }],
         handleDeleteWorkspace: jest.fn(),
         handleReplaceWorkspace: jest.fn(),
+        handleSelectWorkspace: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -55,6 +56,15 @@ describe('<WorkspaceView />', () => {
             .simulate('click');
 
         expect(handleDeleteWorkspace).toHaveBeenCalled();
+    });
+
+    it('should call handleSelectWorkspace on select click', () => {
+        const { handleSelectWorkspace } = wrapper.props();
+
+        wrapper.find(Workspace).at(0).find(Workspace.Text).at(1)
+            .simulate('click');
+
+        expect(handleSelectWorkspace).toHaveBeenCalled();
     });
 
     it('should render correct amount of workspaces', () => {

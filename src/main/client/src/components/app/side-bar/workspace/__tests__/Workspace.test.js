@@ -44,4 +44,11 @@ describe('<Workspace />', () => {
 
         expect(showConfirmModal).toHaveBeenCalled();
     });
+
+    it('should handleSelectWorkspace correctly', () => {
+        const { showConfirmModal } = wrapper.instance().props;
+        wrapper.instance().handleSelectWorkspace();
+
+        expect(showConfirmModal).toHaveBeenCalled();
+    });
 });

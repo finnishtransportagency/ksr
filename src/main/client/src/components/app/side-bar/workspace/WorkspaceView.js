@@ -12,6 +12,7 @@ type Props = {
     workspaceList: Array<Object>,
     handleDeleteWorkspace: Function,
     handleReplaceWorkspace: Function,
+    handleSelectWorkspace: Function,
 }
 
 const WorkspaceView = ({
@@ -19,6 +20,7 @@ const WorkspaceView = ({
     workspaceList,
     handleDeleteWorkspace,
     handleReplaceWorkspace,
+    handleSelectWorkspace,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
@@ -47,7 +49,10 @@ const WorkspaceView = ({
                             >
                                 <i className="fas fa-save" />
                             </Workspace.Icon>
-                            <Workspace.TextColumn title={`${workspace.name} ${workspace.updated}`}>
+                            <Workspace.TextColumn
+                                onClick={() => handleSelectWorkspace(workspace.name)}
+                                title={`${workspace.name} ${workspace.updated}`}
+                            >
                                 <Workspace.Text>{workspace.name}</Workspace.Text>
                                 <Workspace.Text>{workspace.updated}</Workspace.Text>
                             </Workspace.TextColumn>

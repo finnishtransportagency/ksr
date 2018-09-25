@@ -2,17 +2,24 @@
 import React, { Component } from 'react';
 import { fetchDeleteWorkspace } from '../../../../api/workspace/deleteWorkspace';
 import { fetchSaveWorkspace } from '../../../../api/workspace/saveWorkspace';
+import { fetchWorkspace } from '../../../../api/workspace/userWorkspace';
 import strings from '../../../../translations/';
 import { createWorkspaceJsonBody } from '../../../../utils/workspace/createWorkspaceJsonBody';
+import { loadWorkspace } from '../../../../utils/workspace/loadWorkspace';
 import WorkspaceView from './WorkspaceView';
 
 type Props = {
     setActiveModal: (activeModal: string) => void,
     workspaceList: Array<Object>,
-    getWorkspaceList: Function,
+    updateWorkspaces: Function,
+    setWorkspace: Function,
+    setWorkspaceRejected: Function,
+    selectFeatures: Function,
+    searchWorkspaceFeatures: Function,
     layerList: Array<Object>,
     view: Object,
     selectedFeatures: Array<Object>,
+    updateWorkspaces: Function,
     showConfirmModal: (
         body: string,
         acceptText: string,
@@ -27,15 +34,16 @@ class Workspace extends Component<Props, null> {
 
         this.handleReplaceWorkspace = this.handleReplaceWorkspace.bind(this);
         this.handleDeleteWorkspace = this.handleDeleteWorkspace.bind(this);
+        this.handleSelectWorkspace = this.handleSelectWorkspace.bind(this);
     }
 
     handleReplaceWorkspace = (workspaceName: string) => {
         const {
-            getWorkspaceList,
             layerList,
             view,
             selectedFeatures,
             showConfirmModal,
+            updateWorkspaces,
         } = this.props;
 
         const workspaceJson = createWorkspaceJsonBody(
@@ -47,21 +55,53 @@ class Workspace extends Component<Props, null> {
 
         const { body, acceptText, cancelText } = strings.workspace.confirmReplace;
         showConfirmModal(body, acceptText, cancelText, () => {
-            fetchSaveWorkspace(workspaceJson)
-                .then(setTimeout(() => {
-                    getWorkspaceList();
-                }, 500));
+            updateWorkspaces(fetchSaveWorkspace, workspaceJson);
         });
     };
 
     handleDeleteWorkspace = (workspaceName: string) => {
-        const { getWorkspaceList, showConfirmModal } = this.props;
+        const { updateWorkspaces, showConfirmModal } = this.props;
         const { body, acceptText, cancelText } = strings.workspace.confirmDelete;
 
         showConfirmModal(body, acceptText, cancelText, () => {
-            fetchDeleteWorkspace(workspaceName)
-                .then(() => {
-                    getWorkspaceList();
+            updateWorkspaces(fetchDeleteWorkspace, workspaceName);
+        });
+    };
+
+    handleSelectWorkspace = (workspaceName: string) => {
+        const {
+            setWorkspace,
+            setWorkspaceRejected,
+            showConfirmModal,
+            view,
+            layerList,
+            selectFeatures,
+            searchWorkspaceFeatures,
+            updateWorkspaces,
+        } = this.props;
+        const { body, acceptText, cancelText } = strings.workspace.confirmSelect;
+
+        showConfirmModal(body, acceptText, cancelText, () => {
+            setWorkspace();
+
+            // Fetches users selected workspace.
+            fetchWorkspace(workspaceName)
+                .then((workspace) => {
+                    if (workspace) {
+                        loadWorkspace(
+                            workspace,
+                            layerList,
+                            view,
+                            searchWorkspaceFeatures,
+                            selectFeatures,
+                            updateWorkspaces,
+                        );
+                    } else {
+                        setWorkspaceRejected();
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
                 });
         });
     };
@@ -75,6 +115,7 @@ class Workspace extends Component<Props, null> {
                 workspaceList={workspaceList}
                 handleDeleteWorkspace={this.handleDeleteWorkspace}
                 handleReplaceWorkspace={this.handleReplaceWorkspace}
+                handleSelectWorkspace={this.handleSelectWorkspace}
             />
         );
     }
