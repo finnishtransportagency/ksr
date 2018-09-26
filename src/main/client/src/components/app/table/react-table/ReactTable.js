@@ -21,6 +21,7 @@ type Props = {
     setEditedLayer: Function,
     layerList: Array<Object>,
     activeTable: string,
+    activeAdminTool: string,
 };
 
 class ReactTable extends Component<Props> {
@@ -53,7 +54,7 @@ class ReactTable extends Component<Props> {
 
     renderEditable = (cellInfo: Object) => {
         const {
-            layer, setEditedLayer, layerList, activeTable,
+            layer, setEditedLayer, layerList, activeTable, activeAdminTool,
         } = this.props;
 
         const currentLayer = layerList.find(l => l.id === activeTable);
@@ -65,7 +66,7 @@ class ReactTable extends Component<Props> {
                     style={{ minHeight: '1rem' }}
                     role="textbox"
                     tabIndex={0}
-                    contentEditable={cellField.type !== 'esriFieldTypeOID' && currentLayer.source !== 'shapefile'}
+                    contentEditable={activeAdminTool.length && cellField.type !== 'esriFieldTypeOID' && currentLayer.source !== 'shapefile'}
                     suppressContentEditableWarning
                     onKeyPress={(e) => {
                         preventKeyPress(e, cellField);

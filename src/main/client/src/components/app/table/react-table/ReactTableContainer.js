@@ -19,6 +19,7 @@ const mapStateToProps = (state) => {
         layer,
         selectAll,
         layerList: state.map.layerGroups.layerList,
+        activeAdminTool: state.adminTool.active.layerId,
     };
 };
 
