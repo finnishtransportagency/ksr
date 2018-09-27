@@ -20,10 +20,7 @@ export const createGeometry = (
     Polygon: Function,
     Multipoint: Function,
 ) => {
-    if (
-        geometry === null
-        || geometry === undefined
-    ) {
+    if (geometry === null || geometry === undefined) {
         return null;
     }
 
@@ -105,11 +102,7 @@ export const createGraphics = (
  * @returns renderer for featureLayer
  */
 export const createSymbol = (geometry: Object) => {
-    if (
-        geometry === null
-        || geometry === undefined
-
-    ) {
+    if (geometry === null || geometry === undefined) {
         return null;
     }
 
