@@ -112,6 +112,10 @@ class EsriMap extends Component<Props> {
         if (this.props.layers.length < 1 && view) {
             setBuffer(view, [], 0);
         }
+
+        if (!equals(prevProps.activeAdminTool, this.props.activeAdminTool)) {
+            view.popup.close();
+        }
     }
 
     initMap = () => {
