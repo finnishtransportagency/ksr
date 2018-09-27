@@ -57,7 +57,6 @@ const initialState = {
 };
 
 export default (state: State = initialState, action: Action) => {
-    const editedLayers = clone(state.editedLayers, true, 3);
     switch (action.type) {
         case SELECT_FEATURES:
             return {
@@ -106,12 +105,14 @@ export default (state: State = initialState, action: Action) => {
             return initialState;
         case CLEAR_TABLE_DATA:
             return initialState;
-        case SET_EDITED_LAYER:
+        case SET_EDITED_LAYER: {
+            const editedLayers = clone(state.editedLayers, true, 3);
             if (editedLayers) editedLayers.find(l => l.id === state.activeTable).data = action.data;
             return {
                 ...state,
                 editedLayers,
             };
+        }
         case SET_SINGLE_LAYER_GEOMETRY:
             return {
                 ...state,
