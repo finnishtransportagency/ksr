@@ -1,7 +1,6 @@
 // @flow
 import strings from '../../translations';
 import { graphicsToEsriJSON } from '../arcFormats';
-import { queryFeatures } from '../queryFeatures';
 
 /**
  * Finds and selects visible features on map click
@@ -15,8 +14,6 @@ import { queryFeatures } from '../queryFeatures';
  * @param selectFeatures Function redux function that selects features
  * @param layerList Array of layers
  * @param activeAdminTool string id of current admin tool layer
- * @param setActiveModal set active modal
- * @param setSingleLayerGeometry geometry for single feature
  */
 export const mapSelectPopup = (
     results: Object,
@@ -25,16 +22,7 @@ export const mapSelectPopup = (
     selectFeatures: Function,
     layerList: Array<Object>,
     activeAdminTool: string,
-    setActiveModal: Function,
-    setSingleLayerGeometry: Function,
 ) => {
-    view.popup = {
-        collapseEnabled: false,
-        dockOptions: {
-            position: 'top-left',
-        },
-    };
-
     const newResults = activeAdminTool
         ? [...results.filter(r => r.graphic.layer.id === activeAdminTool)]
         : [...results];
@@ -80,18 +68,6 @@ export const mapSelectPopup = (
     });
 
     const graphics = newResults.map(re => re.graphic);
-
-    view.popup.on('trigger-action', (evt) => {
-        if (evt.action.id === 'select-intersect') {
-            const layerId = view.popup.viewModel.selectedFeature.layer.id;
-            const featureGeom = view.popup.viewModel.selectedFeature.geometry;
-            queryFeatures(featureGeom, activeAdminTool, view, selectFeatures, layerId);
-        } else if (evt.action.id === 'set-buffer') {
-            setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
-            setActiveModal('bufferSelectedData');
-        }
-    });
-
     const features = graphicsToEsriJSON(graphics);
     selectFeatures(features);
 };

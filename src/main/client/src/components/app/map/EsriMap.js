@@ -8,6 +8,7 @@ import EsriMapView from './EsriMapView';
 import { addLayers, highlight, fitExtent } from '../../../utils/map';
 import { setBuffer } from '../../../utils/buffer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
+import { queryFeatures } from '../../../utils/queryFeatures';
 
 type Props = {
     view: Object,
@@ -183,6 +184,12 @@ class EsriMap extends Component<Props> {
                         maxScale: 2000,
                         minScale: 5000000,
                     },
+                    popup: {
+                        collapseEnabled: false,
+                        dockOptions: {
+                            position: 'top-left',
+                        },
+                    },
                 });
 
                 const layers = [...layerList].reverse().map((l, index) => ({ ...l, index }));
@@ -241,6 +248,18 @@ class EsriMap extends Component<Props> {
                 (document.getElementById: Function)('create-new-feature-wrapper').classList
                     .remove('esri-component');
 
+                view.popup.on('trigger-action', (evt) => {
+                    if (evt.action.id === 'select-intersect') {
+                        const layerId = view.popup.viewModel.selectedFeature.layer.id;
+                        const featureGeom = view.popup.viewModel.selectedFeature.geometry;
+                        const { activeAdminTool } = this.props;
+                        queryFeatures(featureGeom, activeAdminTool, view, selectFeatures, layerId);
+                    } else if (evt.action.id === 'set-buffer') {
+                        setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
+                        setActiveModal('bufferSelectedData');
+                    }
+                });
+
                 view.on('click', (event) => {
                     // Return if update sketch is ongoing
                     if (this.props.editMode === 'update') return;
@@ -249,7 +268,7 @@ class EsriMap extends Component<Props> {
                         // Found results
                         if (results.length) {
                             if (this.props.activeTool === 'drawErase') {
-                                view.popup = null;
+                                view.popup.close();
                                 results.forEach((r) => {
                                     if (r.graphic && r.graphic.type === 'draw-graphic') {
                                         view.graphics.remove(r.graphic);
@@ -280,24 +299,20 @@ class EsriMap extends Component<Props> {
                                     this.props.sketchViewModel.update(graphic);
                                 } else if (this.props.editMode === 'finish') {
                                     this.props.setEditMode('');
-                                } else {
+                                } else if (event.button === 0) {
                                     const { activeAdminTool } = this.props;
-                                    if (event.button === 0) {
-                                        const swLink = getStreetViewLink(
-                                            event.mapPoint.x,
-                                            event.mapPoint.y,
-                                        );
-                                        mapSelectPopup(
-                                            results,
-                                            swLink,
-                                            view,
-                                            selectFeatures,
-                                            layerList,
-                                            activeAdminTool,
-                                            setActiveModal,
-                                            setSingleLayerGeometry,
-                                        );
-                                    }
+                                    const swLink = getStreetViewLink(
+                                        event.mapPoint.x,
+                                        event.mapPoint.y,
+                                    );
+                                    mapSelectPopup(
+                                        results,
+                                        swLink,
+                                        view,
+                                        selectFeatures,
+                                        layerList,
+                                        activeAdminTool,
+                                    );
                                 }
                             }
                         }
