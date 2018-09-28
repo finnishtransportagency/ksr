@@ -79,7 +79,7 @@ class MapDraw extends Component<Props, null> {
                         spatialReference: view.spatialReference,
                     });
 
-                const createGraphic = (geometry, style, complete): any =>
+                const createPolygonGraphic = (geometry, style, complete): any =>
                     new Graphic({
                         geometry: geometry.extent.width ? geometry : null,
                         symbol: {
@@ -90,6 +90,19 @@ class MapDraw extends Component<Props, null> {
                                 color: '#470047',
                                 width: 2,
                             },
+                        },
+                        type: 'draw-graphic',
+                        complete,
+                        id: this.currentGraphicUUID,
+                    });
+
+                const createPolylineGraphic = (geometry, complete): any =>
+                    new Graphic({
+                        geometry: geometry.extent.width ? geometry : null,
+                        symbol: {
+                            type: 'simple-line',
+                            color: '#660066',
+                            width: 2,
                         },
                         type: 'draw-graphic',
                         complete,
@@ -137,7 +150,7 @@ class MapDraw extends Component<Props, null> {
                     const { vertices } = evt;
                     const polygon = createPolygon(vertices);
 
-                    const graphic = createGraphic(polygon, 'solid', evt.type === 'draw-complete');
+                    const graphic = createPolygonGraphic(polygon, 'solid', evt.type === 'draw-complete');
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
                     view.graphics.add(graphic);
@@ -147,7 +160,7 @@ class MapDraw extends Component<Props, null> {
                     const { vertices } = evt;
                     const line = createLine(vertices);
 
-                    const graphic = createGraphic(line, 'none', evt.type === 'draw-complete');
+                    const graphic = createPolylineGraphic(line, evt.type === 'draw-complete');
 
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
