@@ -41,7 +41,7 @@ export const createGeometry = (
             });
         case 'polygon':
             return new Polygon({
-                hasZ: true,
+                hasZ: false,
                 hasM: true,
                 rings: geometry.coordinates,
                 spatialReference: { wkid: 3067 },
