@@ -10,8 +10,8 @@ type Props = {
     drawCircleButtonRef: () => void,
     toggleSelectToolsButtonRef: () => void,
     toggleTools: () => void,
+    hasSelectedFeatures: boolean,
     isOpen: boolean,
-    data: Array<Object>,
 };
 
 const SketchToolView = ({
@@ -21,13 +21,13 @@ const SketchToolView = ({
     drawCircleButtonRef,
     toggleSelectToolsButtonRef,
     toggleTools,
+    hasSelectedFeatures,
     isOpen,
-    data,
 }: Props) => (
     <Fragment>
         <div id="select-tool-outer-wrapper" >
             <div
-                style={{ visibility: data.length ? 'visible' : 'hidden' }}
+                style={{ visibility: hasSelectedFeatures ? 'visible' : 'hidden' }}
                 id="remove-selection"
                 role="button"
                 tabIndex={0}

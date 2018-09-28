@@ -4,7 +4,14 @@ import SketchToolView from '../SketchToolView';
 
 const setup = () => {
     const props = {
-        data: [],
+        removeSelection: jest.fn(),
+        drawRectangleButtonRef: jest.fn(),
+        drawPolygonButtonRef: jest.fn(),
+        drawCircleButtonRef: jest.fn(),
+        toggleSelectToolsButtonRef: jest.fn(),
+        toggleTools: jest.fn(),
+        hasSelectedFeatures: true,
+        isOpen: false,
     };
 
     const wrapper = shallow(<SketchToolView {...props} />);
