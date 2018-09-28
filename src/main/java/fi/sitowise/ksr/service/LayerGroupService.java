@@ -9,12 +9,12 @@ import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
 /**
  * Layer group service.
  */
@@ -75,7 +75,7 @@ public class LayerGroupService {
      * @return List of usergroups
      */
     public List<String> getUserGroups() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = getAuthentication();
         if (auth != null) {
             Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
             if (authorities == null) {
@@ -94,7 +94,7 @@ public class LayerGroupService {
      LayerGroup createUserLayerGroup(List<LayerGroup> layerGroups) {
          int maxId = Collections.max(layerGroups, Comparator.comparing(LayerGroup::getId)).getId();
          int maxGroupOrder = Collections.max(layerGroups, Comparator.comparing(LayerGroup::getGroupOrder)).getGroupOrder();
-         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         Authentication authentication = getAuthentication();
 
          LayerGroup layerGroup = new LayerGroup();
          layerGroup.setName("Käyttäjätasot");

@@ -13,7 +13,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 
 /**
@@ -83,7 +83,7 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetLayerGroups() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         LayerGroup lg = new LayerGroup();
         lg.setId(123);
         lg.setGroupOrder(1);

@@ -5,14 +5,14 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.WorkspaceService;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import java.sql.Timestamp;
 import java.util.Map;
+
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
 
 /**
  * Workspace rest controller.
@@ -39,9 +39,8 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public void saveWorkspace(@Valid @RequestBody Workspace workspace) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
-            workspaceService.saveWorkspace(workspace, authentication.getName());
+            workspaceService.saveWorkspace(workspace, getCurrentUsername());
         } catch (DataAccessException e) {
             throw new KsrApiException.InternalServerErrorException(
                     "Failed to save new workspace.", e);
@@ -56,9 +55,8 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "/exists", method = RequestMethod.GET)
     public boolean getWorkspaceExistence(@RequestParam String name) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
-            return workspaceService.getWorkspaceExistence(authentication.getName(), name);
+            return workspaceService.getWorkspaceExistence(getCurrentUsername(), name);
         } catch (DataAccessException e) {
             throw new KsrApiException.InternalServerErrorException("Error when checking workspace existence.", e);
         }
@@ -71,8 +69,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public void saveWorkspace(@RequestParam String workspaceName) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!workspaceService.deleteWorkspace(workspaceName, authentication.getName())) {
+        if (!workspaceService.deleteWorkspace(workspaceName, getCurrentUsername())) {
             throw new KsrApiException.NotFoundErrorException(
                     "No workspace found with the given name to be deleted.");
         }
@@ -85,8 +82,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public Map<Timestamp, String> getWorkspaceList() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return workspaceService.getWorkspaceListForUser(authentication.getName());
+        return workspaceService.getWorkspaceListForUser(getCurrentUsername());
     }
 
     /**
@@ -98,8 +94,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Workspace getWorkspaceDetails(@RequestParam (required = false) String workspaceName) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Workspace workspace = workspaceService.getWorkspaceDetails(workspaceName, authentication.getName());
+        Workspace workspace = workspaceService.getWorkspaceDetails(workspaceName, getCurrentUsername());
 
         if (workspace == null) {
             throw new KsrApiException.NotFoundErrorException("No workspace can be found.");
