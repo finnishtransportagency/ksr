@@ -49,6 +49,7 @@ export const queryWorkspaceFeatures = (
                 objectIds: workspaceFeatures.filter(obj => obj.layerId === layer.id)
                     .map(filteredObj => filteredObj.featureId),
                 outFields: ['*'],
+                returnGeometry: true,
             };
 
             if (query.objectIds.length > 0) {
@@ -68,7 +69,7 @@ export const queryWorkspaceFeatures = (
                             objectIdFieldName: layer.objectIdField,
                             features: results.features,
                             fields: layer.fields,
-                            source: 'select',
+                            _source: 'select',
                         };
                     }));
             }
