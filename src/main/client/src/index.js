@@ -6,6 +6,9 @@ import App from './components/app/App';
 import registerServiceWorker from './registerServiceWorker';
 import store from './store';
 import strings from './translations';
+import { TextDecoder } from 'text-encoding';
+
+if (!window.TextDecoder) window.TextDecoder = TextDecoder;
 
 window.dojoConfig = {
     locale: strings.getLanguage(),
