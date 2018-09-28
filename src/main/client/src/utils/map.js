@@ -57,7 +57,7 @@ export const addLayers = (layers: Array<Object>, view: Object, searchLayers: Arr
                             opacity: layer.opacity,
                             visible: layer.visible,
                             title: layer.name,
-                            sublayers: layer.layers.split(',').map(l => ({ name: l })),
+                            sublayers: layer.layers ? layer.layers.split(',').map(l => ({ name: l })) : '',
                         }), layer.index);
                         break;
                     case 'wmts':
