@@ -119,6 +119,10 @@ export const WrapperReactTable = styled.div`
         input[type='checkbox']:hover {
             cursor: pointer;
         };
+        
+        .content-not-editable {
+            outline: none;
+        }
     };
 
     @media only screen and (max-width: 768px) {

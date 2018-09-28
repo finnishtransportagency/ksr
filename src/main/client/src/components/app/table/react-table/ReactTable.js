@@ -61,12 +61,14 @@ class ReactTable extends Component<Props> {
 
         if (currentLayer) {
             const cellField = currentLayer.fields.find(f => f.name === cellInfo.column.Header);
+            const contentEditable = activeAdminTool.length && cellField.type !== 'esriFieldTypeOID' && currentLayer.source !== 'shapefile';
             return (
                 <div
                     style={{ minHeight: '1rem' }}
                     role="textbox"
                     tabIndex={0}
-                    contentEditable={activeAdminTool.length && cellField.type !== 'esriFieldTypeOID' && currentLayer.source !== 'shapefile'}
+                    className={!contentEditable && 'content-not-editable'}
+                    contentEditable={contentEditable}
                     suppressContentEditableWarning
                     onKeyPress={(e) => {
                         preventKeyPress(e, cellField);
