@@ -32,6 +32,7 @@ type Props = {
     setSingleLayerGeometry: Function,
     activeTool: string,
     setHasGraphics: (hasGraphics: boolean) => void,
+    removeLayersView: (layerIds: Array<any>) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -54,11 +55,12 @@ class EsriMap extends Component<Props> {
             const layerListReversed = [...layerList].reverse();
             const searchLayers = [];
             const newLayers = [];
+            const toBeRemoved = [];
 
             // Update layer settings
             layerListReversed.forEach((l, i) => {
                 // Change layer opacity and visibility
-                view.map.allLayers.forEach((layer) => {
+                view.map.layers.forEach((layer) => {
                     if (layer && l.id === layer.id) {
                         layer.visible = l.visible;
                         layer.opacity = l.opacity;
@@ -70,7 +72,7 @@ class EsriMap extends Component<Props> {
                                 }
                             }
                         }
-                        if (!l.active) view.map.layers.remove(layer);
+                        if (!l.active) toBeRemoved.push(layer.id);
                     }
                 });
 
@@ -84,6 +86,10 @@ class EsriMap extends Component<Props> {
                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
             });
 
+            if (toBeRemoved.length > 0) {
+                this.props.removeLayersView(toBeRemoved);
+            }
+
             if (newLayers.length) {
                 // Add new layers to map
                 addLayers(newLayers, view, searchLayers);
@@ -91,10 +97,10 @@ class EsriMap extends Component<Props> {
                 fitExtent(searchLayers, view);
             }
 
-            view.map.allLayers.forEach((l) => {
+            view.map.layers.forEach((l) => {
                 // Temporary fix for sketchViewModel index
                 if (l.id.indexOf('layer') >= 0) {
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.allLayers.length));
+                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.layers.length));
                 }
             });
         }

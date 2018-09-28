@@ -1,6 +1,12 @@
 // @flow
 import { connect } from 'react-redux';
-import { setEditMode, setMapView, setTempGraphicsLayer, setHasGraphics } from '../../../reducers/map/actions';
+import {
+    setEditMode,
+    setMapView,
+    setTempGraphicsLayer,
+    setHasGraphics,
+    removeLayersView,
+} from '../../../reducers/map/actions';
 import EsriMap from './EsriMap';
 
 import { selectFeatures, setSingleLayerGeometry } from './../../../reducers/table/actions';
@@ -49,6 +55,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setHasGraphics: (hasGraphics) => {
         dispatch(setHasGraphics(hasGraphics));
+    },
+    removeLayersView: (layerIds) => {
+        dispatch(removeLayersView(layerIds));
     },
 });
 

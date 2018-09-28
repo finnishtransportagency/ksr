@@ -1,5 +1,5 @@
 // @flow
-import { SET_GRAPH_LAYER, SET_MAP_VIEW, REMOVE_LAYER_FROM_VIEW } from '../../constants/actionTypes';
+import { CLEAR_TABLE_DATA, REMOVE_LAYER_FROM_VIEW, SET_GRAPH_LAYER, SET_MAP_VIEW } from '../../constants/actionTypes';
 
 const initialState = {};
 
@@ -7,7 +7,7 @@ type Action = {
     type: string,
     view: any,
     graphicsLayer: Object,
-    layerId: string,
+    layerIds: Array<any>,
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -23,8 +23,16 @@ export default (state: Object = initialState, action: Action) => {
                 graphicsLayer: action.graphicsLayer,
             };
         case REMOVE_LAYER_FROM_VIEW:
-            state.view.map.layers.remove(state.view.map.allLayers
-                .find(l => l.id === action.layerId));
+            action.layerIds.forEach((layerId) => {
+                state.view.map.layers.remove(state.view.map.layers
+                    .find(l => l.id === layerId));
+            });
+            return state;
+        case CLEAR_TABLE_DATA:
+            if (state.view && state.view.map) {
+                state.view.map.layers.removeMany(state.view.map.layers.filter(l =>
+                    l.id.endsWith('.s')));
+            }
             return state;
         default:
             return state;
