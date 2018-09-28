@@ -67,7 +67,7 @@ class MapMeasure extends Component<Props, State> {
                         spatialReference: view.spatialReference,
                     });
 
-                const createGraphic = (geometry, style): any =>
+                const createPolygonGraphic = (geometry, style): any =>
                     new Graphic({
                         geometry: geometry.extent.width ? geometry : null,
                         symbol: {
@@ -78,6 +78,17 @@ class MapMeasure extends Component<Props, State> {
                                 color: '#444444',
                                 width: 2,
                             },
+                        },
+                        id: 'drawMeasure',
+                    });
+
+                const createPolylineGraphic = (geometry): any =>
+                    new Graphic({
+                        geometry: geometry.extent.width ? geometry : null,
+                        symbol: {
+                            type: 'simple-line',
+                            color: '#444444',
+                            width: 2,
                         },
                         id: 'drawMeasure',
                     });
@@ -128,7 +139,7 @@ class MapMeasure extends Component<Props, State> {
                         area = '';
                     }
 
-                    const graphic = createGraphic(polygon, 'solid');
+                    const graphic = createPolygonGraphic(polygon, 'solid');
                     const graphicLabelMeasure = labelMeasure(polygon, area);
                     view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.map(g => g.id === 'labelMeasure' && view.graphics.remove(g));
@@ -152,7 +163,7 @@ class MapMeasure extends Component<Props, State> {
                         length = '';
                     }
 
-                    const graphic = createGraphic(line, 'none');
+                    const graphic = createPolylineGraphic(line);
                     const graphicLabelMeasure = labelMeasure(line, length);
                     view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
                     view.graphics.map(g => g.id === 'labelMeasure' && view.graphics.remove(g));
