@@ -3,6 +3,8 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.UserLayerService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ public class UserLayerController {
 
     private final UserLayerService userLayerService;
 
+    private static final Logger LOG = LogManager.getLogger(UserLayerController.class);
+
     @Autowired
     public UserLayerController(UserLayerService userLayerService) {
         this.userLayerService = userLayerService;
@@ -33,14 +37,14 @@ public class UserLayerController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Layer postUserLayer(@Valid @RequestBody Layer layer, @RequestHeader(value = "User-Agent") String userAgent) {
+        LOG.info(String.format("%s: Add user layer to database.", getCurrentUsername()));
         String[] mobileAgents = {"Mobile", "Tablet", "Mobi", "IEMobile"};
         boolean isMobile = Arrays.stream(mobileAgents).parallel().anyMatch(userAgent::contains);
 
         try {
             return userLayerService.addUserLayer(getCurrentUsername(), layer, isMobile);
         } catch (DataAccessException e) {
-            String msg = "Error creating new user layer";
-            throw new KsrApiException.InternalServerErrorException(msg, e);
+            throw new KsrApiException.InternalServerErrorException("Error creating new user layer", e);
         }
     }
 

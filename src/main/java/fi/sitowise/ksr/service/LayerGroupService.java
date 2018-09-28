@@ -6,6 +6,8 @@ import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.utils.KsrStringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +17,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
+
 /**
  * Layer group service.
  */
@@ -26,6 +30,8 @@ public class LayerGroupService {
 
     private final LayerGroupRepository layerGroupRepository;
     private final UserLayerRepository userLayerRepository;
+
+    private static final Logger LOG = LogManager.getLogger(LayerGroupService.class);
 
     /**
      * Instantiates a new Layer group service.
@@ -66,6 +72,11 @@ public class LayerGroupService {
                 }
             }
         }
+
+        if (combinedLayerGroups.size() < 1) {
+            LOG.info(String.format("%s: User does not have any layergroups or layers.", getCurrentUsername()));
+        }
+
         return combinedLayerGroups;
     }
 

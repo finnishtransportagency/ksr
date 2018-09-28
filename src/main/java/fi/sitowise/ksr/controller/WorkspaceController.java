@@ -3,6 +3,8 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.Workspace;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.WorkspaceService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
+    private static final Logger LOG = LogManager.getLogger(WorkspaceController.class);
+
     /**
      * Instantiates new workspace controller.
      *
@@ -39,6 +43,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public void saveWorkspace(@Valid @RequestBody Workspace workspace) {
+        LOG.info(String.format("%s: Save new workspace to database.", getCurrentUsername()));
         try {
             workspaceService.saveWorkspace(workspace, getCurrentUsername());
         } catch (DataAccessException e) {
@@ -55,6 +60,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "/exists", method = RequestMethod.GET)
     public boolean getWorkspaceExistence(@RequestParam String name) {
+        LOG.info(String.format("%s: Gets workspace name existence.", getCurrentUsername()));
         try {
             return workspaceService.getWorkspaceExistence(getCurrentUsername(), name);
         } catch (DataAccessException e) {
@@ -69,6 +75,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public void saveWorkspace(@RequestParam String workspaceName) {
+        LOG.info(String.format("%s: Delete existing workspace from database.", getCurrentUsername()));
         if (!workspaceService.deleteWorkspace(workspaceName, getCurrentUsername())) {
             throw new KsrApiException.NotFoundErrorException(
                     "No workspace found with the given name to be deleted.");
@@ -82,6 +89,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public Map<Timestamp, String> getWorkspaceList() {
+        LOG.info(String.format("%s: Fetch map of workspace names and update times for current user.", getCurrentUsername()));
         return workspaceService.getWorkspaceListForUser(getCurrentUsername());
     }
 
@@ -94,6 +102,7 @@ public class WorkspaceController {
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Workspace getWorkspaceDetails(@RequestParam (required = false) String workspaceName) {
+        LOG.info(String.format("%s: Fetch details for single workspace.", getCurrentUsername()));
         Workspace workspace = workspaceService.getWorkspaceDetails(workspaceName, getCurrentUsername());
 
         if (workspace == null) {
