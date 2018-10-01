@@ -5,7 +5,6 @@ import ModalLayerDetailsView from './ModalLayerDetailsView';
 import strings from '../../../../translations';
 import save from '../../../../utils/saveFeatureData';
 import ModalContainer from '../../shared/Modal/ModalContainer';
-import { parseGeometryType } from '../../../../utils/type';
 
 type Props = {
     fields: any,
@@ -43,13 +42,14 @@ class ModalFilter extends Component<Props, State> {
 
     loadFields = () => {
         const { fields, layer } = this.props;
-        const data = {};
-        data.attributes = {};
 
-        data.geometry = parseGeometryType(layer.graphics.items[0].geometry);
-        fields.forEach((f) => {
-            data.attributes[f.name] = '';
-        });
+        const attributes = fields.reduce((acc, cur) => ({ ...acc, [cur.name]: '' }), {});
+
+        const data = {
+            attributes,
+            geometry: layer.graphics.items[0].geometry,
+        };
+
         this.setState({ data });
     };
 

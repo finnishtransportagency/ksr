@@ -45,6 +45,7 @@ describe('<ModalLayerDetails />', () => {
             geometry: {
                 x: 123,
                 y: 123,
+                type: 'point',
             },
         };
 
@@ -62,6 +63,7 @@ describe('<ModalLayerDetails />', () => {
             geometry: {
                 x: 123,
                 y: 123,
+                type: 'point',
             },
         };
 
