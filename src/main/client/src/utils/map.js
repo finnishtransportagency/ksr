@@ -247,8 +247,7 @@ export const highlight = (
         ]) => {
             if (view) {
                 view.graphics.removeMany(view.graphics.filter(g => g.id === 'highlight'));
-                view.allLayerViews.forEach((lv) => {
-                    const { layer } = lv;
+                view.map.layers.forEach((layer) => {
                     if (layer.visible && layer.queryFeatures) {
                         const ids = selectedFeatures
                             .filter(f => f._layerId.startsWith(layer.id))
