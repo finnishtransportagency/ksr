@@ -111,24 +111,24 @@ describe('parseFeatureData', () => {
         const aExpected = [
             {
                 Header: 'L 1 A',
-                accessor: 'l.1.a',
+                accessor: '123/l.1.a',
                 show: true,
             },
             {
                 Header: 'L 2 A',
-                accessor: 'l.2.a',
+                accessor: '123/l.2.a',
                 show: true,
             },
             {
                 Header: 'L 3 A',
-                accessor: 'l.3.a',
+                accessor: '123/l.3.a',
                 show: true,
             },
         ];
 
-        expect(parseColumns(null)).toEqual([]);
-        expect(parseColumns(undefined)).toEqual([]);
-        expect(parseColumns(a)).toEqual(aExpected);
+        expect(parseColumns(null, null)).toEqual([]);
+        expect(parseColumns(undefined, undefined)).toEqual([]);
+        expect(parseColumns(123, a)).toEqual(aExpected);
     });
 
     it('mergeLayers - should merge layers', () => {
@@ -219,13 +219,13 @@ describe('parseFeatureData', () => {
                 title: 'layer123',
                 source: 'select',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    { Header: 'L1A', accessor: '123/l.1.a', show: true },
+                    { Header: 'L2A', accessor: '123/l.2.a', show: true },
                 ],
                 data: [
                     {
-                        id: 'a123',
-                        name: 'f1',
+                        '123/id': 'a123',
+                        '123/name': 'f1',
                         _id: 'a123',
                         _layerId: '123',
                         _selected: false,
@@ -240,13 +240,13 @@ describe('parseFeatureData', () => {
                 title: 'layer456',
                 source: 'search',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    { Header: 'L1A', accessor: '456/l.1.a', show: true },
+                    { Header: 'L2A', accessor: '456/l.2.a', show: true },
                 ],
                 data: [
                     {
-                        id: 'a456',
-                        name: 'f2',
+                        '456/id': 'a456',
+                        '456/name': 'f2',
                         _id: 'a456',
                         _layerId: '456',
                         _selected: false,
@@ -261,13 +261,13 @@ describe('parseFeatureData', () => {
                 title: 'layer789',
                 source: 'select',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    { Header: 'L1A', accessor: '789/l.1.a', show: true },
+                    { Header: 'L2A', accessor: '789/l.2.a', show: true },
                 ],
                 data: [
                     {
-                        id: 'a789',
-                        name: 'f3',
+                        '789/id': 'a789',
+                        '789/name': 'f3',
                         _id: 'a789',
                         _layerId: '789',
                         _selected: false,

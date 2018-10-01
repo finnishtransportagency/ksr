@@ -1,20 +1,37 @@
 import clone from 'clone';
 
 /**
- * Parse columns from Esri's fields Array. Returns
- * react-table compatible columns Array.
- *
- * @param data Esri's fields Array
- *
- * @returns Array React-table compatible Array
- */
-export const parseColumns = (data) => {
+* Parse columns from Esri's fields Array. Returns
+* react-table compatible columns Array.
+*
+* @param {string} id Layer id.
+* @param {array} data Esri's fields Array.
+*
+* @returns Array React-table compatible Array
+*/
+export const parseColumns = (id, data) => {
     if (!data) return [];
     return data.map(f => ({
         Header: f.alias,
-        accessor: f.name,
+        accessor: `${id}/${f.name}`,
         show: true,
     }));
+};
+
+/**
+ * Parse feature attributes to unique for each layer.
+ *
+ * @param {string} id Layer id.
+ * @param {array} attributes Feature attributes.
+ * @return {Object} Attributes contains layer id on the attribute name.
+ */
+export const parseAttributes = (id, attributes) => {
+    const a = Object.entries(attributes);
+    const newObject = {};
+    for (let i = 0; i < a.length; i += 1) {
+        Object.assign(newObject, { [`${id}/${a[i][0]}`]: a[i][1] });
+    }
+    return newObject;
 };
 
 /**
@@ -31,10 +48,10 @@ export const parseData = (data, selected) => {
     return data.layers.map(l => ({
         id: l.id,
         title: l.title,
-        columns: parseColumns(l.fields),
+        columns: parseColumns(l.id, l.fields),
         source: l.source,
         data: l.features.map(f => ({
-            ...f.attributes,
+            ...parseAttributes(l.id, f.attributes),
             geometry: f.geometry,
             _id: f.attributes[l.objectIdFieldName],
             _layerId: l.id,
