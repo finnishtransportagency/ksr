@@ -80,7 +80,7 @@ describe('loadWorkspace', () => {
                 fields: [],
                 id: '123',
                 objectIdFieldName: 'OBJECTID_1',
-                source: 'select',
+                _source: 'select',
                 title: 'test',
             }],
         };
