@@ -1,4 +1,4 @@
-import { convertEsriGeometryType, dataType, findGeometryType, parseColumnType, parseGeometryType } from '../type';
+import { convertEsriGeometryType, dataType, findGeometryType, parseColumnType } from '../type';
 
 describe('type tests', () => {
     it('should return ColumnType', () => {
@@ -8,49 +8,6 @@ describe('type tests', () => {
             .toEqual('number');
     });
 
-    it('should return correct geometry', () => {
-        let geometry = {
-            type: 'polygon',
-            rings: [
-                [10, 10],
-                [20, 20],
-            ],
-        };
-
-        let expectedSymbol = [
-            [10, 10], [20, 20],
-        ];
-
-        expect(parseGeometryType(geometry))
-            .toEqual(expect.objectContaining(expectedSymbol));
-
-        geometry = { type: 'point', x: 10, y: 20 };
-
-        expectedSymbol = {
-            x: 10,
-            y: 20,
-        };
-        expect(parseGeometryType(geometry))
-            .toEqual(expect.objectContaining(expectedSymbol));
-
-        geometry = {
-            type: 'polyline',
-            paths: [
-                [-95.9899452281111, 38.1345878074741],
-                [-95.9898896947778, 38.1344644074744],
-                [-95.9899164947778, 38.1343866074744],
-            ],
-        };
-
-        expectedSymbol =
-            [
-                [-95.9899452281111, 38.1345878074741],
-                [-95.9898896947778, 38.1344644074744],
-                [-95.9899164947778, 38.1343866074744],
-            ];
-        expect(parseGeometryType(geometry))
-            .toEqual(expect.objectContaining(expectedSymbol));
-    });
     const layer = {
         id: 1,
         geometryType: 'esriGeometryPolyline',

@@ -26,33 +26,6 @@ export const parseColumnType = (type: String) => {
 };
 
 /**
- * Parse different GeometryTypes
- * @param geometry Object geometry of object
- * @returns geometry
- */
-export const parseGeometryType = (geometry: Object) => {
-    let value = {};
-    switch (geometry.type) {
-        case 'point':
-            value.x = geometry.x;
-            value.y = geometry.y;
-            break;
-        case 'multipoint':
-            value = geometry.points;
-            break;
-        case 'polyline':
-            value = geometry.paths;
-            break;
-        case 'polygon':
-            value = geometry.rings;
-            break;
-        default:
-            return {};
-    }
-    return value;
-};
-
-/**
  * Find GeometryType from current layerId
  * @param layerId String of layer ID
  * @param layerList Array of layers
