@@ -1,7 +1,6 @@
 // @flow
 import querystring from 'querystring';
 import { fetchGetGeoconvert } from '../../api/geoconvert/getGeoconvert';
-import { parseGeometryType } from '../type';
 
 /**
  * Creates a list of string parameters that can be used for geoconvert fetch.
@@ -32,7 +31,7 @@ export const createGeoconvertParams = (
                     }),
                 ]);
         case 'multipoint':
-            return geometry.map(g => (querystring.stringify({
+            return geometry.points.map(g => (querystring.stringify({
                 y: g[1],
                 x: g[0],
                 featureType,
@@ -41,12 +40,12 @@ export const createGeoconvertParams = (
             return (
                 [
                     querystring.stringify({
-                        y: geometry[0][0][1],
-                        x: geometry[0][0][0],
+                        y: geometry.paths[0][0][1],
+                        x: geometry.paths[0][0][0],
                         featureType,
                     }), querystring.stringify({
-                        y: geometry[0][geometry[0].length - 1][1],
-                        x: geometry[0][geometry[0].length - 1][0],
+                        y: geometry.paths[0][geometry.paths[0].length - 1][1],
+                        x: geometry.paths[0][geometry.paths[0].length - 1][0],
                         featureType,
                     }),
                 ]);
@@ -77,7 +76,7 @@ export const createAddressFields = (
     }
 
     const geoconvertQueryParams = createGeoconvertParams(
-        data.geometry.type ? parseGeometryType(data.geometry) : data.geometry,
+        data.geometry,
         geometryType,
         featureType,
     );

@@ -18,12 +18,14 @@ describe('createGeoconvertParams', () => {
     });
 
     it('should work with polyline', () => {
-        const geometry = [[
-            [321, 123],
-            [456, 456],
-            [564, 564],
-            [987, 789],
-        ]];
+        const geometry = {
+            paths: [[
+                [321, 123],
+                [456, 456],
+                [564, 564],
+                [987, 789],
+            ]],
+        };
         const geometryType = 'polyline';
         const featureType = 'road';
 
@@ -36,11 +38,13 @@ describe('createGeoconvertParams', () => {
     });
 
     it('should work with multipoint', () => {
-        const geometry = [
-            [123, 123],
-            [999, 999],
-            [456, 456],
-        ];
+        const geometry = {
+            points: [
+                [123, 123],
+                [999, 999],
+                [456, 456],
+            ],
+        };
         const geometryType = 'multipoint';
         const featureType = 'road';
 
@@ -87,12 +91,14 @@ describe('createAddressFields', () => {
 
         const data = {
             attributes: {},
-            geometry: [[
-                [321, 123],
-                [456, 456],
-                [564, 564],
-                [987, 789],
-            ]],
+            geometry: {
+                paths: [[
+                    [321, 123],
+                    [456, 456],
+                    [564, 564],
+                    [987, 789],
+                ]],
+            },
         };
         const geometryType = 'polyline';
         const featureType = 'road';
@@ -116,11 +122,13 @@ describe('createAddressFields', () => {
 
         const data = {
             attributes: {},
-            geometry: [
-                [123, 123],
-                [123, 123],
-                [123, 123],
-            ],
+            geometry: {
+                points: [
+                    [123, 123],
+                    [123, 123],
+                    [123, 123],
+                ],
+            },
         };
         const geometryType = 'multipoint';
         const featureType = 'road';
