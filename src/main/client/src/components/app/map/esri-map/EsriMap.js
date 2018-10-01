@@ -95,6 +95,10 @@ class EsriMap extends Component<Props> {
             }
         }
 
+        if (!loadingWorkspace && loadingWorkspace !== prevProps.loadingWorkspace) {
+            highlight(view, this.props.selectedFeatures, this.props.activeAdminTool);
+        }
+
         if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
             highlight(view, this.props.selectedFeatures, this.props.activeAdminTool);
         }
