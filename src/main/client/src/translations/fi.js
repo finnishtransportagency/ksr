@@ -5,6 +5,8 @@ const fi = {
         all: 'Kaikki',
         shape: 'Avaa shape',
         addNewLayer: 'Uusi taso',
+        failedToLoadLayer: 'Tason lataus epäonnistui',
+        loadingLayers: 'Ladataan karttatasoja',
     },
     search: {
         title: 'Haku',
@@ -149,6 +151,7 @@ const fi = {
         replaceWorkspace: 'Korvaa työtila',
         deleteWorkspace: 'Poista työtila',
         workspaceLoaded: 'Ladattu työtila',
+        loadingWorkspace: 'Ladataan työtilaa',
         confirmDelete: {
             body: 'Haluatko varmasti poistaa valitun työtilan?',
             acceptText: 'Poista',
