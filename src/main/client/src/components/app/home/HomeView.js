@@ -15,8 +15,8 @@ type Props = {
 };
 
 const toastProps = {
-    position: 'bottom-right',
-    autoClose: 8000,
+    position: 'top-right',
+    autoClose: 5000,
     hideProgressBar: false,
     newestOnTop: true,
     closeOnClick: true,
