@@ -39,6 +39,6 @@ export const setWorkspace = () => (dispatch: Function) => {
     dispatch({ type: types.SET_WORKSPACE });
 };
 
-export const setWorkspaceRejected = () => ({
-    type: types.SET_WORKSPACE_REJECTED,
-});
+export const setWorkspaceRejected = () => (dispatch: Function) => {
+    dispatch({ type: types.SET_WORKSPACE_REJECTED });
+};

@@ -1,6 +1,8 @@
 // @flow
+import { toast } from 'react-toastify';
 import { fetchSearchQuery } from '../../api/search/searchQuery';
 import * as types from '../../constants/actionTypes';
+import strings from '../../translations';
 import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
@@ -102,44 +104,47 @@ export const searchWorkspaceFeatures = (
         const layerData = {
             layers: [],
         };
-        searchQueries.push(fetchSearchQuery(
-            selectedLayer.layerId,
-            queryString,
-            selectedLayer.layer.name,
-            layerData,
-        )
-            .then((r) => {
-                if (r.layers.length) {
-                    r.layers.forEach((fetchedLayer) => {
-                        fetchedLayer.features.map((f) => {
-                            const selectedObj = selectedLayer.selectedFeaturesList.find(obj =>
-                                parseInt(obj.id, 10) ===
+        if (selectedLayer.layer) {
+            searchQueries.push(fetchSearchQuery(
+                selectedLayer.layerId,
+                queryString,
+                selectedLayer.layer.name,
+                layerData,
+            )
+                .then((r) => {
+                    if (r.layers.length) {
+                        r.layers.forEach((fetchedLayer) => {
+                            fetchedLayer.features.map((f) => {
+                                const selectedObj = selectedLayer.selectedFeaturesList.find(obj =>
+                                    parseInt(obj.id, 10) ===
                                     f.attributes[fetchedLayer.objectIdFieldName]);
-                            if (selectedObj) {
-                                f.selected = selectedObj.highlight;
-                            }
-                            return f;
+                                if (selectedObj) {
+                                    f.selected = selectedObj.highlight;
+                                }
+                                return f;
+                            });
+
+                            const newLayer = {
+                                ...selectedLayer.layer,
+                                name: selectedLayer.layer.name,
+                                definitionExpression: queryString,
+                                visible: true,
+                                active: true,
+                                opacity: selectedLayer.opacity,
+                                id: `${selectedLayer.layerId}.s`,
+                                _source: 'search',
+                                title: fetchedLayer.title,
+                                fields: fetchedLayer.fields,
+                                features: fetchedLayer.features,
+                                objectIdFieldName: fetchedLayer.objectIdFieldName,
+                            };
+
+                            layersToBeAdded.layers.push(newLayer);
                         });
-
-                        const newLayer = {
-                            ...selectedLayer.layer,
-                            name: selectedLayer.layer.name,
-                            definitionExpression: queryString,
-                            visible: true,
-                            active: true,
-                            opacity: selectedLayer.opacity,
-                            id: `${selectedLayer.layerId}.s`,
-                            _source: 'search',
-                            title: fetchedLayer.title,
-                            fields: fetchedLayer.fields,
-                            features: fetchedLayer.features,
-                            objectIdFieldName: fetchedLayer.objectIdFieldName,
-                        };
-
-                        layersToBeAdded.layers.push(newLayer);
-                    });
-                }
-            }));
+                    }
+                })
+                .catch(err => console.log(err)));
+        }
     });
 
     Promise.all(searchQueries).then(() => {
@@ -158,6 +163,12 @@ export const searchWorkspaceFeatures = (
         dispatch({
             type: types.SET_WORKSPACE_FULFILLED,
             workspace,
+        });
+
+        toast.update('loadingWorkspace', {
+            render: `${strings.workspace.workspaceLoaded} [${workspace.name}]`,
+            type: toast.TYPE.SUCCESS,
+            autoClose: 5000,
         });
     });
 };

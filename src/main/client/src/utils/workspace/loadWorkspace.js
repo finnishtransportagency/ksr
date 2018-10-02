@@ -71,7 +71,8 @@ export const queryWorkspaceFeatures = (
                             fields: layer.fields,
                             _source: 'select',
                         };
-                    }));
+                    })
+                    .catch(err => console.log(err)));
             }
         }
     });
@@ -137,7 +138,6 @@ export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Obje
             },
             layer.definitionExpression,
         ));
-
     return queryMap;
 };
 
@@ -160,6 +160,12 @@ export const loadWorkspace = (
     updateWorkspaces: ?Function,
 ) => {
     const layers = updateLayerList(workspace, layerList);
+
+    toast.info(`${strings.workspace.loadingWorkspace} [${workspace.name}]`, {
+        toastId: 'loadingWorkspace',
+        autoClose: false,
+    });
+
     addLayers(layers, view, [])
         .then(() => {
             setCenterPoint(
@@ -173,7 +179,7 @@ export const loadWorkspace = (
                     searchWorkspaceFeatures(workspace, layers);
                     selectFeatures(layerFeatures);
                     if (updateWorkspaces) updateWorkspaces(fetchGetWorkspaceList);
-                    toast.success(`${strings.workspace.workspaceLoaded} ${workspace.name}`);
-                });
+                })
+                .catch(err => console.log(err));
         });
 };
