@@ -1,14 +1,22 @@
 // @flow
+import { toast } from 'react-toastify';
 import { fetchLayerGroups } from '../../api/map/layerGroups';
 import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
 import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
+import strings from '../../translations/';
 
 export const getLayerGroups = () => (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
     const layerList = [];
+    const layerQueries = [];
+    const layersToRemove = [];
+    toast.info(strings.mapLayers.loadingLayers, {
+        toastId: 'loadingLayers',
+        autoClose: false,
+    });
     fetchLayerGroups()
         .then((r) => {
             r.map(lg => lg.layers.map(l => layerList.push(l)));
@@ -16,27 +24,42 @@ export const getLayerGroups = () => (dispatch: Function) => {
             return r;
         })
         .then((r) => {
-            layerList.forEach((l, i) => {
+            layerList.forEach((l) => {
                 if (l.type === 'agfs') {
                     // Add featurelayer fields and geometryType to layerList
-                    layerData(l.id)
+                    layerQueries.push(layerData(l.id)
                         .then((layers) => {
-                            layerList[i].geometryType = layers.geometryType;
-                            layerList[i].fields =
-                                layers.fields && layers.fields.map((f, index) => ({
-                                    value: index, label: f.alias, type: f.type, name: f.name,
-                                }));
+                            if (!layers.error) {
+                                l.geometryType = layers.geometryType;
+                                l.fields =
+                                    layers.fields && layers.fields.map((f, index) => ({
+                                        value: index, label: f.alias, type: f.type, name: f.name,
+                                    }));
+                            } else {
+                                toast.error(`${strings.mapLayers.failedToLoadLayer} [${l.name}]`);
+                                layersToRemove.push(l.id);
+                                layerList.find((ll, index) => (
+                                    ll.id === l.id && layerList.splice(index, 1)
+                                ));
+                            }
                         })
-                        .catch(err => console.log(err));
+                        .catch(err => console.log(err)));
                 }
             });
-            return r;
+            Promise.all(layerQueries)
+                .then(() => r)
+                .then((layerGroups) => {
+                    toast.dismiss('loadingLayers');
+                    return dispatch({
+                        type: types.GET_LAYER_GROUPS_FULFILLED,
+                        layerGroups: layerGroups.map(lg => ({
+                            ...lg,
+                            layers: lg.layers.filter(l => !layersToRemove.includes(l.id)),
+                        })),
+                        layerList,
+                    });
+                });
         })
-        .then(r => dispatch({
-            type: types.GET_LAYER_GROUPS_FULFILLED,
-            layerGroups: r,
-            layerList,
-        }))
         .catch(err => console.log(err));
 };
 
