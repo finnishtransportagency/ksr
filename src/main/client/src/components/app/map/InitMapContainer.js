@@ -20,6 +20,7 @@ const mapStateToProps = (state) => {
         sketchViewModel: state.map.mapTools.sketchViewModel,
         editMode: state.map.mapTools.editMode,
         activeTool: state.map.mapTools.active,
+        initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
     });
 };
 

@@ -26,13 +26,18 @@ type Props = {
     setHasGraphics: (hasGraphics: boolean) => void,
     searchWorkspaceFeatures: Function,
     setWorkspaceRejected: Function,
+    initialLoading: boolean,
 };
 
 class EsriMap extends Component<Props> {
     printWidget: ?Object = null; // eslint-disable-line react/sort-comp
 
-    componentDidMount() {
-        this.initMap();
+    componentDidUpdate(prevProps: Props) {
+        const { initialLoading } = this.props;
+
+        if (!initialLoading && initialLoading !== prevProps.initialLoading) {
+            this.initMap();
+        }
     }
 
     initMap = () => {
