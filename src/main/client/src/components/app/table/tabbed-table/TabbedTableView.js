@@ -27,7 +27,12 @@ const TabbedTableView = ({ layers, activeTable, setActiveTable }: Props) => (
                             flat
                             title={l.title}
                             active={activeTable === l.id}
-                            onClick={() => setActiveTable(l.id)}
+                            onClick={() => {
+                                setActiveTable(l.id);
+                                if (document.getElementsByClassName('tbody-scroll-wrapper').length) {
+                                    document.getElementsByClassName('tbody-scroll-wrapper')[0].scrollTop = 0;
+                                }
+                            }}
                         >
                             <MapLayerTitle layer={l} />
                         </ButtonTabbedTableTab>
