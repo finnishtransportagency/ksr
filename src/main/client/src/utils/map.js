@@ -84,7 +84,7 @@ export const addLayers = (
     ]) => {
         layers.forEach((layer) => {
             if (layer.active && !view.map.layers.find(l => l.id === layer.id)) {
-                esriConfig.request.corsEnabledServers.push(layer.url);
+                esriConfig.request.trustedServers.push(layer.url);
                 switch (layer.type) {
                     // sublayers split will work as long as name doesn't contain comma
                     case 'wms':
