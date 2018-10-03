@@ -67,7 +67,7 @@ class ReactTable extends Component<Props> {
                     style={{ minHeight: '1rem' }}
                     role="textbox"
                     tabIndex={0}
-                    className={!contentEditable && 'content-not-editable'}
+                    className={!contentEditable ? 'content-not-editable' : null}
                     contentEditable={contentEditable}
                     suppressContentEditableWarning
                     onKeyPress={(e) => {

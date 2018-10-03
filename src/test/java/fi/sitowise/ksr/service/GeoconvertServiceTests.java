@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,26 @@ public class GeoconvertServiceTests {
     private HttpRequestService httpRequestService;
 
     /**
-     * Test get converted data.
+     * Test get converted data with road type.
      */
     @Test
-    public void testGetConvertedDataIsOk() {
+    public void testGetConvertedRoadDataIsOk() {
         geoconvertService.getConvertedData(request, response, "road", "123", "123");
+    }
+
+    /**
+     * Test get converted data with railway type.
+     */
+    @Test
+    public void testGetConvertedRailwayDataIsOk() {
+        geoconvertService.getConvertedData(request, response, "railway", "123", "123");
+    }
+
+    /**
+     * Test get converted data throws exception with wrong parameter.
+     */
+    @Test(expected = KsrApiException.BadRequestException.class)
+    public void testGetConvertedDataThrowsException() {
+        geoconvertService.getConvertedData(request, response, "test", "123", "123");
     }
 }
