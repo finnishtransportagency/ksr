@@ -39,7 +39,7 @@ comment on column layer_permission.delete_layer is 'Whether user can delete laye
 comment on table user_layer is 'User layer details.';
 comment on column user_layer.id is 'Generated layer identifier. Primary key. Starts at 10000';
 comment on column user_layer.name is 'Name of the layer.';
-comment on column user_layer.type is 'Type of the layer. Either wms, wfs, mvt, wmts or agfs (= ArcGIS Feature Service).';
+comment on column user_layer.type is 'Type of the layer. Either wms, wfs, mvt, wmts, agfs (= ArcGIS Feature Service Spatial Layer) or agfl (= ArcGIS Feature Service Non Spatial Layer).';
 comment on column user_layer.url is 'Url of the service where the layer is fetched from.';
 comment on column user_layer.layers is 'Comma separated string of layers which are used from the service.';
 comment on column user_layer.styles is 'JSON formatted string of styles for the layers.';
