@@ -7,6 +7,21 @@ import { updateFeatures } from '../api/map/updateFeatures';
 import { createAddressFields } from './geoconvert/createAddressFields';
 
 /**
+ * Convert attribute back to original Feature Layer attribute format.
+ *
+ * @param {Object} attributes Feature attributes.
+ * @return {Object} Attributes without layerId on the attribute name.
+ */
+const parseAttributes = (attributes: Object) => {
+    const a = Object.entries(attributes);
+    const newObject = {};
+    for (let i = 0; i < a.length; i += 1) {
+        Object.assign(newObject, { [`${a[i][0].split('/').pop()}`]: a[i][1] });
+    }
+    return newObject;
+};
+
+/**
 * Converts list of features into ArcGIS Server compliant formdata.
 *
 * @param features Object[] Array of features
@@ -16,6 +31,14 @@ const featureDataToParams = (features: Object[]) => {
     if (features === null || features === undefined) {
         return null;
     }
+
+    features.map((f) => {
+        const newAttributes = parseAttributes(f.attributes);
+        delete f.attributes;
+        f.attributes = newAttributes;
+        return f;
+    });
+
     const params = new URLSearchParams();
     params.append('f', 'json');
     params.append('features', JSON.stringify(features));
