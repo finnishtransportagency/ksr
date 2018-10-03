@@ -14,7 +14,7 @@ import { config } from '../config';
 export const fetchSearchQuery = (layerId, queryString, title, data) =>
     fetch(`api/proxy/layer/${layerId}/query?${
         querystring.stringify({
-            where: encodeURIComponent(queryString),
+            where: queryString,
             f: 'pjson',
             outFields: '*',
         })

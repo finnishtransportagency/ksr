@@ -257,6 +257,8 @@ class SketchTool extends Component<Props, State> {
             data, view, activeAdminTool, tempGraphicsLayer, setActiveModal, isOpen,
         } = this.props;
 
+        const hasSelectedFeatures = data.filter(f => f._source !== 'search').length > 0;
+
         const hasAdminGraphics = tempGraphicsLayer
             && tempGraphicsLayer.graphics
             && tempGraphicsLayer.graphics.filter(g => g.type === 'sketch-graphic').length > 0;
@@ -270,8 +272,8 @@ class SketchTool extends Component<Props, State> {
                     drawCircleButtonRef={this.drawCircleButton}
                     toggleSelectToolsButtonRef={this.toggleSelectToolsButton}
                     toggleTools={this.toggleSelectTools}
+                    hasSelectedFeatures={hasSelectedFeatures}
                     isOpen={isOpen}
-                    data={data}
                     view={view}
                 />
                 <SketchActiveAdminView
