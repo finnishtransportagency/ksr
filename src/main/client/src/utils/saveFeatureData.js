@@ -32,16 +32,14 @@ const featureDataToParams = (features: Object[]) => {
         return null;
     }
 
-    features.map((f) => {
-        const newAttributes = parseAttributes(f.attributes);
-        delete f.attributes;
-        f.attributes = newAttributes;
-        return f;
-    });
+    const parsedFeatures = features.map(f => ({
+        ...f,
+        attributes: parseAttributes(f.attributes),
+    }));
 
     const params = new URLSearchParams();
     params.append('f', 'json');
-    params.append('features', JSON.stringify(features));
+    params.append('features', JSON.stringify(parsedFeatures));
     return params;
 };
 
