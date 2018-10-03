@@ -41,7 +41,7 @@ class EsriMap extends Component<Props> {
     }
 
     initMap = () => {
-        esriLoader.loadCss('https://js.arcgis.com/4.8/esri/css/main.css');
+        esriLoader.loadCss('https://js.arcgis.com/4.9/esri/css/main.css');
 
         esriLoader
             .loadModules([

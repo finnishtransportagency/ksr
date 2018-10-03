@@ -6,7 +6,7 @@
     "clone": "^2.1.2",
     "dompurify": "^1.0.8",
     "downshift": "^2.2.2",
-    "esri-loader": "2.4.0",
+    "esri-loader": "2.5.0",
     "moment": "^2.22.2",
     "nano-equal": "^2.0.2",
     "proj4": "^2.5.0",
