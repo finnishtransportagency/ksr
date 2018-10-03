@@ -119,6 +119,7 @@ export const addLayers = (
                         const fl = new FeatureLayer({
                             id: layer.id,
                             url: layer.url,
+                            layerId: layer.id,
                             copyright: layer.attribution,
                             maxScale: layer.maxScale,
                             minScale: layer.minScale,

@@ -65,7 +65,13 @@ public class LayerGroupService {
         for (LayerGroup lg : combinedLayerGroups) {
             if (lg.getLayers() != null) {
                 for (Layer l : lg.getLayers()) {
-                    String formatUrl = String.format("%s/%s/%s/", contextPath, ProxyController.PROXY_URL, l.getId());
+                    String formatUrl;
+                    if ("agfs".equals(l.getType())) {
+                        formatUrl = String.format("%s/%s/", contextPath, ProxyController.PROXY_URL);
+
+                    } else {
+                        formatUrl = String.format("%s/%s/%s/", contextPath, ProxyController.PROXY_URL, l.getId());
+                    }
 
                     l.setVisible(isMobile ? l.getMobileVisible() : l.getDesktopVisible());
                     l.setUrl(KsrStringUtils.replaceMultipleSlashes(formatUrl));
