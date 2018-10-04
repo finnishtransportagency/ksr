@@ -42,19 +42,22 @@ const MapLayersView = ({
                                                 toggledHidden={!l.visible}
                                             >
                                                 <LayerSettings.Content>
-                                                    <LayerSettings.Toggle
-                                                        onClick={() =>
-                                                            onToggleVisibility(l.id)
-                                                        }
-                                                    >
-                                                        <i
-                                                            className={
-                                                                l.visible
-                                                                    ? 'fas fa-toggle-on'
-                                                                    : 'fas fa-toggle-off'
+                                                    {
+                                                        l.type !== 'agfl' &&
+                                                        <LayerSettings.Toggle
+                                                            onClick={() =>
+                                                                onToggleVisibility(l.id)
                                                             }
-                                                        />
-                                                    </LayerSettings.Toggle>
+                                                        >
+                                                            <i
+                                                                className={
+                                                                    l.visible
+                                                                        ? 'fas fa-toggle-on'
+                                                                        : 'fas fa-toggle-off'
+                                                                }
+                                                            />
+                                                        </LayerSettings.Toggle>
+                                                    }
                                                     <LayerSettings.ContentMain>
                                                         <LayerSettings.ContentTop >
                                                             <LayerSettings.Title >
@@ -89,22 +92,25 @@ const MapLayersView = ({
                                                                 }
                                                             </LayerSettings.Icons>
                                                         </LayerSettings.ContentTop>
-                                                        <LayerSettings.Slider>
-                                                            <Slider
-                                                                min={0}
-                                                                max={1}
-                                                                step={0.01}
-                                                                defaultValue={
-                                                                    l.opacity
-                                                                }
-                                                                onChange={evt =>
-                                                                    onOpacityChange(
-                                                                        evt,
-                                                                        l.id,
-                                                                    )
-                                                                }
-                                                            />
-                                                        </LayerSettings.Slider>
+                                                        {
+                                                            l.type !== 'agfl' &&
+                                                            <LayerSettings.Slider>
+                                                                <Slider
+                                                                    min={0}
+                                                                    max={1}
+                                                                    step={0.01}
+                                                                    defaultValue={
+                                                                        l.opacity
+                                                                    }
+                                                                    onChange={evt =>
+                                                                        onOpacityChange(
+                                                                            evt,
+                                                                            l.id,
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </LayerSettings.Slider>
+                                                        }
                                                     </LayerSettings.ContentMain>
                                                 </LayerSettings.Content>
                                             </LayerSettings>
