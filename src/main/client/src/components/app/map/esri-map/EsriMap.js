@@ -39,7 +39,7 @@ class EsriMap extends Component<Props> {
             const toBeRemoved = [];
 
             // Update layer settings
-            layerListReversed.forEach((l, i) => {
+            layerListReversed.filter(l => l.type !== 'agfl').forEach((l, i) => {
                 // Change layer opacity and visibility
                 view.map.layers.forEach((layer) => {
                     if (layer && l.id === layer.id) {
