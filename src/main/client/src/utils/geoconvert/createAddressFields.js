@@ -73,23 +73,41 @@ export const createAddressFields = (
 ) => new Promise((resolve) => {
     if (!featureType || !addressField) {
         resolve(data);
+    } else {
+        const geoconvertQueryParams = createGeoconvertParams(
+            data.geometry,
+            geometryType,
+            featureType,
+        );
+
+        const geoconvertFetches = geoconvertQueryParams.map(params => fetchGetGeoconvert(params));
+
+        Promise.all(geoconvertFetches).then((r) => {
+            if (r.length) {
+                let convertedAddress = [];
+                switch (featureType) {
+                    case 'road':
+                        convertedAddress = r.map(address => (
+                            address.osoite
+                                ? address.osoite
+                                : null
+                        ));
+                        break;
+                    case 'railway':
+                        convertedAddress = r.map(address => (
+                            address.kunta_nimi
+                                ? `${address.kunta_nimi} - ${address.urakka_nimi}`
+                                : null
+                        ));
+                        break;
+                    default:
+                        convertedAddress = r.map(() => null);
+                }
+                data.attributes[addressField] = convertedAddress.join(', ');
+            }
+
+            resolve(data);
+        });
     }
-
-    const geoconvertQueryParams = createGeoconvertParams(
-        data.geometry,
-        geometryType,
-        featureType,
-    );
-
-    const geoconvertFetches = geoconvertQueryParams.map(params => fetchGetGeoconvert(params));
-
-    Promise.all(geoconvertFetches).then((r) => {
-        if (r.length) {
-            const convertedAddress = r.map(address => (address.osoite ? address.osoite : null));
-            data.attributes[addressField] = convertedAddress.join(', ');
-        }
-
-        resolve(data);
-    });
 });
 

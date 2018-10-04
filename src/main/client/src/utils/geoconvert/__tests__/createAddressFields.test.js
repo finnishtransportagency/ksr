@@ -142,4 +142,86 @@ describe('createAddressFields', () => {
                 },
             });
     });
+
+    it('works with railway point', () => {
+        fetchMock.fetchGetGeoconvert
+            .mockReturnValueOnce({ kunta_nimi: 'Municipality', urakka_nimi: 'Contract' });
+
+        const data = {
+            attributes: {},
+            geometry: {
+                x: 123,
+                y: 123,
+            },
+        };
+        const geometryType = 'point';
+        const featureType = 'railway';
+        const addressField = 'test_address_field';
+
+        return expect(createAddressFields(data, geometryType, featureType, addressField))
+            .resolves.toEqual({
+                ...data,
+                attributes: {
+                    test_address_field: 'Municipality - Contract',
+                },
+            });
+    });
+
+    it('works with railway polyline', () => {
+        fetchMock.fetchGetGeoconvert
+            .mockReturnValueOnce({ kunta_nimi: 'Municipality 1', urakka_nimi: 'Contract 1' })
+            .mockReturnValueOnce({ kunta_nimi: 'Municipality 2', urakka_nimi: 'Contract 2' });
+
+        const data = {
+            attributes: {},
+            geometry: {
+                paths: [[
+                    [321, 123],
+                    [456, 456],
+                    [564, 564],
+                    [987, 789],
+                ]],
+            },
+        };
+        const geometryType = 'polyline';
+        const featureType = 'railway';
+        const addressField = 'start_and_endpoint';
+
+        return expect(createAddressFields(data, geometryType, featureType, addressField))
+            .resolves.toEqual({
+                ...data,
+                attributes: {
+                    start_and_endpoint: 'Municipality 1 - Contract 1, Municipality 2 - Contract 2',
+                },
+            });
+    });
+
+    it('works with railway multipoint', () => {
+        fetchMock.fetchGetGeoconvert
+            .mockReturnValueOnce({ kunta_nimi: 'Municipality 1', urakka_nimi: 'Contract 1' })
+            .mockReturnValueOnce({ kunta_nimi: 'Municipality 2', urakka_nimi: 'Contract 2' })
+            .mockReturnValueOnce({ kunta_nimi: 'Municipality 3', urakka_nimi: 'Contract 3' });
+
+        const data = {
+            attributes: {},
+            geometry: {
+                points: [
+                    [123, 123],
+                    [123, 123],
+                    [123, 123],
+                ],
+            },
+        };
+        const geometryType = 'multipoint';
+        const featureType = 'railway';
+        const addressField = 'test_address_field';
+
+        return expect(createAddressFields(data, geometryType, featureType, addressField))
+            .resolves.toEqual({
+                ...data,
+                attributes: {
+                    test_address_field: 'Municipality 1 - Contract 1, Municipality 2 - Contract 2, Municipality 3 - Contract 3',
+                },
+            });
+    });
 });

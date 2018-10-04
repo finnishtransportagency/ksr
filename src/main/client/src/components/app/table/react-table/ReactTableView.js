@@ -62,6 +62,9 @@ const ReactTableView = ({
             selectType="checkbox"
             isSelected={r => r._selected}
             selectAll={selectAll}
+            onPageChange={() => {
+                document.getElementsByClassName('tbody-scroll-wrapper')[0].scrollTop = 0;
+            }}
             toggleSelection={toggleSelection}
             toggleAll={toggleSelectAll}
             getTdProps={(state, r, c) => {
@@ -69,7 +72,7 @@ const ReactTableView = ({
                 return {
                     style: {
                         background: r && r.original._edited && r.original._edited
-                            .find(t => t.title === c.Header) ? color : null,
+                            .find(t => t.title === c.id) ? color : null,
                     },
                 };
             }}

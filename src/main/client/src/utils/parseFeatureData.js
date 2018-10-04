@@ -4,37 +4,54 @@ import clone from 'clone';
 * Parse columns from Esri's fields Array. Returns
 * react-table compatible columns Array.
 *
-* @param data Esri's fields Array
+* @param {string} id Layer id.
+* @param {array} data Esri's fields Array.
 *
 * @returns Array React-table compatible Array
 */
-export const parseColumns = (data) => {
+export const parseColumns = (id, data) => {
     if (!data) return [];
     return data.map(f => ({
         Header: f.alias,
-        accessor: f.name,
+        accessor: `${id}/${f.name}`,
         show: true,
     }));
 };
 
 /**
-* Parse data from Esri's FeatureService JSON-response.
-*
-* @param data Content of FeatureService JSON-response
-* @param selected Whether features should be marked as selected
-*
-* @returns Array of layers holding respective features and columns
-*/
+ * Parse feature attributes to unique for each layer.
+ *
+ * @param {string} id Layer id.
+ * @param {array} attributes Feature attributes.
+ * @return {Object} Attributes contains layer id on the attribute name.
+ */
+export const parseAttributes = (id, attributes) => {
+    const a = Object.entries(attributes);
+    const newObject = {};
+    for (let i = 0; i < a.length; i += 1) {
+        Object.assign(newObject, { [`${id}/${a[i][0]}`]: a[i][1] });
+    }
+    return newObject;
+};
+
+/**
+ * Parse data from Esri's FeatureService JSON-response.
+ *
+ * @param data Content of FeatureService JSON-response
+ * @param selected Whether features should be marked as selected
+ *
+ * @returns Array of layers holding respective features and columns
+ */
 
 export const parseData = (data, selected) => {
     if (data === undefined || data === null || data.layers === undefined) return [];
     return data.layers.map(l => ({
         id: l.id,
         title: l.title,
-        columns: parseColumns(l.fields),
+        columns: parseColumns(l.id, l.fields),
         source: l.source,
         data: l.features.map(f => ({
-            ...f.attributes,
+            ...parseAttributes(l.id, f.attributes),
             geometry: f.geometry,
             _id: f.attributes[l.objectIdFieldName],
             _layerId: l.id,
@@ -47,15 +64,15 @@ export const parseData = (data, selected) => {
 };
 
 /**
-* Merge two arrays of features. If features does not exists in
-* currentData (matching done with '_id') then add it, otherwise
-* only update its '_selected' attribute.
-*
-* @param currentData Array of current features
-* @param newData Array of incoming features
-*
-* @returns Array of merged input arrays
-*/
+ * Merge two arrays of features. If features does not exists in
+ * currentData (matching done with '_id') then add it, otherwise
+ * only update its '_selected' attribute.
+ *
+ * @param currentData Array of current features
+ * @param newData Array of incoming features
+ *
+ * @returns Array of merged input arrays
+ */
 export const mergeData = (currentData, newData) => {
     const data = [...currentData];
     newData.forEach((newFeature) => {
@@ -71,16 +88,16 @@ export const mergeData = (currentData, newData) => {
 };
 
 /**
-* Returns id of active table.
-* If layer matching current id does not exists in layers,
-* then return id of first layer in layers-array or
-* if layers is empty then return empty string.
-*
-* @param layers Array of layers
-* @param currentActiveTable Id of currently active table
-*
-* @returns Id of active table
-*/
+ * Returns id of active table.
+ * If layer matching current id does not exists in layers,
+ * then return id of first layer in layers-array or
+ * if layers is empty then return empty string.
+ *
+ * @param layers Array of layers
+ * @param currentActiveTable Id of currently active table
+ *
+ * @returns Id of active table
+ */
 export const getActiveTable = (layers, currentActiveTable) => {
     if (
         layers.find(l => l.id === currentActiveTable) === undefined
@@ -94,18 +111,19 @@ export const getActiveTable = (layers, currentActiveTable) => {
 };
 
 /**
-* Merge two array of layers.
-*
-* @param currentLayers Array of current layers
-* @param newLayers Array of new layers
-* @param currentActiveTable Id of currently active table
-* @param clear Boolean which tells if feature should be cleared
-*
-* @returns {layers, activeTable}
-*
-* Layers: newLayers merged with currentLayers.
-* ActiveTable: id of active table.
-*/
+ * Merge two array of layers.
+ *
+ * @param currentLayers Array of current layers
+ * @param newLayers Array of new layers
+ * @param currentActiveTable Id of currently active table
+ * @param clear Boolean which tells if feature should be cleared
+ *
+ * @returns {layers, editedLayers, activeTable}
+ *
+ * Layers: newLayers merged with currentLayers.
+ * editedLayers: copy of layers,
+ * ActiveTable: id of active table.
+ */
 export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear = false) => {
     const layers = currentLayers.map(l => ({ ...l, data: [...l.data] }));
 
@@ -127,54 +145,57 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear 
     const activeTable = getActiveTable(layers, currentActiveTable);
     const editedLayers = clone(layers, true, 3);
 
-    return { layers, activeTable, editedLayers };
+    return { layers, editedLayers, activeTable };
 };
 
 /**
-* Update columns array of given layer id.
-*
-* @param activeTable Id of the layer, whose columns to update
-* @param columns Columns that should be placed in matching layer
-* @param currentLayers Array of layers
-*
-* @returns Updated layers
-*/
+ * Update columns array of given layer id.
+ *
+ * @param activeTable Id of the layer, whose columns to update
+ * @param columns Columns that should be placed in matching layer
+ * @param currentLayers Array of layers
+ *
+ * @returns Updated layers
+ */
 export const updateLayerColumns = (activeTable, columns, currentLayers) => (
     currentLayers.map(l => (l.id === activeTable ? { ...l, columns } : { ...l }))
 );
 
 /**
-* Remove layers which are currently not active on the map. (layer.active === false)
-*
-* @param currentLayers Array of layers (table-reducer)
-* @param layerList Array of map-layers (layerGroup-reducer)
-* @param currentActiveTable Id of the currently active layer in table
-*
-* @returns { layers, activeTable }
-* layers: Filtered layers,
-* activeTable: id of active table.
-*/
+ * Remove layers which are currently not active on the map. (layer.active === false)
+ *
+ * @param currentLayers Array of layers (table-reducer)
+ * @param layerList Array of map-layers (layerGroup-reducer)
+ * @param currentActiveTable Id of the currently active layer in table
+ *
+ * @returns { layers, editedLayers, activeTable }
+ * layers: Filtered layers,
+ * editedLayers: copy of layers,
+ * activeTable: id of active table.
+ */
 export const syncWithLayersList = (currentLayers, layerList, currentActiveTable) => {
     const layers = currentLayers.filter(l => layerList.find(ll => (
         (ll.id === l.id && l.id.indexOf('.s') > 0) ||
         (ll.id === l.id && ll.active === true))) !== undefined);
 
+    const editedLayers = clone(layers, true, 3);
     const activeTable = getActiveTable(layers, currentActiveTable);
 
-    return { layers, activeTable };
+    return { layers, editedLayers, activeTable };
 };
 
 /**
-* Deselects selected features from layers.
-* If layer contains no features, it will also be removed from table.
-*
-* @param currentLayers Array of layers (table-reducer)
-* @param currentActiveTable Id of the currently active layer in table
-*
-* @returns { layers, activeTable }
-* layers: Filtered layers,
-* activeTable: id of active table.
-*/
+ * Deselects selected features from layers.
+ * If layer contains no features, it will also be removed from table.
+ *
+ * @param currentLayers Array of layers (table-reducer)
+ * @param currentActiveTable Id of the currently active layer in table
+ *
+ * @returns { layers, editedLayers, activeTable }
+ * layers: Filtered layers,
+ * editedLayers: copy of layers,
+ * activeTable: id of active table.
+ */
 export const deSelectFeatures = (currentLayers, currentActiveTable) => {
     const layers = currentLayers.reduce((filtered, layer) => {
         const data = layer.data.reduce((fd, d) => {
@@ -190,21 +211,22 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
         return filtered;
     }, []);
 
+    const editedLayers = clone(layers, true, 3);
     const activeTable = getActiveTable(layers, currentActiveTable);
 
-    return { layers, activeTable };
+    return { layers, editedLayers, activeTable };
 };
 
 
 /**
-* Toggles selected-state for given feature.
-* If feature is set unselected, it won't be removed from the table.
-*
-* @param currentLayers Array of layers (table-reducer)
-* @param feature Object of selected feature
-*
-* @returns layers Layers updated with features selection
-*/
+ * Toggles selected-state for given feature.
+ * If feature is set unselected, it won't be removed from the table.
+ *
+ * @param currentLayers Array of layers (table-reducer)
+ * @param feature Object of selected feature
+ *
+ * @returns layers Layers updated with features selection
+ */
 export const toggleSelection = (currentLayers, feature) => (
     currentLayers.map((layer) => {
         if (layer.id === feature._layerId) {
@@ -221,13 +243,13 @@ export const toggleSelection = (currentLayers, feature) => (
 );
 
 /**
-* Set's all features on given layer either selected or unselected.
-*
-* @param currentLayers Array of layers (table-reducer)
-* @param layerId Id of the layer to select/unselect all features
-*
-* @returns layers Layers updates with features selected
-*/
+ * Set's all features on given layer either selected or unselected.
+ *
+ * @param currentLayers Array of layers (table-reducer)
+ * @param layerId Id of the layer to select/unselect all features
+ *
+ * @returns layers Layers updates with features selected
+ */
 export const toggleSelectAll = (currentLayers, layerId) => (
     currentLayers.map((layer) => {
         if (layer.id === layerId) {

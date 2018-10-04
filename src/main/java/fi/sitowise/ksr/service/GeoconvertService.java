@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,11 +38,17 @@ public class GeoconvertService {
      * @param x Points x coordinate.
      */
     public void getConvertedData(HttpServletRequest request, HttpServletResponse response, String featureType, String y, String x) {
-        String urlToFetch = null;
+        String urlToFetch;
 
         switch (featureType) {
             case "road":
                 urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/reversegeocode?y=%s&x=%s", geoConvertServiceUrl, y, x));
+                break;
+            case "railway":
+                urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/rataosoite?x=%s&y=%s", geoConvertServiceUrl, x, y));
+                break;
+            default:
+                throw new KsrApiException.BadRequestException("Invalid query parameters given.");
         }
 
         this.httpRequestService.fetchToResponse(null, null, null, urlToFetch, request, response, false, null);

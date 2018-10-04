@@ -4,7 +4,6 @@ import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
 import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
-import { SET_HAS_GRAPHICS } from '../../constants/actionTypes';
 import * as types from '../../constants/actionTypes';
 
 export const getLayerGroups = () => (dispatch: Function) => {
@@ -148,7 +147,7 @@ export const removeUserLayerConfirmed = (
         if (res.ok) {
             dispatch({
                 type: types.REMOVE_LAYER_FROM_VIEW,
-                layerId,
+                layerIds: [layerId],
             });
             dispatch({
                 type: types.SET_LAYER_LIST,
@@ -178,6 +177,11 @@ export const setActiveToolMenu = (activeToolMenu: string) => ({
 });
 
 export const setHasGraphics = (hasGraphics: boolean) => ({
-    type: SET_HAS_GRAPHICS,
+    type: types.SET_HAS_GRAPHICS,
     hasGraphics,
+});
+
+export const removeLayersView = (layerIds: Array<number>) => ({
+    type: types.REMOVE_LAYER_FROM_VIEW,
+    layerIds,
 });

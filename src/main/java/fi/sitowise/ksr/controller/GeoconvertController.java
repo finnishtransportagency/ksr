@@ -35,6 +35,12 @@ public class GeoconvertController {
         this.geoconvertService = geoconvertService;
     }
 
+    /**
+     * Convert coordinates to address.
+     *
+     * @param request HTTP request interface.
+     * @param response HTTP response where to write the fetch response.
+     */
     @RequestMapping(value = "/**", method = { RequestMethod.GET })
     public void getGeoconvertData(HttpServletRequest request, HttpServletResponse response) {
         LOG.info(String.format("%s: Convert coordinates to address.", getCurrentUsername()));

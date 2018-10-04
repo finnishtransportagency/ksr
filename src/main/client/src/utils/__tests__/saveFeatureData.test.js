@@ -7,7 +7,7 @@ describe('saveFeatureData', () => {
     });
 
     it('featureDataToParams - should return correct data', () => {
-        const inputFeatures = [{ a: 1, b: '2' }];
+        const inputFeatures = [{ attributes: { a: 1, b: '2' }, geometry: {} }];
         const form = save.featureDataToParams(inputFeatures);
 
         expect(form.get('f')).toBe('json');
