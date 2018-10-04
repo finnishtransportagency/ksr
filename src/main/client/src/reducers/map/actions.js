@@ -63,9 +63,10 @@ export const getLayerGroups = () => (dispatch: Function) => {
         .catch(err => console.log(err));
 };
 
-export const setLayerList = (layerList: Array<any>) => (dispatch: Function) => {
-    dispatch({ type: types.SET_LAYER_LIST, layerList });
-};
+export const setLayerList = (layerList: Array<any>) => ({
+    type: types.SET_LAYER_LIST,
+    layerList,
+});
 
 export const getActiveLayerTab = () => ({
     type: types.GET_ACTIVE_LAYER_TAB,
@@ -88,27 +89,21 @@ export const getMapConfig = () => (dispatch: Function) => {
         .catch(err => console.log(err));
 };
 
-export const setMapView = (view: any) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_MAP_VIEW,
-        view,
-    });
-};
+export const setMapView = (view: any) => ({
+    type: types.SET_MAP_VIEW,
+    view,
+});
 
-export const setTempGraphicsLayer = (graphicsLayer: Object) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_GRAPH_LAYER,
-        graphicsLayer,
-    });
-};
+export const setTempGraphicsLayer = (graphicsLayer: Object) => ({
+    type: types.SET_GRAPH_LAYER,
+    graphicsLayer,
+});
 
-export const setMapTools = (draw: Object, sketchViewModel: Object) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_MAP_TOOLS,
-        draw,
-        sketchViewModel,
-    });
-};
+export const setMapTools = (draw: Object, sketchViewModel: Object) => ({
+    type: types.SET_MAP_TOOLS,
+    draw,
+    sketchViewModel,
+});
 
 export const setActiveTool = (active: string) => ({
     type: types.SET_ACTIVE_TOOL,
