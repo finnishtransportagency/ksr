@@ -45,10 +45,16 @@ class MapLayersActive extends Component<Props, State> {
     onToggleVisibility = (id: Number) => {
         const { setLayerList } = this.props;
         const layerList = [...this.props.layerList];
-        const foundLayer = layerList.find(l => l.id === id);
-
-        foundLayer.visible = !foundLayer.visible;
-        setLayerList(layerList);
+        const newLayerList = layerList.map((l) => {
+            if (l.id === id) {
+                return {
+                    ...l,
+                    visible: !l.visible,
+                };
+            }
+            return { ...l };
+        });
+        setLayerList(newLayerList);
     };
 
     onOpacityChange = (evt: Number, id: Number) => {

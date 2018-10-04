@@ -71,7 +71,11 @@ describe('<MapLayersActive />', () => {
         expect(foundLayer.visible).toBe(true);
         wrapper.instance().onToggleVisibility(id);
         expect(setLayerList).toHaveBeenCalled();
-        expect(foundLayer.visible).toBe(false);
+
+        const newLayerList = setLayerList.mock.calls[0][0];
+        const newFoundLayer = newLayerList.find(layer => layer.id === id);
+
+        expect(newFoundLayer.visible).toBe(false);
     });
 
     it('should handle onOpacityChange correctly', () => {
