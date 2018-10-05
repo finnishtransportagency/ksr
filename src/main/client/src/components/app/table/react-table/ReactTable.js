@@ -60,7 +60,7 @@ class ReactTable extends Component<Props> {
 
         if (currentLayer) {
             const cellField = currentLayer.fields.find(f => f.name === cellInfo.column.Header);
-            const contentEditable = activeAdminTool.length && cellField.type !== 'esriFieldTypeOID' && currentLayer.source !== 'shapefile';
+            const contentEditable = activeAdminTool.length && cellField.type !== 'esriFieldTypeOID' && currentLayer._source !== 'shapefile';
             return (
                 <div
                     style={{ minHeight: '1rem' }}

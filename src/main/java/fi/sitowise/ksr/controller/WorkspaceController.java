@@ -47,7 +47,7 @@ public class WorkspaceController {
         LOG.info(String.format("%s: Save new workspace to database.", getCurrentUsername()));
         try {
             workspaceService.saveWorkspace(workspace,  getCurrentUsername());
-            return workspaceService.getWorkspaceListForUser(authentication.getName());
+            return workspaceService.getWorkspaceListForUser(getCurrentUsername());
         } catch (DataAccessException e) {
             throw new KsrApiException.InternalServerErrorException(
                     "Failed to save new workspace.", e);
@@ -83,7 +83,7 @@ public class WorkspaceController {
             throw new KsrApiException.NotFoundErrorException(
                     "No workspace found with the given name to be deleted.");
         }
-        return workspaceService.getWorkspaceListForUser(authentication.getName());
+        return workspaceService.getWorkspaceListForUser(getCurrentUsername());
     }
 
     /**

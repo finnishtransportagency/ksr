@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+import { removeLayersView } from '../../../../reducers/map/actions';
 import EsriMap from './EsriMap';
 
 const mapStateToProps = (state) => {
@@ -18,6 +19,12 @@ const mapStateToProps = (state) => {
     });
 };
 
-const EsriMapContainer = connect(mapStateToProps, null)(EsriMap);
+const mapDispatchToProps = dispatch => ({
+    removeLayersView: (layerIds) => {
+        dispatch(removeLayersView(layerIds));
+    },
+});
+
+const EsriMapContainer = connect(mapStateToProps, mapDispatchToProps)(EsriMap);
 
 export default EsriMapContainer;

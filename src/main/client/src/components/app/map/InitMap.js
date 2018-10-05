@@ -2,7 +2,6 @@
 import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
-import { addLayers } from '../../../utils/map';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
@@ -20,8 +19,6 @@ type Props = {
     setEditMode: (editMode: string) => void,
     editMode: string,
     setTempGraphicsLayer: (graphicsLayer: Object) => void,
-    setActiveModal: Function,
-    setSingleLayerGeometry: Function,
     activeTool: string,
     setHasGraphics: (hasGraphics: boolean) => void,
     searchWorkspaceFeatures: Function,
@@ -74,8 +71,6 @@ class EsriMap extends Component<Props> {
                     mapScale,
                     selectFeatures,
                     printServiceUrl,
-                    setActiveModal,
-                    setSingleLayerGeometry,
                 } = this.props;
 
                 // GraphicsLayer to hold graphics created via sketch view model
@@ -194,8 +189,6 @@ class EsriMap extends Component<Props> {
                                             selectFeatures,
                                             layerList,
                                             activeAdminTool,
-                                            setActiveModal,
-                                            setSingleLayerGeometry,
                                         );
                                     }
                                 }
@@ -244,13 +237,10 @@ class EsriMap extends Component<Props> {
                                 selectFeatures,
                             );
                         } else {
-                            addLayers(layerList, r.view, []);
                             setWorkspaceRejected();
                         }
                     })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+                    .catch(err => console.log(err));
             });
     };
 

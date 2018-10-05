@@ -26,10 +26,11 @@ class EsriMap extends Component<Props> {
             loadingWorkspace,
         } = this.props;
 
-        if (prevProps.layerList &&
+        if ((prevProps.layerList &&
             prevProps.layerList.length > 0 &&
             prevProps.layerList !== layerList &&
-            view && view.map
+            view && view.map) ||
+            (!loadingWorkspace && loadingWorkspace !== prevProps.loadingWorkspace)
         ) {
             const layerListReversed = [...layerList].reverse();
             const searchLayers = [];
@@ -38,7 +39,7 @@ class EsriMap extends Component<Props> {
             // Update layer settings
             layerListReversed.forEach((l, i) => {
                 // Change layer opacity and visibility
-                view.map.allLayers.forEach((layer) => {
+                view.map.layers.forEach((layer) => {
                     if (layer && l.id === layer.id) {
                         layer.visible = l.visible;
                         layer.opacity = l.opacity;
@@ -74,10 +75,10 @@ class EsriMap extends Component<Props> {
                 }
             }
 
-            view.map.allLayers.forEach((l) => {
+            view.map.layers.forEach((l) => {
                 // Temporary fix for sketchViewModel index
                 if (l.id.indexOf('layer') >= 0) {
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.allLayers.length));
+                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.layers.length));
                 }
             });
         }
