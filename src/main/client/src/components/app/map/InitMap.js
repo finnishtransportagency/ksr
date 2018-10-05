@@ -7,6 +7,7 @@ import { queryFeatures } from '../../../utils/queryFeatures';
 import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
+import { mapHighlightStroke } from '../../ui/defaultStyles';
 
 type Props = {
     layerList: Array<any>,
@@ -107,6 +108,11 @@ class EsriMap extends Component<Props> {
                         dockOptions: {
                             position: 'top-left',
                         },
+                        highlightEnabled: false,
+                    },
+                    highlightOptions: {
+                        color: mapHighlightStroke,
+                        fillOpacity: 0,
                     },
                 });
 
@@ -167,8 +173,7 @@ class EsriMap extends Component<Props> {
                                 });
                             } else {
                                 results = results.filter(item =>
-                                    item.graphic.id !== 'highlight'
-                                    && item.graphic.id !== 'buffer'
+                                    item.graphic.id !== 'buffer'
                                     && item.graphic.id !== 'drawMeasure'
                                     && item.graphic.type !== 'draw-graphic');
 
