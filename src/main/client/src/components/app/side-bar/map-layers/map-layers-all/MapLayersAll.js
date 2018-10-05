@@ -10,6 +10,7 @@ type Props = {
     setLayerList: (Array<any>) => void,
     activeAdminTool: string,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
+    addNonSpatialContentToTable: Object => void,
 };
 
 type State = {
@@ -50,6 +51,10 @@ class MapLayersActive extends Component<Props, State> {
         // Set activated layer visible by default.
         foundLayer.visible = true;
         setLayerList(layerList);
+
+        if (foundLayer.type === 'agfl' && foundLayer.active) {
+            this.props.addNonSpatialContentToTable(foundLayer);
+        }
     };
 
     render() {

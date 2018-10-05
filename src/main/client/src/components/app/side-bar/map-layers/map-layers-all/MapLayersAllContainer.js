@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { setLayerList } from '../../../../../reducers/map/actions';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
+import { addNonSpatialContentToTable } from '../../../../../reducers/table/actions';
 import MapLayersAll from './MapLayersAll';
 
 const mapStateToProps = state => ({
@@ -17,6 +18,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveAdminTool: (layerId, layerList) => {
         dispatch(setActiveAdminTool(layerId, layerList));
+    },
+    addNonSpatialContentToTable: (layer) => {
+        dispatch(addNonSpatialContentToTable(layer));
     },
 });
 

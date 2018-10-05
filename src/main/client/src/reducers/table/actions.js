@@ -224,3 +224,24 @@ export const saveEditedFeatures = (
         type: 'none',
     };
 };
+
+export const addNonSpatialContentToTable = (layer: Object) => (dispatch: Function) => {
+    fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
+        .then((r) => {
+            const layers = parseData(r, false).map((l) => {
+                if (l.id === layer.id) {
+                    return {
+                        ...l,
+                        type: layer.type,
+                    };
+                }
+                return { ...l };
+            });
+
+            dispatch({
+                type: types.SELECT_FEATURES,
+                layers,
+            });
+        })
+        .catch(err => console.error(err));
+};
