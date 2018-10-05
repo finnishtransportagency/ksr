@@ -122,9 +122,21 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerGroups: (state.layerGroups.map(lg => ({
                     ...lg,
-                    layers: lg.type === 'search' ? [] : lg.layers,
+                    layers: lg.type === 'search' ? [] : lg.layers
+                        .map((l) => {
+                            if (l.type === 'agfl' && l.active) {
+                                return { ...l, active: false };
+                            }
+                            return { ...l };
+                        }),
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
+                layerList: ((state.layerList.filter(l => l._source !== 'search'): Array<LayerList>)
+                    .map((l: Object) => {
+                        if (l.type === 'agfl' && l.active) {
+                            return { ...l, active: false };
+                        }
+                        return { ...l };
+                    }): Object[]),
             };
         case ADD_SHAPEFILE_LAYER:
             return {
