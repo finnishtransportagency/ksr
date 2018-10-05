@@ -15,6 +15,7 @@ type Props = {
     layers: Array<Object>,
     loadingWorkspace: boolean,
     printWidget: any,
+    removeLayersView: (layerIds: Object[]) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -35,6 +36,7 @@ class EsriMap extends Component<Props> {
             const layerListReversed = [...layerList].reverse();
             const searchLayers = [];
             const newLayers = [];
+            const toBeRemoved = [];
 
             // Update layer settings
             layerListReversed.forEach((l, i) => {
@@ -51,14 +53,12 @@ class EsriMap extends Component<Props> {
                                 }
                             }
                         }
-                        if (!l.active) view.map.layers.remove(layer);
+                        if (!l.active) toBeRemoved.push(layer.id);
                     }
                 });
 
                 if (l.active && !view.map.findLayerById(l.id)) {
-                    if (l._source === 'search') {
-                        l.visible = true;
-                    }
+                    l.visible = true;
                     l.index = i;
                     newLayers.push(l);
                 }
@@ -68,8 +68,17 @@ class EsriMap extends Component<Props> {
             });
 
             if (!loadingWorkspace) {
+                if (toBeRemoved.length > 0) {
+                    this.props.removeLayersView(toBeRemoved);
+                }
+
                 if (newLayers.length) {
-                    addLayers(newLayers, view, searchLayers);
+                    addLayers(newLayers, view, searchLayers)
+                        .then(() => {
+                            layerListReversed.forEach((l, i) => {
+                                view.map.reorder(view.map.findLayerById(`${l.id}`, i));
+                            });
+                        });
                 } else if (searchLayers.length) {
                     fitExtent(searchLayers, view);
                 }
@@ -82,7 +91,6 @@ class EsriMap extends Component<Props> {
                 }
             });
         }
-
 
         if (view && view.map) {
             if (activeNav === 'fileExport' && this.props.printWidget) {
