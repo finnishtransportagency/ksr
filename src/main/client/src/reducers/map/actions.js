@@ -25,7 +25,7 @@ export const getLayerGroups = () => (dispatch: Function) => {
         })
         .then((r) => {
             layerList.forEach((l) => {
-                if (l.type === 'agfs') {
+                if (l.type === 'agfs' || l.type === 'agfl') {
                     // Add featurelayer fields and geometryType to layerList
                     layerQueries.push(layerData(l.id)
                         .then((layers) => {
