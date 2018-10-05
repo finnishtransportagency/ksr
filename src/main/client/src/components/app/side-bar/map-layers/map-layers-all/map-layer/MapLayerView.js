@@ -29,7 +29,15 @@ const MapLayerView = ({
                 value={layer.name}
                 id={layer.id}
             />
-            <span>{layer.name}</span>
+            {
+                layer.type === 'agfl' &&
+                <React.Fragment>
+                    <i className="fas fa-table" />{' '}<span>{layer.name}</span>
+                </React.Fragment>
+            }
+            {
+                layer.type !== 'agfl' && <span>{layer.name}</span>
+            }
         </LayerGroup.Layer.Label>
         {
             !layer.userLayer ?

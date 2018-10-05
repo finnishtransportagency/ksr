@@ -9,6 +9,7 @@ const mapStateToProps = state => ({
         id: l.id,
         title: l.title,
         _source: l._source,
+        type: l.type,
     })),
     activeTable: state.table.features.activeTable,
 });

@@ -27,6 +27,13 @@ const MapLayerTitle = ({ layer }) => {
                         <span>{layer.name ? layer.name : layer.title}</span>
                     </MapLayerTitleWrapper>
                 );
+            } else if (layer.type === 'agfl') {
+                return (
+                    <MapLayerTitleWrapper>
+                        <i className="fas fa-table" />
+                        <span>{layer.name ? layer.name : layer.title}</span>
+                    </MapLayerTitleWrapper>
+                );
             }
             return layer.name ? layer.name : layer.title;
     }
