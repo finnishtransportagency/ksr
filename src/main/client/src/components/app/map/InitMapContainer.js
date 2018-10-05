@@ -1,7 +1,8 @@
 // @flow
 import { connect } from 'react-redux';
 import { setEditMode, setMapView, setTempGraphicsLayer, setHasGraphics } from '../../../reducers/map/actions';
-import { searchWorkspaceFeatures, selectFeatures } from './../../../reducers/table/actions';
+import { setActiveModal } from '../../../reducers/modal/actions';
+import { setSingleLayerGeometry, searchWorkspaceFeatures, selectFeatures } from './../../../reducers/table/actions';
 import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/actions';
 import InitMap from './InitMap';
 
@@ -35,6 +36,12 @@ const mapDispatchToProps = dispatch => ({
     },
     setEditMode: (editMode) => {
         dispatch(setEditMode(editMode));
+    },
+    setActiveModal: (activeModal) => {
+        dispatch(setActiveModal(activeModal));
+    },
+    setSingleLayerGeometry: (geometry) => {
+        dispatch(setSingleLayerGeometry(geometry));
     },
     setHasGraphics: (hasGraphics) => {
         dispatch(setHasGraphics(hasGraphics));

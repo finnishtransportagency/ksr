@@ -3,6 +3,7 @@ import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
+import { queryFeatures } from '../../../utils/queryFeatures';
 import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
@@ -24,6 +25,8 @@ type Props = {
     searchWorkspaceFeatures: Function,
     setWorkspaceRejected: Function,
     initialLoading: boolean,
+    setActiveModal: Function,
+    setSingleLayerGeometry: Function,
 };
 
 class EsriMap extends Component<Props> {
@@ -71,6 +74,8 @@ class EsriMap extends Component<Props> {
                     mapScale,
                     selectFeatures,
                     printServiceUrl,
+                    setActiveModal,
+                    setSingleLayerGeometry,
                 } = this.props;
 
                 // GraphicsLayer to hold graphics created via sketch view model
@@ -96,6 +101,12 @@ class EsriMap extends Component<Props> {
                     constraints: {
                         maxScale: 2000,
                         minScale: 5000000,
+                    },
+                    popup: {
+                        collapseEnabled: false,
+                        dockOptions: {
+                            position: 'top-left',
+                        },
                     },
                 });
 
@@ -144,7 +155,7 @@ class EsriMap extends Component<Props> {
                         // Found results
                         if (results.length) {
                             if (this.props.activeTool === 'drawErase') {
-                                view.popup = null;
+                                view.popup.close();
                                 results.forEach((r) => {
                                     if (r.graphic && r.graphic.type === 'draw-graphic') {
                                         view.graphics.remove(r.graphic);
@@ -175,22 +186,20 @@ class EsriMap extends Component<Props> {
                                     this.props.sketchViewModel.update(graphic);
                                 } else if (this.props.editMode === 'finish') {
                                     this.props.setEditMode('');
-                                } else {
+                                } else if (event.button === 0) {
                                     const { activeAdminTool } = this.props;
-                                    if (event.button === 0) {
-                                        const swLink = getStreetViewLink(
-                                            event.mapPoint.x,
-                                            event.mapPoint.y,
-                                        );
-                                        mapSelectPopup(
-                                            results,
-                                            swLink,
-                                            view,
-                                            selectFeatures,
-                                            layerList,
-                                            activeAdminTool,
-                                        );
-                                    }
+                                    const swLink = getStreetViewLink(
+                                        event.mapPoint.x,
+                                        event.mapPoint.y,
+                                    );
+                                    mapSelectPopup(
+                                        results,
+                                        swLink,
+                                        view,
+                                        selectFeatures,
+                                        layerList,
+                                        activeAdminTool,
+                                    );
                                 }
                             }
                         }
@@ -208,6 +217,18 @@ class EsriMap extends Component<Props> {
 
                 (document.getElementById: Function)('create-new-feature-wrapper').classList
                     .remove('esri-component');
+
+                view.popup.on('trigger-action', (evt) => {
+                    if (evt.action.id === 'select-intersect') {
+                        const layerId = view.popup.viewModel.selectedFeature.layer.id;
+                        const featureGeom = view.popup.viewModel.selectedFeature.geometry;
+                        const { activeAdminTool } = this.props;
+                        queryFeatures(featureGeom, activeAdminTool, view, selectFeatures, layerId);
+                    } else if (evt.action.id === 'set-buffer') {
+                        setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
+                        setActiveModal('bufferSelectedData');
+                    }
+                });
 
                 return { view, tempGraphicsLayer };
             })
