@@ -63,7 +63,7 @@ public class LayerRepository {
                                     LAYER_PERMISSION.UPDATE_LAYER.equal("1") : DSL.trueCondition()
                     )
                     .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
-                    .and(isQuery ? LAYER.TYPE.equal("agfs") : DSL.trueCondition())
+                    .and(isQuery ? LAYER.TYPE.in("agfs", "agfl") : DSL.trueCondition())
                 .fetchOneInto(LayerRecord.class);
 
         return lr == null ? null : new Layer(lr);
