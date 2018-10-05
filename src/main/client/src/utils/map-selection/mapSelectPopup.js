@@ -29,17 +29,27 @@ export const mapSelectPopup = (
 
     newResults.forEach((layer) => {
         const fieldInfos = [];
-        const queryColumns = layerList
-            .filter(ll => ll.id === layer.graphic.layer.id)
-            .map(ll => ll.queryColumns);
-
-        if (queryColumns[0]) {
-            queryColumns[0].forEach((r) => {
+        if (layer.graphic.layer.featureType === 'shapefile') {
+            const columns = layer.graphic.layer.fields.slice(0, 5);
+            columns.forEach((c) => {
                 fieldInfos.push({
-                    fieldName: r,
-                    label: r,
+                    fieldName: c.name,
+                    label: c.name,
                 });
             });
+        } else {
+            const queryColumns = layerList
+                .filter(ll => ll.id === layer.graphic.layer.id)
+                .map(ll => ll.queryColumns);
+
+            if (queryColumns[0]) {
+                queryColumns[0].forEach((r) => {
+                    fieldInfos.push({
+                        fieldName: r,
+                        label: r,
+                    });
+                });
+            }
         }
 
         const selectIntersectAction = {
