@@ -69,15 +69,13 @@ const findMatchingLayer = (view: Object, layerId: string) => {
 * @param res Object Body of the response from ArcGIS Server
 * @param layer FeatureLayer esri/layers/FeatureLayer
 */
-const handleSaveResponse = (res: Object, layer: Object) => {
+const handleSaveResponse = (res: Object, layer: ?Object) => {
     if (res && Array.isArray(res.addResults) && res.addResults.some(e => e.success)) {
         if (layer) {
-            const ids = res.addResults.filter(e => e.success).map(e => e.objectId);
             layer.refresh();
-            toast.success(`${strings.saveFeatureData.newFeatureSaveSuccess} [${ids.join(', ')}]`);
-        } else {
-            toast.error(strings.saveFeatureData.newFeatureSaveError);
         }
+        const ids = res.addResults.filter(e => e.success).map(e => e.objectId);
+        toast.success(`${strings.saveFeatureData.newFeatureSaveSuccess} [${ids.join(', ')}]`);
     } else {
         toast.error(strings.saveFeatureData.newFeatureSaveError);
     }
@@ -102,16 +100,13 @@ const handleUpdateResponse = (res: Object, layerId: string) => ({
 /**
 * Display toast notification, if at least one feture saved for given layer.
 *
-* @param layer Object Returned layer from handleUpdateResponse-method
-* @param originalLayer esri/layers/Layer
+* @param {Object} layer Returned layer from handleUpdateResponse-method
 *
-* @return layer Layer
+* @return {Object} Layer
 */
-const notifyUpdateSuccess = (layer: Object, originalLayer: Object) => {
+const notifyUpdateSuccess = (layer: Object) => {
     if (layer && layer.features && layer.features.length) {
-        toast.success(`
-            ${strings.saveFeatureData.layerUpdateSaveSuccess} [${originalLayer.layer.title}]
-        `);
+        toast.success(`${strings.saveFeatureData.layerUpdateSaveSuccess}`);
     }
     return layer;
 };
@@ -132,7 +127,7 @@ const saveData = (
 ) => {
     const params = featureDataToParams(features);
     const layer = findMatchingLayer(view, layerId);
-    if (layer && params) {
+    if (params) {
         switch (action) {
             case 'add':
                 return addFeatures(layerId, params).then(res =>
@@ -144,11 +139,9 @@ const saveData = (
             case 'update':
                 return updateFeatures(layerId, params).then(r =>
                     r && handleUpdateResponse(r, layerId))
-                    .then(l => l && notifyUpdateSuccess(l, layer))
+                    .then(l => l && notifyUpdateSuccess(l))
                     .catch((err) => {
-                        toast.error(`
-                            ${strings.saveFeatureData.layerUpdateSaveError} [${layer.layer.title}]
-                        `);
+                        toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
                         console.error(err);
                     });
             default:
@@ -212,10 +205,9 @@ const saveEditedFeatureData = (
 
             const layerId = ed.id;
 
-            const promisesAddressField = features.map((feature) => {
-                const geometryType = feature.geometry.type;
-                return createAddressFields(feature, geometryType, featureType, addressField);
-            });
+            const promisesAddressField = features.map(feature => (
+                createAddressFields(feature, featureType, addressField)
+            ));
 
             return Promise.all(promisesAddressField)
                 .then(r => save.saveData('update', view, layerId, r));
