@@ -14,7 +14,7 @@ type Props = {
     onToggleVisibility: (Number) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
-    createNonSpatialFeature: (layerId: string) => void,
+    createNonSpatialFeature: () => void,
     activeAdminTool: string,
 };
 
@@ -52,16 +52,16 @@ const MapLayerSettings = ({
                                 className="fas fa-plus"
                                 role="button"
                                 tabIndex={0}
-                                onKeyPress={() => createNonSpatialFeature(layer.id)}
-                                onClick={() => createNonSpatialFeature(layer.id)}
+                                onKeyPress={() => createNonSpatialFeature()}
+                                onClick={() => createNonSpatialFeature()}
                                 title={strings.mapLayerSettings.addNewFeature}
                             />
                         </LayerSettings.Icons>
                     }
                     <LayerSettings.Icons activeAdminTool={activeAdminTool === layer.id}>
-                        { layer.source !== 'search' &&
+                        { layer._source !== 'search' &&
                         !layer.userLayer &&
-                        layer.source !== 'shapefile' &&
+                        layer._source !== 'shapefile' &&
                         (layer.type === 'agfs'
                         || layer.type === 'agfl') &&
                         <i

@@ -11,6 +11,7 @@ type Props = {
     setLayerList: (Array<any>) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     activeAdminTool: string,
+    createNonSpatialFeature: () => void,
 };
 
 type State = {
@@ -68,7 +69,7 @@ class MapLayersActive extends Component<Props, State> {
 
     render() {
         const {
-            layerList, fetching, setActiveAdminTool, activeAdminTool,
+            layerList, fetching, setActiveAdminTool, activeAdminTool, createNonSpatialFeature,
         } = this.props;
         if (!fetching) {
             return (
@@ -79,6 +80,7 @@ class MapLayersActive extends Component<Props, State> {
                     onOpacityChange={this.onOpacityChange}
                     setActiveAdminTool={setActiveAdminTool}
                     activeAdminTool={activeAdminTool}
+                    createNonSpatialFeature={createNonSpatialFeature}
                 />
             );
         }

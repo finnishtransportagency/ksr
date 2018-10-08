@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
 import { setLayerList } from '../../../../../reducers/map/actions';
+import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
 
 const mapStateToProps = state => ({
@@ -16,6 +17,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveAdminTool: (layerId, layerList) => {
         dispatch(setActiveAdminTool(layerId, layerList));
+    },
+    createNonSpatialFeature: () => {
+        dispatch(setActiveModal('editLayerDetails'));
     },
 });
 
