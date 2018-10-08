@@ -49,7 +49,7 @@ public class GeoconvertController {
         String y = request.getParameter("y");
         String x = request.getParameter("x");
 
-        if (featureType == null || y == null || x == null) {
+        if (featureType == null || featureType.isEmpty() || y == null || y.isEmpty() || x == null || x.isEmpty()) {
             throw new KsrApiException.BadRequestException("Invalid query parameters given.");
         }
 
