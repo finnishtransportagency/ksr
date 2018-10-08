@@ -78,6 +78,13 @@ class EsriMap extends Component<Props> {
                             layerListReversed.forEach((l, i) => {
                                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
                             });
+                            view.map.layers.forEach((l) => {
+                                // Temporary fix for sketchViewModel index
+                                if (l.id.indexOf('layer') >= 0) {
+                                    view.map.reorder(view
+                                        .map.findLayerById(`${l.id}`, view.map.layers.length));
+                                }
+                            });
                         });
                 } else if (searchLayers.length) {
                     fitExtent(searchLayers, view);
