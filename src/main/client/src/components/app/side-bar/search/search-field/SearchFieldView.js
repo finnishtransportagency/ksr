@@ -40,7 +40,7 @@ const SearchFieldView = ({
 }: Props) => (
     <SearchFieldWrapper>
         <SearchFieldWrapper.Title>
-            <div>{field.name}</div>
+            <div>{field.label}</div>
             <SearchFieldWrapper.Remove
                 role="button"
                 tabIndex={index}

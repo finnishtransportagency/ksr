@@ -97,14 +97,17 @@ class Search extends Component<Props, State> {
             suggestionsActive,
         } = this.props.searchState;
 
+        const field = optionsField.find(a => a.value === layerId);
+
         const newField = {
             id: searchFieldValues.length,
-            name: optionsField.find(a => a.value === layerId).label,
+            name: field.name,
+            label: field.label,
             queryExpression: '%',
             queryText: '',
         };
         const searchFields = [...searchFieldValues, newField]
-            .map((field, index) => ({ ...field, id: index }));
+            .map((f, index) => ({ ...f, id: index }));
 
         setSearchState(
             selectedLayer,
