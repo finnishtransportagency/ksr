@@ -197,6 +197,8 @@ const fi = {
         layerUpdateSaveSuccess: 'Muokkausten tallennus onnistui.',
         layerUpdateSaveError: 'Muokkausten tallennus epäonnistui.',
         errorLayerNotFound: 'Tallennus epäonnistui. Tasoa ei löydy.',
+        featureDeleteSuccess: 'Poistettu kohteet',
+        featureDeleteError: 'Kohteiden poisto epäonnistui.',
     },
 };
 
