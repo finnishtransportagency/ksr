@@ -18,7 +18,6 @@ export const TextArea = styled.textarea`
 export const FilteredDataTable = styled.table`
     text-align: left;
     display: block;
-    overflow: auto;
     
     th, td {
         padding-right: 1rem;
