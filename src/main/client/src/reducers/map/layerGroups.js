@@ -11,6 +11,7 @@ import {
     SET_ACTIVE_ADMIN_TOOL,
     SET_LAYER_LIST,
     SET_WORKSPACE_FULFILLED,
+    APPLY_DELETED_FEATURES,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -152,6 +153,15 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 layerList: updateLayerList(action.workspace, state.layerList),
+            };
+        case APPLY_DELETED_FEATURES:
+            return {
+                ...state,
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: lg.type === 'search' ? [] : lg.layers,
+                })): Array<LayerGroups>),
+                layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
             };
         default:
             return state;

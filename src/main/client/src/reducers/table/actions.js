@@ -224,3 +224,20 @@ export const saveEditedFeatures = (
         type: 'none',
     };
 };
+
+export const saveDeletedFeatures = (
+    view: Object,
+    layerId: string,
+    objectIds: string,
+    deleteComment: string,
+) => (dispatch: Function) => {
+    view.popup.close();
+    save.saveDeletedFeatureData(view, layerId, objectIds, deleteComment)
+        .then(() => {
+            dispatch({
+                type: types.APPLY_DELETED_FEATURES,
+                objectIds,
+                layerId,
+            });
+        });
+};
