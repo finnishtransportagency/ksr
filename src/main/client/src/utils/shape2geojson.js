@@ -1,8 +1,9 @@
 // @flow
 import * as shapefile from 'shapefile';
 import esriLoader from 'esri-loader';
+import moment from 'moment';
 import { mapShapefileHighlight as highlight } from '../components/ui/defaultStyles';
-import { convertEsriGeometryType, dataType } from './type';
+import { convertEsriGeometryType } from './type';
 
 /**
  * Create Esri geometry type.
@@ -72,7 +73,12 @@ export const createAttributes = (properties: Object[], index: number) => {
     const attributes = {};
     attributes.ObjectID = index;
     Object.entries(properties).forEach(([key, value]) => {
-        attributes[key] = value;
+        if (value instanceof Date) {
+            attributes[key] = moment(value).format('DD.MM.YYYY');
+        } else {
+            // No need to validate imported shape data as it is not editable.
+            attributes[key] = String(value);
+        }
     });
     return attributes;
 };
@@ -167,14 +173,14 @@ export const createSymbol = (geometry: Object) => {
 export const createFields = (attributes: Object) => {
     const fields = [];
     let fieldObj = {};
-    Object.entries(attributes).forEach(([key, value]) => {
+    Object.entries(attributes).forEach(([key]) => {
         fieldObj = {};
         fieldObj.name = key;
         fieldObj.alias = key;
         if (key === 'ObjectID') {
             fieldObj.type = 'esriFieldTypeOID';
         } else {
-            fieldObj.type = dataType(value);
+            fieldObj.type = 'esriFieldTypeString';
         }
         fields.push(fieldObj);
     });

@@ -71,31 +71,3 @@ export const convertEsriGeometryType = (type: string) => {
     }
     return typeValue;
 };
-
-/**
- * Parse data to Esri Field Types
- * @param value any data
- * @returns String Esri Field Types
- */
-export const dataType = (value: any) => {
-    // Returns if a value is a string
-    if (value) {
-        if (typeof value === 'string') {
-            return 'esriFieldTypeString';
-        }
-    }
-    // Returns if a value is really a number
-    if (value) {
-        if (typeof value === 'number') {
-            return 'esriFieldTypeInteger';
-        }
-    }
-    // Returns if value is a date object
-    if (value) {
-        if (value instanceof Date) {
-            return 'esriFieldTypeDate';
-        }
-    }
-
-    return 'esriFieldTypeString';
-};
