@@ -58,7 +58,6 @@ export const createGeoconvertParams = (
  * Adds address attribute to features data.
  *
  * @param {Object} data Feature layer data without address.
- * @param {string} geometryType Type of esri geometry to be used in query.
  * @param {string} featureType Type of feature (road | water | railway).
  * @param {string} addressField Name of layers address field.
  *
@@ -67,16 +66,15 @@ export const createGeoconvertParams = (
  */
 export const createAddressFields = (
     data: Object,
-    geometryType: string,
     featureType: string,
     addressField: string,
 ) => new Promise((resolve) => {
-    if (!featureType || !addressField) {
+    if (!featureType || !addressField || !data.geometry) {
         resolve(data);
     } else {
         const geoconvertQueryParams = createGeoconvertParams(
             data.geometry,
-            geometryType,
+            data.geometry.type,
             featureType,
         );
 

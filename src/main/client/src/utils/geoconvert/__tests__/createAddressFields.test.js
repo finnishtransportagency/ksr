@@ -68,13 +68,13 @@ describe('createAddressFields', () => {
             geometry: {
                 x: 123,
                 y: 123,
+                type: 'point',
             },
         };
-        const geometryType = 'point';
         const featureType = 'road';
         const addressField = 'test_address_field';
 
-        return expect(createAddressFields(data, geometryType, featureType, addressField))
+        return expect(createAddressFields(data, featureType, addressField))
             .resolves.toEqual({
                 ...data,
                 attributes: {
@@ -98,13 +98,13 @@ describe('createAddressFields', () => {
                     [564, 564],
                     [987, 789],
                 ]],
+                type: 'polyline',
             },
         };
-        const geometryType = 'polyline';
         const featureType = 'road';
         const addressField = 'start_and_endpoint';
 
-        return expect(createAddressFields(data, geometryType, featureType, addressField))
+        return expect(createAddressFields(data, featureType, addressField))
             .resolves.toEqual({
                 ...data,
                 attributes: {
@@ -128,13 +128,13 @@ describe('createAddressFields', () => {
                     [123, 123],
                     [123, 123],
                 ],
+                type: 'multipoint',
             },
         };
-        const geometryType = 'multipoint';
         const featureType = 'road';
         const addressField = 'address_fields';
 
-        return expect(createAddressFields(data, geometryType, featureType, addressField))
+        return expect(createAddressFields(data, featureType, addressField))
             .resolves.toEqual({
                 ...data,
                 attributes: {
@@ -152,13 +152,13 @@ describe('createAddressFields', () => {
             geometry: {
                 x: 123,
                 y: 123,
+                type: 'point',
             },
         };
-        const geometryType = 'point';
         const featureType = 'railway';
         const addressField = 'test_address_field';
 
-        return expect(createAddressFields(data, geometryType, featureType, addressField))
+        return expect(createAddressFields(data, featureType, addressField))
             .resolves.toEqual({
                 ...data,
                 attributes: {
@@ -181,13 +181,13 @@ describe('createAddressFields', () => {
                     [564, 564],
                     [987, 789],
                 ]],
+                type: 'polyline',
             },
         };
-        const geometryType = 'polyline';
         const featureType = 'railway';
         const addressField = 'start_and_endpoint';
 
-        return expect(createAddressFields(data, geometryType, featureType, addressField))
+        return expect(createAddressFields(data, featureType, addressField))
             .resolves.toEqual({
                 ...data,
                 attributes: {
@@ -210,13 +210,13 @@ describe('createAddressFields', () => {
                     [123, 123],
                     [123, 123],
                 ],
+                type: 'multipoint',
             },
         };
-        const geometryType = 'multipoint';
         const featureType = 'railway';
         const addressField = 'test_address_field';
 
-        return expect(createAddressFields(data, geometryType, featureType, addressField))
+        return expect(createAddressFields(data, featureType, addressField))
             .resolves.toEqual({
                 ...data,
                 attributes: {

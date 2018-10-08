@@ -61,16 +61,14 @@ class ModalFilter extends Component<Props, State> {
 
     handleModalSubmit = () => {
         const {
-            layer,
             addressField,
             view,
             originalLayerId,
             featureType,
         } = this.props;
         const { data } = this.state;
-        const geometryType = layer.graphics.items[0].geometry.type;
 
-        createAddressFields(data, geometryType, featureType, addressField)
+        createAddressFields(data, featureType, addressField)
             .then(r => save.saveData('add', view, originalLayerId, [r]));
     };
 
