@@ -61,3 +61,23 @@ export const applyEdits = (
     return { ...layer };
 });
 
+/**
+ * Removes deleted features from table.
+ *
+ * @param {Object[]} layers List of map layers.
+ * @param {string} objectIds String of feature IDs to be deleted, separated by commas.
+ * @param {string} layerId ID of layer that the features will be deleted from.
+ *
+ * @returns {Object[]} List of map layers with deleted features removed.
+ */
+export const applyDeletedFeatures = (
+    layers: Object[],
+    objectIds: string,
+    layerId: string,
+): Object[] => layers.filter(layer => layer.id === layerId)
+    .map((layer: Object) => ({
+        ...layer,
+        data: layer.data.filter(d => !objectIds.includes(d._id)),
+    }))
+    .filter((layer: Object) => layer.data.length);
+
