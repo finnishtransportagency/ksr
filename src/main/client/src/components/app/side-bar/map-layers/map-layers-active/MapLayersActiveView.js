@@ -70,8 +70,9 @@ const MapLayersView = ({
                                                             >
                                                                 { l._source !== 'search' &&
                                                                 !l.userLayer &&
-                                                                l._source !== 'shapefile' &&
-                                                                l.type === 'agfs' &&
+                                                                l.source !== 'shapefile' &&
+                                                                (l.type === 'agfs'
+                                                                || l.type === 'agfl') &&
                                                                 <i
                                                                     role="button"
                                                                     tabIndex={0}
