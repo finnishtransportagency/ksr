@@ -34,6 +34,7 @@ type Props = {
     isOpen: boolean,
     setActiveToolMenu: Function,
     activeAdminTool: string,
+    layerList: Object[],
 };
 
 class SketchTool extends Component<Props, State> {
@@ -245,6 +246,14 @@ class SketchTool extends Component<Props, State> {
         this.props.setTempGraphicsLayer(layer);
     };
 
+    showAdminView = (): boolean => {
+        if (this.props.activeAdminTool === '') {
+            return false;
+        }
+        const layer = this.props.layerList.find(l => l.id === this.props.activeAdminTool);
+        return layer ? layer.type !== 'agfl' : false;
+    };
+
     // Assign constructor ref flowtypes
     drawNewFeatureButton: any;
     drawRectangleButton: any;
@@ -254,7 +263,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, activeAdminTool, tempGraphicsLayer, setActiveModal, isOpen,
+            data, view, tempGraphicsLayer, setActiveModal, isOpen,
         } = this.props;
 
         const hasSelectedFeatures = data.filter(f => f._source !== 'search').length > 0;
@@ -279,7 +288,7 @@ class SketchTool extends Component<Props, State> {
                 <SketchActiveAdminView
                     editSketchIcon={this.state.editSketchIcon}
                     removeSketch={this.removeSketch}
-                    activeAdminTool={activeAdminTool}
+                    showAdminView={this.showAdminView()}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
                     hasAdminGraphics={hasAdminGraphics}
                     setActiveModal={setActiveModal}

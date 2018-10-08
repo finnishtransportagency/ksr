@@ -22,6 +22,7 @@ const mapStateToProps = state => ({
     geometryType: state.adminTool.active.geometryType,
     activeModal: state.modal.activeModal,
     isOpen: state.map.mapTools.activeToolMenu === 'sketchTools',
+    layerList: state.map.layerGroups.layerList,
 });
 
 const mapDispatchToProps = dispatch => ({

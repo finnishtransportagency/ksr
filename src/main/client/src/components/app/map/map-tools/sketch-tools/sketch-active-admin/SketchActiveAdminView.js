@@ -5,7 +5,7 @@ import Wrapper from './styles';
 
 type Props = {
     editSketchIcon: string,
-    activeAdminTool: string,
+    showAdminView: boolean,
     removeSketch: () => void,
     drawNewFeatureButtonRef: () => void,
     hasAdminGraphics: boolean,
@@ -14,7 +14,7 @@ type Props = {
 
 const SketchActiveAdminView = ({
     editSketchIcon,
-    activeAdminTool,
+    showAdminView,
     removeSketch,
     drawNewFeatureButtonRef,
     hasAdminGraphics,
@@ -54,7 +54,7 @@ const SketchActiveAdminView = ({
             </div>
             <Wrapper>
                 <div
-                    style={{ visibility: activeAdminTool === '' ? 'hidden' : 'visible' }}
+                    style={{ visibility: showAdminView ? 'visible' : 'hidden' }}
                     id="draw-create-new-feature"
                     className={`esri-component esri-widget--button esri-widget esri-interactive ${hasAdminGraphics ? 'draw-create-new-feature-disabled' : ''}`}
                     title={strings.sketchTool.activeAdmin}
