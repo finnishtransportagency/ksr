@@ -198,6 +198,11 @@ const fi = {
         layerUpdateSaveError: 'Muokkausten tallennus epäonnistui.',
         errorLayerNotFound: 'Tallennus epäonnistui. Tasoa ei löydy.',
     },
+    mapLayerSettings: {
+        addNewFeature: 'Luo uusi kohde',
+        toggleAdminTool: 'Muokkaus päälle/pois',
+        toggleVisibility: 'Näytä/piilota karttataso',
+    },
 };
 
 export default fi;
