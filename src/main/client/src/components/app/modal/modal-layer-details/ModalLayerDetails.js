@@ -36,8 +36,10 @@ class ModalFilter extends Component<Props, State> {
 
     componentWillUnmount() {
         const { layer } = this.props;
-        layer.graphics = undefined;
-        this.props.setTempGraphicsLayer(layer);
+        if (layer) {
+            layer.graphics = undefined;
+            this.props.setTempGraphicsLayer(layer);
+        }
     }
 
     loadFields = () => {
@@ -47,7 +49,7 @@ class ModalFilter extends Component<Props, State> {
 
         const data = {
             attributes,
-            geometry: layer.graphics.items[0].geometry,
+            geometry: layer.graphics.items.length ? layer.graphics.items[0].geometry : null,
         };
 
         this.setState({ data });
