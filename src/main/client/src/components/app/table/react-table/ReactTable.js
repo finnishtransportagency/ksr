@@ -91,7 +91,7 @@ class ReactTable extends Component<Props> {
             fetching, layer, selectAll, toggleSelectAll, layerList,
         } = this.props;
 
-        if (layer === null) {
+        if (!layer) {
             return (
                 <WrapperReactTableNoTable>
                     {strings.table.noTableText}
