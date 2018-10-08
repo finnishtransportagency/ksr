@@ -42,32 +42,3 @@ export const findGeometryType = (
     }
     return '';
 };
-
-/**
- *  Parse type to Esri Geometry Types
- * @param type String type
- * @returns String Esri Geometry Types
- */
-export const convertEsriGeometryType = (type: string) => {
-    let typeValue = null;
-    switch (type.toLowerCase()) {
-        case 'point':
-            typeValue = 'esriGeometryPoint';
-            break;
-        case 'multipoint':
-            typeValue = 'esriGeometryMultipoint';
-            break;
-        case 'polyline':
-            typeValue = 'esriGeometryPolyline';
-            break;
-        case 'polygon':
-            typeValue = 'esriGeometryPolygon';
-            break;
-        case 'envelope':
-            typeValue = 'esriGeometryEnvelope';
-            break;
-        default:
-            return 'esriGeometryPolygon';
-    }
-    return typeValue;
-};

@@ -3,7 +3,6 @@ import * as shapefile from 'shapefile';
 import esriLoader from 'esri-loader';
 import moment from 'moment';
 import { mapShapefileHighlight as highlight } from '../components/ui/defaultStyles';
-import { convertEsriGeometryType } from './type';
 
 /**
  * Create Esri geometry type.
@@ -200,7 +199,6 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
     active: true,
     attribution: '',
     authentication: '',
-    geometryType: convertEsriGeometryType(layer.geometryType),
     fields: layer.fields && layer.fields.map((f, index) => ({
         value: index, label: f.alias, type: f.type, name: f.name,
     })),
@@ -249,8 +247,6 @@ export const createLayer = (
         fields: createFields(graphics[0].attributes),
         objectIdField: 'ObjectID', // This must be defined when creating a layer from Graphics
         renderer: createSymbol(graphics[0].geometry),
-        spatialReference: { wkid: 3067 },
-        geometryType: graphics[0].geometry.type, // Must be set when creating a layer from Graphics
         outFields: ['*'],
         title: fileName,
         maxScale: 0,
