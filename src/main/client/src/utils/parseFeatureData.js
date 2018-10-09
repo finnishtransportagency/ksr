@@ -201,6 +201,8 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
         const data = layer.data.reduce((fd, d) => {
             if (d._source === 'search') {
                 fd.push({ ...d, _selected: false, _edited: [] });
+            } else if (!d._selected) {
+                fd.push({ ...d });
             }
             return fd;
         }, []);
