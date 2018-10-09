@@ -115,6 +115,7 @@ export default (state: State = initialState, action: Action) => {
                     .map(l => ({
                         ...l,
                         visible: l.id === action.layerId ? true : l.visible,
+                        active: l.type === 'agfl' && l.id !== action.layerId ? false : l.active,
                     })): any),
             };
         case CLEAR_TABLE_DATA:
