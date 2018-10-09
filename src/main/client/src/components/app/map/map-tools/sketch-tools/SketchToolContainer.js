@@ -17,7 +17,7 @@ const mapStateToProps = state => ({
     draw: state.map.mapTools.draw,
     sketchViewModel: state.map.mapTools.sketchViewModel,
     data: state.table.features.layers
-        .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []),
+        .reduce((a, b) => (b.type !== 'agfl' ? a.concat(b.data.filter(d => d._selected)) : a), []),
     activeAdminTool: state.adminTool.active.layerId,
     geometryType: state.adminTool.active.geometryType,
     activeModal: state.modal.activeModal,

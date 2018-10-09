@@ -26,11 +26,9 @@ const mapStateToProps = (state) => {
 
     const editedLayers = state.table.features.editedLayers.map(l => removeUnderscore(l));
     const originalLayers = state.table.features.layers.map(l => removeUnderscore(l));
-    const selectedData = [];
-
-    state.table.features.layers.forEach((l) => {
-        l.data.forEach(d => d._selected && selectedData.push(d));
-    });
+    const selectedData = state.table.features.layers.reduce((a, b) => (
+        b.type !== 'agfl' ? a.concat(b.data.filter(d => d._selected)) : a
+    ), []);
 
     return {
         isOpen: state.table.toggleTable,
