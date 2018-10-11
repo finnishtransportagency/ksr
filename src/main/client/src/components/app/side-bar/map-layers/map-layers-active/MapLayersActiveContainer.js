@@ -6,7 +6,8 @@ import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
 
 const mapStateToProps = state => ({
-    layerList: state.map.layerGroups.layerList,
+    mapLayerList: state.map.layerGroups.layerList.filter(l => l.type !== 'agfl'),
+    dataLayerList: state.map.layerGroups.layerList.filter(l => l.type === 'agfl'),
     fetching: state.map.layerGroups.fetching,
     activeAdminTool: state.adminTool.active.layerId,
 });

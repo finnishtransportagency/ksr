@@ -5,17 +5,17 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import MapLayerSettings from './map-layer-settings/MapLayerSettings';
 
 type Props = {
-    layerList: Object[],
+    mapLayerList: Object[],
     onDragEnd: (DropResult) => void,
     onToggleVisibility: (Number) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
-    createNonSpatialFeature: (layerId: string) => void,
+    createNonSpatialFeature: () => void,
     activeAdminTool: string,
 };
 
 const MapLayersView = ({
-    layerList,
+    mapLayerList,
     onDragEnd,
     onOpacityChange,
     onToggleVisibility,
@@ -28,7 +28,7 @@ const MapLayersView = ({
             <Droppable droppableId="droppable">
                 {dropProvided => (
                     <div ref={dropProvided.innerRef}>
-                        {layerList.map((l, i) => (
+                        {mapLayerList.map((l, i) => (
                             <Draggable key={l.id} draggableId={l.id} index={i}>
                                 {provided => (
                                     <div
@@ -39,7 +39,7 @@ const MapLayersView = ({
                                         {l.active && (
                                             <MapLayerSettings
                                                 layer={l}
-                                                layerList={layerList}
+                                                layerList={mapLayerList}
                                                 onOpacityChange={onOpacityChange}
                                                 onToggleVisibility={onToggleVisibility}
                                                 setActiveAdminTool={setActiveAdminTool}

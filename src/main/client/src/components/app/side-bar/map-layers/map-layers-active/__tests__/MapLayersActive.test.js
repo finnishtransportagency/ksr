@@ -3,10 +3,11 @@ import { shallow } from 'enzyme';
 import LoadingIcon from '../../../../shared/LoadingIcon';
 import MapLayersActive from '../MapLayersActive';
 import MapLayersActiveView from '../MapLayersActiveView';
+import DataLayersActiveView from '../data-layers-active/DataLayersActiveView';
 
 const setup = (prop) => {
     const minProps = {
-        layerList: [
+        mapLayerList: [
             {
                 id: 1,
                 opacity: 1,
@@ -15,6 +16,12 @@ const setup = (prop) => {
             {
                 id: 2,
                 opacity: 1,
+                visible: true,
+            },
+        ],
+        dataLayerList: [
+            {
+                id: 3,
                 visible: true,
             },
         ],
@@ -36,13 +43,14 @@ describe('<MapLayersActive />', () => {
 
     it('should render view if fetching completed', () => {
         const props = {
-            activeLayers: [],
-            layerGroups: [],
+            mapLayerList: [],
+            dataLayerList: [],
             fetching: false,
         };
 
         const { wrapper } = setup(props);
         expect(wrapper.find(MapLayersActiveView).exists()).toBe(true);
+        expect(wrapper.find(DataLayersActiveView).exists()).toBe(true);
     });
 
     it('should handle onDragEnd correctly', () => {
@@ -64,9 +72,9 @@ describe('<MapLayersActive />', () => {
 
     it('should handle onToggleVisibility correctly', () => {
         const { wrapper } = setup();
-        const { setLayerList, layerList } = wrapper.instance().props;
+        const { setLayerList, mapLayerList } = wrapper.instance().props;
         const id = 2;
-        const foundLayer = layerList.find(layer => layer.id === id);
+        const foundLayer = mapLayerList.find(layer => layer.id === id);
 
         expect(foundLayer.visible).toBe(true);
         wrapper.instance().onToggleVisibility(id);
@@ -80,10 +88,10 @@ describe('<MapLayersActive />', () => {
 
     it('should handle onOpacityChange correctly', () => {
         const { wrapper } = setup();
-        const { setLayerList, layerList } = wrapper.instance().props;
+        const { setLayerList, mapLayerList } = wrapper.instance().props;
         const newOpacity = 0.7;
         const id = 2;
-        const foundLayer = layerList.find(layer => layer.id === id);
+        const foundLayer = mapLayerList.find(layer => layer.id === id);
 
         expect(foundLayer.opacity).toBe(1);
         wrapper.instance().onOpacityChange(newOpacity, id);

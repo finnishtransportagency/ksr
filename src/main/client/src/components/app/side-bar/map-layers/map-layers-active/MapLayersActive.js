@@ -4,9 +4,11 @@ import type { DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../../../../utils/reorder';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersActiveView from './MapLayersActiveView';
+import DataLayersActiveView from './data-layers-active/DataLayersActiveView';
 
 type Props = {
-    layerList: any,
+    mapLayerList: any,
+    dataLayerList: any,
     fetching: boolean,
     setLayerList: (Array<any>) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
@@ -28,25 +30,25 @@ class MapLayersActive extends Component<Props, State> {
     }
 
     onDragEnd = (result: DropResult) => {
-        const { layerList, setLayerList } = this.props;
+        const { mapLayerList, setLayerList, dataLayerList } = this.props;
 
         if (!result.destination) {
             return;
         }
 
         const layerListReorder = reorder(
-            layerList,
+            mapLayerList,
             result.source.index,
             result.destination.index,
         );
 
-        setLayerList(layerListReorder);
+        setLayerList(layerListReorder.concat(dataLayerList));
     };
 
     onToggleVisibility = (id: Number) => {
-        const { setLayerList } = this.props;
-        const layerList = [...this.props.layerList];
-        const newLayerList = layerList.map((l) => {
+        const { setLayerList, dataLayerList } = this.props;
+        const mapLayerList = [...this.props.mapLayerList];
+        const newMapLayerList = mapLayerList.map((l) => {
             if (l.id === id) {
                 return {
                     ...l,
@@ -55,33 +57,47 @@ class MapLayersActive extends Component<Props, State> {
             }
             return { ...l };
         });
-        setLayerList(newLayerList);
+        setLayerList(newMapLayerList.concat(dataLayerList));
     };
 
     onOpacityChange = (evt: Number, id: Number) => {
-        const { setLayerList } = this.props;
-        const layerList = [...this.props.layerList];
-        const foundLayer = layerList.find(l => l.id === id);
+        const { setLayerList, dataLayerList } = this.props;
+        const mapLayerList = [...this.props.mapLayerList];
+        const foundLayer = mapLayerList.find(l => l.id === id);
 
         foundLayer.opacity = evt;
-        setLayerList(layerList);
+        setLayerList(mapLayerList.concat(dataLayerList));
     };
 
     render() {
         const {
-            layerList, fetching, setActiveAdminTool, activeAdminTool, createNonSpatialFeature,
+            mapLayerList,
+            fetching,
+            setActiveAdminTool,
+            activeAdminTool,
+            createNonSpatialFeature,
+            dataLayerList,
         } = this.props;
         if (!fetching) {
             return (
-                <MapLayersActiveView
-                    layerList={layerList}
-                    onDragEnd={this.onDragEnd}
-                    onToggleVisibility={this.onToggleVisibility}
-                    onOpacityChange={this.onOpacityChange}
-                    setActiveAdminTool={setActiveAdminTool}
-                    activeAdminTool={activeAdminTool}
-                    createNonSpatialFeature={createNonSpatialFeature}
-                />
+                <React.Fragment>
+                    <MapLayersActiveView
+                        mapLayerList={mapLayerList}
+                        dataLayerList={dataLayerList.filter(l => l.active)}
+                        onDragEnd={this.onDragEnd}
+                        onToggleVisibility={this.onToggleVisibility}
+                        onOpacityChange={this.onOpacityChange}
+                        setActiveAdminTool={setActiveAdminTool}
+                        activeAdminTool={activeAdminTool}
+                        createNonSpatialFeature={createNonSpatialFeature}
+                    />
+                    <DataLayersActiveView
+                        dataLayerList={dataLayerList.filter(l => l.active)}
+                        setActiveAdminTool={setActiveAdminTool}
+                        activeAdminTool={activeAdminTool}
+                        createNonSpatialFeature={createNonSpatialFeature}
+                    />
+                </React.Fragment>
             );
         }
 

@@ -6,7 +6,7 @@ import MapLayersActiveView from '../MapLayersActiveView';
 
 const setup = () => {
     const props = {
-        layerList: [
+        mapLayerList: [
             {
                 id: 1,
                 active: false,
@@ -33,13 +33,29 @@ const setup = () => {
                 active: true,
                 name: 'Layer 4',
                 type: 'wmts',
-                _source: 'search'
+                _source: 'search',
             },
             {
                 id: 5,
                 active: true,
                 name: 'Layer 5',
                 type: 'agfs',
+                _source: 'select',
+            },
+        ],
+        dataLayerList: [
+            {
+                id: 6,
+                active: false,
+                name: 'Layer 6',
+                type: 'agfl',
+                _source: 'search',
+            },
+            {
+                id: 7,
+                active: true,
+                name: 'Layer 7',
+                type: 'agfl',
                 _source: 'select',
             },
         ],
