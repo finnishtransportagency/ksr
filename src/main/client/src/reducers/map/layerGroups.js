@@ -166,6 +166,10 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 layerList: updateLayerList(action.workspace, state.layerList),
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: lg.layers.filter(l => l._source !== 'shapefile'),
+                })): Array<LayerGroups>),
             };
         case APPLY_DELETED_FEATURES:
             return {

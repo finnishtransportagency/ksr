@@ -232,8 +232,44 @@ describe('Layer group reducer', () => {
         expect(reducer(initialState, action)).toEqual(expected);
     });
 
-    it('should handle REMOVE_USER_LAYER_FULFILLED', () => {
+    it('should handle SET_WORKSPACE_FULFILLED', () => {
         const initialState = {
+            layerGroups: [
+                {
+                    id: 1,
+                    name: 'Group 1',
+                    layers: [
+                        {
+                            id: '123',
+                            name: 'Layer 1',
+                            type: 'wms',
+                            url: '/api/proxy/layer/123',
+                            layers: 'layer1',
+                            styles: 'default',
+                            visible: false,
+                            opacity: 1,
+                            authentication: null,
+                            layerOrder: 42,
+                            minScale: 0,
+                            maxScale: 0,
+                            transparent: true,
+                            attribution: 'Attribution 1',
+                            queryable: false,
+                            queryColumns: null,
+                            userLayer: false,
+                        },
+                    ],
+                    type: 'wms',
+                    groupOrder: 1,
+                },
+                {
+                    id: 2,
+                    name: 'Group 2',
+                    layers: [],
+                    type: 'wms',
+                    groupOrder: 2,
+                },
+            ],
             layerList: [
                 {
                     name: 'Postinumeroalueet',
@@ -418,6 +454,42 @@ describe('Layer group reducer', () => {
         };
 
         const expected = {
+            layerGroups: [
+                {
+                    id: 1,
+                    name: 'Group 1',
+                    layers: [
+                        {
+                            id: '123',
+                            name: 'Layer 1',
+                            type: 'wms',
+                            url: '/api/proxy/layer/123',
+                            layers: 'layer1',
+                            styles: 'default',
+                            visible: false,
+                            opacity: 1,
+                            authentication: null,
+                            layerOrder: 42,
+                            minScale: 0,
+                            maxScale: 0,
+                            transparent: true,
+                            attribution: 'Attribution 1',
+                            queryable: false,
+                            queryColumns: null,
+                            userLayer: false,
+                        },
+                    ],
+                    type: 'wms',
+                    groupOrder: 1,
+                },
+                {
+                    id: 2,
+                    name: 'Group 2',
+                    layers: [],
+                    type: 'wms',
+                    groupOrder: 2,
+                },
+            ],
             layerList: [
                 {
                     name: 'Taustakartta',

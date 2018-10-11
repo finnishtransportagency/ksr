@@ -96,7 +96,7 @@ export const queryWorkspaceFeatures = (
  */
 export const updateLayerList = (workspace: Object, layerList: Object[]): Object[] => {
     const workspaceIds = workspace.layers.map(w => (w.definitionExpression ? `${w.layerId}.s` : w.layerId || w.userLayerId));
-    return layerList.map((ll) => {
+    return layerList.filter(ll => ll._source !== 'shapefile').map((ll) => {
         if (workspaceIds.includes(ll.id)) {
             const ws = ll.definitionExpression
                 ? workspace.layers.find(w => w.layerId === ll.id.replace('.s', '')
