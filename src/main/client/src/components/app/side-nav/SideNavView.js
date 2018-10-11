@@ -27,7 +27,7 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => (
                     active={activeNav === 'mapLayers'}
                     onClick={() => { setActiveNav('mapLayers'); }}
                 >
-                    <i className="fas fa-map" />
+                    <i className="fas fa-layer-group" />
                 </SideNav.Link>
                 <SideNav.Link
                     title={strings.sideNav.fileExport}
