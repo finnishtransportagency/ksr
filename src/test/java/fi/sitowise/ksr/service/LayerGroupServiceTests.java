@@ -11,10 +11,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -23,12 +25,15 @@ import java.util.Collections;
 import java.util.List;
 
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
+import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 
 /**
  * Layer group service tests.
  */
 @RunWith(SpringRunner.class)
+@SpringBootTest
+@TestPropertySource(properties = "server.servlet.context-path=/")
 @ContextConfiguration(classes = LayerGroupService.class)
 public class LayerGroupServiceTests {
 
@@ -108,7 +113,6 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetLayerGroupsModifyLayerUrl() {
-        String contextPath = "${server.servlet.context-path}";
 
         LayerGroup lg = new LayerGroup();
         lg.setId(123);
@@ -126,8 +130,7 @@ public class LayerGroupServiceTests {
         Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(Collections.singletonList(lg));
         for (LayerGroup lgr : layerGroupService.getLayerGroups(false)) {
             for (Layer lr : lgr.getLayers()) {
-                String formatUrl = String.format("%s/%s/%s/", contextPath, ProxyController.PROXY_URL, lr.getId());
-                Assert.assertEquals(KsrStringUtils.replaceMultipleSlashes(formatUrl), lr.getUrl());
+                Assert.assertEquals(formatLayerUrl(lr.getType(), lr.getId()), lr.getUrl());
             }
         }
     }

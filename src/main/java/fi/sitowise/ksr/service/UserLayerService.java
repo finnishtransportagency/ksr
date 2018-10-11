@@ -6,6 +6,8 @@ import fi.sitowise.ksr.repository.UserLayerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
+
 /**
  * User Layer service.
  */
@@ -37,7 +39,7 @@ public class UserLayerService {
         int id = userLayerRepository.addUserLayer(layer, username);
         Layer newLayer = userLayerRepository.getUserLayer(id);
         newLayer.setVisible(isMobile ? newLayer.getMobileVisible() : newLayer.getDesktopVisible());
-
+        newLayer.setUrl(formatLayerUrl(newLayer.getType(), newLayer.getId()));
         return newLayer;
     }
 
