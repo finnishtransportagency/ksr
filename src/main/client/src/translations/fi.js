@@ -1,6 +1,6 @@
 const fi = {
     mapLayers: {
-        title: 'Karttatasot',
+        title: 'Aineistot',
         active: 'Aktiiviset',
         all: 'Kaikki',
         shape: 'Avaa shape',
@@ -113,7 +113,7 @@ const fi = {
     },
     sideNav: {
         search: 'Haku',
-        layerManagement: 'Karttatasojen hallinta',
+        layerManagement: 'Aineistot',
         fileExport: 'Tiedostojen vienti',
         workspace: 'Työtilat',
     },
