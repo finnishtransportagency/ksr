@@ -15,6 +15,7 @@ import {
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
     APPLY_EDITS,
+    APPLY_DELETED_FEATURES,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
@@ -24,7 +25,7 @@ import {
     toggleSelection,
     updateLayerColumns,
 } from '../../utils/parseFeatureData';
-import { applyEdits } from '../../utils/table';
+import { applyEdits, applyDeletedFeatures } from '../../utils/table';
 
 type State = {
     fetching: boolean,
@@ -46,6 +47,7 @@ type Action = {
     data: Object,
     geometry: Object,
     edits: Array<Object>,
+    objectIds: string,
 };
 
 const initialState = {
@@ -130,6 +132,16 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layers: applyEdits(state.layers, action.edits),
                 editedLayers: applyEdits(state.editedLayers, action.edits),
+            };
+        case APPLY_DELETED_FEATURES:
+            return {
+                ...state,
+                layers: applyDeletedFeatures(state.layers, action.objectIds, action.layerId),
+                editedLayers: applyDeletedFeatures(
+                    state.editedLayers,
+                    action.objectIds,
+                    action.layerId,
+                ),
             };
         default:
             return state;

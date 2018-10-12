@@ -1,6 +1,9 @@
 // @flow
+
 /* eslint-disable no-use-before-define */
 import { toast } from 'react-toastify';
+import querystring from 'querystring';
+import { deleteFeatures } from '../api/map/deleteFeatures';
 import strings from '../translations';
 import { addFeatures } from '../api/map/addFeatures';
 import { updateFeatures } from '../api/map/updateFeatures';
@@ -82,7 +85,7 @@ const handleSaveResponse = (res: Object, layer: ?Object) => {
 };
 
 /**
-* Handles response form Esri ArcGIS Servers FeatureService updateFeatures -request
+* Handles response from Esri ArcGIS Servers FeatureService updateFeatures -request
 * Returns an object, where features-attribute contains ids of those features that were updated.
 *
 * @param res Object Body of the response from ArcGIS Server
@@ -96,6 +99,25 @@ const handleUpdateResponse = (res: Object, layerId: string) => ({
         res.updateResults.filter(e => e.success).map(e => e.objectId) : [],
 });
 
+/**
+ * Handles response from Esri ArcGIS Servers FeatureService deleteFeatures -request.
+ *
+ * @param {Object} res Body of the response from ArcGIS Server.
+ * @param {Object} layer Deleted features layer.
+ */
+const handleDeleteResponse = (res: Object, layer: Object) => {
+    if (res && Array.isArray(res.deleteResults) && res.deleteResults.some(e => e.success)) {
+        if (layer) {
+            const deletedIds = res.deleteResults.filter(e => e.success).map(e => e.objectId);
+            layer.refresh();
+            toast.success(`${strings.saveFeatureData.featureDeleteSuccess} [${deletedIds.join(', ')}]`);
+        } else {
+            toast.error(strings.saveFeatureData.featureDeleteError);
+        }
+    } else {
+        toast.error(strings.saveFeatureData.featureDeleteError);
+    }
+};
 
 /**
 * Display toast notification, if at least one feture saved for given layer.
@@ -153,6 +175,36 @@ const saveData = (
 
         return Promise.reject(new Error(`Error in saving, no layer ${layerId} found.`));
     }
+};
+
+/**
+ * Deletes given features from given layer.
+ *
+ * @param {Object} view Esri ArcGIS JS MapView.
+ * @param {string} layerId Id of the corresponding layer.
+ * @param {string} objectIds String of feature IDs to be deleted, separated by commas.
+ * @param {string} [deleteComment] Reason for feature deletion.
+ *
+ * @returns {Promise} Promise that calls deleteFeature api.
+ */
+const saveDeletedFeatureData = (
+    view: Object,
+    layerId: string,
+    objectIds: string,
+    deleteComment: string,
+) => {
+    const layer = findMatchingLayer(view, layerId);
+    const params = querystring.stringify({
+        f: 'json',
+        objectIds,
+        deleteComment,
+    });
+    if (layer) {
+        return deleteFeatures(layerId, params)
+            .then(r => r && handleDeleteResponse(r, layer))
+            .catch(() => toast.error(strings.saveFeatureData.featureDeleteError));
+    }
+    return Promise.reject(new Error(`Error in feature delete, no layer ${layerId} found.`));
 };
 
 /**
@@ -220,9 +272,11 @@ const saveEditedFeatureData = (
 const save = {
     saveEditedFeatureData,
     saveData,
+    saveDeletedFeatureData,
     featureDataToParams,
     findMatchingLayer,
     handleSaveResponse,
+    handleDeleteResponse,
     removeUnderscoreKeys,
     formatToEsriCompliant,
     notifyUpdateSuccess,

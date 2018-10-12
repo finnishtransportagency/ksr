@@ -90,6 +90,61 @@ describe('saveFeatureData', () => {
         expect(layer.refresh.mock.calls.length).toBe(1);
     });
 
+    it('handleDeleteResponse - invalid response - should not refresh layer', () => {
+        const layer = { refresh: jest.fn() };
+        save.handleDeleteResponse({ deleteResults: 1 }, layer);
+        expect(layer.refresh.mock.calls.length).toBe(0);
+    });
+
+    it('handleDeleteResponse - invalid layer-parameter - should not refresh layer', () => {
+        expect(save.handleDeleteResponse({ deleteResults: 1 }, null)).toBe(undefined);
+    });
+
+    it('handleDeleteResponse - invalid parameters - should not refresh layer', () => {
+        const layer1 = { refresh: jest.fn() };
+        save.handleDeleteResponse(null, null);
+        expect(layer1.refresh.mock.calls.length).toBe(0);
+    });
+
+    it('handleDeleteResponse - one successfull - should refresh layer', () => {
+        const layer = { refresh: jest.fn() };
+        const response = {
+            deleteResults: [
+                { success: false },
+                { success: true },
+                { success: false },
+            ],
+        };
+        save.handleDeleteResponse(response, layer);
+        expect(layer.refresh.mock.calls.length).toBe(1);
+    });
+
+    it('handleDeleteResponse - not success - should not refresh layer', () => {
+        const layer = { refresh: jest.fn() };
+        const response = {
+            deleteResults: [
+                { success: false },
+                { success: false },
+                { success: false },
+            ],
+        };
+        save.handleDeleteResponse(response, layer);
+        expect(layer.refresh.mock.calls.length).toBe(0);
+    });
+
+    it('handleDeleteResponse - all success - should refresh layer', () => {
+        const layer = { refresh: jest.fn() };
+        const response = {
+            deleteResults: [
+                { success: true },
+                { success: true },
+                { success: true },
+            ],
+        };
+        save.handleDeleteResponse(response, layer);
+        expect(layer.refresh.mock.calls.length).toBe(1);
+    });
+
     it('removeUnderscoreKeys - should return undefined', () => {
         expect(save.removeUnderscoreKeys(null)).toBe(null);
         expect(save.removeUnderscoreKeys(undefined)).toBe(undefined);

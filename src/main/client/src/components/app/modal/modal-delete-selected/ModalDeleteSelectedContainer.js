@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { deleteSelectedData } from '../../../../reducers/adminTool/actions';
+import { saveDeletedFeatures } from '../../../../reducers/table/actions';
 import ModalDeleteSelected from './ModalDeleteSelected';
 
 const mapStateToProps = (state) => {
@@ -17,9 +17,9 @@ const mapStateToProps = (state) => {
     const filteredData = [];
     selectedData.map((d) => {
         const filtered = Object.keys(d)
-            .filter(key => queryColumns.find(qc => qc === key || key === '_id'))
+            .filter(key => queryColumns.find(qc => qc === key || key === '_id' || key.includes('/')))
             .reduce((obj, key) => {
-                obj[key] = d[key];
+                obj[key.split('/').pop()] = d[key];
                 return obj;
             }, {});
 
@@ -27,14 +27,20 @@ const mapStateToProps = (state) => {
     });
 
     return {
-        selectedData,
         filteredData,
+        view: state.map.mapView.view,
+        layerId: state.adminTool.active.layerId,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteSelectedData: (selectedData: Array<Object>, deleteComment: string) => {
-        dispatch(deleteSelectedData(selectedData, deleteComment));
+    saveDeletedFeatures: (
+        view: Object,
+        layerId: string,
+        objectIds: string,
+        deleteComment: string,
+    ) => {
+        dispatch(saveDeletedFeatures(view, layerId, objectIds, deleteComment));
     },
 });
 

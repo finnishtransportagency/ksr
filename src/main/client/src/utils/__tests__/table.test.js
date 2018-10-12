@@ -1,4 +1,4 @@
-import { clearEdits, handleData, applyEdits } from '../table';
+import { clearEdits, handleData, applyEdits, applyDeletedFeatures } from '../table';
 
 describe('utils/table', () => {
     it('should clearEdits - 1', () => {
@@ -331,5 +331,64 @@ describe('utils/table', () => {
 
     it('should applyEdits - 2', () => {
         expect(applyEdits([], [])).toMatchObject([]);
+    });
+
+    it('applyDeletedFeatures - should remove given IDs', () => {
+        const layers = [
+            {
+                id: '1',
+                data: [
+                    {
+                        _id: 123,
+                    },
+                    {
+                        _id: 456,
+                    },
+                    {
+                        _id: 987,
+                    },
+                ],
+            },
+        ];
+        const objectIds = '123, 987';
+        const layerId = '1';
+
+        const expectedResult = [
+            {
+                id: '1',
+                data: [
+                    {
+                        _id: 456,
+                    },
+                ],
+            },
+        ];
+
+        expect(applyDeletedFeatures(layers, objectIds, layerId)).toMatchObject(expectedResult);
+    });
+
+    it('applyDeletedFeatures - should only return layers with data', () => {
+        const layers = [
+            {
+                id: '1',
+                data: [
+                    {
+                        _id: 123,
+                    },
+                    {
+                        _id: 456,
+                    },
+                    {
+                        _id: 987,
+                    },
+                ],
+            },
+        ];
+        const objectIds = '123, 987, 456';
+        const layerId = '1';
+
+        const expectedResult = [];
+
+        expect(applyDeletedFeatures(layers, objectIds, layerId)).toMatchObject(expectedResult);
     });
 });

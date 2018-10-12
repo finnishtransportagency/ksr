@@ -225,6 +225,23 @@ export const saveEditedFeatures = (
     };
 };
 
+export const saveDeletedFeatures = (
+    view: Object,
+    layerId: string,
+    objectIds: string,
+    deleteComment: string,
+) => (dispatch: Function) => {
+    view.popup.close();
+    save.saveDeletedFeatureData(view, layerId, objectIds, deleteComment)
+        .then(() => {
+            dispatch({
+                type: types.APPLY_DELETED_FEATURES,
+                objectIds,
+                layerId,
+            });
+        });
+};
+
 export const addNonSpatialContentToTable = (layer: Object) => (dispatch: Function) => {
     fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
         .then((r) => {
