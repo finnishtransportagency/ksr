@@ -115,7 +115,7 @@ const handleDeleteResponse = (res: Object, layer: Object) => {
             toast.error(strings.saveFeatureData.featureDeleteError);
         }
     } else {
-        toast.error(strings.saveFeatureData.featureDeleteError);
+        toast.error(strings.saveFeatureData.featureDeleteNoFeaturesError);
     }
 };
 

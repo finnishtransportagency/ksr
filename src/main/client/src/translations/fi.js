@@ -199,6 +199,7 @@ const fi = {
         errorLayerNotFound: 'Tallennus epäonnistui. Tasoa ei löydy.',
         featureDeleteSuccess: 'Poistettu kohteet',
         featureDeleteError: 'Kohteiden poisto epäonnistui.',
+        featureDeleteNoFeaturesError: 'Kohde tai kohteet on jo poistettu. Päivitä näkymä ja yritä uudelleen.',
     },
     mapLayerSettings: {
         addNewFeature: 'Luo uusi kohde',
