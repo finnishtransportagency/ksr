@@ -38,6 +38,13 @@ class EsriMap extends Component<Props> {
             const newLayers = [];
             const toBeRemoved = [];
 
+            // Remove shapefile from view.map.layers if it has been removed from layerList
+            view.map.layers.filter(l => !layerListReversed.some(ll => ll.id === l.id))
+                .filter(k => k.featureType)
+                .forEach((k) => {
+                    toBeRemoved.push(k.id);
+                });
+
             // Update layer settings
             layerListReversed.filter(l => l.type !== 'agfl').forEach((l, i) => {
                 // Change layer opacity and visibility

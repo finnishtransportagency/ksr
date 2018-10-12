@@ -1,6 +1,5 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
@@ -8,7 +7,6 @@ import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -18,15 +16,13 @@ import java.util.stream.Collectors;
 
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
+import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
 
 /**
  * Layer group service.
  */
 @Service
 public class LayerGroupService {
-
-    @Value("${server.servlet.context-path}")
-    private String contextPath;
 
     private final LayerGroupRepository layerGroupRepository;
     private final UserLayerRepository userLayerRepository;
@@ -65,16 +61,8 @@ public class LayerGroupService {
         for (LayerGroup lg : combinedLayerGroups) {
             if (lg.getLayers() != null) {
                 for (Layer l : lg.getLayers()) {
-                    String formatUrl;
-                    if ("agfs".equals(l.getType())) {
-                        formatUrl = String.format("%s/%s/", contextPath, ProxyController.PROXY_URL);
-
-                    } else {
-                        formatUrl = String.format("%s/%s/%s/", contextPath, ProxyController.PROXY_URL, l.getId());
-                    }
-
                     l.setVisible(isMobile ? l.getMobileVisible() : l.getDesktopVisible());
-                    l.setUrl(KsrStringUtils.replaceMultipleSlashes(formatUrl));
+                    l.setUrl(formatLayerUrl(l.getType(), l.getId()));
                 }
             }
         }

@@ -238,7 +238,7 @@ export const createLayer = (
     addShapefile: Function,
 ) => {
     if (graphics.length < 1 || graphics[0].geometry === null) return;
-    const maxId = Math.max(...layerList.map(lg => lg.id));
+    const maxId = layerList.map(ll => parseInt(ll.id, 10)).reduce((a, b) => Math.max(a, b));
 
     const layer = new FeatureLayer({
         id: maxId + 11000,
