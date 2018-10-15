@@ -48,6 +48,7 @@ public class Layer implements Serializable {
     private boolean useInternalProxy;
     private boolean userLayer;
     private String featureType;
+    private String updaterField;
 
     /**
      * Construct a Layer
@@ -80,6 +81,7 @@ public class Layer implements Serializable {
         this.setUserLayer(false);
         this.setAddressField(lr.getAddressField());
         this.setFeatureType(lr.getFeatureType());
+        this.setUpdaterField(lr.getUpdaterField());
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -535,4 +537,18 @@ public class Layer implements Serializable {
     public void setFeatureType(String featureType) {
         this.featureType = featureType;
     }
+
+    /**
+     * Get's layer's updater field
+     *
+     * @return layer's updater field
+     */
+    public String getUpdaterField() { return updaterField; }
+
+    /**
+     * Sets layer's updater field.
+     *
+     * @param updaterField layer's updater field
+     */
+    public void setUpdaterField(String updaterField) { this.updaterField = updaterField; }
 }
