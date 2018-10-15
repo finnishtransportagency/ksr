@@ -85,19 +85,31 @@ const handleSaveResponse = (res: Object, layer: ?Object) => {
 };
 
 /**
-* Handles response from Esri ArcGIS Servers FeatureService updateFeatures -request
-* Returns an object, where features-attribute contains ids of those features that were updated.
-*
-* @param res Object Body of the response from ArcGIS Server
-* @param layerId string Id of the corresponding layer.
-*
-* @return Object Object containing both layerId and feature-ids of updated features
-*/
-const handleUpdateResponse = (res: Object, layerId: string) => ({
-    layerId,
-    features: Array.isArray(res.updateResults) ?
-        res.updateResults.filter(e => e.success).map(e => e.objectId) : [],
-});
+ * Handles response from Esri ArcGIS Servers FeatureService updateFeatures -request and displays
+ * a notification toast according to the result.
+ *
+ * @param {Object} res Body of the response from ArcGIS Server.
+ * @param {string} layerId Id of the corresponding layer.
+ *
+ * @returns {Object} Object containing layer id and feature ids of the updated features.
+ */
+const handleUpdateResponse = (res: Object, layerId: string) => {
+    const layer = {
+        layerId,
+        features: Array.isArray(res.updateResults) ?
+            res.updateResults.filter(e => e.success).map(e => e.objectId) : [],
+    };
+
+    if (layer && layer.features && layer.features.length) {
+        toast.success(`${strings.saveFeatureData.layerUpdateSaveSuccess}`);
+    } else if (!layer.features.length) {
+        toast.error(`${strings.saveFeatureData.layerUpdateSaveNoFeaturesError}`);
+    } else {
+        toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
+    }
+
+    return layer;
+};
 
 /**
  * Handles response from Esri ArcGIS Servers FeatureService deleteFeatures -request.
@@ -115,22 +127,8 @@ const handleDeleteResponse = (res: Object, layer: Object) => {
             toast.error(strings.saveFeatureData.featureDeleteError);
         }
     } else {
-        toast.error(strings.saveFeatureData.featureDeleteError);
+        toast.error(strings.saveFeatureData.featureDeleteNoFeaturesError);
     }
-};
-
-/**
-* Display toast notification, if at least one feture saved for given layer.
-*
-* @param {Object} layer Returned layer from handleUpdateResponse-method
-*
-* @return {Object} Layer
-*/
-const notifyUpdateSuccess = (layer: Object) => {
-    if (layer && layer.features && layer.features.length) {
-        toast.success(`${strings.saveFeatureData.layerUpdateSaveSuccess}`);
-    }
-    return layer;
 };
 
 /**
@@ -159,9 +157,8 @@ const saveData = (
                         console.error(err);
                     });
             case 'update':
-                return updateFeatures(layerId, params).then(r =>
-                    r && handleUpdateResponse(r, layerId))
-                    .then(l => l && notifyUpdateSuccess(l))
+                return updateFeatures(layerId, params).then(res =>
+                    res && handleUpdateResponse(res, layerId))
                     .catch((err) => {
                         toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
                         console.error(err);
@@ -279,7 +276,6 @@ const save = {
     handleDeleteResponse,
     removeUnderscoreKeys,
     formatToEsriCompliant,
-    notifyUpdateSuccess,
 };
 
 export default save;

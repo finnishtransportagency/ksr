@@ -51,7 +51,7 @@ describe('saveFeatureData', () => {
         expect(layer1.refresh.mock.calls.length).toBe(0);
     });
 
-    it('handleSaveResponse - one successfull - should refresh layer', () => {
+    it('handleSaveResponse - one successful - should refresh layer', () => {
         const layer = { refresh: jest.fn() };
         const response = {
             addResults: [
@@ -106,7 +106,7 @@ describe('saveFeatureData', () => {
         expect(layer1.refresh.mock.calls.length).toBe(0);
     });
 
-    it('handleDeleteResponse - one successfull - should refresh layer', () => {
+    it('handleDeleteResponse - one successful - should refresh layer', () => {
         const layer = { refresh: jest.fn() };
         const response = {
             deleteResults: [

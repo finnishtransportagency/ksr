@@ -196,9 +196,11 @@ const fi = {
         newFeatureSaveError: 'Kohteen luonti epäonnistui.',
         layerUpdateSaveSuccess: 'Muokkausten tallennus onnistui.',
         layerUpdateSaveError: 'Muokkausten tallennus epäonnistui.',
+        layerUpdateSaveNoFeaturesError: 'Muokkausten kohde tai kohteet on jo poistettu. Päivitä näkymä ja yritä uudelleen.',
         errorLayerNotFound: 'Tallennus epäonnistui. Tasoa ei löydy.',
         featureDeleteSuccess: 'Poistettu kohteet',
         featureDeleteError: 'Kohteiden poisto epäonnistui.',
+        featureDeleteNoFeaturesError: 'Kohde tai kohteet on jo poistettu. Päivitä näkymä ja yritä uudelleen.',
     },
     mapLayerSettings: {
         addNewFeature: 'Luo uusi kohde',
