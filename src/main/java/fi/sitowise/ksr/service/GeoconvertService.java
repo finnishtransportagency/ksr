@@ -51,6 +51,6 @@ public class GeoconvertService {
                 throw new KsrApiException.BadRequestException("Invalid query parameters given.");
         }
 
-        this.httpRequestService.fetchToResponse(null, null, null, urlToFetch, request, response, false, null);
+        this.httpRequestService.fetchToResponse(null, null, null, urlToFetch, request, response, false, null, null);
     }
 }

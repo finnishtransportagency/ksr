@@ -1,7 +1,11 @@
 package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.controller.PrintOutputController;
+import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
+import fi.sitowise.ksr.domain.proxy.EditFeature;
 import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -19,6 +23,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -120,15 +125,17 @@ public class HttpRequestService {
     /**
      * Fetch endPointUrl:s content and write into HttpServletResponse.
      *
-     * @param layerUrl Layer URL that is requested.
+     * @param layer Layer URL that is requested.
      * @param baseUrl Baseurl for proxy-service for given layer.
      * @param endPointUrl The url to be fetched.
      * @param request HTTP request interface.
      * @param response HttpServletResponse, where to write the fetched content
      * @param editedParams List, which contains edited Web_Map_as_JSON for printing
+     * @param action LayerAction Possible action-type
      */
-    public void fetchToResponse(String layerUrl, String authentication, String baseUrl,
-            String endPointUrl, HttpServletRequest request, HttpServletResponse response, boolean useProxy, List<NameValuePair> editedParams) {
+    public void fetchToResponse(Layer layer, String authentication, String baseUrl, String endPointUrl,
+                                HttpServletRequest request, HttpServletResponse response, boolean useProxy,
+                                List<NameValuePair> editedParams, LayerAction action) {
         try {
             URI endpointURI = new URI(endPointUrl);
             String path = endpointURI.getRawPath();
@@ -139,7 +146,10 @@ public class HttpRequestService {
                     request,
                     authentication,
                     query == null ? path : KsrStringUtils.replaceMultipleSlashes(String.format("%s?%s", path, query)),
-                    editedParams);
+                    editedParams,
+                    action,
+                    layer
+            );
             if (useProxy) {
                 base.setConfig(proxyRequestConfig);
             } else {
@@ -152,7 +162,7 @@ public class HttpRequestService {
             setResponseHeaders(response, cRes);
 
             if (isGetCapabilitiesRequest(endPointUrl)) {
-                setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes, endPointUrl);
+                setGetCapabilitiesResponse(layer == null ? null : layer.getUrl(), baseUrl, response, cRes, endPointUrl);
             } else if (isPrintOutputRequest(endPointUrl)) {
                 setPrintOutputResponse(response, cRes);
             } else {
@@ -213,15 +223,15 @@ public class HttpRequestService {
      * @return Correct HttpRequestBase or GET if no matches found for method.
      */
     public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
-            String endPointUrl, List<NameValuePair> editedParams) {
+                                          String endPointUrl, List<NameValuePair> editedParams, LayerAction action,
+                                          Layer layer) {
         HttpRequestBase base;
-        List<NameValuePair> params = new ArrayList<>();
         switch (request.getMethod()) {
             case "GET":
-                base = requestBaseGet(params, editedParams, endPointUrl);
+                base = requestBaseGet(editedParams, endPointUrl);
                 break;
             case "POST":
-                base = requestBasePost(request, params, editedParams, endPointUrl);
+                base = requestBasePost(request, editedParams, endPointUrl, action, layer);
                 break;
             default:
                 base = new HttpGet(endPointUrl);
@@ -417,22 +427,27 @@ public class HttpRequestService {
      * Returns a correct HttpRequestBase from POST request.
      *
      * @param request interface for getting request method and POST request parameters.
-     * @param params List<NameValuePair> empty list
      * @param editedParams edited parameters / querystring from print request.
+     * @param endPointUrl The url to be fetched.
+     * @param action The action type related to request (READ | CREATE | UPDATE | DELETE)
+     * @param layer The Layer related to request
      *
      * @return base
      */
-    private HttpRequestBase requestBasePost(HttpServletRequest request, List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+    private HttpRequestBase requestBasePost(HttpServletRequest request,
+                                            List<NameValuePair> editedParams, String endPointUrl,
+                                            LayerAction action, Layer layer) {
         HttpRequestBase base = new HttpPost(endPointUrl);
+        List<NameValuePair> params = new ArrayList<>();
         if (!CollectionUtils.isEmpty(request.getParameterMap())) {
             if (editedParams != null) {
                 for (NameValuePair entry : editedParams) {
-                    params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
+                    params.add(filterParams(entry.getName(), entry.getValue(), layer, action));
                 }
             } else {
                 for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
                     for (String value : entry.getValue()) {
-                        params.add(new BasicNameValuePair(entry.getKey(), value));
+                        params.add(filterParams(entry.getKey(), value, layer, action));
                     }
                 }
             }
@@ -447,17 +462,54 @@ public class HttpRequestService {
     }
 
     /**
+     * Filter / check params for given Layer and LayerAction
+     *
+     * If LayerAction is either UPDATE_LAYER OR CREATE_LAYER then it populates updater-field with information
+     * from current user if updater-field is defined for Layer.
+     *
+     * @param key Key of the parameter
+     * @param value Value of the parameter
+     * @param layer Layer
+     * @param action LayerAction type of action
+     * @return
+     */
+    private BasicNameValuePair filterParams(String key, String value, Layer layer, LayerAction action) {
+        if (layer != null && layer.getUpdaterField() != null && key.toLowerCase().equals("features")
+                && (action == LayerAction.UPDATE_LAYER || action == LayerAction.CREATE_LAYER)){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                EditFeature[] features = mapper.readValue(value, EditFeature[].class);
+                for (EditFeature feature : features) {
+                    feature.putAttributeValue(
+                            layer.getUpdaterField(),
+                            KsrAuthenticationUtils.getCurrentUserUpdaterName()
+                    );
+                }
+                String newValue = mapper.writeValueAsString(features);
+                return new BasicNameValuePair(key, newValue);
+
+            } catch (IOException e) {
+                throw new KsrApiException.InternalServerErrorException(
+                        "Error parsing features-JSON.",
+                        e
+                );
+            }
+        }
+        return new BasicNameValuePair(key, value);
+    }
+
+    /**
      * Returns a correct HttpRequestBase from GET request.
      * Print GET request gets changed to HttpPost
      *
-     * @param params List<NameValuePair> empty list
      * @param editedParams edited parameters / querystring from print request.
      * @param endPointUrl The url to be fetched.
      *
      * @return base
      */
-    private HttpRequestBase requestBaseGet(List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+    private HttpRequestBase requestBaseGet(List<NameValuePair> editedParams, String endPointUrl) {
         HttpRequestBase base;
+        List<NameValuePair> params = new ArrayList<>();
         if (editedParams != null) {
             base = new HttpPost(endPointUrl.split("\\?")[0]);
             for (NameValuePair entry : editedParams) {

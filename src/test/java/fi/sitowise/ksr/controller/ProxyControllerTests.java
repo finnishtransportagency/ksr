@@ -102,7 +102,8 @@ public class ProxyControllerTests {
                 Mockito.anyString(),
                 Mockito.anyString(),
                 Mockito.any(HttpServletRequest.class),
-                Mockito.any(HttpServletResponse.class));
+                Mockito.any(HttpServletResponse.class),
+                Mockito.any(LayerAction.class));
 
         Layer layer1 = new Layer();
         layer1.setId("1");
