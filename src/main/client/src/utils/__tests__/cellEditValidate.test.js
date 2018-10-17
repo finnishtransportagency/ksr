@@ -1,4 +1,4 @@
-import { cellEditValidate, getValue, equals } from '../cellEditValidate';
+import { cellEditValidate, getValue, equals, preventKeyPress } from '../cellEditValidate';
 
 describe('cellEditValidate.js', () => {
     it('should return correct values for "esriFieldTypeString"', () => {
@@ -419,5 +419,101 @@ describe('cellEditValidate.js', () => {
         expect(equals(null, undefined)).toBe(false);
         expect(equals({}, {})).toBe(false);
         expect(equals([], [])).toBe(false);
+    });
+
+    it('preventKeyPress - esriFieldTypeSmallInteger - invalid integer', () => {
+        const e = { preventDefault: jest.fn(), key: 'e', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeSmallInteger' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
+    it('preventKeyPress - esriFieldTypeSmallInteger - string with space', () => {
+        const e = { preventDefault: jest.fn(), key: ' ', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeSmallInteger' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
+    it('preventKeyPress - esriFieldTypeSmallInteger - valid integer', () => {
+        const e = { preventDefault: jest.fn(), key: '9', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeSmallInteger' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalledTimes(0);
+    });
+
+    it('preventKeyPress - esriFieldTypeInteger - invalid integer', () => {
+        const e = { preventDefault: jest.fn(), key: 'e', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeInteger' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
+    it('preventKeyPress - esriFieldTypeInteger - string with space', () => {
+        const e = { preventDefault: jest.fn(), key: ' ', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeInteger' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
+    it('preventKeyPress - esriFieldTypeInteger - valid integer', () => {
+        const e = { preventDefault: jest.fn(), key: '9', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeInteger' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalledTimes(0);
+    });
+
+    it('preventKeyPress - esriFieldTypeDouble - invalid integer', () => {
+        const e = { preventDefault: jest.fn(), key: 'e', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeDouble' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
+    it('preventKeyPress - esriFieldTypeDouble - string with space', () => {
+        const e = { preventDefault: jest.fn(), key: ' ', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeDouble' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
+    it('preventKeyPress - esriFieldTypeDouble - string with dot', () => {
+        const e = { preventDefault: jest.fn(), key: '.', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeDouble' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalledTimes(0);
+    });
+
+    it('preventKeyPress - esriFieldTypeDouble - valid integer', () => {
+        const e = { preventDefault: jest.fn(), key: '9', target: { innerText: '' } };
+        const cellField = { type: 'esriFieldTypeDouble' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalledTimes(0);
+    });
+
+    it('preventKeyPress - too long text', () => {
+        const e = { preventDefault: jest.fn(), key: '9', target: { innerText: '123' } };
+        const cellField = { length: 3, type: 'esriFieldTypeString' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
+    it('preventKeyPress - valid text', () => {
+        const e = { preventDefault: jest.fn(), key: '9', target: { innerText: '123' } };
+        const cellField = { length: 4, type: 'esriFieldTypeString' };
+
+        preventKeyPress(e, cellField);
+        expect(e.preventDefault).toHaveBeenCalledTimes(0);
     });
 });

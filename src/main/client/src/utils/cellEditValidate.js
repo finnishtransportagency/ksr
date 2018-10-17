@@ -141,29 +141,29 @@ export const cellEditValidate = (
 )): Object[]);
 
 /**
- * Prevents some keypresses depending on cell type
- * String cells allow everything
- * Int cells allow numbers only
- * Double cells allow numbers and dots
+ * Prevents some keypresses depending on cell type.
+ * Prevents keypress if text will be longer than length in cellField.
+ * String cells allow everything.
+ * Int cells allow numbers only.
+ * Double cells allow numbers and dots.
  *
- * @param e Object edited cells event
- * @param cellField Object contains info about edited field
+ * @param {Object} e Edited cells event.
+ * @param {Object} cellField Contains info about edited field.
  *
- * @returns prevents keypress or null
+ * @returns method call or null
  */
 export const preventKeyPress = (e: Object, cellField: Object) => {
+    if (Number.isInteger(cellField.length) && e.target.innerText.length >= cellField.length) {
+        return e.preventDefault();
+    }
     switch (cellField.type) {
-        case ('esriFieldTypeSmallInteger'):
+        case 'esriFieldTypeInteger':
+        case 'esriFieldTypeSmallInteger':
             if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ') {
                 return e.preventDefault();
             }
             break;
-        case ('esriFieldTypeInteger'):
-            if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ') {
-                return e.preventDefault();
-            }
-            break;
-        case ('esriFieldTypeDouble'):
+        case 'esriFieldTypeDouble':
             if (e.key !== '.' && (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ')) {
                 return e.preventDefault();
             }

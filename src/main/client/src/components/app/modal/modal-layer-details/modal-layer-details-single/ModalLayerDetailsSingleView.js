@@ -24,6 +24,7 @@ const ModalLayerDetailsSingleView = ({
                 placeholder=""
                 name={field.name}
                 autoComplete="off"
+                maxLength={field.length}
             />
         </label>
     </Fragment>
