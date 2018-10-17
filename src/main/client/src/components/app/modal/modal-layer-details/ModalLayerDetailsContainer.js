@@ -12,8 +12,11 @@ const mapStateToProps = (state) => {
     const { addressField, featureType } = state.map.layerGroups.layerList
         .find(l => l.id === state.adminTool.active.layerId);
 
+    const fields = activeLayer ? activeLayer.fields.filter(f =>
+        f.type !== 'esriFieldTypeOID' && f.name !== addressField && f.editable) : [];
+
     return {
-        fields: activeLayer ? activeLayer.fields.filter(f => f.type !== 'esriFieldTypeOID' && f.name !== addressField) : [],
+        fields,
         layer: state.map.mapView.graphicsLayer,
         originalLayerId: state.adminTool.active.layerId,
         addressField,

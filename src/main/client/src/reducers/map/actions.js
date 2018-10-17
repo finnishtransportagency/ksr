@@ -33,7 +33,13 @@ export const getLayerGroups = () => (dispatch: Function) => {
                                 l.geometryType = layers.geometryType;
                                 l.fields =
                                     layers.fields && layers.fields.map((f, index) => ({
-                                        value: index, label: f.alias, type: f.type, name: f.name,
+                                        value: index,
+                                        label: f.alias,
+                                        type: f.type,
+                                        name: f.name,
+                                        editable: f.editable,
+                                        nullable: f.nullable,
+                                        length: f.length,
                                     }));
                             } else {
                                 toast.error(`${strings.mapLayers.failedToLoadLayer} [${l.name}]`);
