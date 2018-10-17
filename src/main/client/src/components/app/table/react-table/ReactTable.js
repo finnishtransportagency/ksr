@@ -59,12 +59,15 @@ class ReactTable extends Component<Props> {
         const currentLayer = layerList.find(l => l.id === activeTable);
 
         if (currentLayer) {
-            const cellField = currentLayer.fields.find(f => f.label === cellInfo.column.Header);
-            const contentEditable = activeAdminTool.length
-                && cellField
-                && cellField.type !== 'esriFieldTypeOID'
-                && currentLayer._source !== 'shapefile';
+            const cellField = currentLayer.fields.find(f => f.name === cellInfo.column.Header);
 
+            const contentEditable = (activeAdminTool === currentLayer.id
+                && cellField.type !== 'esriFieldTypeOID'
+                && currentLayer._source !== 'shapefile');
+
+            const content = cellField.type === 'esriFieldTypeDate' ?
+                (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString() :
+                layer.data[cellInfo.index][cellInfo.column.id];
             return (
                 <div
                     style={{ minHeight: '1rem' }}
@@ -74,14 +77,16 @@ class ReactTable extends Component<Props> {
                     contentEditable={contentEditable}
                     suppressContentEditableWarning
                     onKeyPress={(e) => {
-                        preventKeyPress(e, cellField);
+                        if (contentEditable) preventKeyPress(e, cellField);
                     }}
                     onBlur={(e) => {
-                        const data = cellEditValidate(e, layer.data, cellField, cellInfo);
-                        setEditedLayer(data);
+                        if (contentEditable) {
+                            const data = cellEditValidate(e, layer.data, cellField, cellInfo);
+                            setEditedLayer(data);
+                        }
                     }}
                     dangerouslySetInnerHTML={{ // eslint-disable-line
-                        __html: DOMPurify.sanitize(layer.data[cellInfo.index][cellInfo.column.id]),
+                        __html: DOMPurify.sanitize(content !== null ? String(content) : null),
                     }}
                 />
             );

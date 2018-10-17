@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,10 +72,10 @@ public class ProxyService {
      * @param response HttpServletResponse where to write the proxy-response
      */
     public void get(Layer layer, String baseUrl, String serviceEndpoint, HttpServletRequest request,
-            HttpServletResponse response) {
+                    HttpServletResponse response, LayerAction action) {
         String endPointUrl = getEndpointUrl(layer.getUrl(), serviceEndpoint, request.getQueryString());
         String authentication = aesService.decrypt(layer.getAuthentication());
-        this.httpRequestService.fetchToResponse(layer.getUrl(), authentication, baseUrl, endPointUrl,
-                request, response, layer.getUseInternalProxy(), null);
+        this.httpRequestService.fetchToResponse(layer, authentication, baseUrl, endPointUrl,
+                request, response, layer.getUseInternalProxy(), null, action);
     }
 }

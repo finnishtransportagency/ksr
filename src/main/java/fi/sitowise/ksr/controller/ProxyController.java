@@ -60,6 +60,7 @@ public class ProxyController {
         String serviceEndpoint = getServiceEndpoint(request.getRequestURI());
 
         Layer layer = null;
+        LayerAction action = null;
 
         if (StringUtils.isNotEmpty(serviceEndpoint)) {
             switch (serviceEndpoint.toLowerCase()) {
@@ -67,6 +68,7 @@ public class ProxyController {
                     if ("POST".equalsIgnoreCase(request.getMethod())) {
                         LOG.info(String.format("%s: Add feature to layer", getCurrentUsername()));
                         layer = layerService.getLayer(layerId, true, LayerAction.CREATE_LAYER);
+                        action = LayerAction.CREATE_LAYER;
                     }
                     break;
                 case "deletefeatures":
@@ -78,6 +80,7 @@ public class ProxyController {
                             LOG.info(String.format("%s: Delete features from layer.", getCurrentUsername()));
                         }
                         layer = layerService.getLayer(layerId, true, LayerAction.DELETE_LAYER);
+                        action = LayerAction.DELETE_LAYER;
                     }
                     break;
                 case "query":
@@ -87,6 +90,7 @@ public class ProxyController {
                     if ("POST".equalsIgnoreCase(request.getMethod())) {
                         LOG.info(String.format("%s: Update features in layer.", getCurrentUsername()));
                         layer = layerService.getLayer(layerId, true, LayerAction.UPDATE_LAYER);
+                        action = LayerAction.UPDATE_LAYER;
                     }
                     break;
                 default:
@@ -107,7 +111,7 @@ public class ProxyController {
 
         String baseUrl = KsrStringUtils.replaceMultipleSlashes("/" + contextPath + "/api/proxy/layer/" + layerId);
 
-        proxyService.get(layer, baseUrl, serviceEndpoint, request, response);
+        proxyService.get(layer, baseUrl, serviceEndpoint, request, response, action);
     }
 
     /**
