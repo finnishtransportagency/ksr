@@ -64,9 +64,7 @@ describe('cellEditValidate.js', () => {
         expect(getValue('esriFieldTypeDate', 3)).toBe(3);
         expect(getValue('esriFieldTypeDate', 4.56)).toBe(4);
         expect(getValue('esriFieldTypeDate', -5)).toBe(-5);
-        expect(getValue('esriFieldTypeDate', '3')).toBe(983397600000);
         expect(getValue('esriFieldTypeDate', '4.56')).toBe(null);
-        expect(getValue('esriFieldTypeDate', '-5')).toBe(988664400000);
         expect(getValue('esriFieldTypeDate', true)).toBe(1);
         expect(getValue('esriFieldTypeDate', '2018-10-16T05:38:11.992Z')).toBe(1539668291992);
     });
