@@ -37,6 +37,9 @@ const layerFromGraphic = (graphic: Graphic) => (
             sqlType: f.sqlType,
             domain: f.domain,
             defaultValue: f.defaultValue,
+            editable: f.editable,
+            nullable: f.nullable,
+            length: f.length,
         })),
         features: [
             featureFromGraphic(graphic),

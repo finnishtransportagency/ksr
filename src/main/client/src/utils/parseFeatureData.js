@@ -15,6 +15,9 @@ export const parseColumns = (id, data) => {
         Header: f.alias,
         accessor: `${id}/${f.name}`,
         show: true,
+        editable: f.editable,
+        nullable: f.nullable,
+        length: f.length,
     }));
 };
 

@@ -64,7 +64,8 @@ class ReactTable extends Component<Props> {
             const contentEditable = (activeAdminTool === currentLayer.id
                 && cellField.type !== 'esriFieldTypeOID'
                 && currentLayer._source !== 'shapefile'
-                && currentLayer.updateLayer);
+                && currentLayer.updateLayer
+                && cellField.editable);
 
             const content = cellField.type === 'esriFieldTypeDate' ?
                 (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString() :
