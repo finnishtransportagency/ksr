@@ -53,6 +53,7 @@ export const parseData = (data, selected) => {
         title: l.title,
         columns: parseColumns(l.id, l.fields),
         _source: l._source,
+        _idFieldName: l.objectIdFieldName,
         data: l.features.map(f => ({
             ...parseAttributes(l.id, f.attributes),
             geometry: f.geometry,

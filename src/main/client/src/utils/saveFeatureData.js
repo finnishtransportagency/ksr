@@ -205,18 +205,7 @@ const saveDeletedFeatureData = (
 };
 
 /**
-* Removes underscore keys from given object.
-*
-* @param obj Object Object whose keys to filter
-*
-* @return Object New object without underscore keys
-*/
-const removeUnderscoreKeys = (obj: Object) => obj && Object.entries(obj)
-    .filter(t => t[0][0] !== '_')
-    .reduce((a, c) => ({ ...a, [c[0]]: c[1] }), {});
-
-/**
-* Format Object so that all attributes expect geometry are positioned under "attributes" -property
+* Format Object so that all attributes except geometry are positioned under "attributes" -property
 *
 * @param obj Object Object whose attributes to format
 *
@@ -228,6 +217,38 @@ const formatToEsriCompliant = (obj: Object) => obj && Object.entries(obj).reduce
         { ...a, attributes: { ...a.attributes, [c[0]]: c[1] } }),
     { attributes: {} },
 );
+
+/**
+* Returns an object with only edited values, id-field (OBJECTID) and geometry field, if exists.
+*
+* @param {Object} obj Object to filter.
+* @param {string} idFieldName Name of the id-field.
+*
+* @returns {Object} Object with only edited values and possible geometry field.
+*/
+const keepOnlyEdited = (obj: Object, idFieldName: ?string) => {
+    const valueKeys = obj._edited.map(e => e.title);
+    return Object.entries(obj).reduce((acc, cur) => {
+        if (cur[0] === 'geometry' || valueKeys.indexOf(cur[0]) !== -1 || cur[0] === idFieldName) {
+            return { ...acc, [cur[0]]: cur[1] };
+        }
+        return { ...acc };
+    }, {});
+};
+
+/**
+* Returns accessor for id-field, if any matching field can be found from columns-array.
+* Otherwise returns undefined.
+*
+* @param {Object[]} columns Array of columns to look for.
+* @param {string} ifFieldName Name of the id-field.
+*
+* @returns {(string | undefined)} Field accessor or undefined if not found.
+*/
+const getIdFieldAccessor = (columns: Object[], idFieldName: string) => {
+    const column = columns.find(c => c.Header === idFieldName);
+    return column === undefined ? undefined : column.accessor;
+};
 
 /**
  * Saves edited data coming from table into ArcGIS Server.
@@ -247,9 +268,10 @@ const saveEditedFeatureData = (
 ) => {
     if (view && Array.isArray(editedData)) {
         const promises = editedData.map((ed) => {
+            const idFieldName = getIdFieldAccessor(ed.columns, ed._idFieldName);
             const features = ed.data
                 .filter(d => d._edited.length)
-                .map(removeUnderscoreKeys)
+                .map(d => keepOnlyEdited(d, idFieldName))
                 .map(formatToEsriCompliant);
 
             const layerId = ed.id;
@@ -274,7 +296,6 @@ const save = {
     findMatchingLayer,
     handleSaveResponse,
     handleDeleteResponse,
-    removeUnderscoreKeys,
     formatToEsriCompliant,
 };
 

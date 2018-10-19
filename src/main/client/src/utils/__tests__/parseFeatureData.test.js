@@ -218,6 +218,7 @@ describe('parseFeatureData', () => {
                 id: '123',
                 title: 'layer123',
                 _source: 'select',
+                _idFieldName: 'id',
                 columns: [
                     { Header: 'L1A', accessor: '123/l.1.a', show: true },
                     { Header: 'L2A', accessor: '123/l.2.a', show: true },
@@ -239,6 +240,7 @@ describe('parseFeatureData', () => {
                 id: '456',
                 title: 'layer456',
                 _source: 'search',
+                _idFieldName: 'id',
                 columns: [
                     { Header: 'L1A', accessor: '456/l.1.a', show: true },
                     { Header: 'L2A', accessor: '456/l.2.a', show: true },
@@ -260,6 +262,7 @@ describe('parseFeatureData', () => {
                 id: '789',
                 title: 'layer789',
                 _source: 'select',
+                _idFieldName: 'id',
                 columns: [
                     { Header: 'L1A', accessor: '789/l.1.a', show: true },
                     { Header: 'L2A', accessor: '789/l.2.a', show: true },

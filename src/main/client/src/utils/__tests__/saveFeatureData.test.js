@@ -145,25 +145,6 @@ describe('saveFeatureData', () => {
         expect(layer.refresh.mock.calls.length).toBe(1);
     });
 
-    it('removeUnderscoreKeys - should return undefined', () => {
-        expect(save.removeUnderscoreKeys(null)).toBe(null);
-        expect(save.removeUnderscoreKeys(undefined)).toBe(undefined);
-    });
-
-    it('removeUnderscoreKeys - should return new object', () => {
-        const a = {
-            _id: '123',
-            id: '321',
-            _adsf: { b: 2 },
-            asdf: { c: 3 },
-        };
-
-        expect(save.removeUnderscoreKeys(a)).toMatchObject({
-            id: '321',
-            asdf: { c: 3 },
-        });
-    });
-
     it('formatToEsriCompliant - should return undefined', () => {
         expect(save.formatToEsriCompliant(null)).toBe(null);
         expect(save.formatToEsriCompliant(undefined)).toBe(undefined);
@@ -186,20 +167,29 @@ describe('saveFeatureData', () => {
             {
                 data: [
                     {
-                        a: 1,
-                        b: 2,
+                        '1/OBJECTID': 1,
+                        '1/b': 2,
+                        '1/e': 4,
                         _c: 3,
                         geometry: 3,
-                        _edited: [1, 2, 3],
+                        _edited: [{ title: '1/b' }],
                     },
                 ],
                 id: '1',
+                _idFieldName: 'OBJECTID',
+                columns: [{ accessor: '1/OBJECTID', Header: 'OBJECTID' }],
             },
         ];
 
-        save.saveEditedFeatureData({}, editedData, 'road', 'test_address_field')
+        return save.saveEditedFeatureData({}, editedData, 'road', 'test_address_field')
             .then(() => {
                 expect(geoconvert.createAddressFields.mock.calls.length).toBe(1);
+
+                expect(geoconvert.createAddressFields.mock.calls[0][0])
+                    .toMatchObject({ attributes: { '1/OBJECTID': 1, '1/b': 2 }, geometry: 3 });
+                expect(geoconvert.createAddressFields.mock.calls[0][1]).toBe('road');
+                expect(geoconvert.createAddressFields.mock.calls[0][2]).toBe('test_address_field');
+
                 expect(save.saveData.mock.calls.length).toBe(1);
             });
     });
