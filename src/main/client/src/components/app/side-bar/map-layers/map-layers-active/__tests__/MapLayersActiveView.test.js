@@ -13,6 +13,12 @@ const setup = () => {
                 name: 'Layer 1',
                 type: 'agfs',
                 _source: 'search',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
             {
                 id: 2,
@@ -20,6 +26,12 @@ const setup = () => {
                 name: 'Layer 2',
                 type: 'agfs',
                 _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
             {
                 id: 3,
@@ -27,6 +39,12 @@ const setup = () => {
                 name: 'Layer 3',
                 type: 'wms',
                 _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
             {
                 id: 4,
@@ -41,6 +59,12 @@ const setup = () => {
                 name: 'Layer 5',
                 type: 'agfs',
                 _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
         ],
         dataLayerList: [
@@ -57,6 +81,12 @@ const setup = () => {
                 name: 'Layer 7',
                 type: 'agfl',
                 _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
         ],
         setActiveAdminTool: jest.fn(),

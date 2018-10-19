@@ -64,6 +64,9 @@ const MapLayerSettings = ({
                         layer._source !== 'shapefile' &&
                         (layer.type === 'agfs'
                         || layer.type === 'agfl') &&
+                        (layer.layerPermission.createLayer ||
+                            layer.layerPermission.updateLayer ||
+                            layer.layerPermission.deleteLayer) &&
                         <i
                             role="button"
                             tabIndex={0}
