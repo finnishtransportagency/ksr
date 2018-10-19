@@ -66,6 +66,6 @@ public class LayerRepository {
                     .and(isQuery ? LAYER.TYPE.in("agfs", "agfl") : DSL.trueCondition())
                 .fetchOneInto(LayerRecord.class);
 
-        return lr == null ? null : new Layer(lr);
+        return lr == null ? null : new Layer(lr, null);
     }
 }

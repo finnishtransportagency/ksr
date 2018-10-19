@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fi.sitowise.ksr.jooq.tables.records.LayerPermissionRecord;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
 import org.hibernate.validator.constraints.SafeHtml;
@@ -49,18 +50,20 @@ public class Layer implements Serializable {
     private boolean userLayer;
     private String featureType;
     private String updaterField;
+    private LayerPermission layerPermission;
 
     /**
-     * Construct a Layer
+     * Construct a Layer.
      */
-    public Layer() {}
+    public Layer() { }
 
     /**
-     * Construct a Layer from jOOQ LayerRecord.
+     * Construct a Layer from jOOQ LayerRecord and LayerPermissionRecord.
      *
-     * @param lr LayerRecord
+     * @param lr  LayerRecord, jOOQ generated.
+     * @param lpr LayerPermissionRecord, jOOQ generated.
      */
-    public Layer(LayerRecord lr) {
+    public Layer(LayerRecord lr, LayerPermissionRecord lpr) {
         this.setId(lr.getId());
         this.setName(lr.getName());
         this.setType(lr.getType());
@@ -85,6 +88,9 @@ public class Layer implements Serializable {
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
+        }
+        if (lpr != null) {
+            this.setLayerPermission(new LayerPermission(lpr));
         }
     }
 
@@ -472,6 +478,7 @@ public class Layer implements Serializable {
 
     /**
      * Gets boolean value deciding if requests outgoing HTTP-requests for layer should be done via proxy
+     *
      * @return useInternalProxy if to use proxy
      */
     @JsonIgnore
@@ -479,6 +486,7 @@ public class Layer implements Serializable {
 
     /**
      * Sets boolean value deciding if requests outgoing HTTP-requests for layer should be done via proxy
+     *
      * @param useInternalProxy if to use proxy
      */
     @JsonIgnore
@@ -488,6 +496,7 @@ public class Layer implements Serializable {
 
     /**
      * Returns if layer is user-defined layer
+     *
      * @return is an user defined layer
      */
     public boolean isUserLayer() {
@@ -496,6 +505,7 @@ public class Layer implements Serializable {
 
     /**
      * Set's if layer is user-defined layer
+     *
      * @param userLayer is an user defined layer
      */
     public void setUserLayer(boolean userLayer) {
@@ -551,4 +561,22 @@ public class Layer implements Serializable {
      * @param updaterField layer's updater field
      */
     public void setUpdaterField(String updaterField) { this.updaterField = updaterField; }
+
+    /**
+     * Gets layer permission.
+     *
+     * @return Layer permission.
+     */
+    public LayerPermission getLayerPermission() {
+        return layerPermission;
+    }
+
+    /**
+     * Sets layer permission.
+     *
+     * @param layerPermission Layer permission.
+     */
+    public void setLayerPermission(LayerPermission layerPermission) {
+        this.layerPermission = layerPermission;
+    }
 }

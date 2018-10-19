@@ -3,6 +3,7 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
+import fi.sitowise.ksr.domain.LayerPermission;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.utils.KsrStringUtils;
@@ -108,7 +109,7 @@ public class LayerGroupServiceTests {
     }
 
     /**
-     * Test get layer groups, modify layer url.
+     * Test get layer groups, modify layer url, contains Layer Permission.
      */
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
@@ -117,13 +118,21 @@ public class LayerGroupServiceTests {
         LayerGroup lg = new LayerGroup();
         lg.setId(123);
 
+        LayerPermission lp = new LayerPermission();
+        lp.setCreateLayer("0");
+        lp.setDeleteLayer("1");
+        lp.setReadLayer("1");
+        lp.setUpdateLayer("0");
+
         Layer l1 = new Layer();
         l1.setId("321");
         l1.setUrl("https://test.example.com");
+        l1.setLayerPermission(lp);
 
         Layer l2 = new Layer();
         l2.setId("543");
         l2.setUrl("https://2.test.example.com");
+        l2.setLayerPermission(lp);
 
         lg.setLayers(Arrays.asList(l1, l2));
 
@@ -131,6 +140,7 @@ public class LayerGroupServiceTests {
         for (LayerGroup lgr : layerGroupService.getLayerGroups(false)) {
             for (Layer lr : lgr.getLayers()) {
                 Assert.assertEquals(formatLayerUrl(lr.getType(), lr.getId()), lr.getUrl());
+                Assert.assertEquals(lp, lr.getLayerPermission());
             }
         }
     }
