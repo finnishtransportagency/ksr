@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react';
+import React from 'react';
 import ModalLayerDetailsSingleView from './modal-layer-details-single/ModalLayerDetailsSingleView';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 };
 
 const ModalLayerDetailsView = ({ fields, handleOnChange }: Props) => (
-    <Fragment>
+    <form>
         {fields && fields.map((c, i) => (
             <ModalLayerDetailsSingleView
                 key={c.value}
@@ -17,7 +17,7 @@ const ModalLayerDetailsView = ({ fields, handleOnChange }: Props) => (
                 handleOnChange={handleOnChange}
             />
         ))}
-    </Fragment>
+    </form>
 );
 
 export default ModalLayerDetailsView;

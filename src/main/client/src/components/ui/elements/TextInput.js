@@ -17,6 +17,10 @@ export const TextInput = styled.input`
     &:focus {
         border: 2px solid ${styles.colorMain};
     }
+
+    &:invalid {
+        border: 2px solid ${styles.mapHighlightStroke};
+    }
 `;
 
 export const InputInfo = styled.div`
