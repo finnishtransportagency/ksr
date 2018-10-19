@@ -25,7 +25,7 @@ type LayerGroups = {
     groupOrder: number,
 }
 
-type LayerList = {
+type Layer = {
     active: boolean,
     attribution: string,
     authentication: any,
@@ -34,6 +34,7 @@ type LayerList = {
     id: string,
     layerOrder: number,
     layers: string,
+    layerPermission: Object,
     maxScale: number,
     minScale: number,
     name: string,
@@ -51,14 +52,14 @@ type LayerList = {
 type State = {
     layerGroups: Array<LayerGroups>,
     fetching: boolean,
-    layerList: Array<LayerList>,
+    layerList: Array<Layer>,
 };
 
 type Action = {
     selectedNav: string,
     type: string,
     layerGroups: Array<LayerGroups>,
-    layerList: Array<LayerList>,
+    layerList: Array<Layer>,
     layerIds: Array<string>,
     layers: Array<Object>,
     layerId: string,
@@ -132,7 +133,7 @@ export default (state: State = initialState, action: Action) => {
                             return { ...l };
                         }),
                 })): Array<LayerGroups>),
-                layerList: ((state.layerList.filter(l => l._source !== 'search'): Array<LayerList>)
+                layerList: ((state.layerList.filter(l => l._source !== 'search'): Array<Layer>)
                     .map((l: Object) => {
                         if (l.type === 'agfl' && l.active) {
                             return { ...l, active: false };
@@ -160,7 +161,7 @@ export default (state: State = initialState, action: Action) => {
                     ...lg,
                     layers: lg.layers.filter(l => l.id !== action.layerId),
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<LayerList>),
+                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<Layer>),
             };
         case SET_WORKSPACE_FULFILLED:
             return {
@@ -178,7 +179,7 @@ export default (state: State = initialState, action: Action) => {
                     ...lg,
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l._source !== 'search'): Array<LayerList>),
+                layerList: (state.layerList.filter(l => l._source !== 'search'): Array<Layer>),
             };
         default:
             return state;
