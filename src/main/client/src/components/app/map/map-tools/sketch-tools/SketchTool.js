@@ -251,7 +251,7 @@ class SketchTool extends Component<Props, State> {
             return false;
         }
         const layer = this.props.layerList.find(l => l.id === this.props.activeAdminTool);
-        return layer ? layer.type !== 'agfl' : false;
+        return layer ? layer.type !== 'agfl' && layer.layerPermission.createLayer : false;
     };
 
     // Assign constructor ref flowtypes
