@@ -10,7 +10,8 @@ type Props = {
     isOpen: boolean,
     activeNav: string,
     setActiveModal: (modal: string) => void,
-    activeAdminTool: string,
+    activeUpdate: boolean,
+    activeDelete: boolean,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
     selectedData: boolean,
@@ -21,7 +22,8 @@ const TableView = ({
     isOpen,
     activeNav,
     setActiveModal,
-    activeAdminTool,
+    activeUpdate,
+    activeDelete,
     originalLayers,
     editedLayers,
     selectedData,
@@ -69,29 +71,36 @@ const TableView = ({
             >
                 <i className="far fa-dot-circle" />
             </Table.Button>
-            <Table.Button
-                title={strings.reactTable.saveEditedData}
-                tableOpen={isOpen && activeAdminTool}
-                disabled={originalLayers.every(o => o._source === 'shapefile') || !originalLayers.length || equals(originalLayers, editedLayers)}
-                onClick={
-                    originalLayers.length && !equals(originalLayers, editedLayers) ? () => {
-                        setActiveModal('saveEditedData');
-                    } : null}
-            >
-                <i className="fas fa-save" />
-            </Table.Button>
-            <Table.Button
-                title={strings.reactTable.deleteSelected}
-                tableOpen={isOpen && activeAdminTool}
-                disabled={!selectedData}
-                onClick={
-                    selectedData ? () => {
-                        setActiveModal('deleteSelected');
-                    } : null
-                }
-            >
-                <i className="fas fa-eraser" />
-            </Table.Button>
+            {
+                activeUpdate &&
+                <Table.Button
+                    title={strings.reactTable.saveEditedData}
+                    tableOpen={isOpen}
+                    disabled={originalLayers.every(o => o._source === 'shapefile') || !originalLayers.length || equals(originalLayers, editedLayers)}
+                    onClick={
+                        originalLayers.length && !equals(originalLayers, editedLayers) ? () => {
+                            setActiveModal('saveEditedData');
+                        } : null}
+                >
+                    <i className="fas fa-save" />
+                </Table.Button>
+            }
+            {
+                activeDelete &&
+                <Table.Button
+                    title={strings.reactTable.deleteSelected}
+                    tableOpen={isOpen}
+                    disabled={!selectedData}
+                    onClick={
+                        selectedData ? () => {
+                            setActiveModal('deleteSelected');
+                        } : null
+                    }
+                >
+                    <i className="fas fa-eraser" />
+                </Table.Button>
+            }
+
         </Table.ButtonWrapper>
         <TabbedTableContainer />
     </Table>

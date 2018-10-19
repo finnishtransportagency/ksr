@@ -30,12 +30,16 @@ const mapStateToProps = (state) => {
         b.type !== 'agfl' ? a.concat(b.data.filter(d => d._selected)) : a
     ), []);
 
+    const layer = state.map.layerGroups.layerList.find(l =>
+        l.id === state.adminTool.active.layerId);
+
     return {
         isOpen: state.table.toggleTable,
         isOpenFilter: state.table.toggleFilter,
         activeNav: state.navigation.activeNav,
         activeModal: state.modal.activeModal.activeModal,
-        activeAdminTool: state.adminTool.active.layerId,
+        activeUpdate: layer ? layer.layerPermission.updateLayer : false,
+        activeDelete: layer ? layer.layerPermission.deleteLayer : false,
         originalLayers,
         editedLayers,
         selectedData: selectedData.length > 0,
