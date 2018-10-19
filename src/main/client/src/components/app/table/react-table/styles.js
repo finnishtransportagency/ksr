@@ -123,6 +123,10 @@ export const WrapperReactTable = styled.div`
         .content-not-editable {
             outline: none;
         }
+
+        .content-not-valid {
+            border: 2px solid ${styles.mapHighlightStroke};
+        };
     };
 
     @media only screen and (max-width: 768px) {

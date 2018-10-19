@@ -70,12 +70,22 @@ class ReactTable extends Component<Props> {
             const content = cellField && cellField.type === 'esriFieldTypeDate' ?
                 (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString() :
                 layer.data[cellInfo.index][cellInfo.column.id];
+
+            let className = '';
+            if (!contentEditable) {
+                className = 'content-not-editable';
+            } else if (
+                (content === null || (typeof content === 'string' && content.trim().length === 0))
+                && !cellField.nullable) {
+                className = 'content-not-valid';
+            }
+
             return (
                 <div
                     style={{ minHeight: '1rem' }}
                     role="textbox"
                     tabIndex={0}
-                    className={!contentEditable ? 'content-not-editable' : null}
+                    className={className}
                     contentEditable={contentEditable}
                     suppressContentEditableWarning
                     onKeyPress={(e) => {
