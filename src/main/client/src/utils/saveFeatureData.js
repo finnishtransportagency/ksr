@@ -19,7 +19,10 @@ const parseAttributes = (attributes: Object) => {
     const a = Object.entries(attributes);
     const newObject = {};
     for (let i = 0; i < a.length; i += 1) {
-        Object.assign(newObject, { [`${a[i][0].split('/').pop()}`]: a[i][1] });
+        Object.assign(
+            newObject,
+            { [`${a[i][0].split('/').pop()}`]: a[i][1] === '' ? null : a[i][1] },
+        );
     }
     return newObject;
 };
@@ -117,15 +120,11 @@ const handleUpdateResponse = (res: Object, layerId: string) => {
  * @param {Object} res Body of the response from ArcGIS Server.
  * @param {Object} layer Deleted features layer.
  */
-const handleDeleteResponse = (res: Object, layer: Object) => {
+const handleDeleteResponse = (res: Object, layer: ?Object) => {
     if (res && Array.isArray(res.deleteResults) && res.deleteResults.some(e => e.success)) {
-        if (layer) {
-            const deletedIds = res.deleteResults.filter(e => e.success).map(e => e.objectId);
-            layer.refresh();
-            toast.success(`${strings.saveFeatureData.featureDeleteSuccess} [${deletedIds.join(', ')}]`);
-        } else {
-            toast.error(strings.saveFeatureData.featureDeleteError);
-        }
+        const deletedIds = res.deleteResults.filter(e => e.success).map(e => e.objectId);
+        if (layer) layer.refresh();
+        toast.success(`${strings.saveFeatureData.featureDeleteSuccess} [${deletedIds.join(', ')}]`);
     } else {
         toast.error(strings.saveFeatureData.featureDeleteNoFeaturesError);
     }
@@ -196,12 +195,9 @@ const saveDeletedFeatureData = (
         objectIds,
         deleteComment,
     });
-    if (layer) {
-        return deleteFeatures(layerId, params)
-            .then(r => r && handleDeleteResponse(r, layer))
-            .catch(() => toast.error(strings.saveFeatureData.featureDeleteError));
-    }
-    return Promise.reject(new Error(`Error in feature delete, no layer ${layerId} found.`));
+    return deleteFeatures(layerId, params)
+        .then(r => r && handleDeleteResponse(r, layer))
+        .catch(() => toast.error(strings.saveFeatureData.featureDeleteError));
 };
 
 /**
