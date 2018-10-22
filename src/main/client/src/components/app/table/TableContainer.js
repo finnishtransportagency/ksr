@@ -26,10 +26,7 @@ const mapStateToProps = (state) => {
 
     const editedLayers = state.table.features.editedLayers.map(l => removeUnderscore(l));
     const originalLayers = state.table.features.layers.map(l => removeUnderscore(l));
-    const selectedData = state.table.features.layers.reduce((a, b) => (
-        b.type !== 'agfl' ? a.concat(b.data.filter(d => d._selected)) : a
-    ), []);
-
+    const selectedData = state.table.features.layers.flatMap(f => f.data.filter(d => d._selected));
     const layer = state.map.layerGroups.layerList.find(l =>
         l.id === state.adminTool.active.layerId);
 
