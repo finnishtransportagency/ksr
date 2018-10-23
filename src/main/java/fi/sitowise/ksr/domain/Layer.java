@@ -51,6 +51,16 @@ public class Layer implements Serializable {
     private String featureType;
     private String updaterField;
     private LayerPermission layerPermission;
+    private boolean hasContracts;
+
+    @JsonIgnore
+    private String contractRelationType;
+
+    @JsonIgnore
+    private Long contractLayerId;
+
+    @JsonIgnore
+    private String contractNumberColumn;
 
     /**
      * Construct a Layer.
@@ -85,6 +95,9 @@ public class Layer implements Serializable {
         this.setAddressField(lr.getAddressField());
         this.setFeatureType(lr.getFeatureType());
         this.setUpdaterField(lr.getUpdaterField());
+        this.setContractLayerId(lr.getContractLayerId());
+        this.setContractNumberColumn(lr.getContractNumberColumn());
+        this.setContractRelationType(lr.getContractRelationType());
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -92,6 +105,11 @@ public class Layer implements Serializable {
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
         }
+
+        boolean hasContracts = lr.getContractNumberColumn() != null
+                && lr.getContractLayerId() != null
+                && lr.getContractRelationType() != null;
+        this.setHasContracts(hasContracts);
     }
 
     /**
@@ -549,16 +567,16 @@ public class Layer implements Serializable {
     }
 
     /**
-     * Get's layer's updater field
+     * Get's layer's updater field.
      *
-     * @return layer's updater field
+     * @return Layer's updater field.
      */
     public String getUpdaterField() { return updaterField; }
 
     /**
      * Sets layer's updater field.
      *
-     * @param updaterField layer's updater field
+     * @param updaterField Layer's updater field.
      */
     public void setUpdaterField(String updaterField) { this.updaterField = updaterField; }
 
@@ -578,5 +596,69 @@ public class Layer implements Serializable {
      */
     public void setLayerPermission(LayerPermission layerPermission) {
         this.layerPermission = layerPermission;
+    }
+
+    /**
+     * Boolean indicating if layer has a related contracts-layer.
+     *
+     * @return Boolean indicating if layer has a related contracts-layer.
+     */
+    public boolean isHasContracts() { return hasContracts; }
+
+    /**
+     * Sets the boolean indicating if layer has a related contracts-layer.
+     *
+     * @param hasContracts Boolean indicating if layer has a related contracts-layer.
+     */
+    public void setHasContracts(boolean hasContracts) { this.hasContracts = hasContracts; }
+
+    /**
+     * Get the contract relation type.
+     * For one-to-many relations type is "one".
+     * For many-to-many relations type is "many".
+     *
+     * @return The contract relation type.
+     */
+    public String getContractRelationType() { return contractRelationType; }
+
+    /**
+     * Sets contract relation type.
+     * For one-to-many relations type is "one".
+     * For many-to-many relations type is "many".
+     *
+     * @param contractRelationType The contract relation type.
+     */
+    public void setContractRelationType(String contractRelationType) {
+        this.contractRelationType = contractRelationType;
+    }
+
+    /**
+     * Gets id of the related contract-layer.
+     *
+     * @return Id of the related contract-layer.
+     */
+    public Long getContractLayerId() { return contractLayerId; }
+
+    /**
+     * Sets id of the related contract-layer.
+     *
+     * @param contractLayerId Id of the related contract-layer.
+     */
+    public void setContractLayerId(Long contractLayerId) { this.contractLayerId = contractLayerId; }
+
+    /**
+     * Gets name of contract number column.
+     *
+     * @return Name of the contract number column.
+     */
+    public String getContractNumberColumn() { return contractNumberColumn; }
+
+    /**
+     * Sets the name of contract number column.
+     *
+     * @param contractNumberColumn Name of the contract number column.
+     */
+    public void setContractNumberColumn(String contractNumberColumn) {
+        this.contractNumberColumn = contractNumberColumn;
     }
 }
