@@ -123,6 +123,40 @@ public class HttpRequestService {
     }
 
     /**
+     * Gets (GET) Content of url and returns an InputStream.
+     *
+     * @param url      Url to be fetched.
+     * @param useProxy Boolean indicating whether to use proxy or not.
+     * @return InputStream of contents.
+     */
+    public InputStream getURLContents(String url, boolean useProxy) {
+        try {
+            HttpRequestBase base = this.requestBaseGet(null, url);
+            HttpHost target = URIUtils.extractHost(new URI(url));
+            setProxy(base, useProxy);
+            CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
+            return cRes.getEntity().getContent();
+        } catch (Exception e) {
+            String msg = String.format("Error making HTTP-request. URL: [%s]. Proxy: [%b]", url, useProxy);
+            throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
+    }
+
+    /**
+     * Set proxy config for HttpRequestBase if proxy should be used.
+     *
+     * @param base HttpRequestBase of request.
+     * @param useProxy Boolean indicating if proxy should be used.
+     */
+    private void setProxy(HttpRequestBase base, boolean useProxy) {
+        if (useProxy) {
+            base.setConfig(proxyRequestConfig);
+        } else {
+            base.setConfig(nonProxyRequestConfig);
+        }
+    }
+
+    /**
      * Fetch endPointUrl:s content and write into HttpServletResponse.
      *
      * @param layer Layer URL that is requested.
@@ -150,11 +184,7 @@ public class HttpRequestService {
                     action,
                     layer
             );
-            if (useProxy) {
-                base.setConfig(proxyRequestConfig);
-            } else {
-                base.setConfig(nonProxyRequestConfig);
-            }
+            setProxy(base, useProxy);
             setBaseHeaders(request, base);
             CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
 
