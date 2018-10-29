@@ -44,7 +44,6 @@ const fi = {
         cancel: 'Peruuta',
     },
     modalClearTable: {
-        title: 'Valintojen ja hakujen tyhjennys',
         submit: 'Tyhjennä',
         cancel: 'Peruuta',
         content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
@@ -140,7 +139,6 @@ const fi = {
         removeTooltip: 'Poista karttataso',
     },
     modalRemoveUserLayer: {
-        title: 'Karttatason poistaminen',
         content: 'Haluatko varmasti poistaa karttatason? Karttatason poistaminen poistaa karttatason tietokannasta. Jos haluat vain piilottaa karttatason, paina "PERUUTA".',
         submit: 'Poista',
         cancel: 'Peruuta',
@@ -190,6 +188,20 @@ const fi = {
         inputPlaceholder: 'Kartan teksti',
         submitText: 'Ok',
         cancelText: 'Peruuta',
+    },
+    modalFeatureContracts: {
+        titleListView: 'Sopimukset kohteelle',
+        titleLinkContract: 'Sopimuksen linkittäminen',
+        titleNewContract: 'Luo uusi sopimus kohteelle',
+        titleEditContract: 'Muokkaa sopimusta',
+        titleContractDetails: 'Sopimuksen tiedot',
+        submitLinkToContract: 'Linkitä sopimukseen',
+        submitNewContract: 'Uusi sopimus',
+        submitLinkContract: 'Linkitä sopimus',
+        submitSave: 'Tallenna',
+        cancelText: 'Peruuta',
+        backText: 'Takaisin',
+        featureHasNoContracts: 'Kohteella ei ole vielä sopimuksia, voit luoda uuden sopimuksen kohteelle tai linkittää olemassa olevan sopimuksen kohteelle.',
     },
     saveFeatureData: {
         newFeatureSaveSuccess: 'Kohteen luonti onnistui.',
