@@ -127,6 +127,14 @@ export const WrapperReactTable = styled.div`
         .content-not-valid {
             border: 2px solid ${styles.mapHighlightStroke};
         };
+        
+        .contract-icon {
+            cursor: pointer;
+        };
+        
+        .contract-icon:focus {
+            outline: none;
+        }
     };
 
     @media only screen and (max-width: 768px) {

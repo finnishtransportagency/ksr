@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+import { setActiveModal } from '../../../../reducers/modal/actions';
 import ReactTable from './ReactTable';
 
 import { toggleSelection, toggleSelectAll, setEditedLayer } from '../../../../reducers/table/actions';
@@ -32,6 +33,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setEditedLayer: (data) => {
         dispatch(setEditedLayer(data));
+    },
+    setActiveModal: (activeModal) => {
+        dispatch(setActiveModal(activeModal));
     },
 });
 

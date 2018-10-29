@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
 import { cellEditValidate, preventKeyPress } from '../../../../utils/cellEditValidate';
-import ReactTableView from './ReactTableView';
+import { addContractColumn } from '../../../../utils/contracts/contractColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
+import ReactTableView from './ReactTableView';
 import { WrapperReactTableNoTable } from './styles';
 import strings from './../../../../translations';
 
@@ -21,6 +22,7 @@ type Props = {
     layerList: Array<Object>,
     activeTable: string,
     activeAdminTool: string,
+    setActiveModal: (activeModal: string) => void,
 };
 
 class ReactTable extends Component<Props> {
@@ -109,7 +111,7 @@ class ReactTable extends Component<Props> {
 
     render() {
         const {
-            fetching, layer, selectAll, toggleSelectAll, layerList,
+            fetching, layer, selectAll, toggleSelectAll, layerList, setActiveModal,
         } = this.props;
 
         if (!layer) {
@@ -120,10 +122,16 @@ class ReactTable extends Component<Props> {
             );
         } else if (!fetching && layerList) {
             const { columns, data } = layer;
+
+            const currentLayer: any = layerList.find(ll => ll.id === layer.id);
+            const contractColumns = currentLayer && currentLayer.hasRelations
+                ? addContractColumn(setActiveModal, columns)
+                : null;
+
             return (<ReactTableView
                 data={data}
                 toggleSelection={this.toggleSelection}
-                columns={columns}
+                columns={contractColumns || columns}
                 selectAll={selectAll}
                 toggleSelectAll={() => toggleSelectAll(layer.id)}
                 renderEditable={this.renderEditable}
