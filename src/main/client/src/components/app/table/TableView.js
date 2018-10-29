@@ -15,6 +15,13 @@ type Props = {
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
     selectedData: boolean,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function
+    ) => void,
+    clearTableData: Function,
 };
 
 const TableView = ({
@@ -27,6 +34,8 @@ const TableView = ({
     originalLayers,
     editedLayers,
     selectedData,
+    showConfirmModal,
+    clearTableData,
 }: Props) => (
     <Table sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace'} tableOpen={isOpen}>
         <Table.ButtonWrapper tableOpen={isOpen}>
@@ -53,10 +62,14 @@ const TableView = ({
                 title={strings.reactTable.clearTableData}
                 tableOpen={isOpen}
                 disabled={!originalLayers.length}
-                onClick={
-                    originalLayers.length ? () => {
-                        setActiveModal('clearTable');
-                    } : null}
+                onClick={() => {
+                    showConfirmModal(
+                        strings.modalClearTable.content,
+                        strings.modalClearTable.submit,
+                        strings.modalClearTable.cancel,
+                        () => { clearTableData(); },
+                    );
+                }}
             >
                 <i className="fas fa-trash" />
             </Table.Button>

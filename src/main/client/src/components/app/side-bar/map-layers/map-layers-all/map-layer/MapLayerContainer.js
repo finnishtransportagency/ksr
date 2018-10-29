@@ -1,21 +1,25 @@
 // @flow
 import { connect } from 'react-redux';
-import { removeUserLayer } from '../../../../../../reducers/map/actions';
-import { setActiveModal } from '../../../../../../reducers/modal/actions';
+import { showConfirmModal } from '../../../../../../reducers/confirmModal/actions';
+import { removeUserLayer, removeUserLayerConfirmed } from '../../../../../../reducers/map/actions';
 import MapLayerView from './MapLayerView';
 
 const mapStateToProps = (state, ownProps) => ({
     layer: ownProps.layer,
     checked: ownProps.checked,
+    layerList: state.map.layerGroups.layerList,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     handleLayerClick: () => {
         ownProps.handleLayerClick(ownProps.layer.id);
     },
-    removeUserLayer: () => {
+    removeUserLayer: (layerList: Object[]) => {
         dispatch(removeUserLayer(ownProps.layer.id));
-        dispatch(setActiveModal('removeUserLayer'));
+        dispatch(removeUserLayerConfirmed(ownProps.layer.id, layerList));
+    },
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
 });
 

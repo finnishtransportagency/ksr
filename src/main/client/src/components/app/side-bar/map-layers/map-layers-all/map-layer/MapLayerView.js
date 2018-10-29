@@ -10,6 +10,13 @@ type Props = {
     removeUserLayer: Function,
     checked: boolean,
     inputDisabled: boolean,
+    layerList: Object[],
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function
+    ) => void,
 };
 
 const MapLayerView = ({
@@ -18,6 +25,8 @@ const MapLayerView = ({
     checked,
     removeUserLayer,
     inputDisabled,
+    layerList,
+    showConfirmModal,
 }: Props) => (
     <LayerGroup.Layer>
         <LayerGroup.Layer.Label htmlFor={layer.id}>
@@ -46,7 +55,14 @@ const MapLayerView = ({
                     <LayerGroup.Layer.RemoveIcon
                         data-balloon={strings.mapLayerView.removeTooltip}
                         data-balloon-pos="left"
-                        onClick={removeUserLayer}
+                        onClick={() => {
+                            showConfirmModal(
+                                strings.modalRemoveUserLayer.content,
+                                strings.modalRemoveUserLayer.submit,
+                                strings.modalRemoveUserLayer.cancel,
+                                () => { removeUserLayer(layerList); },
+                            );
+                        }}
                     >
                         <i className="fas fa-trash" />
                     </LayerGroup.Layer.RemoveIcon>

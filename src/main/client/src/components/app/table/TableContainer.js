@@ -1,6 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
-import { toggleFilter, toggleTable } from '../../../reducers/table/actions';
+import { showConfirmModal } from '../../../reducers/confirmModal/actions';
+import { toggleFilter, toggleTable, clearTableData } from '../../../reducers/table/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import TableView from './TableView';
 
@@ -52,6 +53,12 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));
+    },
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+    clearTableData: () => {
+        dispatch(clearTableData());
     },
 });
 
