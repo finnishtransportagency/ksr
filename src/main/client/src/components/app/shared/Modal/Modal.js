@@ -5,16 +5,22 @@ import ModalView from './ModalView';
 
 const modalRoot: any = document.getElementById('modal-root');
 
+type ModalSubmit = {
+    text: string,
+    handleSubmit: Function,
+    disabled: boolean,
+    toggleModal: boolean,
+};
+
 type Props = {
     title: string,
-    submitText: string,
+    modalSubmit: ModalSubmit[],
     cancelText: string,
     children: any,
-    handleModalSubmit: Function,
     handleModalCancel?: Function,
+    handleGoBack: any,
     activeModal: string,
     setActiveModal: (modal: string) => void,
-    submitDisabled: boolean,
 };
 
 type State = {
@@ -27,8 +33,8 @@ const initialState = {
 
 class Modal extends Component<Props, State> {
     static defaultProps = {
-        submitDisabled: false,
         handleModalCancel: undefined,
+        handleGoBack: undefined,
     };
 
     constructor(props: any) {
@@ -56,21 +62,21 @@ class Modal extends Component<Props, State> {
         this.toggleModal();
     };
 
-    handleSubmit = () => {
-        const { handleModalSubmit } = this.props;
+    handleSubmit = (index: number) => {
+        const { modalSubmit } = this.props;
 
-        handleModalSubmit();
-        this.toggleModal();
+        modalSubmit[index].handleSubmit();
+        if (modalSubmit[index].toggleModal) this.toggleModal();
     };
 
     render() {
         const {
             title,
-            submitText,
+            modalSubmit,
             cancelText,
             children,
             activeModal,
-            submitDisabled,
+            handleGoBack,
         } = this.props;
         const { fadeOut } = this.state;
 
@@ -79,12 +85,12 @@ class Modal extends Component<Props, State> {
                 <ModalView
                     content={children}
                     title={title}
-                    submitText={submitText}
+                    modalSubmit={modalSubmit}
                     cancelText={cancelText}
-                    handleModalSubmit={this.handleSubmit}
-                    submitDisabled={submitDisabled}
                     fadeOut={fadeOut}
                     handleModalCancel={this.handleCancel}
+                    handleSubmit={this.handleSubmit}
+                    handleGoBack={handleGoBack}
                 />,
                 modalRoot,
             );

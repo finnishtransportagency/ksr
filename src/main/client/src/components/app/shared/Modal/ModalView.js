@@ -4,26 +4,33 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import Modal from '../../../ui/blocks/Modal/index';
 import { Button, H1 } from '../../../ui/elements/index';
 
+type ModalSubmit = {
+    text: string,
+    handleSubmit: Function,
+    disabled: boolean,
+    toggleModal: boolean,
+};
+
 type Props = {
     handleModalCancel: Function,
-    handleModalSubmit: Function,
+    modalSubmit: ModalSubmit[],
     content: any,
     title: string,
-    submitText: string,
     cancelText: string,
-    submitDisabled: boolean,
     fadeOut: boolean,
+    handleSubmit: (index: number) => void,
+    handleGoBack: Function,
 };
 
 const ModalView = ({
     handleModalCancel,
-    handleModalSubmit,
+    modalSubmit,
     content,
     title,
-    submitText,
     cancelText,
-    submitDisabled,
     fadeOut,
+    handleSubmit,
+    handleGoBack,
 }: Props) => (
     <Modal fadeOut={fadeOut}>
         <Modal.Blur />
@@ -38,14 +45,23 @@ const ModalView = ({
                 {content}
             </Modal.Content>
         </Scrollbars>
-        <Modal.Footer hidden={!submitText}>
-            <Button disabled={submitDisabled} onClick={handleModalSubmit}>
-                {submitText}
-            </Button>
-            <Button flat onClick={handleModalCancel}>
-                {cancelText}
-            </Button>
-        </Modal.Footer>
+        {modalSubmit.length ?
+            <Modal.Footer>
+                {modalSubmit.map((submit, i) => (
+                    <Button
+                        key={submit.text}
+                        disabled={submit.disabled}
+                        onClick={() => handleSubmit(i)}
+                    >
+                        {submit.text}
+                    </Button>
+                ))}
+                <Button flat onClick={handleGoBack || handleModalCancel}>
+                    {cancelText}
+                </Button>
+            </Modal.Footer>
+            : null
+        }
     </Modal>
 );
 
