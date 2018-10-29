@@ -91,12 +91,17 @@ class ModalNewWorkspace extends Component<Props, State> {
     render() {
         const { workspaceName, submitDisabled, fetching } = this.state;
 
+        const modalSubmit = [{
+            text: strings.modalNewWorkspace.submit,
+            handleSubmit: this.handleSubmit,
+            disabled: !workspaceName.trim() || submitDisabled || fetching,
+            toggleModal: true,
+        }];
+
         return (
             <ModalContainer
-                submitDisabled={!workspaceName.trim() || submitDisabled || fetching}
                 title={strings.modalNewWorkspace.title}
-                handleModalSubmit={this.handleSubmit}
-                submitText={strings.modalNewWorkspace.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalNewWorkspace.cancel}
             >
                 <ModalNewWorkspaceView

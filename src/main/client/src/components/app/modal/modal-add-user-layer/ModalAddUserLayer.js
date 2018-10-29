@@ -113,11 +113,17 @@ class ModalAddUserLayer extends Component<Props, State> {
     render() {
         const { layerValues, optionsType } = this.state;
 
+        const modalSubmit = [{
+            text: strings.modalAddUserLayer.submit,
+            handleSubmit: this.handleSubmit,
+            disabled: false,
+            toggleModal: true,
+        }];
+
         return (
             <ModalContainer
                 title={strings.modalAddUserLayer.title}
-                handleModalSubmit={this.handleSubmit}
-                submitText={strings.modalAddUserLayer.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalAddUserLayer.cancel}
             >
                 <ModalAddUserLayerView

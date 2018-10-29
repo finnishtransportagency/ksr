@@ -45,11 +45,17 @@ class ModalFilter extends Component<Props, State> {
         const { columns } = this.state;
         const { setColumns } = this.props;
 
+        const modalSubmit = [{
+            text: strings.modalFilter.submit,
+            handleSubmit: () => { setColumns(columns); },
+            disabled: false,
+            toggleModal: true,
+        }];
+
         return (
             <ModalContainer
                 title={strings.modalFilter.title}
-                handleModalSubmit={() => setColumns(columns)}
-                submitText={strings.modalFilter.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalFilter.cancel}
                 columns={columns}
             >

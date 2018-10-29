@@ -77,11 +77,17 @@ class ModalFilter extends Component<Props, State> {
     render() {
         const { fields } = this.props;
 
+        const modalSubmit = [{
+            text: strings.modalLayerDetails.submit,
+            handleSubmit: this.handleModalSubmit,
+            disabled: false,
+            toggleModal: true,
+        }];
+
         return (
             <ModalContainer
                 title={strings.modalLayerDetails.title}
-                handleModalSubmit={this.handleModalSubmit}
-                submitText={strings.modalLayerDetails.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalLayerDetails.cancel}
             >
                 <ModalLayerDetailsView

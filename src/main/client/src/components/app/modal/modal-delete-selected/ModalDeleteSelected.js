@@ -57,11 +57,17 @@ class ModalDeleteSelected extends Component<Props, State> {
         const { filteredData } = this.props;
         const { deleteComment } = this.state;
 
+        const modalSubmit = [{
+            text: strings.modalAddUserLayer.submit,
+            handleSubmit: this.handleFeatureDelete,
+            disabled: false,
+            toggleModal: true,
+        }];
+
         return (
             <ModalContainer
                 title={strings.modalDeleteSelected.title}
-                handleModalSubmit={() => { this.handleFeatureDelete(); }}
-                submitText={strings.modalDeleteSelected.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalDeleteSelected.cancel}
             >
                 <ModalDeleteSelectedView

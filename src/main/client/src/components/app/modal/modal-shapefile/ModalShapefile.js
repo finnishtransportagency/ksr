@@ -90,9 +90,7 @@ class ModalShapefile extends Component<Props, State> {
                 <MediaQuery query="(min-width: 769px)">
                     <ModalContainer
                         title={strings.modalShapefile.title}
-                        handleModalSubmit={() => {}}
-                        submitText=""
-                        cancelText=""
+                        modalSubmit={[]}
                     >
                         <ModalShapefileView
                             onDrop={this.onDrop}
