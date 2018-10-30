@@ -51,16 +51,19 @@ public class Layer implements Serializable {
     private String featureType;
     private String updaterField;
     private LayerPermission layerPermission;
-    private boolean hasContracts;
+    private boolean hasRelations;
 
     @JsonIgnore
-    private String contractRelationType;
+    private String relationType;
 
     @JsonIgnore
-    private Long contractLayerId;
+    private Long relationLayerId;
 
     @JsonIgnore
-    private String contractNumberColumn;
+    private String relationColumnIn;
+
+    @JsonIgnore
+    private String relationColumnOut;
 
     /**
      * Construct a Layer.
@@ -95,9 +98,11 @@ public class Layer implements Serializable {
         this.setAddressField(lr.getAddressField());
         this.setFeatureType(lr.getFeatureType());
         this.setUpdaterField(lr.getUpdaterField());
-        this.setContractLayerId(lr.getContractLayerId());
-        this.setContractNumberColumn(lr.getContractNumberColumn());
-        this.setContractRelationType(lr.getContractRelationType());
+        this.setRelationColumnIn(lr.getRelationColumnIn());
+        this.setRelationColumnOut(lr.getRelationColumnOut());
+        this.setRelationLayerId(lr.getRelationLayerId());
+        this.setRelationType(lr.getRelationType());
+
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -106,10 +111,10 @@ public class Layer implements Serializable {
             this.setLayerPermission(new LayerPermission(lpr));
         }
 
-        boolean hasContracts = lr.getContractNumberColumn() != null
-                && lr.getContractLayerId() != null
-                && lr.getContractRelationType() != null;
-        this.setHasContracts(hasContracts);
+        boolean hasRelations = lr.getRelationColumnOut() != null
+                && lr.getRelationLayerId() != null
+                && ("one".equals(lr.getRelationType()) || "many".equals(lr.getRelationType()));
+        this.setHasRelations(hasRelations);
     }
 
     /**
@@ -598,67 +603,74 @@ public class Layer implements Serializable {
         this.layerPermission = layerPermission;
     }
 
-    /**
-     * Boolean indicating if layer has a related contracts-layer.
-     *
-     * @return Boolean indicating if layer has a related contracts-layer.
-     */
-    public boolean isHasContracts() { return hasContracts; }
 
     /**
-     * Sets the boolean indicating if layer has a related contracts-layer.
+     * Returns boolean indicating if layer has relations.
      *
-     * @param hasContracts Boolean indicating if layer has a related contracts-layer.
+     * @return Boolean indicating if layer has relations.
      */
-    public void setHasContracts(boolean hasContracts) { this.hasContracts = hasContracts; }
+    public boolean isHasRelations() { return hasRelations; }
 
     /**
-     * Get the contract relation type.
-     * For one-to-many relations type is "one".
-     * For many-to-many relations type is "many".
+     * Sets boolean indicating if layer has relations.
      *
-     * @return The contract relation type.
+     * @param hasRelations Boolean indicating if layer has relations.
      */
-    public String getContractRelationType() { return contractRelationType; }
+    public void setHasRelations(boolean hasRelations) { this.hasRelations = hasRelations; }
 
     /**
-     * Sets contract relation type.
-     * For one-to-many relations type is "one".
-     * For many-to-many relations type is "many".
+     * Gets type of relation. Possible values are "one", "many", "link" and null.
      *
-     * @param contractRelationType The contract relation type.
+     * @return Type of relation.
      */
-    public void setContractRelationType(String contractRelationType) {
-        this.contractRelationType = contractRelationType;
-    }
+    public String getRelationType() { return relationType; }
 
     /**
-     * Gets id of the related contract-layer.
+     * Sets type of relation.
      *
-     * @return Id of the related contract-layer.
+     * @param relationType Type of relation.
      */
-    public Long getContractLayerId() { return contractLayerId; }
+    public void setRelationType(String relationType) { this.relationType = relationType; }
 
     /**
-     * Sets id of the related contract-layer.
+     * Gets id of the relation layer. On database level, references on another entry in Layer-table.
      *
-     * @param contractLayerId Id of the related contract-layer.
+     * @return Id of the relation layer.
      */
-    public void setContractLayerId(Long contractLayerId) { this.contractLayerId = contractLayerId; }
+    public Long getRelationLayerId() { return relationLayerId; }
 
     /**
-     * Gets name of contract number column.
+     * Sets id of the relation layer. On database level, references on another entry in Layer-table.
      *
-     * @return Name of the contract number column.
+     * @param relationLayerId Id of the relation layer.
      */
-    public String getContractNumberColumn() { return contractNumberColumn; }
+    public void setRelationLayerId(Long relationLayerId) { this.relationLayerId = relationLayerId; }
 
     /**
-     * Sets the name of contract number column.
+     * Gets name of the column another layer references to.
      *
-     * @param contractNumberColumn Name of the contract number column.
+     * @return Name of the column another layer references to.
      */
-    public void setContractNumberColumn(String contractNumberColumn) {
-        this.contractNumberColumn = contractNumberColumn;
-    }
+    public String getRelationColumnIn() { return relationColumnIn; }
+
+    /**
+     * Sets name of the column another layer references to.
+     *
+     * @param relationColumnIn Name of the column another layer references to.
+     */
+    public void setRelationColumnIn(String relationColumnIn) { this.relationColumnIn = relationColumnIn; }
+
+    /**
+     * Gets name of the column which references to another layer.
+     *
+     * @return Name of the column which references to another layer
+     */
+    public String getRelationColumnOut() { return relationColumnOut; }
+
+    /**
+     * Sets name of the column which references to another layer
+     *
+     * @param relationColumnOut Name of the column which references to another layer
+     */
+    public void setRelationColumnOut(String relationColumnOut) { this.relationColumnOut = relationColumnOut; }
 }
