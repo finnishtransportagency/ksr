@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 
 import ModalDeleteSelectedContainer from './modal-delete-selected/ModalDeleteSelectedContainer';
-import ModalFeatureContracts from './modal-feature-contracts/ModalFeatureContracts';
+import ModalFeatureContractsContainer from './modal-feature-contracts/ModalFeatureContractsContainer';
 import ModalSaveEditedDataContainer from './modal-save-edited-data/ModalSaveEditedDataContainer';
 import ModalBufferSelectedContainer from './modal-buffer-selected/ModalBufferSelectedContainer';
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
@@ -29,7 +29,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'newWorkspace' && <ModalNewWorkspaceContainer />}
         {activeModal === 'shapefile' && <ModalShapefileContainer />}
         {activeModal === 'drawText' && <ModalDrawTextContainer />}
-        {activeModal === 'featureContracts' && <ModalFeatureContracts />}
+        {activeModal === 'featureContracts' && <ModalFeatureContractsContainer />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );

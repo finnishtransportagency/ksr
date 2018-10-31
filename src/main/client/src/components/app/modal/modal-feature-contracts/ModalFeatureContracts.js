@@ -2,11 +2,11 @@
 import React, { Component, Fragment } from 'react';
 import strings from '../../../../translations';
 import ModalContainer from '../../shared/Modal/ModalContainer';
-import ContractListView from './modal-feature-contracts-views/ContractListView';
+import ContractListContainer from './contract-list/ContractListContainer';
 import LinkContractView from './modal-feature-contracts-views/LinkContractView';
 
 type Props = {
-    /* ... */
+    removeContractListInfo: Function,
 };
 
 type State = {
@@ -16,7 +16,7 @@ type State = {
 
 const initialState = {
     activeView: 'contractList',
-    title: strings.modalFeatureContracts.titleListView,
+    title: strings.modalFeatureContracts.listView.title,
 };
 
 class ModalFeatureContracts extends Component<Props, State> {
@@ -43,11 +43,17 @@ class ModalFeatureContracts extends Component<Props, State> {
 
         this.handleSubmitLinkToContract = this.handleSubmitLinkToContract.bind(this);
         this.handleGoBack = this.handleGoBack.bind(this);
+        this.handleModalCancel = this.handleModalCancel.bind(this);
     }
 
     handleGoBack = () => {
         this.modalSubmit = this.initialModalSubmit;
         this.setState({ ...initialState });
+    };
+
+    handleModalCancel = () => {
+        const { removeContractListInfo } = this.props;
+        removeContractListInfo();
     };
 
     handleSubmitLinkToContract = () => {
@@ -71,6 +77,7 @@ class ModalFeatureContracts extends Component<Props, State> {
             <ModalContainer
                 modalSubmit={this.modalSubmit}
                 title={title}
+                handleModalCancel={this.handleModalCancel}
                 cancelText={activeView !== 'contractList'
                     ? strings.modalFeatureContracts.backText
                     : strings.modalFeatureContracts.cancelText
@@ -81,7 +88,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                 }
             >
                 <Fragment>
-                    {activeView === 'contractList' && <ContractListView />}
+                    {activeView === 'contractList' && <ContractListContainer />}
                     {activeView === 'linkContract' && <LinkContractView />}
                 </Fragment>
             </ModalContainer>
