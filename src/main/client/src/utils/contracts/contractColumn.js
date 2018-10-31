@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import strings from '../../translations';
 
 /**
  * Adds clickable contract icon to table if layer has contract relations.
@@ -19,6 +20,7 @@ export const addContractColumn = (setActiveModal: Function, columns: Object[]) =
             resizeable: false,
             Cell: () => (
                 <div
+                    title={strings.modalFeatureContracts.featureContracts}
                     role="button"
                     tabIndex={0}
                     onClick={() => setActiveModal('featureContracts')}

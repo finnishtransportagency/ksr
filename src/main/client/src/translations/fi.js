@@ -190,6 +190,7 @@ const fi = {
         cancelText: 'Peruuta',
     },
     modalFeatureContracts: {
+        featureContracts: 'Kohteen sopimukset',
         titleListView: 'Sopimukset kohteelle',
         titleLinkContract: 'Sopimuksen linkittäminen',
         titleNewContract: 'Luo uusi sopimus kohteelle',
