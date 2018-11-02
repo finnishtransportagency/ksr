@@ -32,6 +32,8 @@ comment on column layer.relation_type is 'Relation type. Either "one", "many", "
 comment on column layer.relation_layer_id is 'Id of the related layer. Related-layer is another entry in Layer-table.';
 comment on column layer.relation_column_in is 'Column/field-name in which other layers reference.';
 comment on column layer.relation_column_out is 'Column/field-name which references to other layers relation_column_id.';
+comment on column layer.contract_id_field is 'Name of contract-relation id field to be shown in contract list.';
+comment on column layer.contract_description_field is 'Name of contract-relation description field to be shown in contract list.';
 
 comment on table layer_permission is 'Layer permissions.';
 comment on column layer_permission.layer_id is 'Identifier of the layer that the permissions belong to.';
