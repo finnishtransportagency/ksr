@@ -8,6 +8,7 @@ import modal from './modal';
 import adminTool from './adminTool';
 import workspace from './workspace';
 import confirmModal from './confirmModal';
+import contract from './contract';
 
 export default combineReducers({
     navigation,
@@ -18,4 +19,5 @@ export default combineReducers({
     adminTool,
     workspace,
     confirmModal,
+    contract,
 });
