@@ -91,7 +91,7 @@ export const setBuffer = (
             geometryEngine,
         ]) => {
             if (view) {
-                view.graphics.removeMany(view.graphics.filter(g => g.id === 'buffer'));
+                view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
 
                 if (selectedGeometryData.length > 0) {
                     const featureBuffers = geometryEngine.buffer(
