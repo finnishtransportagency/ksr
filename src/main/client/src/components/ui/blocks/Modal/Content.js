@@ -14,6 +14,10 @@ const Content = styled.div`
         box-shadow: none;
         margin: 0.25rem 0 1rem;
     }
+    
+    .loading-icon {
+        text-align: center;
+    };
 `;
 
 export default Content;
