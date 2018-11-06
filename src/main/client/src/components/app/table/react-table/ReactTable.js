@@ -23,6 +23,12 @@ type Props = {
     activeTable: string,
     activeAdminTool: string,
     setActiveModal: (activeModal: string) => void,
+    setContractListInfo: (
+        layerId: string,
+        objectId: number,
+        contractIdField: string,
+        contractDescriptionField: string,
+    ) => void,
 };
 
 class ReactTable extends Component<Props> {
@@ -51,6 +57,21 @@ class ReactTable extends Component<Props> {
 
     toggleSelection = (id: string, shiftKey: string, row: Object) => {
         this.props.toggleSelection(row);
+    };
+
+    handleContractClick = (objectId: number) => {
+        const {
+            setActiveModal, setContractListInfo, activeTable, layerList,
+        } = this.props;
+        const layerId = activeTable.replace('.s', '');
+        const currentLayer: any = layerList.find(ll => ll.id === layerId);
+        setActiveModal('featureContracts');
+        setContractListInfo(
+            layerId,
+            objectId,
+            currentLayer.contractIdField,
+            currentLayer.contractDescriptionField,
+        );
     };
 
     renderEditable = (cellInfo: Object) => {
@@ -109,7 +130,7 @@ class ReactTable extends Component<Props> {
 
     render() {
         const {
-            fetching, layer, selectAll, toggleSelectAll, layerList, setActiveModal,
+            fetching, layer, selectAll, toggleSelectAll, layerList,
         } = this.props;
 
         if (!layer) {
@@ -123,7 +144,7 @@ class ReactTable extends Component<Props> {
 
             const currentLayer: any = layerList.find(ll => ll.id === layer.id);
             const contractColumns = currentLayer && currentLayer.hasRelations
-                ? addContractColumn(setActiveModal, columns)
+                ? addContractColumn(this.handleContractClick, columns)
                 : null;
 
             return (<ReactTableView

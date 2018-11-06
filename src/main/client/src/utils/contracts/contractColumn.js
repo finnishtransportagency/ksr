@@ -5,12 +5,12 @@ import strings from '../../translations';
 /**
  * Adds clickable contract icon to table if layer has contract relations.
  *
- * @param {Function} setActiveModal Redux action to set active modal.
+ * @param {Function} handleContractClick Opens contract modal and saves objectId to redux.
  * @param {Object[]} columns Currently active layers table columns.
  *
  * @returns {Object[]} Modified columns with contract icon added as first column.
  */
-export const addContractColumn = (setActiveModal: Function, columns: Object[]) => ([
+export const addContractColumn = (handleContractClick: Function, columns: Object[]) => ([
     {
         columns: [{
             width: 30,
@@ -18,13 +18,13 @@ export const addContractColumn = (setActiveModal: Function, columns: Object[]) =
             sortable: false,
             filterable: false,
             resizeable: false,
-            Cell: () => (
+            Cell: (row: Object) => (
                 <div
                     title={strings.modalFeatureContracts.featureContracts}
                     role="button"
                     tabIndex={0}
-                    onClick={() => setActiveModal('featureContracts')}
-                    onKeyPress={() => setActiveModal('featureContracts')}
+                    onClick={() => handleContractClick(row.original._id)}
+                    onKeyPress={() => handleContractClick(row.original._id)}
                     className="contract-icon"
                 >
                     <i className="fas fa-tasks" />
