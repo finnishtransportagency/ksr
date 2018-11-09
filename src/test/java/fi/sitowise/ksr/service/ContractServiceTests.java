@@ -109,11 +109,11 @@ public class ContractServiceTests {
         String requestUrl2 = "http://test/ksr/2/query?f=pjson&returnGeometry=false&outFields=*&where=ID_C+IN+%2890%29";
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is1);
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl2), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl2), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is2);
 
         ObjectMapper om = new ObjectMapper();
@@ -191,11 +191,11 @@ public class ContractServiceTests {
         String requestUrl2 = "http://test/ksr/2/query?f=pjson&returnGeometry=false&outFields=*&where=ID_C+IN+%28%27a90%27%29";
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is1);
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl2), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl2), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is2);
 
         ObjectMapper om = new ObjectMapper();
@@ -238,7 +238,7 @@ public class ContractServiceTests {
         String requestUrl1 = "http://test/ksr/1/query?f=pjson&returnGeometry=false&outFields=C_ID&objectIds=100";
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is1);
 
         contractService.getContracts(layer, 100);
@@ -279,7 +279,7 @@ public class ContractServiceTests {
         String requestUrl1 = "http://test/ksr/1/query?f=pjson&returnGeometry=false&outFields=C_ID&objectIds=100";
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is1);
 
         contractService.getContracts(layer, 100);
@@ -396,15 +396,15 @@ public class ContractServiceTests {
         String requestUrl3 = "http://test/ksr/13/query?f=pjson&returnGeometry=false&outFields=*&where=CO+IN+%28190%2C290%2C390%29";
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl1), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is1);
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl2), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl2), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is2);
 
         Mockito.when(
-                httpRequestService.getURLContents(Mockito.eq(requestUrl3), Mockito.eq(false))
+                httpRequestService.getURLContents(Mockito.eq(requestUrl3), Mockito.eq(false), Mockito.isNull())
         ).thenReturn(is3);
 
 

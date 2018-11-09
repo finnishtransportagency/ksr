@@ -7,8 +7,10 @@ import fi.sitowise.ksr.domain.proxy.EditFeature;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -159,15 +161,19 @@ public class HttpRequestService {
     }
 
     /**
-     * Gets (GET) Content of url and returns an InputStream.
+     * Gets (GET) content of url and returns an InputStream.
      *
-     * @param url      Url to be fetched.
+     * @param url Url to be fetched.
      * @param useProxy Boolean indicating whether to use proxy or not.
+     * @param authentication Base64 encoded Basic Authentication string if authentication is needed.
      * @return InputStream of contents.
      */
-    public InputStream getURLContents(String url, boolean useProxy) {
+    public InputStream getURLContents(String url, boolean useProxy, String authentication) {
         try {
             HttpRequestBase base = this.requestBaseGet(null, url);
+            if (StringUtils.isNotEmpty(authentication)) {
+                base.setHeader(HttpHeaders.AUTHORIZATION, String.format("Basic %s", authentication));
+            }
             HttpHost target = URIUtils.extractHost(new URI(url));
             setProxy(base, useProxy);
             CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);

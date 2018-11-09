@@ -113,7 +113,7 @@ public class ContractService {
         }
 
         String url = createGetFeaturesUrl(targetLayer, fkeys);
-        InputStream is = httpRequestService.getURLContents(url, layer.getUseInternalProxy());
+        InputStream is = httpRequestService.getURLContents(url, layer.getUseInternalProxy(), null);
         return deSerializeResponse(is, targetLayer.getId());
     }
 
@@ -147,7 +147,7 @@ public class ContractService {
      */
     private List<Object> getRelations(Layer layer, int objectID) {
         String url = createGetRelationUrl(layer, objectID);
-        InputStream is = httpRequestService.getURLContents(url, layer.getUseInternalProxy());
+        InputStream is = httpRequestService.getURLContents(url, layer.getUseInternalProxy(), null);
         EsriQueryResponse eQRes = deSerializeResponse(is, layer.getId());
         return eQRes.getAttributeValues(layer.getRelationColumnOut());
     }
