@@ -6,6 +6,8 @@ import ContractList from '../ContractList';
 import ContractListView from '../ContractListView';
 
 const setup = (prop) => {
+    fetchMock.fetchContractRelation = jest.fn(() => Promise.resolve({ features: null }));
+
     const minProps = {
         layerId: 123,
         objectId: 123456,
