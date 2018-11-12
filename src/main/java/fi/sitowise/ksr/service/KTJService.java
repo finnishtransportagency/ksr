@@ -8,7 +8,10 @@ import org.apache.logging.log4j.Logger;
 import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -191,5 +194,47 @@ public class KTJService {
         pdfLinkMap.put("map", KTJUtils.parseKTJPdfLinks(xmlInputStream));
 
         return pdfLinkMap;
+    }
+
+    /**
+     * Get PDF print from given url.
+     *
+     * @param printType Type of the print to be fetched.
+     * @param pdfUrl Url of the print.
+     * @param response Http servlet interface to which the response is written.
+     */
+    public void getPropertyPdfPrint(String printType, String pdfUrl, HttpServletResponse response) {
+        String filename;
+        switch (printType) {
+            case "deed":
+                filename = "lainhuutotodistus.pdf";
+                break;
+            case "easement":
+                filename = "rasitustodistus.pdf";
+                break;
+            case "map":
+                filename = "karttaote.pdf";
+                break;
+            case "registerunit":
+                filename = "kiinteistorekisteriote.pdf";
+                break;
+            default:
+                throw new KsrApiException.BadRequestException("Invalid print type.");
+        }
+
+        log.info(String.format(
+                "Get [%s] PDF print with url: [%s] User: [%s]",
+                printType, pdfUrl, KsrAuthenticationUtils.getCurrentUsername()
+        ));
+        InputStream inputStream = httpRequestService.getURLContents(pdfUrl, false, getBasicAuthString());
+
+        try {
+            String headerValue = String.format("inline; filename=\"%s\"", filename);
+            response.setHeader("Content-Disposition", headerValue);
+            response.setContentType("application/pdf");
+            StreamUtils.copy(inputStream, response.getOutputStream());
+        } catch (IOException e) {
+            throw new KsrApiException.InternalServerErrorException("Failed to get PDF print.", e);
+        }
     }
 }
