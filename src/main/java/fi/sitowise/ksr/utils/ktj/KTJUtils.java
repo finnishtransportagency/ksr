@@ -32,6 +32,8 @@ public class KTJUtils {
     private final static String REGISTER_DATE_EL = "ktjkiiwfs:rekisterointipvm";
     private final static String PARCEL_DETAILS_EL = "ktjkiiwfs:rekisteriyksikonPalstanTietoja";
     private final static String PARCEL_LOCATION_EL = "ktjkiiwfs:RekisteriyksikonPalstanTietoja/ktjkiiwfs:sijainti";
+    private final static String PDF_LINK_EL = "//linkki";
+    private final static String PDF_URL_EL = "url";
 
     /**
      * Parses a KTJ-responses InputStream into a GeoJSON FeatureCollection.
@@ -56,6 +58,26 @@ public class KTJUtils {
                     "Error handling KTJ-response.",
                     e
             );
+        }
+    }
+
+    /**
+     * Parse KTJ PDF link response InputStream into a string list containing PDF urls.
+     *
+     * @param inputStream InputStream of KTJ map PDF link response.
+     * @return List of PDF urls.
+     */
+    public static List<String> parseKTJPdfLinks(InputStream inputStream) {
+        Objects.requireNonNull(inputStream);
+        try {
+            Document doc = XMLUtils.parseDocument(inputStream);
+            NodeList linkNodes = XMLUtils.getNodes(doc, PDF_LINK_EL);
+            System.out.println(linkNodes.getLength());
+            Stream<Node> nodeStream = IntStream.range(0, linkNodes.getLength()).mapToObj(linkNodes::item);
+            return nodeStream.map(KTJUtils::parsePdfLink).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new KsrApiException.InternalServerErrorException(
+                    "Error handling KTJ PDF link response.", e);
         }
     }
 
@@ -158,6 +180,21 @@ public class KTJUtils {
                     "Error parsing GML-geometry.",
                     xe
             );
+        }
+    }
+
+    /**
+     * Parse url from link node.
+     *
+     * @param linkNode Link node.
+     * @return Url of the link.
+     */
+    private static String parsePdfLink(Node linkNode) {
+        try {
+            return XMLUtils.getNodeContent(linkNode, PDF_URL_EL);
+        } catch (XPathExpressionException xe) {
+            throw new KsrApiException.InternalServerErrorException(
+                    "Error parsing KTJ PDF link response.", xe);
         }
     }
 }

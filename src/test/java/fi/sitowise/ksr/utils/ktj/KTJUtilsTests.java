@@ -97,4 +97,37 @@ public class KTJUtilsTests {
         KTJUtils.parseKTJResponse(null);
     }
 
+    @Test
+    public void testParseKTJPdfLinks() {
+        String response =
+                "<karttaote>" +
+                "    <rekisteriyksikko>12-345-67-89</rekisteriyksikko>" +
+                "    <palstalkm>1</palstalkm>" +
+                "    <oikeaksi_todistettava>false</oikeaksi_todistettava>" +
+                "    <lang>FI</lang>" +
+                "    <kopiointilupa/>" +
+                "    <linkki>" +
+                "        <url>www.testiurl1.fi</url>" +
+                "        <alkusivu>1</alkusivu>" +
+                "        <loppusivu>1</loppusivu>" +
+                "    </linkki>" +
+                "    <linkki>" +
+                "        <url>www.testiurl2.fi</url>" +
+                "        <alkusivu>1</alkusivu>" +
+                "        <loppusivu>1</loppusivu>" +
+                "    </linkki>" +
+                "    <linkki>" +
+                "        <url>www.testiurl3.fi</url>" +
+                "        <alkusivu>1</alkusivu>" +
+                "        <loppusivu>1</loppusivu>" +
+                "    </linkki>" +
+                "</karttaote>";
+
+        InputStream inputStream = new ByteArrayInputStream(response.getBytes());
+        List<String> pdfUrls = KTJUtils.parseKTJPdfLinks(inputStream);
+
+        Assert.assertEquals("www.testiurl1.fi", pdfUrls.get(0));
+        Assert.assertEquals("www.testiurl2.fi", pdfUrls.get(1));
+        Assert.assertEquals("www.testiurl3.fi", pdfUrls.get(2));
+    }
 }

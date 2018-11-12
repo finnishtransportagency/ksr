@@ -10,7 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Service to make Requests to Maanmittauslaitos Kiinteistötietojärjestelmä (KTJ).
@@ -53,6 +57,18 @@ public class KTJService {
 
     @Value("${ktj.endpoint}")
     String ktjEndpointUrl;
+
+    @Value("${ktj.deedEndpoint}")
+    String ktjDeedEndpointUrl;
+
+    @Value("${ktj.easementEndpoint}")
+    String ktjEasementEndpointUrl;
+
+    @Value("${ktj.mapEndpoint}")
+    String ktjMapEndpointUrl;
+
+    @Value("${ktj.registerUnitEndpoint}")
+    String ktjRegisterUnitEndpointUrl;
 
     @Value("${ktj.username}")
     String ktjUsername;
@@ -136,5 +152,44 @@ public class KTJService {
      */
     private String getBasicAuthString() {
         return Base64.getEncoder().encodeToString(String.format("%s:%s", ktjUsername, ktjPassword).getBytes());
+    }
+
+    /**
+     * Get PDF print links for given property.
+     *
+     * @param propertyIdentifier Property's identifier.
+     * @param language Language of the prints.
+     * @return A map containing links to different types of PDF prints.
+     */
+    public Map<String, List<String>> getPropertyPdfLinks(String propertyIdentifier, String language) {
+        log.info(String.format(
+                "Get PDF print links for property: [%s] User: [%s]",
+                propertyIdentifier, KsrAuthenticationUtils.getCurrentUsername()
+        ));
+
+        Map<String, List<String>> pdfLinkMap = new HashMap<>();
+
+        List<String> deedPdfLinks = new ArrayList<>();
+        deedPdfLinks.add(String.format("%s?kiinteistotunnus=%s&lang=%s",
+                ktjDeedEndpointUrl, propertyIdentifier, language.toUpperCase()));
+        pdfLinkMap.put("deed", deedPdfLinks);
+
+        List<String> easementPdfLinks = new ArrayList<>();
+        easementPdfLinks.add(String.format("%s?kiinteistotunnus=%s&lang=%s",
+                ktjEasementEndpointUrl, propertyIdentifier, language.toUpperCase()));
+        pdfLinkMap.put("easement", easementPdfLinks);
+
+        List<String> registerUnitPdfLinks = new ArrayList<>();
+        registerUnitPdfLinks.add(String.format("%s?kiinteistotunnus=%s&lang=%s",
+                ktjRegisterUnitEndpointUrl, propertyIdentifier, language.toUpperCase()));
+        pdfLinkMap.put("registerunit", registerUnitPdfLinks);
+
+        String xmlUrl = String.format("%s?rekisteriyksikko=%s&lang=%s",
+                ktjMapEndpointUrl, propertyIdentifier, language.toUpperCase());
+        InputStream xmlInputStream = httpRequestService.getURLContents(xmlUrl, false,
+                getBasicAuthString());
+        pdfLinkMap.put("map", KTJUtils.parseKTJPdfLinks(xmlInputStream));
+
+        return pdfLinkMap;
     }
 }
