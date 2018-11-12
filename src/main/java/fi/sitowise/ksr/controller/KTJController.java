@@ -1,9 +1,14 @@
 package fi.sitowise.ksr.controller;
 
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.KTJService;
 import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for KTJ-related requests.
@@ -46,5 +51,22 @@ public class KTJController {
     @RequestMapping(value = "/", method = { RequestMethod.GET })
     public FeatureCollection getPropertyDetails(@RequestParam("x") Double x, @RequestParam("y") Double y) {
         return ktjService.getPropertyDetails(x, y);
+    }
+
+    /**
+     * Get PDF print links for given property.
+     *
+     * @param propertyIdentifier Property's identifier in either numeric or hyphen format.
+     * @param language Language of the prints.
+     */
+    @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER')")
+    @RequestMapping(value = "/pdf/links", method = { RequestMethod.GET })
+    public Map<String, List<String>> getPropertyPdfLinks(@RequestParam String propertyIdentifier,
+            @RequestParam String language) {
+        // At least for now KTJ only support Finnish and Swedish as print languages.
+        if ("fi".equalsIgnoreCase(language) && "sv".equalsIgnoreCase(language)) {
+            throw new KsrApiException.BadRequestException("Unsupported language.");
+        }
+        return ktjService.getPropertyPdfLinks(propertyIdentifier, language);
     }
 }

@@ -12,7 +12,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -93,6 +96,15 @@ public class KTJControllerTests extends AuthControllerTestBase {
 
         Mockito.when(ktjService.getPropertyDetails(Mockito.eq(123.432), Mockito.eq(456.43)))
                 .thenReturn(fc2);
+
+        Map<String, List<String>> pdfLinkMap = new HashMap<>();
+        pdfLinkMap.put("registerunit", Collections.singletonList("registeruniturl"));
+        pdfLinkMap.put("map", Collections.singletonList("mapurl"));
+        pdfLinkMap.put("deed", Collections.singletonList("deedurl"));
+        pdfLinkMap.put("easement", Collections.singletonList("easementurl"));
+
+        Mockito.when(ktjService.getPropertyPdfLinks(Mockito.eq("123-45-67-89"), Mockito.eq("fi")))
+                .thenReturn(pdfLinkMap);
     }
 
     @Test
@@ -141,4 +153,31 @@ public class KTJControllerTests extends AuthControllerTestBase {
         this.mockMvc.perform(get("/api/property/00100200030004")).andExpect(status().isForbidden());
     }
 
+    @Test
+    public void testGetPropertyPdfLinks() throws Exception {
+        String expectedJSON = "{\"registerunit\":[\"registeruniturl\"],\"map\":[\"mapurl\"],\"deed\":[\"deedurl\"],\"easement\":[\"easementurl\"]}";
+
+        this.mockMvc.perform(
+                get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
+                        .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
+        ).andExpect(status().isOk());
+
+        this.mockMvc.perform(
+                get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
+                        .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
+        ).andExpect(content().json(expectedJSON));
+    }
+
+    @Test
+    public void testGetPropertyPdfLinksInsufficientUserRights() throws Exception {
+        this.mockMvc.perform(
+                get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
+                        .headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
+        ).andExpect(status().isForbidden());
+
+        this.mockMvc.perform(
+                get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
+                        .headers(this.getHeadersWithGroup("KSR_ROLE_EXTERNAL_UPDATER"))
+        ).andExpect(status().isForbidden());
+    }
 }
