@@ -261,7 +261,4 @@ public class KTJServiceTests {
 
         Assert.assertEquals(expectedFc, fc);
     }
-
-
-
 }
