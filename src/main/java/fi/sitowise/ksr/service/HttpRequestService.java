@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -120,6 +121,41 @@ public class HttpRequestService {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(socketTimeout);
         return requestConfigBuilder;
+    }
+
+
+    /**
+     * Makes an HTTP POST request and return responses content as a InputStream.
+     *
+     * @param url Url
+     * @param body Raw body to POST.
+     * @param authentication Base64 encoded username:password if needed. Otherwise null.
+     * @param contentType Content type of the body.
+     * @param useProxy Boolean indicating whether to proxy request.
+     * @return InputStream of the response body.
+     */
+    public InputStream postURLContents(
+            String url,
+            String body,
+            String authentication,
+            String contentType,
+            boolean useProxy
+    ) {
+        try {
+            HttpRequestBase base = this.simplePostBase(url, body, contentType);
+            HttpHost target = URIUtils.extractHost(new URI(url));
+            setProxy(base, useProxy);
+
+            if (authentication != null) {
+                base.setHeader("Authorization", String.format("Basic %s", authentication));
+            }
+
+            CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
+            return cRes.getEntity().getContent();
+        } catch (Exception e) {
+            String msg = String.format("Error making HTTP-request. URL: [%s]. Proxy: [%b]", url, useProxy);
+            throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
     }
 
     /**
@@ -451,6 +487,24 @@ public class HttpRequestService {
             String msg = "Error creating print output response";
             throw new KsrApiException.InternalServerErrorException(msg, e);
         }
+    }
+
+    /**
+     * Returns a HttpRequestBase for POST request.
+     *
+     * Streamlined to work when POSTing raw content.
+     *
+     * @param url Url.
+     * @param body POST body as a String.
+     * @param contentType Value of Content-Type Header.
+     * @return HttpRequestBase with parameters in place.
+     * @throws UnsupportedEncodingException
+     */
+    private HttpRequestBase simplePostBase(String url, String body, String contentType) throws UnsupportedEncodingException {
+        HttpPost base = new HttpPost(url);
+        base.setHeader("Content-Type", contentType);
+        base.setEntity(new StringEntity(body));
+        return base;
     }
 
     /**
