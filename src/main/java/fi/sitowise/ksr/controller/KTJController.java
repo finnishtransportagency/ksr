@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -68,5 +69,19 @@ public class KTJController {
             throw new KsrApiException.BadRequestException("Unsupported language.");
         }
         return ktjService.getPropertyPdfLinks(propertyIdentifier, language);
+    }
+
+    /**
+     * Get PDF print from given url.
+     *
+     * @param printType Type of the print to be fetched.
+     * @param pdfUrl Url of the print.
+     * @param response Http servlet interface to which the response is written.
+     */
+    @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER')")
+    @RequestMapping(value = "/pdf/{printType}", method = { RequestMethod.GET })
+    public void getPropertyPdfPrint(@PathVariable String printType, @RequestParam String pdfUrl,
+            HttpServletResponse response) {
+        ktjService.getPropertyPdfPrint(printType, pdfUrl, response);
     }
 }
