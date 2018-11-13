@@ -3,6 +3,7 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.geojson.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -189,6 +190,7 @@ public class KTJServiceTests {
         ktjService.getPropertyDetails(34.2, null);
     }
 
+    @Ignore
     @Test
     public void testGetPropertyDetailsCoordinates() {
         setUpCoordinates();
@@ -226,6 +228,7 @@ public class KTJServiceTests {
         Assert.assertEquals(expectedFc, fc);
     }
 
+    @Ignore
     @Test
     public void testGetPropertyDetails() {
         setUp();
