@@ -8,6 +8,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class GMLUtilsTests {
                 "                        </gml:Surface>" +
                 "                    </ktjkiiwfs:sijainti>";
 
-        Document doc = XMLUtils.parseDocument(new ByteArrayInputStream(locationStr.getBytes()));
+        Document doc = XMLUtils.parseDocument(new ByteArrayInputStream(locationStr.getBytes(StandardCharsets.UTF_8)));
         Node location = XMLUtils.getNode(doc, "//ktjkiiwfs:sijainti");
 
         Polygon polygon = GMLUtils.parsePolygons(location).get(0);
@@ -66,7 +67,7 @@ public class GMLUtilsTests {
                 "                        </gml:Surface>" +
                 "                    </ktjkiiwfs:sijainti>";
 
-        Document doc = XMLUtils.parseDocument(new ByteArrayInputStream(locationStr.getBytes()));
+        Document doc = XMLUtils.parseDocument(new ByteArrayInputStream(locationStr.getBytes(StandardCharsets.UTF_8)));
         Node location = XMLUtils.getNode(doc, "//ktjkiiwfs:sijainti");
 
         Polygon polygon = GMLUtils.parsePolygons(location).get(0);

@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class KTJUtilsTests {
                 "   </gml:featureMember>" +
                 "</wfs:FeatureCollection>";
 
-        InputStream is = new ByteArrayInputStream(response.getBytes());
+        InputStream is = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
 
         Feature expectedFeature = new Feature();
         expectedFeature.setId("00100200030004");

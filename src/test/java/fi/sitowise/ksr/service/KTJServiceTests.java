@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class KTJServiceTests {
                 "</wfs:Query>" +
                 "</wfs:GetFeature>";
 
-        InputStream is = new ByteArrayInputStream(response.getBytes());
+        InputStream is = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
 
         Mockito.when(httpRequestService.postURLContents(
                 Mockito.anyString(),
@@ -157,7 +158,7 @@ public class KTJServiceTests {
                 "</wfs:Query>" +
                 "</wfs:GetFeature>";
 
-        InputStream is = new ByteArrayInputStream(response.getBytes());
+        InputStream is = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
 
         Mockito.when(httpRequestService.postURLContents(
                 Mockito.anyString(),
