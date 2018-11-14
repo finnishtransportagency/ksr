@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { setEditMode, setMapView, setTempGraphicsLayer, setHasGraphics } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
+import { setPropertyInfo } from '../../../reducers/search/actions';
 import { setSingleLayerGeometry, searchWorkspaceFeatures, selectFeatures } from './../../../reducers/table/actions';
 import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/actions';
 import InitMap from './InitMap';
@@ -21,6 +22,7 @@ const mapStateToProps = (state) => {
         editMode: state.map.mapTools.editMode,
         activeTool: state.map.mapTools.active,
         initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
+        authorities: state.user.userInfo.authorities,
     });
 };
 
@@ -54,6 +56,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setWorkspaceRejected: () => {
         dispatch(setWorkspaceRejected());
+    },
+    setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
+        dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
     },
 });
 

@@ -28,6 +28,13 @@ type Props = {
     initialLoading: boolean,
     setActiveModal: Function,
     setSingleLayerGeometry: Function,
+    setPropertyInfo: (
+        queryParameter: Object | string,
+        view: Object,
+        graphicId: string,
+        authorities: Object[],
+    ) => void,
+    authorities: Object[],
 };
 
 class EsriMap extends Component<Props> {
@@ -77,6 +84,7 @@ class EsriMap extends Component<Props> {
                     printServiceUrl,
                     setActiveModal,
                     setSingleLayerGeometry,
+                    setPropertyInfo,
                 } = this.props;
 
                 // GraphicsLayer to hold graphics created via sketch view model
@@ -154,14 +162,28 @@ class EsriMap extends Component<Props> {
                 view.ui.add([scaleBar], 'bottom-left');
 
                 view.on('click', (event) => {
-                    // Return if update sketch is ongoing
+                    event.stopPropagation();
+                    view.popup.close();
+
                     if (this.props.editMode === 'update') return;
                     view.hitTest(event).then((response) => {
                         let { results } = response;
-                        // Found results
+
+                        if (this.props.activeTool !== 'drawErase') {
+                            view.popup.open({ location: event.mapPoint });
+
+                            const { activeAdminTool } = this.props;
+                            mapSelectPopup(
+                                results,
+                                view,
+                                selectFeatures,
+                                layerList,
+                                activeAdminTool,
+                            );
+                        }
+
                         if (results.length) {
                             if (this.props.activeTool === 'drawErase') {
-                                view.popup.close();
                                 results.forEach((r) => {
                                     if (r.graphic && r.graphic.type === 'draw-graphic') {
                                         view.graphics.remove(r.graphic);
@@ -191,20 +213,6 @@ class EsriMap extends Component<Props> {
                                     this.props.sketchViewModel.update(graphic);
                                 } else if (this.props.editMode === 'finish') {
                                     this.props.setEditMode('');
-                                } else if (event.button === 0) {
-                                    const { activeAdminTool } = this.props;
-                                    const swLink = getStreetViewLink(
-                                        event.mapPoint.x,
-                                        event.mapPoint.y,
-                                    );
-                                    mapSelectPopup(
-                                        results,
-                                        swLink,
-                                        view,
-                                        selectFeatures,
-                                        layerList,
-                                        activeAdminTool,
-                                    );
                                 }
                             }
                         }
@@ -224,14 +232,29 @@ class EsriMap extends Component<Props> {
                     .remove('esri-component');
 
                 view.popup.on('trigger-action', (evt) => {
-                    if (evt.action.id === 'select-intersect') {
-                        const layerId = view.popup.viewModel.selectedFeature.layer.id;
-                        const featureGeom = view.popup.viewModel.selectedFeature.geometry;
-                        const { activeAdminTool } = this.props;
-                        queryFeatures(featureGeom, activeAdminTool, view, selectFeatures, layerId);
-                    } else if (evt.action.id === 'set-buffer') {
-                        setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
-                        setActiveModal('bufferSelectedData');
+                    const { x, y } = view.popup.location;
+                    const { activeAdminTool, authorities } = this.props;
+                    switch (evt.action.id) {
+                        case ('select-intersect'):
+                            queryFeatures(
+                                view.popup.viewModel.selectedFeature.geometry,
+                                activeAdminTool,
+                                view,
+                                selectFeatures,
+                                view.popup.viewModel.selectedFeature.layer.id,
+                            );
+                            break;
+                        case ('set-buffer'):
+                            setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
+                            setActiveModal('bufferSelectedData');
+                            break;
+                        case ('get-property-info'):
+                            setPropertyInfo({ x, y }, view, 'propertyArea', authorities);
+                            break;
+                        case ('google-street-view'):
+                            getStreetViewLink(x, y);
+                            break;
+                        default: break;
                     }
                 });
 
