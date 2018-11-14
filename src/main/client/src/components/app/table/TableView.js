@@ -14,6 +14,7 @@ type Props = {
     activeDelete: boolean,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
+    editedLayersNoUnderscore: Array<Object>,
     selectedData: boolean,
     showConfirmModal: (
         body: string,
@@ -22,6 +23,10 @@ type Props = {
         accept: Function
     ) => void,
     clearTableData: Function,
+    saveEditedFeatures: Function,
+    featureType: string,
+    addressField: string,
+    view: Object,
 };
 
 const TableView = ({
@@ -36,6 +41,11 @@ const TableView = ({
     selectedData,
     showConfirmModal,
     clearTableData,
+    saveEditedFeatures,
+    featureType,
+    addressField,
+    view,
+    editedLayersNoUnderscore,
 }: Props) => (
     <Table sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace'} tableOpen={isOpen}>
         <Table.ButtonWrapper tableOpen={isOpen}>
@@ -89,11 +99,24 @@ const TableView = ({
                 <Table.Button
                     title={strings.reactTable.saveEditedData}
                     tableOpen={isOpen}
-                    disabled={originalLayers.every(o => o._source === 'shapefile') || !originalLayers.length || equals(originalLayers, editedLayers)}
+                    disabled={originalLayers.every(o => o._source === 'shapefile') || !originalLayers.length || equals(originalLayers, editedLayersNoUnderscore)}
                     onClick={
-                        originalLayers.length && !equals(originalLayers, editedLayers) ? () => {
-                            setActiveModal('saveEditedData');
-                        } : null}
+                        originalLayers.length && !equals(originalLayers, editedLayersNoUnderscore)
+                            ? () => {
+                                showConfirmModal(
+                                    strings.modalSaveEditedData.content,
+                                    strings.modalSaveEditedData.submit,
+                                    strings.modalSaveEditedData.cancel,
+                                    () => {
+                                        saveEditedFeatures(
+                                            view,
+                                            editedLayers,
+                                            featureType,
+                                            addressField,
+                                        );
+                                    },
+                                );
+                            } : null}
                 >
                     <i className="fas fa-save" />
                 </Table.Button>

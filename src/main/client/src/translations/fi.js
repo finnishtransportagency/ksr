@@ -190,7 +190,7 @@ const fi = {
         cancelText: 'Peruuta',
     },
     modalFeatureContracts: {
-        titleListView: 'Sopimukset kohteelle',
+        featureContracts: 'Kohteen sopimukset',
         titleLinkContract: 'Sopimuksen linkittäminen',
         titleNewContract: 'Luo uusi sopimus kohteelle',
         titleEditContract: 'Muokkaa sopimusta',
@@ -201,7 +201,13 @@ const fi = {
         submitSave: 'Tallenna',
         cancelText: 'Peruuta',
         backText: 'Takaisin',
-        featureHasNoContracts: 'Kohteella ei ole vielä sopimuksia, voit luoda uuden sopimuksen kohteelle tai linkittää olemassa olevan sopimuksen kohteelle.',
+        listView: {
+            title: 'Sopimukset kohteelle',
+            noContracts: 'Kohteella ei ole vielä sopimuksia, voit luoda uuden sopimuksen kohteelle tai linkittää olemassa olevan sopimuksen kohteelle.',
+            details: 'Sopimuksen lisätiedot',
+            edit: 'Muokkaa sopimusta',
+            unlink: 'Poista sopimuksen linkitys kohteelta',
+        },
     },
     saveFeatureData: {
         newFeatureSaveSuccess: 'Kohteen luonti onnistui.',

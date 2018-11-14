@@ -2,8 +2,7 @@
 import React, { Fragment } from 'react';
 
 import ModalDeleteSelectedContainer from './modal-delete-selected/ModalDeleteSelectedContainer';
-import ModalFeatureContracts from './modal-feature-contracts/ModalFeatureContracts';
-import ModalSaveEditedDataContainer from './modal-save-edited-data/ModalSaveEditedDataContainer';
+import ModalFeatureContractsContainer from './modal-feature-contracts/ModalFeatureContractsContainer';
 import ModalBufferSelectedContainer from './modal-buffer-selected/ModalBufferSelectedContainer';
 import ModalFilterContainer from './modal-filter/ModalFilterContainer';
 import ModalAddUserLayerContainer from './modal-add-user-layer/ModalAddUserLayerContainer';
@@ -22,14 +21,13 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
     <Fragment>
         {activeModal === 'filter' && <ModalFilterContainer />}
         {activeModal === 'deleteSelected' && <ModalDeleteSelectedContainer />}
-        {activeModal === 'saveEditedData' && <ModalSaveEditedDataContainer />}
         {activeModal === 'bufferSelectedData' && <ModalBufferSelectedContainer />}
         {activeModal === 'addUserLayer' && <ModalAddUserLayerContainer />}
         {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
         {activeModal === 'newWorkspace' && <ModalNewWorkspaceContainer />}
         {activeModal === 'shapefile' && <ModalShapefileContainer />}
         {activeModal === 'drawText' && <ModalDrawTextContainer />}
-        {activeModal === 'featureContracts' && <ModalFeatureContracts />}
+        {activeModal === 'featureContracts' && <ModalFeatureContractsContainer />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );

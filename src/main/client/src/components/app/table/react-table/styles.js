@@ -132,6 +132,10 @@ export const WrapperReactTable = styled.div`
             cursor: pointer;
         };
         
+        .contract-icon:hover {
+            color: ${styles.colorMain};
+        }
+        
         .contract-icon:focus {
             outline: none;
         }

@@ -52,6 +52,8 @@ public class Layer implements Serializable {
     private String updaterField;
     private LayerPermission layerPermission;
     private boolean hasRelations;
+    private String contractIdField;
+    private String contractDescriptionField;
 
     @JsonIgnore
     private String relationType;
@@ -102,7 +104,8 @@ public class Layer implements Serializable {
         this.setRelationColumnOut(lr.getRelationColumnOut());
         this.setRelationLayerId(lr.getRelationLayerId());
         this.setRelationType(lr.getRelationType());
-
+        this.setContractIdField(lr.getContractIdField());
+        this.setContractDescriptionField(lr.getContractDescriptionField());
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -673,4 +676,40 @@ public class Layer implements Serializable {
      * @param relationColumnOut Name of the column which references to another layer
      */
     public void setRelationColumnOut(String relationColumnOut) { this.relationColumnOut = relationColumnOut; }
+
+    /**
+     * Gets name of contract-relation id field to be shown in contract list.
+     *
+     * @return Contract id field name.
+     */
+    public String getContractIdField() {
+        return contractIdField;
+    }
+
+    /**
+     * Sets layers contract id field name.
+     *
+     * @param contractIdField Contract id field name.
+     */
+    public void setContractIdField(String contractIdField) {
+        this.contractIdField = contractIdField;
+    }
+
+    /**
+     * Gets name of contract-relation description field to be shown in contract list.
+     *
+     * @return Contract description field name.
+     */
+    public String getContractDescriptionField() {
+        return contractDescriptionField;
+    }
+
+    /**
+     * Sets layers contract description field name.
+     *
+     * @param contractDescriptionField Contract description field name.
+     */
+    public void setContractDescriptionField(String contractDescriptionField) {
+        this.contractDescriptionField = contractDescriptionField;
+    }
 }

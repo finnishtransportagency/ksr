@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import { showConfirmModal } from '../../../reducers/confirmModal/actions';
-import { toggleFilter, toggleTable, clearTableData } from '../../../reducers/table/actions';
+import { toggleFilter, toggleTable, clearTableData, saveEditedFeatures } from '../../../reducers/table/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import TableView from './TableView';
 
@@ -25,11 +25,15 @@ const mapStateToProps = (state) => {
         };
     };
 
-    const editedLayers = state.table.features.editedLayers.map(l => removeUnderscore(l));
+    const editedLayersNoUnderscore = state.table.features.editedLayers
+        .map(l => removeUnderscore(l));
     const originalLayers = state.table.features.layers.map(l => removeUnderscore(l));
     const selectedData = state.table.features.layers.flatMap(f => f.data.filter(d => d._selected));
     const layer = state.map.layerGroups.layerList.find(l =>
         l.id === state.adminTool.active.layerId);
+
+    const { addressField, featureType } = state.adminTool.active.layerId
+    && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
 
     return {
         isOpen: state.table.toggleTable,
@@ -39,8 +43,12 @@ const mapStateToProps = (state) => {
         activeUpdate: layer ? layer.layerPermission.updateLayer : false,
         activeDelete: layer ? layer.layerPermission.deleteLayer : false,
         originalLayers,
-        editedLayers,
+        editedLayersNoUnderscore,
         selectedData: selectedData.length > 0,
+        featureType,
+        addressField,
+        view: state.map.mapView.view,
+        editedLayers: state.table.features.editedLayers,
     };
 };
 
@@ -59,6 +67,9 @@ const mapDispatchToProps = dispatch => ({
     },
     clearTableData: () => {
         dispatch(clearTableData());
+    },
+    saveEditedFeatures: (view, editedLayers, featureType, addressField) => {
+        dispatch(saveEditedFeatures(view, editedLayers, featureType, addressField));
     },
 });
 

@@ -23,6 +23,12 @@ type Props = {
     activeTable: string,
     activeAdminTool: string,
     setActiveModal: (activeModal: string) => void,
+    setContractListInfo: (
+        layerId: string,
+        objectId: number,
+        contractIdField: string,
+        contractDescriptionField: string,
+    ) => void,
 };
 
 class ReactTable extends Component<Props> {
@@ -53,6 +59,21 @@ class ReactTable extends Component<Props> {
         this.props.toggleSelection(row);
     };
 
+    handleContractClick = (objectId: number) => {
+        const {
+            setActiveModal, setContractListInfo, activeTable, layerList,
+        } = this.props;
+        const layerId = activeTable.replace('.s', '');
+        const currentLayer: any = layerList.find(ll => ll.id === layerId);
+        setActiveModal('featureContracts');
+        setContractListInfo(
+            layerId,
+            objectId,
+            currentLayer.contractIdField,
+            currentLayer.contractDescriptionField,
+        );
+    };
+
     renderEditable = (cellInfo: Object) => {
         const {
             layer, setEditedLayer, layerList, activeTable, activeAdminTool,
@@ -63,11 +84,10 @@ class ReactTable extends Component<Props> {
         if (currentLayer) {
             const cellField = currentLayer.fields.find(f => f.name === cellInfo.column.Header);
 
-            const contentEditable = (activeAdminTool === currentLayer.id
-                && cellField.type !== 'esriFieldTypeOID'
+            const contentEditable = activeAdminTool === currentLayer.id
                 && currentLayer._source !== 'shapefile'
-                && currentLayer.updateLayer
-                && cellField.editable);
+                && currentLayer.layerPermission.updateLayer
+                && cellField.editable;
 
             const content = cellField && cellField.type === 'esriFieldTypeDate' ?
                 (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString() :
@@ -111,7 +131,7 @@ class ReactTable extends Component<Props> {
 
     render() {
         const {
-            fetching, layer, selectAll, toggleSelectAll, layerList, setActiveModal,
+            fetching, layer, selectAll, toggleSelectAll, layerList,
         } = this.props;
 
         if (!layer) {
@@ -125,7 +145,7 @@ class ReactTable extends Component<Props> {
 
             const currentLayer: any = layerList.find(ll => ll.id === layer.id);
             const contractColumns = currentLayer && currentLayer.hasRelations
-                ? addContractColumn(setActiveModal, columns)
+                ? addContractColumn(this.handleContractClick, columns)
                 : null;
 
             return (<ReactTableView

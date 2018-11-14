@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+import { setContractListInfo } from '../../../../reducers/contract/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import ReactTable from './ReactTable';
 
@@ -36,6 +37,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));
+    },
+    setContractListInfo: (layerId, objectId, contractIdField, contractDescriptionField) => {
+        dispatch(setContractListInfo(layerId, objectId, contractIdField, contractDescriptionField));
     },
 });
 
