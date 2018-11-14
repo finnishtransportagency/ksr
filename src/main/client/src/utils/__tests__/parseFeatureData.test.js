@@ -97,14 +97,27 @@ describe('parseFeatureData', () => {
             {
                 alias: 'L 1 A',
                 name: 'l.1.a',
+                type: 'string',
             },
             {
                 alias: 'L 2 A',
                 name: 'l.2.a',
+                type: 'string',
             },
             {
                 alias: 'L 3 A',
                 name: 'l.3.a',
+                type: 'string',
+            },
+            {
+                alias: 'geom',
+                name: 'GEOM',
+                type: 'geometry',
+            },
+            {
+                alias: 'objectid',
+                name: 'OBJECTID',
+                type: 'string',
             },
         ];
 
@@ -123,6 +136,16 @@ describe('parseFeatureData', () => {
                 Header: 'L 3 A',
                 accessor: '123/l.3.a',
                 show: true,
+            },
+            {
+                Header: 'geom',
+                accessor: '123/GEOM',
+                show: false,
+            },
+            {
+                Header: 'objectid',
+                accessor: '123/OBJECTID',
+                show: false,
             },
         ];
 

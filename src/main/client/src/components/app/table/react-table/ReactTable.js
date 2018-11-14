@@ -82,7 +82,7 @@ class ReactTable extends Component<Props> {
         const currentLayer = layerList.find(l => l.id === activeTable);
 
         if (currentLayer) {
-            const cellField = currentLayer.fields.find(f => f.name === cellInfo.column.Header);
+            const cellField = currentLayer.fields.find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
 
             const contentEditable = activeAdminTool === currentLayer.id
                 && currentLayer._source !== 'shapefile'

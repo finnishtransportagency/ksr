@@ -1,20 +1,23 @@
 import clone from 'clone';
 
 /**
-* Parse columns from Esri's fields Array. Returns
-* react-table compatible columns Array.
-*
-* @param {string} id Layer id.
-* @param {array} data Esri's fields Array.
-*
-* @returns Array React-table compatible Array
-*/
+ * Parse columns from Esri's fields Array. Returns
+ * react-table compatible columns Array.
+ *
+ * @param {string} id Layer id.
+ * @param {array} data Esri's fields Array.
+ *
+ * @returns Array React-table compatible Array
+ */
 export const parseColumns = (id, data) => {
     if (!data) return [];
     return data.map(f => ({
         Header: f.alias,
         accessor: `${id}/${f.name}`,
-        show: true,
+        show: f.type !== 'geometry' &&
+            f.name.toLowerCase() !== 'objectid' &&
+            f.name.toLowerCase() !== 'objectid_1' &&
+            f.name.toLowerCase() !== 'symbolidentifier',
         editable: f.editable,
         nullable: f.nullable,
         length: f.length,
@@ -32,6 +35,9 @@ export const parseAttributes = (id, attributes) => {
     const a = Object.entries(attributes);
     const newObject = {};
     for (let i = 0; i < a.length; i += 1) {
+        if (Number.isFinite(a[i][1]) && !Number.isInteger(a[i][1])) {
+            a[i][1] = Number(`${Math.round(`${a[i][1]}e${3}`)}e-${3}`);
+        }
         Object.assign(newObject, { [`${id}/${a[i][0]}`]: a[i][1] });
     }
     return newObject;
