@@ -51,6 +51,7 @@ pipeline {
         KTJ_ENDPOINT = credentials("ktj_endpoint")
         KTJ_USERNAME = credentials("ktj_username")
         KTJ_PASSWORD = credentials("ktj_password")
+        PROXY_SOCKET_TIMEOUT = credentials("proxy_socket_timeout")
         NOTIFY_SLACK_SUBJECT = "${JOB_NAME} - <${RUN_DISPLAY_URL}|${BUILD_DISPLAY_NAME}>"
     }
     options {
@@ -129,6 +130,7 @@ pipeline {
                         "sed -i 's,KTJ_ENDPOINT,${KTJ_ENDPOINT},g' ${properties}",
                         "sed -i 's,KTJ_USERNAME,${KTJ_USERNAME},g' ${properties}",
                         "sed -i 's,KTJ_PASSWORD,${KTJ_PASSWORD},g' ${properties}",
+                        "sed -i 's,PROXY_SOCKET_TIMEOUT,${PROXY_SOCKET_TIMEOUT},g' ${properties}",
                         [
                             "mvn",
                             "versions:set",
