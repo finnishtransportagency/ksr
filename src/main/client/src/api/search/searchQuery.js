@@ -29,21 +29,20 @@ export const fetchSearchQuery = (layerId, queryString, title, data) =>
 /**
  * Fetch search suggestions for given column.
  *
- * @param layerId Layer id (ID in database) that is used in fetch URL
- * @param queryString Parsed query string that is used in fetch URL
- * @param queryColumn Column which the suggestions are fetched for
- * @param signal Request signal which can be used to abort the request
+ * @param {number} layerId Layer id (ID in database) that is used in fetch URL.
+ * @param {string} whereQueryString Parsed query string that is used in fetch URL.
+ * @param {string} queryColumn Column which the suggestions are fetched for.
+ * @param {any} signal Request signal which can be used to abort the request.
  *
- * @returns Suggested search words
+ * @returns {String[]} Suggested search words.
  */
-export const fetchSearchSuggestions = (layerId, queryString, queryColumn, signal) => {
+export const fetchSearchSuggestions = (layerId, whereQueryString, queryColumn, signal) => {
     const suggestions = [];
     return fetch(`api/proxy/layer/${layerId}/query?${
         querystring.stringify({
-            where: queryString,
+            where: whereQueryString,
             f: 'pjson',
             outFields: queryColumn,
-            resultRecordCount: 10,
         })
     }`, { ...config(), signal })
         .then(r => r.json())
@@ -53,7 +52,7 @@ export const fetchSearchSuggestions = (layerId, queryString, queryColumn, signal
                     suggestions.push(feature.attributes[queryColumn]);
                 });
             }
-            return suggestions;
+            return suggestions.slice(0, 10);
         })
         .catch(err => console.log(err));
 };
