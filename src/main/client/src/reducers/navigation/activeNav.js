@@ -1,5 +1,5 @@
 // @flow
-import { SET_ACTIVE_NAV, GET_ACTIVE_NAV } from '../../constants/actionTypes';
+import { SET_ACTIVE_NAV, GET_ACTIVE_NAV, SET_PROPERTY_INFO } from '../../constants/actionTypes';
 
 const initialState = '';
 
@@ -11,13 +11,13 @@ type Action = {
 };
 
 export default (state: State = initialState, action: Action) => {
-    let newState = state;
     switch (action.type) {
         case GET_ACTIVE_NAV:
             return state;
         case SET_ACTIVE_NAV:
-            newState = state === action.selectedNav ? '' : action.selectedNav;
-            return newState;
+            return state === action.selectedNav ? '' : action.selectedNav;
+        case SET_PROPERTY_INFO:
+            return 'search';
         default:
             return state;
     }
