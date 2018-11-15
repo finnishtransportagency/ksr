@@ -1,6 +1,8 @@
 // @flow
 import querystring from 'querystring';
-import { config } from '../config';
+import { toast } from 'react-toastify';
+import strings from '../../translations/fi';
+import { config, handleErrors } from '../config';
 
 /**
  * Finds property info with X and Y coordinates or property identifier.
@@ -18,12 +20,26 @@ export const fetchPropertyInfo = (queryParameter: any): Object => {
                 y: queryParameter.y,
             })
         }`, config())
-            .then(res => (res.ok ? res.json() : null))
+            .then(res => handleErrors(res, strings.searchProperty.errorToast.searchFailed))
+            .then(res => res.json())
+            .then((res) => {
+                if (!res.features.length) {
+                    toast.error(strings.searchProperty.errorToast.searchCoordsNoResults);
+                }
+                return res;
+            })
             .catch(err => console.log(err));
     }
 
     return fetch(`api/property/${queryParameter}`, config())
-        .then(res => (res.ok ? res.json() : null))
+        .then(res => handleErrors(res, strings.searchProperty.errorToast.searchFailed))
+        .then(res => res.json())
+        .then((res) => {
+            if (!res.features.length) {
+                toast.error(strings.searchProperty.errorToast.searchIdNoResults);
+            }
+            return res.json();
+        })
         .catch(err => console.log(err));
 };
 
@@ -39,6 +55,7 @@ export const fetchPropertyPdfLinks = (propertyIdentifier: string, language: stri
     fetch(`api/property/pdf/links/?${
         querystring.stringify({ propertyIdentifier, language })
     }`, config())
-        .then(res => (res.ok ? res.json() : null))
+        .then(res => handleErrors(res, strings.searchProperty.errorToast.searchLinksFailed))
+        .then(res => res.json())
         .catch(err => console.log(err))
 );

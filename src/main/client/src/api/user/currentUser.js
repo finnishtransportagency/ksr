@@ -1,5 +1,5 @@
 // @flow
-import { config } from '../config';
+import { config, handleErrors } from '../config';
 
 /**
  * Gets current users info.
@@ -8,11 +8,7 @@ import { config } from '../config';
  */
 export const fetchGetUserInfo = () => (
     fetch('api/user', config())
-        .then((r) => {
-            if (r.ok) {
-                return r.json();
-            }
-            return null;
-        })
+        .then(handleErrors)
+        .then(res => res.json())
         .catch(err => console.log(err))
 );

@@ -246,6 +246,12 @@ const fi = {
             maps: 'Kiinteistörekisterin karttaotteet',
             map: 'Kiinteistörekisterin karttaote',
         },
+        errorToast: {
+            searchFailed: 'Kiinteistöhaku epäonnistui. Yritä uudelleen.',
+            searchLinksFailed: 'Kiinteistötulosteiden haku epäonnistui.',
+            searchCoordsNoResults: 'Koordinaateilla ei löytynyt yhtään kiinteistöä.',
+            searchIdNoResults: 'Kiinteistötunnuksella ei löytynyt yhtään kiinteistöä.',
+        },
     },
 };
 
