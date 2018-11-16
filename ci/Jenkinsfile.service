@@ -52,6 +52,8 @@ pipeline {
         KTJ_DEED_ENDPOINT = credentials("ktj_deed_endpoint")
         KTJ_EASEMENT_ENDPOINT = credentials("ktj_easement_endpoint")
         KTJ_MAP_ENDPOINT = credentials("ktj_map_endpoint")
+        KTJ_MAP_ENDPOINT_URL = credentials("ktj_map_endpoint_url")
+        KTJ_MAP_ENDPOINT_XML = credentials("ktj_map_endpoint_xml")
         KTJ_REGISTER_UNIT_ENDPOINT = credentials("ktj_register_unit_endpoint")
         KTJ_USERNAME = credentials("ktj_username")
         KTJ_PASSWORD = credentials("ktj_password")
@@ -134,7 +136,8 @@ pipeline {
                         "sed -i 's,KTJ_ENDPOINT,${KTJ_ENDPOINT},g' ${properties}",
                         "sed -i 's,KTJ_DEED_ENDPOINT,${KTJ_DEED_ENDPOINT},g' ${properties}",
                         "sed -i 's,KTJ_EASEMENT_ENDPOINT,${KTJ_EASEMENT_ENDPOINT},g' ${properties}",
-                        "sed -i 's,KTJ_MAP_ENDPOINT,${KTJ_MAP_ENDPOINT},g' ${properties}",
+                        "sed -i 's,KTJ_MAP_ENDPOINT_URL,${KTJ_MAP_ENDPOINT_URL},g' ${properties}",
+                        "sed -i 's,KTJ_MAP_ENDPOINT_XML,${KTJ_MAP_ENDPOINT_XML},g' ${properties}",
                         "sed -i 's,KTJ_REGISTER_UNIT_ENDPOINT,${KTJ_REGISTER_UNIT_ENDPOINT},g' ${properties}",
                         "sed -i 's,KTJ_USERNAME,${KTJ_USERNAME},g' ${properties}",
                         "sed -i 's,KTJ_PASSWORD,${KTJ_PASSWORD},g' ${properties}",
