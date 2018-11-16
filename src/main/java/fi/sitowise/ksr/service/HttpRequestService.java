@@ -13,6 +13,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -122,6 +123,7 @@ public class HttpRequestService {
     public RequestConfig.Builder getRequestConfigBase() {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(socketTimeout);
+        requestConfigBuilder.setCookieSpec(CookieSpecs.IGNORE_COOKIES);
         return requestConfigBuilder;
     }
 
