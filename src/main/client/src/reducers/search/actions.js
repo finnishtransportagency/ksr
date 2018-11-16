@@ -1,5 +1,4 @@
 // @flow
-import querystring from 'querystring';
 import { fetchPropertyInfo, fetchPropertyPdfLinks } from '../../api/search/searchProperty';
 import * as types from '../../constants/actionTypes';
 import strings from '../../translations';
@@ -65,21 +64,11 @@ export const setPropertyInfo = (
                     fetchPropertyPdfLinks(property.features[0].id, strings.getLanguage())
                         .then((linksRes) => {
                             if (linksRes) {
-                                const createApiUrl = (printType, pdfUrl) => (
-                                    `api/property/pdf/${printType}/?${
-                                        querystring.stringify({ pdfUrl })
-                                    }`
-                                );
-
                                 const linksResApiUrls = {
-                                    deed: linksRes.deed.map(deed =>
-                                        createApiUrl('deed', deed)),
-                                    easement: linksRes.easement.map(easement =>
-                                        createApiUrl('easement', easement)),
-                                    map: linksRes.map.map(map =>
-                                        createApiUrl('map', map)),
-                                    registerunit: linksRes.registerunit.map(registerunit =>
-                                        createApiUrl('registerunit', registerunit)),
+                                    deed: linksRes.deed,
+                                    easement: linksRes.easement,
+                                    map: linksRes.map,
+                                    registerunit: linksRes.registerunit,
                                 };
 
                                 dispatch({
