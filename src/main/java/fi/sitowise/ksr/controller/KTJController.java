@@ -66,7 +66,7 @@ public class KTJController {
     public Map<String, List<String>> getPropertyPdfLinks(@RequestParam String propertyIdentifier,
             @RequestParam String language) {
         // At least for now KTJ only support Finnish and Swedish as print languages.
-        if ("fi".equalsIgnoreCase(language) && "sv".equalsIgnoreCase(language)) {
+        if (!"fi".equalsIgnoreCase(language) && !"sv".equalsIgnoreCase(language)) {
             throw new KsrApiException.BadRequestException("Unsupported language.");
         }
         return ktjService.getPropertyPdfLinks(propertyIdentifier, language);
