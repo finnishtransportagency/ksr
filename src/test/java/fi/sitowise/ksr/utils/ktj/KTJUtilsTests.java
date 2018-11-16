@@ -110,7 +110,7 @@ public class KTJUtilsTests {
                 "    <lang>FI</lang>" +
                 "    <kopiointilupa/>" +
                 "    <linkki>" +
-                "        <url>www.testiurl1.fi</url>" +
+                "        <url>www.testiurl1.fi?param1=asdf&amp;param2=123</url>" +
                 "        <alkusivu>1</alkusivu>" +
                 "        <loppusivu>1</loppusivu>" +
                 "    </linkki>" +
@@ -120,17 +120,17 @@ public class KTJUtilsTests {
                 "        <loppusivu>1</loppusivu>" +
                 "    </linkki>" +
                 "    <linkki>" +
-                "        <url>www.testiurl3.fi</url>" +
+                "        <url>www.testiurl3.fi?param1=5432</url>" +
                 "        <alkusivu>1</alkusivu>" +
                 "        <loppusivu>1</loppusivu>" +
                 "    </linkki>" +
                 "</karttaote>";
 
         InputStream inputStream = new ByteArrayInputStream(response.getBytes());
-        List<String> pdfUrls = KTJUtils.parseKTJPdfLinks(inputStream);
+        List<String> pdfUrls = KTJUtils.parseKTJPdfLinks("/", inputStream);
 
-        Assert.assertEquals("www.testiurl1.fi", pdfUrls.get(0));
-        Assert.assertEquals("www.testiurl2.fi", pdfUrls.get(1));
-        Assert.assertEquals("www.testiurl3.fi", pdfUrls.get(2));
+        Assert.assertEquals("/api/property/pdf/map?param1=asdf&param2=123", pdfUrls.get(0));
+        Assert.assertEquals("/api/property/pdf/map?", pdfUrls.get(1));
+        Assert.assertEquals("/api/property/pdf/map?param1=5432", pdfUrls.get(2));
     }
 }

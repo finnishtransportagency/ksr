@@ -1,8 +1,11 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.controller.KTJController;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import fi.sitowise.ksr.utils.ktj.KTJUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geojson.FeatureCollection;
@@ -10,14 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * A Service to make Requests to Maanmittauslaitos Kiinteistötietojärjestelmä (KTJ).
@@ -58,6 +60,9 @@ public class KTJService {
 
     private final HttpRequestService httpRequestService;
 
+    @Value("${spring.servlet.context-path:/}")
+    String contextPath;
+
     @Value("${ktj.endpoint}")
     String ktjEndpointUrl;
 
@@ -67,7 +72,10 @@ public class KTJService {
     @Value("${ktj.easementEndpoint}")
     String ktjEasementEndpointUrl;
 
-    @Value("${ktj.mapEndpoint}")
+    @Value("${ktj.mapEndpoint.xml}")
+    String ktjMapEndpointXml;
+
+    @Value("${ktj.mapEndpoint.url}")
     String ktjMapEndpointUrl;
 
     @Value("${ktj.registerUnitEndpoint}")
@@ -162,7 +170,7 @@ public class KTJService {
      *
      * @param propertyIdentifier Property's identifier.
      * @param language Language of the prints.
-     * @return A map containing links to different types of PDF prints.
+     * @return A map containing List of parameter maps to different types of PDF prints.
      */
     public Map<String, List<String>> getPropertyPdfLinks(String propertyIdentifier, String language) {
         log.info(String.format(
@@ -172,26 +180,44 @@ public class KTJService {
 
         Map<String, List<String>> pdfLinkMap = new HashMap<>();
 
-        List<String> deedPdfLinks = new ArrayList<>();
-        deedPdfLinks.add(String.format("%s?kiinteistotunnus=%s&lang=%s",
-                ktjDeedEndpointUrl, propertyIdentifier, language.toUpperCase()));
-        pdfLinkMap.put("deed", deedPdfLinks);
+        String deedUrl = KsrStringUtils.replaceMultipleSlashes(
+            String.format(
+                "/%s/%s/pdf/deed?kiinteistotunnus=%s&lang=%s",
+                contextPath,
+                KTJController.ENDPOINT_URL,
+                propertyIdentifier,
+                language.toUpperCase()
+            )
+        );
+        pdfLinkMap.put("deed", Arrays.asList(deedUrl));
 
-        List<String> easementPdfLinks = new ArrayList<>();
-        easementPdfLinks.add(String.format("%s?kiinteistotunnus=%s&lang=%s",
-                ktjEasementEndpointUrl, propertyIdentifier, language.toUpperCase()));
-        pdfLinkMap.put("easement", easementPdfLinks);
+        String easementUrl = KsrStringUtils.replaceMultipleSlashes(
+            String.format(
+                "/%s/%s/pdf/easement?kiinteistotunnus=%s&lang=%s",
+                contextPath,
+                KTJController.ENDPOINT_URL,
+                propertyIdentifier,
+                language.toUpperCase()
+            )
+        );
+        pdfLinkMap.put("easement", Arrays.asList(easementUrl));
 
-        List<String> registerUnitPdfLinks = new ArrayList<>();
-        registerUnitPdfLinks.add(String.format("%s?kiinteistotunnus=%s&lang=%s",
-                ktjRegisterUnitEndpointUrl, propertyIdentifier, language.toUpperCase()));
-        pdfLinkMap.put("registerunit", registerUnitPdfLinks);
+        String registerUnitUrl = KsrStringUtils.replaceMultipleSlashes(
+            String.format(
+                "/%s/%s/pdf/registerunit?kiinteistotunnus=%s&lang=%s",
+                contextPath,
+                KTJController.ENDPOINT_URL,
+                propertyIdentifier,
+                language.toUpperCase()
+            )
+        );
+        pdfLinkMap.put("registerunit", Arrays.asList(registerUnitUrl));
 
         String xmlUrl = String.format("%s?rekisteriyksikko=%s&lang=%s",
-                ktjMapEndpointUrl, propertyIdentifier, language.toUpperCase());
-        InputStream xmlInputStream = httpRequestService.getURLContents(xmlUrl, false,
+                ktjMapEndpointXml, propertyIdentifier, language.toUpperCase());
+        InputStream xmlInputStream = httpRequestService.getURLContents(xmlUrl, true,
                 getBasicAuthString());
-        pdfLinkMap.put("map", KTJUtils.parseKTJPdfLinks(xmlInputStream));
+        pdfLinkMap.put("map", KTJUtils.parseKTJPdfLinks(contextPath, xmlInputStream));
 
         return pdfLinkMap;
     }
@@ -200,28 +226,43 @@ public class KTJService {
      * Get PDF print from given url.
      *
      * @param printType Type of the print to be fetched.
-     * @param pdfUrl Url of the print.
+     * @param request Http servlet request of incoming request.
      * @param response Http servlet interface to which the response is written.
      */
-    public void getPropertyPdfPrint(String printType, String pdfUrl, HttpServletResponse response) {
+    public void getPropertyPdfPrint(String printType, HttpServletRequest request, HttpServletResponse response) {
         String filename;
-        switch (printType) {
-            case "deed":
-                filename = "lainhuutotodistus.pdf";
-                break;
-            case "easement":
-                filename = "rasitustodistus.pdf";
-                break;
-            case "map":
-                filename = "karttaote.pdf";
-                break;
-            case "registerunit":
-                filename = "kiinteistorekisteriote.pdf";
-                break;
-            default:
-                throw new KsrApiException.BadRequestException("Invalid print type.");
-        }
+        String pdfUrl;
+        URIBuilder uri;
+        try {
+            switch (printType) {
+                case "deed":
+                    filename = "lainhuutotodistus.pdf";
+                    uri = new URIBuilder(ktjDeedEndpointUrl);
+                    break;
+                case "easement":
+                    filename = "rasitustodistus.pdf";
+                    uri = new URIBuilder(ktjEasementEndpointUrl);
+                    break;
+                case "map":
+                    filename = "karttaote.pdf";
+                    uri = new URIBuilder(ktjMapEndpointUrl);
+                    break;
+                case "registerunit":
+                    filename = "kiinteistorekisteriote.pdf";
+                    uri = new URIBuilder(ktjRegisterUnitEndpointUrl);
+                    break;
+                default:
+                    throw new KsrApiException.BadRequestException("Invalid print type.");
+            }
 
+            for (String paramName: Collections.list(request.getParameterNames())) {
+                uri.setParameter(paramName, request.getParameter(paramName));
+            }
+
+            pdfUrl = uri.build().toString();
+        } catch (URISyntaxException ue) {
+            throw new KsrApiException.InternalServerErrorException("Error building pdf-url.", ue);
+        }
         log.info(String.format(
                 "Get [%s] PDF print with url: [%s] User: [%s]",
                 printType, pdfUrl, KsrAuthenticationUtils.getCurrentUsername()

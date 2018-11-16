@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +16,9 @@ import java.util.Map;
  * Controller for KTJ-related requests.
  */
 @RestController
-@RequestMapping("/api/property")
+@RequestMapping(KTJController.ENDPOINT_URL)
 public class KTJController {
-
+    public final static String ENDPOINT_URL = "/api/property";
     private final KTJService ktjService;
 
     @Autowired
@@ -75,13 +76,12 @@ public class KTJController {
      * Get PDF print from given url.
      *
      * @param printType Type of the print to be fetched.
-     * @param pdfUrl Url of the print.
      * @param response Http servlet interface to which the response is written.
      */
     @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER')")
     @RequestMapping(value = "/pdf/{printType}", method = { RequestMethod.GET })
-    public void getPropertyPdfPrint(@PathVariable String printType, @RequestParam String pdfUrl,
+    public void getPropertyPdfPrint(@PathVariable String printType, HttpServletRequest request,
             HttpServletResponse response) {
-        ktjService.getPropertyPdfPrint(printType, pdfUrl, response);
+        ktjService.getPropertyPdfPrint(printType, request, response);
     }
 }

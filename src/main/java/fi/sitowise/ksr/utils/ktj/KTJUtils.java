@@ -1,6 +1,8 @@
 package fi.sitowise.ksr.utils.ktj;
 
+import fi.sitowise.ksr.controller.KTJController;
 import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.MultiPolygon;
@@ -11,9 +13,9 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -64,17 +66,17 @@ public class KTJUtils {
     /**
      * Parse KTJ PDF link response InputStream into a string list containing PDF urls.
      *
+     * @param contextPath Context Path
      * @param inputStream InputStream of KTJ map PDF link response.
      * @return List of PDF urls.
      */
-    public static List<String> parseKTJPdfLinks(InputStream inputStream) {
+    public static List<String> parseKTJPdfLinks(String contextPath, InputStream inputStream) {
         Objects.requireNonNull(inputStream);
         try {
             Document doc = XMLUtils.parseDocument(inputStream);
             NodeList linkNodes = XMLUtils.getNodes(doc, PDF_LINK_EL);
-            System.out.println(linkNodes.getLength());
             Stream<Node> nodeStream = IntStream.range(0, linkNodes.getLength()).mapToObj(linkNodes::item);
-            return nodeStream.map(KTJUtils::parsePdfLink).collect(Collectors.toList());
+            return nodeStream.map(m -> KTJUtils.parsePdfLink(contextPath, m)).collect(Collectors.toList());
         } catch (Exception e) {
             throw new KsrApiException.InternalServerErrorException(
                     "Error handling KTJ PDF link response.", e);
@@ -186,15 +188,29 @@ public class KTJUtils {
     /**
      * Parse url from link node.
      *
+     * @param contextPath Context path.
      * @param linkNode Link node.
-     * @return Url of the link.
+     * @return Url for pdf link.
      */
-    private static String parsePdfLink(Node linkNode) {
+    private static String parsePdfLink(String contextPath, Node linkNode) {
         try {
-            return XMLUtils.getNodeContent(linkNode, PDF_URL_EL);
+            URI mapUri = new URI(XMLUtils.getNodeContent(linkNode, PDF_URL_EL));
+            String params = mapUri.getRawQuery();
+            return KsrStringUtils.replaceMultipleSlashes(
+                String.format(
+                    "/%s/%s/pdf/map?%s",
+                    contextPath,
+                    KTJController.ENDPOINT_URL,
+                    params == null ? "" : params
+                )
+            );
+
         } catch (XPathExpressionException xe) {
             throw new KsrApiException.InternalServerErrorException(
                     "Error parsing KTJ PDF link response.", xe);
+        } catch (URISyntaxException us) {
+            throw new KsrApiException.InternalServerErrorException(
+                    "Error parsing KTJ PDF link url.", us);
         }
     }
 }
