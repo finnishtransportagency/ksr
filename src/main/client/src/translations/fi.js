@@ -18,6 +18,8 @@ const fi = {
         searchLayerGroupName: 'Hakutulokset',
         allQueryableLayers: 'Kaikki tasot',
         allActiveLayers: 'Kaikki aktiiviset tasot',
+        layer: 'Taso',
+        property: 'Kiinteistö',
     },
     reactTable: {
         previousText: 'Edellinen',
@@ -34,9 +36,11 @@ const fi = {
         bufferSelectedData: 'Puskurialue valituille kohteille',
     },
     esriMap: {
-        openGoogleStreetView: 'Avaa Google Street View',
+        openGoogleStreetView: 'Google Street View',
         selectIntersectFeatures: 'Aluevalinta',
         setBuffer: 'Puskurialue',
+        noFeatures: 'Ei kohteita',
+        getPropertyInfo: 'Kiinteistötiedot',
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
@@ -224,6 +228,30 @@ const fi = {
         addNewFeature: 'Luo uusi kohde',
         toggleAdminTool: 'Muokkaus päälle/pois',
         toggleVisibility: 'Näytä/piilota karttataso',
+    },
+    searchProperty: {
+        propertyInfo: 'Kiinteistön tiedot',
+        propertyIdentifier: 'Kiinteistötunnus',
+        parcelCount: 'Palstojen lukumäärä',
+        registerUnitType: 'Rekisteriyksikkölaji',
+        municipality: 'Kunta',
+        name: 'Nimi',
+        landArea: 'Maapinta-ala',
+        registrationDate: 'Rekisteröintipäivämäärä',
+        propertyPrintFiles: {
+            title: 'Kiinteistön tulosteet',
+            registerunit: 'Kiinteistörekisteriote',
+            deed: 'Lainhuutotodistus',
+            easement: 'Rasitustodistus',
+            maps: 'Kiinteistörekisterin karttaotteet',
+            map: 'Kiinteistörekisterin karttaote',
+        },
+        errorToast: {
+            searchFailed: 'Kiinteistöhaku epäonnistui. Yritä uudelleen.',
+            searchLinksFailed: 'Kiinteistötulosteiden haku epäonnistui.',
+            searchCoordsNoResults: 'Koordinaateilla ei löytynyt yhtään kiinteistöä.',
+            searchIdNoResults: 'Kiinteistötunnuksella ei löytynyt yhtään kiinteistöä.',
+        },
     },
 };
 

@@ -102,6 +102,10 @@ export const Wrapper = styled.div`
             };
         };
         
+        .esri-popup__feature-buttons {
+            padding: 0 1em;
+        }
+        
         ${props => props.sideBar && css`
             left: 460px;
             width: calc(100% - 460px);

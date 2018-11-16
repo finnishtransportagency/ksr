@@ -1,40 +1,14 @@
 // @flow
 import { connect } from 'react-redux';
-import { searchFeatures } from '../../../../reducers/table/actions';
-import { setSearchState, setSearchOptions } from '../../../../reducers/search/actions';
+import { setSearchState, setActiveSearch } from '../../../../reducers/search/actions';
 import Search from './Search';
-import strings from '../../../../translations';
 
-const mapStateToProps = (state) => {
-    let allQueryableLayers = [];
-
-    if (state.adminTool.active.layerId) {
-        allQueryableLayers = state.map.layerGroups.layerList
-            .filter(l => l.queryable && l.id === state.adminTool.active.layerId && l._source !== 'search')
-            .map(l => ({ ...l, value: l.id, label: l.name }));
-    } else {
-        allQueryableLayers = state.map.layerGroups.layerList
-            .filter(l => l.queryable && l._source !== 'search')
-            .map(l => ({ ...l, value: l.id, label: l.name }));
-    }
-    const activeQueryableLayers = allQueryableLayers.filter(l => l.active);
-    const queryOptions = [{ value: 'queryAll', label: strings.search.allQueryableLayers }]
-        .concat([{ value: 'queryActive', label: strings.search.allActiveLayers }])
-        .concat(activeQueryableLayers);
-
-    return ({
-        allQueryableLayers,
-        activeQueryableLayers,
-        queryOptions,
-        searchState: state.search.searchState,
-        layerList: state.map.layerGroups.layerList,
-    });
-};
+const mapStateToProps = state => ({
+    searchState: state.search.searchState,
+    activeSearch: state.search.activeSearch,
+});
 
 const mapDispatchToProps = dispatch => ({
-    searchFeatures: (queryMap) => {
-        dispatch(searchFeatures(queryMap));
-    },
     setSearchState: (layerId, textSearch, searchFieldValues, suggestions, suggestionsActive) => {
         dispatch(setSearchState(
             layerId,
@@ -44,8 +18,8 @@ const mapDispatchToProps = dispatch => ({
             suggestionsActive,
         ));
     },
-    setSearchOptions: (layerId, layerList) => {
-        dispatch(setSearchOptions(layerId, layerList));
+    setActiveSearch: (activeSearch) => {
+        dispatch(setActiveSearch(activeSearch));
     },
 });
 

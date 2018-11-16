@@ -231,3 +231,63 @@ export const highlight = (
             }
         });
 };
+
+/**
+ * Removes all graphics from esrimap with given id.
+ *
+ * @param {Object} view Esri ArcGIS JS MapView.
+ * @param {string} graphicId Name of the graphic to be removed.
+ */
+export const removeGraphicsFromMap = (view: Object, graphicId: string) => {
+    const graphicToBeRemoved = view.graphics
+        .filter(graphic => graphic.id === graphicId);
+
+    view.graphics.removeMany(graphicToBeRemoved);
+};
+
+/**
+ * Creates a new graphic to map for a single property.
+ *
+ * @param {Object} view Esri ArcGIS JS MapView.
+ * @param {any} propertyCoordinates Multipolygon coordinates returned from property query.
+ */
+export const drawPropertyArea = (view: Object, propertyCoordinates: any) => {
+    esriLoader
+        .loadModules([
+            'esri/geometry/Polygon',
+            'esri/Graphic',
+        ])
+        .then(([
+            Polygon,
+            Graphic,
+        ]) => {
+            const createPolygon = vertices =>
+                new Polygon({
+                    rings: vertices,
+                    spatialReference: view.spatialReference,
+                });
+
+            const createPolygonGraphic = (geometry): any =>
+                new Graphic({
+                    geometry,
+                    symbol: {
+                        type: 'simple-fill',
+                        style: 'solid',
+                        color: 'rgba(247, 69, 69, 0.75)',
+                        outline: {
+                            color: '#444444',
+                            width: 1,
+                        },
+                    },
+                    id: 'propertyArea',
+                });
+
+            removeGraphicsFromMap(view, 'propertyArea');
+            propertyCoordinates.forEach((coordinates) => {
+                const geometry = createPolygon(coordinates);
+
+                const graphic = createPolygonGraphic(geometry);
+                view.graphics.add(graphic);
+            });
+        });
+};

@@ -4,7 +4,7 @@ import Downshift from 'downshift';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-import { TextInput } from '../../../../ui/elements';
+import { TextInput } from '../../../../../ui/elements';
 import SearchFieldWrapper from './styles';
 
 type Props = {

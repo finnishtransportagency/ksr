@@ -9,14 +9,16 @@ type Props = {
     setWorkspace: Function,
     updateWorkspaces: Function,
     loadingWorkspace: boolean,
+    setUserInfo: Function,
 };
 
 class Home extends Component<Props, null> {
     componentDidMount() {
         const {
-            getLayerGroups, getMapConfig, updateWorkspaces, setWorkspace,
+            getLayerGroups, getMapConfig, updateWorkspaces, setWorkspace, setUserInfo,
         } = this.props;
 
+        setUserInfo();
         setWorkspace();
         getLayerGroups();
         getMapConfig();

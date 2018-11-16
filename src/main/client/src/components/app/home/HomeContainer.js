@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+import { setUserInfo } from '../../../reducers/user/actions';
 import { setWorkspace, updateWorkspaces } from '../../../reducers/workspace/actions';
 import { getLayerGroups, getMapConfig } from '../../../reducers/map/actions';
 import Home from './Home';
@@ -20,6 +21,9 @@ const mapDispatchToProps = dispatch => ({
     ),
     setWorkspace: () => (
         dispatch(setWorkspace())
+    ),
+    setUserInfo: () => (
+        dispatch(setUserInfo())
     ),
 });
 
