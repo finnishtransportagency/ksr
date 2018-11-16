@@ -42,7 +42,7 @@ const PropertyInfoView = ({ properties }: Props) => (
         </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.registrationDate}</span>
-            <span>{properties.registerationDate
+            <span>{properties.registrationDate
                 ? moment(properties.registrationDate, 'YYYYMMDD').format('DD.MM.YYYY')
                 : ''}
             </span>
