@@ -167,14 +167,18 @@ class EsriMap extends Component<Props> {
 
                     if (this.props.editMode === 'update') return;
                     view.hitTest(event).then((response) => {
-                        let { results } = response;
+                        const { results } = response;
+                        const filteredResults = results.filter(item =>
+                            item.graphic.id !== 'buffer'
+                            && item.graphic.id !== 'drawMeasure'
+                            && item.graphic.type !== 'draw-graphic');
 
                         if (this.props.activeTool !== 'drawErase') {
                             view.popup.open({ location: event.mapPoint });
 
                             const { activeAdminTool } = this.props;
                             mapSelectPopup(
-                                results,
+                                filteredResults,
                                 view,
                                 selectFeatures,
                                 layerList,
@@ -194,12 +198,7 @@ class EsriMap extends Component<Props> {
                                     }
                                 });
                             } else {
-                                results = results.filter(item =>
-                                    item.graphic.id !== 'buffer'
-                                    && item.graphic.id !== 'drawMeasure'
-                                    && item.graphic.type !== 'draw-graphic');
-
-                                const layer = results.find(l => l
+                                const layer = filteredResults.find(l => l
                                     .graphic.layer.id.indexOf('layer') >= 0);
 
                                 // Check if we're already editing a graphic
