@@ -48,7 +48,9 @@ export const mapSelectPopup = (
                 });
             } else {
                 const queryColumns = layerList
-                    .filter(ll => ll.id === layer.graphic.layer.id)
+                    // Use original layer's id instead of search layer id. Otherwise query columns
+                    // are not populated in the popup for search layers.
+                    .filter(ll => ll.id === layer.graphic.layer.id.replace('.s', ''))
                     .map(ll => ll.queryColumns);
 
                 if (queryColumns.length) {
