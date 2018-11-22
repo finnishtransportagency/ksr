@@ -41,6 +41,8 @@ const fi = {
         setBuffer: 'Puskurialue',
         noFeatures: 'Ei kohteita',
         getPropertyInfo: 'Kiinteistötiedot',
+        caseManagementLink: 'Asianhallinta',
+        alfrescoLink: 'Alfresco',
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
