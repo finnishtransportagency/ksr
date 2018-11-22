@@ -17,7 +17,7 @@ const LayerSettings = styled.div`
 `;
 
 const Icons = styled.div`
-    flex: 2;
+    flex: 1;
     text-align: right;
     
     ${props => props.activeAdminTool && css`
@@ -38,6 +38,8 @@ const Drag = styled.div`
 const Title = styled.div`
     flex: 8;
     max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Toggle = styled.div`
