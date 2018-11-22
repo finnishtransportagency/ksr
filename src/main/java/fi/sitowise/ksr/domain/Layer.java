@@ -54,6 +54,8 @@ public class Layer implements Serializable {
     private boolean hasRelations;
     private String contractIdField;
     private String contractDescriptionField;
+    private String alfrescoLinkField;
+    private String caseManagementLinkField;
 
     @JsonIgnore
     private String relationType;
@@ -106,6 +108,8 @@ public class Layer implements Serializable {
         this.setRelationType(lr.getRelationType());
         this.setContractIdField(lr.getContractIdField());
         this.setContractDescriptionField(lr.getContractDescriptionField());
+        this.setAlfrescoLinkField(lr.getAlfrescoLinkField());
+        this.setCaseManagementLinkField(lr.getCaseManagementLinkField());
 
         if (lr.getQueryColumns() != null) {
             this.setQueryColumns(lr.getQueryColumns());
@@ -711,5 +715,41 @@ public class Layer implements Serializable {
      */
     public void setContractDescriptionField(String contractDescriptionField) {
         this.contractDescriptionField = contractDescriptionField;
+    }
+
+    /**
+     * Gets layer Alfresco link fields.
+     *
+     * @return Alfresco link field(s).
+     */
+    public String getAlfrescoLinkField() {
+        return alfrescoLinkField;
+    }
+
+    /**
+     * Sets layers Alfresco link fields.
+     *
+     * @param alfrescoLinkField Alfresco link field name.
+     */
+    public void setAlfrescoLinkField(String alfrescoLinkField) {
+        this.alfrescoLinkField = alfrescoLinkField;
+    }
+
+    /**
+     * Gets layer case management link fields.
+     *
+     * @return Case management link field(s).
+     */
+    public String getCaseManagementLinkField() {
+        return caseManagementLinkField;
+    }
+
+    /**
+     * Sets layers case management link fields.
+     *
+     * @param caseManagementLinkField Case management link field name.
+     */
+    public void setCaseManagementLinkField(String caseManagementLinkField) {
+        this.caseManagementLinkField = caseManagementLinkField;
     }
 }

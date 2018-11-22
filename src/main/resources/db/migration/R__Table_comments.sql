@@ -34,6 +34,8 @@ comment on column layer.relation_column_in is 'Column/field-name in which other 
 comment on column layer.relation_column_out is 'Column/field-name which references to other layers relation_column_id.';
 comment on column layer.contract_id_field is 'Name of contract-relation id field to be shown in contract list.';
 comment on column layer.contract_description_field is 'Name of contract-relation description field to be shown in contract list.';
+comment on column layer.alfresco_link_field is 'Name of columns which refers layer contract number and/or register number for Alfresco.';
+comment on column layer.case_management_link_field is 'Name of columns which refers layer contract number and/or register number for Asianhallinta.';
 
 comment on table layer_permission is 'Layer permissions.';
 comment on column layer_permission.layer_id is 'Identifier of the layer that the permissions belong to.';
