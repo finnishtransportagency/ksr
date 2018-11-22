@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import type { DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../../../../utils/reorder';
 import LoadingIcon from '../../../shared/LoadingIcon';
@@ -80,7 +80,7 @@ class MapLayersActive extends Component<Props, State> {
         } = this.props;
         if (!fetching) {
             return (
-                <React.Fragment>
+                <Fragment>
                     <MapLayersActiveView
                         mapLayerList={mapLayerList}
                         dataLayerList={dataLayerList.filter(l => l.active)}
@@ -97,7 +97,7 @@ class MapLayersActive extends Component<Props, State> {
                         activeAdminTool={activeAdminTool}
                         createNonSpatialFeature={createNonSpatialFeature}
                     />
-                </React.Fragment>
+                </Fragment>
             );
         }
 
