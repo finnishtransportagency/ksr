@@ -29,6 +29,8 @@ type Layer = {
     active: boolean,
     attribution: string,
     authentication: any,
+    alfrescoLinkField: string,
+    caseManagementLinkField: string,
     geometryType: string,
     fields: Array<Object>,
     id: string,

@@ -8,6 +8,8 @@ import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 import { mapHighlightStroke } from '../../ui/defaultStyles';
+import { getCaseManagementLink } from '../../../utils/map-selection/caseManagementLink';
+import { getAlfrescoLink } from '../../../utils/map-selection/alfrescoLink';
 
 type Props = {
     layerList: Array<any>,
@@ -234,6 +236,12 @@ class EsriMap extends Component<Props> {
                 view.popup.on('trigger-action', (evt) => {
                     const { x, y } = view.popup.location;
                     const { activeAdminTool, authorities } = this.props;
+                    const alfrescoLinkField = (layerList.find(ll =>
+                        ll.id === view.popup.viewModel.selectedFeature.layer.id &&
+                        ll.alfrescoLinkField));
+                    const caseManagementLinkField = (layerList.find(ll =>
+                        ll.id === view.popup.viewModel.selectedFeature.layer.id &&
+                        ll.caseManagementLinkField));
                     switch (evt.action.id) {
                         case ('select-intersect'):
                             queryFeatures(
@@ -254,7 +262,20 @@ class EsriMap extends Component<Props> {
                         case ('google-street-view'):
                             getStreetViewLink(x, y);
                             break;
-                        default: break;
+                        case ('case-management-link'):
+                            getCaseManagementLink(
+                                caseManagementLinkField,
+                                view.popup.viewModel.selectedFeature.attributes,
+                            );
+                            break;
+                        case ('alfresco-link'):
+                            getAlfrescoLink(
+                                alfrescoLinkField,
+                                view.popup.viewModel.selectedFeature.attributes,
+                            );
+                            break;
+                        default:
+                            break;
                     }
                 });
 

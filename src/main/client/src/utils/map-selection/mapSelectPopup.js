@@ -74,13 +74,33 @@ export const mapSelectPopup = (
                 className: 'far fa-dot-circle',
             };
 
+            const actions = [selectIntersectAction, setBufferAction];
+            if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
+                ll.alfrescoLinkField)) {
+                const alfrescoLink = {
+                    title: strings.esriMap.alfrescoLink,
+                    id: 'alfresco-link',
+                    className: 'fas fa-archive',
+                };
+                actions.push(alfrescoLink);
+            }
+            if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
+                ll.caseManagementLinkField)) {
+                const caseManagementLink = {
+                    title: strings.esriMap.caseManagementLink,
+                    id: 'case-management-link',
+                    className: 'fas fa-book',
+                };
+                actions.push(caseManagementLink);
+            }
+
             layer.graphic.layer.popupTemplate = {
                 title: layer.graphic.layer.title,
                 content: [{
                     type: 'fields',
                     fieldInfos,
                 }],
-                actions: [selectIntersectAction, setBufferAction],
+                actions,
             };
         });
         const graphics = newResults.map(re => re.graphic);
