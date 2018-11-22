@@ -83,7 +83,6 @@ class MapLayersActive extends Component<Props, State> {
                 <Fragment>
                     <MapLayersActiveView
                         mapLayerList={mapLayerList}
-                        dataLayerList={dataLayerList.filter(l => l.active)}
                         onDragEnd={this.onDragEnd}
                         onToggleVisibility={this.onToggleVisibility}
                         onOpacityChange={this.onOpacityChange}
