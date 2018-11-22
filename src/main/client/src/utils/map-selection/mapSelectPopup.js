@@ -30,12 +30,11 @@ export const mapSelectPopup = (
     };
 
     view.popup.actions = [getPropertyInfo, googleStreetView];
+    const newResults = activeAdminTool
+        ? [...results.filter(r => r.graphic.layer.id === activeAdminTool)]
+        : [...results];
 
-    if (results.length) {
-        const newResults = activeAdminTool
-            ? [...results.filter(r => r.graphic.layer.id === activeAdminTool)]
-            : [...results];
-
+    if (newResults.length) {
         newResults.forEach((layer) => {
             const fieldInfos = [];
             if (layer.graphic.layer.featureType === 'shapefile') {
