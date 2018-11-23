@@ -77,7 +77,10 @@ const TableView = ({
                         strings.modalClearTable.content,
                         strings.modalClearTable.submit,
                         strings.modalClearTable.cancel,
-                        () => { clearTableData(); },
+                        () => {
+                            clearTableData();
+                            view.popup.close();
+                        },
                     );
                 }}
             >

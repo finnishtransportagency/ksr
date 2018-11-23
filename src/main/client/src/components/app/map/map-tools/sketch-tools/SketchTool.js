@@ -229,6 +229,7 @@ class SketchTool extends Component<Props, State> {
 
     removeSelection = () => {
         this.props.deSelectSelected();
+        this.props.view.popup.close();
     };
 
     toggleSelectTools = () => {
