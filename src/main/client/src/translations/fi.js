@@ -255,6 +255,11 @@ const fi = {
             searchIdNoResults: 'Kiinteistötunnuksella ei löytynyt yhtään kiinteistöä.',
         },
     },
+    offlineSavedModal: {
+        title: 'Offline-muutosten tallennus',
+        cancel: 'Sulje',
+        text: 'Tallentamattomia muutoksia tallennettu onnistuneesti. Päivitä tarvittavat karttatasot ja taulukot tarvittaessa.',
+    },
 };
 
 export default fi;
