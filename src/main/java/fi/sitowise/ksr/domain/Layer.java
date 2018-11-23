@@ -56,17 +56,9 @@ public class Layer implements Serializable {
     private String contractDescriptionField;
     private String alfrescoLinkField;
     private String caseManagementLinkField;
-
-    @JsonIgnore
     private String relationType;
-
-    @JsonIgnore
     private Long relationLayerId;
-
-    @JsonIgnore
     private String relationColumnIn;
-
-    @JsonIgnore
     private String relationColumnOut;
 
     /**

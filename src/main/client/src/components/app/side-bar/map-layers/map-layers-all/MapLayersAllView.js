@@ -37,17 +37,18 @@ const MapLayersAllView = ({
                     </div>
                 </LayerGroup.Header>
                 <LayerGroup.Content hidden={activeGroup !== lg.id}>
-                    {lg.layers.map(l => (
-                        layerList.find(layer => layer.id === l.id)
-                            ? <MapLayerContainer
-                                inputDisabled={l._source === 'shapefile'}
-                                key={l.id}
-                                layer={l}
-                                handleLayerClick={handleLayerClick}
-                                checked={layerList.find(layer => layer.id === l.id).active}
-                            />
-                            : null
-                    ))
+                    {lg.layers.filter(layer => layer.relationType !== 'link')
+                        .map(l => (
+                            layerList.find(layer => layer.id === l.id)
+                                ? <MapLayerContainer
+                                    inputDisabled={l._source === 'shapefile'}
+                                    key={l.id}
+                                    layer={l}
+                                    handleLayerClick={handleLayerClick}
+                                    checked={layerList.find(layer => layer.id === l.id).active}
+                                />
+                                : null
+                        ))
                     }
                 </LayerGroup.Content>
             </LayerGroup>

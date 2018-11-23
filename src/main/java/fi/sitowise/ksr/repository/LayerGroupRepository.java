@@ -47,7 +47,6 @@ public class LayerGroupRepository {
                         .join(LAYER_PERMISSION).on(LAYER_PERMISSION.LAYER_ID.equal(LAYER.ID))
                         .where(LAYER_PERMISSION.READ_LAYER.equal("1"))
                             .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
-                            .and(LAYER.RELATION_TYPE.notEqual("link").or(LAYER.RELATION_TYPE.isNull()))
                         .fetchGroups(
                                 r -> r.into(LAYER_GROUP).into(LayerGroupRecord.class),
                                 r -> new Layer(
