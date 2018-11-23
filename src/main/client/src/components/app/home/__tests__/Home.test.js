@@ -11,6 +11,7 @@ const setup = () => {
         setWorkspace: jest.fn(),
         setUserInfo: jest.fn(),
         loadingWorkspace: false,
+        loadFailedEdits: jest.fn(),
     };
     const wrapper = shallow(<Home {...props} />);
 
