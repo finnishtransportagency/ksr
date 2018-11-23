@@ -1,10 +1,9 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
 import strings from '../../../../translations';
 import { TextInput } from '../../../ui/elements';
 import { InputWithIcon, InputInfo } from '../../../ui/elements/TextInput';
 import LoadingIcon from '../../shared/LoadingIcon';
-import { WorkspacenameInputWrapper } from './styles';
 
 type Props = {
     handleInputChange: Function,
@@ -19,7 +18,7 @@ const ModalNewWorkspaceView = ({
     submitDisabled,
     fetching,
 }: Props) => (
-    <WorkspacenameInputWrapper>
+    <Fragment>
         <label htmlFor={strings.modalNewWorkspace.workspaceName}>
             <span>{strings.modalNewWorkspace.workspaceName}</span>
             <InputWithIcon>
@@ -47,7 +46,7 @@ const ModalNewWorkspaceView = ({
                 </InputInfo>
             </InputWithIcon>
         </label>
-    </WorkspacenameInputWrapper>
+    </Fragment>
 );
 
 export default ModalNewWorkspaceView;

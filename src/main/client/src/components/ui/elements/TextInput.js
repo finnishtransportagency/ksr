@@ -60,4 +60,8 @@ export const InputWithIcon = styled.div`
     .Select-control > *:last-child {
         padding-right: 3rem;
     }
+    
+    .fa-exclamation-triangle {
+        color: ${styles.mapHighlightStroke}
+    }
 `;
