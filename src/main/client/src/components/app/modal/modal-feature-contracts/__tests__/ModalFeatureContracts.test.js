@@ -27,7 +27,7 @@ describe('<ModalFeatureContracts />', () => {
         const instance = wrapper.instance();
         instance.handleSubmitLinkToContract();
         expect(wrapper.state('activeView')).toBe('linkContract');
-        expect(wrapper.state('title')).toBe(strings.modalFeatureContracts.titleLinkContract);
+        expect(wrapper.state('title')).toBe(strings.modalFeatureContracts.linkContract.title);
     });
 
     it('handleGoBack - should set correct state', () => {
@@ -42,5 +42,25 @@ describe('<ModalFeatureContracts />', () => {
         const { removeContractListInfo } = wrapper.instance().props;
         instance.handleModalCancel();
         expect(removeContractListInfo).toHaveBeenCalled();
+    });
+
+    it('contractLinkValidation - should change state based based on valid contract link number', () => {
+        const { contractLinkValidation } = wrapper.instance();
+        contractLinkValidation(false);
+
+        expect(wrapper.state('contractNumber')).toBe(null);
+        expect(wrapper.state('contractUpdateLayer')).toEqual({});
+        expect(wrapper.state('contractUuid')).toBe('');
+    });
+
+    it('contractLinkValidation - should change state based based on valid contract link number', () => {
+        const updateLayer = {
+            id: 123,
+        };
+        const { contractLinkValidation } = wrapper.instance();
+        contractLinkValidation(true, 123, updateLayer, '1234-456-789');
+        expect(wrapper.state('contractNumber')).toBe(123);
+        expect(wrapper.state('contractUpdateLayer')).toEqual(updateLayer);
+        expect(wrapper.state('contractUuid')).toBe('1234-456-789');
     });
 });
