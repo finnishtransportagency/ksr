@@ -1,17 +1,23 @@
+// @flow
 import querystring from 'querystring';
-import { config } from '../config';
+import { config, handleErrors } from '../config';
 
 /**
- * Finds all features from layer with given search values
+ * Finds all features from layer with given search values.
  *
- * @param layerId Layer id (ID in database) that is used in fetch URL
- * @param queryString Parsed query string that is used in fetch URL
- * @param title Layer name that will be used in table tab
- * @param data Data object with empty layer array (added so it works with parseData method)
+ * @param {number} layerId Layer id (ID in database) that is used in fetch URL.
+ * @param {string} queryString Parsed query string that is used in fetch URL.
+ * @param {string} title Layer name that will be used in table tab.
+ * @param {Object} data Object with empty layer array (added so it works with parseData method).
  *
- * @returns Data that can be used in parseData method to add it to the table
+ * @returns Data that can be used in parseData method to add it to the table.
  */
-export const fetchSearchQuery = (layerId, queryString, title, data) =>
+export const fetchSearchQuery = (
+    layerId: number,
+    queryString: string,
+    title: string,
+    data: Object,
+): any =>
     fetch(`api/proxy/layer/${layerId}/query?${
         querystring.stringify({
             where: queryString,
@@ -36,7 +42,12 @@ export const fetchSearchQuery = (layerId, queryString, title, data) =>
  *
  * @returns {String[]} Suggested search words.
  */
-export const fetchSearchSuggestions = (layerId, whereQueryString, queryColumn, signal) => {
+export const fetchSearchSuggestions = (
+    layerId: string,
+    whereQueryString: string,
+    queryColumn: string,
+    signal: any,
+) => {
     const suggestions = [];
     return fetch(`api/proxy/layer/${layerId}/query?${
         querystring.stringify({
@@ -45,6 +56,7 @@ export const fetchSearchSuggestions = (layerId, whereQueryString, queryColumn, s
             outFields: queryColumn,
         })
     }`, { ...config(), signal })
+        .then(handleErrors)
         .then(r => r.json())
         .then((r) => {
             if (!r.error && r.features.length) {
@@ -56,3 +68,27 @@ export const fetchSearchSuggestions = (layerId, whereQueryString, queryColumn, s
         })
         .catch(err => console.log(err));
 };
+
+/**
+ * Query for finding features with given layer and query string.
+ *
+ * @param {number} layerId Layer id (ID in database) that is used in fetch URL.
+ * @param {string} whereQueryString Parsed query string that is used in fetch URL.
+ * @param {any} signal Request signal which can be used to abort the request.
+ *
+ * @returns {Promise} Promise object that contains features found with given contract number.
+ */
+export const queryFeatures = (
+    layerId: number,
+    whereQueryString: string,
+    signal: any,
+): Promise<any> => fetch(`api/proxy/layer/${layerId}/query?${
+    querystring.stringify({
+        where: whereQueryString,
+        f: 'pjson',
+        outFields: '*',
+    })
+}`, { ...config(), signal })
+    .then(handleErrors)
+    .then(r => r.json())
+    .catch(err => console.log(err));
