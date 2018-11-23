@@ -41,8 +41,8 @@ const MapLayerSettings = ({
                 </LayerSettings.Toggle>
             }
             <LayerSettings.ContentMain>
-                <LayerSettings.ContentTop >
-                    <LayerSettings.Title >
+                <LayerSettings.ContentTop>
+                    <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
                         <MapLayerTitle layer={layer} />
                     </LayerSettings.Title>
                     {
