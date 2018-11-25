@@ -144,7 +144,9 @@ class ReactTable extends Component<Props> {
             const { columns, data } = layer;
 
             const currentLayer: any = layerList.find(ll => ll.id === layer.id);
-            const contractColumns = currentLayer && currentLayer.hasRelations
+            const contractColumns = currentLayer &&
+            currentLayer.hasRelations &&
+            currentLayer.type !== 'agfl'
                 ? addContractColumn(this.handleContractClick, columns)
                 : null;
 
