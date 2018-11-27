@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -54,6 +53,24 @@ public class KTJService {
             "<ogc:PropertyName>ktjkiiwfs:kiinteistotunnus</ogc:PropertyName>" +
             "<ogc:Literal>%s</ogc:Literal>" +
             "</ogc:PropertyIsEqualTo>" +
+            "</ogc:Filter>" +
+            "</wfs:Query>" +
+            "</wfs:GetFeature>";
+
+    private final String KTJ_WFS_POLYGON = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<wfs:GetFeature version=\"1.1.0\" xmlns:ktjkiiwfs=\"http://xml.nls.fi/ktjkiiwfs/2010/02\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\">" +
+            "<wfs:Query typeName=\"ktjkiiwfs:RekisteriyksikonTietoja\" srsName=\"EPSG:3067\">" +
+            "<ogc:Filter>" +
+            "<ogc:Intersects>" +
+            "<ogc:PropertyName>ktjkiiwfs:rekisteriyksikonPalstanTietoja/ktjkiiwfs:RekisteriyksikonPalstanTietoja/ktjkiiwfs:sijainti</ogc:PropertyName>" +
+            "<gml:Polygon>" +
+            "<gml:exterior>" +
+            "<gml:LinearRing>" +
+            "<gml:posList>%s</gml:posList>" +
+            "</gml:LinearRing>" +
+            "</gml:exterior>" +
+            "</gml:Polygon>" +
+            "</ogc:Intersects>" +
             "</ogc:Filter>" +
             "</wfs:Query>" +
             "</wfs:GetFeature>";
@@ -134,6 +151,26 @@ public class KTJService {
                 x, y, KsrAuthenticationUtils.getCurrentUsername()
         ));
         return fetchDetails(String.format(KTJ_WFS_POINT, x, y));
+    }
+
+    /**
+     * Gets a FeatureCollection of KTJ-response for given polygon.
+     *
+     * Coordinates must be given in EPSG:3067 spatial reference system.
+     *
+     * @param polygon polygon coordinates.
+     * @return FeatureCollection representing found property.
+     */
+    public FeatureCollection getPropertyDetailsArea(String polygon) {
+        if (polygon == null) {
+            throw new KsrApiException.BadRequestException("Invalid parameters. polygon must be defined.");
+        }
+
+        log.info(
+                "Get property details: polygon: [%f]. User: [%s]",
+                polygon, KsrAuthenticationUtils.getCurrentUsername()
+        );
+        return fetchDetails(String.format(KTJ_WFS_POLYGON, polygon.replaceAll(",", "")));
     }
 
     /**
