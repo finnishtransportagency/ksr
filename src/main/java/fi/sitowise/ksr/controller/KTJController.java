@@ -56,6 +56,22 @@ public class KTJController {
     }
 
     /**
+     * Gets property details from given area (polygon).
+     *
+     *  Coordinates must be given in EPSG:3067 spatial reference system.
+     *
+     * @param polygon Polygon coordinates.
+     * @return FeatureCollection of property details.
+     */
+    @RequestMapping(value = "/", method = { RequestMethod.POST })
+    public FeatureCollection getPropetyDetailsArea(@RequestBody Map<String, String> polygon) {
+        if (polygon != null) {
+           String polygonValue = polygon.get("polygon");
+            return  ktjService.getPropertyDetailsArea(polygonValue);
+        }
+        return new FeatureCollection();
+    }
+    /**
      * Get PDF print links for given property.
      *
      * @param propertyIdentifier Property's identifier in either numeric or hyphen format.

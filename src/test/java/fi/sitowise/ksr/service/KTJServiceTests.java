@@ -190,6 +190,11 @@ public class KTJServiceTests {
         ktjService.getPropertyDetails(34.2, null);
     }
 
+    @Test(expected = KsrApiException.BadRequestException.class)
+    public void testGetPropertyDetailsAreaIsNull() {
+        ktjService.getPropertyDetailsArea( null);
+    }
+
     @Ignore
     @Test
     public void testGetPropertyDetailsCoordinates() {
