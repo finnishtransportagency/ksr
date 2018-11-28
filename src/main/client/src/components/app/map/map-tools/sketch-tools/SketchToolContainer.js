@@ -6,6 +6,7 @@ import {
     setTempGraphicsLayer,
     setActiveToolMenu,
 } from '../../../../../reducers/map/actions';
+import { setPropertyInfo } from '../../../../../reducers/search/actions';
 import { selectFeatures, deSelectSelected } from '../../../../../reducers/table/actions';
 import SketchTool from './SketchTool';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
@@ -23,6 +24,8 @@ const mapStateToProps = state => ({
     activeModal: state.modal.activeModal,
     isOpen: state.map.mapTools.activeToolMenu === 'sketchTools',
     layerList: state.map.layerGroups.layerList,
+    propertyAreaSearch: state.search.propertyInfo.propertyAreaSearch,
+    authorities: state.user.userInfo.authorities,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -46,6 +49,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveToolMenu: (activeMenu) => {
         dispatch(setActiveToolMenu(activeMenu));
+    },
+    setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
+        dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
     },
 });
 

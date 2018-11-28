@@ -1,6 +1,8 @@
 // @flow
 import esriLoader from 'esri-loader';
 import React, { Component, createRef, Fragment } from 'react';
+import { toast } from 'react-toastify';
+import strings from '../../../../../translations';
 import { resetMapTools } from '../../../../../utils/mapTools';
 import * as styles from '../../../../ui/defaultStyles';
 import SketchToolView from './SketchToolView';
@@ -35,6 +37,14 @@ type Props = {
     setActiveToolMenu: Function,
     activeAdminTool: string,
     layerList: Object[],
+    propertyAreaSearch: boolean,
+    setPropertyInfo: (
+        queryParameter: Object | string,
+        view: Object,
+        graphicId: string,
+        authorities: Object[],
+    ) => void,
+    authorities: Object[],
 };
 
 class SketchTool extends Component<Props, State> {
@@ -92,8 +102,8 @@ class SketchTool extends Component<Props, State> {
 
     sketchTool = () => {
         esriLoader
-            .loadModules(['esri/Graphic'])
-            .then(([Graphic]) => {
+            .loadModules(['esri/Graphic', 'esri/geometry/geometryEngine'])
+            .then(([Graphic, geometryEngine]) => {
                 const {
                     view,
                     draw,
@@ -204,8 +214,27 @@ class SketchTool extends Component<Props, State> {
                 const selectFeaturesFromDraw = (evt) => {
                     const { geometry } = evt;
                     const {
-                        active, activeAdminTool, selectFeatures,
+                        active,
+                        activeAdminTool,
+                        selectFeatures,
+                        propertyAreaSearch,
+                        setPropertyInfo,
+                        authorities,
                     } = this.props;
+
+                    if (propertyAreaSearch) {
+                        const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
+                        const area = geometryEngine.planarArea(
+                            geometry,
+                            'square-kilometers',
+                        );
+
+                        if (area > 0.25) {
+                            toast.error(strings.searchProperty.errorToast.searchAreaLimit);
+                        } else {
+                            setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
+                        }
+                    }
 
                     // Skip finding layers if Administrator editing is in use
                     if (active === 'sketchActiveAdmin') {
