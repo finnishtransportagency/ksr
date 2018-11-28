@@ -53,7 +53,7 @@ export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
             if (!res.features.length) {
                 toast.error(strings.searchProperty.errorToast.searchIdNoResults);
             }
-            return res.json();
+            return res;
         })
         .catch(err => console.log(err));
 };
