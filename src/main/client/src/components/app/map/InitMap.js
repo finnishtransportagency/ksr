@@ -236,8 +236,17 @@ class EsriMap extends Component<Props> {
                 view.popup.on('trigger-action', (evt) => {
                     const { x, y } = view.popup.location;
                     const { activeAdminTool, authorities } = this.props;
+                    const layer = layerList.find((ll) => {
+                        if (view.popup.viewModel &&
+                            view.popup.viewModel.selectedFeature &&
+                            view.popup.viewModel.selectedFeature.layer.id === ll.id) {
+                            return true;
+                        }
+                        return false;
+                    });
+
                     switch (evt.action.id) {
-                        case ('select-intersect'):
+                        case 'select-intersect':
                             queryFeatures(
                                 view.popup.viewModel.selectedFeature.geometry,
                                 activeAdminTool,
@@ -246,29 +255,25 @@ class EsriMap extends Component<Props> {
                                 view.popup.viewModel.selectedFeature.layer.id,
                             );
                             break;
-                        case ('set-buffer'):
+                        case 'set-buffer':
                             setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
                             setActiveModal('bufferSelectedData');
                             break;
-                        case ('get-property-info'):
+                        case 'get-property-info':
                             setPropertyInfo({ x, y }, view, 'propertyArea', authorities);
                             break;
-                        case ('google-street-view'):
+                        case 'google-street-view':
                             getStreetViewLink(x, y);
                             break;
-                        case ('case-management-link'):
+                        case 'case-management-link':
                             getCaseManagementLink(
-                                layerList.find(ll =>
-                                    ll.id === view.popup.viewModel.selectedFeature.layer.id &&
-                                    ll.caseManagementLinkField),
+                                layer,
                                 view.popup.viewModel.selectedFeature.attributes,
                             );
                             break;
-                        case ('alfresco-link'):
+                        case 'alfresco-link':
                             getAlfrescoLink(
-                                layerList.find(ll =>
-                                    ll.id === view.popup.viewModel.selectedFeature.layer.id &&
-                                    ll.alfrescoLinkField),
+                                layer,
                                 view.popup.viewModel.selectedFeature.attributes,
                             );
                             break;
