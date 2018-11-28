@@ -1,15 +1,12 @@
 // @flow
 import { connect } from 'react-redux';
-import SearchPropertyView from './SearchPropertyView';
+import SearchProperty from './SearchProperty';
 
 const mapStateToProps = state => ({
-    propertyId: state.search.propertyInfo.id,
-    properties: state.search.propertyInfo.properties,
-    links: state.search.propertyInfo.links,
+    features: state.search.propertyInfo.features,
     fetching: state.search.propertyInfo.fetching,
-    fetchingLinks: state.search.propertyInfo.fetchingLinks,
 });
 
-const SearchPropertyContainer = connect(mapStateToProps, null)(SearchPropertyView);
+const SearchPropertyContainer = connect(mapStateToProps, null)(SearchProperty);
 
 export default SearchPropertyContainer;

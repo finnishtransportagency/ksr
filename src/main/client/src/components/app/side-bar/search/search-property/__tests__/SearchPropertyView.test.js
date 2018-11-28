@@ -1,5 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
+import Property from '../../../../../ui/blocks/Property';
 import LoadingIcon from '../../../../shared/LoadingIcon';
 import PropertyInfoView from '../property-info/PropertyInfoView';
 import PropertyPrintFilesView from '../property-print-files/PropertyPrintFilesView';
@@ -7,52 +8,142 @@ import SearchPropertyView from '../SearchPropertyView';
 
 const setup = (prop) => {
     const minProps = {
-        propertyId: null,
-        properties: null,
-        links: null,
+        features: [],
         fetching: false,
-        fetchingLinks: false,
+        handlePropertyClick: jest.fn(),
+        activeProperty: '',
     };
 
     const props = prop || minProps;
-    const wrapper = shallow(<SearchPropertyView {...props} />);
+    const wrapper = mount(<SearchPropertyView {...props} />);
 
-    return { wrapper };
+    return { minProps, wrapper };
 };
 
 describe('<SearchPropertyView />', () => {
-    it('render - should render LoadingIcon', () => {
+    it('render - should render LoadingIcon while fetching', () => {
+        const { minProps } = setup();
         const props = {
-            propertyId: null,
-            properties: null,
-            links: null,
+            ...minProps,
             fetching: true,
-            fetchingLinks: false,
         };
         const { wrapper } = setup(props);
 
         expect(wrapper.find(LoadingIcon).exists()).toBe(true);
+        expect(wrapper.find(Property).length).toBe(0);
     });
 
-    it('render - should render LoadingIcon', () => {
+    it('render - should render propertys correctly', () => {
+        const { minProps } = setup();
         const props = {
-            propertyId: null,
-            properties: {
-                parcelCount: 1,
-                registerUnitType: 'register unit',
-                name: 'property name',
-                landArea: 123.123,
-                registrationDate: '20151231',
-                municipalityName: 'municipality name',
-                propertyIdentifier: '123456789',
-            },
-            links: null,
-            fetching: false,
-            fetchingLinks: false,
+            ...minProps,
+            features: [{
+                propertyId: null,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                links: null,
+                fetching: false,
+                fetchingLinks: false,
+            }, {
+                propertyId: null,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                links: null,
+                fetching: false,
+                fetchingLinks: false,
+            }, {
+                propertyId: null,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                links: null,
+                fetching: false,
+                fetchingLinks: false,
+            }],
         };
         const { wrapper } = setup(props);
 
-        expect(wrapper.find(PropertyInfoView).exists()).toBe(true);
-        expect(wrapper.find(PropertyPrintFilesView).exists()).toBe(true);
+        expect(wrapper.find(Property).length).toBe(3);
+        expect(wrapper.find(PropertyInfoView).length).toBe(3);
+        expect(wrapper.find(PropertyPrintFilesView).length).toBe(3);
+    });
+
+    it('render - should activate property on click', () => {
+        const { minProps } = setup();
+        const props = {
+            ...minProps,
+            features: [{
+                propertyId: null,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                links: null,
+                fetching: false,
+                fetchingLinks: false,
+            }, {
+                propertyId: null,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                links: null,
+                fetching: false,
+                fetchingLinks: false,
+            }, {
+                propertyId: null,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                links: null,
+                fetching: false,
+                fetchingLinks: false,
+            }],
+        };
+        const { wrapper } = setup(props);
+
+        const { handlePropertyClick } = wrapper.props();
+
+        wrapper.find(Property.Header).at(0).simulate('click');
+        wrapper.find(Property.Header).at(1).simulate('click');
+        wrapper.find(Property.Header).at(2).simulate('click');
+
+        expect(handlePropertyClick).toHaveBeenCalledTimes(3);
     });
 });
