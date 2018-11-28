@@ -249,7 +249,8 @@ const fi = {
         municipality: 'Kunta',
         name: 'Nimi',
         landArea: 'Maapinta-ala',
-        registrationDate: 'Rekisteröintipäivämäärä',
+        registrationDate: 'Rekisteröintipvm',
+        areaSearch: 'Aluehaku',
         propertyPrintFiles: {
             title: 'Kiinteistön tulosteet',
             registerunit: 'Kiinteistörekisteriote',
@@ -263,6 +264,7 @@ const fi = {
             searchLinksFailed: 'Kiinteistötulosteiden haku epäonnistui.',
             searchCoordsNoResults: 'Koordinaateilla ei löytynyt yhtään kiinteistöä.',
             searchIdNoResults: 'Kiinteistötunnuksella ei löytynyt yhtään kiinteistöä.',
+            searchAreaLimit: 'Kiinteistö aluehaun pinta-ala saa olla korkeintaan: 0,0625 km\xB2. Hakuvyöhyke metreinä saa olla korkeintaan: 250 m.',
         },
     },
     offlineSavedModal: {
