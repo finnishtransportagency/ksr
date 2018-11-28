@@ -13,6 +13,10 @@ const Header = styled.div`
     .search-suggestions-toggle {
         outline: none;
         cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         
         i {
             margin-left: 1rem;
