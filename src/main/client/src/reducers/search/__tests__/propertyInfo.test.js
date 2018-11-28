@@ -134,4 +134,17 @@ describe('Property info reducer', () => {
             propertyAreaSearch: !state.propertyAreaSearch,
         });
     });
+
+    it('should handle SET_PROPERTY_ID', () => {
+        const expectedState = {
+            id: '1-2-3-4',
+            properties: null,
+            geometry: null,
+            links: null,
+            fetching: false,
+            fetchingLinks: false,
+        };
+        expect(reducer(initialState, { type: types.SET_PROPERTY_ID, id: '1-2-3-4' }))
+            .toEqual(expectedState);
+    });
 });

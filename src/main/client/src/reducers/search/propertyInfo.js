@@ -6,6 +6,7 @@ import {
     SET_PROPERTY_INFO_LINKS,
     SET_PROPERTY_INFO_LINKS_FULFILLED,
     SET_PROPERTY_INFO_LINKS_REJECTED,
+    SET_PROPERTY_ID,
     TOGGLE_PROPERTY_AREA_SEARCH,
 } from '../../constants/actionTypes';
 
@@ -98,6 +99,11 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 propertyAreaSearch: !state.propertyAreaSearch,
+            };
+        case SET_PROPERTY_ID:
+            return {
+                ...state,
+                id: action.id,
             };
         default:
             return state;

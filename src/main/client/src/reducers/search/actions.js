@@ -64,7 +64,7 @@ export const setPropertyInfo = (
                 dispatch({
                     type: types.SET_PROPERTY_INFO_FULFILLED,
                     features: result.features.map(feature => ({
-                        id: feature.id,
+                        id: feature.properties.propertyIdentifier,
                         properties: feature.properties,
                         geometry: feature.geometry,
                     })),
@@ -119,6 +119,11 @@ export const setPropertyInfo = (
 export const setActiveSearch = (activeSearch: string) => ({
     type: types.SET_ACTIVE_SEARCH,
     activeSearch,
+});
+
+export const setPropertyId = (propertyId: string) => ({
+    type: types.SET_PROPERTY_ID,
+    id: propertyId,
 });
 
 export const togglePropertyAreaSearch = () => ({
