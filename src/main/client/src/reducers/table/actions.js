@@ -242,10 +242,26 @@ export const saveDeletedFeatures = (
         });
 };
 
-export const addNonSpatialContentToTable = (layer: Object) => (dispatch: Function) => {
+export const addNonSpatialContentToTable = (
+    layer: Object,
+    workspaceFeatures?: Object[],
+) => (dispatch: Function) => {
     fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
-        .then((r) => {
-            const layers = parseData(r, false).map((l) => {
+        .then((results) => {
+            if (workspaceFeatures) {
+                results.layers.forEach((l) => {
+                    l.features.forEach((f) => {
+                        const selectedObj = workspaceFeatures && workspaceFeatures.find(obj =>
+                            obj.featureId === f.attributes[l.objectIdFieldName]);
+                        if (selectedObj) {
+                            f.selected = selectedObj.selected;
+                        }
+                        return f;
+                    });
+                });
+            }
+
+            const layers = parseData(results, false).map((l) => {
                 if (l.id === layer.id) {
                     return {
                         ...l,

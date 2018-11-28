@@ -7,14 +7,14 @@ import { addLayers, setCenterPoint } from '../map';
 /**
  * Creates list of feature data saved in workspace.
  *
- * @param {Object} workspace User specific workspace settings.
+ * @param {Object[]} workspace list of user specific workspace settings.
  *
  * @returns {Object[]} List of layer features saved in workspace.
  */
-export const setWorkspaceFeatures = (workspace: Object): Object[] => {
+export const setWorkspaceFeatures = (workspace: Object[]) => {
     const workspaceFeatures = [];
-    if (workspace && workspace.layers) {
-        workspace.layers.forEach((layer) => {
+    if (workspace) {
+        workspace.forEach((layer) => {
             if (!layer.definitionExpression) {
                 layer.selectedFeaturesList.forEach(feature =>
                     workspaceFeatures.push({
@@ -148,6 +148,7 @@ export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Obje
  * @param {Object[]} layerList List of layers.
  * @param {Object} view Esri map view.
  * @param {Function} searchWorkspaceFeatures Redux function that handles workspace searches.
+ * @param {Function} addNonSpatialContentToTable Adds non spatial content to table.
  * @param {Function} selectFeatures Redux function that handles workspace selections.
  * @param {Function} [updateWorkspaces] Redux function that handles workspace fetches.
  */
@@ -156,6 +157,7 @@ export const loadWorkspace = (
     layerList: Object[],
     view: Object,
     searchWorkspaceFeatures: Function,
+    addNonSpatialContentToTable: Function,
     selectFeatures: Function,
     updateWorkspaces: ?Function,
 ) => {
@@ -173,7 +175,23 @@ export const loadWorkspace = (
                 workspace.scale,
                 view,
             );
-            const workspaceFeatures = setWorkspaceFeatures(workspace);
+            const nonSpatialLayers = layers.filter(l =>
+                workspace.layers.find(wl => wl.layerId === l.id && l.type === 'agfl'));
+
+            nonSpatialLayers.forEach((nl) => {
+                const nonSpatialWorkspace = workspace.layers.filter(wl =>
+                    nl.id === wl.layerId);
+
+                addNonSpatialContentToTable(
+                    nl,
+                    setWorkspaceFeatures(nonSpatialWorkspace),
+                );
+            });
+
+            const spatialWorkspace = workspace.layers.filter(wl =>
+                layers.find(l => l.id === wl.layerId && l.type !== 'agfl'));
+
+            const workspaceFeatures = setWorkspaceFeatures(spatialWorkspace);
             queryWorkspaceFeatures(workspaceFeatures, view)
                 .then((layerFeatures) => {
                     searchWorkspaceFeatures(workspace, layers);

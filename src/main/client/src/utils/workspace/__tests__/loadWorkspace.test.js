@@ -2,24 +2,22 @@ import { setWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQu
 
 describe('loadWorkspace', () => {
     it('setWorkspaceFeatuers - should return workspace features', () => {
-        const workspace = {
-            layers: [
-                {
-                    layerId: '123',
-                    selectedFeaturesList: [
-                        { id: 1, highlight: false },
-                        { id: 2, highlight: true },
-                    ],
-                },
-                {
-                    layerId: '456',
-                    selectedFeaturesList: [
-                        { id: 7, highlight: true },
-                        { id: 8, highlight: false },
-                    ],
-                },
-            ],
-        };
+        const workspace = [
+            {
+                layerId: '123',
+                selectedFeaturesList: [
+                    { id: 1, highlight: false },
+                    { id: 2, highlight: true },
+                ],
+            },
+            {
+                layerId: '456',
+                selectedFeaturesList: [
+                    { id: 7, highlight: true },
+                    { id: 8, highlight: false },
+                ],
+            },
+        ];
 
         const expectedResult = [
             { featureId: 1, layerId: '123', selected: false },
