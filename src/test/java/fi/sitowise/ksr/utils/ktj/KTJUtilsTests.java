@@ -74,7 +74,7 @@ public class KTJUtilsTests {
 
         expectedFeature.setProperty("landArea", 4.432);
         expectedFeature.setProperty("registrationDate", "20170102");
-        expectedFeature.setProperty("propertyIdentifier", "00100200030004");
+        expectedFeature.setProperty("propertyIdentifier", "1-2-3-4");
 
         Polygon expectedPolygon = new Polygon();
         List<LngLatAlt> exterior = new ArrayList<>();

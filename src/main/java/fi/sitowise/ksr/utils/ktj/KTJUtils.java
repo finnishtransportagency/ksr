@@ -2,6 +2,7 @@ package fi.sitowise.ksr.utils.ktj;
 
 import fi.sitowise.ksr.controller.KTJController;
 import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.service.KTJService;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
@@ -84,6 +85,27 @@ public class KTJUtils {
     }
 
     /**
+     * Format property identifier (Kiinteistötunnus) into human readable format.
+     *
+     * @param id Property identifier (Kiinteistötunnus).
+     * @return Human readable property identifier.
+     */
+    private static String formatPropertyIdentifier(String id) {
+        if (id == null) {
+            return null;
+        } else if (id.matches(KTJService.NUMERIC_IDENTIFIER_PATTERN)) {
+            return String.format(
+                    "%d-%d-%d-%d",
+                    Integer.parseInt(id.substring(0, 3)),
+                    Integer.parseInt(id.substring(3, 6)),
+                    Integer.parseInt(id.substring(6, 10)),
+                    Integer.parseInt(id.substring(10, 14))
+            );
+        }
+        return id;
+    }
+
+    /**
      * Parses details of a Register Unit (Rekisteriyksikkö) from a Register Unit Node.
      *
      * @param registerUnit The RegisterUnit Node.
@@ -101,9 +123,11 @@ public class KTJUtils {
 
             feat.setProperty(
                     "propertyIdentifier",
-                    XMLUtils.getNodeContent(
-                        registerUnit,
-                        PROPERTY_IDENTIFIER_EL
+                    formatPropertyIdentifier(
+                            XMLUtils.getNodeContent(
+                                    registerUnit,
+                                    PROPERTY_IDENTIFIER_EL
+                            )
                     )
             );
 
