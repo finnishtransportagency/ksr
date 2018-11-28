@@ -6,6 +6,7 @@ import {
     SET_PROPERTY_INFO_LINKS,
     SET_PROPERTY_INFO_LINKS_FULFILLED,
     SET_PROPERTY_INFO_LINKS_REJECTED,
+    TOGGLE_PROPERTY_AREA_SEARCH,
 } from '../../constants/actionTypes';
 
 type Properties = {
@@ -15,33 +16,34 @@ type Properties = {
     landArea: number,
     registrationDate: string,
     municipalityName: string,
-    propertyIdentifier: string
+    propertyIdentifier: string,
+}
+
+type Feature = {
+    id: string,
+    properties: Properties,
+    geometry: Object,
+    links: ?Object,
+    fetchingLinks: boolean,
 }
 
 type State = {
-    id: ?string,
-    properties: ?Properties,
-    geometry: ?Object,
-    links: ?Object,
+    features: Feature[],
     fetching: boolean,
-    fetchingLinks: boolean,
+    propertyAreaSearch: boolean,
 };
 
 type Action = {
     type: string,
-    id: string,
-    properties: Properties,
-    geometry: Object,
+    features: Feature[],
     links: Object,
+    featureId: string,
 };
 
 const initialState = {
-    id: null,
-    properties: null,
-    geometry: null,
-    links: null,
+    features: [],
     fetching: false,
-    fetchingLinks: false,
+    propertyAreaSearch: false,
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -50,32 +52,52 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...initialState,
                 fetching: true,
+                propertyAreaSearch: state.propertyAreaSearch,
             };
         case SET_PROPERTY_INFO_FULFILLED:
             return {
                 ...state,
-                id: action.id,
-                properties: action.properties,
-                geometry: action.geometry,
+                features: (action.features.map(feature => ({
+                    ...feature,
+                    fetchingLinks: false,
+                    links: null,
+                })): Feature[]),
                 fetching: false,
             };
         case SET_PROPERTY_INFO_REJECTED:
-            return initialState;
+            return {
+                ...initialState,
+                propertyAreaSearch: state.propertyAreaSearch,
+            };
         case SET_PROPERTY_INFO_LINKS:
             return {
                 ...state,
-                fetchingLinks: true,
+                features: (state.features.map(feature => ({
+                    ...feature,
+                    fetchingLinks: true,
+                })): Feature[]),
             };
         case SET_PROPERTY_INFO_LINKS_FULFILLED:
             return {
                 ...state,
-                links: action.links,
-                fetchingLinks: false,
+                features: (state.features.map(feature => ({
+                    ...feature,
+                    links: feature.id === action.featureId ? action.links : feature.links,
+                    fetchingLinks: !feature.id === action.featureId,
+                })): Feature[]),
             };
         case SET_PROPERTY_INFO_LINKS_REJECTED:
             return {
                 ...state,
-                fetchingLinks: false,
+                features: (state.features.map(feature => ({
+                    ...feature,
+                    fetchingLinks: !feature.id === action.featureId,
+                })): Feature[]),
+            };
+        case TOGGLE_PROPERTY_AREA_SEARCH:
+            return {
+                ...state,
+                propertyAreaSearch: !state.propertyAreaSearch,
             };
         default:
             return state;

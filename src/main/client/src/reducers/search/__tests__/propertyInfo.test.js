@@ -2,12 +2,9 @@ import * as types from '../../../constants/actionTypes';
 import reducer from '../propertyInfo';
 
 const initialState = {
-    id: null,
-    properties: null,
-    geometry: null,
-    links: null,
+    features: [],
     fetching: false,
-    fetchingLinks: false,
+    propertyAreaSearch: false,
 };
 
 describe('Property info reducer', () => {
@@ -23,6 +20,40 @@ describe('Property info reducer', () => {
 
     it('should handle SET_PROPERTY_INFO_FULFILLED', () => {
         const action = {
+            features: [{
+                id: 123456789,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                geometry: [],
+                fetchingLinks: false,
+                links: null,
+            }],
+        };
+
+        expect(reducer(undefined, {
+            type: types.SET_PROPERTY_INFO_FULFILLED,
+            features: action.features,
+        })).toEqual({
+            ...initialState,
+            features: action.features,
+        });
+    });
+
+    it('should handle SET_PROPERTY_INFO_REJECTED', () => {
+        expect(reducer(undefined, {
+            type: types.SET_PROPERTY_INFO_REJECTED,
+        })).toEqual({ ...initialState });
+    });
+
+    const state = {
+        features: [{
             id: 123456789,
             properties: {
                 parcelCount: 1,
@@ -34,49 +65,23 @@ describe('Property info reducer', () => {
                 propertyIdentifier: '123456789',
             },
             geometry: [],
-        };
-
-        expect(reducer(undefined, {
-            type: types.SET_PROPERTY_INFO_FULFILLED,
-            id: action.id,
-            properties: action.properties,
-            geometry: action.geometry,
-        })).toEqual({
-            ...initialState,
-            id: action.id,
-            properties: action.properties,
-            geometry: action.geometry,
-            fetching: false,
-        });
-    });
-
-    it('should handle SET_PROPERTY_INFO_REJECTED', () => {
-        expect(reducer(undefined, {
-            type: types.SET_PROPERTY_INFO_REJECTED,
-        })).toEqual({ ...initialState });
-    });
-
-    const state = {
-        id: 123456789,
-        properties: {
-            parcelCount: 1,
-            registerUnitType: 'register unit',
-            name: 'property name',
-            landArea: 123.123,
-            registrationDate: '20151231',
-            municipalityName: 'municipality name',
-            propertyIdentifier: '123456789',
-        },
-        geometry: [],
-        links: null,
+            links: null,
+            fetchingLinks: false,
+        }],
         fetching: false,
-        fetchingLinks: false,
+        propertyAreaSearch: false,
     };
 
     it('should handle SET_PROPERTY_INFO_LINKS', () => {
         expect(reducer({ ...state }, {
             type: types.SET_PROPERTY_INFO_LINKS,
-        })).toEqual({ ...state, fetchingLinks: true });
+        })).toEqual({
+            ...state,
+            features: state.features.map(feature => ({
+                ...feature,
+                fetchingLinks: true,
+            })),
+        });
     });
 
     it('should handle SET_PROPERTY_INFO_LINKS_FULFILLED', () => {
@@ -87,21 +92,46 @@ describe('Property info reducer', () => {
                 easement: ['http://test.url'],
                 map: ['http://test.url'],
             },
+            featureId: '123456789',
         };
 
         expect(reducer({ ...state }, {
             type: types.SET_PROPERTY_INFO_LINKS_FULFILLED,
             links: action.links,
+            featureId: action.featureId,
         })).toEqual({
             ...state,
-            links: action.links,
-            fetchingLinks: false,
+            features: state.features.map(feature => ({
+                ...feature,
+                links: feature.id === action.featureId ? action.links : feature.links,
+                fetchingLinks: !feature.id === action.featureId,
+            })),
         });
     });
 
     it('should handle SET_PROPERTY_INFO_LINKS_REJECTED', () => {
+        const action = {
+            featureId: '123456789',
+        };
+
         expect(reducer({ ...state }, {
             type: types.SET_PROPERTY_INFO_LINKS_REJECTED,
-        })).toEqual({ ...state });
+            featureId: action.featureId,
+        })).toEqual({
+            ...state,
+            features: state.features.map(feature => ({
+                ...feature,
+                fetchingLinks: !feature.id === action.featureId,
+            })),
+        });
+    });
+
+    it('should handle TOGGLE_PROPERTY_AREA_SEARCH', () => {
+        expect(reducer({ ...state }, {
+            type: types.TOGGLE_PROPERTY_AREA_SEARCH,
+        })).toEqual({
+            ...state,
+            propertyAreaSearch: !state.propertyAreaSearch,
+        });
     });
 });
