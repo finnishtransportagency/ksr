@@ -107,3 +107,7 @@ export const SET_PROPERTY_INFO_LINKS_REJECTED = 'SET_PROPERTY_INFO_LINKS_REJECTE
 
 // User
 export const SET_USER_INFO = 'SET_USER_INFO';
+
+// Offline
+export const ADD_EDIT = 'ADD_EDIT';
+export const SET_EDITS = 'SET_EDITS';

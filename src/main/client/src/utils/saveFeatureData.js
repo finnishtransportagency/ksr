@@ -8,6 +8,8 @@ import strings from '../translations';
 import { addFeatures } from '../api/map/addFeatures';
 import { updateFeatures } from '../api/map/updateFeatures';
 import { createAddressFields } from './geoconvert/createAddressFields';
+import { handleFailedEdit } from '../reducers/offline/actions';
+import store from '../store';
 
 /**
  * Convert attribute back to original Feature Layer attribute format.
@@ -149,16 +151,18 @@ const saveData = (
     if (params) {
         switch (action) {
             case 'add':
-                return addFeatures(layerId, params).then(res =>
+                return addFeatures(layerId, params.toString()).then(res =>
                     res && handleSaveResponse(res, layer))
                     .catch((err) => {
+                        store.dispatch(handleFailedEdit('add', [layerId, params.toString()]));
                         toast.error(`${strings.saveFeatureData.newFeatureSaveError}`);
                         console.error(err);
                     });
             case 'update':
-                return updateFeatures(layerId, params).then(res =>
+                return updateFeatures(layerId, params.toString()).then(res =>
                     res && handleUpdateResponse(res, layerId))
                     .catch((err) => {
+                        store.dispatch(handleFailedEdit('update', [layerId, params.toString()]));
                         toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
                         console.error(err);
                     });
@@ -197,7 +201,11 @@ const saveDeletedFeatureData = (
     });
     return deleteFeatures(layerId, params)
         .then(r => r && handleDeleteResponse(r, layer))
-        .catch(() => toast.error(strings.saveFeatureData.featureDeleteError));
+        .catch((err) => {
+            console.error(err);
+            store.dispatch(handleFailedEdit('delete', [layerId, params]));
+            toast.error(strings.saveFeatureData.featureDeleteError);
+        });
 };
 
 /**

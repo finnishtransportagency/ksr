@@ -121,6 +121,7 @@ const fi = {
         layerManagement: 'Aineistot',
         fileExport: 'Tiedostojen vienti',
         workspace: 'Työtilat',
+        offline: 'Offline-käyttö',
     },
     table: {
         noTableText: 'Ei näytettävää dataa.',
@@ -253,6 +254,21 @@ const fi = {
             searchLinksFailed: 'Kiinteistötulosteiden haku epäonnistui.',
             searchCoordsNoResults: 'Koordinaateilla ei löytynyt yhtään kiinteistöä.',
             searchIdNoResults: 'Kiinteistötunnuksella ei löytynyt yhtään kiinteistöä.',
+        },
+    },
+    offlineSavedModal: {
+        title: 'Offline-muutosten tallennus',
+        cancel: 'Sulje',
+        text: 'Tallentamattomia muutoksia tallennettu onnistuneesti. Päivitä tarvittavat karttatasot ja taulukot tarvittaessa.',
+    },
+    offline: {
+        title: 'Offline-käyttö',
+        edits: {
+            title: 'Tallentamattomat muutokset',
+            noEdits: 'Ei muutoksia.',
+            hasEdits: 'tallentamatonta muutosta.',
+            save: 'Tallenna muutokset',
+            remove: 'Poista muutokset',
         },
     },
 };

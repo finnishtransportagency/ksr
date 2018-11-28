@@ -10,6 +10,7 @@ import workspace from './workspace';
 import confirmModal from './confirmModal';
 import contract from './contract';
 import user from './user';
+import offline from './offline';
 
 export default combineReducers({
     navigation,
@@ -22,4 +23,5 @@ export default combineReducers({
     confirmModal,
     contract,
     user,
+    offline,
 });

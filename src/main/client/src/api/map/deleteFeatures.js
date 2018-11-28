@@ -17,5 +17,4 @@ export const deleteFeatures = (layerId: string, params: string) =>
         method: 'POST',
         body: params,
     })
-        .then(r => r.json())
-        .catch(err => console.error(err));
+        .then(r => r.json());

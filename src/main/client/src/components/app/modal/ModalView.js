@@ -11,6 +11,7 @@ import ModalShapefileContainer from './modal-shapefile/ModalShapefileContainer';
 import ModalNewWorkspaceContainer from './modal-new-workspace/ModalNewWorkspaceContainer';
 import ConfirmModalContainer from '../shared/confirm-modal/ConfirmModalContainer';
 import ModalDrawTextContainer from './modal-draw-text/ModalDrawTextContainer';
+import ModalOfflineSavedView from './modal-offline-saved/ModalOfflineSavedView';
 
 type Props = {
     activeModal: string,
@@ -28,6 +29,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'shapefile' && <ModalShapefileContainer />}
         {activeModal === 'drawText' && <ModalDrawTextContainer />}
         {activeModal === 'featureContracts' && <ModalFeatureContractsContainer />}
+        {activeModal === 'offlineSave' && <ModalOfflineSavedView />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );
