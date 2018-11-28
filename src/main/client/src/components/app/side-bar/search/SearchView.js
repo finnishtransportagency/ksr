@@ -14,6 +14,8 @@ type Props = {
     toggleSearchSuggestions: Function,
     handleRadioChange: Function,
     activeSearch: string,
+    propertyAreaSearch: boolean,
+    togglePropertyAreaSearch: Function,
 };
 
 const SearchView = ({
@@ -21,6 +23,8 @@ const SearchView = ({
     toggleSearchSuggestions,
     handleRadioChange,
     activeSearch,
+    propertyAreaSearch,
+    togglePropertyAreaSearch,
 }: Props) => (
     <SearchWrapper>
         <SideBar.Header>
@@ -42,6 +46,24 @@ const SearchView = ({
                         }
                     />
                 </div>
+            }
+            {activeSearch === 'property' &&
+            <div
+                className="search-suggestions-toggle"
+                tabIndex="0"
+                role="button"
+                onClick={togglePropertyAreaSearch}
+                onKeyPress={togglePropertyAreaSearch}
+            >
+                <span>{strings.searchProperty.areaSearch}</span>
+                <i
+                    className={
+                        propertyAreaSearch
+                            ? 'fas fa-toggle-on'
+                            : 'fas fa-toggle-off'
+                    }
+                />
+            </div>
             }
         </SideBar.Header>
         <SideBar.Content>

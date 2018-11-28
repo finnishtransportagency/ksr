@@ -16,6 +16,8 @@ type Props = {
     },
     activeSearch: string,
     setActiveSearch: (activeSearch: string) => void,
+    propertyAreaSearch: boolean,
+    togglePropertyAreaSearch: Function,
 };
 
 class Search extends Component<Props, null> {
@@ -53,7 +55,9 @@ class Search extends Component<Props, null> {
     };
 
     render() {
-        const { searchState, activeSearch } = this.props;
+        const {
+            searchState, activeSearch, propertyAreaSearch, togglePropertyAreaSearch,
+        } = this.props;
 
         return (
             <SearchView
@@ -61,6 +65,8 @@ class Search extends Component<Props, null> {
                 toggleSearchSuggestions={this.toggleSearchSuggestions}
                 handleRadioChange={this.handleRadioChange}
                 activeSearch={activeSearch}
+                propertyAreaSearch={propertyAreaSearch}
+                togglePropertyAreaSearch={togglePropertyAreaSearch}
             />
         );
     }

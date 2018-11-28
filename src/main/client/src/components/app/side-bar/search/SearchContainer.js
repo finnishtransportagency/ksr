@@ -1,11 +1,12 @@
 // @flow
 import { connect } from 'react-redux';
-import { setSearchState, setActiveSearch } from '../../../../reducers/search/actions';
+import { setSearchState, setActiveSearch, togglePropertyAreaSearch } from '../../../../reducers/search/actions';
 import Search from './Search';
 
 const mapStateToProps = state => ({
     searchState: state.search.searchState,
     activeSearch: state.search.activeSearch,
+    propertyAreaSearch: state.search.propertyInfo.propertyAreaSearch,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -20,6 +21,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveSearch: (activeSearch) => {
         dispatch(setActiveSearch(activeSearch));
+    },
+    togglePropertyAreaSearch: () => {
+        dispatch(togglePropertyAreaSearch());
     },
 });
 
