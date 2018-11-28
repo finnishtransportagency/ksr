@@ -282,7 +282,6 @@ export const drawPropertyArea = (view: Object, propertyCoordinates: any) => {
                     id: 'propertyArea',
                 });
 
-            removeGraphicsFromMap(view, 'propertyArea');
             propertyCoordinates.forEach((coordinates) => {
                 const geometry = createPolygon(coordinates);
 
