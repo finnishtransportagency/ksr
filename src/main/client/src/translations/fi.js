@@ -242,7 +242,6 @@ const fi = {
         toggleVisibility: 'Näytä/piilota karttataso',
     },
     searchProperty: {
-        propertyInfo: 'Kiinteistön tiedot',
         propertyIdentifier: 'Kiinteistötunnus',
         parcelCount: 'Palstojen lukumäärä',
         registerUnitType: 'Rekisteriyksikkölaji',

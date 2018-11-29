@@ -2,7 +2,6 @@
 import moment from 'moment';
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations';
-import { H2 } from '../../../../../ui/elements';
 import { PropertyFeature } from '../styles';
 
 type Props = {
@@ -11,11 +10,6 @@ type Props = {
 
 const PropertyInfoView = ({ properties }: Props) => (
     <Fragment>
-        <H2>{strings.searchProperty.propertyInfo}</H2>
-        <PropertyFeature>
-            <span>{strings.searchProperty.propertyIdentifier}</span>
-            <span>{properties.propertyIdentifier}</span>
-        </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.municipality}</span>
             <span>{properties.municipalityName}</span>
@@ -30,7 +24,7 @@ const PropertyInfoView = ({ properties }: Props) => (
         </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.name}</span>
-            <span>{properties.name}</span>
+            <span title={properties.name}>{properties.name}</span>
         </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.landArea}</span>

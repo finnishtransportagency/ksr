@@ -26,6 +26,6 @@ describe('<PropertyInfoView />', () => {
     it('render - should render all property data', () => {
         const { wrapper } = setup();
 
-        expect(wrapper.find(PropertyFeature)).toHaveLength(7);
+        expect(wrapper.find(PropertyFeature)).toHaveLength(6);
     });
 });
