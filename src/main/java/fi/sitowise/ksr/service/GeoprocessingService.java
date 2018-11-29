@@ -46,15 +46,20 @@ public class GeoprocessingService {
      * @param request HTTP request interface.
      * @param response HttpServletResponse where to write the proxy-response
      */
-    public void getPrintRequest(String serviceEndpoint, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
-        String endPointUrl = proxyService.getEndpointUrl(printServiceUrl, serviceEndpoint, request.getQueryString());
-        String decodedServiceEndpoint = serviceEndpoint == null ? null : URLDecoder.decode(serviceEndpoint, "UTF-8");
+    public void getPrintRequest(String serviceEndpoint, HttpServletRequest request,
+            HttpServletResponse response) throws IOException, ParseException {
+        String endPointUrl = proxyService
+                .getEndpointUrl(printServiceUrl, serviceEndpoint, request.getQueryString());
+        String decodedServiceEndpoint = serviceEndpoint == null ?
+                null : URLDecoder.decode(serviceEndpoint, "UTF-8");
 
         if (decodedServiceEndpoint == null) {
-            this.httpRequestService.fetchToResponse(null, null, printServiceUrl, endPointUrl, request, response, false, null, null);
+            this.httpRequestService.fetchToResponse(null, null, printServiceUrl,
+                    endPointUrl, request, response, false, null, null);
         } else if (request.getParameterMap().containsKey("Web_Map_as_JSON")) {
             List<NameValuePair> editedParams = KsrPrintUtils.createEditedParams(request, layerService);
-            this.httpRequestService.fetchToResponse(null, null, printServiceUrl, endPointUrl, request, response, false, editedParams, null);
+            this.httpRequestService.fetchToResponse(null, null, printServiceUrl,
+                    endPointUrl, request, response, false, editedParams, null);
         } else if (request.getQueryString().equals("f=json")) {
             this.httpRequestService.fetchToResponse(null, null, printServiceUrl,
                     endPointUrl, request, response, false, null, null);
@@ -68,8 +73,11 @@ public class GeoprocessingService {
      * @param request HTTP request interface.
      * @param response HttpServletResponse where to write the proxy-response
      */
-    public void getPrintOutput(String serviceEndpoint, HttpServletRequest request, HttpServletResponse response) {
-        String endPointUrl = proxyService.getEndpointUrl(printOutputUrl, serviceEndpoint, request.getQueryString());
-        this.httpRequestService.fetchToResponse(null, null, printOutputUrl, endPointUrl, request, response, false, null, null);
+    public void getPrintOutput(String serviceEndpoint, HttpServletRequest request,
+            HttpServletResponse response) {
+        String endPointUrl = proxyService
+                .getEndpointUrl(printOutputUrl, serviceEndpoint, request.getQueryString());
+        this.httpRequestService.fetchToResponse(null, null, printOutputUrl,
+                endPointUrl, request, response, false, null, null);
     }
 }

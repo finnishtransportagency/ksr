@@ -45,7 +45,8 @@ public class GeoprocessingController {
 
     @RequestMapping(value = "/**", method = { RequestMethod.GET, RequestMethod.POST })
     public void printProxy(HttpServletRequest request, HttpServletResponse response) {
-        String serviceEndpoint = KsrRequestUtils.getServiceEndpoint(printProxyUrlPattern, request.getRequestURI());
+        String serviceEndpoint = KsrRequestUtils
+                .getServiceEndpoint(printProxyUrlPattern,request.getRequestURI());
         try {
             geoprocessingService.getPrintRequest(serviceEndpoint, request, response);
         } catch (ParseException | IOException e) {
