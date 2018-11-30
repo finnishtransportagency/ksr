@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import { setEditMode, setMapView, setTempGraphicsLayer, setHasGraphics } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import { setPropertyInfo } from '../../../reducers/search/actions';
-import { setSingleLayerGeometry, searchWorkspaceFeatures, selectFeatures } from './../../../reducers/table/actions';
+import {
+    setSingleLayerGeometry,
+    searchWorkspaceFeatures,
+    selectFeatures,
+    addNonSpatialContentToTable,
+} from './../../../reducers/table/actions';
 import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/actions';
 import InitMap from './InitMap';
 
@@ -53,6 +58,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
         dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
+    },
+    addNonSpatialContentToTable: (layer, workspaceFeatures) => {
+        dispatch(addNonSpatialContentToTable(layer, workspaceFeatures));
     },
 });
 

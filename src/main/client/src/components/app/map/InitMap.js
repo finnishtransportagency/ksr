@@ -16,6 +16,7 @@ type Props = {
     mapCenter: Array<number>,
     mapScale: number,
     printServiceUrl: ?string,
+    addNonSpatialContentToTable: Function,
     selectFeatures: Function,
     setMapView: (view: Object) => void,
     activeAdminTool: string,
@@ -286,6 +287,7 @@ class EsriMap extends Component<Props> {
                     searchWorkspaceFeatures,
                     setMapView,
                     setTempGraphicsLayer,
+                    addNonSpatialContentToTable,
                 } = this.props;
 
                 // Set initial view and temp graphics layer to redux
@@ -301,6 +303,7 @@ class EsriMap extends Component<Props> {
                                 layerList,
                                 r.view,
                                 searchWorkspaceFeatures,
+                                addNonSpatialContentToTable,
                                 selectFeatures,
                             );
                         } else {

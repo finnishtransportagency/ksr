@@ -14,6 +14,7 @@ type Props = {
     updateWorkspaces: Function,
     setWorkspace: Function,
     setWorkspaceRejected: Function,
+    addNonSpatialContentToTable: Function,
     selectFeatures: Function,
     searchWorkspaceFeatures: Function,
     layerList: Array<Object>,
@@ -78,6 +79,7 @@ class Workspace extends Component<Props, null> {
             selectFeatures,
             searchWorkspaceFeatures,
             updateWorkspaces,
+            addNonSpatialContentToTable,
         } = this.props;
         const { body, acceptText, cancelText } = strings.workspace.confirmSelect;
 
@@ -93,6 +95,7 @@ class Workspace extends Component<Props, null> {
                             layerList,
                             view,
                             searchWorkspaceFeatures,
+                            addNonSpatialContentToTable,
                             selectFeatures,
                             updateWorkspaces,
                         );
