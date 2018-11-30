@@ -28,6 +28,11 @@ export const setSearchOptions = (
     optionsField: layerList.find(l => l.id === selectedLayer).fields,
 });
 
+export const clearProperties = (graphicId: string, view: Object) => {
+    removeGraphicsFromMap(view, graphicId);
+    return { type: types.CLEAR_PROPERTY_INFO };
+};
+
 let propertyController;
 let propertySignal;
 /**
@@ -63,10 +68,10 @@ export const setPropertyInfo = (
             if (result.features.length) {
                 dispatch({
                     type: types.SET_PROPERTY_INFO_FULFILLED,
-                    features: result.features.map(feature => ({
-                        id: feature.properties.propertyIdentifier,
-                        properties: feature.properties,
-                        geometry: feature.geometry,
+                    features: result.features.map(property => ({
+                        id: property.properties.propertyIdentifier,
+                        properties: property.properties,
+                        geometry: property.geometry,
                     })),
                 });
 
@@ -74,15 +79,16 @@ export const setPropertyInfo = (
                 const hasPermission = allowedUsers.some(allowedUser =>
                     authorities.find(auth => auth.authority === allowedUser));
 
-                result.features.forEach((feature) => {
-                    drawPropertyArea(view, feature.geometry.coordinates);
+                result.features.forEach((property) => {
+                    drawPropertyArea(view, property.geometry.coordinates);
 
                     if (hasPermission) {
                         dispatch({
                             type: types.SET_PROPERTY_INFO_LINKS,
                         });
 
-                        fetchPropertyPdfLinks(feature.id, strings.getLanguage())
+                        const { propertyIdentifier } = property.properties;
+                        fetchPropertyPdfLinks(propertyIdentifier, strings.getLanguage())
                             .then((linksRes) => {
                                 if (linksRes) {
                                     const linksResApiUrls = {
@@ -95,12 +101,12 @@ export const setPropertyInfo = (
                                     dispatch({
                                         type: types.SET_PROPERTY_INFO_LINKS_FULFILLED,
                                         links: linksResApiUrls,
-                                        featureId: feature.id,
+                                        propertyIdentifier,
                                     });
                                 } else {
                                     dispatch({
                                         type: types.SET_PROPERTY_INFO_LINKS_REJECTED,
-                                        featureId: feature.id,
+                                        propertyIdentifier,
                                     });
                                 }
                             })
@@ -119,11 +125,6 @@ export const setPropertyInfo = (
 export const setActiveSearch = (activeSearch: string) => ({
     type: types.SET_ACTIVE_SEARCH,
     activeSearch,
-});
-
-export const setPropertyId = (propertyId: string) => ({
-    type: types.SET_PROPERTY_ID,
-    id: propertyId,
 });
 
 export const togglePropertyAreaSearch = () => ({

@@ -135,16 +135,30 @@ describe('Property info reducer', () => {
         });
     });
 
-    it('should handle SET_PROPERTY_ID', () => {
-        const expectedState = {
+    it('should handle CLEAR_PROPERTY_INFO', () => {
+        const currentState = {
             id: '1-2-3-4',
-            properties: null,
+            properties: {
+                parcelCount: 1,
+                registerUnitType: 'register unit',
+                name: 'property name',
+                landArea: 123.123,
+                registrationDate: '20151231',
+                municipalityName: 'municipality name',
+                propertyIdentifier: '123456789',
+            },
             geometry: null,
-            links: null,
-            fetching: false,
-            fetchingLinks: false,
+            links: {
+                registerunit: ['http://test.url'],
+                deed: ['http://test.url'],
+                easement: ['http://test.url'],
+                map: ['http://test.url'],
+            },
+            fetching: true,
+            fetchingLinks: true,
         };
-        expect(reducer(initialState, { type: types.SET_PROPERTY_ID, id: '1-2-3-4' }))
-            .toEqual(expectedState);
+
+        expect(reducer(currentState, { type: types.CLEAR_PROPERTY_INFO }))
+            .toEqual(initialState);
     });
 });

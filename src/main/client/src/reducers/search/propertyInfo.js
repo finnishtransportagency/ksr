@@ -6,8 +6,8 @@ import {
     SET_PROPERTY_INFO_LINKS,
     SET_PROPERTY_INFO_LINKS_FULFILLED,
     SET_PROPERTY_INFO_LINKS_REJECTED,
-    SET_PROPERTY_ID,
     TOGGLE_PROPERTY_AREA_SEARCH,
+    CLEAR_PROPERTY_INFO,
 } from '../../constants/actionTypes';
 
 type Properties = {
@@ -20,7 +20,7 @@ type Properties = {
     propertyIdentifier: string,
 }
 
-type Feature = {
+type Property = {
     id: string,
     properties: Properties,
     geometry: Object,
@@ -29,16 +29,16 @@ type Feature = {
 }
 
 type State = {
-    features: Feature[],
+    features: Property[],
     fetching: boolean,
     propertyAreaSearch: boolean,
 };
 
 type Action = {
     type: string,
-    features: Feature[],
+    features: Property[],
     links: Object,
-    featureId: string,
+    propertyIdentifier: string,
 };
 
 const initialState = {
@@ -58,11 +58,11 @@ export default (state: State = initialState, action: Action) => {
         case SET_PROPERTY_INFO_FULFILLED:
             return {
                 ...state,
-                features: (action.features.map(feature => ({
-                    ...feature,
+                features: (action.features.map(property => ({
+                    ...property,
                     fetchingLinks: false,
                     links: null,
-                })): Feature[]),
+                })): Property[]),
                 fetching: false,
             };
         case SET_PROPERTY_INFO_REJECTED:
@@ -73,37 +73,41 @@ export default (state: State = initialState, action: Action) => {
         case SET_PROPERTY_INFO_LINKS:
             return {
                 ...state,
-                features: (state.features.map(feature => ({
-                    ...feature,
+                features: (state.features.map(property => ({
+                    ...property,
                     fetchingLinks: true,
-                })): Feature[]),
+                })): Property[]),
             };
         case SET_PROPERTY_INFO_LINKS_FULFILLED:
             return {
                 ...state,
                 features: (state.features.map(feature => ({
                     ...feature,
-                    links: feature.id === action.featureId ? action.links : feature.links,
-                    fetchingLinks: !feature.id === action.featureId,
-                })): Feature[]),
+                    links: feature.properties.propertyIdentifier === action.propertyIdentifier
+                        ? action.links
+                        : feature.links,
+                    fetchingLinks: !feature.properties.propertyIdentifier ===
+                        action.propertyIdentifier,
+                })): Property[]),
             };
         case SET_PROPERTY_INFO_LINKS_REJECTED:
             return {
                 ...state,
-                features: (state.features.map(feature => ({
-                    ...feature,
-                    fetchingLinks: !feature.id === action.featureId,
-                })): Feature[]),
+                features: (state.features.map(property => ({
+                    ...property,
+                    fetchingLinks: !property.properties.propertyIdentifier ===
+                        action.propertyIdentifier,
+                })): Property[]),
             };
         case TOGGLE_PROPERTY_AREA_SEARCH:
             return {
                 ...state,
                 propertyAreaSearch: !state.propertyAreaSearch,
             };
-        case SET_PROPERTY_ID:
+        case CLEAR_PROPERTY_INFO:
             return {
-                ...state,
-                id: action.id,
+                ...initialState,
+                propertyAreaSearch: state.propertyAreaSearch,
             };
         default:
             return state;
