@@ -79,9 +79,9 @@ export const setPropertyInfo = (
                 const hasPermission = allowedUsers.some(allowedUser =>
                     authorities.find(auth => auth.authority === allowedUser));
 
-                result.features.forEach((property) => {
-                    drawPropertyArea(view, property.geometry.coordinates);
+                drawPropertyArea(view, result.features);
 
+                result.features.forEach((property) => {
                     if (hasPermission) {
                         dispatch({
                             type: types.SET_PROPERTY_INFO_LINKS,
