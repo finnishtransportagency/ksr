@@ -2,6 +2,8 @@
 import React, { Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import 'react-select/dist/react-select.css';
+import strings from '../../../../../translations';
+import { TextInput, Button } from '../../../../ui/elements';
 import Property from '../../../../ui/blocks/Property';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import PropertyInfoView from './property-info/PropertyInfoView';
@@ -12,6 +14,11 @@ type Props = {
     fetching: boolean,
     handlePropertyClick: (id: string) => void,
     activeProperty: string,
+    handleProperyIdChange: Function,
+    handleSubmit: Function,
+    handleClear: Function,
+    submitDisabled: boolean,
+    propertyId: string,
 };
 
 const SearchPropertyView = ({
@@ -19,6 +26,11 @@ const SearchPropertyView = ({
     fetching,
     handlePropertyClick,
     activeProperty,
+    handleProperyIdChange,
+    handleSubmit,
+    handleClear,
+    submitDisabled,
+    propertyId,
 }: Props) => (
     <Scrollbars
         autoHide
@@ -28,32 +40,60 @@ const SearchPropertyView = ({
         renderThumbVertical={scrollProps =>
             <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
     >
+        <label
+            htmlFor="propertyId"
+        >
+            <p>{strings.searchProperty.propertyIdentifier}</p>
+            <TextInput
+                type="text"
+                value={propertyId}
+                placeholder=""
+                name="propertyId"
+                disabled={fetching}
+                onChange={handleProperyIdChange}
+            />
+            <Button
+                disabled={fetching || submitDisabled}
+                type="submit"
+                onClick={handleSubmit}
+                onKeyPress={handleSubmit}
+            >
+                {strings.search.buttonSearch}
+            </Button>
+            <Button
+                disabled={fetching || !features}
+                onClick={handleClear}
+                onKeyPress={handleClear}
+            >
+                {strings.search.buttonClear}
+            </Button>
+        </label>
         {fetching && <LoadingIcon loading={fetching} />}
         {features.length > 0 &&
             <Fragment>
-                {features.map(feature =>
+                {features.map(property =>
                     (
-                        <Property active={activeProperty === feature.id} key={feature.id}>
-                            <Property.Header onClick={() => handlePropertyClick(feature.id)}>
+                        <Property active={activeProperty === property.id} key={property.id}>
+                            <Property.Header onClick={() => handlePropertyClick(property.id)}>
                                 <div>
-                                    <span>{feature.id}</span>
+                                    <span>{property.id}</span>
                                 </div>
                                 <div>
                                     <i
                                         className={
-                                            activeProperty === feature.id
+                                            activeProperty === property.id
                                                 ? 'fas fa-chevron-up'
                                                 : 'fas fa-chevron-down'
                                         }
                                     />
                                 </div>
                             </Property.Header>
-                            <Property.Content hidden={activeProperty !== feature.id}>
-                                <PropertyInfoView properties={feature.properties} />
+                            <Property.Content hidden={activeProperty !== property.id}>
+                                <PropertyInfoView properties={property.properties} />
                                 <br />
                                 <PropertyPrintFilesView
-                                    links={feature.links}
-                                    fetching={feature.fetchingLinks}
+                                    links={property.links}
+                                    fetching={property.fetchingLinks}
                                 />
                             </Property.Content>
                         </Property>

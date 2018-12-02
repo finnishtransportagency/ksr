@@ -12,6 +12,7 @@ const fi = {
         title: 'Haku',
         suggestions: 'Hakuehdotukset',
         buttonSearch: 'Hae',
+        buttonClear: 'Tyhjennä',
         chooseLayer: 'Valitse taso',
         searchAllFields: 'Hae kaikista kentistä',
         addField: 'Lisää hakukenttä',
