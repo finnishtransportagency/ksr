@@ -11,6 +11,7 @@ const setup = (prop) => {
         features: [],
         fetching: false,
         handlePropertyClick: jest.fn(),
+        handlePropertyZoomClick: jest.fn(),
         activeProperty: '',
     };
 
@@ -138,12 +139,17 @@ describe('<SearchPropertyView />', () => {
         };
         const { wrapper } = setup(props);
 
-        const { handlePropertyClick } = wrapper.props();
+        const { handlePropertyClick, handlePropertyZoomClick } = wrapper.props();
 
-        wrapper.find(Property.Header).at(0).simulate('click');
-        wrapper.find(Property.Header).at(1).simulate('click');
-        wrapper.find(Property.Header).at(2).simulate('click');
+        wrapper.find(Property.Header.Toggle).at(0).simulate('click');
+        wrapper.find(Property.Header.Toggle).at(1).simulate('click');
+        wrapper.find(Property.Header.Toggle).at(2).simulate('click');
+
+        wrapper.find(Property.Header.Zoom).at(0).simulate('click');
+        wrapper.find(Property.Header.Zoom).at(1).simulate('click');
+        wrapper.find(Property.Header.Zoom).at(2).simulate('click');
 
         expect(handlePropertyClick).toHaveBeenCalledTimes(3);
+        expect(handlePropertyZoomClick).toHaveBeenCalledTimes(3);
     });
 });
