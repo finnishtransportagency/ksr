@@ -84,7 +84,6 @@ export const setBuffer = (
         .loadModules([
             'esri/Graphic',
             'esri/geometry/geometryEngine',
-            'esri/geometry/SpatialReference',
         ])
         .then(([
             Graphic,
