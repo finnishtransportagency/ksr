@@ -43,6 +43,12 @@ public class GeoprocessingController {
         printProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(printPatternToMatch));
     }
 
+    /**
+     * Proxy print request.
+     *
+     * @param request Http servlet interface of incoming request.
+     * @param response Http servlet interface to which the response is written.
+     */
     @RequestMapping(value = "/**", method = { RequestMethod.GET, RequestMethod.POST })
     public void printProxy(HttpServletRequest request, HttpServletResponse response) {
         String serviceEndpoint = KsrRequestUtils

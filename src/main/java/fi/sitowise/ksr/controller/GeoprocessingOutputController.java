@@ -18,6 +18,9 @@ import java.util.regex.Pattern;
 
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
 
+/**
+ * Controller for geoprocessing output related requests.
+ */
 @RestController
 @RequestMapping(GeoprocessingOutputController.PRINT_OUTPUT_URL)
 public class GeoprocessingOutputController {
@@ -42,6 +45,12 @@ public class GeoprocessingOutputController {
         printOutputProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(patternToMatch));
     }
 
+    /**
+     * Proxy print output request.
+     *
+     * @param request Http servlet interface of incoming request.
+     * @param response Http servlet interface to which the response is written.
+     */
     @RequestMapping(value = "/**", method = { RequestMethod.GET })
     public void printOutputProxy(HttpServletRequest request, HttpServletResponse response) {
         LOG.info(String.format("%s: Proxy print output -request.", getCurrentUsername()));
