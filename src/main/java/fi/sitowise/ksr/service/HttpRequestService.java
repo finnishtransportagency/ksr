@@ -64,6 +64,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A Service to handle HTTP(S) requests to external servers.
@@ -239,6 +241,8 @@ public class HttpRequestService {
                 setGetCapabilitiesResponse(layer == null ? null : layer.getUrl(), baseUrl, response, cRes, endPointUrl);
             } else if (isPrintOutputRequest(endPointUrl)) {
                 setPrintOutputResponse(response, cRes);
+            } else if (isExtractOutputRequest(endPointUrl)) {
+                setExtractOutputResponse(response, cRes);
             } else {
                 setResponseContent(response, cRes);
             }
@@ -285,6 +289,18 @@ public class HttpRequestService {
      */
     private boolean isPrintOutputRequest(String endPointUrl) {
         return endPointUrl.contains("Export%20Web%20Map%20Task/execute");
+    }
+
+    /**
+     * Returns whether given url should be treated as a extract output request or not.
+     *
+     * @param endPointUrl Url that is inspected.
+     * @return Whether the url should be treated as a extract output request or not.
+     */
+    private boolean isExtractOutputRequest(String endPointUrl) {
+        Pattern urlPattern = Pattern.compile("Extract%20Data%20Task/jobs/(.*)/results/");
+        Matcher matcher = urlPattern.matcher(endPointUrl);
+        return matcher.find();
     }
 
     /**
@@ -493,6 +509,36 @@ public class HttpRequestService {
             }
         } catch (ParseException | IOException e) {
             String msg = "Error creating print output response";
+            throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
+    }
+
+    /**
+     * Replace extract output response body url with proxy url.
+     *
+     * @param response Http servlet response interface where to write the fetched content.
+     * @param cRes Closeable Http response from where to read contents.
+     */
+    @SuppressWarnings("unchecked")
+    private void setExtractOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
+        try {
+            String extractOutputUrl = KsrStringUtils
+                    .replaceMultipleSlashes(contextPath + GeoprocessingOutputController.EXTRACT_OUTPUT_URL);
+            String responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
+            JSONParser parser = new JSONParser();
+            JSONObject responseJson = (JSONObject) parser.parse(responseString);
+            if (responseJson != null) {
+                String value = responseJson.get("value").toString();
+                JSONObject valueJson = (JSONObject) parser.parse(value);
+                String url = valueJson.get("url").toString();
+                url = url.replaceAll(url.split("_gpserver")[0], extractOutputUrl);
+                valueJson.replace("url", url.replaceAll("_gpserver", ""));
+                responseJson.replace("value", valueJson);
+                response.setHeader("Content-Length", Integer.toString(responseJson.toString().length()));
+                response.getWriter().write(responseJson.toString());
+            }
+        } catch (ParseException | IOException e) {
+            String msg = "Error creating extract output response.";
             throw new KsrApiException.InternalServerErrorException(msg, e);
         }
     }
