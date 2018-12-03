@@ -16,6 +16,7 @@ type Props = {
     editedLayers: Array<Object>,
     editedLayersNoUnderscore: Array<Object>,
     selectedData: boolean,
+    geometryDataSelected: boolean,
     showConfirmModal: (
         body: string,
         acceptText: string,
@@ -39,6 +40,7 @@ const TableView = ({
     originalLayers,
     editedLayers,
     selectedData,
+    geometryDataSelected,
     showConfirmModal,
     clearTableData,
     saveEditedFeatures,
@@ -93,9 +95,9 @@ const TableView = ({
             <Table.Button
                 title={strings.reactTable.bufferSelectedData}
                 tableOpen={isOpen}
-                disabled={!selectedData}
+                disabled={!geometryDataSelected}
                 onClick={
-                    selectedData ? () => {
+                    geometryDataSelected ? () => {
                         setActiveModal('bufferSelectedData');
                     } : null}
             >

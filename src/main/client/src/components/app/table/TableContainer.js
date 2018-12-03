@@ -29,6 +29,8 @@ const mapStateToProps = (state) => {
         .map(l => removeUnderscore(l));
     const originalLayers = state.table.features.layers.map(l => removeUnderscore(l));
     const selectedData = state.table.features.layers.flatMap(f => f.data.filter(d => d._selected));
+    const geometryDataSelected = state.table.features.layers
+        .flatMap(f => f.data.filter(d => d._selected && d.geometry));
     const layer = state.map.layerGroups.layerList.find(l =>
         l.id === state.adminTool.active.layerId);
 
@@ -45,6 +47,7 @@ const mapStateToProps = (state) => {
         originalLayers,
         editedLayersNoUnderscore,
         selectedData: selectedData.length > 0,
+        geometryDataSelected: geometryDataSelected.length > 0,
         featureType,
         addressField,
         view: state.map.mapView.view,
