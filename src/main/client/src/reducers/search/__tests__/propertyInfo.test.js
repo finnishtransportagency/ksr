@@ -137,28 +137,26 @@ describe('Property info reducer', () => {
 
     it('should handle CLEAR_PROPERTY_INFO', () => {
         const currentState = {
-            id: '1-2-3-4',
-            properties: {
-                parcelCount: 1,
-                registerUnitType: 'register unit',
-                name: 'property name',
-                landArea: 123.123,
-                registrationDate: '20151231',
-                municipalityName: 'municipality name',
-                propertyIdentifier: '123456789',
-            },
-            geometry: null,
-            links: {
-                registerunit: ['http://test.url'],
-                deed: ['http://test.url'],
-                easement: ['http://test.url'],
-                map: ['http://test.url'],
-            },
-            fetching: true,
-            fetchingLinks: true,
+            features: [{
+                id: 123456789,
+                properties: {
+                    parcelCount: 1,
+                    registerUnitType: 'register unit',
+                    name: 'property name',
+                    landArea: 123.123,
+                    registrationDate: '20151231',
+                    municipalityName: 'municipality name',
+                    propertyIdentifier: '123456789',
+                },
+                geometry: [],
+                links: null,
+                fetchingLinks: false,
+            }],
+            fetching: false,
+            propertyAreaSearch: true,
         };
 
         expect(reducer(currentState, { type: types.CLEAR_PROPERTY_INFO }))
-            .toEqual(initialState);
+            .toEqual({ ...initialState, propertyAreaSearch: true });
     });
 });
