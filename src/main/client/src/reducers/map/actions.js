@@ -91,6 +91,7 @@ export const getMapConfig = () => (dispatch: Function) => {
             mapCenter: r.center,
             mapScale: r.scale,
             printServiceUrl: r.printServiceUrl,
+            extractServiceUrl: r.extractServiceUrl,
         }))
         .catch(err => console.log(err));
 };

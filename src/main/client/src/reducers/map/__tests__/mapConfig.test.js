@@ -8,6 +8,7 @@ describe('Map config reducer', () => {
             mapScale: 0,
             fetching: true,
             printServiceUrl: null,
+            extractServiceUrl: null,
         };
 
         expect(reducer(undefined, {})).toEqual(initialState);
@@ -19,6 +20,7 @@ describe('Map config reducer', () => {
             mapScale: 0,
             fetching: true,
             printServiceUrl: null,
+            extractServiceUrl: null,
         };
 
         expect(reducer(undefined, {
@@ -31,6 +33,7 @@ describe('Map config reducer', () => {
             mapCenter: [425574, 7051264],
             mapScale: 9244648,
             printServiceUrl: '/print/service/url',
+            extractServiceUrl: '/extract/service/url',
             fetching: false,
         };
 
@@ -39,6 +42,7 @@ describe('Map config reducer', () => {
             mapCenter: expectedResult.mapCenter,
             mapScale: expectedResult.mapScale,
             printServiceUrl: expectedResult.printServiceUrl,
+            extractServiceUrl: expectedResult.extractServiceUrl,
         })).toEqual(expectedResult);
     });
 });
