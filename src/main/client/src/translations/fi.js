@@ -44,6 +44,7 @@ const fi = {
         getPropertyInfo: 'Kiinteistötiedot',
         caseManagementLink: 'Asianhallinta',
         alfrescoLink: 'Alfresco',
+        featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
