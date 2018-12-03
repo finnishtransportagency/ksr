@@ -59,6 +59,9 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
         mapConfigData.setPrintServiceUrl(
                 KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.PRINT_CONTROLLER_URL)
         );
+        mapConfigData.setExtractServiceUrl(
+                KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.EXTRACT_CONTROLLER_URL)
+        );
 
         MvcResult result = this.mockMvc.perform(get("/api/map")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))

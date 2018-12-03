@@ -39,6 +39,9 @@ public class MapConfigController {
         mapConfigInformation.setPrintServiceUrl(
                 KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.PRINT_CONTROLLER_URL)
         );
+        mapConfigInformation.setExtractServiceUrl(
+                KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.EXTRACT_CONTROLLER_URL)
+        );
         return mapConfigInformation;
     }
 }
