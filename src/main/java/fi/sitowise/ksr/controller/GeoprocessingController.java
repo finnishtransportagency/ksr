@@ -56,7 +56,7 @@ public class GeoprocessingController {
         try {
             geoprocessingService.getPrintRequest(serviceEndpoint, request, response);
         } catch (ParseException | IOException e) {
-            String msg = "Error handling print request";
+            String msg = "Error handling print request.";
             throw new KsrApiException.InternalServerErrorException(msg, e);
         }
     }
