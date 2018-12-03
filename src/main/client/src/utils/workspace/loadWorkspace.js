@@ -166,7 +166,7 @@ export const loadWorkspace = (
         autoClose: false,
     });
 
-    addLayers(layers, view, [])
+    addLayers(layers, view, true)
         .then(() => {
             setCenterPoint(
                 [workspace.centerLongitude, workspace.centerLatitude],

@@ -2,7 +2,7 @@
 import equals from 'nano-equal';
 import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
-import { addLayers, highlight, fitExtent } from '../../../../utils/map';
+import { addLayers, highlight } from '../../../../utils/map';
 import { setBuffer } from '../../../../utils/buffer';
 
 type Props = {
@@ -34,7 +34,6 @@ class EsriMap extends Component<Props> {
             (!loadingWorkspace && loadingWorkspace !== prevProps.loadingWorkspace)
         ) {
             const layerListReversed = [...layerList].reverse();
-            const searchLayers = [];
             const newLayers = [];
             const toBeRemoved = [];
 
@@ -52,14 +51,6 @@ class EsriMap extends Component<Props> {
                     if (layer && l.id === layer.id) {
                         layer.visible = l.visible;
                         layer.opacity = l.opacity;
-                        if (l.type === 'agfs') {
-                            if (layer.definitionExpression !== l.definitionExpression) {
-                                layer.definitionExpression = l.definitionExpression;
-                                if (l._source === 'search') {
-                                    searchLayers.push(layer);
-                                }
-                            }
-                        }
                         if (!l.active) toBeRemoved.push(layer.id);
                     }
                 });
@@ -80,7 +71,7 @@ class EsriMap extends Component<Props> {
                 }
 
                 if (newLayers.length) {
-                    addLayers(newLayers, view, searchLayers)
+                    addLayers(newLayers, view, prevProps.loadingWorkspace)
                         .then(() => {
                             layerListReversed.forEach((l, i) => {
                                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
@@ -93,8 +84,6 @@ class EsriMap extends Component<Props> {
                                 }
                             });
                         });
-                } else if (searchLayers.length) {
-                    fitExtent(searchLayers, view);
                 }
             }
 
