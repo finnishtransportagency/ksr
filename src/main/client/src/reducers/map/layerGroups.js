@@ -12,6 +12,7 @@ import {
     SET_LAYER_LIST,
     SET_WORKSPACE_FULFILLED,
     APPLY_DELETED_FEATURES,
+    CLEAR_SEARCH_DATA,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -142,6 +143,15 @@ export default (state: State = initialState, action: Action) => {
                         }
                         return { ...l };
                     }): Object[]),
+            };
+        case CLEAR_SEARCH_DATA:
+            return {
+                ...state,
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: lg.layers.filter(l => l.id !== action.layerId),
+                })): Array<LayerGroups>),
+                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<Layer>),
             };
         case ADD_SHAPEFILE_LAYER:
             return {
