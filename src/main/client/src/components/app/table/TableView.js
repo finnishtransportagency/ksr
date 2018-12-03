@@ -75,17 +75,18 @@ const TableView = ({
                 title={strings.reactTable.clearTableData}
                 tableOpen={isOpen}
                 disabled={!originalLayers.length}
-                onClick={() => {
-                    showConfirmModal(
-                        strings.modalClearTable.content,
-                        strings.modalClearTable.submit,
-                        strings.modalClearTable.cancel,
-                        () => {
-                            clearTableData();
-                            view.popup.close();
-                        },
-                    );
-                }}
+                onClick={
+                    originalLayers.length ? () => {
+                        showConfirmModal(
+                            strings.modalClearTable.content,
+                            strings.modalClearTable.submit,
+                            strings.modalClearTable.cancel,
+                            () => {
+                                clearTableData();
+                                view.popup.close();
+                            },
+                        );
+                    } : null}
             >
                 <i className="fas fa-trash" />
             </Table.Button>
