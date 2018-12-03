@@ -25,8 +25,10 @@ import java.util.regex.Pattern;
 public class GeoprocessingController {
 
     private Pattern printProxyUrlPattern;
+    private Pattern extractProxyUrlPattern;
     private final GeoprocessingService geoprocessingService;
     static final String PRINT_CONTROLLER_URL = "/api/GPServer/Export Web Map Task";
+    static final String EXTRACT_CONTROLLER_URL = "/api/GPServer/Extract/Extract Data Task";
     static final String GEOPROCESSING_URL = "/api/GPServer";
 
     @Value("${server.servlet.context-path}")
@@ -38,9 +40,12 @@ public class GeoprocessingController {
     }
 
     @PostConstruct
-    public void setUpPrintProxyUrlMatcher() {
+    public void setUpGeoprocessingProxyUrlMatchers() {
         String printPatternToMatch = "/api/GPServer/Export%20Web%20Map%20Task/(.*?)$";
         printProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(printPatternToMatch));
+
+        String extractPatternToMatch = "/api/GPServer/Extract/Extract%20Data%20Task/(.*?)$";
+        extractProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(extractPatternToMatch));
     }
 
     /**
@@ -59,5 +64,18 @@ public class GeoprocessingController {
             String msg = "Error handling print request.";
             throw new KsrApiException.InternalServerErrorException(msg, e);
         }
+    }
+
+    /**
+     * Proxy extract request.
+     *
+     * @param request Http servlet interface of incoming request.
+     * @param response Http servlet interface to which the response is written.
+     */
+    @RequestMapping(value = "/Extract/**", method = { RequestMethod.GET, RequestMethod.POST })
+    public void extractProxy(HttpServletRequest request, HttpServletResponse response) {
+        String serviceEndpoint = KsrRequestUtils
+                .getServiceEndpoint(extractProxyUrlPattern, request.getRequestURI());
+        geoprocessingService.getExtractRequest(serviceEndpoint, request, response);
     }
 }
