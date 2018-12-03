@@ -32,6 +32,9 @@ public class GeoprocessingService {
     @Value("${extract.service.url}")
     private String extractServiceUrl;
 
+    @Value("${extract.output.url}")
+    private String extractOutputUrl;
+
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
@@ -102,5 +105,20 @@ public class GeoprocessingService {
         }
         httpRequestService.fetchToResponse(null, null, extractServiceUrl,
                 endPointUrl, request, response, false, editedParams, null);
+    }
+
+    /**
+     * Proxy extract output to given endpoint.
+     *
+     * @param serviceEndpoint Service specific endpoint.
+     * @param request HTTP request interface.
+     * @param response HttpServletResponse where to write the proxy-response
+     */
+    public void getExtractOutput(String serviceEndpoint, HttpServletRequest request,
+            HttpServletResponse response) {
+        String endPointUrl = proxyService
+                .getEndpointUrl(extractOutputUrl, serviceEndpoint, request.getQueryString());
+        this.httpRequestService.fetchToResponse(null, null, extractOutputUrl,
+                endPointUrl, request, response, false, null, null);
     }
 }
