@@ -61,14 +61,14 @@ export const setCenterPoint = (
  * Add new layers to map view.
  * If search layers are present or added also fit map on the extent of search layers.
  *
- * @param layers Array of layers to be added
- * @param view Map view to which the layers are added
- * @param searchLayers Array of search layers that already exist in map view
+ * @param {Array<Object>} layers Array of layers to be added
+ * @param {Object} view Map view to which the layers are added
+ * @param {boolean} isWorkspace indicates if adding layers comes from loading workspace.
  */
 export const addLayers = (
     layers: Array<Object>,
     view: Object,
-    searchLayers: Array<Object>,
+    isWorkspace: boolean,
 ) => esriLoader
     .loadModules([
         'esri/config',
@@ -82,6 +82,7 @@ export const addLayers = (
         WMTSLayer,
         FeatureLayer,
     ]) => {
+        const searchLayers = [];
         layers.forEach((layer) => {
             if (layer.active && !view.map.layers.find(l => l.id === layer.id)) {
                 esriConfig.request.trustedServers.push(layer.url);
@@ -142,6 +143,9 @@ export const addLayers = (
                 }
             }
         });
+        if (searchLayers.length && !isWorkspace) {
+            fitExtent(searchLayers, view);
+        }
     });
 
 /**

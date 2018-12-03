@@ -37,6 +37,8 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
         const layerData = {
             layers: [],
         };
+        dispatch({ type: types.CLEAR_SEARCH_DATA, layerId: `${selectedLayer.id}.s` });
+
         searchQueries.push(fetchSearchQuery(
             selectedLayer.id,
             queryString,

@@ -16,6 +16,7 @@ import {
     TOGGLE_SELECTION,
     APPLY_EDITS,
     APPLY_DELETED_FEATURES,
+    CLEAR_SEARCH_DATA,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
@@ -114,6 +115,12 @@ export default (state: State = initialState, action: Action) => {
             };
         case CLEAR_TABLE_DATA:
             return initialState;
+        case CLEAR_SEARCH_DATA:
+            return {
+                ...state,
+                layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
+                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId): Object[]),
+            };
         case SET_EDITED_LAYER: {
             const editedLayers = clone(state.editedLayers, true, 3);
             if (editedLayers) editedLayers.find(l => l.id === state.activeTable).data = action.data;
