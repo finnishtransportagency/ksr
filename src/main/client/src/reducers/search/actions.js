@@ -119,7 +119,14 @@ export const setPropertyInfo = (
                 });
             }
         })
-        .catch(error => console.log(error));
+        .catch((error) => {
+            if (!error.toString().includes('Abort')) {
+                console.error(error);
+                dispatch({
+                    type: types.SET_PROPERTY_INFO_REJECTED,
+                });
+            }
+        });
 };
 
 export const setActiveSearch = (activeSearch: string) => ({
