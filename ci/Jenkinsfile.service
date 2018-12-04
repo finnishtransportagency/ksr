@@ -58,6 +58,8 @@ pipeline {
         KTJ_PASSWORD = credentials("ktj_password")
         PROXY_SOCKET_TIMEOUT = credentials("proxy_socket_timeout")
         NOTIFY_SLACK_SUBJECT = "${JOB_NAME} - <${RUN_DISPLAY_URL}|${BUILD_DISPLAY_NAME}>"
+        ROBOT_TEST_USER = credentials("robot_test_user")
+        ROBOT_TEST_USER_PWD = credentials("robot_test_user_pwd")
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: "25"))
@@ -176,6 +178,8 @@ pipeline {
                         get_test_hosts().collect {
                             [
                                 "robot",
+								"--variable LiviUSER:${ROBOT_TEST_USER}",
+								"--variable LiviPWD:${ROBOT_TEST_USER_PWD}",
                                 "--include Smoke",
                                 "--log NONE",
                                 "--name ${it.tokenize('/').last()}",

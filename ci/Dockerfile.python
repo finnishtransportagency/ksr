@@ -1,8 +1,13 @@
-FROM python:2-alpine
+FROM python:alpine3.8
 ARG JENKINS_UID=1000
-COPY confs/pip* /etc/
-RUN apk add build-base jpeg-dev zlib-dev
-RUN pip install --upgrade pip
+WORKDIR /etc/app/
+COPY src/test/* ./
+COPY ci/confs/pip* /etc/
+
+RUN apk add build-base jpeg-dev zlib-dev chromium chromium-chromedriver
+RUN apk --no-cache add chromium chromium-chromedriver
 RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install -r /etc/pip-requirements.txt"
+
 RUN adduser -D -S -u ${JENKINS_UID} jenkins
 RUN chown -R jenkins /home/jenkins
+
