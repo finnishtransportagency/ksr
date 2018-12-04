@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersAllView from './MapLayersAllView';
+import { reorderLayers } from '../../../../../utils/reorder';
 
 type Props = {
     layerGroups: Array<any>,
@@ -42,13 +43,16 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     handleLayerClick = (id: number) => {
-        const { setLayerList, activeAdminTool, setActiveAdminTool } = this.props;
-        const layerList = [...this.props.layerList];
+        const {
+            setLayerList, activeAdminTool, setActiveAdminTool, layerGroups,
+        } = this.props;
+        let layerList = [...this.props.layerList];
         const foundLayer = layerList.find(l => l.id === id);
 
         if (foundLayer.id === activeAdminTool) setActiveAdminTool('', layerList);
+
+        if (!foundLayer.active) layerList = reorderLayers(layerGroups, layerList, foundLayer);
         foundLayer.active = !foundLayer.active;
-        // Set activated layer visible by default.
         foundLayer.visible = true;
         setLayerList(layerList);
 
