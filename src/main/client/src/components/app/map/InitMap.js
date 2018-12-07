@@ -80,14 +80,10 @@ class EsriMap extends Component<Props> {
                 GraphicsLayer,
             ]) => {
                 const {
-                    layerList,
                     mapCenter,
                     mapScale,
                     selectFeatures,
                     printServiceUrl,
-                    setActiveModal,
-                    setSingleLayerGeometry,
-                    setPropertyInfo,
                 } = this.props;
 
                 // GraphicsLayer to hold graphics created via sketch view model
@@ -171,6 +167,7 @@ class EsriMap extends Component<Props> {
                     if (this.props.editMode === 'update') return;
                     view.hitTest(event).then((response) => {
                         const { results } = response;
+                        const { layerList } = this.props;
                         const filteredResults = results.filter(item =>
                             item.graphic.id !== 'buffer'
                             && item.graphic.id !== 'drawMeasure'
@@ -186,6 +183,8 @@ class EsriMap extends Component<Props> {
                                 selectFeatures,
                                 layerList,
                                 activeAdminTool,
+                                event.x,
+                                event.y,
                             );
                         }
 
@@ -234,11 +233,18 @@ class EsriMap extends Component<Props> {
                     .remove('esri-component');
 
                 view.popup.on('trigger-action', (evt) => {
+                    const {
+                        layerList,
+                        setActiveModal,
+                        setSingleLayerGeometry,
+                        setPropertyInfo,
+                    } = this.props;
                     const { x, y } = view.popup.location;
                     const { activeAdminTool, authorities } = this.props;
                     const layer = layerList.find((ll) => {
                         if (view.popup.viewModel &&
                             view.popup.viewModel.selectedFeature &&
+                            view.popup.viewModel.selectedFeature.layer &&
                             view.popup.viewModel.selectedFeature.layer.id === ll.id) {
                             return true;
                         }

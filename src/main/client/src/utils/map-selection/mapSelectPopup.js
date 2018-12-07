@@ -1,6 +1,7 @@
 // @flow
 import strings from '../../translations';
 import { graphicsToEsriJSON } from '../arcFormats';
+import { getFeatureInfo } from './featureInfo';
 
 /**
  * Adds content and custom actions to views popup when map clicked.
@@ -10,13 +11,17 @@ import { graphicsToEsriJSON } from '../arcFormats';
  * @param {Function} selectFeatures Redux function that selects features.
  * @param {Object[]} layerList List of layers.
  * @param {string} activeAdminTool Id of currently active admin layer.
+ * @param {number} x Screen x-coordinate (pixels).
+ * @param {number} y Screen y-coordinate (pixels).
  */
-export const mapSelectPopup = (
+export const mapSelectPopup = async (
     results: Object,
     view: Object,
     selectFeatures: Function,
     layerList: Object[],
     activeAdminTool: string,
+    x: number,
+    y: number,
 ) => {
     const getPropertyInfo = {
         title: strings.esriMap.getPropertyInfo,
@@ -30,39 +35,14 @@ export const mapSelectPopup = (
     };
 
     view.popup.actions = [getPropertyInfo, googleStreetView];
+
+    const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
     const newResults = activeAdminTool
-        ? [...results.filter(r => r.graphic.layer.id === activeAdminTool)]
-        : [...results];
+        ? [...results.filter(r => r.graphic.layer.id === activeAdminTool), ...wmsFeatures]
+        : [...results, ...wmsFeatures];
 
     if (newResults.length) {
         newResults.forEach((layer) => {
-            const fieldInfos = [];
-            if (layer.graphic.layer.featureType === 'shapefile') {
-                const columns = layer.graphic.layer.fields.slice(0, 5);
-                columns.forEach((c) => {
-                    fieldInfos.push({
-                        fieldName: c.name,
-                        label: c.name,
-                    });
-                });
-            } else {
-                const queryColumns = layerList
-                    // Use original layer's id instead of search layer id. Otherwise query columns
-                    // are not populated in the popup for search layers.
-                    .filter(ll => ll.id === layer.graphic.layer.id.replace('.s', ''))
-                    .map(ll => ll.queryColumns);
-
-                if (queryColumns.length) {
-                    queryColumns[0].forEach((r) => {
-                        fieldInfos.push({
-                            fieldName: r,
-                            label: layer.graphic.layer.fields
-                                .find(l => l.name === r).alias,
-                        });
-                    });
-                }
-            }
-
             const selectIntersectAction = {
                 title: strings.esriMap.selectIntersectFeatures,
                 id: 'select-intersect',
@@ -76,36 +56,72 @@ export const mapSelectPopup = (
             };
 
             const actions = [selectIntersectAction, setBufferAction];
-            if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
-                ll.alfrescoLinkField)) {
-                const alfrescoLink = {
-                    title: strings.esriMap.alfrescoLink,
-                    id: 'alfresco-link',
-                    className: 'fas fa-archive',
-                };
-                actions.push(alfrescoLink);
-            }
-            if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
-                ll.caseManagementLinkField)) {
-                const caseManagementLink = {
-                    title: strings.esriMap.caseManagementLink,
-                    id: 'case-management-link',
-                    className: 'fas fa-book',
-                };
-                actions.push(caseManagementLink);
-            }
 
-            layer.graphic.layer.popupTemplate = {
-                title: layer.graphic.layer.title,
-                content: [{
-                    type: 'fields',
-                    fieldInfos,
-                }],
-                actions,
-            };
+            const fieldInfos = [];
+
+            if (layer.graphic.layer && layer.graphic.layer.featureType === 'shapefile') {
+                const columns = layer.graphic.layer.fields.slice(0, 5);
+                columns.forEach((c) => {
+                    fieldInfos.push({
+                        fieldName: c.name,
+                        label: c.name,
+                    });
+                });
+
+                layer.graphic.layer.popupTemplate = {
+                    title: layer.graphic.layer.title,
+                    content: [{
+                        type: 'fields',
+                        fieldInfos,
+                    }],
+                    actions,
+                };
+            } else if (layer.graphic.layer) {
+                const matchingLayer = layerList
+                    .find(ll => ll.id === layer.graphic.layer.id.replace('.s', ''));
+
+                if (matchingLayer && matchingLayer.type === 'agfs' && matchingLayer.queryColumns) {
+                    matchingLayer.queryColumns.forEach((r) => {
+                        fieldInfos.push({
+                            fieldName: r,
+                            label: layer.graphic.layer.fields
+                                .find(l => l.name === r).alias,
+                        });
+                    });
+
+                    if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
+                        ll.alfrescoLinkField)) {
+                        const alfrescoLink = {
+                            title: strings.esriMap.alfrescoLink,
+                            id: 'alfresco-link',
+                            className: 'fas fa-archive',
+                        };
+                        actions.push(alfrescoLink);
+                    }
+                    if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
+                        ll.caseManagementLinkField)) {
+                        const caseManagementLink = {
+                            title: strings.esriMap.caseManagementLink,
+                            id: 'case-management-link',
+                            className: 'fas fa-book',
+                        };
+                        actions.push(caseManagementLink);
+                    }
+
+                    layer.graphic.layer.popupTemplate = {
+                        title: layer.graphic.layer.title,
+                        content: [{
+                            type: 'fields',
+                            fieldInfos,
+                        }],
+                        actions,
+                    };
+                }
+            }
         });
         const graphics = newResults.map(re => re.graphic);
-        const features = graphicsToEsriJSON(graphics);
+        const features = graphicsToEsriJSON(graphics
+            .filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined));
         view.popup.viewModel.features = graphics;
         selectFeatures(features);
     } else {
