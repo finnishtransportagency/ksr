@@ -1,7 +1,5 @@
 // @flow
 import querystring from 'querystring';
-
-import strings from '../../translations';
 import { getFeatureInfo as getFeatureInfoRequest } from '../../api/map/featureInfo';
 
 /**
