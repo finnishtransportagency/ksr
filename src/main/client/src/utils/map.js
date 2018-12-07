@@ -169,6 +169,7 @@ export const highlight = (
                         const ids = selectedFeatures
                             .filter(f => f._layerId.startsWith(layer.id))
                             .map(f => parseInt(f._id, 10));
+                        const { objectIdField } = layer;
 
                         if (!ids.length && layer.layerHighlight) {
                             // No selected features in the current layer so
@@ -180,7 +181,7 @@ export const highlight = (
                         if (activeAdminTool && activeAdminTool === layer.id) {
                             view.whenLayerView(layer).then((layerView) => {
                                 const query = {
-                                    objectIds: ids,
+                                    where: `${objectIdField} IN (${ids.join(',')})`,
                                     outFields: ['*'],
                                     returnGeometry: true,
                                 };
@@ -214,7 +215,7 @@ export const highlight = (
                             } else {
                                 view.whenLayerView(layer).then((layerView) => {
                                     const query = {
-                                        objectIds: ids,
+                                        where: `${objectIdField} IN (${ids.join(',')})`,
                                         outFields: ['*'],
                                         returnGeometry: true,
                                     };
