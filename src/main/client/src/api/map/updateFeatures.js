@@ -6,7 +6,7 @@
 * @param {string} layerId Id of the corresponding layer.
 * @param {string} params Params to be sent in the request.
 *
-* @return Promise Returns Promise with json body.
+* @return {Promise} Returns Promise with json body.
 */
 export const updateFeatures = (layerId: string, params: string) =>
     fetch(`api/proxy/layer/${layerId}/updateFeatures`, {
@@ -16,4 +16,4 @@ export const updateFeatures = (layerId: string, params: string) =>
         },
         method: 'POST',
         body: params,
-    });
+    }).then(res => res.json());
