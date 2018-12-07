@@ -25,14 +25,22 @@ const mapStateToProps = (state) => {
         };
     };
 
+    const tableFeaturesLayers = state.table.features.layers;
+
     const editedLayersNoUnderscore = state.table.features.editedLayers
         .map(l => removeUnderscore(l));
-    const originalLayers = state.table.features.layers.map(l => removeUnderscore(l));
-    const selectedData = state.table.features.layers.flatMap(f => f.data.filter(d => d._selected));
-    const geometryDataSelected = state.table.features.layers
+    const originalLayers = tableFeaturesLayers.map(l => removeUnderscore(l));
+    const selectedData = tableFeaturesLayers.flatMap(f => f.data.filter(d => d._selected));
+    const geometryDataSelected = tableFeaturesLayers
         .flatMap(f => f.data.filter(d => d._selected && d.geometry));
+    const activeTableFeatureLayer = tableFeaturesLayers
+        .find(l => l.id === state.table.features.activeTable);
+    const activeTableDataSelected = activeTableFeatureLayer ?
+        activeTableFeatureLayer.data.some(d => d._selected) : false;
     const layer = state.map.layerGroups.layerList.find(l =>
         l.id === state.adminTool.active.layerId);
+    const activeTableLayer = state.map.layerGroups.layerList
+        .find(l => l.id === state.table.features.activeTable && l.type === 'agfs' && l.layers);
 
     const { addressField, featureType } = state.adminTool.active.layerId
     && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
@@ -48,6 +56,8 @@ const mapStateToProps = (state) => {
         editedLayersNoUnderscore,
         selectedData: selectedData.length > 0,
         geometryDataSelected: geometryDataSelected.length > 0,
+        activeTableDataSelected,
+        activeTableLayer,
         featureType,
         addressField,
         view: state.map.mapView.view,

@@ -17,6 +17,8 @@ type Props = {
     editedLayersNoUnderscore: Array<Object>,
     selectedData: boolean,
     geometryDataSelected: boolean,
+    activeTableDataSelected: boolean,
+    activeTableLayer: Object,
     showConfirmModal: (
         body: string,
         acceptText: string,
@@ -41,6 +43,8 @@ const TableView = ({
     editedLayers,
     selectedData,
     geometryDataSelected,
+    activeTableDataSelected,
+    activeTableLayer,
     showConfirmModal,
     clearTableData,
     saveEditedFeatures,
@@ -102,6 +106,17 @@ const TableView = ({
                     } : null}
             >
                 <i className="far fa-dot-circle" />
+            </Table.Button>
+            <Table.Button
+                title={strings.reactTable.extractSelectedData}
+                tableOpen={isOpen}
+                disabled={!activeTableLayer || !geometryDataSelected || !activeTableDataSelected}
+                onClick={
+                    activeTableLayer && geometryDataSelected && activeTableDataSelected ? () => {
+                        setActiveModal('extractSelectedData');
+                    } : null}
+            >
+                <i className="fas fa-file-export" />
             </Table.Button>
             {
                 activeUpdate &&
