@@ -15,7 +15,7 @@ type Props = {
     handlePropertyClick: (id: string) => void,
     handlePropertyZoomClick: (id: string) => void,
     activeProperty: string,
-    handleProperyIdChange: Function,
+    handlePropertyIdChange: Function,
     handleSubmit: Function,
     handleClear: Function,
     submitDisabled: boolean,
@@ -28,7 +28,7 @@ const SearchPropertyView = ({
     handlePropertyClick,
     handlePropertyZoomClick,
     activeProperty,
-    handleProperyIdChange,
+    handlePropertyIdChange,
     handleSubmit,
     handleClear,
     submitDisabled,
@@ -52,7 +52,7 @@ const SearchPropertyView = ({
                 placeholder=""
                 name="propertyId"
                 disabled={fetching}
-                onChange={handleProperyIdChange}
+                onChange={handlePropertyIdChange}
             />
             <Button
                 disabled={fetching || submitDisabled}

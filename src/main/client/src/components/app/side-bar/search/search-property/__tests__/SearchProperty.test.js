@@ -72,10 +72,10 @@ describe('<SearchProperty />', () => {
         expect(wrapper.instance().validatePropertyId('00100200030004')).toBeTruthy();
     });
 
-    it('should handle handleProperyIdChange', () => {
+    it('should handle handlePropertyIdChange', () => {
         const { wrapper } = setup();
         const evt = { target: { value: '1-2-3-4' } };
-        wrapper.instance().handleProperyIdChange(evt);
+        wrapper.instance().handlePropertyIdChange(evt);
         expect(wrapper.state('propertyId')).toBe('1-2-3-4');
     });
 });

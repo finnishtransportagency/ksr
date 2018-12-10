@@ -57,7 +57,7 @@ class SearchProperty extends Component<Props, State> {
         return zeroRegexp.test(propertyId) || hyphenRegexp.test(propertyId);
     };
 
-    handleProperyIdChange = (evt: Object) => {
+    handlePropertyIdChange = (evt: Object) => {
         const propertyId = evt.target.value;
         const valid = this.validatePropertyId(propertyId);
 
@@ -99,7 +99,7 @@ class SearchProperty extends Component<Props, State> {
                 handlePropertyZoomClick={this.handlePropertyZoomClick}
                 activeProperty={activeProperty}
                 submitDisabled={submitDisabled}
-                handleProperyIdChange={this.handleProperyIdChange}
+                handlePropertyIdChange={this.handlePropertyIdChange}
                 handleSubmit={this.onSubmit}
                 handleClear={this.onClear}
             />
