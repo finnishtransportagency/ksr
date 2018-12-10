@@ -1,6 +1,6 @@
 package fi.sitowise.ksr.controller;
 
-import fi.sitowise.ksr.service.PrintService;
+import fi.sitowise.ksr.service.GeoprocessingService;
 import fi.sitowise.ksr.utils.KsrRequestUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -19,21 +19,21 @@ import java.util.regex.Pattern;
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
 
 @RestController
-@RequestMapping(PrintOutputController.PRINT_OUTPUT_URL)
-public class PrintOutputController {
+@RequestMapping(GeoprocessingOutputController.PRINT_OUTPUT_URL)
+public class GeoprocessingOutputController {
 
-    private final PrintService printService;
+    private final GeoprocessingService geoprocessingService;
     public static final String PRINT_OUTPUT_URL = "/api/print/output";
     private Pattern printOutputProxyUrlPattern;
 
-    private static final Logger LOG = LogManager.getLogger(PrintOutputController.class);
+    private static final Logger LOG = LogManager.getLogger(GeoprocessingOutputController.class);
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
     @Autowired
-    public PrintOutputController(PrintService printService) {
-        this.printService = printService;
+    public GeoprocessingOutputController(GeoprocessingService geoprocessingService) {
+        this.geoprocessingService = geoprocessingService;
     }
 
     @PostConstruct
@@ -46,6 +46,6 @@ public class PrintOutputController {
     public void printOutputProxy(HttpServletRequest request, HttpServletResponse response) {
         LOG.info(String.format("%s: Proxy print output -request.", getCurrentUsername()));
         String serviceEndpoint = KsrRequestUtils.getServiceEndpoint(printOutputProxyUrlPattern, request.getRequestURI());
-        printService.getPrintOutput(serviceEndpoint, request, response);
+        geoprocessingService.getPrintOutput(serviceEndpoint, request, response);
     }
 }

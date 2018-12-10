@@ -1,6 +1,6 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.controller.PrintOutputController;
+import fi.sitowise.ksr.controller.GeoprocessingOutputController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.domain.proxy.EditFeature;
@@ -473,7 +473,7 @@ public class HttpRequestService {
     @SuppressWarnings("unchecked")
     private void setPrintOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
         try {
-            String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + PrintOutputController.PRINT_OUTPUT_URL);
+            String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingOutputController.PRINT_OUTPUT_URL);
             String responseString;
             responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
             JSONParser parser = new JSONParser();

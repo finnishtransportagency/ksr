@@ -57,7 +57,7 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
         mapConfigData.setCenter(new int[]{centerLng, centerLat});
         mapConfigData.setScale(scale);
         mapConfigData.setPrintServiceUrl(
-                KsrStringUtils.replaceMultipleSlashes(contextPath + PrintController.PRINT_CONTROLLER_URL)
+                KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.PRINT_CONTROLLER_URL)
         );
 
         MvcResult result = this.mockMvc.perform(get("/api/map")

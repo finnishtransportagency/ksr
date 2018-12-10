@@ -37,7 +37,7 @@ public class MapConfigController {
         mapConfigInformation.setCenter(new int[]{centerLng, centerLat});
         mapConfigInformation.setScale(scale);
         mapConfigInformation.setPrintServiceUrl(
-                KsrStringUtils.replaceMultipleSlashes(contextPath + PrintController.PRINT_CONTROLLER_URL)
+                KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.PRINT_CONTROLLER_URL)
         );
         return mapConfigInformation;
     }

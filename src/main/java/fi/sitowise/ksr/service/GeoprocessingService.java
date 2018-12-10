@@ -14,10 +14,10 @@ import java.net.URLDecoder;
 import java.util.List;
 
 /**
- * Print service.
+ * Geoprocessing service.
  */
 @Service
-public class PrintService {
+public class GeoprocessingService {
 
     private final HttpRequestService httpRequestService;
     private final LayerService layerService;
@@ -33,7 +33,7 @@ public class PrintService {
     private String contextPath;
 
     @Autowired
-    public PrintService(HttpRequestService httpRequestService, LayerService layerService, ProxyService proxyService) {
+    public GeoprocessingService(HttpRequestService httpRequestService, LayerService layerService, ProxyService proxyService) {
         this.httpRequestService = httpRequestService;
         this.layerService = layerService;
         this.proxyService = proxyService;
