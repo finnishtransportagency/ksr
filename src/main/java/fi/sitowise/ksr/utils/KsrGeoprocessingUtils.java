@@ -2,6 +2,7 @@ package fi.sitowise.ksr.utils;
 
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.LayerService;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -49,8 +50,7 @@ public class KsrGeoprocessingUtils {
             for (Object entry : requestLayers) {
                 if (((JSONObject) entry).get("url") != null) {
                     String layerId = KsrStringUtils.replaceSearchId(((JSONObject) entry).get("id").toString());
-                    Integer id = Integer.parseInt(layerId);
-                    Layer layer = layerService.getLayer(id, false, LayerAction.READ_LAYER);
+                    Layer layer = fetchLayer(layerId, layerService);
                     String url = layer.getUrl();
                     ((JSONObject) entry).replace("url", url);
                 }
@@ -86,12 +86,28 @@ public class KsrGeoprocessingUtils {
         }
 
         if (layersToClip != null) {
-            Integer id = Integer.parseInt(layersToClip);
-            Layer layer = layerService.getLayer(id, false, LayerAction.READ_LAYER);
+            Layer layer = fetchLayer(layersToClip, layerService);
             String layerName = String.format("[\"%s\"]", layer.getLayers());
             params.add(new BasicNameValuePair("Layers_to_Clip", layerName));
         }
 
         return params;
+    }
+
+    /**
+     * Fetch layer from database with the given layer id.
+     *
+     * @param layerId Identifier of the layer.
+     * @param layerService LayerService for fetching the layer.
+     * @return Layer details or throw NotFoundErrorException if user does not have read
+     * permissions for the layer or layer can't be found with the given id.
+     */
+    private static Layer fetchLayer(String layerId, LayerService layerService) {
+        Integer id = Integer.parseInt(layerId);
+        Layer layer = layerService.getLayer(id, false, LayerAction.READ_LAYER);
+        if (layer == null) {
+            throw new KsrApiException.NotFoundErrorException("No layer can be found.");
+        }
+        return layer;
     }
 }
