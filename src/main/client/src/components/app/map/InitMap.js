@@ -171,7 +171,8 @@ class EsriMap extends Component<Props> {
                         const filteredResults = results.filter(item =>
                             item.graphic.id !== 'buffer'
                             && item.graphic.id !== 'drawMeasure'
-                            && item.graphic.type !== 'draw-graphic');
+                            && item.graphic.type !== 'draw-graphic'
+                            && item.graphic.id !== 'propertyArea');
 
                         if (this.props.activeTool !== 'drawErase') {
                             view.popup.open({ location: event.mapPoint });

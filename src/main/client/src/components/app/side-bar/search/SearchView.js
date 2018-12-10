@@ -31,7 +31,7 @@ const SearchView = ({
             <H1>{strings.search.title}</H1>
             {activeSearch === 'layer' &&
                 <div
-                    className="search-suggestions-toggle"
+                    className="search-toggle"
                     tabIndex="0"
                     role="button"
                     onClick={toggleSearchSuggestions}
@@ -49,7 +49,7 @@ const SearchView = ({
             }
             {activeSearch === 'property' &&
             <div
-                className="search-suggestions-toggle"
+                className="search-toggle"
                 tabIndex="0"
                 role="button"
                 onClick={togglePropertyAreaSearch}

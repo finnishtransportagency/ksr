@@ -11,6 +11,7 @@ const setup = (prop) => {
         features: [],
         fetching: false,
         handlePropertyClick: jest.fn(),
+        handlePropertyZoomClick: jest.fn(),
         activeProperty: '',
     };
 
@@ -33,12 +34,12 @@ describe('<SearchPropertyView />', () => {
         expect(wrapper.find(Property).length).toBe(0);
     });
 
-    it('render - should render propertys correctly', () => {
+    it('render - should render properties correctly', () => {
         const { minProps } = setup();
         const props = {
             ...minProps,
             features: [{
-                propertyId: null,
+                id: '111-111-1111-1111',
                 properties: {
                     parcelCount: 1,
                     registerUnitType: 'register unit',
@@ -52,7 +53,7 @@ describe('<SearchPropertyView />', () => {
                 fetching: false,
                 fetchingLinks: false,
             }, {
-                propertyId: null,
+                id: '222-222-2222-2222',
                 properties: {
                     parcelCount: 1,
                     registerUnitType: 'register unit',
@@ -66,7 +67,7 @@ describe('<SearchPropertyView />', () => {
                 fetching: false,
                 fetchingLinks: false,
             }, {
-                propertyId: null,
+                id: '333-333-3333-3333',
                 properties: {
                     parcelCount: 1,
                     registerUnitType: 'register unit',
@@ -93,7 +94,7 @@ describe('<SearchPropertyView />', () => {
         const props = {
             ...minProps,
             features: [{
-                propertyId: null,
+                id: '111-111-1111-1111',
                 properties: {
                     parcelCount: 1,
                     registerUnitType: 'register unit',
@@ -107,7 +108,7 @@ describe('<SearchPropertyView />', () => {
                 fetching: false,
                 fetchingLinks: false,
             }, {
-                propertyId: null,
+                id: '222-222-2222-2222',
                 properties: {
                     parcelCount: 1,
                     registerUnitType: 'register unit',
@@ -121,7 +122,7 @@ describe('<SearchPropertyView />', () => {
                 fetching: false,
                 fetchingLinks: false,
             }, {
-                propertyId: null,
+                id: '333-333-3333-3333',
                 properties: {
                     parcelCount: 1,
                     registerUnitType: 'register unit',
@@ -138,12 +139,17 @@ describe('<SearchPropertyView />', () => {
         };
         const { wrapper } = setup(props);
 
-        const { handlePropertyClick } = wrapper.props();
+        const { handlePropertyClick, handlePropertyZoomClick } = wrapper.props();
 
-        wrapper.find(Property.Header).at(0).simulate('click');
-        wrapper.find(Property.Header).at(1).simulate('click');
-        wrapper.find(Property.Header).at(2).simulate('click');
+        wrapper.find(Property.Header.Toggle).at(0).simulate('click');
+        wrapper.find(Property.Header.Toggle).at(1).simulate('click');
+        wrapper.find(Property.Header.Toggle).at(2).simulate('click');
+
+        wrapper.find(Property.Header.Zoom).at(0).simulate('click');
+        wrapper.find(Property.Header.Zoom).at(1).simulate('click');
+        wrapper.find(Property.Header.Zoom).at(2).simulate('click');
 
         expect(handlePropertyClick).toHaveBeenCalledTimes(3);
+        expect(handlePropertyZoomClick).toHaveBeenCalledTimes(3);
     });
 });

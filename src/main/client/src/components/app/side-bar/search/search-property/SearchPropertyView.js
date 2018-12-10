@@ -13,8 +13,9 @@ type Props = {
     features: Object[],
     fetching: boolean,
     handlePropertyClick: (id: string) => void,
+    handlePropertyZoomClick: (id: string) => void,
     activeProperty: string,
-    handleProperyIdChange: Function,
+    handlePropertyIdChange: Function,
     handleSubmit: Function,
     handleClear: Function,
     submitDisabled: boolean,
@@ -25,8 +26,9 @@ const SearchPropertyView = ({
     features,
     fetching,
     handlePropertyClick,
+    handlePropertyZoomClick,
     activeProperty,
-    handleProperyIdChange,
+    handlePropertyIdChange,
     handleSubmit,
     handleClear,
     submitDisabled,
@@ -50,7 +52,7 @@ const SearchPropertyView = ({
                 placeholder=""
                 name="propertyId"
                 disabled={fetching}
-                onChange={handleProperyIdChange}
+                onChange={handlePropertyIdChange}
             />
             <Button
                 disabled={fetching || submitDisabled}
@@ -74,19 +76,34 @@ const SearchPropertyView = ({
                 {features.map(property =>
                     (
                         <Property active={activeProperty === property.id} key={property.id}>
-                            <Property.Header onClick={() => handlePropertyClick(property.id)}>
-                                <div>
-                                    <span>{property.id}</span>
-                                </div>
-                                <div>
-                                    <i
-                                        className={
-                                            activeProperty === property.id
-                                                ? 'fas fa-chevron-up'
-                                                : 'fas fa-chevron-down'
-                                        }
-                                    />
-                                </div>
+                            <Property.Header>
+                                <Property.Header.Zoom
+                                    tabIndex="0"
+                                    role="button"
+                                    onClick={() => handlePropertyZoomClick(property.id)}
+                                    onKeyPress={() => handlePropertyZoomClick(property.id)}
+                                >
+                                    <i className="fas fa-search-plus" />
+                                </Property.Header.Zoom>
+                                <Property.Header.Toggle
+                                    tabIndex="0"
+                                    role="button"
+                                    onClick={() => handlePropertyClick(property.id)}
+                                    onKeyPress={() => handlePropertyClick(property.id)}
+                                >
+                                    <div>
+                                        <span>{property.id}</span>
+                                    </div>
+                                    <div>
+                                        <i
+                                            className={
+                                                activeProperty === property.id
+                                                    ? 'fas fa-chevron-up'
+                                                    : 'fas fa-chevron-down'
+                                            }
+                                        />
+                                    </div>
+                                </Property.Header.Toggle>
                             </Property.Header>
                             <Property.Content hidden={activeProperty !== property.id}>
                                 <PropertyInfoView properties={property.properties} />

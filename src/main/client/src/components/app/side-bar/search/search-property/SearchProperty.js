@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { zoomToProperty } from '../../../../../utils/map';
 import SearchPropertyView from './SearchPropertyView';
 
 type Props = {
@@ -28,8 +29,6 @@ class SearchProperty extends Component<Props, State> {
         super(props);
 
         this.state = { ...initialState };
-
-        this.handlePropertyClick = this.handlePropertyClick.bind(this);
     }
 
     onSubmit = (evt: Object) => {
@@ -58,7 +57,7 @@ class SearchProperty extends Component<Props, State> {
         return zeroRegexp.test(propertyId) || hyphenRegexp.test(propertyId);
     };
 
-    handleProperyIdChange = (evt: Object) => {
+    handlePropertyIdChange = (evt: Object) => {
         const propertyId = evt.target.value;
         const valid = this.validatePropertyId(propertyId);
 
@@ -78,6 +77,12 @@ class SearchProperty extends Component<Props, State> {
         }
     };
 
+    handlePropertyZoomClick = (id: string) => {
+        const { view, features } = this.props;
+        const foundProperty = features.find(property => property.id === id);
+        if (foundProperty) zoomToProperty(view, id);
+    };
+
     render() {
         const { activeProperty, submitDisabled, propertyId } = this.state;
         const {
@@ -91,9 +96,10 @@ class SearchProperty extends Component<Props, State> {
                 features={features}
                 fetching={fetching}
                 handlePropertyClick={this.handlePropertyClick}
+                handlePropertyZoomClick={this.handlePropertyZoomClick}
                 activeProperty={activeProperty}
                 submitDisabled={submitDisabled}
-                handleProperyIdChange={this.handleProperyIdChange}
+                handlePropertyIdChange={this.handlePropertyIdChange}
                 handleSubmit={this.onSubmit}
                 handleClear={this.onClear}
             />

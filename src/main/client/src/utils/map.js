@@ -235,12 +235,15 @@ export const removeGraphicsFromMap = (view: Object, graphicId: string) => {
 };
 
 /**
- * Creates a new graphic to map for a single property.
+ * Zooms and creates new graphics for all property results.
  *
  * @param {Object} view Esri ArcGIS JS MapView.
- * @param {any} propertyCoordinates Multipolygon coordinates returned from property query.
+ * @param {Object[]} features List of result features from query.
  */
-export const drawPropertyArea = async (view: Object, propertyCoordinates: any) => {
+export const drawPropertyArea = async (
+    view: Object,
+    features: Object[],
+) => {
     const [Polygon, Graphic] = await esriLoader.loadModules([
         'esri/geometry/Polygon',
         'esri/Graphic',
@@ -251,7 +254,7 @@ export const drawPropertyArea = async (view: Object, propertyCoordinates: any) =
             spatialReference: view.spatialReference,
         });
 
-    const createPolygonGraphic = (geometry): any =>
+    const createPolygonGraphic = (geometry, propertyId): any =>
         new Graphic({
             geometry,
             symbol: {
@@ -264,12 +267,50 @@ export const drawPropertyArea = async (view: Object, propertyCoordinates: any) =
                 },
             },
             id: 'propertyArea',
+            propertyId,
         });
 
-    propertyCoordinates.forEach((coordinates) => {
-        const geometry = createPolygon(coordinates);
-
-        const graphic = createPolygonGraphic(geometry);
-        view.graphics.add(graphic);
+    let propertyGraphics = [];
+    features.forEach((property) => {
+        propertyGraphics = property.geometry.coordinates.map((coordinates) => {
+            const geometry = createPolygon(coordinates);
+            const graphic = createPolygonGraphic(
+                geometry,
+                property.properties.propertyIdentifier,
+            );
+            view.graphics.add(graphic);
+            return [...propertyGraphics, graphic];
+        });
     });
+    view.goTo(propertyGraphics);
+};
+
+/**
+ * Zoom to a single property area and highlight found property.
+ *
+ * @param {Object} view Esri ArcGIS JS MapView.
+ * @param {string} propertyId Property's identifier.
+ */
+export const zoomToProperty = (
+    view: Object,
+    propertyId: string,
+) => {
+    const propertyGraphics = view.graphics
+        .filter(graphic => graphic.id === 'propertyArea');
+
+    if (propertyGraphics.length) {
+        propertyGraphics.forEach((property) => {
+            property.symbol.color.a = 0.75;
+            property.symbol.outline.width = 1;
+        });
+
+        const selectedProperty = propertyGraphics.filter(a => a.propertyId === propertyId);
+        if (selectedProperty.length) {
+            selectedProperty.forEach((property) => {
+                property.symbol.color.a = 1;
+                property.symbol.outline.width = 2;
+            });
+            view.goTo(selectedProperty);
+        }
+    }
 };
