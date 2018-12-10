@@ -35,6 +35,7 @@ const fi = {
         deleteSelected: 'Poista kohteita',
         saveEditedData: 'Tallenna muutokset',
         bufferSelectedData: 'Puskurialue valituille kohteille',
+        extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',
@@ -76,6 +77,20 @@ const fi = {
         submit: 'Laske',
         cancel: 'Peruuta',
         bufferLabel: 'Anna puskurialueen koko metreinä',
+    },
+    modalExtractSelectedData: {
+        title: 'Vie valitut kohteet toiseen paikkatietoformaattiin',
+        submit: 'Vie',
+        cancel: 'Peruuta',
+        geodatabase: '.gdb',
+        shapefile: '.shp',
+        autocadDxf: '.dxf',
+        autocadDwg: '.dwg',
+        bentley: '.dgn',
+        outputEmpty: 'Ei vietyjä kohteita',
+        outputSuccess: 'Lataa kohteet',
+        outputError: 'Kohteiden vienti epäonnistui.',
+        outputName: 'kohteet.zip',
     },
     modalLayerDetails: {
         title: 'Luo uusi kohde',
