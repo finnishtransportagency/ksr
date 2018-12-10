@@ -310,7 +310,7 @@ export const drawPropertyArea = (
  * Zoom to a single property area and highlight found property.
  *
  * @param {Object} view Esri ArcGIS JS MapView.
- * @param {Object[]} propertyId Propertys identifier.
+ * @param {string} propertyId Property's identifier.
  */
 export const zoomToProperty = (
     view: Object,

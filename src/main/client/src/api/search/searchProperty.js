@@ -61,7 +61,7 @@ export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
 /**
  * Gets all the PDF document links connected to a property.
  *
- * @param {string} propertyIdentifier Propertys identifier.
+ * @param {string} propertyIdentifier Property's identifier.
  * @param {string} language Language for the documents.
  *
  * @returns {Promise} Promise with PDF document link urls.
