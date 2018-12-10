@@ -22,11 +22,13 @@ import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
  * Controller for geoprocessing output related requests.
  */
 @RestController
-@RequestMapping(GeoprocessingOutputController.PRINT_OUTPUT_URL)
+@RequestMapping("/api/output")
 public class GeoprocessingOutputController {
 
     private final GeoprocessingService geoprocessingService;
-    public static final String PRINT_OUTPUT_URL = "/api/print/output";
+    public static final String EXTRACT_OUTPUT_URL = "/api/output/extract";
+    public static final String PRINT_OUTPUT_URL = "/api/output/print";
+    private Pattern extractOutputProxyUrlPattern;
     private Pattern printOutputProxyUrlPattern;
 
     private static final Logger LOG = LogManager.getLogger(GeoprocessingOutputController.class);
@@ -40,9 +42,12 @@ public class GeoprocessingOutputController {
     }
 
     @PostConstruct
-    public void setUpPrintProxyUrlMatcher() {
-        String patternToMatch = "/api/print/output/(.*?)$";
-        printOutputProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(patternToMatch));
+    public void setUpOutputProxyUrlMatchers() {
+        String printPatternToMatch = "/api/output/print/(.*?)$";
+        printOutputProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(printPatternToMatch));
+
+        String extractPatternToMatch = "/api/output/extract/(.*?)$";
+        extractOutputProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(extractPatternToMatch));
     }
 
     /**
@@ -51,10 +56,23 @@ public class GeoprocessingOutputController {
      * @param request Http servlet interface of incoming request.
      * @param response Http servlet interface to which the response is written.
      */
-    @RequestMapping(value = "/**", method = { RequestMethod.GET })
+    @RequestMapping(value = "/print/**", method = { RequestMethod.GET })
     public void printOutputProxy(HttpServletRequest request, HttpServletResponse response) {
         LOG.info(String.format("%s: Proxy print output -request.", getCurrentUsername()));
         String serviceEndpoint = KsrRequestUtils.getServiceEndpoint(printOutputProxyUrlPattern, request.getRequestURI());
         geoprocessingService.getPrintOutput(serviceEndpoint, request, response);
+    }
+
+    /**
+     * Proxy extract output request.
+     *
+     * @param request Http servlet interface of incoming request.
+     * @param response Http servlet interface to which the response is written.
+     */
+    @RequestMapping(value = "/extract/**", method = { RequestMethod.GET })
+    public void extractOutputProxy(HttpServletRequest request, HttpServletResponse response) {
+        LOG.info(String.format("%s: Proxy extract output -request.", getCurrentUsername()));
+        String serviceEndpoint = KsrRequestUtils.getServiceEndpoint(extractOutputProxyUrlPattern, request.getRequestURI());
+        geoprocessingService.getExtractOutput(serviceEndpoint, request, response);
     }
 }
