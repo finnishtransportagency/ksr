@@ -29,6 +29,9 @@ public class GeoprocessingService {
     @Value("${print.output.url}")
     private String printOutputUrl;
 
+    @Value("${extract.service.url}")
+    private String extractServiceUrl;
+
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
@@ -80,5 +83,24 @@ public class GeoprocessingService {
                 .getEndpointUrl(printOutputUrl, serviceEndpoint, request.getQueryString());
         this.httpRequestService.fetchToResponse(null, null, printOutputUrl,
                 endPointUrl, request, response, false, null, null);
+    }
+
+    /**
+     * Proxy extract data request to given endpoint.
+     *
+     * @param serviceEndpoint Service specific endpoint.
+     * @param request HTTP request interface.
+     * @param response HttpServletResponse where to write the proxy-response.
+     */
+    public void getExtractRequest(String serviceEndpoint, HttpServletRequest request,
+            HttpServletResponse response) {
+        String endPointUrl = proxyService
+                .getEndpointUrl(extractServiceUrl, serviceEndpoint, request.getQueryString());
+        List<NameValuePair> editedParams = null;
+        if (request.getParameterMap().containsKey("Layers_to_Clip")) {
+            editedParams = KsrGeoprocessingUtils.createExtractParams(request, layerService);
+        }
+        httpRequestService.fetchToResponse(null, null, extractServiceUrl,
+                endPointUrl, request, response, false, editedParams, null);
     }
 }

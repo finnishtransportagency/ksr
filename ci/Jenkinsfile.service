@@ -47,6 +47,7 @@ pipeline {
         CACHE_CAFFEINE_SPEC = credentials("cache_caffeine_spec")
         PRINT_SERVICE_URL = credentials("print_service_url_${get_environment()}")
         PRINT_OUTPUT_URL = credentials("print_output_url_${get_environment()}")
+        EXTRACT_SERVICE_URL = credentials("extract_service_url_${get_environment()}")
         GEOCONVERT_SERVICE = credentials("geoconvert_service_${get_environment()}")
         KTJ_ENDPOINT = credentials("ktj_endpoint")
         KTJ_DEED_ENDPOINT = credentials("ktj_deed_endpoint")
@@ -133,6 +134,7 @@ pipeline {
                         "sed -i 's/CACHE_CAFFEINE_SPEC/${CACHE_CAFFEINE_SPEC}/g' ${properties}",
                         "sed -i 's,PRINT_SERVICE_URL,${PRINT_SERVICE_URL},g' ${properties}",
                         "sed -i 's,PRINT_OUTPUT_URL,${PRINT_OUTPUT_URL},g' ${properties}",
+                        "sed -i 's,EXTRACT_SERVICE_URL,${EXTRACT_SERVICE_URL},g' ${properties}",
                         "sed -i 's,GEOCONVERT_SERVICE,${GEOCONVERT_SERVICE},g' ${properties}",
                         "sed -i 's,KTJ_ENDPOINT,${KTJ_ENDPOINT},g' ${properties}",
                         "sed -i 's,KTJ_DEED_ENDPOINT,${KTJ_DEED_ENDPOINT},g' ${properties}",
