@@ -16,16 +16,17 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class KsrPrintUtils {
+public class KsrGeoprocessingUtils {
 
     /**
-     * Creates edited parameters from request queryString or parameters to be used for printing
+     * Creates edited parameters from request queryString or parameters to be used for printing.
      *
-     * @param request HTTPServletRequest that contains queryString and query parameters
-     * @param layerService LayerService for getting layer URL
-     * @return edited List without Web_Map_as_JSON
+     * @param request HTTPServletRequest that contains queryString and query parameters.
+     * @param layerService LayerService for getting layer URL.
+     * @return Edited parameter list without Web_Map_as_JSON.
      */
-    public static List<NameValuePair> createEditedParams(HttpServletRequest request, LayerService layerService) throws ParseException {
+    public static List<NameValuePair> createPrintParams(HttpServletRequest request,
+            LayerService layerService) throws ParseException {
         List<NameValuePair> params = new ArrayList<>();
         JSONObject webMapAsJson = new JSONObject();
         JSONParser parser = new JSONParser();

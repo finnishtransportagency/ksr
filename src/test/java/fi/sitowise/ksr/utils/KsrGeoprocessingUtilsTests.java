@@ -31,7 +31,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = SpringRunner.class)
 @ContextConfiguration(classes = LayerService.class)
-public class KsrPrintUtilsTests {
+public class KsrGeoprocessingUtilsTests {
 
     @MockBean
     CloseableHttpClient closeableHttpClient;
@@ -61,7 +61,7 @@ public class KsrPrintUtilsTests {
     LayerGroupService layerGroupService;
 
     @Test
-    public void testCreateEditedParameters() throws ParseException {
+    public void testCreatePrintParameters() throws ParseException {
         List<NameValuePair> params = new ArrayList<>();
         MockHttpServletRequest request = new MockHttpServletRequest();
         String webMapAsJSON = "{\"layoutOptions\":{\"titleText\":\"\",\"legendOptions\":{\"operationalLayers\":[{\"id\":\"1\"}]},\"authorText\":\"\",\"copyrightText\":\"\",\"scaleBarOptions\":{}},\"exportOptions\":{\"dpi\":96},\"operationalLayers\":[{\"tileMatrixSet\":\"ETRS-TM35FIN\",\"maxScale\":1128,\"format\":\"image\\/png\",\"style\":\"default\",\"id\":\"1\",\"minScale\":18489297,\"title\":\"Taustakartta\",\"opacity\":1,\"type\":\"wmts\",\"url\":\"http:\\/\\/http://192.168.0.110:6080\\/arcgis\\/rest\\/directories\\/arcgisoutput\\/Utilities\\/PrintingTools_GPServer\\/_ags_123.pdf\",\"layer\":\"taustakartta\",\"token\":null}],\"mapOptions\":{\"extent\":{\"ymin\":6448739.432859199,\"xmin\":-11859.958809584263,\"ymax\":7653788.567140801,\"xmax\":863007.9588095843,\"spatialReference\":{\"wkid\":3067}},\"scale\":4244648,\"spatialReference\":{\"wkid\":3067},\"showAttribution\":true}}";
@@ -80,6 +80,6 @@ public class KsrPrintUtilsTests {
         params.add(new BasicNameValuePair("f", "json"));
         params.add(new BasicNameValuePair("Web_Map_as_JSON", webMapAsJSONChangedURL));
 
-        Assert.assertEquals(params, KsrPrintUtils.createEditedParams(request, layerService));
+        Assert.assertEquals(params, KsrGeoprocessingUtils.createPrintParams(request, layerService));
     }
 }

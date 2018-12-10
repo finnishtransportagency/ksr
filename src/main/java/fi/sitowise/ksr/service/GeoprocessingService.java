@@ -1,6 +1,6 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.utils.KsrPrintUtils;
+import fi.sitowise.ksr.utils.KsrGeoprocessingUtils;
 import org.apache.http.NameValuePair;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,8 @@ public class GeoprocessingService {
             this.httpRequestService.fetchToResponse(null, null, printServiceUrl,
                     endPointUrl, request, response, false, null, null);
         } else if (request.getParameterMap().containsKey("Web_Map_as_JSON")) {
-            List<NameValuePair> editedParams = KsrPrintUtils.createEditedParams(request, layerService);
+            List<NameValuePair> editedParams = KsrGeoprocessingUtils
+                    .createPrintParams(request, layerService);
             this.httpRequestService.fetchToResponse(null, null, printServiceUrl,
                     endPointUrl, request, response, false, editedParams, null);
         } else if (request.getQueryString().equals("f=json")) {
