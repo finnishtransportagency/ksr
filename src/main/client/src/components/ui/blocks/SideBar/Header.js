@@ -10,7 +10,7 @@ const Header = styled.div`
         margin: 0;
     }
     
-    .search-suggestions-toggle {
+    .search-toggle {
         outline: none;
         cursor: pointer;
         -webkit-user-select: none;

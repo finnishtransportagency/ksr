@@ -78,7 +78,6 @@ const SearchPropertyView = ({
                         <Property active={activeProperty === property.id} key={property.id}>
                             <Property.Header>
                                 <Property.Header.Zoom
-                                    className="search-suggestions-toggle"
                                     tabIndex="0"
                                     role="button"
                                     onClick={() => handlePropertyZoomClick(property.id)}
@@ -87,7 +86,6 @@ const SearchPropertyView = ({
                                     <i className="fas fa-search-plus" />
                                 </Property.Header.Zoom>
                                 <Property.Header.Toggle
-                                    className="search-suggestions-toggle"
                                     tabIndex="0"
                                     role="button"
                                     onClick={() => handlePropertyClick(property.id)}
