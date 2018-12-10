@@ -15,12 +15,14 @@ type Props = {
 type State = {
     extracting: boolean,
     activeFormat: string,
+    downloadFormat: string,
     outputLink: string,
 };
 
 const initialState = {
     extracting: false,
     activeFormat: 'Shapefile - SHP - .shp',
+    downloadFormat: '',
     outputLink: '',
 };
 
@@ -48,7 +50,11 @@ class ModalExtractSelected extends Component<Props, State> {
         const { layerId, extractServiceUrl, selectedGeometryData } = this.props;
         const { activeFormat } = this.state;
 
-        this.setState({ extracting: true, outputLink: '' });
+        this.setState({
+            extracting: true,
+            outputLink: '',
+            downloadFormat: activeFormat.slice(-4),
+        });
         extractSelected(
             extractServiceUrl,
             layerId,
@@ -75,7 +81,12 @@ class ModalExtractSelected extends Component<Props, State> {
     };
 
     render() {
-        const { extracting, activeFormat, outputLink } = this.state;
+        const {
+            extracting,
+            activeFormat,
+            downloadFormat,
+            outputLink,
+        } = this.state;
         const modalSubmit = [{
             text: strings.modalExtractSelectedData.submit,
             handleSubmit: this.handleModalSubmit,
@@ -91,6 +102,7 @@ class ModalExtractSelected extends Component<Props, State> {
             >
                 <ModalExtractSelectedView
                     activeFormat={activeFormat}
+                    downloadFormat={downloadFormat}
                     handleRadioChange={this.handleRadioChange}
                     outputLink={outputLink}
                     extracting={extracting}

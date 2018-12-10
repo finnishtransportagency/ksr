@@ -6,6 +6,7 @@ import Radiobutton from '../../../../ui/blocks/Radiobutton';
 const setup = (prop) => {
     const minProps = {
         activeFormat: '',
+        downloadFormat: '',
         handleRadioChange: jest.fn(),
         outputLink: '',
         extracting: false,

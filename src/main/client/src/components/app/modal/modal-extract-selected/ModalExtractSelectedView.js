@@ -8,6 +8,7 @@ import LoadingIcon from '../../shared/LoadingIcon';
 
 type Props = {
     activeFormat: string,
+    downloadFormat: string,
     handleRadioChange: Function,
     outputLink: string,
     extracting: boolean,
@@ -15,6 +16,7 @@ type Props = {
 
 const ModalExtractSelectedView = ({
     activeFormat,
+    downloadFormat,
     handleRadioChange,
     outputLink,
     extracting,
@@ -83,7 +85,9 @@ const ModalExtractSelectedView = ({
                 outputLink &&
                     <a href={outputLink} download={strings.modalExtractSelectedData.outputName}>
                         <i className="esri-icon-download" />
-                        <span>{strings.modalExtractSelectedData.outputSuccess}</span>
+                        <span>
+                            {strings.modalExtractSelectedData.outputSuccess} ({downloadFormat})
+                        </span>
                     </a>
             }
             {
