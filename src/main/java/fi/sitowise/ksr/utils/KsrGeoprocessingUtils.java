@@ -60,4 +60,38 @@ public class KsrGeoprocessingUtils {
 
         return params;
     }
+
+    /**
+     * Create edited parameters from request queryString or form parameters to be used in
+     * feature extract.
+     *
+     * @param request HTTPServletRequest that contains queryString and query parameters.
+     * @param layerService LayerService for getting layer name.
+     * @return Edited parameter list with layer name instead of id.
+     */
+    public static List<NameValuePair> createExtractParams(HttpServletRequest request,
+            LayerService layerService) {
+        List<NameValuePair> params = new ArrayList<>();
+        Map<String, String[]> queryParams = request.getParameterMap();
+        String layersToClip = null;
+
+        for (Map.Entry<String, String[]> entry : queryParams.entrySet()) {
+            for (String value : entry.getValue()) {
+                if (entry.getKey().equals("Layers_to_Clip")) {
+                    layersToClip = value;
+                } else {
+                    params.add(new BasicNameValuePair(entry.getKey(), value));
+                }
+            }
+        }
+
+        if (layersToClip != null) {
+            Integer id = Integer.parseInt(layersToClip);
+            Layer layer = layerService.getLayer(id, false, LayerAction.READ_LAYER);
+            String layerName = String.format("[\"%s\"]", layer.getLayers());
+            params.add(new BasicNameValuePair("Layers_to_Clip", layerName));
+        }
+
+        return params;
+    }
 }

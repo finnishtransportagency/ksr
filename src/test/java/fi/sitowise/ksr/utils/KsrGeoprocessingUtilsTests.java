@@ -82,4 +82,27 @@ public class KsrGeoprocessingUtilsTests {
 
         Assert.assertEquals(params, KsrGeoprocessingUtils.createPrintParams(request, layerService));
     }
+
+    @Test
+    public void testCreateExtractParameters() throws ParseException {
+        List<NameValuePair> params = new ArrayList<>();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod("POST");
+        request.setParameter("Feature_Format", "Shapefile - SHP - .shp");
+        request.setParameter("f", "json");
+        request.setParameter("Area_of_Interest", "{polygon}");
+        request.setParameter("Layers_to_Clip", "1");
+
+        Layer layer = new Layer();
+        layer.setLayers("Example Layer");
+        Mockito.when(layerService.getLayer(1, false, LayerAction.READ_LAYER)).thenReturn(layer);
+
+        String layersToClipName = "[\"Example Layer\"]";
+        params.add(new BasicNameValuePair("Feature_Format", "Shapefile - SHP - .shp"));
+        params.add(new BasicNameValuePair("f", "json"));
+        params.add(new BasicNameValuePair("Area_of_Interest", "{polygon}"));
+        params.add(new BasicNameValuePair("Layers_to_Clip", layersToClipName));
+
+        Assert.assertEquals(params, KsrGeoprocessingUtils.createExtractParams(request, layerService));
+    }
 }
