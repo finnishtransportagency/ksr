@@ -42,7 +42,7 @@ class ModalShapefile extends Component<Props, State> {
         }
     }
 
-    onDrop = (acceptedFiles: any) => {
+    onDrop = async (acceptedFiles: any) => {
         if (acceptedFiles.length < 1) return;
 
         const fileName = acceptedFiles.find(a => a).name.split('.').shift();
@@ -53,15 +53,14 @@ class ModalShapefile extends Component<Props, State> {
         }
 
         const contents = {};
-        const promises = acceptedFiles.map(file => this.readFile(file, contents));
-        Promise.all(promises).then(() =>
-            shape2geoJson(
-                contents,
-                fileName,
-                this.props.view,
-                this.props.layerList,
-                this.props.addShapefile,
-            ));
+        await Promise.all(acceptedFiles.map(file => this.readFile(file, contents)));
+        shape2geoJson(
+            contents,
+            fileName,
+            this.props.view,
+            this.props.layerList,
+            this.props.addShapefile,
+        );
         this.closeModal();
     };
 
