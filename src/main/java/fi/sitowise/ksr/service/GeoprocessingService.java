@@ -50,7 +50,7 @@ public class GeoprocessingService {
      *
      * @param serviceEndpoint Service specific endpoint, after mapLayers base url.
      * @param request HTTP request interface.
-     * @param response HttpServletResponse where to write the proxy-response
+     * @param response HttpServletResponse where to write the proxy-response.
      */
     public void getPrintRequest(String serviceEndpoint, HttpServletRequest request,
             HttpServletResponse response) throws IOException, ParseException {
@@ -78,7 +78,7 @@ public class GeoprocessingService {
      *
      * @param serviceEndpoint Service specific endpoint, after mapLayers base url.
      * @param request HTTP request interface.
-     * @param response HttpServletResponse where to write the proxy-response
+     * @param response HttpServletResponse where to write the proxy-response.
      */
     public void getPrintOutput(String serviceEndpoint, HttpServletRequest request,
             HttpServletResponse response) {
@@ -92,7 +92,7 @@ public class GeoprocessingService {
      * Proxy extract data request to given endpoint.
      *
      * @param serviceEndpoint Service specific endpoint.
-     * @param request HTTP request interface.
+     * @param request HttpServletRequest interface.
      * @param response HttpServletResponse where to write the proxy-response.
      */
     public void getExtractRequest(String serviceEndpoint, HttpServletRequest request,
@@ -111,8 +111,8 @@ public class GeoprocessingService {
      * Proxy extract output to given endpoint.
      *
      * @param serviceEndpoint Service specific endpoint.
-     * @param request HTTP request interface.
-     * @param response HttpServletResponse where to write the proxy-response
+     * @param request HttpServletRequest interface.
+     * @param response HttpServletResponse where to write the proxy-response.
      */
     public void getExtractOutput(String serviceEndpoint, HttpServletRequest request,
             HttpServletResponse response) {

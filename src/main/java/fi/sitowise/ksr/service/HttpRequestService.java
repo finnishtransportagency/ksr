@@ -208,10 +208,10 @@ public class HttpRequestService {
      * @param layer Layer URL that is requested.
      * @param baseUrl Baseurl for proxy-service for given layer.
      * @param endPointUrl The url to be fetched.
-     * @param request HTTP request interface.
-     * @param response HttpServletResponse, where to write the fetched content
-     * @param editedParams List, which contains edited Web_Map_as_JSON for printing
-     * @param action LayerAction Possible action-type
+     * @param request HttpServletRequest interface.
+     * @param response HttpServletResponse where to write the proxy-response.
+     * @param editedParams List which contains edited Web_Map_as_JSON for printing.
+     * @param action Possible action-type.
      */
     public void fetchToResponse(Layer layer, String authentication, String baseUrl, String endPointUrl,
                                 HttpServletRequest request, HttpServletResponse response, boolean useProxy,

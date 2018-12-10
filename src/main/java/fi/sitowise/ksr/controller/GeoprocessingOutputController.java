@@ -53,8 +53,8 @@ public class GeoprocessingOutputController {
     /**
      * Proxy print output request.
      *
-     * @param request Http servlet interface of incoming request.
-     * @param response Http servlet interface to which the response is written.
+     * @param request HttpServletRequest interface.
+     * @param response HttpServletResponse where to write the proxy-response.
      */
     @RequestMapping(value = "/print/**", method = { RequestMethod.GET })
     public void printOutputProxy(HttpServletRequest request, HttpServletResponse response) {
@@ -66,8 +66,8 @@ public class GeoprocessingOutputController {
     /**
      * Proxy extract output request.
      *
-     * @param request Http servlet interface of incoming request.
-     * @param response Http servlet interface to which the response is written.
+     * @param request HttpServletRequest interface.
+     * @param response HttpServletResponse where to write the proxy-response.
      */
     @RequestMapping(value = "/extract/**", method = { RequestMethod.GET })
     public void extractOutputProxy(HttpServletRequest request, HttpServletResponse response) {
