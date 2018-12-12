@@ -13,13 +13,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 public class KsrAuthenticationUtilsTests {
 
-    private void setup(String username, String firstName, String lastName) {
+    private void setup(String username, String firstName, String lastName, List<String> groups) {
         Authentication authentication = Mockito.mock(Authentication.class);
-        User user = new User(username, firstName, lastName, null, null, null, null);
+        User user = new User(username, firstName, lastName, null, null, null, groups);
         Mockito.when(authentication.getPrincipal()).thenReturn(user);
+
 
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -42,7 +47,7 @@ public class KsrAuthenticationUtilsTests {
 
     @Test
     public void testGetCurrentUserUpdaterNameValid() {
-        setup("K12345", "Seppo", "Testaaja");
+        setup("K12345", "Seppo", "Testaaja", null);
         String updaterUsername = KsrAuthenticationUtils.getCurrentUserUpdaterName();
 
         Assert.assertEquals("S Testaaja", updaterUsername);
@@ -50,7 +55,7 @@ public class KsrAuthenticationUtilsTests {
 
     @Test
     public void testGetCurrentUserUpdaterNameLowercaseValid() {
-        setup("K12345", "seppo", "testaaja");
+        setup("K12345", "seppo", "testaaja", null);
         String updaterUsername = KsrAuthenticationUtils.getCurrentUserUpdaterName();
 
         Assert.assertEquals("S Testaaja", updaterUsername);
@@ -58,7 +63,7 @@ public class KsrAuthenticationUtilsTests {
 
     @Test
     public void testGetCurrentUserUpdaterNameMixedCaseValid() {
-        setup("K12345", "sEppo", "tEsTAAJA");
+        setup("K12345", "sEppo", "tEsTAAJA", null);
         String updaterUsername = KsrAuthenticationUtils.getCurrentUserUpdaterName();
 
         Assert.assertEquals("S Testaaja", updaterUsername);
@@ -66,25 +71,39 @@ public class KsrAuthenticationUtilsTests {
 
     @Test(expected = KsrApiException.ForbiddenException.class)
     public void testGetCurrentUserUpdaterNameFirstNameIsNull() {
-        setup("K12345", null, "Testaaja");
+        setup("K12345", null, "Testaaja", null);
         KsrAuthenticationUtils.getCurrentUserUpdaterName();
     }
 
     @Test(expected = KsrApiException.ForbiddenException.class)
     public void testGetCurrentUserUpdaterNameFirstNameIsEmpty() {
-        setup("K12345", "", "Testaaja");
+        setup("K12345", "", "Testaaja", null);
         KsrAuthenticationUtils.getCurrentUserUpdaterName();
     }
 
     @Test(expected = KsrApiException.ForbiddenException.class)
     public void testGetCurrentUserUpdaterNameLastNameIsNull() {
-        setup("K12345", "Seppo", null);
+        setup("K12345", "Seppo", null, null);
         KsrAuthenticationUtils.getCurrentUserUpdaterName();
     }
 
     @Test(expected = KsrApiException.ForbiddenException.class)
     public void testGetCurrentUserUpdaterNameLastNameIsEmpty() {
-        setup("K12345", "Seppo", "");
+        setup("K12345", "Seppo", "", null);
         KsrAuthenticationUtils.getCurrentUserUpdaterName();
+    }
+
+    @Test
+    public void testGetCurrentUserGroups() {
+        setup("K12345", "Seppo", "S", Arrays.asList("KSR_ROLE_ADMIN", "KSR_ROLE_UPDATER"));
+        List<String> expected = Arrays.asList("KSR_ROLE_ADMIN", "KSR_ROLE_UPDATER");
+
+        Assert.assertEquals(expected, KsrAuthenticationUtils.getCurrentUserGroups());
+    }
+
+    @Test
+    public void testGetCurrentUserGroupsNoGroups() {
+        setup("K12345", "Seppo", "S", null);
+        Assert.assertEquals(Collections.emptyList(), KsrAuthenticationUtils.getCurrentUserGroups());
     }
 }

@@ -4,7 +4,12 @@ import fi.sitowise.ksr.authentication.User;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  Helper class for authentication utils.
@@ -52,5 +57,28 @@ public class KsrAuthenticationUtils {
                 user.getFirstName().substring(0, 1).toUpperCase(),
                 StringUtils.capitalize(user.getLastName().toLowerCase())
         );
+    }
+
+    /**
+     * Get List of users usergroups.
+     *
+     * @return List of usergroups
+     */
+    public static List<String> getCurrentUserGroups() {
+        Authentication auth = getAuthentication();
+        if (auth != null) {
+            Collection<? extends GrantedAuthority> authorities;
+            if (auth.getPrincipal() instanceof User) {
+                User user = (User) auth.getPrincipal();
+                authorities = user.getAuthorities();
+            } else {
+                authorities = auth.getAuthorities();
+            }
+            if (authorities == null) {
+                return null;
+            }
+            return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        }
+        return null;
     }
 }
