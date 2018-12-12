@@ -43,8 +43,6 @@ const fi = {
         setBuffer: 'Puskurialue',
         noFeatures: 'Ei kohteita',
         getPropertyInfo: 'Kiinteistötiedot',
-        caseManagementLink: 'Asianhallinta',
-        alfrescoLink: 'Alfresco',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
     },
     modalFilter: {
@@ -229,6 +227,8 @@ const fi = {
             details: 'Sopimuksen lisätiedot',
             edit: 'Muokkaa sopimusta',
             unlink: 'Poista sopimuksen linkitys kohteelta',
+            caseManagementLink: 'Asianhallinta',
+            alfrescoLink: 'Alfresco',
         },
         linkContract: {
             title: 'Sopimuksen linkittäminen',
