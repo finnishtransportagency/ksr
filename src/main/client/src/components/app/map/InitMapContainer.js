@@ -11,6 +11,7 @@ import {
 } from './../../../reducers/table/actions';
 import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/actions';
 import InitMap from './InitMap';
+import { setContractListInfo } from '../../../reducers/contract/actions';
 
 const mapStateToProps = state => ({
     layerList: state.map.layerGroups.layerList,
@@ -61,6 +62,9 @@ const mapDispatchToProps = dispatch => ({
     },
     addNonSpatialContentToTable: (layer, workspaceFeatures) => {
         dispatch(addNonSpatialContentToTable(layer, workspaceFeatures));
+    },
+    setContractListInfo: (layerId, objectId, contractIdField, contractDescriptionField) => {
+        dispatch(setContractListInfo(layerId, objectId, contractIdField, contractDescriptionField));
     },
 });
 

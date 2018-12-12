@@ -2,6 +2,7 @@
 import strings from '../../translations';
 import { graphicsToEsriJSON } from '../arcFormats';
 import { getFeatureInfo } from './featureInfo';
+import { nestedVal } from '../nestedValue';
 
 /**
  * Adds content and custom actions to views popup when map clicked.
@@ -81,31 +82,24 @@ export const mapSelectPopup = async (
                     .find(ll => ll.id === layer.graphic.layer.id.replace('.s', ''));
 
                 if (matchingLayer && matchingLayer.type === 'agfs' && matchingLayer.queryColumns) {
-                    matchingLayer.queryColumns.forEach((r) => {
+                    const fields = nestedVal(layer, ['graphic', 'layer', 'fields']);
+                    matchingLayer.queryColumns.forEach((column) => {
                         fieldInfos.push({
-                            fieldName: r,
-                            label: layer.graphic.layer.fields
-                                .find(l => l.name === r).alias,
+                            fieldName: column,
+                            label: nestedVal(
+                                fields && fields.find(f => f.name === column),
+                                ['alias'],
+                            ),
                         });
                     });
 
-                    if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
-                        ll.alfrescoLinkField)) {
-                        const alfrescoLink = {
-                            title: strings.esriMap.alfrescoLink,
-                            id: 'alfresco-link',
-                            className: 'fas fa-archive',
+                    if (matchingLayer.hasRelations) {
+                        const contractLink = {
+                            title: strings.modalFeatureContracts.featureContracts,
+                            id: 'contract-link',
+                            className: 'fas fa-tasks',
                         };
-                        actions.push(alfrescoLink);
-                    }
-                    if (layerList.some(ll => ll.id === layer.graphic.layer.id &&
-                        ll.caseManagementLinkField)) {
-                        const caseManagementLink = {
-                            title: strings.esriMap.caseManagementLink,
-                            id: 'case-management-link',
-                            className: 'fas fa-book',
-                        };
-                        actions.push(caseManagementLink);
+                        actions.push(contractLink);
                     }
 
                     layer.graphic.layer.popupTemplate = {

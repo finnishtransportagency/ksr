@@ -8,8 +8,7 @@ import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 import { mapHighlightStroke } from '../../ui/defaultStyles';
-import { getCaseManagementLink } from '../../../utils/map-selection/caseManagementLink';
-import { getAlfrescoLink } from '../../../utils/map-selection/alfrescoLink';
+import { nestedVal } from '../../../utils/nestedValue';
 
 type Props = {
     layerList: Array<any>,
@@ -38,6 +37,12 @@ type Props = {
         authorities: Object[],
     ) => void,
     authorities: Object[],
+    setContractListInfo: (
+        layerId: string,
+        objectId: number,
+        contractIdField: string,
+        contractDescriptionField: string,
+    ) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -239,31 +244,37 @@ class EsriMap extends Component<Props> {
                         setActiveModal,
                         setSingleLayerGeometry,
                         setPropertyInfo,
+                        setContractListInfo,
                     } = this.props;
                     const { x, y } = view.popup.location;
                     const { activeAdminTool, authorities } = this.props;
-                    const layer = layerList.find((ll) => {
-                        if (view.popup.viewModel &&
-                            view.popup.viewModel.selectedFeature &&
-                            view.popup.viewModel.selectedFeature.layer &&
-                            view.popup.viewModel.selectedFeature.layer.id === ll.id) {
-                            return true;
-                        }
-                        return false;
-                    });
+
+                    const selectedFeature = nestedVal(
+                        view,
+                        ['popup', 'viewModel', 'selectedFeature'],
+                    );
+
+                    const geometry = nestedVal(selectedFeature, ['geometry']);
+                    const layer = layerList.find(ll => nestedVal(
+                        selectedFeature,
+                        ['layer', 'id'],
+                    ) === ll.id);
+
+                    const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
+                    const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
 
                     switch (evt.action.id) {
                         case 'select-intersect':
                             queryFeatures(
-                                view.popup.viewModel.selectedFeature.geometry,
+                                geometry,
                                 activeAdminTool,
                                 view,
                                 selectFeatures,
-                                view.popup.viewModel.selectedFeature.layer.id,
+                                layer && layer.id,
                             );
                             break;
                         case 'set-buffer':
-                            setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
+                            setSingleLayerGeometry(geometry);
                             setActiveModal('bufferSelectedData');
                             break;
                         case 'get-property-info':
@@ -272,17 +283,16 @@ class EsriMap extends Component<Props> {
                         case 'google-street-view':
                             getStreetViewLink(x, y);
                             break;
-                        case 'case-management-link':
-                            getCaseManagementLink(
-                                layer,
-                                view.popup.viewModel.selectedFeature.attributes,
-                            );
-                            break;
-                        case 'alfresco-link':
-                            getAlfrescoLink(
-                                layer,
-                                view.popup.viewModel.selectedFeature.attributes,
-                            );
+                        case 'contract-link':
+                            if (layer) {
+                                setContractListInfo(
+                                    layer.id,
+                                    objectId,
+                                    layer.contractIdField,
+                                    layer.contractDescriptionField,
+                                );
+                                setActiveModal('featureContracts');
+                            }
                             break;
                         default:
                             break;
