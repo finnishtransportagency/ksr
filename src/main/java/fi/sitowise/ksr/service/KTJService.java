@@ -166,10 +166,10 @@ public class KTJService {
             throw new KsrApiException.BadRequestException("Invalid parameters. polygon must be defined.");
         }
 
-        log.info(
-                "Get property details: polygon: [%f]. User: [%s]",
+        log.info(String.format(
+                "Get property details: polygon: [%s]. User: [%s]",
                 polygon, KsrAuthenticationUtils.getCurrentUsername()
-        );
+        ));
         return fetchDetails(String.format(KTJ_WFS_POLYGON, polygon.replaceAll(",", "")));
     }
 
