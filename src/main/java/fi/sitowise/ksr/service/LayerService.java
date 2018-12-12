@@ -4,10 +4,11 @@ import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.repository.LayerRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUserGroups;
 
 /**
  * Layer service.
@@ -40,7 +41,7 @@ public class LayerService {
      * @return the layer
      */
     public Layer getLayer(int id, boolean isQuery, LayerAction actionType) {
-        List<String> userGroups = layerGroupService.getUserGroups();
+        List<String> userGroups = getCurrentUserGroups();
         if (userGroups == null) {
             return null;
         }

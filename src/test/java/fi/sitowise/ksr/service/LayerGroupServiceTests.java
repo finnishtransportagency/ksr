@@ -1,12 +1,10 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.domain.LayerPermission;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
-import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUserGroups;
 import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 
@@ -63,7 +62,7 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetUserGroupsWithRoles() {
-        Assert.assertEquals(Arrays.asList("ROLE_ADMIN", "ROLE_USER"), layerGroupService.getUserGroups());
+        Assert.assertEquals(Arrays.asList("ROLE_ADMIN", "ROLE_USER"), getCurrentUserGroups());
     }
 
     /**
@@ -72,7 +71,7 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {})
     public void testGetUserGroupsWithoutRoles() {
-        Assert.assertEquals(Collections.emptyList(), layerGroupService.getUserGroups());
+        Assert.assertEquals(Collections.emptyList(), getCurrentUserGroups());
     }
 
     /**
@@ -80,7 +79,7 @@ public class LayerGroupServiceTests {
      */
     @Test
     public void testGetUserGroupsWithoutAuth() {
-        Assert.assertNull(layerGroupService.getUserGroups());
+        Assert.assertNull(getCurrentUserGroups());
     }
 
     /**
