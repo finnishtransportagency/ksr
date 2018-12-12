@@ -6,6 +6,7 @@ import { addFeatures } from '../../api/map/addFeatures';
 import { updateFeatures } from '../../api/map/updateFeatures';
 import { queryFeatures } from '../../api/search/searchQuery';
 import strings from '../../translations';
+import { getContractDocumentUrl } from './contractDocument';
 
 /**
  * Gets ID and Description field from contract query, that will be shown in contract list.
@@ -13,6 +14,8 @@ import strings from '../../translations';
  * @param {Object} contracts Contract response from contractRelations query.
  * @param {string} contractIdField Name of ID field to be shown in contract list.
  * @param {string} contractDescriptionField Name of description field to be shown in contract list.
+ * @param {string} [alfrescoLinkField] Name of alfresco link field.
+ * @param {string} [caseManagementLinkField] Name of case management link field.
  *
  * @returns {Array} Array containing contract ID and description fields.
  */
@@ -20,11 +23,15 @@ export const contractListTexts = (
     contracts: { features: Object[] },
     contractIdField: string,
     contractDescriptionField: string,
+    alfrescoLinkField: ?string,
+    caseManagementLinkField: ?string,
 ): Object[] => {
     if (contracts && contracts.features) {
         return contracts.features.map(feature => ({
             id: feature.attributes[contractIdField],
             description: feature.attributes[contractDescriptionField],
+            alfrescoUrl: alfrescoLinkField ? getContractDocumentUrl('alfresco', alfrescoLinkField, feature.attributes) : '',
+            caseManagementUrl: caseManagementLinkField ? getContractDocumentUrl('caseManagement', caseManagementLinkField, feature.attributes) : '',
         }));
     }
     return [];
