@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -106,7 +107,7 @@ public class WorkspaceControllerTests extends AuthControllerTestBase {
     @Test
     public void testFetchWorkspaceListOk() throws Exception {
         Mockito.when(workspaceService.getWorkspaceListForUser(Mockito.anyString()))
-                .thenReturn(new HashMap<>());
+                .thenReturn(new ArrayList<>());
         this.mockMvc.perform(
                 get("/api/workspace/list").headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
         ).andExpect(status().isOk());

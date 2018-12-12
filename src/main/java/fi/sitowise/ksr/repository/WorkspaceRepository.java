@@ -154,21 +154,18 @@ public class WorkspaceRepository {
     }
 
     /**
-     * Fetch map of workspace names and update times for given user.
+     * Fetch list of workspaces for given username. Will sort workspaces
+     * by their updated time.
      *
      * @param username username of the user whose workspaces are fetched
-     * @return map of workspace names and update times
+     * @return list of workspaces sorted by updated time
      */
-    public Map<Timestamp, String> fetchWorkspaceListForUser(String username) {
+    public List<Workspace> fetchWorkspaceListForUser(String username) {
         return context
-                .select(
-                        WORKSPACE.UPDATED,
-                        WORKSPACE.NAME
-                )
-                .from(WORKSPACE)
+                .selectFrom(WORKSPACE)
                 .where(WORKSPACE.USERNAME.equal(username))
                 .orderBy(WORKSPACE.UPDATED.desc())
-                .fetchMap(WORKSPACE.UPDATED, WORKSPACE.NAME);
+                .fetch(w -> new Workspace(w, null));
     }
 
     /**
