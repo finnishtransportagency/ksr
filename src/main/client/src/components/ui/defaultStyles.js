@@ -19,6 +19,8 @@ export const mapShapefileHighlight = '#86c866';
 export const colorTableEdited = '#F79421';
 export const colorTableEditedDarker = '#EC8921';
 
+export const colorDanger = '#CC3300';
+
 // Shadows
 export const shadowLight = '0 2px 4px 0 hsla(0, 0%, 0%, 0.2)';
 export const shadowDefault = '0 2px 4px 0 hsla(0, 0%, 0%, 0.4)';
