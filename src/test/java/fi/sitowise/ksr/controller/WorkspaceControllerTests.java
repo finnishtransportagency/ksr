@@ -1,5 +1,6 @@
 package fi.sitowise.ksr.controller;
 
+import fi.sitowise.ksr.domain.Workspace;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.helper.AuthControllerTestBase;
 import fi.sitowise.ksr.service.WorkspaceService;
@@ -15,11 +16,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.AdditionalMatchers.not;
 
 /**
  * Tests for WorkspaceController.
@@ -111,5 +113,53 @@ public class WorkspaceControllerTests extends AuthControllerTestBase {
         this.mockMvc.perform(
                 get("/api/workspace/list").headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
         ).andExpect(status().isOk());
+    }
+
+    /**
+     * Test fetch workspace by Uuid.
+     *
+     * @throws Exception if mock request fails
+     */
+    @Test
+    public void testFetchWorkspaceByUuidOk() throws Exception {
+        Workspace workspace = new Workspace();
+        workspace.setId(2L);
+
+        Mockito.when(workspaceService.getWorkspaceByUuid(
+                Mockito.eq(UUID.fromString("28db6440-911e-41dc-ad1a-4d1961e96561")))
+        ).thenReturn(workspace);
+
+        Mockito.when(workspaceService.getWorkspaceByUuid(
+                not(Mockito.eq(UUID.fromString("28db6440-911e-41dc-ad1a-4d1961e96561"))))
+        ).thenThrow(new KsrApiException.NotFoundErrorException(
+                "Workspace: 28db6440-911e-41dc-ad1a-4d1961e96561 not found."
+        ));
+
+        this.mockMvc.perform(
+                get("/api/workspace/28db6440-911e-41dc-ad1a-4d1961e96561")
+                        .headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
+        ).andExpect(status().isOk());
+    }
+
+    /**
+     * Test fetch workspace by Uuid not found.
+     *
+     * @throws Exception if mock request fails
+     */
+    @Test
+    public void testFetchWorkspaceByUuidNotFound() throws Exception {
+        Workspace workspace = new Workspace();
+        workspace.setId(2L);
+
+        Mockito.when(workspaceService.getWorkspaceByUuid(
+                Mockito.eq(UUID.fromString("28db6440-911e-41dc-ad1a-4d1961e96561")))
+        ).thenThrow(new KsrApiException.NotFoundErrorException(
+                "Workspace: 28db6440-911e-41dc-ad1a-4d1961e96561 not found."
+        ));
+
+        this.mockMvc.perform(
+                get("/api/workspace/28db6440-911e-41dc-ad1a-4d1961e96561")
+                        .headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
+        ).andExpect(status().isNotFound());
     }
 }

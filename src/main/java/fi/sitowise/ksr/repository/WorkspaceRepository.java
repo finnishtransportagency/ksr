@@ -12,13 +12,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import static fi.sitowise.ksr.jooq.Tables.WORKSPACE;
-import static fi.sitowise.ksr.jooq.Tables.WORKSPACE_LAYER;
+import static fi.sitowise.ksr.jooq.Tables.*;
 
 /**
  * Workspace repository.
@@ -203,6 +200,38 @@ public class WorkspaceRepository {
             return new Workspace(workspace, layers);
         }
 
+        return null;
+    }
+
+    /**
+     * Fetch a single workspace by uuid. If not matching workspace can be found,
+     * then returns null instead.
+     *
+     * Filters out layers the user does not have a permission and also user defined layers.
+     *
+     * @param uuid Uuid of the workspace
+     * @return workspace if found
+     */
+    @Transactional
+    public Workspace fetchWorkspaceByUuid(UUID uuid, List<String> userGroups) {
+        WorkspaceRecord wr = context
+                .selectFrom(WORKSPACE)
+                .where(WORKSPACE.UUID.equal(uuid.toString()))
+                .fetchOne();
+
+        if (wr != null) {
+            List<WorkspaceLayerRecord> layers = context
+                    .select(WORKSPACE_LAYER.fields())
+                    .from(WORKSPACE_LAYER)
+                    .innerJoin(LAYER_PERMISSION).on(LAYER_PERMISSION.LAYER_ID.equal(WORKSPACE_LAYER.LAYER_ID))
+                    .where(WORKSPACE_LAYER.WORKSPACE_ID.equal(wr.getId()))
+                        .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
+                        .and(LAYER_PERMISSION.READ_LAYER.equal("1"))
+                        .and(WORKSPACE_LAYER.USER_LAYER_ID.isNull())
+                    .orderBy(WORKSPACE_LAYER.LAYER_ORDER)
+                    .fetchInto(WORKSPACE_LAYER);
+            return new Workspace(wr, layers);
+        }
         return null;
     }
 }

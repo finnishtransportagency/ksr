@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
 
@@ -96,6 +95,17 @@ public class WorkspaceController {
     public List<Workspace> getWorkspaceList() {
         LOG.info(String.format("%s: Fetch map of workspace names and update times for current user.", getCurrentUsername()));
         return workspaceService.getWorkspaceListForUser(getCurrentUsername());
+    }
+
+    /**
+     * Fetch a single workspace with uuid.
+     *
+     * @return matching workspace if any
+     */
+    @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+    public Workspace getWorkspaceByUuid(@PathVariable UUID uuid) {
+        LOG.info(String.format("%s: Fetch workspace [%s]", getCurrentUsername(), uuid.toString()));
+        return workspaceService.getWorkspaceByUuid(uuid);
     }
 
     /**

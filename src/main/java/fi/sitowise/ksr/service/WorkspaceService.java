@@ -1,13 +1,15 @@
 package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Workspace;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
+
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUserGroups;
 
 /**
  * Workspace service.
@@ -78,5 +80,21 @@ public class WorkspaceService {
      */
     public Workspace getWorkspaceDetails(String workspaceName, String username) {
         return workspaceRepository.fetchWorkspaceDetails(workspaceName, username);
+    }
+
+    /**
+     * Fetch a single workspace by Uuid.
+     *
+     * If workspace cannot be found, then will raise a 404 exception.
+     *
+     * @param uuid Uuid of the workspace to be fetched
+     * @return workspace
+     */
+    public Workspace getWorkspaceByUuid(UUID uuid) {
+        Workspace workspace = workspaceRepository.fetchWorkspaceByUuid(uuid, getCurrentUserGroups());
+        if (workspace == null) {
+            throw new KsrApiException.NotFoundErrorException(String.format("Workspace: %s not found.", uuid.toString()));
+        }
+        return workspace;
     }
 }
