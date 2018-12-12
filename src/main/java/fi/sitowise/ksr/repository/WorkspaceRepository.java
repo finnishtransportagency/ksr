@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static fi.sitowise.ksr.jooq.Tables.WORKSPACE;
 import static fi.sitowise.ksr.jooq.Tables.WORKSPACE_LAYER;
@@ -78,6 +79,7 @@ public class WorkspaceRepository {
         return context
                 .insertInto(
                         WORKSPACE,
+                        WORKSPACE.UUID,
                         WORKSPACE.NAME,
                         WORKSPACE.USERNAME,
                         WORKSPACE.SCALE,
@@ -85,6 +87,7 @@ public class WorkspaceRepository {
                         WORKSPACE.CENTER_LATITUDE
                 )
                 .values(
+                        UUID.randomUUID().toString(),
                         workspace.getName(),
                         username,
                         workspace.getScale(),
