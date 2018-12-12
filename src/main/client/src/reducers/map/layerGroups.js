@@ -158,7 +158,6 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerList: [action.layer, ...state.layerList],
                 layerGroups: addLayerToUserGroup(state.layerGroups, action.layer),
-
             };
         case ADD_USER_LAYER:
             return {
