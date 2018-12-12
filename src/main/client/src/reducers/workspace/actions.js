@@ -17,20 +17,21 @@ export const updateWorkspaces = (
     workspaceFetch(fetchParam)
         .then((r) => {
             if (!r.error) {
-                return Object.keys(r).map(workspace => ({
-                    name: r[workspace],
-                    updated: moment(workspace).format('MM.DD.YYYY HH:mm'),
+                const workspaceList = r.map(w => ({
+                    ...w,
+                    updated: moment(w.updateTime).format('DD.MM.YYYY HH:mm'),
                 }));
+                dispatch({
+                    type: types.GET_WORKSPACE_LIST_FULFILLED,
+                    workspaceList,
+                });
+            } else {
+                dispatch({
+                    type: types.GET_WORKSPACE_LIST_REJECTED,
+                });
+                throw new Error('GET_WORKSPACE_LIST_REJECTED -error');
             }
-            dispatch({
-                type: types.GET_WORKSPACE_LIST_REJECTED,
-            });
-            throw new Error('GET_WORKSPACE_LIST_REJECTED -error');
-        }).then(r =>
-            dispatch({
-                type: types.GET_WORKSPACE_LIST_FULFILLED,
-                workspaceList: r,
-            }))
+        })
         .catch(err => console.log(err));
 };
 
