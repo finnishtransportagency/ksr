@@ -9,7 +9,9 @@ type Props = {
     handleUnlinkContract: (contractNumber: number) => any,
 };
 
-const ContractListView = ({ contracts, contractUnlinkable, handleUnlinkContract }: Props) => (
+const ContractListView = ({
+    contracts, contractUnlinkable, handleUnlinkContract,
+}: Props) => (
     <Fragment>
         { !contracts.length && <p>{strings.modalFeatureContracts.listView.noContracts}</p> }
         { contracts.map(contract =>
@@ -31,11 +33,25 @@ const ContractListView = ({ contracts, contractUnlinkable, handleUnlinkContract 
                     </Contract.TextWrapper>
                     <Contract.IconWrapper>
                         <Contract.IconWrapper.Icon
+                            edit
                             title={strings.modalFeatureContracts.listView.edit}
                             className="fas fa-edit"
                         />
+                        <Contract.IconWrapper.Icon
+                            onClick={() => contract.alfrescoUrl && window.open(contract.alfrescoUrl, '_blank')}
+                            title={strings.modalFeatureContracts.listView.alfrescoLink}
+                            className="fas fa-archive"
+                            disabled={!contract.alfrescoUrl}
+                        />
+                        <Contract.IconWrapper.Icon
+                            onClick={() => contract.caseManagementUrl && window.open(contract.caseManagementUrl, '_blank')}
+                            title={strings.modalFeatureContracts.listView.caseManagementLink}
+                            className="fas fa-book"
+                            disabled={!contract.caseManagementUrl}
+                        />
                         {contractUnlinkable &&
                         <Contract.IconWrapper.Icon
+                            unlink
                             onClick={() => { handleUnlinkContract(contract.id); }}
                             title={strings.modalFeatureContracts.listView.unlink}
                             className="fas fa-unlink"

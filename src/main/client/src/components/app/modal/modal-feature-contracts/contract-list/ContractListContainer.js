@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+import { nestedVal } from '../../../../../utils/nestedValue';
 import ContractList from './ContractList';
 
 const mapStateToProps = (state) => {
@@ -9,13 +10,19 @@ const mapStateToProps = (state) => {
     const relationLayer = currentLayer && state.map.layerGroups.layerList
         .find(layer => layer.id === currentLayer.relationLayerId.toString());
 
+    const {
+        objectId, contractIdField, contractDescriptionField,
+    } = state.contract.contractList;
+
     return {
-        objectId: state.contract.contractList.objectId,
-        contractIdField: state.contract.contractList.contractIdField,
-        contractDescriptionField: state.contract.contractList.contractDescriptionField,
-        contractUnlinkable: currentLayer && currentLayer.relationType === 'many',
+        objectId,
+        contractIdField,
+        contractDescriptionField,
+        contractUnlinkable: nestedVal(currentLayer, ['relationType']) === 'many',
         currentLayer,
         relationLayer,
+        alfrescoLinkField: nestedVal(currentLayer, ['alfrescoLinkField']),
+        caseManagementLinkField: nestedVal(currentLayer, ['caseManagementLinkField']),
     };
 };
 

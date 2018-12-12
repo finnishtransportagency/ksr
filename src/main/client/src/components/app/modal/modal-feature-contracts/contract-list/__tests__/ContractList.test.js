@@ -14,6 +14,8 @@ const setup = (prop) => {
         objectId: 123456,
         contractIdField: 'contractId',
         contractDescriptionField: 'contractDescription',
+        alfrescoLinkField: 'alfrescoUrl',
+        caseManagementLinkField: 'caseManagementUrl',
         currentLayer: {
             id: 123,
         },
@@ -61,11 +63,15 @@ describe('<ContractList />', () => {
         const contracts = {
             features: [{
                 attributes: {
+                    alfrescoUrl: '/alfrescourl/123',
+                    caseManagementUrl: '/casemanagementurl/123',
                     contractId: 123,
                     contractDescription: 'Description field 1',
                 },
             }, {
                 attributes: {
+                    alfrescoUrl: '/alfrescourl/456',
+                    caseManagementUrl: '/casemanagementurl/456',
                     contractId: 456,
                     contractDescription: 'Description field 2',
                 },
@@ -73,9 +79,13 @@ describe('<ContractList />', () => {
         };
 
         const expectedResult = [{
+            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/123',
+            caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/123',
             id: 123,
             description: 'Description field 1',
         }, {
+            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/456',
+            caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/456',
             id: 456,
             description: 'Description field 2',
         }];
