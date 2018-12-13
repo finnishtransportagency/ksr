@@ -37,7 +37,7 @@ public class KTJController {
      * @return FeatureCollection of property details.
      */
     @RequestMapping(value = "/{propertyIdentifier}", method = { RequestMethod.GET })
-    public FeatureCollection getPropertyDetails(@PathVariable String propertyIdentifier) {
+    public FeatureCollection getPropertyDetailsById(@PathVariable String propertyIdentifier) {
         return ktjService.getPropertyDetails(propertyIdentifier);
     }
 
