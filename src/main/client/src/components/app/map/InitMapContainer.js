@@ -63,8 +63,8 @@ const mapDispatchToProps = dispatch => ({
     addNonSpatialContentToTable: (layer, workspaceFeatures) => {
         dispatch(addNonSpatialContentToTable(layer, workspaceFeatures));
     },
-    setContractListInfo: (layerId, objectId, contractIdField, contractDescriptionField) => {
-        dispatch(setContractListInfo(layerId, objectId, contractIdField, contractDescriptionField));
+    setContractListInfo: (layerId, objectId) => {
+        dispatch(setContractListInfo(layerId, objectId));
     },
 });
 

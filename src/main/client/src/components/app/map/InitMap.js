@@ -40,8 +40,6 @@ type Props = {
     setContractListInfo: (
         layerId: string,
         objectId: number,
-        contractIdField: string,
-        contractDescriptionField: string,
     ) => void,
 };
 
@@ -285,12 +283,7 @@ class EsriMap extends Component<Props> {
                             break;
                         case 'contract-link':
                             if (layer) {
-                                setContractListInfo(
-                                    layer.id,
-                                    objectId,
-                                    layer.contractIdField,
-                                    layer.contractDescriptionField,
-                                );
+                                setContractListInfo(layer.id, objectId);
                                 setActiveModal('featureContracts');
                             }
                             break;

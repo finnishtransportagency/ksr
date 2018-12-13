@@ -23,12 +23,7 @@ type Props = {
     activeTable: string,
     activeAdminTool: string,
     setActiveModal: (activeModal: string) => void,
-    setContractListInfo: (
-        layerId: string,
-        objectId: number,
-        contractIdField: string,
-        contractDescriptionField: string,
-    ) => void,
+    setContractListInfo: (layerId: string, objectId: number) => void,
 };
 
 class ReactTable extends Component<Props> {
@@ -61,17 +56,11 @@ class ReactTable extends Component<Props> {
 
     handleContractClick = (objectId: number) => {
         const {
-            setActiveModal, setContractListInfo, activeTable, layerList,
+            setActiveModal, setContractListInfo, activeTable,
         } = this.props;
         const layerId = activeTable.replace('.s', '');
-        const currentLayer: any = layerList.find(ll => ll.id === layerId);
         setActiveModal('featureContracts');
-        setContractListInfo(
-            layerId,
-            objectId,
-            currentLayer.contractIdField,
-            currentLayer.contractDescriptionField,
-        );
+        setContractListInfo(layerId, objectId);
     };
 
     renderEditable = (cellInfo: Object) => {

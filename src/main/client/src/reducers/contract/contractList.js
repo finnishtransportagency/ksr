@@ -4,16 +4,12 @@ import { SET_CONTRACT_LIST_INFO, REMOVE_CONTRACT_LIST_INFO } from '../../constan
 const initialState = {
     layerId: null,
     objectId: null,
-    contractIdField: '',
-    contractDescriptionField: '',
 };
 
 type Action = {
     type: string,
     layerId: number,
     objectId: number,
-    contractIdField: string,
-    contractDescriptionField: string,
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -22,8 +18,6 @@ export default (state: Object = initialState, action: Action) => {
             return {
                 layerId: action.layerId,
                 objectId: action.objectId,
-                contractIdField: action.contractIdField,
-                contractDescriptionField: action.contractDescriptionField,
             };
         case REMOVE_CONTRACT_LIST_INFO:
             return initialState;

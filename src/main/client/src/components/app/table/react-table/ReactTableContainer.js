@@ -38,8 +38,8 @@ const mapDispatchToProps = dispatch => ({
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));
     },
-    setContractListInfo: (layerId, objectId, contractIdField, contractDescriptionField) => {
-        dispatch(setContractListInfo(layerId, objectId, contractIdField, contractDescriptionField));
+    setContractListInfo: (layerId, objectId) => {
+        dispatch(setContractListInfo(layerId, objectId));
     },
 });
 

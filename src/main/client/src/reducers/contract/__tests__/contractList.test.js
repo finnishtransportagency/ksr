@@ -5,8 +5,6 @@ describe('contractList reducer', () => {
     const initialState = {
         layerId: null,
         objectId: null,
-        contractIdField: '',
-        contractDescriptionField: '',
     };
 
     it('should return initial state', () => {
@@ -18,13 +16,9 @@ describe('contractList reducer', () => {
             type: types.SET_CONTRACT_LIST_INFO,
             layerId: 123,
             objectId: 456,
-            contractIdField: 'contractId',
-            contractDescriptionField: 'contractDescription',
         })).toEqual({
             layerId: 123,
             objectId: 456,
-            contractIdField: 'contractId',
-            contractDescriptionField: 'contractDescription',
         });
     });
 
