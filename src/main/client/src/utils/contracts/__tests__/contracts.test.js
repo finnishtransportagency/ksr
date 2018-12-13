@@ -1,4 +1,4 @@
-import { contractListTexts, getRelationLayers } from '../contracts';
+import { contractListTexts, getContractLayers } from '../contracts';
 
 describe('contracts', () => {
     it('contractListTexts - should return array with correct values', () => {
@@ -78,39 +78,34 @@ describe('contracts', () => {
         )).toEqual([]);
     });
 
-    it('getRelationLayers - should work correctly with relation type one', () => {
-        const currentLayer = {
-            id: 123,
-            relationType: 'one',
-        };
-        const relationLayer = {
-            relationLayerId: 456,
-        };
+    it('getContractLayers - should work correctly with relation type one', () => {
+        const layerList = [
+            { id: '1', relationLayerId: '10', relationType: 'one' },
+            { id: '10', relationType: 'one' },
+        ];
 
         const expectedResult = {
-            layerToQuery: relationLayer.id,
-            layerToUpdate: currentLayer,
+            currentLayer: { id: '1', relationLayerId: '10', relationType: 'one' },
+            contractLinkLayer: null,
+            contractLayer: { id: '10', relationType: 'one' },
         };
 
-        expect(getRelationLayers(currentLayer, relationLayer))
-            .toEqual(expectedResult);
+        expect(getContractLayers('1', layerList)).toEqual(expectedResult);
     });
 
-    it('getRelationLayers - should work correctly with relation type many', () => {
-        const currentLayer = {
-            id: 123,
-            relationType: 'many',
-        };
-        const relationLayer = {
-            relationLayerId: 456,
-        };
+    it('getContractLayers - should work correctly with relation type many', () => {
+        const layerList = [
+            { id: '1', relationLayerId: '10', relationType: 'many' },
+            { id: '10', relationLayerId: '11', relationType: 'link' },
+            { id: '11', relationType: 'many' },
+        ];
 
         const expectedResult = {
-            layerToQuery: relationLayer.relationLayerId,
-            layerToUpdate: relationLayer,
+            currentLayer: { id: '1', relationLayerId: '10', relationType: 'many' },
+            contractLinkLayer: { id: '10', relationLayerId: '11', relationType: 'link' },
+            contractLayer: { id: '11', relationType: 'many' },
         };
 
-        expect(getRelationLayers(currentLayer, relationLayer))
-            .toEqual(expectedResult);
+        expect(getContractLayers('1', layerList)).toEqual(expectedResult);
     });
 });

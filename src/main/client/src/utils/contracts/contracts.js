@@ -38,31 +38,46 @@ export const contractListTexts = (
 };
 
 /**
- * Gets layer ID to query for an existing contract and layer to update.
+ * Gets all contract related layers used for linking and creating new contracts.
  *
- * @param {Object} currentLayer Currently active layer in contract modal.
- * @param {Object} relationLayer Currently active layers closest contract relation layer.
+ * @param {string} layerId Geometry layer's id.
+ * @param {Object[]} layerList List of layers.
  *
- * @returns {Object} Object with layer to query and layer to update.
+ * @returns {Object} Current-, contractLink and contract layers.
  */
-export const getRelationLayers = (currentLayer: Object, relationLayer: Object) => {
-    switch (currentLayer.relationType) {
-        case 'one':
-            return {
-                layerToQuery: relationLayer.id,
-                layerToUpdate: currentLayer,
-            };
-        case 'many':
-            return {
-                layerToQuery: relationLayer.relationLayerId,
-                layerToUpdate: relationLayer,
-            };
-        default:
-            return {
-                layerToQuery: 0,
-                layerToUpdate: {},
-            };
+export const getContractLayers = (layerId: string, layerList: Object[]) => {
+    if (!layerId) return { currentLayer: null, contractLinkLayer: null, contractLayer: null };
+
+    const currentLayer = layerList.find(layer => layer.id === layerId
+        .replace('.s', ''));
+    const relationLayer = currentLayer && layerList
+        .find(layer => layer.id === currentLayer.relationLayerId.toString());
+
+    if (currentLayer && relationLayer) {
+        switch (currentLayer.relationType) {
+            case 'one':
+                return {
+                    currentLayer,
+                    contractLinkLayer: null,
+                    contractLayer: relationLayer,
+                };
+            case 'many':
+                return {
+                    currentLayer,
+                    contractLinkLayer: relationLayer,
+                    contractLayer: layerList
+                        .find(layer => layer.id === relationLayer.relationLayerId.toString()),
+                };
+            default:
+                return {
+                    currentLayer,
+                    contractLinkLayer: null,
+                    contractLayer: null,
+                };
+        }
     }
+
+    return { currentLayer: null, contractLinkLayer: null, contractLayer: null };
 };
 
 /**
@@ -127,29 +142,27 @@ export const linkToContract = async (
 /**
  * Gets query parameters to be used in unlinking contract.
  *
- * @param {Object} currentLayer Currently active layer in contract modal.
- * @param {Object} relationLayer Currently active layers closest relation layer.
+ * @param {Object} contractLinkLayer Currently active layer's contract link layer.
+ * @param {Object} contractLayer Currently active layer's contract layer.
  * @param {number} contractNumber Contract number.
  *
  * @returns {Promise} Promise object with object IDs to be deleted.
  */
 export const getUnlinkParams = async (
-    currentLayer: Object,
-    relationLayer: Object,
+    contractLinkLayer: Object,
+    contractLayer: Object,
     contractNumber: number,
 ) => {
     try {
-        const { contractIdField } = currentLayer;
-        const {
-            relationLayerId, relationColumnOut, fields, id,
-        } = relationLayer;
+        const { contractIdField, id: contractId } = contractLayer;
+        const { relationColumnOut, fields, id: linkId } = contractLinkLayer;
 
-        const contractUuid = await queryFeatures(relationLayerId, `${contractIdField} = '${contractNumber}'`)
-            .then(res => res.features[0].attributes[relationColumnOut]);
+        let res = await queryFeatures(contractId, `${contractIdField} = '${contractNumber}'`);
+        const contractUuid = res.features[0].attributes[relationColumnOut];
+
         const objectIdField = fields.find(a => a.type === 'esriFieldTypeOID').name;
-
-        const objectIdToDelete = await queryFeatures(id, `${relationColumnOut} = '${contractUuid}'`)
-            .then(r => r.features[0].attributes[objectIdField]);
+        res = await queryFeatures(linkId, `${relationColumnOut} = '${contractUuid}'`);
+        const objectIdToDelete = res.features[0].attributes[objectIdField];
 
         return querystring.stringify({
             f: 'json',
