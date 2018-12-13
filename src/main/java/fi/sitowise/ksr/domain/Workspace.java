@@ -2,6 +2,7 @@ package fi.sitowise.ksr.domain;
 
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceLayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceRecord;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
@@ -26,6 +27,8 @@ public class Workspace implements Serializable {
     private int centerLongitude;
     private int centerLatitude;
     private Timestamp updateTime;
+    
+    @ApiModelProperty(hidden = true)
     private List<WorkspaceLayer> layers;
 
     /**
