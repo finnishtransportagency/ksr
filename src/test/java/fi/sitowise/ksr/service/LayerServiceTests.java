@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,9 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @WebMvcTest(value = SpringRunner.class)
 @ContextConfiguration(classes = LayerService.class)
 public class LayerServiceTests {
-
-    @Autowired
-    private LayerService layerService;
 
     /**
      * The Layer repository.
@@ -37,29 +35,40 @@ public class LayerServiceTests {
     @MockBean
     UserLayerRepository userLayerRepository;
 
-    /**
-     * The Layer group service.
-     */
-    @MockBean
-    LayerGroupService layerGroupService;
+    @Autowired
+    LayerService layerService;
 
     /**
      * Test get layer url with response.
      */
     @Test
-    public  void testGetLayerUrlWithResponse() {
+    @WithMockUser(username = "K12345")
+    public void testGetLayerUrlWithResponse() {
         Layer l = new Layer();
         l.setUrl("http://test.example.com/arcgis/services/WMS/MapServer/WMSServer?");
-        Mockito.when(layerService.getLayer(1, false, LayerAction.READ_LAYER)).thenReturn(l);
-        Assert.assertEquals(l, layerService.getLayer(1, false, LayerAction.READ_LAYER));
+        Mockito.when(layerRepository.getLayer(
+                Mockito.eq(1),
+                Mockito.any(),
+                Mockito.eq(false),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(l);
+        Layer received = layerService.getLayer(1, false, LayerAction.READ_LAYER);
+        Assert.assertEquals(l.getUrl(), received.getUrl());
     }
 
     /**
      * Test get layer url without response.
      */
     @Test
-    public  void testGetLayerUrlWithoutResponse() {
-        Mockito.when(layerService.getLayer(1, false, LayerAction.READ_LAYER)).thenReturn(null);
+    @WithMockUser(username = "K12345")
+    public void testGetLayerUrlWithoutResponse() {
+        Mockito.when(layerRepository.getLayer(
+                Mockito.eq(1),
+                Mockito.any(),
+                Mockito.eq(false),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(null);
+        Mockito.when(userLayerRepository.getUserLayer(Mockito.eq(1))).thenReturn(null);
         Assert.assertNull(layerService.getLayer(1, false, LayerAction.READ_LAYER));
     }
 }
