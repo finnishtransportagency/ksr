@@ -11,6 +11,8 @@ const setup = () => {
             type: 'esriFieldTypeString',
         },
         handleOnChange: jest.fn(),
+        fetching: false,
+        contractExists: true,
     };
 
     const wrapper = shallow(<ModalLayerDetailsSingleView {...props} />);

@@ -17,6 +17,7 @@ const mapStateToProps = (state) => {
 
     return {
         fields,
+        activeLayer,
         layer: state.map.mapView.graphicsLayer,
         originalLayerId: state.adminTool.active.layerId,
         addressField,

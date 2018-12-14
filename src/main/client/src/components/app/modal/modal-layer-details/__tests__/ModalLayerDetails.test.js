@@ -10,6 +10,8 @@ const setup = () => {
             { name: 'Field2' },
             { name: 'Field3' },
         ],
+        dataFields: [],
+        data: {},
         layer: {
             graphics: {
                 items: [{
@@ -20,6 +22,9 @@ const setup = () => {
                     },
                 }],
             },
+        },
+        activeLayer: {
+            contractIdField: 123,
         },
         setTempGraphicsLayer: jest.fn(),
     };
@@ -36,36 +41,23 @@ describe('<ModalLayerDetails />', () => {
     });
 
     it('should handle loadFields', () => {
-        const expectedResult = {
-            attributes: {
-                Field1: '',
-                Field2: '',
-                Field3: '',
-            },
-            geometry: {
-                x: 123,
-                y: 123,
-                type: 'point',
-            },
-        };
+        const expectedResult = [
+            { data: '', name: 'Field1', nullable: true },
+            { data: '', name: 'Field2', nullable: true },
+            { data: '', name: 'Field3', nullable: true },
+        ];
+
 
         wrapper.instance().loadFields();
-        expect(wrapper.state('data')).toEqual(expectedResult);
+        expect(wrapper.state('dataFields')).toEqual(expectedResult);
     });
 
     it('should handle handleOnChange', () => {
-        const expectedResult = {
-            attributes: {
-                Field1: 'Test Value',
-                Field2: '',
-                Field3: '',
-            },
-            geometry: {
-                x: 123,
-                y: 123,
-                type: 'point',
-            },
-        };
+        const expectedResult = [
+            { data: 'Test Value', name: 'Field1', nullable: true },
+            { data: '', name: 'Field2', nullable: true },
+            { data: '', name: 'Field3', nullable: true },
+        ];
 
         const evt = {
             target: {
@@ -74,8 +66,12 @@ describe('<ModalLayerDetails />', () => {
             },
         };
 
-        wrapper.instance().handleOnChange(evt);
+        const field = {
+            name: 'Field1',
+        };
 
-        expect(wrapper.state('data')).toEqual(expectedResult);
+        wrapper.instance().handleOnChange(evt, field);
+
+        expect(wrapper.state('dataFields')).toEqual(expectedResult);
     });
 });
