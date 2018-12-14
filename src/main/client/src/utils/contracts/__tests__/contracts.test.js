@@ -32,12 +32,24 @@ describe('contracts', () => {
                 id: 123,
                 description: 'Test description.',
                 alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/123',
+                attributes: {
+                    alfrescoLinkField: '/alfrescourl/123',
+                    caseManagementLinkField: '/casemanagementurl/123',
+                    contractDescription: 'Test description.',
+                    contractId: 123,
+                },
                 caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/123',
             },
             {
                 id: 456,
                 description: 'Test description 2.',
                 alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/456',
+                attributes: {
+                    alfrescoLinkField: '/alfrescourl/456',
+                    caseManagementLinkField: '/casemanagementurl/456',
+                    contractDescription: 'Test description 2.',
+                    contractId: 456,
+                },
                 caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/456',
             },
         ];
