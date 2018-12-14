@@ -5,7 +5,6 @@ import { fetchContractRelation } from '../../../../../api/contract/contractRelat
 import { deleteFeatures } from '../../../../../api/map/deleteFeatures';
 import strings from '../../../../../translations';
 import { contractListTexts, getUnlinkParams } from '../../../../../utils/contracts/contracts';
-import { nestedVal } from '../../../../../utils/nestedValue';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import ContractListView from './ContractListView';
 
@@ -15,7 +14,8 @@ type Props = {
     contractDescriptionField: string,
     contractUnlinkable: boolean,
     currentLayer: Object,
-    relationLayer: Object,
+    contractLinkLayer: Object,
+    contractLayer: Object,
     alfrescoLinkField: string,
     caseManagementLinkField: string,
 };
@@ -50,7 +50,7 @@ class ContractList extends Component<Props, State> {
         } = this.props;
 
         let contracts = await fetchContractRelation(
-            nestedVal(currentLayer, ['id']),
+            currentLayer.id,
             objectId,
         );
         contracts = await contractListTexts(
@@ -71,7 +71,8 @@ class ContractList extends Component<Props, State> {
     handleUnlinkContract = async (contractNumber: number) => {
         const {
             currentLayer,
-            relationLayer,
+            contractLinkLayer,
+            contractLayer,
             objectId,
             contractIdField,
             contractDescriptionField,
@@ -82,16 +83,16 @@ class ContractList extends Component<Props, State> {
         this.setState({ fetchingContracts: true });
 
         try {
-            const params = await getUnlinkParams(currentLayer, relationLayer, contractNumber);
+            const params = await getUnlinkParams(contractLinkLayer, contractLayer, contractNumber);
             const deletedFeatures = await deleteFeatures(
-                nestedVal(relationLayer, ['id']),
+                contractLinkLayer.id,
                 params,
             );
 
-            const deleteResults = nestedVal(deletedFeatures, ['deleteResults']);
-            if (deleteResults.length) {
+            const { deleteResults } = deletedFeatures;
+            if (deleteResults && deleteResults.length) {
                 let contracts = await fetchContractRelation(
-                    nestedVal(currentLayer, ['id']),
+                    currentLayer.id,
                     objectId,
                 );
                 contracts = await contractListTexts(

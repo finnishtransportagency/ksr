@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { queryFeatures } from '../../../../../api/search/searchQuery';
-import { getRelationLayers } from '../../../../../utils/contracts/contracts';
 import LinkContractView from './LinkContractView';
 
 type Props = {
@@ -12,7 +11,8 @@ type Props = {
         contractUuid?: string,
     ) => void,
     currentLayer: Object,
-    relationLayer: Object,
+    contractLinkLayer: Object,
+    contractLayer: Object,
 };
 
 type State = {
@@ -53,39 +53,34 @@ class LinkContract extends Component<Props, State> {
         this.props.contractLinkValidation(false);
 
         if (contractNumber) {
-            this.existsQuery = window.setTimeout(() => {
+            this.existsQuery = window.setTimeout(async () => {
                 const signal = this.abortController ? this.abortController.signal : undefined;
 
-                const { currentLayer, relationLayer } = this.props;
+                const { contractLinkLayer, contractLayer, currentLayer } = this.props;
 
-                const {
-                    layerToQuery,
-                    layerToUpdate,
-                } = getRelationLayers(currentLayer, relationLayer);
-
-                queryFeatures(
-                    layerToQuery,
-                    `${currentLayer.contractIdField} = '${contractNumber}'`,
+                const res = await queryFeatures(
+                    contractLayer.id,
+                    `${contractLayer.contractIdField} = '${contractNumber}'`,
                     signal,
-                ).then((r) => {
-                    if (r.features && r.features.length) {
-                        const contractUuid = r.features[0].attributes.CONTRACT_UUID;
-                        this.props.contractLinkValidation(
-                            true,
-                            contractNumber,
-                            layerToUpdate,
-                            contractUuid,
-                        );
-                        this.setState({
-                            fetching: false,
-                            contractExists: true,
-                        });
-                    } else {
-                        this.setState({
-                            fetching: false,
-                        });
-                    }
-                });
+                );
+
+                if (res.features && res.features.length) {
+                    const contractUuid = res.features[0].attributes.CONTRACT_UUID;
+                    this.props.contractLinkValidation(
+                        true,
+                        contractNumber,
+                        contractLinkLayer || currentLayer,
+                        contractUuid,
+                    );
+                    this.setState({
+                        fetching: false,
+                        contractExists: true,
+                    });
+                } else {
+                    this.setState({
+                        fetching: false,
+                    });
+                }
             }, 300);
         } else {
             this.setState({

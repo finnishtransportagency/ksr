@@ -1,28 +1,27 @@
 // @flow
 import { connect } from 'react-redux';
+import { getContractLayers } from '../../../../../utils/contracts/contracts';
 import { nestedVal } from '../../../../../utils/nestedValue';
 import ContractList from './ContractList';
 
 const mapStateToProps = (state) => {
-    const { layerId } = state.contract.contractList;
-    const currentLayer = layerId && state.map.layerGroups.layerList
-        .find(layer => layer.id === layerId.replace('.s', ''));
-    const relationLayer = currentLayer && state.map.layerGroups.layerList
-        .find(layer => layer.id === currentLayer.relationLayerId.toString());
+    const { layerId, objectId } = state.contract.contractList;
+    const { layerList } = state.map.layerGroups;
 
     const {
-        objectId, contractIdField, contractDescriptionField,
-    } = state.contract.contractList;
+        currentLayer, contractLinkLayer, contractLayer,
+    } = getContractLayers(layerId, layerList);
 
     return {
         objectId,
-        contractIdField,
-        contractDescriptionField,
-        contractUnlinkable: nestedVal(currentLayer, ['relationType']) === 'many',
         currentLayer,
-        relationLayer,
-        alfrescoLinkField: nestedVal(currentLayer, ['alfrescoLinkField']),
-        caseManagementLinkField: nestedVal(currentLayer, ['caseManagementLinkField']),
+        contractLinkLayer,
+        contractLayer,
+        contractIdField: nestedVal(contractLayer, ['contractIdField']),
+        contractDescriptionField: nestedVal(contractLayer, ['contractDescriptionField']),
+        contractUnlinkable: nestedVal(currentLayer, ['relationType']) === 'many',
+        alfrescoLinkField: nestedVal(contractLayer, ['alfrescoLinkField']),
+        caseManagementLinkField: nestedVal(contractLayer, ['caseManagementLinkField']),
     };
 };
 
