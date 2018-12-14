@@ -41,8 +41,10 @@ describe('saveFeatureData', () => {
         expect(layer.refresh.mock.calls.length).toBe(0);
     });
 
+    const expectedResult = { addResults: 1 };
+
     it('handleSaveResponse - invalid layer-parameter - should not refresh layer', () => {
-        expect(save.handleSaveResponse({ addResults: 1 }, null)).toBe(undefined);
+        expect(save.handleSaveResponse({ addResults: 1 }, null)).toMatchObject(expectedResult);
     });
 
     it('handleSaveResponse - invalid parameters - should not refresh layer', () => {

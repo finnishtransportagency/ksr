@@ -87,6 +87,7 @@ const handleSaveResponse = (res: Object, layer: ?Object) => {
     } else {
         toast.error(strings.saveFeatureData.newFeatureSaveError);
     }
+    return res;
 };
 
 /**
@@ -98,7 +99,7 @@ const handleSaveResponse = (res: Object, layer: ?Object) => {
  *
  * @returns {Object} Object containing layer id and feature ids of the updated features.
  */
-const handleUpdateResponse = (res: Object, layerId: string) => {
+const handleUpdateResponse = (res: Object, layerId: string): Object => {
     const layer = {
         layerId,
         features: Array.isArray(res.updateResults) ?

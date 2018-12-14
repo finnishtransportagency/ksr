@@ -241,6 +241,9 @@ const fi = {
             contractLinkedExists: 'Linkitys on jo olemassa',
             contractLinkedError: 'Linkityksen luonti epäonnistui',
         },
+        addEditContract: {
+            contractFound: 'täytyy olla yksilöllinen.',
+        },
     },
     saveFeatureData: {
         newFeatureSaveSuccess: 'Kohteen luonti onnistui.',

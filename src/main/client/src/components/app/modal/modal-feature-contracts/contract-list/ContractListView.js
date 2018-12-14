@@ -7,10 +7,16 @@ type Props = {
     contracts: Object[],
     contractUnlinkable: boolean,
     handleUnlinkContract: (contractNumber: number) => any,
+    setActiveView: Function,
+    editLayerPermission: boolean,
 };
 
 const ContractListView = ({
-    contracts, contractUnlinkable, handleUnlinkContract,
+    contracts,
+    contractUnlinkable,
+    handleUnlinkContract,
+    setActiveView,
+    editLayerPermission,
 }: Props) => (
     <Fragment>
         { !contracts.length && <p>{strings.modalFeatureContracts.listView.noContracts}</p> }
@@ -32,11 +38,16 @@ const ContractListView = ({
                         </Contract.TextWrapper.Text>
                     </Contract.TextWrapper>
                     <Contract.IconWrapper>
+                        {editLayerPermission &&
                         <Contract.IconWrapper.Icon
                             edit
+                            onClick={() => {
+                                setActiveView('editContract', contract.id);
+                            }}
                             title={strings.modalFeatureContracts.listView.edit}
                             className="fas fa-edit"
                         />
+                        }
                         <Contract.IconWrapper.Icon
                             onClick={() => contract.alfrescoUrl && window.open(contract.alfrescoUrl, '_blank')}
                             title={strings.modalFeatureContracts.listView.alfrescoLink}
@@ -49,7 +60,7 @@ const ContractListView = ({
                             className="fas fa-book"
                             disabled={!contract.caseManagementUrl}
                         />
-                        {contractUnlinkable &&
+                        {contractUnlinkable && editLayerPermission &&
                         <Contract.IconWrapper.Icon
                             unlink
                             onClick={() => { handleUnlinkContract(contract.id); }}
