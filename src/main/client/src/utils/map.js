@@ -150,6 +150,13 @@ export const highlight = async (
 ) => {
     const [Query] = await esriLoader.loadModules(['esri/tasks/support/Query']);
     if (view) {
+        const highlightFeatures = (layer: Object, layerView: Object, features: Object[]) => {
+            if (layer.layerHighlight) {
+                layer.layerHighlight.remove();
+            }
+            layer.layerHighlight = layerView.highlight(features);
+        };
+
         view.map.layers.forEach((layer) => {
             if (layer.visible && layer.queryFeatures) {
                 const ids = selectedFeatures
@@ -171,12 +178,9 @@ export const highlight = async (
                             outFields: ['*'],
                             returnGeometry: true,
                         };
-                        layer.queryFeatures(query).then((res) => {
-                            if (res) {
-                                if (layer.layerHighlight) {
-                                    layer.layerHighlight.remove();
-                                }
-                                layer.layerHighlight = layerView.highlight(res.features);
+                        layer.queryFeatures(query).then((results) => {
+                            if (results) {
+                                highlightFeatures(layer, layerView, results.features);
                             }
                         });
                     });
@@ -190,11 +194,7 @@ export const highlight = async (
                             layerView.queryFeatures(queryView)
                                 .then((results) => {
                                     if (results) {
-                                        if (layer.layerHighlight) {
-                                            layer.layerHighlight.remove();
-                                        }
-                                        layer.layerHighlight =
-                                            layerView.highlight(results.features);
+                                        highlightFeatures(layer, layerView, results.features);
                                     }
                                 });
                         });
@@ -205,12 +205,9 @@ export const highlight = async (
                                 outFields: ['*'],
                                 returnGeometry: true,
                             };
-                            layer.queryFeatures(query).then((res) => {
-                                if (res) {
-                                    if (layer.layerHighlight) {
-                                        layer.layerHighlight.remove();
-                                    }
-                                    layer.layerHighlight = layerView.highlight(res.features);
+                            layer.queryFeatures(query).then((results) => {
+                                if (results) {
+                                    highlightFeatures(layer, layerView, results.features);
                                 }
                             });
                         });
