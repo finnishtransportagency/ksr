@@ -8,6 +8,7 @@ import ContractListView from '../ContractListView';
 const setup = (prop) => {
     const minProps = {
         contracts: [],
+        editLayerPermission: true,
     };
 
     const props = prop || minProps;
@@ -20,6 +21,7 @@ describe('<ContractListView />', () => {
     it('should render text with no contracts', () => {
         const props = {
             contracts: [],
+            editLayerPermission: true,
         };
 
         const { wrapper } = setup(props);
@@ -61,6 +63,7 @@ describe('<ContractListView />', () => {
                 id: 3,
                 description: 'Test 3',
             }],
+            editLayerPermission: true,
         };
 
         const { wrapper } = setup(props);

@@ -18,6 +18,8 @@ type Props = {
     contractLayer: Object,
     alfrescoLinkField: string,
     caseManagementLinkField: string,
+    setActiveView: Function,
+    editLayerPermission: boolean,
 };
 
 type State = {
@@ -121,7 +123,9 @@ class ContractList extends Component<Props, State> {
     render() {
         const { contracts, fetchingContracts } = this.state;
         const {
-            contractUnlinkable, alfrescoLinkField, caseManagementLinkField,
+            contractUnlinkable,
+            setActiveView,
+            editLayerPermission,
         } = this.props;
 
         return fetchingContracts
@@ -130,8 +134,8 @@ class ContractList extends Component<Props, State> {
                 contracts={contracts}
                 contractUnlinkable={contractUnlinkable}
                 handleUnlinkContract={this.handleUnlinkContract}
-                alfrescoLink={alfrescoLinkField}
-                caseManagementLink={caseManagementLinkField}
+                setActiveView={setActiveView}
+                editLayerPermission={editLayerPermission}
             />;
     }
 }

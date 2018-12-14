@@ -19,7 +19,7 @@ const setup = (prop) => {
         currentLayer: {
             id: 123,
         },
-        relationLayer: {
+        contractLayer: {
             id: 123,
         },
     };
@@ -81,13 +81,25 @@ describe('<ContractList />', () => {
         const expectedResult = [{
             alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/123',
             caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/123',
-            id: 123,
+            attributes: {
+                alfrescoUrl: '/alfrescourl/123',
+                caseManagementUrl: '/casemanagementurl/123',
+                contractDescription: 'Description field 1',
+                contractId: 123,
+            },
             description: 'Description field 1',
+            id: 123,
         }, {
             alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/456',
             caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/456',
-            id: 456,
+            attributes: {
+                alfrescoUrl: '/alfrescourl/456',
+                caseManagementUrl: '/casemanagementurl/456',
+                contractDescription: 'Description field 2',
+                contractId: 456,
+            },
             description: 'Description field 2',
+            id: 456,
         }];
 
         fetchMock.fetchContractRelation = jest.fn(() => Promise.resolve(contracts));

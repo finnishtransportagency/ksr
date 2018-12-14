@@ -12,6 +12,10 @@ const mapStateToProps = (state) => {
         currentLayer, contractLinkLayer, contractLayer,
     } = getContractLayers(layerId, layerList);
 
+    const editLayerPermission = state.adminTool.active.layerId === layerId &&
+        nestedVal(currentLayer, ['layerPermission', 'updateLayer']) &&
+        nestedVal(contractLayer, ['layerPermission', 'updateLayer']);
+
     return {
         objectId,
         currentLayer,
@@ -22,6 +26,7 @@ const mapStateToProps = (state) => {
         contractUnlinkable: nestedVal(currentLayer, ['relationType']) === 'many',
         alfrescoLinkField: nestedVal(contractLayer, ['alfrescoLinkField']),
         caseManagementLinkField: nestedVal(contractLayer, ['caseManagementLinkField']),
+        editLayerPermission,
     };
 };
 

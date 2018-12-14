@@ -11,7 +11,7 @@ const setup = (prop) => {
     const minProps = {
         contractLinkValidation: jest.fn(),
         currentLayer: {},
-        relationLayer: {},
+        contractLayer: {},
     };
     const props = prop || minProps;
     const wrapper = shallow(<LinkContract {...props} />);
