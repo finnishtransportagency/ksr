@@ -36,6 +36,7 @@ const initialState = {
 class ModalFilter extends Component<Props, State> {
     abortController: ?Object = null; // eslint-disable-line react/sort-comp
     existsQuery: ?number = 0; // eslint-disable-line react/sort-comp
+
     constructor(props: Props) {
         super(props);
         this.state = { ...initialState };
@@ -82,6 +83,9 @@ class ModalFilter extends Component<Props, State> {
 
         this.setState({ dataFields: newData });
 
+        window.clearTimeout(this.existsQuery);
+        if (this.abortController) this.abortController.abort();
+
         const dataObject = Object.assign({}, ...(newData.map(item =>
             ({ [item.name]: item.data }))));
         this.setState({ data: dataObject });
@@ -89,6 +93,8 @@ class ModalFilter extends Component<Props, State> {
         const { activeLayer } = this.props;
 
         if (value && field.name === activeLayer.contractIdField) {
+            this.setState({ fetching: true, contractExists: true });
+
             this.existsQuery = window.setTimeout(() => {
                 const signal = this.abortController ? this.abortController.signal : undefined;
                 queryFeatures(
@@ -136,12 +142,13 @@ class ModalFilter extends Component<Props, State> {
     };
 
     render() {
+        const { activeLayer } = this.props;
         const { fetching, contractExists, dataFields } = this.state;
-
+        const disabled = activeLayer.contractIdField && contractExists;
         const modalSubmit = [{
             text: strings.modalLayerDetails.submit,
             handleSubmit: this.handleModalSubmit,
-            disabled: contractExists,
+            disabled,
             toggleModal: true,
         }];
 
