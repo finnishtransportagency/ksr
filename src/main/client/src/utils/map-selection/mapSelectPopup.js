@@ -71,15 +71,6 @@ export const mapSelectPopup = async (
                         label: c.name,
                     });
                 });
-
-                layer.graphic.layer.popupTemplate = {
-                    title: layer.graphic.layer.title,
-                    content: [{
-                        type: 'fields',
-                        fieldInfos,
-                    }],
-                    actions,
-                };
             } else if (layer.graphic.layer) {
                 const matchingLayer = layerList
                     .find(ll => ll.id === layer.graphic.layer.id.replace('.s', ''));
@@ -104,17 +95,17 @@ export const mapSelectPopup = async (
                         };
                         actions.push(contractLink);
                     }
-
-                    layer.graphic.layer.popupTemplate = {
-                        title: layer.graphic.layer.title,
-                        content: [{
-                            type: 'fields',
-                            fieldInfos,
-                        }],
-                        actions,
-                    };
                 }
             }
+
+            layer.graphic.layer.popupTemplate = {
+                title: layer.graphic.layer.title,
+                content: [{
+                    type: 'fields',
+                    fieldInfos,
+                }],
+                actions,
+            };
         });
         const graphics = newResults.map(re => re.graphic);
         const features = graphicsToEsriJSON(graphics
