@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import java.sql.Timestamp;
-import java.util.Map;
+import java.util.List;
+import java.util.UUID;
 
 import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
 
@@ -40,10 +40,10 @@ public class WorkspaceController {
      * Save new workspace to database.
      *
      * @param workspace workspace to be saved into database
-     * @return map of workspace names and update times
+     * @return list of workspaces
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Map<Timestamp, String> saveWorkspace(@Valid @RequestBody Workspace workspace) {
+    public List<Workspace> saveWorkspace(@Valid @RequestBody Workspace workspace) {
         LOG.info(String.format("%s: Save new workspace to database.", getCurrentUsername()));
         try {
             workspaceService.saveWorkspace(workspace,  getCurrentUsername());
@@ -74,10 +74,10 @@ public class WorkspaceController {
      * Delete existing workspace from database.
      *
      * @param workspaceName name of the workspace to be deleted from database
-     * @return map of workspace names and update times
+     * @return list of workspaces
      */
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public Map<Timestamp, String> deleteWorkspace(@RequestParam String workspaceName) {
+    public List<Workspace> deleteWorkspace(@RequestParam String workspaceName) {
         LOG.info(String.format("%s: Delete existing workspace from database.", getCurrentUsername()));
         if (!workspaceService.deleteWorkspace(workspaceName, getCurrentUsername())) {
             throw new KsrApiException.NotFoundErrorException(
@@ -89,12 +89,23 @@ public class WorkspaceController {
     /**
      * Fetch map of workspace names and update times for current user.
      *
-     * @return map of workspace names and update times
+     * @return list of workspaces
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public Map<Timestamp, String> getWorkspaceList() {
+    public List<Workspace> getWorkspaceList() {
         LOG.info(String.format("%s: Fetch map of workspace names and update times for current user.", getCurrentUsername()));
         return workspaceService.getWorkspaceListForUser(getCurrentUsername());
+    }
+
+    /**
+     * Fetch a single workspace with uuid.
+     *
+     * @return matching workspace if any
+     */
+    @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+    public Workspace getWorkspaceByUuid(@PathVariable UUID uuid) {
+        LOG.info(String.format("%s: Fetch workspace [%s]", getCurrentUsername(), uuid.toString()));
+        return workspaceService.getWorkspaceByUuid(uuid);
     }
 
     /**

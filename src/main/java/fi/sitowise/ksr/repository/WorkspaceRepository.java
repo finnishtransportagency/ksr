@@ -12,12 +12,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
-import static fi.sitowise.ksr.jooq.Tables.WORKSPACE;
-import static fi.sitowise.ksr.jooq.Tables.WORKSPACE_LAYER;
+import static fi.sitowise.ksr.jooq.Tables.*;
 
 /**
  * Workspace repository.
@@ -78,6 +76,7 @@ public class WorkspaceRepository {
         return context
                 .insertInto(
                         WORKSPACE,
+                        WORKSPACE.UUID,
                         WORKSPACE.NAME,
                         WORKSPACE.USERNAME,
                         WORKSPACE.SCALE,
@@ -85,6 +84,7 @@ public class WorkspaceRepository {
                         WORKSPACE.CENTER_LATITUDE
                 )
                 .values(
+                        UUID.randomUUID().toString(),
                         workspace.getName(),
                         username,
                         workspace.getScale(),
@@ -151,21 +151,18 @@ public class WorkspaceRepository {
     }
 
     /**
-     * Fetch map of workspace names and update times for given user.
+     * Fetch list of workspaces for given username. Will sort workspaces
+     * by their updated time.
      *
      * @param username username of the user whose workspaces are fetched
-     * @return map of workspace names and update times
+     * @return list of workspaces sorted by updated time
      */
-    public Map<Timestamp, String> fetchWorkspaceListForUser(String username) {
+    public List<Workspace> fetchWorkspaceListForUser(String username) {
         return context
-                .select(
-                        WORKSPACE.UPDATED,
-                        WORKSPACE.NAME
-                )
-                .from(WORKSPACE)
+                .selectFrom(WORKSPACE)
                 .where(WORKSPACE.USERNAME.equal(username))
                 .orderBy(WORKSPACE.UPDATED.desc())
-                .fetchMap(WORKSPACE.UPDATED, WORKSPACE.NAME);
+                .fetch(w -> new Workspace(w, null));
     }
 
     /**
@@ -203,6 +200,38 @@ public class WorkspaceRepository {
             return new Workspace(workspace, layers);
         }
 
+        return null;
+    }
+
+    /**
+     * Fetch a single workspace by uuid. If not matching workspace can be found,
+     * then returns null instead.
+     *
+     * Filters out layers the user does not have a permission and also user defined layers.
+     *
+     * @param uuid Uuid of the workspace
+     * @return workspace if found
+     */
+    @Transactional
+    public Workspace fetchWorkspaceByUuid(UUID uuid, List<String> userGroups) {
+        WorkspaceRecord wr = context
+                .selectFrom(WORKSPACE)
+                .where(WORKSPACE.UUID.equal(uuid.toString()))
+                .fetchOne();
+
+        if (wr != null) {
+            List<WorkspaceLayerRecord> layers = context
+                    .select(WORKSPACE_LAYER.fields())
+                    .from(WORKSPACE_LAYER)
+                    .innerJoin(LAYER_PERMISSION).on(LAYER_PERMISSION.LAYER_ID.equal(WORKSPACE_LAYER.LAYER_ID))
+                    .where(WORKSPACE_LAYER.WORKSPACE_ID.equal(wr.getId()))
+                        .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
+                        .and(LAYER_PERMISSION.READ_LAYER.equal("1"))
+                        .and(WORKSPACE_LAYER.USER_LAYER_ID.isNull())
+                    .orderBy(WORKSPACE_LAYER.LAYER_ORDER)
+                    .fetchInto(WORKSPACE_LAYER);
+            return new Workspace(wr, layers);
+        }
         return null;
     }
 }

@@ -1,12 +1,15 @@
 package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Workspace;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.Map;
+import java.util.List;
+import java.util.UUID;
+
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUserGroups;
 
 /**
  * Workspace service.
@@ -58,12 +61,12 @@ public class WorkspaceService {
     }
 
     /**
-     * Fetch map of workspace names and update times for given user.
+     * Fetch list of workspaces for given user.
      *
      * @param username username of the user whose workspaces are fetched
-     * @return map of workspace names and update times
+     * @return list of workspaces
      */
-    public Map<Timestamp, String> getWorkspaceListForUser(String username) {
+    public List<Workspace> getWorkspaceListForUser(String username) {
         return workspaceRepository.fetchWorkspaceListForUser(username);
     }
 
@@ -77,5 +80,21 @@ public class WorkspaceService {
      */
     public Workspace getWorkspaceDetails(String workspaceName, String username) {
         return workspaceRepository.fetchWorkspaceDetails(workspaceName, username);
+    }
+
+    /**
+     * Fetch a single workspace by Uuid.
+     *
+     * If workspace cannot be found, then will raise a 404 exception.
+     *
+     * @param uuid Uuid of the workspace to be fetched
+     * @return workspace
+     */
+    public Workspace getWorkspaceByUuid(UUID uuid) {
+        Workspace workspace = workspaceRepository.fetchWorkspaceByUuid(uuid, getCurrentUserGroups());
+        if (workspace == null) {
+            throw new KsrApiException.NotFoundErrorException(String.format("Workspace: %s not found.", uuid.toString()));
+        }
+        return workspace;
     }
 }

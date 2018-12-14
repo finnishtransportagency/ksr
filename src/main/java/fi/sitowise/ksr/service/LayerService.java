@@ -4,10 +4,12 @@ import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.repository.LayerRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUserGroups;
 
 /**
  * Layer service.
@@ -15,19 +17,17 @@ import java.util.List;
 @Service
 public class LayerService {
 
-    private final LayerGroupService layerGroupService;
-
     private final LayerRepository layerRepository;
     private final UserLayerRepository userLayerRepository;
 
     /**
      * Instantiates a new Layer service.
      *
-     * @param layerGroupService the layer group service
      * @param layerRepository   the layer repository
+     * @param userLayerRepository the user layer repository
      */
-    public LayerService(LayerGroupService layerGroupService, LayerRepository layerRepository, UserLayerRepository userLayerRepository) {
-        this.layerGroupService = layerGroupService;
+    @Autowired
+    public LayerService(LayerRepository layerRepository, UserLayerRepository userLayerRepository) {
         this.layerRepository = layerRepository;
         this.userLayerRepository = userLayerRepository;
     }
@@ -40,13 +40,13 @@ public class LayerService {
      * @return the layer
      */
     public Layer getLayer(int id, boolean isQuery, LayerAction actionType) {
-        List<String> userGroups = layerGroupService.getUserGroups();
+        List<String> userGroups = getCurrentUserGroups();
         if (userGroups == null) {
             return null;
         }
-        if (layerRepository.getLayer(id, userGroups, isQuery, actionType) == null) {
-            return userLayerRepository.getUserLayer(id);
-        }
-        return layerRepository.getLayer(id, userGroups, isQuery, actionType);
+        Layer layer = layerRepository.getLayer(id, userGroups, isQuery, actionType);
+
+        //TODO: Check permission for userlayer
+        return layer == null ? userLayerRepository.getUserLayer(id) : layer;
     }
 }

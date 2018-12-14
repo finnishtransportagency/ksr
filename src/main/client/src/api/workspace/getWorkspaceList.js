@@ -3,7 +3,7 @@ import { config } from '../config';
 /**
  * Gets all workspaces that belong to the current user.
  *
- * @return {Object} Contains workspace names and last updated times.
+ * @return {Object[]} Contains list of workspaces.
  */
 export const fetchGetWorkspaceList = () => (
     fetch('api/workspace/list', config())

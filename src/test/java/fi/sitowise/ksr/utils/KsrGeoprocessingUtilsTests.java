@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -61,6 +62,7 @@ public class KsrGeoprocessingUtilsTests {
     LayerGroupService layerGroupService;
 
     @Test
+    @WithMockUser(username = "K12345")
     public void testCreatePrintParameters() throws ParseException {
         List<NameValuePair> params = new ArrayList<>();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -84,6 +86,7 @@ public class KsrGeoprocessingUtilsTests {
     }
 
     @Test
+    @WithMockUser(username = "K12345")
     public void testCreateExtractParameters() throws ParseException {
         List<NameValuePair> params = new ArrayList<>();
         MockHttpServletRequest request = new MockHttpServletRequest();

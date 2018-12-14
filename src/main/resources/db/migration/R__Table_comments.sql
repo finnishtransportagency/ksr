@@ -67,6 +67,7 @@ comment on column user_layer.username is 'Identifier of the user that the layer 
 
 comment on table workspace is 'Saved workspaces.';
 comment on column workspace.id is 'Generated workspace identifier. Primary key.';
+comment on column workspace.uuid is 'UUID-identifier for workspace. Unique and not null.';
 comment on column workspace.name is 'Name of the workspace.';
 comment on column workspace.username is 'Username of the user that the workspace belongs to.';
 comment on column workspace.scale is 'Scale of the map.';
