@@ -5,7 +5,7 @@ import { cellEditValidate, preventKeyPress } from '../../../../utils/cellEditVal
 import { addContractColumn } from '../../../../utils/contracts/contractColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';
-import { WrapperReactTableNoTable } from './styles';
+import { WrapperReactTableNoTable, TableSelect } from './styles';
 import strings from './../../../../translations';
 
 type Props = {
@@ -50,8 +50,22 @@ class ReactTable extends Component<Props> {
         }
     }
 
-    toggleSelection = (id: string, shiftKey: string, row: Object) => {
-        this.props.toggleSelection(row);
+    getCellContent = (layer: Object, cellField: Object, cellInfo: Object) => (
+        cellField && cellField.type === 'esriFieldTypeDate' ?
+            (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString() :
+            layer.data[cellInfo.index][cellInfo.column.id]
+    );
+
+    getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
+        let className = '';
+        if (!contentEditable) {
+            className = 'content-not-editable';
+        } else if (
+            (content === null || (typeof content === 'string' && content.trim().length === 0))
+            && !cellField.nullable) {
+            className = 'content-not-valid';
+        }
+        return className;
     };
 
     handleContractClick = (objectId: number) => {
@@ -63,58 +77,99 @@ class ReactTable extends Component<Props> {
         setContractListInfo(layerId, objectId);
     };
 
-    renderEditable = (cellInfo: Object) => {
-        const {
-            layer, setEditedLayer, layerList, activeTable, activeAdminTool,
-        } = this.props;
+    isCellEditable = (currentLayer: Object, cellField: Object) => {
+        const { activeAdminTool } = this.props;
+        return activeAdminTool === currentLayer.id
+            && currentLayer._source !== 'shapefile'
+            && currentLayer.layerPermission.updateLayer
+            && cellField.editable;
+    };
 
+    toggleSelection = (id: string, shiftKey: string, row: Object) => {
+        this.props.toggleSelection(row);
+    };
+
+    renderSelect = (cellField: Object, content: any, layer: Object, cellInfo: Object) => {
+        const { setEditedLayer } = this.props;
+        const options = cellField.domain.codedValues.map(v => (
+            <option key={v.code} value={v.code}>{v.name}</option>
+        )).concat([
+            // Add empty option for empty and null values
+            <option key="-" value="">--</option>,
+        ]);
+        return (
+            <TableSelect
+                value={content === null ? '' : content}
+                onChange={(e) => {
+                    setEditedLayer(cellEditValidate(
+                        e.target.value,
+                        layer.data,
+                        cellField,
+                        cellInfo,
+                    ));
+                }}
+            >
+                {options}
+            </TableSelect>
+        );
+    };
+
+    renderDiv = (
+        cellField: Object,
+        content: any,
+        layer: Object,
+        cellInfo: Object,
+        contentEditable: boolean,
+    ) => {
+        const className = this.getCellClassName(contentEditable, cellField, content);
+        const { setEditedLayer } = this.props;
+        return (
+            <div
+                style={{ minHeight: '1rem' }}
+                role="textbox"
+                tabIndex={0}
+                className={className}
+                contentEditable={contentEditable}
+                suppressContentEditableWarning
+                onKeyPress={(e) => {
+                    if (contentEditable) preventKeyPress(e, cellField);
+                }}
+                onBlur={(e) => {
+                    if (contentEditable) {
+                        setEditedLayer(cellEditValidate(
+                            e.target.innerText,
+                            layer.data,
+                            cellField,
+                            cellInfo,
+                        ));
+                    }
+                }}
+                dangerouslySetInnerHTML={{ // eslint-disable-line
+                    __html: DOMPurify.sanitize(content !== null ? String(content) : null),
+                }}
+            />
+        );
+    };
+
+    renderEditable = (cellInfo: Object) => {
+        const { layer, layerList, activeTable } = this.props;
         const currentLayer = layerList.find(l => l.id === activeTable);
 
         if (currentLayer) {
             const cellField = currentLayer.fields.find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
-
-            const contentEditable = activeAdminTool === currentLayer.id
-                && currentLayer._source !== 'shapefile'
-                && currentLayer.layerPermission.updateLayer
-                && cellField.editable;
-
-            const content = cellField && cellField.type === 'esriFieldTypeDate' ?
-                (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString() :
-                layer.data[cellInfo.index][cellInfo.column.id];
-
-            let className = '';
-            if (!contentEditable) {
-                className = 'content-not-editable';
-            } else if (
-                (content === null || (typeof content === 'string' && content.trim().length === 0))
-                && !cellField.nullable) {
-                className = 'content-not-valid';
+            if (cellField) {
+                const contentEditable = this.isCellEditable(currentLayer, cellField);
+                const content = this.getCellContent(layer, cellField, cellInfo);
+                if (
+                    cellField.domain &&
+                    (cellField.domain.type === 'codedValue' || cellField.domain.type === 'coded-value') &&
+                    contentEditable
+                ) {
+                    return this.renderSelect(cellField, content, layer, cellInfo);
+                }
+                return this.renderDiv(cellField, content, layer, cellInfo, contentEditable);
             }
-
-            return (
-                <div
-                    style={{ minHeight: '1rem' }}
-                    role="textbox"
-                    tabIndex={0}
-                    className={className}
-                    contentEditable={contentEditable}
-                    suppressContentEditableWarning
-                    onKeyPress={(e) => {
-                        if (contentEditable) preventKeyPress(e, cellField);
-                    }}
-                    onBlur={(e) => {
-                        if (contentEditable) {
-                            const data = cellEditValidate(e, layer.data, cellField, cellInfo);
-                            setEditedLayer(data);
-                        }
-                    }}
-                    dangerouslySetInnerHTML={{ // eslint-disable-line
-                        __html: DOMPurify.sanitize(content !== null ? String(content) : null),
-                    }}
-                />
-            );
         }
-
         return null;
     };
 
