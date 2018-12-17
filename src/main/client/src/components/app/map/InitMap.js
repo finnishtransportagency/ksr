@@ -1,7 +1,7 @@
 // @flow
 import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
-import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
+import { fetchWorkspace, getWorkspaceUuid } from '../../../api/workspace/userWorkspace';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import { queryFeatures } from '../../../utils/queryFeatures';
 import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
@@ -168,7 +168,7 @@ class EsriMap extends Component<Props> {
                     view.popup.close();
 
                     if (this.props.editMode === 'update') return;
-                    view.hitTest(event).then((response) => {
+                    view.hitTest(event).then(async (response) => {
                         const { results } = response;
                         const { layerList } = this.props;
                         const filteredResults = results.filter(item =>
@@ -181,7 +181,7 @@ class EsriMap extends Component<Props> {
                             view.popup.open({ location: event.mapPoint });
 
                             const { activeAdminTool } = this.props;
-                            mapSelectPopup(
+                            await mapSelectPopup(
                                 filteredResults,
                                 view,
                                 selectFeatures,
@@ -294,7 +294,7 @@ class EsriMap extends Component<Props> {
 
                 return { view, tempGraphicsLayer };
             })
-            .then((r) => {
+            .then(async (r) => {
                 const {
                     setWorkspaceRejected,
                     layerList,
@@ -309,23 +309,41 @@ class EsriMap extends Component<Props> {
                 setMapView(r.view);
                 setTempGraphicsLayer(r.tempGraphicsLayer);
 
-                // Initial workspace load, fetches users latest workspace.
-                fetchWorkspace(null)
-                    .then((workspace) => {
-                        if (workspace) {
-                            loadWorkspace(
-                                workspace,
-                                layerList,
-                                r.view,
-                                searchWorkspaceFeatures,
-                                addNonSpatialContentToTable,
-                                selectFeatures,
-                            );
-                        } else {
-                            setWorkspaceRejected();
-                        }
-                    })
-                    .catch(err => console.log(err));
+                /**
+                 * Loads workspace with workspace uuid if url contains workspace parameter.
+                 * e.g. /?workspace=<workspace uuid>
+                 *
+                 * If url doesn't have workspace parameter, latest workspace will be loaded.
+                 */
+                const urlParams = new URLSearchParams(window.location.search);
+                const workspaceUuid = urlParams.get('workspace');
+                let workspace = workspaceUuid && await getWorkspaceUuid(workspaceUuid);
+
+                if (workspace) {
+                    loadWorkspace(
+                        workspace,
+                        layerList,
+                        r.view,
+                        searchWorkspaceFeatures,
+                        addNonSpatialContentToTable,
+                        selectFeatures,
+                    );
+                } else {
+                    workspace = await fetchWorkspace(null);
+                    if (workspace) {
+                        loadWorkspace(
+                            workspace,
+                            layerList,
+                            r.view,
+                            searchWorkspaceFeatures,
+                            addNonSpatialContentToTable,
+                            selectFeatures,
+                        );
+                    } else {
+                        setWorkspaceRejected();
+                    }
+                }
+                window.history.pushState({}, document.title, window.location.pathname);
             });
     };
 
