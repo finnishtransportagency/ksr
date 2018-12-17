@@ -126,26 +126,31 @@ describe('parseFeatureData', () => {
                 Header: 'L 1 A',
                 accessor: '123/l.1.a',
                 show: true,
+                domain: null,
             },
             {
                 Header: 'L 2 A',
                 accessor: '123/l.2.a',
                 show: true,
+                domain: null,
             },
             {
                 Header: 'L 3 A',
                 accessor: '123/l.3.a',
                 show: true,
+                domain: null,
             },
             {
                 Header: 'geom',
                 accessor: '123/GEOM',
                 show: false,
+                domain: null,
             },
             {
                 Header: 'objectid',
                 accessor: '123/OBJECTID',
                 show: false,
+                domain: null,
             },
         ];
 
@@ -243,8 +248,18 @@ describe('parseFeatureData', () => {
                 _source: 'select',
                 _idFieldName: 'id',
                 columns: [
-                    { Header: 'L1A', accessor: '123/l.1.a', show: true },
-                    { Header: 'L2A', accessor: '123/l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: '123/l.1.a',
+                        show: true,
+                        domain: null,
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: '123/l.2.a',
+                        show: true,
+                        domain: null,
+                    },
                 ],
                 data: [
                     {
@@ -265,8 +280,18 @@ describe('parseFeatureData', () => {
                 _source: 'search',
                 _idFieldName: 'id',
                 columns: [
-                    { Header: 'L1A', accessor: '456/l.1.a', show: true },
-                    { Header: 'L2A', accessor: '456/l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: '456/l.1.a',
+                        show: true,
+                        domain: null,
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: '456/l.2.a',
+                        show: true,
+                        domain: null,
+                    },
                 ],
                 data: [
                     {
@@ -287,8 +312,18 @@ describe('parseFeatureData', () => {
                 _source: 'select',
                 _idFieldName: 'id',
                 columns: [
-                    { Header: 'L1A', accessor: '789/l.1.a', show: true },
-                    { Header: 'L2A', accessor: '789/l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: '789/l.1.a',
+                        show: true,
+                        domain: null,
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: '789/l.2.a',
+                        show: true,
+                        domain: null,
+                    },
                 ],
                 data: [
                     {

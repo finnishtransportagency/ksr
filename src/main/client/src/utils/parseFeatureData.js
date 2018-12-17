@@ -21,6 +21,12 @@ export const parseColumns = (id, data) => {
         editable: f.editable,
         nullable: f.nullable,
         length: f.length,
+        domain: f.domain ? {
+            type: f.domain.type,
+            name: f.domain.name,
+            description: f.domain.description,
+            codedValues: f.domain.codedValues,
+        } : null,
     }));
 };
 
