@@ -1,10 +1,10 @@
 // @flow
 import React, { Fragment } from 'react';
-import { parseColumnType } from '../../../../../utils/type';
-import { TextInput } from '../../../../ui/elements';
+
 import { InputInfo, InputWithIcon } from '../../../../ui/elements/TextInput';
 import strings from '../../../../../translations';
 import LoadingIcon from '../../../shared/LoadingIcon';
+import ModalLayerDetailsSingleViewInput from './ModalLayerDetailsSingleViewInput';
 
 type Props = {
     index: number,
@@ -24,16 +24,10 @@ const ModalLayerDetailsSingleView = ({
             {field.label}
             {(!field.nullable) &&
             <InputWithIcon>
-                <TextInput
-                    backgroundDarker
+                <ModalLayerDetailsSingleViewInput
+                    field={field}
+                    handleOnChange={handleOnChange}
                     index={index}
-                    type={parseColumnType(field.type)}
-                    onChange={evt => handleOnChange(evt, field)}
-                    name={field.name}
-                    value={field.data ? field.data : ''}
-                    autoComplete="off"
-                    maxLength={field.length}
-                    required={!field.nullable}
                 />
                 <InputInfo
                     data-balloon={!fetching && contractExists
@@ -48,18 +42,13 @@ const ModalLayerDetailsSingleView = ({
                     <LoadingIcon size={7} loading={fetching} />
                 </InputInfo>
             </InputWithIcon>}
-            {(field.nullable) &&
-                <TextInput
-                    backgroundDarker
+            {field.nullable &&
+                <ModalLayerDetailsSingleViewInput
+                    field={field}
+                    handleOnChange={handleOnChange}
                     index={index}
-                    type={parseColumnType(field.type)}
-                    onChange={evt => handleOnChange(evt, field)}
-                    name={field.name}
-                    value={field.data ? field.data : ''}
-                    autoComplete="off"
-                    maxLength={field.length}
-                    required={!field.nullable}
-                />}
+                />
+            }
         </label>
     </Fragment>
 );

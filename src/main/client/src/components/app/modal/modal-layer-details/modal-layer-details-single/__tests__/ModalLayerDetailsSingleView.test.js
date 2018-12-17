@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ModalLayerDetailsSingleView from '../ModalLayerDetailsSingleView';
-import { TextInput } from '../../../../../ui/elements';
+import ModalLayerDetailsSingleViewInput from '../ModalLayerDetailsSingleViewInput';
 
 const setup = () => {
     const props = {
@@ -28,6 +28,6 @@ describe('<ModalLayerDetailsSingleView />', () => {
     });
 
     it('contains <TextInput />', () => {
-        expect(wrapper.find(TextInput).length).toBe(1);
+        expect(wrapper.find(ModalLayerDetailsSingleViewInput).length).toBe(1);
     });
 });
