@@ -95,16 +95,16 @@ export const getValue = (type: string, value: string) => {
 * Returns a new row with changes.
 *
 * @param {Object} row A row/feature.
-* @param {Object} evt Event from inputchange.
+* @param {any} value Events targets value.
 * @param {Object} cellInfo Table's Cell-object.
 * @param {Object} cellField Table's Field-object.
 *
 * @returns {Object} Row with changes.
 */
-const applyChange = (row, evt, cellInfo, cellField) => {
+const applyChange = (row, value, cellInfo, cellField) => {
     const newValue = getValue(
         cellField.type,
-        evt.target.innerText,
+        value,
     );
     return {
         ...row,
@@ -122,7 +122,7 @@ const applyChange = (row, evt, cellInfo, cellField) => {
  * Does validations about edited cell in table.
  * Either adds new data to editedLayer or removes if original and edited matches.
  *
- * @param {Object} evt Event from inputchange.
+ * @param {any} value Event's targets value.
  * @param {Object} layerData A row/feature array.
  * @param {Object} cellField Table's Cell-object.
  * @param {Object} cellInfo Table's Field-object.
@@ -130,13 +130,13 @@ const applyChange = (row, evt, cellInfo, cellField) => {
  * @returns {Object[]} Array of rows, with changes applied.
  */
 export const cellEditValidate = (
-    evt: Object,
+    value: any,
     layerData: Object[],
     cellField: Object,
     cellInfo: Object,
 ) => (layerData.map((row, index) => (
     index === cellInfo.index
-        ? applyChange(row, evt, cellInfo, cellField)
+        ? applyChange(row, value, cellInfo, cellField)
         : { ...row }
 )): Object[]);
 

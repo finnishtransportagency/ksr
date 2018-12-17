@@ -70,7 +70,7 @@ describe('cellEditValidate.js', () => {
     });
 
     it('cellEditValidate - new edit - text', () => {
-        const evt = { target: { innerText: 'edit - 2.2' } };
+        const value = 'edit - 2.2';
         const layerData = [
             {
                 COLUMN_1: 'value - 1.1',
@@ -121,11 +121,11 @@ describe('cellEditValidate.js', () => {
             },
         ];
 
-        expect(cellEditValidate(evt, layerData, cellField, cellInfo)).toEqual(expected);
+        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
 
     it('cellEditValidate - old edit, undo changes - text', () => {
-        const evt = { target: { innerText: 'value - 2.2' } };
+        const value = 'value - 2.2';
         const layerData = [
             {
                 COLUMN_1: 'value - 1.1',
@@ -177,11 +177,11 @@ describe('cellEditValidate.js', () => {
             },
         ];
 
-        expect(cellEditValidate(evt, layerData, cellField, cellInfo)).toEqual(expected);
+        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
 
     it('cellEditValidate - old edit, change value - text', () => {
-        const evt = { target: { innerText: 'other edit - 2.2' } };
+        const value = 'other edit - 2.2';
         const layerData = [
             {
                 COLUMN_1: 'value - 1.1',
@@ -239,11 +239,11 @@ describe('cellEditValidate.js', () => {
             },
         ];
 
-        expect(cellEditValidate(evt, layerData, cellField, cellInfo)).toEqual(expected);
+        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
 
     it('cellEditValidate - index larger than row-count - text', () => {
-        const evt = { target: { innerText: 'other edit - 2.2' } };
+        const value = 'other edit - 2.2';
         const layerData = [
             {
                 COLUMN_1: 'value - 1.1',
@@ -301,11 +301,11 @@ describe('cellEditValidate.js', () => {
             },
         ];
 
-        expect(cellEditValidate(evt, layerData, cellField, cellInfo)).toEqual(expected);
+        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
 
     it('cellEditValidate - new edit on same row, different column - text', () => {
-        const evt = { target: { innerText: 'edit - 1.1' } };
+        const value = 'edit - 1.1';
         const layerData = [
             {
                 COLUMN_1: 'value - 1.1',
@@ -344,11 +344,11 @@ describe('cellEditValidate.js', () => {
             },
         ];
 
-        expect(cellEditValidate(evt, layerData, cellField, cellInfo)).toEqual(expected);
+        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
 
     it('cellEditValidate - old edit on same row, different column - text', () => {
-        const evt = { target: { innerText: 'new edit - 1.2' } };
+        const value = 'new edit - 1.2';
         const layerData = [
             {
                 COLUMN_1: 'edit - 1.1',
@@ -392,7 +392,7 @@ describe('cellEditValidate.js', () => {
             },
         ];
 
-        expect(cellEditValidate(evt, layerData, cellField, cellInfo)).toEqual(expected);
+        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
 
     it('equals', () => {
