@@ -46,7 +46,7 @@ const MapLayerSettings = ({
                         <MapLayerTitle layer={layer} />
                     </LayerSettings.Title>
                     {
-                        activeAdminTool === layer.id && layer.type === 'agfl' &&
+                        activeAdminTool === layer.id && layer.type === 'agfl' && layer.layerPermission.createLayer &&
                         <LayerSettings.Icons>
                             <i
                                 className="fas fa-plus"
