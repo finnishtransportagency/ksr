@@ -154,3 +154,7 @@ export const WrapperReactTableNoTable = styled.div`
   top: 80px;
   position: absolute;
 `;
+
+export const TableSelect = styled.select`
+    width: 100%;
+`;
