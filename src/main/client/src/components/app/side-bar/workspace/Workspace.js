@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
 import { fetchDeleteWorkspace } from '../../../../api/workspace/deleteWorkspace';
 import { fetchSaveWorkspace } from '../../../../api/workspace/saveWorkspace';
 import { fetchWorkspace } from '../../../../api/workspace/userWorkspace';
@@ -7,11 +8,11 @@ import strings from '../../../../translations/';
 import { createWorkspaceJsonBody } from '../../../../utils/workspace/createWorkspaceJsonBody';
 import { loadWorkspace } from '../../../../utils/workspace/loadWorkspace';
 import WorkspaceView from './WorkspaceView';
+import { copyToClipboard } from '../../../../utils/copyToClipboard';
 
 type Props = {
     setActiveModal: (activeModal: string) => void,
     workspaceList: Array<Object>,
-    updateWorkspaces: Function,
     setWorkspace: Function,
     setWorkspaceRejected: Function,
     addNonSpatialContentToTable: Function,
@@ -20,7 +21,10 @@ type Props = {
     layerList: Array<Object>,
     view: Object,
     selectedFeatures: Array<Object>,
-    updateWorkspaces: Function,
+    updateWorkspaces: (
+        workspaceFetch: Function,
+        fetchParam: Object | string,
+        type: string) => void,
     showConfirmModal: (
         body: string,
         acceptText: string,
@@ -56,7 +60,7 @@ class Workspace extends Component<Props, null> {
 
         const { body, acceptText, cancelText } = strings.workspace.confirmReplace;
         showConfirmModal(body, acceptText, cancelText, () => {
-            updateWorkspaces(fetchSaveWorkspace, workspaceJson);
+            updateWorkspaces(fetchSaveWorkspace, workspaceJson, 'replace');
         });
     };
 
@@ -65,7 +69,7 @@ class Workspace extends Component<Props, null> {
         const { body, acceptText, cancelText } = strings.workspace.confirmDelete;
 
         showConfirmModal(body, acceptText, cancelText, () => {
-            updateWorkspaces(fetchDeleteWorkspace, workspaceName);
+            updateWorkspaces(fetchDeleteWorkspace, workspaceName, 'delete');
         });
     };
 
@@ -109,6 +113,27 @@ class Workspace extends Component<Props, null> {
         });
     };
 
+    handleShareWorkspace = (workspaceName: string) => {
+        const { workspaceList } = this.props;
+        const workspace = workspaceList.find(ws => ws.name === workspaceName);
+
+        if (workspace) {
+            const { uuid } = workspace;
+            const path = window.location.href.split('?')[0];
+
+            copyToClipboard(`${path}?workspace=${uuid}`);
+            toast.info(`${strings.workspace.share.copiedWorkspaceLink} [${workspaceName}]`, {
+                toastId: 'workspaceCopyClipboard',
+            });
+            toast.update('workspaceCopyClipboard');
+        } else {
+            toast.error(strings.workspace.share.linkToClipboardError, {
+                toastId: 'workspaceCopyClipboard',
+            });
+            toast.update('workspaceCopyClipboard');
+        }
+    };
+
     render() {
         const { setActiveModal, workspaceList } = this.props;
 
@@ -119,6 +144,7 @@ class Workspace extends Component<Props, null> {
                 handleDeleteWorkspace={this.handleDeleteWorkspace}
                 handleReplaceWorkspace={this.handleReplaceWorkspace}
                 handleSelectWorkspace={this.handleSelectWorkspace}
+                handleShareWorkspace={this.handleShareWorkspace}
             />
         );
     }

@@ -13,6 +13,7 @@ type Props = {
     handleDeleteWorkspace: Function,
     handleReplaceWorkspace: Function,
     handleSelectWorkspace: Function,
+    handleShareWorkspace: Function,
 }
 
 const WorkspaceView = ({
@@ -21,6 +22,7 @@ const WorkspaceView = ({
     handleDeleteWorkspace,
     handleReplaceWorkspace,
     handleSelectWorkspace,
+    handleShareWorkspace,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
@@ -48,6 +50,12 @@ const WorkspaceView = ({
                                 title={strings.workspace.replaceWorkspace}
                             >
                                 <i className="fas fa-save" />
+                            </Workspace.Icon>
+                            <Workspace.Icon
+                                onClick={() => handleShareWorkspace(workspace.name)}
+                                title={strings.workspace.share.copyWorkspaceLink}
+                            >
+                                <i className="fas fa-share-alt" />
                             </Workspace.Icon>
                             <Workspace.TextColumn
                                 onClick={() => handleSelectWorkspace(workspace.name)}

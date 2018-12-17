@@ -16,6 +16,7 @@ const setup = (prop) => {
         handleDeleteWorkspace: jest.fn(),
         handleReplaceWorkspace: jest.fn(),
         handleSelectWorkspace: jest.fn(),
+        handleShareWorkspace: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -49,10 +50,19 @@ describe('<WorkspaceView />', () => {
         expect(handleReplaceWorkspace).toHaveBeenCalled();
     });
 
+    it('should call handleShareWorkspace on share click', () => {
+        const { handleShareWorkspace } = wrapper.props();
+
+        wrapper.find(Workspace).at(0).find(Workspace.Icon).at(1)
+            .simulate('click');
+
+        expect(handleShareWorkspace).toHaveBeenCalled();
+    });
+
     it('should call handleDeleteWorkspace on delete click', () => {
         const { handleDeleteWorkspace } = wrapper.props();
 
-        wrapper.find(Workspace).at(0).find(Workspace.Icon).at(1)
+        wrapper.find(Workspace).at(0).find(Workspace.Icon).at(2)
             .simulate('click');
 
         expect(handleDeleteWorkspace).toHaveBeenCalled();

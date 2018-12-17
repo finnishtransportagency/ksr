@@ -24,8 +24,8 @@ const mapDispatchToProps = dispatch => ({
     setActiveModal: (activeModal: string) => {
         dispatch(setActiveModal(activeModal));
     },
-    updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string) => {
-        dispatch(updateWorkspaces(workspaceFetch, fetchParam));
+    updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string, type: string) => {
+        dispatch(updateWorkspaces(workspaceFetch, fetchParam, type));
     },
     setWorkspace: () => {
         dispatch(setWorkspace());
