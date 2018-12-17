@@ -85,7 +85,7 @@ class ModalNewWorkspace extends Component<Props, State> {
             selectedFeatures,
         );
 
-        updateWorkspaces(fetchSaveWorkspace, workspaceJson);
+        updateWorkspaces(fetchSaveWorkspace, workspaceJson, 'create');
     };
 
     render() {

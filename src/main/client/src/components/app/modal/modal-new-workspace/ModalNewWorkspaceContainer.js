@@ -10,8 +10,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string) => {
-        dispatch(updateWorkspaces(workspaceFetch, fetchParam));
+    updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string, type: string) => {
+        dispatch(updateWorkspaces(workspaceFetch, fetchParam, type));
     },
 });
 
