@@ -39,7 +39,7 @@ export const fetchWorkspace = (workspaceName: ?string) => {
  * @returns {Promise | null} Promise object with found workspace or null.
  */
 export const getWorkspaceUuid = async (workspaceUuid: string) => {
-    const res = await fetch(`/api/workspace/${workspaceUuid}`, config());
+    const res = await fetch(`api/workspace/${workspaceUuid}`, config());
     if (!res.ok) {
         toast.error(strings.workspace.share.sharedWorkspaceLoadError);
         return null;
