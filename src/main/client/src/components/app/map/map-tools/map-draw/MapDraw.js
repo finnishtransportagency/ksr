@@ -120,7 +120,7 @@ class MapDraw extends Component<Props, null> {
                                 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817
                                 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z`,
                             size: '24px',
-                            yoffset: '200px',
+                            yoffset: '12px',
                         },
                         type: 'draw-graphic',
                         complete,
