@@ -114,6 +114,7 @@ class EsriMap extends Component<Props> {
                         minScale: 5000000,
                     },
                     popup: {
+                        autoOpenEnabled: false,
                         collapseEnabled: false,
                         dockOptions: {
                             position: 'top-left',
@@ -164,7 +165,6 @@ class EsriMap extends Component<Props> {
                 view.ui.add([scaleBar], 'bottom-left');
 
                 view.on('click', (event) => {
-                    event.stopPropagation();
                     view.popup.close();
 
                     if (this.props.editMode === 'update') return;
