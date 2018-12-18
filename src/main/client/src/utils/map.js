@@ -300,15 +300,29 @@ export const zoomToProperty = (
 
     if (propertyGraphics.length) {
         propertyGraphics.forEach((property) => {
-            property.symbol.color.a = 0.75;
-            property.symbol.outline.width = 1;
+            property.symbol = {
+                type: 'simple-fill',
+                style: 'solid',
+                color: 'rgba(247, 69, 69, 0.75)',
+                outline: {
+                    color: '#444444',
+                    width: 1,
+                },
+            };
         });
 
         const selectedProperty = propertyGraphics.filter(a => a.propertyId === propertyId);
         if (selectedProperty.length) {
             selectedProperty.forEach((property) => {
-                property.symbol.color.a = 1;
-                property.symbol.outline.width = 2;
+                property.symbol = {
+                    type: 'simple-fill',
+                    style: 'solid',
+                    color: 'rgba(247, 69, 69, 1)',
+                    outline: {
+                        color: '#444444',
+                        width: 2,
+                    },
+                };
             });
             view.goTo(selectedProperty);
         }
