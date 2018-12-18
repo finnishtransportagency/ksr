@@ -124,8 +124,13 @@ export const linkToContract = async (
 
             const queryResult = await queryFeatures(id, whereQueryString);
             if (!queryResult.features.length) {
-                await save.saveData('add', view, id, features, objectId.toString(), objectIdFieldName, true);
                 toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
+                const res = await save.saveData('add', view, id, features, objectId.toString(), objectIdFieldName, true);
+                if (res.addResults.some(r => r.success)) {
+                    toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
+                } else {
+                    toast.error(strings.modalFeatureContracts.linkContract.contractLinkedError);
+                }
             } else {
                 toast.error(strings.modalFeatureContracts.linkContract.contractLinkedExists);
             }
@@ -137,13 +142,23 @@ export const linkToContract = async (
                 },
             }];
 
-            await save.saveData('update', view, currentLayer.id, features, objectId.toString(), objectIdFieldName, true);
             addUpdateLayers(
                 currentLayer.id,
                 objectIdFieldName,
                 objectId,
             );
             toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
+            const res = await save.saveData('update', view, currentLayer.id, features, objectId.toString(), objectIdFieldName, true);
+            if (res.updateResults.some(r => r.success)) {
+                addUpdateLayers(
+                    currentLayer.id,
+                    objectIdFieldName,
+                    objectId,
+                );
+                toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
+            } else {
+                toast.error(strings.modalFeatureContracts.linkContract.contractLinkedError);
+            }
         }
     } catch (error) {
         toast.error(strings.saveFeatureData.contractLinkedError);
