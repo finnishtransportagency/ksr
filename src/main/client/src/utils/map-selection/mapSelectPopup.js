@@ -39,7 +39,10 @@ export const mapSelectPopup = async (
 
     const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
     const newResults = activeAdminTool
-        ? [...results.filter(r => r.graphic.layer.id === activeAdminTool), ...wmsFeatures]
+        ? [
+            ...results.filter(r => r.graphic.layer && r.graphic.layer.id === activeAdminTool),
+            ...wmsFeatures,
+        ]
         : [...results, ...wmsFeatures];
 
     if (newResults.length) {
