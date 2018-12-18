@@ -117,11 +117,6 @@ export const setActiveTool = (active: string) => ({
     active,
 });
 
-export const setEditMode = (editMode: string) => ({
-    type: types.SET_EDIT_MODE,
-    editMode,
-});
-
 export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
     fetchAddUserLayer(layerValues)
         .then((l) => {

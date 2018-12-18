@@ -19,9 +19,6 @@ type Props = {
     selectFeatures: Function,
     setMapView: (view: Object) => void,
     activeAdminTool: string,
-    sketchViewModel: Object,
-    setEditMode: (editMode: string) => void,
-    editMode: string,
     setTempGraphicsLayer: (graphicsLayer: Object) => void,
     activeTool: string,
     setHasGraphics: (hasGraphics: boolean) => void,
@@ -167,7 +164,6 @@ class EsriMap extends Component<Props> {
                 view.on('click', (event) => {
                     view.popup.close();
 
-                    if (this.props.editMode === 'update') return;
                     view.hitTest(event).then((response) => {
                         const { results } = response;
                         const { layerList } = this.props;
@@ -204,22 +200,6 @@ class EsriMap extends Component<Props> {
                                         this.props.setHasGraphics(hasGraphics);
                                     }
                                 });
-                            } else {
-                                const layer = filteredResults.find(l => l
-                                    .graphic.layer.id.indexOf('layer') >= 0);
-
-                                // Check if we're already editing a graphic
-                                if (layer && this.props.editMode === '') {
-                                    // Save a reference to the graphic we intend to update
-                                    const { graphic } = layer;
-                                    this.props.setEditMode('update');
-                                    // Remove the graphic from the GraphicsLayer
-                                    // Sketch will handle displaying the graphic while being updated
-                                    tempGraphicsLayer.remove(graphic);
-                                    this.props.sketchViewModel.update(graphic);
-                                } else if (this.props.editMode === 'finish') {
-                                    this.props.setEditMode('');
-                                }
                             }
                         }
                     });

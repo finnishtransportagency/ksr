@@ -29,7 +29,6 @@ type Props = {
     tempGraphicsLayer: Object,
     data: Array<Object>,
     activeAdminTool: string,
-    setEditMode: (editMode: string) => void,
     setTempGraphicsLayer: Function,
     geometryType: string,
     setActiveModal: (modal: string) => void,
@@ -192,67 +191,60 @@ class SketchTool extends Component<Props, State> {
                 });
 
                 const addGraphic = (geometry) => {
-                    // Create a new graphic and set its geometry to tempGraphicsLayer
-                    // `create-complete` event geometry.
+                    // Create a new graphic and set its geometry to tempGraphicsLayer.
                     const graphic = new Graphic({
                         geometry,
-                        symbol: sketchViewModel.graphic.symbol,
                         type: 'sketch-graphic',
                     });
                     tempGraphicsLayer.add(graphic);
                     this.props.setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
-                const updateGraphic = (event) => {
-                    // event.graphic is the graphic that user clicked on and its geometry
-                    // has not been changed. Update its geometry and add it to the layer
-                    event.graphic.geometry = event.geometry;
-                    tempGraphicsLayer.add(event.graphic);
-                    this.props.setEditMode('finish');
-                };
-
-                const selectFeaturesFromDraw = (evt) => {
-                    const { geometry } = evt;
-                    const {
-                        active,
-                        activeAdminTool,
-                        selectFeatures,
-                        propertyAreaSearch,
-                        setPropertyInfo,
-                        authorities,
-                    } = this.props;
-
-                    if (propertyAreaSearch) {
-                        const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
-                        const area = geometryEngine.planarArea(
-                            geometry,
-                            'square-kilometers',
-                        );
-
-                        if (area > 0.25) {
-                            toast.error(strings.searchProperty.errorToast.searchAreaLimit);
-                        } else {
-                            setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
-                        }
-                    }
-
-                    // Skip finding layers if Administrator editing is in use
-                    if (active === 'sketchActiveAdmin') {
-                        addGraphic(geometry);
-                    } else {
-                        queryFeatures(
-                            geometry,
+                const selectFeaturesFromDraw = (event) => {
+                    if (event.state === 'complete') {
+                        const { geometry } = event.graphic;
+                        const {
+                            active,
                             activeAdminTool,
-                            view,
                             selectFeatures,
-                        );
+                            propertyAreaSearch,
+                            setPropertyInfo,
+                            authorities,
+                        } = this.props;
+
+                        if (propertyAreaSearch) {
+                            const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
+                            const area = geometryEngine.planarArea(
+                                geometry,
+                                'square-kilometers',
+                            );
+
+                            if (area > 0.25) {
+                                toast.error(strings.searchProperty.errorToast.searchAreaLimit);
+                            } else {
+                                setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
+                            }
+                        }
+
+                        // Skip finding layers if Administrator editing is in use
+                        if (active === 'sketchActiveAdmin') {
+                            addGraphic(geometry);
+                        } else {
+                            queryFeatures(
+                                geometry,
+                                activeAdminTool,
+                                view,
+                                selectFeatures,
+                            );
+                            // Graphic is added to the layer by default so when selecting features
+                            // the added graphic has to removed manually.
+                            tempGraphicsLayer.remove(event.graphic);
+                        }
+                        resetMapTools(draw, sketchViewModel, setActiveTool);
+                        setActiveTool('');
                     }
-                    resetMapTools(draw, sketchViewModel, setActiveTool);
-                    setActiveTool('');
                 };
-                sketchViewModel.on('create-complete', selectFeaturesFromDraw);
-                sketchViewModel.on('update-complete', updateGraphic);
-                sketchViewModel.on('update-cancel', updateGraphic);
+                sketchViewModel.on('create', selectFeaturesFromDraw);
             });
     };
 
@@ -274,6 +266,7 @@ class SketchTool extends Component<Props, State> {
         const layer = this.props.tempGraphicsLayer;
         layer.graphics = undefined;
         this.props.setTempGraphicsLayer(layer);
+        this.props.sketchViewModel.cancel();
     };
 
     showAdminView = (): boolean => {

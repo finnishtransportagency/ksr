@@ -2,7 +2,6 @@
 import { connect } from 'react-redux';
 import {
     setActiveTool,
-    setEditMode,
     setTempGraphicsLayer,
     setActiveToolMenu,
 } from '../../../../../reducers/map/actions';
@@ -37,9 +36,6 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveTool: (active) => {
         dispatch(setActiveTool(active));
-    },
-    setEditMode: (editMode) => {
-        dispatch(setEditMode(editMode));
     },
     setTempGraphicsLayer: (graphicsLayer) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
