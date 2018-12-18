@@ -35,7 +35,11 @@ const MapLayerTitle = ({ layer }) => {
                     </MapLayerTitleWrapper>
                 );
             }
-            return layer.name ? layer.name : layer.title;
+            return (
+                <MapLayerTitleWrapper>
+                    <span>{layer.name ? layer.name : layer.title}</span>
+                </MapLayerTitleWrapper>
+            );
     }
 };
 
