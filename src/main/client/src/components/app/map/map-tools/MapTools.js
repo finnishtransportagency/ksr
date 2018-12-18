@@ -13,7 +13,7 @@ type Props = {
 
 class MapTools extends Component<Props> {
     componentWillReceiveProps(newProps: any) {
-        if (this.props.view !== newProps.view && newProps.view._setup) {
+        if (this.props.view !== newProps.view) {
             this.mapTools();
         }
     }
