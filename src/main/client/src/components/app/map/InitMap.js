@@ -177,7 +177,8 @@ class EsriMap extends Component<Props> {
                             && item.graphic.type !== 'draw-graphic'
                             && item.graphic.id !== 'propertyArea');
 
-                        if (this.props.activeTool !== 'drawErase') {
+                        if (this.props.activeTool !== 'drawErase' && !filteredResults.find(item =>
+                            item.graphic.layer.type === 'graphics')) {
                             view.popup.open({ location: event.mapPoint });
 
                             const { activeAdminTool } = this.props;
