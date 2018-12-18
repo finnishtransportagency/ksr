@@ -22,6 +22,7 @@ const mapStateToProps = (state) => {
         addressField,
         featureType,
         view: state.map.mapView.view,
+        sketchViewModel: state.map.mapTools.sketchViewModel,
     };
 };
 
