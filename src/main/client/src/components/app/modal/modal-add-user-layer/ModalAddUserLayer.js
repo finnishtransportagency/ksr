@@ -41,14 +41,6 @@ const initialState = {
             value: 'wmts',
             label: 'Web Map Tile Service',
         },
-        {
-            value: 'wfs',
-            label: 'Web Feature Service',
-        },
-        {
-            value: 'mvt',
-            label: 'Mapnik Vector Tile',
-        },
     ],
 };
 
@@ -113,10 +105,15 @@ class ModalAddUserLayer extends Component<Props, State> {
     render() {
         const { layerValues, optionsType } = this.state;
 
+        const disabled = layerValues.type !== 'agfs'
+            ? layerValues.name.length > 0 && layerValues.url.length > 0 &&
+            layerValues.layers.length > 0
+            : layerValues.name.length > 0 && layerValues.url.length > 0;
+
         const modalSubmit = [{
             text: strings.modalAddUserLayer.submit,
             handleSubmit: this.handleSubmit,
-            disabled: false,
+            disabled: !disabled,
             toggleModal: true,
         }];
 

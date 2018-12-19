@@ -40,14 +40,6 @@ const setup = () => {
                 value: 'wmts',
                 label: 'Web Map Tile Service',
             },
-            {
-                value: 'wfs',
-                label: 'Web Feature Service',
-            },
-            {
-                value: 'mvt',
-                label: 'Mapnik Vector Tile',
-            },
         ],
     };
     const wrapper = mount(<ModalAddUserLayerView {...props} />);

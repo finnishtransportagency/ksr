@@ -31,6 +31,7 @@ const ModalAddUserLayerView = ({
             <span>{strings.modalAddUserLayer.name}</span>
             <InputWithIcon>
                 <TextInput
+                    required
                     backgroundDarker
                     type="text"
                     placeholder=""
@@ -94,6 +95,7 @@ const ModalAddUserLayerView = ({
             <span>{strings.modalAddUserLayer.layers}</span>
             <InputWithIcon>
                 <TextInput
+                    required
                     backgroundDarker
                     type="text"
                     placeholder=""
