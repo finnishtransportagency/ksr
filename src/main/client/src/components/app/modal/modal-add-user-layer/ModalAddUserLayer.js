@@ -16,17 +16,19 @@ type State = {
 const initialState = {
     layerValues: {
         name: '',
-        type: '',
+        type: 'agfs',
         url: '',
         layers: '',
         opacity: 1,
-        minScale: 577790,
-        maxScale: 9027,
+        minScale: 0,
+        maxScale: 0,
         transparent: true,
         attribution: '',
         desktopVisible: true,
         mobileVisible: true,
         styles: '',
+        queryable: '0',
+        queryColumns: '',
     },
     optionsType: [
         {
@@ -98,6 +100,21 @@ class ModalAddUserLayer extends Component<Props, State> {
 
         layerValues.desktopVisible = layerValues.desktopVisible ? '1' : '0';
         layerValues.mobileVisible = layerValues.mobileVisible ? '1' : '0';
+        layerValues.queryColumns = layerValues.queryColumns === ''
+            ? null
+            : layerValues.queryColumns.trim().split(',');
+
+        if (Array.isArray(layerValues.queryColumns)) {
+            layerValues.queryColumns = layerValues.queryColumns.map(c => c.trim());
+        }
+        layerValues.queryable = layerValues.queryColumns ? '1' : '0';
+
+        if (layerValues.type === 'agfs') {
+            layerValues.layers = '';
+        } else {
+            layerValues.queryColumns = null;
+            layerValues.queryable = '0';
+        }
 
         addUserLayer(layerValues);
     };

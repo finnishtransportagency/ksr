@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import * as styles from '../../../ui/defaultStyles';
+import Radiobutton from '../../../ui/blocks/Radiobutton';
+import { InputInfo } from '../../../ui/elements/TextInput';
 
 export const SliderWrapper = styled.div`
     .rc-slider {
@@ -22,4 +24,26 @@ export const SliderWrapper = styled.div`
             cursor: default;
         }
     }
+`;
+
+export const RadioWrapper = styled.div`
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+        ${Radiobutton} {
+            margin-bottom: 1rem;
+        };
+`;
+
+export const Wrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    
+        ${InputInfo} {
+            top: 10rem;
+            position: absolute;
+            right: 1.56rem;
+        };
 `;

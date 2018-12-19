@@ -1,13 +1,13 @@
 // @flow
 import Slider from 'rc-slider';
 import React, { Fragment } from 'react';
-import Select from 'react-select';
 import strings from '../../../../translations';
 import Checkbox from '../../../ui/blocks/Checkbox';
 import { TextInput } from '../../../ui/elements';
 import { CheckboxWrapper } from '../modal-filter/styles';
 import { InputWithIcon, InputInfo } from '../../../ui/elements/TextInput';
-import { SliderWrapper } from './styles';
+import { RadioWrapper, SliderWrapper, Wrapper } from './styles';
+import Radiobutton from '../../../ui/blocks/Radiobutton';
 
 type Props = {
     handleInputChange: Function,
@@ -48,33 +48,11 @@ const ModalAddUserLayerView = ({
                 </InputInfo>
             </InputWithIcon>
         </label>
-
-        <span>{strings.modalAddUserLayer.type}</span>
-        <label htmlFor="selectType">
-            <InputWithIcon>
-                <Select
-                    onBlurResetsInput={false}
-                    onSelectResetsInput={false}
-                    options={optionsType}
-                    simpleValue
-                    name="selectType"
-                    placeholder=""
-                    onChange={handleTypeChange}
-                    value={layerValues.type}
-                />
-                <InputInfo
-                    select
-                    data-balloon={strings.modalAddUserLayer.infoTooltip.type}
-                    data-balloon-pos="left"
-                >
-                    <i className="fas fa-question-circle" />
-                </InputInfo>
-            </InputWithIcon>
-        </label>
         <label htmlFor={strings.modalAddUserLayer.url}>
             <span>{strings.modalAddUserLayer.url}</span>
             <InputWithIcon>
                 <TextInput
+                    required
                     backgroundDarker
                     type="text"
                     placeholder=""
@@ -91,6 +69,36 @@ const ModalAddUserLayerView = ({
                 </InputInfo>
             </InputWithIcon>
         </label>
+        <label htmlFor={strings.modalAddUserLayer.type}>
+            <Wrapper>
+                <span>{strings.modalAddUserLayer.type}</span>
+                <InputInfo
+                    select
+                    data-balloon={strings.modalAddUserLayer.infoTooltip.type}
+                    data-balloon-pos="left"
+                    data-balloon-length="medium"
+                >
+                    <i className="fas fa-question-circle" />
+                </InputInfo>
+            </Wrapper>
+            <RadioWrapper>
+                {
+                    optionsType.map(t => (
+                        <Radiobutton htmlFor={t.value} key={t.value}>
+                            {t.label}
+                            <Radiobutton.Input
+                                checked={layerValues.type === t.value}
+                                type="radio"
+                                id={t.value}
+                                value={layerValues.type}
+                                onChange={() => handleTypeChange(t.value)}
+                            />
+                            <Radiobutton.Checkmark />
+                        </Radiobutton>))
+                }
+            </RadioWrapper>
+        </label>
+        { layerValues.type !== 'agfs' &&
         <label htmlFor={strings.modalAddUserLayer.layers}>
             <span>{strings.modalAddUserLayer.layers}</span>
             <InputWithIcon>
@@ -113,6 +121,29 @@ const ModalAddUserLayerView = ({
                 </InputInfo>
             </InputWithIcon>
         </label>
+        }
+        { layerValues.type === 'agfs' &&
+        <label htmlFor={strings.modalAddUserLayer.queryColumns}>
+            <span>{strings.modalAddUserLayer.queryColumns}</span>
+            <InputWithIcon>
+                <TextInput
+                    backgroundDarker
+                    type="text"
+                    placeholder=""
+                    name="queryColumns"
+                    autoComplete="off"
+                    onChange={handleInputChange}
+                    value={layerValues.queryColumns}
+                />
+                <InputInfo
+                    data-balloon={strings.modalAddUserLayer.infoTooltip.queryColumns}
+                    data-balloon-pos="left"
+                >
+                    <i className="fas fa-question-circle" />
+                </InputInfo>
+            </InputWithIcon>
+        </label>
+        }
         <label htmlFor={strings.modalAddUserLayer.styles}>
             <span>{strings.modalAddUserLayer.styles}</span>
             <InputWithIcon>

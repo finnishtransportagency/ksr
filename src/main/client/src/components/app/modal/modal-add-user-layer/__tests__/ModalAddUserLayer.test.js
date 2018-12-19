@@ -17,6 +17,8 @@ const layerValues = {
     desktopVisible: true,
     mobileVisible: true,
     styles: '',
+    queryable: '0',
+    queryColumns: '',
 };
 
 const setup = (prop) => {
@@ -98,6 +100,15 @@ describe('<ModalAddUserLayer />', () => {
         };
         wrapper.instance().handleInputChange(evt);
 
+        evt = {
+            target: {
+                name: 'queryColumns',
+                value: 'test, column',
+            },
+        };
+        wrapper.instance().handleInputChange(evt);
+
+
         const expectedLayerValues = {
             name: 'Taustakartta',
             type: '',
@@ -111,6 +122,8 @@ describe('<ModalAddUserLayer />', () => {
             desktopVisible: true,
             mobileVisible: true,
             styles: 'highlight',
+            queryable: '0',
+            queryColumns: 'test, column',
         };
 
         expect(wrapper.state('layerValues')).toEqual(expectedLayerValues);
@@ -137,6 +150,8 @@ describe('<ModalAddUserLayer />', () => {
             desktopVisible: true,
             mobileVisible: true,
             styles: '',
+            queryable: '0',
+            queryColumns: '',
         };
 
         expect(wrapper.state('layerValues')).toEqual(expectedLayerValues);
@@ -164,6 +179,8 @@ describe('<ModalAddUserLayer />', () => {
             desktopVisible: false,
             mobileVisible: false,
             styles: '',
+            queryable: '0',
+            queryColumns: '',
         };
 
         expect(wrapper.state('layerValues')).toEqual(expectedLayerValues);
@@ -189,6 +206,8 @@ describe('<ModalAddUserLayer />', () => {
             desktopVisible: true,
             mobileVisible: true,
             styles: '',
+            queryable: '0',
+            queryColumns: '',
         };
 
         expect(wrapper.state('layerValues')).toEqual(expectedLayerValues);

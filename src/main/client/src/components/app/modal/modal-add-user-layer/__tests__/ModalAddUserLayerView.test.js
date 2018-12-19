@@ -5,7 +5,7 @@ import { TextInput } from '../../../../ui/elements';
 import { InputWithIcon } from '../../../../ui/elements/TextInput';
 import { CheckboxWrapper } from '../../modal-filter/styles';
 import ModalAddUserLayerView from '../ModalAddUserLayerView';
-import { SliderWrapper } from '../styles';
+import { RadioWrapper, SliderWrapper, Wrapper } from '../styles';
 
 const setup = () => {
     const props = {
@@ -26,6 +26,8 @@ const setup = () => {
             desktopVisible: true,
             mobileVisible: true,
             styles: '',
+            queryable: '0',
+            queryColumns: '',
         },
         optionsType: [
             {
@@ -51,7 +53,7 @@ describe('<ModalAddUserLayerView />', () => {
     const { wrapper } = setup();
 
     it('should render eight (8) InputWrappers', () => {
-        expect(wrapper.find(InputWithIcon).length).toBe(8);
+        expect(wrapper.find(InputWithIcon).length).toBe(7);
     });
 
     it('should render three (3) CheckboxWrapper', () => {
@@ -72,5 +74,12 @@ describe('<ModalAddUserLayerView />', () => {
         wrapper.find(Checkbox.Input).forEach(input => input.simulate('change'));
         const { handleCheckboxChange } = wrapper.props();
         expect(handleCheckboxChange).toHaveBeenCalledTimes(3);
+    });
+
+    it('should render one (1) Wrapper', () => {
+        expect(wrapper.find(Wrapper).length).toBe(1);
+    });
+    it('should render one (1) RadioWrapper', () => {
+        expect(wrapper.find(RadioWrapper).length).toBe(1);
     });
 });
