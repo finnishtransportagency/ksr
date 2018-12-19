@@ -64,6 +64,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -603,28 +604,48 @@ public class HttpRequestService {
     }
 
     /**
-     * Filter / check params for given Layer and LayerAction
+     * Filter / check params for given Layer and LayerAction.
      *
      * If LayerAction is either UPDATE_LAYER OR CREATE_LAYER then it populates updater-field with information
      * from current user if updater-field is defined for Layer.
      *
-     * @param key Key of the parameter
-     * @param value Value of the parameter
-     * @param layer Layer
-     * @param action LayerAction type of action
-     * @return
+     * If Layer is a contract with type "many" then it populates contract uuid field
+     * with new randomly generated uuid value when new contract is added to the Layer.
+     *
+     * @param key Key of the parameter.
+     * @param value Value of the parameter.
+     * @param layer Layer, where to find field names.
+     * @param action Type of the layer action.
+     *
+     * @return Name value pair for Layer and LayerAction.
      */
     private BasicNameValuePair filterParams(String key, String value, Layer layer, LayerAction action) {
-        if (layer != null && layer.getUpdaterField() != null && key.toLowerCase().equals("features")
-                && (action == LayerAction.UPDATE_LAYER || action == LayerAction.CREATE_LAYER)){
+        if (layer != null && key.toLowerCase().equals("features")
+                && (action == LayerAction.UPDATE_LAYER || action == LayerAction.CREATE_LAYER)
+                && (layer.getUpdaterField() != null
+                || "many".equals(layer.getRelationType()))
+        ){
             ObjectMapper mapper = new ObjectMapper();
             try {
                 EditFeature[] features = mapper.readValue(value, EditFeature[].class);
                 for (EditFeature feature : features) {
-                    feature.putAttributeValue(
-                            layer.getUpdaterField(),
-                            KsrAuthenticationUtils.getCurrentUserUpdaterName()
-                    );
+                    if (layer.getUpdaterField() != null) {
+                        feature.putAttributeValue(
+                                layer.getUpdaterField(),
+                                KsrAuthenticationUtils.getCurrentUserUpdaterName()
+                        );
+                    }
+
+                    if (action == LayerAction.CREATE_LAYER
+                            && "many".equals(layer.getRelationType())
+                            && !layer.getRelationColumnIn().isEmpty()
+                            && layer.getRelationColumnIn() != null
+                    ) {
+                        feature.putAttributeValue(
+                                layer.getRelationColumnIn(),
+                                UUID.randomUUID().toString()
+                        );
+                    }
                 }
                 String newValue = mapper.writeValueAsString(features);
                 return new BasicNameValuePair(key, newValue);
