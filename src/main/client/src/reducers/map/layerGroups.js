@@ -42,7 +42,7 @@ type Layer = {
     minScale: number,
     name: string,
     opacity: number,
-    queryColumns: Array<string>,
+    queryColumnsList: Array<string>,
     queryable: boolean,
     styles: string,
     transparent: boolean,

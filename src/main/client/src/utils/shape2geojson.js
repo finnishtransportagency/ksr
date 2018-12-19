@@ -209,7 +209,7 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
     minScale: 0,
     name: fileName,
     opacity: 1,
-    queryColumns: null,
+    queryColumnsList: null,
     queryable: false,
     styles: 'default',
     transparent: true,

@@ -24,7 +24,7 @@ const optionsField = [
         label: 'fieldName5',
     },
 ];
-const queryColumns = [
+const queryColumnsList = [
     'fieldName1',
     'fieldName2',
     'fieldName3',
@@ -36,7 +36,7 @@ describe('parseQueryString', () => {
             searchFieldValues,
             textSearch,
             optionsField,
-            queryColumns,
+            queryColumnsList,
         );
 
         expect(queryString).toBe("fieldName1 LIKE '%helsinki%' OR fieldName2 LIKE '%helsinki%' OR fieldName3 LIKE '%helsinki%'");
@@ -54,7 +54,7 @@ describe('parseQueryString', () => {
             searchFieldValues,
             textSearch,
             optionsField,
-            queryColumns,
+            queryColumnsList,
         );
 
         expect(queryString).toBe("fieldName1 = 'helsinki'");
@@ -70,7 +70,7 @@ describe('parseQueryString', () => {
             searchFieldValues,
             textSearch,
             optionsField,
-            queryColumns,
+            queryColumnsList,
         );
 
         expect(queryString2).toBe("fieldName2 LIKE '%turku%'");

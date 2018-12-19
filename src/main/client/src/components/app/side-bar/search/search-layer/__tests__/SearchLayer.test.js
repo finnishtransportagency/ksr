@@ -13,19 +13,19 @@ const setup = (prop) => {
             value: 0,
             label: 'Layer 1',
             id: 0,
-            queryColumns: [],
+            queryColumnsList: [],
         }],
         activeQueryableLayers: [{
             value: 0,
             label: 'Layer 1',
             id: 0,
-            queryColumns: [],
+            queryColumnsList: [],
         }],
         queryOptions: [{
             value: 0,
             label: 'Layer 1',
             id: 0,
-            queryColumns: [],
+            queryColumnsList: [],
         }],
         searchState: {
             selectedLayer: 0,
