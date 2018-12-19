@@ -9,7 +9,6 @@ type Props = {
     contractLinkValidation: (
         validContract?: boolean,
         contractNumber?: number,
-        contractUpdateLayer?: Object,
         contractUuid?: string,
     ) => void,
     currentLayer: Object,
@@ -112,7 +111,6 @@ class EditContract extends Component<Props, State> {
                     this.props.contractLinkValidation(
                         true,
                         value,
-                        contractLayer,
                         '',
                     );
                     this.setState({

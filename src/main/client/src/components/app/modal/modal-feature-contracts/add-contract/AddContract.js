@@ -7,10 +7,8 @@ type Props = {
     contractLinkValidation: (
         validContract?: boolean,
         contractNumber?: number,
-        contractUpdateLayer?: Object,
         contractUuid?: string,
     ) => void,
-    currentLayer: Object,
     contractLayer: Object,
     fields: Array<Object>,
     setData: Function,
@@ -64,7 +62,7 @@ class AddContract extends Component<Props, State> {
     handleOnChange = (evt: Object, field: Object) => {
         const { name, value } = evt.target;
         const { contractData } = this.state;
-        const { currentLayer, contractLayer, setData } = this.props;
+        const { contractLayer, setData } = this.props;
 
         this.setState({
             fetching: true,
@@ -100,7 +98,6 @@ class AddContract extends Component<Props, State> {
                     this.props.contractLinkValidation(
                         true,
                         value,
-                        currentLayer,
                         '',
                     );
                     this.setState({
