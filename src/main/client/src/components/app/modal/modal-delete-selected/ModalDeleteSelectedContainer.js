@@ -11,13 +11,13 @@ const mapStateToProps = (state) => {
             .find(sd => sd._id === d._id) && selectedData.push(d));
     });
 
-    const { queryColumns } = state.map.layerGroups.layerList
+    const { queryColumnsList } = state.map.layerGroups.layerList
         .find(lg => lg.id === state.adminTool.active.layerId);
 
     const filteredData = [];
     selectedData.map((d) => {
         const filtered = Object.keys(d)
-            .filter(key => queryColumns.find(qc => qc === key || key === '_id' || key.includes('/')))
+            .filter(key => queryColumnsList.find(qc => qc === key || key === '_id' || key.includes('/')))
             .reduce((obj, key) => {
                 obj[key.split('/').pop()] = d[key];
                 return obj;

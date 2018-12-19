@@ -224,7 +224,7 @@ class SearchLayer extends Component<Props, State> {
                 searchFieldValues,
                 textSearch,
                 optionsField,
-                layer.queryColumns,
+                layer.queryColumnsList,
             );
 
         const queryMap = new Map();

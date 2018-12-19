@@ -81,9 +81,9 @@ export const mapSelectPopup = async (
                 const matchingLayer = layerList
                     .find(ll => ll.id === layer.graphic.layer.id.replace('.s', ''));
 
-                if (matchingLayer && matchingLayer.type === 'agfs' && matchingLayer.queryColumns) {
+                if (matchingLayer && matchingLayer.type === 'agfs' && matchingLayer.queryColumnsList) {
                     const fields = nestedVal(layer, ['graphic', 'layer', 'fields']);
-                    matchingLayer.queryColumns.forEach((column) => {
+                    matchingLayer.queryColumnsList.forEach((column) => {
                         fieldInfos.push({
                             fieldName: column,
                             label: nestedVal(

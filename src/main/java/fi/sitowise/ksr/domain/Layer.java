@@ -1,9 +1,11 @@
 package fi.sitowise.ksr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.sitowise.ksr.jooq.tables.records.LayerPermissionRecord;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
+import fi.sitowise.ksr.jooq.udt.records.QueryColumnTypeRecord;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
@@ -45,7 +47,6 @@ public class Layer implements Serializable {
     private boolean desktopVisible;
     private boolean mobileVisible;
     private boolean queryable;
-    private List<String> queryColumns;
     private boolean useInternalProxy;
     private boolean userLayer;
     private String featureType;
@@ -60,6 +61,8 @@ public class Layer implements Serializable {
     private Long relationLayerId;
     private String relationColumnIn;
     private String relationColumnOut;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private QueryColumnTypeRecord queryColumns;
 
     /**
      * Construct a Layer.
@@ -104,7 +107,7 @@ public class Layer implements Serializable {
         this.setCaseManagementLinkField(lr.getCaseManagementLinkField());
 
         if (lr.getQueryColumns() != null) {
-            this.setQueryColumns(lr.getQueryColumns());
+            setQueryColumns(lr.getQueryColumns());
         }
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
@@ -142,7 +145,7 @@ public class Layer implements Serializable {
         this.setUserLayer(true);
 
         if (lr.getQueryColumns() != null) {
-            this.setQueryColumns(lr.getQueryColumns());
+            setQueryColumns(lr.getQueryColumns());
         }
     }
 
@@ -481,23 +484,13 @@ public class Layer implements Serializable {
     }
 
     /**
-     * Gets layer's columns that can be queried with free word search.
+     * Gets layer's columns that can be queried with free word search. (client uses it)
      *
      * @return layer's queryable columns
      */
-    public List<String> getQueryColumns() {
+    public List<String> getQueryColumnsList() {
         return queryColumns;
     }
-
-    /**
-     * Sets layer's columns that can be queried with free word search.
-     *
-     * @param queryColumns layer's queryable columns
-     */
-    public void setQueryColumns(List<String> queryColumns) {
-        this.queryColumns = queryColumns;
-    }
-
     /**
      * Gets boolean value deciding if requests outgoing HTTP-requests for layer should be done via proxy
      *
@@ -743,5 +736,22 @@ public class Layer implements Serializable {
      */
     public void setCaseManagementLinkField(String caseManagementLinkField) {
         this.caseManagementLinkField = caseManagementLinkField;
+    }
+
+    /**
+     * @return query columns as jOOQ table type record
+     */
+    @JsonIgnore
+    public QueryColumnTypeRecord getQueryColumns() {
+        return queryColumns;
+    }
+
+    /**
+     * Set query columns for the layer
+     *
+     * @param queryColumns list of query columns
+     */
+    public void setQueryColumns(QueryColumnTypeRecord queryColumns) {
+        this.queryColumns = queryColumns;
     }
 }

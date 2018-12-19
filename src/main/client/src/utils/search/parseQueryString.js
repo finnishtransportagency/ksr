@@ -6,7 +6,7 @@
  * @param searchFieldValues Array containing all field search values
  * @param textSearch String from default text search
  * @param fields Array of all attributes included in featurelayer
- * @param queryColumns Array of columns that are queried on general search
+ * @param queryColumnsList Array of columns that are queried on general search
  *
  * @returns Parsed querystring that can be passed to feature fetch URL
  */
@@ -14,7 +14,7 @@ export const parseQueryString = (
     searchFieldValues: Array<any>,
     textSearch: string,
     fields: Array<Object>,
-    queryColumns: Array<string>,
+    queryColumnsList: Array<string>,
 ) => {
     const queryString = [];
 
@@ -33,7 +33,7 @@ export const parseQueryString = (
     } else {
         const text = `'%${textSearch}%'`;
 
-        queryColumns.forEach(a =>
+        queryColumnsList.forEach(a =>
             queryString.push(`${a} LIKE ${text}`));
     }
 
