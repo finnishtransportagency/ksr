@@ -1,4 +1,4 @@
-import { findGeometryType, parseColumnType } from '../type';
+import { convertEsriGeometryType, findGeometryType, parseColumnType } from '../type';
 
 describe('type tests', () => {
     it('should return ColumnType', () => {
@@ -18,5 +18,9 @@ describe('type tests', () => {
 
     it('should return correct geometry type', () => {
         expect(findGeometryType(1, layerList)).toEqual('esriGeometryPolyline');
+    });
+
+    it('should convert to correct geometry type', () => {
+        expect(convertEsriGeometryType(layer.geometryType)).toEqual('polyline');
     });
 });

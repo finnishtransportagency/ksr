@@ -42,3 +42,29 @@ export const findGeometryType = (
     }
     return '';
 };
+
+/**
+ * Convert Esri geometry type to normal geometry type.
+ *
+ * @param {string} type Esri geometry type to be converted.
+ *
+ * @returns {string} Normal geometry type.
+ */
+export const convertEsriGeometryType = (type: string) => {
+    switch (type) {
+        case 'esriGeometryPolygon':
+            return 'polygon';
+        case 'esriGeometryMultipoint':
+            return 'multipoint';
+        case 'esriGeometryPoint':
+            return 'point';
+        case 'esriGeometryPolyline':
+            return 'polyline';
+        case 'esriGeometryEnvelope':
+            return 'rectangle';
+        case 'esriGeometryCircularArc':
+            return 'circle';
+        default:
+            return 'polygon';
+    }
+};
