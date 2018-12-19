@@ -44,23 +44,17 @@ describe('<ModalFeatureContracts />', () => {
         expect(removeContractListInfo).toHaveBeenCalled();
     });
 
-    it('contractLinkValidation - should change state based based on valid contract link number', () => {
+    it('contractLinkValidation - should reset to initial state when false passed as parameter', () => {
         const { contractLinkValidation } = wrapper.instance();
         contractLinkValidation(false);
-
         expect(wrapper.state('contractNumber')).toBe(null);
-        expect(wrapper.state('contractUpdateLayer')).toEqual({});
         expect(wrapper.state('contractUuid')).toBe('');
     });
 
-    it('contractLinkValidation - should change state based based on valid contract link number', () => {
-        const updateLayer = {
-            id: 123,
-        };
+    it('contractLinkValidation - should change state based on valid contract link number', () => {
         const { contractLinkValidation } = wrapper.instance();
-        contractLinkValidation(true, 123, updateLayer, '1234-456-789');
+        contractLinkValidation(true, 123, '1234-456-789');
         expect(wrapper.state('contractNumber')).toBe(123);
-        expect(wrapper.state('contractUpdateLayer')).toEqual(updateLayer);
         expect(wrapper.state('contractUuid')).toBe('1234-456-789');
     });
 });
