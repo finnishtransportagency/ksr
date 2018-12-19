@@ -45,19 +45,19 @@ class AddContract extends Component<Props, State> {
     }
 
     loadFields = () => {
-        const { fields, contractLayer, currentLayer } = this.props;
+        const { fields, contractLayer } = this.props;
 
-        const data = fields.filter(f => (f.type !== 'esriFieldTypeOID' &&
-            f.editable && f.name !== contractLayer.relationColumnOut) ||
-            (f.name === contractLayer.contractIdField &&
-            f.name === contractLayer.relationColumnOut)).map((field) => {
-            const newItem = Object.assign({}, field);
-            if (field.name === currentLayer.contractIdField) {
-                newItem.nullable = false;
-            }
-            newItem.data = '';
-            return newItem;
-        });
+        const data = fields
+            .filter(f => (f.type !== 'esriFieldTypeOID'
+                && f.editable
+                && f.name !== contractLayer.relationColumnOut)
+                || (f.name === contractLayer.contractIdField
+                    && f.name === contractLayer.relationColumnOut))
+            .map(field => ({
+                ...field,
+                nullable: field.name !== contractLayer.contractIdField,
+                data: '',
+            }));
         this.setState({ contractData: data });
     };
 
