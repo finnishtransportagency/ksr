@@ -8,6 +8,7 @@ import * as styles from '../../../../ui/defaultStyles';
 import SketchToolView from './SketchToolView';
 import SketchActiveAdminView from './sketch-active-admin/SketchActiveAdminView';
 import { queryFeatures } from '../../../../../utils/queryFeatures';
+import { convertEsriGeometryType } from '../../../../../utils/type';
 
 type State = {
     editSketchIcon: string,
@@ -130,28 +131,8 @@ class SketchTool extends Component<Props, State> {
                         setActiveToolMenu('sketchActiveAdmin');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchActiveAdmin');
-                        switch (this.props.geometryType) {
-                            case 'esriGeometryPolygon':
-                                sketchViewModel.create('polygon');
-                                break;
-                            case 'esriGeometryMultipoint':
-                                sketchViewModel.create('multipoint');
-                                break;
-                            case 'esriGeometryPoint':
-                                sketchViewModel.create('point');
-                                break;
-                            case 'esriGeometryPolyline':
-                                sketchViewModel.create('polyline');
-                                break;
-                            case 'esriGeometryEnvelope':
-                                sketchViewModel.create('rectangle');
-                                break;
-                            case 'esriGeometryCircularArc':
-                                sketchViewModel.create('circle');
-                                break;
-                            default:
-                                sketchViewModel.create('polygon');
-                        }
+                        const geometryType = convertEsriGeometryType(this.props.geometryType);
+                        sketchViewModel.create(geometryType);
                         drawNewFeatureButton.style.backgroundColor =
                             styles.colorBackgroundDarkBlue;
                     }
