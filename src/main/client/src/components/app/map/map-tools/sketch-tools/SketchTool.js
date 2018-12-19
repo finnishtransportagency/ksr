@@ -193,24 +193,24 @@ class SketchTool extends Component<Props, State> {
                             authorities,
                         } = this.props;
 
-                        if (propertyAreaSearch) {
-                            const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
-                            const area = geometryEngine.planarArea(
-                                geometry,
-                                'square-kilometers',
-                            );
-
-                            if (area > 0.25) {
-                                toast.error(strings.searchProperty.errorToast.searchAreaLimit);
-                            } else {
-                                setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
-                            }
-                        }
-
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
                             addGraphic(geometry);
                         } else {
+                            if (propertyAreaSearch) {
+                                const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
+                                const area = geometryEngine.planarArea(
+                                    geometry,
+                                    'square-kilometers',
+                                );
+
+                                if (area > 0.25) {
+                                    toast.error(strings.searchProperty.errorToast.searchAreaLimit);
+                                } else {
+                                    setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
+                                }
+                            }
+
                             queryFeatures(
                                 geometry,
                                 activeAdminTool,
