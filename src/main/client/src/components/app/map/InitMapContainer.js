@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { setEditMode, setMapView, setTempGraphicsLayer, setHasGraphics } from '../../../reducers/map/actions';
+import { setMapView, setTempGraphicsLayer, setHasGraphics } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import { setPropertyInfo } from '../../../reducers/search/actions';
 import {
@@ -20,7 +20,6 @@ const mapStateToProps = state => ({
     printServiceUrl: state.map.mapConfig.printServiceUrl,
     activeAdminTool: state.adminTool.active.layerId,
     sketchViewModel: state.map.mapTools.sketchViewModel,
-    editMode: state.map.mapTools.editMode,
     activeTool: state.map.mapTools.active,
     initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
     authorities: state.user.userInfo.authorities,
@@ -35,9 +34,6 @@ const mapDispatchToProps = dispatch => ({
     },
     setTempGraphicsLayer: (graphicsLayer) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
-    },
-    setEditMode: (editMode) => {
-        dispatch(setEditMode(editMode));
     },
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));

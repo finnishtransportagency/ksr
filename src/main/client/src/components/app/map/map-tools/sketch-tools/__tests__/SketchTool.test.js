@@ -13,6 +13,7 @@ const setup = () => {
         setTempGraphicsLayer: jest.fn(),
         setActiveTool: jest.fn(),
         sketchViewModel: {
+            cancel: jest.fn(),
             reset: jest.fn(),
         },
     };

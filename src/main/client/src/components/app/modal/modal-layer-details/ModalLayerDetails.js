@@ -16,7 +16,7 @@ type Props = {
     addressField: string,
     featureType: string,
     activeLayer: Object,
-
+    sketchViewModel: Object,
 };
 
 type State = {
@@ -44,14 +44,6 @@ class ModalFilter extends Component<Props, State> {
 
     componentDidMount() {
         this.loadFields();
-    }
-
-    componentWillUnmount() {
-        const { layer } = this.props;
-        if (layer) {
-            layer.graphics = undefined;
-            this.props.setTempGraphicsLayer(layer);
-        }
     }
 
     loadFields = () => {
@@ -138,7 +130,15 @@ class ModalFilter extends Component<Props, State> {
         };
 
         createAddressFields(combinedData, featureType, addressField)
-            .then(r => save.saveData('add', view, originalLayerId, [r]));
+            .then(r => save.saveData('add', view, originalLayerId, [r]))
+            .then(() => {
+                if (layer) {
+                    layer.graphics = undefined;
+                    this.props.setTempGraphicsLayer(layer);
+                }
+                this.props.sketchViewModel.cancel();
+                this.props.sketchViewModel.reset();
+            });
     };
 
     render() {

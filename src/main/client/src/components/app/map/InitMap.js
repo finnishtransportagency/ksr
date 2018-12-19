@@ -19,9 +19,6 @@ type Props = {
     selectFeatures: Function,
     setMapView: (view: Object) => void,
     activeAdminTool: string,
-    sketchViewModel: Object,
-    setEditMode: (editMode: string) => void,
-    editMode: string,
     setTempGraphicsLayer: (graphicsLayer: Object) => void,
     activeTool: string,
     setHasGraphics: (hasGraphics: boolean) => void,
@@ -55,7 +52,7 @@ class EsriMap extends Component<Props> {
     }
 
     initMap = () => {
-        esriLoader.loadCss('https://js.arcgis.com/4.9/esri/css/main.css');
+        esriLoader.loadCss('https://js.arcgis.com/4.10/esri/css/main.css');
 
         esriLoader
             .loadModules([
@@ -114,6 +111,7 @@ class EsriMap extends Component<Props> {
                         minScale: 5000000,
                     },
                     popup: {
+                        autoOpenEnabled: false,
                         collapseEnabled: false,
                         dockOptions: {
                             position: 'top-left',
@@ -164,10 +162,8 @@ class EsriMap extends Component<Props> {
                 view.ui.add([scaleBar], 'bottom-left');
 
                 view.on('click', (event) => {
-                    event.stopPropagation();
                     view.popup.close();
 
-                    if (this.props.editMode === 'update') return;
                     view.hitTest(event).then(async (response) => {
                         const { results } = response;
                         const { layerList } = this.props;
@@ -177,7 +173,8 @@ class EsriMap extends Component<Props> {
                             && item.graphic.type !== 'draw-graphic'
                             && item.graphic.id !== 'propertyArea');
 
-                        if (this.props.activeTool !== 'drawErase') {
+                        if (this.props.activeTool !== 'drawErase' && !filteredResults.find(item =>
+                            item.graphic.layer.type === 'graphics')) {
                             view.popup.open({ location: event.mapPoint });
 
                             const { activeAdminTool } = this.props;
@@ -203,22 +200,6 @@ class EsriMap extends Component<Props> {
                                         this.props.setHasGraphics(hasGraphics);
                                     }
                                 });
-                            } else {
-                                const layer = filteredResults.find(l => l
-                                    .graphic.layer.id.indexOf('layer') >= 0);
-
-                                // Check if we're already editing a graphic
-                                if (layer && this.props.editMode === '') {
-                                    // Save a reference to the graphic we intend to update
-                                    const { graphic } = layer;
-                                    this.props.setEditMode('update');
-                                    // Remove the graphic from the GraphicsLayer
-                                    // Sketch will handle displaying the graphic while being updated
-                                    tempGraphicsLayer.remove(graphic);
-                                    this.props.sketchViewModel.update(graphic);
-                                } else if (this.props.editMode === 'finish') {
-                                    this.props.setEditMode('');
-                                }
                             }
                         }
                     });

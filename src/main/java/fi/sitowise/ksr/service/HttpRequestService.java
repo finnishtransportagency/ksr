@@ -505,6 +505,8 @@ public class HttpRequestService {
                 }
             }
             if (responseJson != null) {
+                response.setHeader("Content-Length", Integer.toString(
+                        responseJson.toString().getBytes().length));
                 response.getWriter().write(responseJson.toString());
             }
         } catch (ParseException | IOException e) {
@@ -534,7 +536,8 @@ public class HttpRequestService {
                 url = url.replaceAll(url.split("_gpserver")[0], extractOutputUrl);
                 valueJson.replace("url", url.replaceAll("_gpserver", ""));
                 responseJson.replace("value", valueJson);
-                response.setHeader("Content-Length", Integer.toString(responseJson.toString().length()));
+                response.setHeader("Content-Length", Integer.toString(
+                        responseJson.toString().getBytes().length));
                 response.getWriter().write(responseJson.toString());
             }
         } catch (ParseException | IOException e) {

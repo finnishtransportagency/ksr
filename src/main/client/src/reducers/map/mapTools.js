@@ -2,7 +2,6 @@
 import {
     SET_MAP_TOOLS,
     SET_ACTIVE_TOOL,
-    SET_EDIT_MODE,
     SET_ACTIVE_TOOL_MENU,
 } from '../../constants/actionTypes';
 
@@ -11,7 +10,6 @@ const initialState = {
     sketchViewModel: {},
     active: '',
     activeToolMenu: '',
-    editMode: '',
 };
 
 type Action = {
@@ -20,7 +18,6 @@ type Action = {
     sketchViewModel: Object,
     active: string,
     activeToolMenu: string,
-    editMode: string,
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -35,11 +32,6 @@ export default (state: Object = initialState, action: Action) => {
             return {
                 ...state,
                 active: action.active,
-            };
-        case SET_EDIT_MODE:
-            return {
-                ...state,
-                editMode: action.editMode,
             };
         case SET_ACTIVE_TOOL_MENU:
             return {
