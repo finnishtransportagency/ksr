@@ -3,6 +3,7 @@ package fi.sitowise.ksr.repository;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
+import fi.sitowise.ksr.jooq.udt.records.QueryColumnTypeRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
@@ -96,6 +97,7 @@ public class UserLayerRepository {
                         USER_LAYER.DESKTOP_VISIBLE,
                         USER_LAYER.MOBILE_VISIBLE,
                         USER_LAYER.QUERYABLE,
+                        USER_LAYER.QUERY_COLUMNS,
                         USER_LAYER.USERNAME
                     )
                 .values(
@@ -111,7 +113,8 @@ public class UserLayerRepository {
                         layer.getTransparent() ? "1" : "0",
                         layer.getDesktopVisible() ? "1" : "0",
                         layer.getMobileVisible() ? "1" : "0",
-                        "0",
+                        layer.isQueryable() ? "1" : "0",
+                        layer.getQueryColumns(),
                         username
                 )
                 .returning(USER_LAYER.ID)
