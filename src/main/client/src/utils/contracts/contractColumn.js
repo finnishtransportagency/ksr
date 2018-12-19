@@ -31,7 +31,6 @@ export const addContractColumn = (handleContractClick: Function, columns: Object
                 </div>
             ),
             style: {
-                padding: '0',
                 textAlign: 'center',
                 userSelect: 'none',
                 background: '#4B4B4B',
