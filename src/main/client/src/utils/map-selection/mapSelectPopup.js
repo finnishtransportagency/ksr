@@ -38,12 +38,7 @@ export const mapSelectPopup = async (
     view.popup.actions = [getPropertyInfo, googleStreetView];
 
     const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
-    const newResults = activeAdminTool
-        ? [
-            ...results.filter(r => r.graphic.layer && r.graphic.layer.id === activeAdminTool),
-            ...wmsFeatures,
-        ]
-        : [...results, ...wmsFeatures];
+    const newResults = [...results, ...wmsFeatures];
 
     if (newResults.length) {
         newResults.forEach((layer) => {
@@ -108,8 +103,11 @@ export const mapSelectPopup = async (
             };
         });
         const graphics = newResults.map(re => re.graphic);
-        const features = graphicsToEsriJSON(graphics
-            .filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined));
+        const filteredGraphics = activeAdminTool
+            ? graphics.filter(graphic => graphic.layer && graphic.layer.id === activeAdminTool
+                && graphic.layer.geometryType !== undefined)
+            : graphics.filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined);
+        const features = graphicsToEsriJSON(filteredGraphics);
         view.popup.viewModel.features = graphics;
         selectFeatures(features);
     } else {
