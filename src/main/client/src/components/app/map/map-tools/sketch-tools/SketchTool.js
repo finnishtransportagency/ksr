@@ -102,8 +102,8 @@ class SketchTool extends Component<Props, State> {
 
     sketchTool = () => {
         esriLoader
-            .loadModules(['esri/Graphic', 'esri/geometry/geometryEngine'])
-            .then(([Graphic, geometryEngine]) => {
+            .loadModules(['esri/geometry/geometryEngine'])
+            .then(([geometryEngine]) => {
                 const {
                     view,
                     draw,
@@ -171,18 +171,14 @@ class SketchTool extends Component<Props, State> {
                     }
                 });
 
-                const addGraphic = (geometry) => {
-                    // Create a new graphic and set its geometry to tempGraphicsLayer.
-                    const graphic = new Graphic({
-                        geometry,
-                        type: 'sketch-graphic',
-                    });
-                    tempGraphicsLayer.add(graphic);
+                const addGraphic = (graphic) => {
+                    graphic.type = 'sketch-graphic';
                     this.props.setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
                 const selectFeaturesFromDraw = (event) => {
                     if (event.state === 'complete') {
+                        const { graphic } = event;
                         const { geometry } = event.graphic;
                         const {
                             active,
@@ -195,7 +191,7 @@ class SketchTool extends Component<Props, State> {
 
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
-                            addGraphic(geometry);
+                            addGraphic(graphic);
                         } else {
                             if (propertyAreaSearch) {
                                 const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
