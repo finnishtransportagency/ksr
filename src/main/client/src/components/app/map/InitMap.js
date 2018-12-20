@@ -7,10 +7,15 @@ import { queryFeatures } from '../../../utils/queryFeatures';
 import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
-import { mapHighlightStroke } from '../../ui/defaultStyles';
+import {
+    colorBackgroundDark,
+    colorMainHighlight,
+    mapHighlightStroke,
+} from '../../ui/defaultStyles';
 import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
 import { copyFeature } from '../../../utils/map-selection/copyFeature';
+import { removeGraphicsFromMap } from '../../../utils/map';
 
 type Props = {
     layerList: Array<any>,
@@ -76,6 +81,7 @@ class EsriMap extends Component<Props> {
                 'esri/geometry/Point',
                 'esri/widgets/Print',
                 'esri/layers/GraphicsLayer',
+                'esri/Graphic',
             ])
             .then(([
                 MapView,
@@ -88,6 +94,7 @@ class EsriMap extends Component<Props> {
                 Point,
                 Print,
                 GraphicsLayer,
+                Graphic,
             ]) => {
                 const {
                     mapCenter,
@@ -181,6 +188,7 @@ class EsriMap extends Component<Props> {
                             item.graphic.id !== 'buffer'
                             && item.graphic.id !== 'drawMeasure'
                             && item.graphic.type !== 'draw-graphic'
+                            && item.graphic.id !== 'selected-popup-feature'
                             && item.graphic.id !== 'propertyArea');
 
                         if (this.props.activeTool !== 'drawErase' && !filteredResults.find(item =>
@@ -313,6 +321,55 @@ class EsriMap extends Component<Props> {
                         }
                         default:
                             break;
+                    }
+                });
+
+                view.popup.viewModel.watch('selectedFeature', (selectedFeature) => {
+                    removeGraphicsFromMap(view, 'selected-popup-feature');
+
+                    if (selectedFeature) {
+                        const newFeature = new Graphic({
+                            geometry: selectedFeature.geometry,
+                            id: 'selected-popup-feature',
+                        });
+                        switch (newFeature.geometry.type) {
+                            case 'point':
+                                newFeature.symbol = {
+                                    type: 'simple-marker',
+                                    style: 'circle',
+                                    size: 6,
+                                    color: colorMainHighlight,
+                                    outline: {
+                                        color: colorBackgroundDark,
+                                        width: 1,
+                                    },
+                                };
+                                break;
+                            case 'polyline':
+                                newFeature.symbol = {
+                                    type: 'simple-line',
+                                    color: colorMainHighlight,
+                                    width: 2,
+                                };
+                                break;
+                            default:
+                                newFeature.symbol = {
+                                    type: 'simple-fill',
+                                    color: colorMainHighlight,
+                                    outline: {
+                                        color: colorBackgroundDark,
+                                        width: 1,
+                                    },
+                                };
+                                break;
+                        }
+                        view.graphics.add(newFeature);
+                    }
+                });
+
+                view.popup.watch('visible', (visible) => {
+                    if (!visible) {
+                        removeGraphicsFromMap(view, 'selected-popup-feature');
                     }
                 });
 
