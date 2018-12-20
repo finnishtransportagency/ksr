@@ -224,9 +224,10 @@ class EsriMap extends Component<Props> {
                         setSingleLayerGeometry,
                         setPropertyInfo,
                         setContractListInfo,
+                        activeAdminTool,
+                        authorities,
                     } = this.props;
                     const { x, y } = view.popup.location;
-                    const { activeAdminTool, authorities } = this.props;
 
                     const selectedFeature = nestedVal(
                         view,
