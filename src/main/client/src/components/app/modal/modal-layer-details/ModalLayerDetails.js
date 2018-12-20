@@ -47,17 +47,21 @@ class ModalFilter extends Component<Props, State> {
     }
 
     loadFields = () => {
-        const {
-            fields, activeLayer,
-        } = this.props;
+        const { fields, activeLayer, layer } = this.props;
+        const copiedAttributes = layer.graphics.items.length ?
+            layer.graphics.items[0].attributes : null;
 
         const dataFields = fields.map(field => ({
             ...field,
             nullable: field.name !== activeLayer.contractIdField,
-            data: '',
+            data: copiedAttributes && copiedAttributes[field.name] ?
+                copiedAttributes[field.name] : '',
         }));
 
-        this.setState({ dataFields });
+        const dataObject = Object.assign({}, ...(dataFields.map(item =>
+            ({ [item.name]: item.data }))));
+
+        this.setState({ dataFields, data: dataObject });
     };
 
     handleOnChange = (evt: Object, field: Object) => {
