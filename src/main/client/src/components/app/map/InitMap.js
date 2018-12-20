@@ -9,6 +9,8 @@ import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 import { mapHighlightStroke } from '../../ui/defaultStyles';
 import { nestedVal } from '../../../utils/nestedValue';
+import strings from '../../../translations';
+import { copyFeature } from '../../../utils/map-selection/copyFeature';
 
 type Props = {
     layerList: Array<any>,
@@ -19,6 +21,7 @@ type Props = {
     selectFeatures: Function,
     setMapView: (view: Object) => void,
     activeAdminTool: string,
+    sketchViewModel: Object,
     geometryType: string,
     setTempGraphicsLayer: (graphicsLayer: Object) => void,
     activeTool: string,
@@ -38,6 +41,12 @@ type Props = {
     setContractListInfo: (
         layerId: string,
         objectId: number,
+    ) => void,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function
     ) => void,
 };
 
@@ -226,6 +235,7 @@ class EsriMap extends Component<Props> {
                         setSingleLayerGeometry,
                         setPropertyInfo,
                         setContractListInfo,
+                        showConfirmModal,
                         activeAdminTool,
                         authorities,
                     } = this.props;
@@ -271,6 +281,36 @@ class EsriMap extends Component<Props> {
                                 setActiveModal('featureContracts');
                             }
                             break;
+                        case 'copy-feature': {
+                            const { sketchViewModel, setTempGraphicsLayer } = this.props;
+                            const copiedFeature = view.popup.viewModel.selectedFeature;
+
+                            if (tempGraphicsLayer.graphics.length) {
+                                const {
+                                    body,
+                                    acceptText,
+                                    cancelText,
+                                } = strings.esriMap.confirmReplace;
+                                showConfirmModal(body, acceptText, cancelText, () => {
+                                    copyFeature(
+                                        view,
+                                        tempGraphicsLayer,
+                                        copiedFeature,
+                                        sketchViewModel,
+                                        setTempGraphicsLayer,
+                                    );
+                                });
+                            } else {
+                                copyFeature(
+                                    view,
+                                    tempGraphicsLayer,
+                                    copiedFeature,
+                                    sketchViewModel,
+                                    setTempGraphicsLayer,
+                                );
+                            }
+                            break;
+                        }
                         default:
                             break;
                     }
