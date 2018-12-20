@@ -3,6 +3,7 @@ import strings from '../../translations';
 import { graphicsToEsriJSON } from '../arcFormats';
 import { getFeatureInfo } from './featureInfo';
 import { nestedVal } from '../nestedValue';
+import { convertEsriGeometryType } from '../type';
 
 /**
  * Adds content and custom actions to views popup when map clicked.
@@ -12,6 +13,7 @@ import { nestedVal } from '../nestedValue';
  * @param {Function} selectFeatures Redux function that selects features.
  * @param {Object[]} layerList List of layers.
  * @param {string} activeAdminTool Id of currently active admin layer.
+ * @param {string} geometryType Geometry type of currently active admin layer.
  * @param {number} x Screen x-coordinate (pixels).
  * @param {number} y Screen y-coordinate (pixels).
  */
@@ -21,6 +23,7 @@ export const mapSelectPopup = async (
     selectFeatures: Function,
     layerList: Object[],
     activeAdminTool: string,
+    geometryType: string,
     x: number,
     y: number,
 ) => {
@@ -91,6 +94,16 @@ export const mapSelectPopup = async (
                         actions.push(contractLink);
                     }
                 }
+            }
+
+            if (activeAdminTool && activeAdminTool !== layer.graphic.layer.id
+                && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType) {
+                const copyFeatureAction = {
+                    title: strings.esriMap.copyFeature,
+                    id: 'copy-feature',
+                    className: 'far fa-clone',
+                };
+                actions.push(copyFeatureAction);
             }
 
             layer.graphic.layer.popupTemplate = {

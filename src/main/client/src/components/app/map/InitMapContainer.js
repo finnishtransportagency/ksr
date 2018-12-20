@@ -20,6 +20,7 @@ const mapStateToProps = state => ({
     printServiceUrl: state.map.mapConfig.printServiceUrl,
     activeAdminTool: state.adminTool.active.layerId,
     sketchViewModel: state.map.mapTools.sketchViewModel,
+    geometryType: state.adminTool.active.geometryType,
     activeTool: state.map.mapTools.active,
     initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
     authorities: state.user.userInfo.authorities,

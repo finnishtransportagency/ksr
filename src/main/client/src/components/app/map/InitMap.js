@@ -19,6 +19,7 @@ type Props = {
     selectFeatures: Function,
     setMapView: (view: Object) => void,
     activeAdminTool: string,
+    geometryType: string,
     setTempGraphicsLayer: (graphicsLayer: Object) => void,
     activeTool: string,
     setHasGraphics: (hasGraphics: boolean) => void,
@@ -177,13 +178,14 @@ class EsriMap extends Component<Props> {
                             item.graphic.layer.type === 'graphics')) {
                             view.popup.open({ location: event.mapPoint });
 
-                            const { activeAdminTool } = this.props;
+                            const { activeAdminTool, geometryType } = this.props;
                             await mapSelectPopup(
                                 filteredResults,
                                 view,
                                 selectFeatures,
                                 layerList,
                                 activeAdminTool,
+                                geometryType,
                                 event.x,
                                 event.y,
                             );
