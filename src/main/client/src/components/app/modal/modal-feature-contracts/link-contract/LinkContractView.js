@@ -23,7 +23,6 @@ const LinkContractView = ({
             <InputWithIcon>
                 <TextInput
                     backgroundDarker
-                    type="number"
                     placeholder=""
                     name="name"
                     autoComplete="off"

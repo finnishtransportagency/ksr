@@ -6,14 +6,14 @@ import LinkContractView from './LinkContractView';
 type Props = {
     contractLinkValidation: (
         validContract?: boolean,
-        contractNumber?: number,
+        contractNumber?: string,
         contractUuid?: string,
     ) => void,
     contractLayer: Object,
 };
 
 type State = {
-    contractNumber: number | string,
+    contractNumber: string,
     fetching: boolean,
     contractExists: boolean,
 };
