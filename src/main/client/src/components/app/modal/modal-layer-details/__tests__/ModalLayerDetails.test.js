@@ -6,9 +6,10 @@ import ModalLayerDetailsView from '../ModalLayerDetailsView';
 const setup = () => {
     const props = {
         fields: [
-            { name: 'Field1' },
-            { name: 'Field2' },
-            { name: 'Field3' },
+            { name: 'Field1', editable: true },
+            { name: 'Field2', editable: true },
+            { name: 'Field3', editable: true },
+            { name: 'columnOut', editable: true },
         ],
         dataFields: [],
         data: {},
@@ -25,6 +26,7 @@ const setup = () => {
         },
         activeLayer: {
             contractIdField: 123,
+            relationColumnOut: 'columnOut',
         },
         setTempGraphicsLayer: jest.fn(),
     };
@@ -42,9 +44,15 @@ describe('<ModalLayerDetails />', () => {
 
     it('should handle loadFields', () => {
         const expectedResult = [
-            { data: '', name: 'Field1', nullable: true },
-            { data: '', name: 'Field2', nullable: true },
-            { data: '', name: 'Field3', nullable: true },
+            {
+                data: '', editable: true, name: 'Field1', nullable: true,
+            },
+            {
+                data: '', editable: true, name: 'Field2', nullable: true,
+            },
+            {
+                data: '', editable: true, name: 'Field3', nullable: true,
+            },
         ];
 
 
@@ -54,9 +62,15 @@ describe('<ModalLayerDetails />', () => {
 
     it('should handle handleOnChange', () => {
         const expectedResult = [
-            { data: 'Test Value', name: 'Field1', nullable: true },
-            { data: '', name: 'Field2', nullable: true },
-            { data: '', name: 'Field3', nullable: true },
+            {
+                data: 'Test Value', editable: true, name: 'Field1', nullable: true,
+            },
+            {
+                data: '', editable: true, name: 'Field2', nullable: true,
+            },
+            {
+                data: '', editable: true, name: 'Field3', nullable: true,
+            },
         ];
 
         const evt = {
