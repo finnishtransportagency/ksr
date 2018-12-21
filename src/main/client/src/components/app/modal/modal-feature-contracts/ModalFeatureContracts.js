@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import strings from '../../../../translations';
-import { linkToContract } from '../../../../utils/contracts/contracts';
+import { getUuidForNewContract, linkToContract } from '../../../../utils/contracts/contracts';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import ContractListContainer from './contract-list/ContractListContainer';
 import LinkContractContainer from './link-contract/LinkContractContainer';
@@ -27,7 +27,7 @@ type State = {
     title: string,
     validContractLink: boolean,
     modalSubmit: Object[],
-    contractNumber: ?number,
+    contractNumber: ?string,
     contractUuid: string,
     data: Object,
 };
@@ -104,7 +104,6 @@ class ModalFeatureContracts extends Component<Props, State> {
                         contractLinkLayer || currentLayer,
                         this.state.contractUuid,
                         objectId,
-                        currentLayer,
                         addUpdateLayers,
                         view,
                     );
@@ -146,12 +145,16 @@ class ModalFeatureContracts extends Component<Props, State> {
                         [this.state.data],
                     );
                     if (res && res.addResults) {
+                        const { contractNumber } = this.state;
+                        const contractUuid = contractNumber && contractLinkLayer
+                            ? await getUuidForNewContract(contractLayer, contractNumber)
+                            : null;
+
                         await linkToContract(
-                            this.state.contractNumber,
+                            contractNumber,
                             contractLinkLayer || currentLayer,
-                            this.state.contractUuid,
+                            contractUuid,
                             objectId,
-                            currentLayer,
                             addUpdateLayers,
                             view,
                         );
@@ -166,7 +169,7 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     contractLinkValidation = (
         validContract?: boolean,
-        contractNumber?: number,
+        contractNumber?: string,
         contractUuid?: string,
     ) => {
         if (validContract) {
@@ -201,7 +204,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         });
     };
 
-    setActiveView = (activeView: string, contractNumber: number) => {
+    setActiveView = (activeView: string, contractNumber: string) => {
         this.setState({
             ...this.state,
             activeView,

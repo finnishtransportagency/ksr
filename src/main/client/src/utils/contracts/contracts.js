@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { queryFeatures } from '../../api/search/searchQuery';
 import strings from '../../translations';
 import { getContractDocumentUrl } from './contractDocument';
+import { nestedVal } from '../nestedValue';
 import save from '../saveFeatureData';
 
 /**
@@ -86,33 +87,31 @@ export const getContractLayers = (layerId: string, layerList: Object[]) => {
  * Handles contract link submit. If layers relation type is 'link', contract link will be added
  * as new link. Otherwise existing link will be replaced with new one.
  *
- * @param {number} contractNumber Contract number.
- * @param {Object} contractUpdateLayer Layer that will be updated.
- * @param {string} contractUuid Linkable contracts unique identifier.
+ * @param {?number} contractNumber Contract number. Only used for non-link layer.
+ * @param {Object} contractUpdateLayer Layer that will be updated. This is either
+ * the contracts link layer, or original geometry layer.
+ * @param {?string} contractUuid Linkable contracts unique identifier. Only used for link layer.
  * @param {number} objectId Objectid fields value.
- * @param {Object} currentLayer Currently active layer in contract modal.
  * @param {Function} addUpdateLayers Redux function to call SelectLayer action.
  * @param {Object} view Esri map view.
  *
  * @returns {Promise} Returns when queries completed.
  */
 export const linkToContract = async (
-    contractNumber: ?number,
+    contractNumber: ?string,
     contractUpdateLayer: Object,
-    contractUuid: string,
+    contractUuid: ?string,
     objectId: number,
-    currentLayer: Object,
     addUpdateLayers: Function,
     view: Object,
 ) => {
     const { relationColumnIn, relationColumnOut, id } = contractUpdateLayer;
+    const objectIdField = contractUpdateLayer.fields
+        .find(field => field.type === 'esriFieldTypeOID');
+    const objectIdFieldName = objectIdField.name;
 
     try {
-        const objectIdField = currentLayer && currentLayer.fields
-            .find(field => field.type === 'esriFieldTypeOID');
-        const objectIdFieldName = objectIdField.name;
-
-        if (contractUpdateLayer.relationType === 'link') {
+        if (contractUuid && contractUpdateLayer.relationType === 'link') {
             const features = [{
                 attributes: {
                     [relationColumnIn]: objectId,
@@ -124,9 +123,8 @@ export const linkToContract = async (
 
             const queryResult = await queryFeatures(id, whereQueryString);
             if (!queryResult.features.length) {
-                toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
                 const res = await save.saveData('add', view, id, features, objectId.toString(), objectIdFieldName, true);
-                if (res.addResults.some(r => r.success)) {
+                if (res && res.addResults.some(r => r.success)) {
                     toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
                 } else {
                     toast.error(strings.modalFeatureContracts.linkContract.contractLinkedError);
@@ -143,15 +141,14 @@ export const linkToContract = async (
             }];
 
             addUpdateLayers(
-                currentLayer.id,
+                id,
                 objectIdFieldName,
                 objectId,
             );
-            toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
-            const res = await save.saveData('update', view, currentLayer.id, features, objectId.toString(), objectIdFieldName, true);
-            if (res.updateResults.some(r => r.success)) {
+            const res = await save.saveData('update', view, id, features, objectId.toString(), objectIdFieldName, true);
+            if (nestedVal(res, ['features', 'length'])) {
                 addUpdateLayers(
-                    currentLayer.id,
+                    id,
                     objectIdFieldName,
                     objectId,
                 );
@@ -161,7 +158,7 @@ export const linkToContract = async (
             }
         }
     } catch (error) {
-        toast.error(strings.saveFeatureData.contractLinkedError);
+        toast.error(strings.modalFeatureContracts.linkContract.contractLinkedError);
     }
 };
 
@@ -177,7 +174,7 @@ export const linkToContract = async (
 export const getUnlinkParams = async (
     contractLinkLayer: Object,
     contractLayer: Object,
-    contractNumber: number,
+    contractNumber: string,
 ) => {
     try {
         const { contractIdField, id: contractId } = contractLayer;
@@ -197,4 +194,21 @@ export const getUnlinkParams = async (
     } catch (error) {
         return '';
     }
+};
+
+/**
+ * Gets the contract uuid for contract linking after new 'many' contract created.
+ *
+ * @param {Object} contractLayer Contract layer where to find the uuid.
+ * @param {string} contractNumber Contract number that will be used to find the uuid.
+ *
+ * @returns {Promise<string>} Promise string with found contract uuid value.
+ */
+export const getUuidForNewContract = async (contractLayer: Object, contractNumber: string) => {
+    const whereQueryString = `${contractLayer.contractIdField} = '${contractNumber}'`;
+    const queryResult = await queryFeatures(
+        contractLayer.id,
+        whereQueryString,
+    );
+    return nestedVal(queryResult, ['features', '0', 'attributes', contractLayer.relationColumnIn]);
 };
