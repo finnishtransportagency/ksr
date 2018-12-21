@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getContractLayers } from '../../../../../utils/contracts/contracts';
 import { nestedVal } from '../../../../../utils/nestedValue';
 import ContractList from './ContractList';
+import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
 
 const mapStateToProps = (state) => {
     const { layerId, objectId } = state.contract.contractList;
@@ -30,6 +31,12 @@ const mapStateToProps = (state) => {
     };
 };
 
-const ContractListContainer = connect(mapStateToProps, null)(ContractList);
+const mapDispatchToProps = dispatch => ({
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+});
+
+const ContractListContainer = connect(mapStateToProps, mapDispatchToProps)(ContractList);
 
 export default ContractListContainer;

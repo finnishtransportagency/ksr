@@ -20,6 +20,12 @@ type Props = {
     caseManagementLinkField: string,
     setActiveView: Function,
     editLayerPermission: boolean,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function
+    ) => void,
 };
 
 type State = {
@@ -70,7 +76,7 @@ class ContractList extends Component<Props, State> {
         });
     }
 
-    handleUnlinkContract = async (contractNumber: number) => {
+    handleUnlinkContract = (contractNumber: string) => {
         const {
             currentLayer,
             contractLinkLayer,
@@ -80,44 +86,61 @@ class ContractList extends Component<Props, State> {
             contractDescriptionField,
             alfrescoLinkField,
             caseManagementLinkField,
+            showConfirmModal,
         } = this.props;
 
-        this.setState({ fetchingContracts: true });
+        const {
+            content, submit, cancel,
+        } = strings.modalFeatureContracts.confirmModalUnlinkContract;
+        showConfirmModal(
+            content,
+            submit,
+            cancel,
+            async () => {
+                this.setState({ fetchingContracts: true });
+                const {
+                    contractUnlinked, contractUnlinkError,
+                } = strings.modalFeatureContracts.linkContract;
+                try {
+                    const params = await getUnlinkParams(
+                        contractLinkLayer,
+                        contractLayer,
+                        contractNumber,
+                    );
+                    const deletedFeatures = await deleteFeatures(
+                        contractLinkLayer.id,
+                        params,
+                    );
 
-        try {
-            const params = await getUnlinkParams(contractLinkLayer, contractLayer, contractNumber);
-            const deletedFeatures = await deleteFeatures(
-                contractLinkLayer.id,
-                params,
-            );
+                    const { deleteResults } = deletedFeatures;
+                    if (deleteResults && deleteResults.length) {
+                        let contracts = await fetchContractRelation(
+                            currentLayer.id,
+                            objectId,
+                        );
+                        contracts = await contractListTexts(
+                            contracts,
+                            contractIdField,
+                            contractDescriptionField,
+                            alfrescoLinkField,
+                            caseManagementLinkField,
+                        );
 
-            const { deleteResults } = deletedFeatures;
-            if (deleteResults && deleteResults.length) {
-                let contracts = await fetchContractRelation(
-                    currentLayer.id,
-                    objectId,
-                );
-                contracts = await contractListTexts(
-                    contracts,
-                    contractIdField,
-                    contractDescriptionField,
-                    alfrescoLinkField,
-                    caseManagementLinkField,
-                );
-
-                toast.success(strings.modalFeatureContracts.linkContract.contractUnlinked);
-                this.setState({
-                    contracts,
-                    fetchingContracts: false,
-                });
-            } else {
-                toast.error(strings.modalFeatureContracts.linkContract.contractUnlinkError);
-                this.setState({ fetchingContracts: false });
-            }
-        } catch (error) {
-            toast.error(strings.modalFeatureContracts.linkContract.contractUnlinkError);
-            this.setState({ fetchingContracts: false });
-        }
+                        toast.success(contractUnlinked);
+                        this.setState({
+                            contracts,
+                            fetchingContracts: false,
+                        });
+                    } else {
+                        toast.error(contractUnlinkError);
+                        this.setState({ fetchingContracts: false });
+                    }
+                } catch (error) {
+                    toast.error(contractUnlinkError);
+                    this.setState({ fetchingContracts: false });
+                }
+            },
+        );
     };
 
     render() {

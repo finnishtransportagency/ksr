@@ -264,6 +264,11 @@ const fi = {
         addEditContract: {
             contractFound: 'täytyy olla yksilöllinen.',
         },
+        confirmModalUnlinkContract: {
+            submit: 'Poista',
+            cancel: 'Peruuta',
+            content: 'Haluatko varmasti poistaa sopimuksen linkityksen kohteelta?',
+        },
     },
     saveFeatureData: {
         newFeatureSaveSuccess: 'Kohteen luonti onnistui.',
