@@ -16,6 +16,7 @@ type Props = {
     fields: Array<Object>,
     setData: Function,
     objectId: number,
+    contractNumber: string,
 };
 
 type State = {
@@ -48,20 +49,23 @@ class EditContract extends Component<Props, State> {
 
     loadFields = () => {
         const {
-            currentLayer, objectId, fields, contractLayer, setData,
+            currentLayer, objectId, fields, contractLayer, setData, contractNumber,
         } = this.props;
-
         fetchContractRelation(
             currentLayer.id,
             objectId,
         ).then(contracts => contractListTexts(contracts))
             .then((contracts) => {
-                const attributes = fields.filter(f => (f.type === 'esriFieldTypeOID' ||
-                    (f.editable && f.name !== contractLayer.relationColumnOut &&
-                    f.name !== contractLayer.contractIdField))).map(
+                const contract = contracts
+                    .find(a => a.attributes.CONTRACT_NUMBER === contractNumber);
+                const attributes = fields.filter(f => (f.type === 'esriFieldTypeOID'
+                    || (f.editable && f.name !== contractLayer.relationColumnOut
+                        && f.name !== contractLayer.contractIdField))).map(
                     field => ({
                         ...field,
-                        data: contracts[0].attributes[field.name],
+                        data: contract
+                            ? contract.attributes[field.name]
+                            : contracts[0].attributes[field.name],
                     }),
                     {},
                 );
@@ -139,7 +143,7 @@ class EditContract extends Component<Props, State> {
                 fields={contractData}
                 handleOnChange={this.handleOnChange}
                 fetching={fetching}
-                contractExists={contractExists}
+                validContract={contractExists}
             />
         );
     }
