@@ -112,6 +112,9 @@ class AddContract extends Component<Props, State> {
                 }
             }, 300);
         } else {
+            if (field.name === contractLayer.contractIdField) {
+                this.props.contractLinkValidation(false);
+            }
             this.setState({
                 fetching: false,
             });
@@ -120,13 +123,14 @@ class AddContract extends Component<Props, State> {
 
     render() {
         const { contractData, fetching, contractExists } = this.state;
+        const validContract = !contractExists;
 
         return (
             <ModalLayerDetailsView
                 fields={contractData}
                 handleOnChange={this.handleOnChange}
                 fetching={fetching}
-                contractExists={contractExists}
+                validContract={validContract}
             />
         );
     }
