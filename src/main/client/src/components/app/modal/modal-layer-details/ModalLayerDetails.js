@@ -6,6 +6,7 @@ import strings from '../../../../translations';
 import save from '../../../../utils/saveFeatureData';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import { queryFeatures } from '../../../../api/search/searchQuery';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     fields: any,
@@ -17,6 +18,8 @@ type Props = {
     featureType: string,
     activeLayer: Object,
     sketchViewModel: Object,
+    objectId: Object,
+    addUpdateLayers: Function,
 };
 
 type State = {
@@ -125,6 +128,9 @@ class ModalFilter extends Component<Props, State> {
             originalLayerId,
             featureType,
             layer,
+            objectId,
+            addUpdateLayers,
+            activeLayer,
         } = this.props;
 
         const { data } = this.state;
@@ -135,13 +141,24 @@ class ModalFilter extends Component<Props, State> {
 
         createAddressFields(combinedData, featureType, addressField)
             .then(r => save.saveData('add', view, originalLayerId, [r]))
-            .then(() => {
-                if (layer) {
-                    layer.graphics = undefined;
-                    this.props.setTempGraphicsLayer(layer);
+            .then((res) => {
+                if (res && res.addResults && res.addResults.length > 0 && objectId) {
+                    if (layer) {
+                        layer.graphics = undefined;
+                        this.props.setTempGraphicsLayer(layer);
+                    }
+                    this.props.sketchViewModel.cancel();
+                    this.props.sketchViewModel.reset();
+
+                    if (nestedVal(activeLayer, ['type']) === 'agfl') {
+                        addUpdateLayers(
+                            originalLayerId,
+                            objectId.name,
+                            res.addResults[0].objectId,
+                            false,
+                        );
+                    }
                 }
-                this.props.sketchViewModel.cancel();
-                this.props.sketchViewModel.reset();
             });
     };
 

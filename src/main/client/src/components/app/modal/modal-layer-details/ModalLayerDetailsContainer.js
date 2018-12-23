@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import ModalLayerDetails from './ModalLayerDetails';
 import { setTempGraphicsLayer } from '../../../../reducers/map/actions';
+import { addUpdateLayers } from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
     const activeLayer = (
@@ -15,7 +16,10 @@ const mapStateToProps = (state) => {
     const fields = activeLayer ? activeLayer.fields.filter(f =>
         f.type !== 'esriFieldTypeOID' && f.name !== addressField && f.editable) : [];
 
+    const objectId = activeLayer && activeLayer.fields.find(f => f.type === 'esriFieldTypeOID');
+
     return {
+        objectId,
         fields,
         activeLayer,
         layer: state.map.mapView.graphicsLayer,
@@ -31,7 +35,9 @@ const mapDispatchToProps = dispatch => ({
     setTempGraphicsLayer: (graphicsLayer) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
     },
-
+    addUpdateLayers: (layerId, ObjectIdFieldName, objectId, selected) => {
+        dispatch(addUpdateLayers(layerId, ObjectIdFieldName, objectId, selected));
+    },
 });
 
 const ModalLayerDetailsContainer = connect(mapStateToProps, mapDispatchToProps)(ModalLayerDetails);
