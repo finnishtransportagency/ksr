@@ -1,9 +1,9 @@
 // @flow
 import { toast } from 'react-toastify';
-import { fetchSearchQuery } from '../../api/search/searchQuery';
+import { fetchSearchQuery, queryFeatures } from '../../api/search/searchQuery';
 import * as types from '../../constants/actionTypes';
 import strings from '../../translations';
-import { parseData } from '../../utils/parseFeatureData';
+import { parseData, parseNewUpdateData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
 
@@ -19,6 +19,28 @@ export const selectFeatures = (features: {}) => ({
     type: types.SELECT_FEATURES,
     layers: parseData(features, true),
 });
+
+export const addUpdateLayers = (
+    layerId: string,
+    objectIdFieldName: string,
+    objectId: number,
+    selected?: boolean,
+) =>
+    (dispatch: Function) => {
+        queryFeatures(
+            parseInt(layerId, 10),
+            `${objectIdFieldName} = ${objectId}`,
+            null,
+        )
+            .then((result) => {
+                if (result && result.fields && result.features.length > 0) {
+                    dispatch({
+                        type: types.SELECT_FEATURES,
+                        layers: parseNewUpdateData(layerId, [result], selected),
+                    });
+                }
+            });
+    };
 
 export const setColumns = (columns: Array<Object>) => ({
     type: types.SET_COLUMNS,
