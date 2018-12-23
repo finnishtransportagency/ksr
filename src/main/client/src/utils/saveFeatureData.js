@@ -10,6 +10,8 @@ import { updateFeatures } from '../api/map/updateFeatures';
 import { createAddressFields } from './geoconvert/createAddressFields';
 import { handleFailedEdit } from '../reducers/offline/actions';
 import store from '../store';
+import { nestedVal } from './nestedValue';
+import { queryFeatures } from '../api/search/searchQuery';
 
 /**
  * Convert attribute back to original Feature Layer attribute format.
@@ -136,20 +138,69 @@ const handleDeleteResponse = (res: Object, layer: ?Object) => {
         toast.error(strings.saveFeatureData.featureDeleteNoFeaturesError);
     }
 };
+/**
+ * Handle popup update if it is open.
+ *
+ * @param {Object} layer Updated layer data.
+ * @param {Object} view MapView Esri ArcGIS JS MapView.
+ * @param {string} layerId string id of the corresponding layer.
+ * @param {string} objectId Id of feature.
+ * @param {string} idFieldName Name of identifier field.
+ */
+const handlePopupUpdate = (
+    layer: Object,
+    view: Object,
+    layerId: string,
+    idFieldName?: string,
+    objectId?: ?string,
+) => {
+    if (objectId && idFieldName) {
+        queryFeatures(
+            parseInt(layerId, 10),
+            `${idFieldName} = ${objectId}`,
+            null,
+        ).then((queryResult) => {
+            if (nestedVal(queryResult, ['fields']) &&
+                nestedVal(queryResult, ['features']) &&
+                queryResult.features.length > 0) {
+                if (view.popup.viewModel.features[0]
+                    .attributes[idFieldName] ===
+                    queryResult.features[0].attributes[idFieldName]) {
+                    // find current layer from view
+                    const viewLayer = view.map.findLayerById(layerId);
+                    if (viewLayer) {
+                        // set new feature values to popup
+                        view.popup.features[0].attributes =
+                            queryResult.features[0].attributes;
+                        // need to make a change to trigger update
+                        const copyLayer = viewLayer.popupTemplate.content;
+                        viewLayer.popupTemplate.content = '';
+                        viewLayer.popupTemplate.content = copyLayer;
+                    }
+                }
+            }
+        });
+    }
+    return layer;
+};
 
 /**
- * This operation adds features to the associated feature layer
+ * This operation adds features to the associated feature layer.
  *
- * @param action string Type of action (add | update)
- * @param view MapView Esri ArcGIS JS MapView
- * @param layerId string id of the corresponding layer
- * @param features Object[] Array of features
+ * @param {string} action Type of action (add | update).
+ * @param {Object} view MapView Esri ArcGIS JS MapView.
+ * @param {string} layerId string id of the corresponding layer.
+ * @param {Object[]} features Array of features.
+ * @param {string} objectId Id of feature.
+ * @param {string} idFieldName Name of identifier field.
  */
 const saveData = (
     action: string,
     view: Object,
     layerId: string,
     features: Object[],
+    objectId?: ?string,
+    idFieldName?: string,
 ) => {
     const params = featureDataToParams(features);
     const layer = findMatchingLayer(view, layerId);
@@ -165,7 +216,9 @@ const saveData = (
                     });
             case 'update':
                 return updateFeatures(layerId, params.toString()).then(res =>
-                    res && handleUpdateResponse(res, layerId))
+                    res && handleUpdateResponse(res, layerId, layer))
+                    .then(layerToUpdated => layerToUpdated &&
+                        handlePopupUpdate(layerToUpdated, view, layerId, idFieldName, objectId))
                     .catch((err) => {
                         store.dispatch(handleFailedEdit('update', [layerId, params.toString()]));
                         toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
@@ -250,7 +303,7 @@ const keepOnlyEdited = (obj: Object, idFieldName: ?string) => {
 * Otherwise returns undefined.
 *
 * @param {Object[]} columns Array of columns to look for.
-* @param {string} ifFieldName Name of the id-field.
+* @param {string} idFieldName Name of the id-field.
 *
 * @returns {(string | undefined)} Field accessor or undefined if not found.
 */
@@ -284,13 +337,22 @@ const saveEditedFeatureData = (
                 .map(formatToEsriCompliant);
 
             const layerId = ed.id;
+            const idFieldNameWithoutLayerId = ed._idFieldName;
+            let objectId = null;
+            if (nestedVal(view, ['popup', 'viewModel', 'features']) && view.popup.viewModel.features.length > 0) {
+                const currentData = ed.data.find(d => d._id ===
+                    view.popup.viewModel.features[0].attributes[ed._idFieldName]);
+                if (currentData) {
+                    objectId = currentData._id;
+                }
+            }
 
             const promisesAddressField = features.map(feature => (
                 createAddressFields(feature, featureType, addressField)
             ));
 
             return Promise.all(promisesAddressField)
-                .then(r => save.saveData('update', view, layerId, r));
+                .then(r => save.saveData('update', view, layerId, r, objectId, idFieldNameWithoutLayerId));
         });
         return Promise.all(promises);
     }
