@@ -21,6 +21,7 @@ type Props = {
     view: Object,
     createLayerPermission: boolean,
     editLayerPermission: boolean,
+    addUpdateLayers: Function,
 };
 
 type State = {
@@ -85,7 +86,9 @@ class ModalFeatureContracts extends Component<Props, State> {
     };
 
     handleSubmitLinkToContract = () => {
-        const { objectId, currentLayer } = this.props;
+        const {
+            objectId, currentLayer, addUpdateLayers, view,
+        } = this.props;
         this.setState({
             activeView: 'linkContract',
             title: strings.modalFeatureContracts.linkContract.title,
@@ -105,6 +108,8 @@ class ModalFeatureContracts extends Component<Props, State> {
                         this.state.contractUuid,
                         objectId,
                         currentLayer,
+                        addUpdateLayers,
+                        view,
                     );
                     this.setState({ ...this.initialState });
                 },
@@ -126,7 +131,7 @@ class ModalFeatureContracts extends Component<Props, State> {
     handleSubmitAddContract = () => {
         const {
             objectId, currentLayer, contractLayer, addressField,
-            featureType, view,
+            featureType, view, addUpdateLayers,
         } = this.props;
         this.setState({
             activeView: 'addContract',
@@ -156,6 +161,8 @@ class ModalFeatureContracts extends Component<Props, State> {
                                     this.state.contractUuid,
                                     objectId,
                                     currentLayer,
+                                    addUpdateLayers,
+                                    view,
                                 ).then(() => this.setState({ ...this.initialState }));
                             }
                         });
