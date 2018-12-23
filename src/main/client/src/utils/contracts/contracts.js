@@ -2,11 +2,10 @@
 
 import * as querystring from 'querystring';
 import { toast } from 'react-toastify';
-import { addFeatures } from '../../api/map/addFeatures';
-import { updateFeatures } from '../../api/map/updateFeatures';
 import { queryFeatures } from '../../api/search/searchQuery';
 import strings from '../../translations';
 import { getContractDocumentUrl } from './contractDocument';
+import save from '../saveFeatureData';
 
 /**
  * Gets ID and Description field from contract query, that will be shown in contract list.
@@ -92,6 +91,8 @@ export const getContractLayers = (layerId: string, layerList: Object[]) => {
  * @param {string} contractUuid Linkable contracts unique identifier.
  * @param {number} objectId Objectid fields value.
  * @param {Object} currentLayer Currently active layer in contract modal.
+ * @param {Function} addUpdateLayers Redux function to call SelectLayer action.
+ * @param {Object} view Esri map view.
  *
  * @returns {Promise} Returns when queries completed.
  */
@@ -101,40 +102,47 @@ export const linkToContract = async (
     contractUuid: string,
     objectId: number,
     currentLayer: Object,
+    addUpdateLayers: Function,
+    view: Object,
 ) => {
     const { relationColumnIn, relationColumnOut, id } = contractUpdateLayer;
 
     try {
+        const objectIdField = currentLayer && currentLayer.fields
+            .find(field => field.type === 'esriFieldTypeOID');
+        const objectIdFieldName = objectIdField.name;
+
         if (contractUpdateLayer.relationType === 'link') {
-            const features = JSON.stringify([{
+            const features = [{
                 attributes: {
                     [relationColumnIn]: objectId,
                     [relationColumnOut]: contractUuid,
                 },
-            }]);
+            }];
 
-            const params = querystring.stringify({ f: 'json', features });
             const whereQueryString = `${relationColumnOut} = '${contractUuid}' AND ${relationColumnIn} = '${objectId}'`;
 
             const queryResult = await queryFeatures(id, whereQueryString);
             if (!queryResult.features.length) {
-                await addFeatures(id, params);
+                await save.saveData('add', view, currentLayer.id, features, objectId.toString(), objectIdFieldName);
                 toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
             } else {
                 toast.error(strings.modalFeatureContracts.linkContract.contractLinkedExists);
             }
         } else {
-            const objectIdField = currentLayer.fields
-                .find(field => field.type === 'esriFieldTypeOID').name;
-            const features = JSON.stringify([{
+            const features = [{
                 attributes: {
-                    [objectIdField]: objectId,
+                    [objectIdFieldName]: objectId,
                     [relationColumnOut]: contractNumber,
                 },
-            }]);
-            const params = querystring.stringify({ f: 'json', features });
+            }];
 
-            await updateFeatures(currentLayer.id, params);
+            await save.saveData('update', view, currentLayer.id, features, objectId.toString(), objectIdFieldName);
+            addUpdateLayers(
+                currentLayer.id,
+                objectIdFieldName,
+                objectId,
+            );
             toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
         }
     } catch (error) {
