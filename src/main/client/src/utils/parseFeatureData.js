@@ -81,7 +81,7 @@ export const parseData = (data, selected) => {
 /**
  * Merge two arrays of features. If features does not exists in
  * currentData (matching done with '_id') then add it, otherwise
- * only update its '_selected' attribute.
+ * update its matching attributes.
  *
  * @param {Object[]} currentData Array of current features.
  * @param {Object[]} newData Array of incoming features.
@@ -93,12 +93,16 @@ export const mergeData = (currentData, newData) => {
     newData.forEach((newFeature) => {
         const matchingFeature = data.find(f => f._id === newFeature._id);
         if (matchingFeature) {
-            matchingFeature._selected = newFeature._selected;
+            Object.keys(matchingFeature).forEach((key) => {
+                matchingFeature[key] = newFeature[key] === undefined ?
+                    matchingFeature[key] :
+                    newFeature[key];
+                return matchingFeature;
+            });
         } else {
             data.push(newFeature);
         }
     });
-
     return data;
 };
 

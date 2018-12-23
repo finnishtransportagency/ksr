@@ -50,7 +50,7 @@ describe('parseFeatureData', () => {
             {
                 n: 4,
                 _id: 'd',
-                _selected: true,
+                _selected: undefined,
                 _source: 'select',
             },
             {
@@ -163,7 +163,9 @@ describe('parseFeatureData', () => {
         const currentLayers = [
             {
                 id: '123',
-                data: [{ _id: 'a123', _source: 'search', _selected: false }],
+                data: [{
+                    _id: 'a123', CONTRACT_NR: '123', _source: 'search', _selected: false,
+                }],
             },
             {
                 id: '456',
@@ -178,7 +180,9 @@ describe('parseFeatureData', () => {
         const newLayers = [
             {
                 id: '123',
-                data: [{ _id: 'a123', _source: 'search', _selected: true }],
+                data: [{
+                    _id: 'a123', CONTRACT_NR: '456', _source: 'search', _selected: true,
+                }],
             },
             {
                 id: '111',
@@ -193,15 +197,21 @@ describe('parseFeatureData', () => {
         const expectedLayers = [
             {
                 id: '123',
-                data: [{ _id: 'a123', _source: 'search', _selected: true }],
+                data: [{
+                    _id: 'a123', CONTRACT_NR: '456', _source: 'search', _selected: true,
+                }],
             },
             {
-                id: '111',
-                data: [{ _id: 'b456', _source: 'select', _selected: true }],
+                id: '456',
+                data: [{ _id: 'a456', _source: 'select', _selected: true }],
             },
             {
                 id: '789',
                 data: [{ _id: 'a789', _source: 'search', _selected: false }],
+            },
+            {
+                id: '111',
+                data: [{ _id: 'b456', _source: 'select', _selected: true }],
             },
         ];
 
