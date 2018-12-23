@@ -96,10 +96,14 @@ const handleSaveResponse = (res: Object, layer: ?Object) => {
  *
  * @param {Object} res Body of the response from ArcGIS Server.
  * @param {string} layerId Id of the corresponding layer.
+ * @param {Object} layerToRefresh Layer from view
  *
  * @returns {Object} Object containing layer id and feature ids of the updated features.
  */
-const handleUpdateResponse = (res: Object, layerId: string): Object => {
+const handleUpdateResponse = (res: Object, layerId: string, layerToRefresh: ?Object): Object => {
+    if (layerToRefresh) {
+        layerToRefresh.refresh();
+    }
     const layer = {
         layerId,
         features: Array.isArray(res.updateResults) ?
