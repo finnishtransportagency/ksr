@@ -1,9 +1,11 @@
 # Matti Telenius       Dimenteq Oy     2018
 # testit ajetaan scr hakemistossa vaikka komennolla:
-# pybot -L TRACE  -d output -i smoke test
+# pybot -L TRACE -d output -i smoke test
+# robot -L TRACE -v LiviUSER:Käyttäjätunnus -v LiviPWD:Salasana -i smoke test
 *** Settings ***
 Library                     Selenium2Library    implicit_wait=1   timeout=40.0
-#Library                     selenium_extensions.py
+Library                     Dialogs
+Library                     selenium_extensions.py
 
 #Resource                    c:\\tools\\oma\\ksr.robot
 
@@ -13,7 +15,7 @@ Library                     Selenium2Library    implicit_wait=1   timeout=40.0
 ${BROWSER}             headlesschrome
 ${DELAY}               0.5
 #${LOGIN URL}           http://localhost:3000/
-${LOGIN URL}           https://devtest.liikennevirasto.fi/ksr/
+${LOGIN URL}           https://devtest.vayla.fi/ksr/
 ${username_input}      id=userNameInput
 ${pwd_input}           id=passwordInput
 ${LiviUserNameField}   id=username
@@ -30,12 +32,11 @@ Open MainPage
     Log                             ${BROWSER}
     Log                             ${LOGIN URL}
     Open Browser      ${LOGIN URL}    ${BROWSER}
-    Selenium2Library.go to                           ${LOGIN URL}
     Set Selenium Speed  ${DELAY}
     Maximize Browser Window
     ${temp}=                        set variable        ${LOG LEVEL}
     set log level                   NONE
-    run keyword if   "${LOGIN URL}" in "https://devtest.liikennevirasto.fi/ksr/"    Kirjaudu sisaan  ${USER}  ${PWD}
+    run keyword if   "${LOGIN URL}" in "https://devtest.vayla.fi/ksr/"    Kirjaudu sisaan   ${LiviUSER}  ${LiviPWD}
     Set Log Level                   ${temp}
 
 Open MainPage Headless
@@ -51,7 +52,7 @@ Open MainPage Headless
     Maximize Browser Window
     ${temp}=                        set variable        ${LOG LEVEL}
     set log level                   NONE
-    run keyword if   "${LOGIN URL}" in "https://devtest.liikennevirasto.fi/ksr/"    Kirjaudu sisaan  ${LiviUSER}  ${LiviPWD}
+    run keyword if   "${LOGIN URL}" in "https://devtest.vayla.fi/ksr/"    Kirjaudu sisaan  ${LiviUSER}  ${LiviPWD}
     Set Log Level                   ${temp}
 
 Kirjaudu sisaan  [Arguments]  ${Username}  ${Password}
