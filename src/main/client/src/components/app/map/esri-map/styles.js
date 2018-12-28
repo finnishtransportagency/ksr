@@ -21,7 +21,8 @@ export const Wrapper = styled.div`
         };
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
-        .esri-popup__button, .esri-popup__header-title, .esri-attribution__sources {
+        .esri-popup__button, .esri-popup__header-container, .esri-attribution__sources,
+        .esri-popup__feature-menu-item {
             outline: none;
         };
         

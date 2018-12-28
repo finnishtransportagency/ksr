@@ -12,6 +12,7 @@ import {
 import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/actions';
 import InitMap from './InitMap';
 import { setContractListInfo } from '../../../reducers/contract/actions';
+import { showConfirmModal } from '../../../reducers/confirmModal/actions';
 
 const mapStateToProps = state => ({
     layerList: state.map.layerGroups.layerList,
@@ -20,6 +21,7 @@ const mapStateToProps = state => ({
     printServiceUrl: state.map.mapConfig.printServiceUrl,
     activeAdminTool: state.adminTool.active.layerId,
     sketchViewModel: state.map.mapTools.sketchViewModel,
+    geometryType: state.adminTool.active.geometryType,
     activeTool: state.map.mapTools.active,
     initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
     authorities: state.user.userInfo.authorities,
@@ -61,6 +63,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setContractListInfo: (layerId, objectId) => {
         dispatch(setContractListInfo(layerId, objectId));
+    },
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
 });
 

@@ -3,6 +3,7 @@ import strings from '../../translations';
 import { graphicsToEsriJSON } from '../arcFormats';
 import { getFeatureInfo } from './featureInfo';
 import { nestedVal } from '../nestedValue';
+import { convertEsriGeometryType } from '../type';
 
 /**
  * Adds content and custom actions to views popup when map clicked.
@@ -12,6 +13,7 @@ import { nestedVal } from '../nestedValue';
  * @param {Function} selectFeatures Redux function that selects features.
  * @param {Object[]} layerList List of layers.
  * @param {string} activeAdminTool Id of currently active admin layer.
+ * @param {string} geometryType Geometry type of currently active admin layer.
  * @param {number} x Screen x-coordinate (pixels).
  * @param {number} y Screen y-coordinate (pixels).
  */
@@ -21,6 +23,7 @@ export const mapSelectPopup = async (
     selectFeatures: Function,
     layerList: Object[],
     activeAdminTool: string,
+    geometryType: string,
     x: number,
     y: number,
 ) => {
@@ -38,12 +41,7 @@ export const mapSelectPopup = async (
     view.popup.actions = [getPropertyInfo, googleStreetView];
 
     const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
-    const newResults = activeAdminTool
-        ? [
-            ...results.filter(r => r.graphic.layer && r.graphic.layer.id === activeAdminTool),
-            ...wmsFeatures,
-        ]
-        : [...results, ...wmsFeatures];
+    const newResults = [...results, ...wmsFeatures];
 
     if (newResults.length) {
         newResults.forEach((layer) => {
@@ -71,15 +69,6 @@ export const mapSelectPopup = async (
                         label: c.name,
                     });
                 });
-
-                layer.graphic.layer.popupTemplate = {
-                    title: layer.graphic.layer.title,
-                    content: [{
-                        type: 'fields',
-                        fieldInfos,
-                    }],
-                    actions,
-                };
             } else if (layer.graphic.layer) {
                 const matchingLayer = layerList
                     .find(ll => ll.id === layer.graphic.layer.id.replace('.s', ''));
@@ -104,21 +93,34 @@ export const mapSelectPopup = async (
                         };
                         actions.push(contractLink);
                     }
-
-                    layer.graphic.layer.popupTemplate = {
-                        title: layer.graphic.layer.title,
-                        content: [{
-                            type: 'fields',
-                            fieldInfos,
-                        }],
-                        actions,
-                    };
                 }
             }
+
+            if (activeAdminTool && activeAdminTool !== layer.graphic.layer.id
+                && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType) {
+                const copyFeatureAction = {
+                    title: strings.esriMap.copyFeature,
+                    id: 'copy-feature',
+                    className: 'far fa-clone',
+                };
+                actions.push(copyFeatureAction);
+            }
+
+            layer.graphic.layer.popupTemplate = {
+                title: layer.graphic.layer.title,
+                content: [{
+                    type: 'fields',
+                    fieldInfos,
+                }],
+                actions,
+            };
         });
         const graphics = newResults.map(re => re.graphic);
-        const features = graphicsToEsriJSON(graphics
-            .filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined));
+        const filteredGraphics = activeAdminTool
+            ? graphics.filter(graphic => graphic.layer && graphic.layer.id === activeAdminTool
+                && graphic.layer.geometryType !== undefined)
+            : graphics.filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined);
+        const features = graphicsToEsriJSON(filteredGraphics);
         view.popup.viewModel.features = graphics;
         selectFeatures(features);
     } else {

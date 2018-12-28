@@ -44,6 +44,12 @@ const fi = {
         noFeatures: 'Ei kohteita',
         getPropertyInfo: 'Kiinteistötiedot',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
+        copyFeature: 'Kopioi kohde',
+        confirmReplace: {
+            body: 'Haluatko varmasti korvata aiemman piirroksen?',
+            acceptText: 'Korvaa',
+            cancelText: 'Peruuta',
+        },
     },
     modalFilter: {
         title: 'Suodata sarakkeita',

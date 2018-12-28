@@ -8,6 +8,7 @@ import * as styles from '../../../../ui/defaultStyles';
 import SketchToolView from './SketchToolView';
 import SketchActiveAdminView from './sketch-active-admin/SketchActiveAdminView';
 import { queryFeatures } from '../../../../../utils/queryFeatures';
+import { convertEsriGeometryType } from '../../../../../utils/type';
 
 type State = {
     editSketchIcon: string,
@@ -101,8 +102,8 @@ class SketchTool extends Component<Props, State> {
 
     sketchTool = () => {
         esriLoader
-            .loadModules(['esri/Graphic', 'esri/geometry/geometryEngine'])
-            .then(([Graphic, geometryEngine]) => {
+            .loadModules(['esri/geometry/geometryEngine'])
+            .then(([geometryEngine]) => {
                 const {
                     view,
                     draw,
@@ -130,28 +131,8 @@ class SketchTool extends Component<Props, State> {
                         setActiveToolMenu('sketchActiveAdmin');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchActiveAdmin');
-                        switch (this.props.geometryType) {
-                            case 'esriGeometryPolygon':
-                                sketchViewModel.create('polygon');
-                                break;
-                            case 'esriGeometryMultipoint':
-                                sketchViewModel.create('multipoint');
-                                break;
-                            case 'esriGeometryPoint':
-                                sketchViewModel.create('point');
-                                break;
-                            case 'esriGeometryPolyline':
-                                sketchViewModel.create('polyline');
-                                break;
-                            case 'esriGeometryEnvelope':
-                                sketchViewModel.create('rectangle');
-                                break;
-                            case 'esriGeometryCircularArc':
-                                sketchViewModel.create('circle');
-                                break;
-                            default:
-                                sketchViewModel.create('polygon');
-                        }
+                        const geometryType = convertEsriGeometryType(this.props.geometryType);
+                        sketchViewModel.create(geometryType);
                         drawNewFeatureButton.style.backgroundColor =
                             styles.colorBackgroundDarkBlue;
                     }
@@ -190,18 +171,14 @@ class SketchTool extends Component<Props, State> {
                     }
                 });
 
-                const addGraphic = (geometry) => {
-                    // Create a new graphic and set its geometry to tempGraphicsLayer.
-                    const graphic = new Graphic({
-                        geometry,
-                        type: 'sketch-graphic',
-                    });
-                    tempGraphicsLayer.add(graphic);
+                const addGraphic = (graphic) => {
+                    graphic.type = 'sketch-graphic';
                     this.props.setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
                 const selectFeaturesFromDraw = (event) => {
                     if (event.state === 'complete') {
+                        const { graphic } = event;
                         const { geometry } = event.graphic;
                         const {
                             active,
@@ -212,24 +189,24 @@ class SketchTool extends Component<Props, State> {
                             authorities,
                         } = this.props;
 
-                        if (propertyAreaSearch) {
-                            const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
-                            const area = geometryEngine.planarArea(
-                                geometry,
-                                'square-kilometers',
-                            );
-
-                            if (area > 0.25) {
-                                toast.error(strings.searchProperty.errorToast.searchAreaLimit);
-                            } else {
-                                setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
-                            }
-                        }
-
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
-                            addGraphic(geometry);
+                            addGraphic(graphic);
                         } else {
+                            if (propertyAreaSearch) {
+                                const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
+                                const area = geometryEngine.planarArea(
+                                    geometry,
+                                    'square-kilometers',
+                                );
+
+                                if (area > 0.25) {
+                                    toast.error(strings.searchProperty.errorToast.searchAreaLimit);
+                                } else {
+                                    setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
+                                }
+                            }
+
                             queryFeatures(
                                 geometry,
                                 activeAdminTool,
