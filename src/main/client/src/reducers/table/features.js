@@ -137,7 +137,7 @@ export default (state: State = initialState, action: Action) => {
         case APPLY_EDITS:
             return {
                 ...state,
-                layers: applyEdits(state.layers, action.edits),
+                layers: applyEdits(state.editedLayers, action.edits),
                 editedLayers: applyEdits(state.editedLayers, action.edits),
             };
         case APPLY_DELETED_FEATURES:
