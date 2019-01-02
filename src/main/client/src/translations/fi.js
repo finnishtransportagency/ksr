@@ -298,6 +298,7 @@ const fi = {
     },
     mapLayerSettings: {
         addNewFeature: 'Luo uusi kohde',
+        createThemeLayer: 'Luo teemataso',
         toggleAdminTool: 'Muokkaus päälle/pois',
         toggleVisibility: 'Näytä/piilota karttataso',
     },

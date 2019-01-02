@@ -22,6 +22,9 @@ const mapDispatchToProps = dispatch => ({
     createNonSpatialFeature: () => {
         dispatch(setActiveModal('editLayerDetails'));
     },
+    createThemeLayer: (layerId: string) => {
+        dispatch(setActiveModal('themeLayer', layerId));
+    },
 });
 
 const MapLayersActiveContainer = connect(mapStateToProps, mapDispatchToProps)(MapLayersActive);

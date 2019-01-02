@@ -112,8 +112,8 @@ describe('<MapLayersActiveView />', () => {
 
     it('should set active admintool on click', () => {
         const { setActiveAdminTool } = wrapper.props();
-        expect(wrapper.find(LayerSettings.Icons).find('i')).toHaveLength(2);
-        wrapper.find(LayerSettings.Icons).find('i').at(0).simulate('click');
+        expect(wrapper.find(LayerSettings.Icons).find('i')).toHaveLength(4);
+        wrapper.find(LayerSettings.Icons).find('i').at(1).simulate('click');
         expect(setActiveAdminTool).toHaveBeenCalled();
     });
 });
