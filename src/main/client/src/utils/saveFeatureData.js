@@ -73,20 +73,23 @@ const findMatchingLayer = (view: Object, layerId: string) => {
 };
 
 /**
-* Handles response from Esri ArcGIS Servers FeatureService addFeatures -request
-* If saving any of features was succesfull, then refresh layer.
-*
-* @param res Object Body of the response from ArcGIS Server
-* @param layer FeatureLayer esri/layers/FeatureLayer
-*/
-const handleSaveResponse = (res: Object, layer: ?Object) => {
+ * Handles response from Esri ArcGIS Servers FeatureService addFeatures -request.
+ * If saving any of features was succesfull, then refresh layer.
+ *
+ * @param {Object} res Body of the response from ArcGIS Server.
+ * @param {?Object} layer FeatureLayer esri/layers/FeatureLayer.
+ * @param {boolean} [hideToast] Show saving data toast or not.
+ */
+const handleSaveResponse = (res: Object, layer: ?Object, hideToast?: boolean) => {
     if (res && Array.isArray(res.addResults) && res.addResults.some(e => e.success)) {
         if (layer) {
             layer.refresh();
         }
         const ids = res.addResults.filter(e => e.success).map(e => e.objectId);
-        toast.success(`${strings.saveFeatureData.newFeatureSaveSuccess} [${ids.join(', ')}]`);
-    } else {
+        if (!hideToast) {
+            toast.success(`${strings.saveFeatureData.newFeatureSaveSuccess} [${ids.join(', ')}]`);
+        }
+    } else if (!hideToast) {
         toast.error(strings.saveFeatureData.newFeatureSaveError);
     }
     return res;
@@ -98,11 +101,17 @@ const handleSaveResponse = (res: Object, layer: ?Object) => {
  *
  * @param {Object} res Body of the response from ArcGIS Server.
  * @param {string} layerId Id of the corresponding layer.
- * @param {Object} layerToRefresh Layer from view
+ * @param {?Object} layerToRefresh Layer from view.
+ * @param {boolean} [hideToast] Show saving data toast or not.
  *
  * @returns {Object} Object containing layer id and feature ids of the updated features.
  */
-const handleUpdateResponse = (res: Object, layerId: string, layerToRefresh: ?Object): Object => {
+const handleUpdateResponse = (
+    res: Object,
+    layerId: string,
+    layerToRefresh: ?Object,
+    hideToast?: boolean,
+): Object => {
     if (layerToRefresh) {
         layerToRefresh.refresh();
     }
@@ -112,11 +121,11 @@ const handleUpdateResponse = (res: Object, layerId: string, layerToRefresh: ?Obj
             res.updateResults.filter(e => e.success).map(e => e.objectId) : [],
     };
 
-    if (layer && layer.features && layer.features.length) {
+    if (layer && layer.features && layer.features.length && !hideToast) {
         toast.success(`${strings.saveFeatureData.layerUpdateSaveSuccess}`);
-    } else if (!layer.features.length) {
+    } else if (!layer.features.length && !hideToast) {
         toast.error(`${strings.saveFeatureData.layerUpdateSaveNoFeaturesError}`);
-    } else {
+    } else if (!hideToast) {
         toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
     }
 
@@ -127,7 +136,7 @@ const handleUpdateResponse = (res: Object, layerId: string, layerToRefresh: ?Obj
  * Handles response from Esri ArcGIS Servers FeatureService deleteFeatures -request.
  *
  * @param {Object} res Body of the response from ArcGIS Server.
- * @param {Object} layer Deleted features layer.
+ * @param {?Object} layer Deleted features layer.
  */
 const handleDeleteResponse = (res: Object, layer: ?Object) => {
     if (res && Array.isArray(res.deleteResults) && res.deleteResults.some(e => e.success)) {
@@ -144,8 +153,8 @@ const handleDeleteResponse = (res: Object, layer: ?Object) => {
  * @param {Object} layer Updated layer data.
  * @param {Object} view MapView Esri ArcGIS JS MapView.
  * @param {string} layerId string id of the corresponding layer.
- * @param {string} objectId Id of feature.
- * @param {string} idFieldName Name of identifier field.
+ * @param {string} [idFieldName] Name of identifier field.
+ * @param {?string} [objectId] Id of feature.
  */
 const handlePopupUpdate = (
     layer: Object,
@@ -191,8 +200,9 @@ const handlePopupUpdate = (
  * @param {Object} view MapView Esri ArcGIS JS MapView.
  * @param {string} layerId string id of the corresponding layer.
  * @param {Object[]} features Array of features.
- * @param {string} objectId Id of feature.
- * @param {string} idFieldName Name of identifier field.
+ * @param {?string} [objectId] Id of feature.
+ * @param {string} [idFieldName] Name of identifier field.
+ * @param {boolean} [hideToast] Show saving data toast or not.
  */
 const saveData = (
     action: string,
@@ -201,6 +211,7 @@ const saveData = (
     features: Object[],
     objectId?: ?string,
     idFieldName?: string,
+    hideToast?: boolean,
 ) => {
     const params = featureDataToParams(features);
     const layer = findMatchingLayer(view, layerId);
@@ -208,7 +219,7 @@ const saveData = (
         switch (action) {
             case 'add':
                 return addFeatures(layerId, params.toString()).then(res =>
-                    res && handleSaveResponse(res, layer))
+                    res && handleSaveResponse(res, layer, hideToast))
                     .catch((err) => {
                         store.dispatch(handleFailedEdit('add', [layerId, params.toString()]));
                         toast.error(`${strings.saveFeatureData.newFeatureSaveError}`);
@@ -216,7 +227,7 @@ const saveData = (
                     });
             case 'update':
                 return updateFeatures(layerId, params.toString()).then(res =>
-                    res && handleUpdateResponse(res, layerId, layer))
+                    res && handleUpdateResponse(res, layerId, layer, hideToast))
                     .then(layerToUpdated => layerToUpdated &&
                         handlePopupUpdate(layerToUpdated, view, layerId, idFieldName, objectId))
                     .catch((err) => {
