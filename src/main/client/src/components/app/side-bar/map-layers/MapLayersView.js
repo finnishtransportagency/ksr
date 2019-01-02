@@ -30,7 +30,7 @@ const MapLayersView = ({
         <SideBar.Header>
             <H1>{strings.mapLayers.title}</H1>
             <div
-                className="search-toggle"
+                className="toggle-button"
                 tabIndex="0"
                 role="button"
                 onClick={toggleLayerLegend}
