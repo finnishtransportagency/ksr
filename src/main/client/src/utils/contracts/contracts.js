@@ -124,7 +124,6 @@ export const linkToContract = async (
 
             const queryResult = await queryFeatures(id, whereQueryString);
             if (!queryResult.features.length) {
-                await save.saveData('add', view, currentLayer.id, features, objectId.toString(), objectIdFieldName);
                 await save.saveData('add', view, id, features, objectId.toString(), objectIdFieldName, true);
                 toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
             } else {
@@ -138,7 +137,7 @@ export const linkToContract = async (
                 },
             }];
 
-            await save.saveData('update', view, currentLayer.id, features, objectId.toString(), objectIdFieldName);
+            await save.saveData('update', view, currentLayer.id, features, objectId.toString(), objectIdFieldName, true);
             addUpdateLayers(
                 currentLayer.id,
                 objectIdFieldName,
