@@ -16,6 +16,7 @@ const mapStateToProps = (state) => {
         activeAdminTool: state.adminTool.active.layerId,
         layers: state.table.features.layers,
         loadingWorkspace: state.workspace.workspace.loadingWorkspace,
+        layerLegendActive: state.map.layerLegend.layerLegendActive,
     });
 };
 

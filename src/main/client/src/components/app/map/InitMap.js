@@ -56,6 +56,7 @@ type Props = {
 };
 
 class EsriMap extends Component<Props> {
+    legendWidget: ?Object = null; // eslint-disable-line react/sort-comp
     printWidget: ?Object = null; // eslint-disable-line react/sort-comp
 
     componentDidUpdate(prevProps: Props) {
@@ -82,6 +83,7 @@ class EsriMap extends Component<Props> {
                 'esri/widgets/Print',
                 'esri/layers/GraphicsLayer',
                 'esri/Graphic',
+                'esri/widgets/Legend',
             ])
             .then(([
                 MapView,
@@ -95,6 +97,7 @@ class EsriMap extends Component<Props> {
                 Print,
                 GraphicsLayer,
                 Graphic,
+                Legend,
             ]) => {
                 const {
                     mapCenter,
@@ -156,6 +159,13 @@ class EsriMap extends Component<Props> {
                 const scaleBar = new ScaleBar({
                     view,
                     unit: 'metric',
+                });
+
+                this.legendWidget = new Legend({
+                    view,
+                    style: {
+                        type: 'card',
+                    },
                 });
 
                 this.printWidget = new Print({
@@ -429,7 +439,7 @@ class EsriMap extends Component<Props> {
     };
 
     render() {
-        return <EsriMapContainer printWidget={this.printWidget} />;
+        return <EsriMapContainer printWidget={this.printWidget} legendWidget={this.legendWidget} />;
     }
 }
 

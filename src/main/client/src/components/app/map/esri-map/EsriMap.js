@@ -16,6 +16,8 @@ type Props = {
     loadingWorkspace: boolean,
     printWidget: any,
     removeLayersView: (layerIds: Object[]) => void,
+    legendWidget: ?Object,
+    layerLegendActive: boolean,
 };
 
 class EsriMap extends Component<Props> {
@@ -25,6 +27,7 @@ class EsriMap extends Component<Props> {
             view,
             activeNav,
             loadingWorkspace,
+            layerLegendActive,
         } = this.props;
 
         if ((prevProps.layerList &&
@@ -100,6 +103,12 @@ class EsriMap extends Component<Props> {
                 view.ui.add(this.props.printWidget, 'top-left');
             } else {
                 view.ui.remove(this.props.printWidget);
+            }
+
+            if (this.props.legendWidget && layerLegendActive) {
+                view.ui.add(this.props.legendWidget, 'bottom-right');
+            } else {
+                view.ui.remove(this.props.legendWidget);
             }
 
             if (this.props.layers.length < 1) {

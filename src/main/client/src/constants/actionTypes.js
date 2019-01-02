@@ -26,6 +26,8 @@ export const SET_GRAPH_LAYER = 'SET_GRAPH_LAYER';
 
 export const ADD_USER_LAYER = 'ADD_USER_LAYER';
 
+export const TOGGLE_LAYER_LEGEND = 'TOGGLE_LAYER_LEGEND';
+
 // Map config
 export const GET_MAP_CONFIG = 'GET_MAP_CONFIG';
 export const GET_MAP_CONFIG_FULFILLED = 'GET_MAP_CONFIG_FULFILLED';

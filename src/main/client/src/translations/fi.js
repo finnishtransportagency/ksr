@@ -7,6 +7,7 @@ const fi = {
         addNewLayer: 'Uusi taso',
         failedToLoadLayer: 'Tason lataus epäonnistui',
         loadingLayers: 'Ladataan karttatasoja',
+        toggleLayerLegend: 'Selite',
     },
     search: {
         title: 'Haku',
