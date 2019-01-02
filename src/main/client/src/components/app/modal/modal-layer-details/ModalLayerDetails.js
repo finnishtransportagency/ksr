@@ -59,7 +59,11 @@ class ModalFilter extends Component<Props, State> {
             nullable: field.name !== activeLayer.contractIdField,
             data: copiedAttributes && copiedAttributes[field.name] ?
                 copiedAttributes[field.name] : '',
-        }));
+        })).filter(f => (f.type !== 'esriFieldTypeOID'
+                && f.editable
+                && f.name !== activeLayer.relationColumnOut)
+                || (f.name === activeLayer.contractIdField
+                    && f.name === activeLayer.relationColumnOut));
 
         const dataObject = Object.assign({}, ...(dataFields.map(item =>
             ({ [item.name]: item.data }))));
