@@ -34,6 +34,10 @@ class MapTools extends Component<Props> {
                 const sketchViewModel = new SketchViewModel({
                     view,
                     layer: tempGraphicsLayer,
+                    defaultUpdateOptions: {
+                        tool: 'reshape',
+                        toggleToolOnClick: false,
+                    },
                 });
 
                 setMapTools(draw, sketchViewModel);
