@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fi.sitowise.ksr.jooq.Tables.LAYER;
 import static fi.sitowise.ksr.jooq.Tables.LAYER_PERMISSION;
@@ -29,6 +30,28 @@ public class LayerRepository {
     @Autowired
     public LayerRepository(DSLContext context) {
         this.context = context;
+    }
+
+    /**
+     * Get all layers that have relation to given layer.
+     *
+     * @param id Id of the layer.
+     * @param userGroups List of user groups.
+     * @return List of layers that have relation to given layer.
+     */
+    @Cacheable("get_referencing_layers")
+    public List<Layer> getReferencingLayers(int id, List<String> userGroups) {
+        return context.select(LAYER.fields())
+                .from(LAYER)
+                .join(LAYER_PERMISSION)
+                    .on(LAYER_PERMISSION.LAYER_ID.equal(LAYER.ID))
+                .where(LAYER.RELATION_LAYER_ID.equal(Long.valueOf(id)))
+                .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
+                .and(LAYER_PERMISSION.READ_LAYER.equal("1"))
+                .fetchInto(LayerRecord.class)
+                .stream()
+                .map(lr -> new Layer(lr, null))
+                .collect(Collectors.toList());
     }
 
     /**
