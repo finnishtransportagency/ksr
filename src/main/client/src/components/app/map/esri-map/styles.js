@@ -142,6 +142,16 @@ export const Wrapper = styled.div`
             .esri-scale-bar {
                 margin-bottom: 1em;
             };
+            
+            .esri-legend--stacked {
+                margin-right: 60px;
+                margin-bottom: 120px;
+                min-width: 200px;
+            };
+            
+            .esri-legend--card__section {
+                min-width: 200px;
+            };
         };
     };
     
