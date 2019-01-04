@@ -10,7 +10,7 @@ const Content = styled.div`
         border-radius: 0;
         outline: none;
         border: none;
-        background: ${styles.colorBackgroundLight}
+        background: ${styles.colorBackgroundLight};
         box-shadow: none;
         margin: 0.25rem 0 1rem;
     }

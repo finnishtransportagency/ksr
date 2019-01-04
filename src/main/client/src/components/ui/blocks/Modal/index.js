@@ -43,7 +43,7 @@ const Modal = styled.div`
     
     @media only screen and (max-width: 768px) {
         width: 90%;
-    }
+    };
 `;
 
 Modal.Content = Content;
