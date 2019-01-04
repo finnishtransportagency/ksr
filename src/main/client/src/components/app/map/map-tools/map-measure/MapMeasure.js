@@ -113,40 +113,48 @@ class MapMeasure extends Component<Props, State> {
 
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
-                    const polygon = createPolygon(vertices);
 
-                    let area = geometryEngine.planarArea(
-                        polygon,
-                        'square-meters',
-                    );
-
-                    if (area < 0) {
-                        const simplifiedPolygon = geometryEngine.simplify(polygon);
-
-                        if (simplifiedPolygon) {
-                            area = geometryEngine.planarArea(
-                                simplifiedPolygon,
-                                'square-meters',
-                            );
-                        }
-                    }
-
-                    if (area >= 10000) {
-                        area = `${parseFloat((area / 10000).toFixed(2))} ha`;
-                    } else if (area > 0 && area < 10000) {
-                        area = `${parseFloat(area.toFixed(2))} m\xB2`;
+                    if (vertices.length === 2) {
+                        const line = createLine(vertices);
+                        const graphic = createPolylineGraphic(line);
+                        view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
+                        view.graphics.add(graphic);
                     } else {
-                        area = '';
+                        const polygon = createPolygon(vertices);
+
+                        let area = geometryEngine.planarArea(
+                            polygon,
+                            'square-meters',
+                        );
+
+                        if (area < 0) {
+                            const simplifiedPolygon = geometryEngine.simplify(polygon);
+
+                            if (simplifiedPolygon) {
+                                area = geometryEngine.planarArea(
+                                    simplifiedPolygon,
+                                    'square-meters',
+                                );
+                            }
+                        }
+
+                        if (area >= 10000) {
+                            area = `${parseFloat((area / 10000).toFixed(2))} ha`;
+                        } else if (area > 0 && area < 10000) {
+                            area = `${parseFloat(area.toFixed(2))} m\xB2`;
+                        } else {
+                            area = '';
+                        }
+
+                        const graphic = createPolygonGraphic(polygon, 'solid');
+                        const graphicLabelMeasure = labelMeasure(polygon, area);
+                        view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
+                        view.graphics.map(g => g.id === 'labelMeasure' && view.graphics.remove(g));
+                        view.graphics.add(graphic);
+                        view.graphics.add(graphicLabelMeasure);
+
+                        this.setState({ value: area });
                     }
-
-                    const graphic = createPolygonGraphic(polygon, 'solid');
-                    const graphicLabelMeasure = labelMeasure(polygon, area);
-                    view.graphics.map(g => g.id === 'drawMeasure' && view.graphics.remove(g));
-                    view.graphics.map(g => g.id === 'labelMeasure' && view.graphics.remove(g));
-                    view.graphics.add(graphic);
-                    view.graphics.add(graphicLabelMeasure);
-
-                    this.setState({ value: area });
                 };
 
                 const drawLine = (evt) => {

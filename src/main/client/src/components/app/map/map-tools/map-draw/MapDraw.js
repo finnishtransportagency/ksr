@@ -151,12 +151,22 @@ class MapDraw extends Component<Props, null> {
 
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
-                    const polygon = createPolygon(vertices);
 
-                    const graphic = createPolygonGraphic(polygon, 'solid', evt.type === 'draw-complete');
-                    view.graphics.forEach(g => g.id === this.currentGraphicUUID
-                        && view.graphics.remove(g));
-                    view.graphics.add(graphic);
+                    if (vertices.length === 2) {
+                        const line = createLine(vertices);
+
+                        const graphic = createPolylineGraphic(line, evt.type === 'draw-complete');
+                        view.graphics.forEach(g => g.id === this.currentGraphicUUID
+                            && view.graphics.remove(g));
+                        view.graphics.add(graphic);
+                    } else {
+                        const polygon = createPolygon(vertices);
+
+                        const graphic = createPolygonGraphic(polygon, 'solid', evt.type === 'draw-complete');
+                        view.graphics.forEach(g => g.id === this.currentGraphicUUID
+                            && view.graphics.remove(g));
+                        view.graphics.add(graphic);
+                    }
                 };
 
                 const drawLine = (evt) => {
