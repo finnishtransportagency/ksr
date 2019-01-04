@@ -1,9 +1,13 @@
 package fi.sitowise.ksr.domain.proxy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -125,5 +129,24 @@ public class EsriQueryResponse {
 
         return e.globalIdFieldName.equals(globalIdFieldName) && e.objectIdFieldName.equals(objectIdFieldName)
                 && e.features.equals(features) && e.fields.equals(fields);
+    }
+
+    /**
+     * Deserializes responses InputStream into an EsriQueryResponse -object.
+     *
+     * @param is InputStream to deserialize.
+     * @param layerId Id of the corresponding layer. Only used for logging purposes.
+     * @return EsriQueryResponse -object.
+     */
+    public static EsriQueryResponse fromInputStream(InputStream is, String layerId) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.readValue(is, EsriQueryResponse.class);
+        } catch (IOException e) {
+            throw new KsrApiException.InternalServerErrorException(
+                    String.format("Error deserializing response from FeatureService. Layer: [%S]", layerId),
+                    e
+            );
+        }
     }
 }

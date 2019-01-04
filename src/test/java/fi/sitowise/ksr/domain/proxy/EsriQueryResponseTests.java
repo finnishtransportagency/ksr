@@ -1,8 +1,12 @@
 package fi.sitowise.ksr.domain.proxy;
 
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class EsriQueryResponseTests {
@@ -94,6 +98,65 @@ public class EsriQueryResponseTests {
         Object[] actual = eqr.getAttributeValues("oid").stream().toArray(Object[]::new);
 
         Assert.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testFromInputStream() {
+        InputStream is = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"C_ID\"," +
+                "\"alias\":\"C_ID\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[" +
+                "{\"attributes\":{\"CO\":190, \"ID\":590}}," +
+                "{\"attributes\":{\"CO\":390, \"ID\":990}}" +
+                "]}").getBytes(StandardCharsets.UTF_8));
+
+        EsriQueryResponse actual = EsriQueryResponse.fromInputStream(is, "1");
+
+        EsriQueryResponse expected = new EsriQueryResponse();
+        expected.setObjectIdFieldName("OBJECTID");
+        expected.setGlobalIdFieldName("");
+
+        List<Map<String, String>> fields = new ArrayList<>();
+        Map<String, String> nameField = new HashMap<>();
+        nameField.put("name", "C_ID");
+        nameField.put("alias", "C_ID");
+        nameField.put("type", "esriFieldTypeDouble");
+        fields.add(nameField);
+
+        List<Map<String, Map<String, Object>>> features = new ArrayList<>();
+
+        Map<String, Map<String, Object>> feat1 = new HashMap<>();
+        Map<String, Object> feat1Attrs = new HashMap<>();
+        feat1Attrs.put("CO", 190);
+        feat1Attrs.put("ID", 590);
+        feat1.put("attributes", feat1Attrs);
+
+        Map<String, Map<String, Object>> feat2 = new HashMap<>();
+        Map<String, Object> feat2Attrs = new HashMap<>();
+        feat2Attrs.put("CO", 390);
+        feat2Attrs.put("ID", 990);
+        feat2.put("attributes", feat2Attrs);
+
+        features.add(feat1);
+        features.add(feat2);
+
+        expected.setFields(fields);
+        expected.setFeatures(features);
+
+        Assert.assertEquals(expected.equals(actual), true);
+    }
+
+    @Test(expected = KsrApiException.InternalServerErrorException.class)
+    public void testFromNullInputStream() {
+        EsriQueryResponse.fromInputStream(null, "1");
     }
 
 
