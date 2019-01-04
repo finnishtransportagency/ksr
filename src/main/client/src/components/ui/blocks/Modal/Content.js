@@ -5,6 +5,7 @@ const Content = styled.div`
     position: relative;
     padding: 1rem;
     background: #FFFFFF;
+    height: auto;
     
     .Select-control, .Select.is-focused > .Select-control, .Select.is-focused:not(.is-open) > .Select-control {
         border-radius: 0;
@@ -17,6 +18,10 @@ const Content = styled.div`
     
     .loading-icon {
         text-align: center;
+    };
+    
+    @media only screen and (max-width: 768px) {
+        max-height: 200px;
     };
 `;
 
