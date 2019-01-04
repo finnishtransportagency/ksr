@@ -1,7 +1,6 @@
 package fi.sitowise.ksr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.sitowise.ksr.jooq.tables.records.LayerPermissionRecord;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
@@ -10,7 +9,9 @@ import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A Layer-POJO which represents a map layer.
@@ -61,8 +62,7 @@ public class Layer implements Serializable {
     private Long relationLayerId;
     private String relationColumnIn;
     private String relationColumnOut;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private QueryColumnTypeRecord queryColumns;
+    private List<String> queryColumns;
     private boolean background;
     private String parentLayer;
 
@@ -109,10 +109,8 @@ public class Layer implements Serializable {
         this.setCaseManagementLinkField(lr.getCaseManagementLinkField());
         this.setBackground(lr.getBackground());
         this.setParentLayer(lr.getParentLayer());
+        this.setQueryColumns(lr.getQueryColumns());
 
-        if (lr.getQueryColumns() != null) {
-            setQueryColumns(lr.getQueryColumns());
-        }
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
         }
@@ -147,10 +145,7 @@ public class Layer implements Serializable {
         this.setQueryable(lr.getQueryable());
         this.setUseInternalProxy(lr.getUseInternalProxy());
         this.setUserLayer(true);
-
-        if (lr.getQueryColumns() != null) {
-            setQueryColumns(lr.getQueryColumns());
-        }
+        this.setQueryColumns(lr.getQueryColumns());
     }
 
     /**
@@ -495,6 +490,7 @@ public class Layer implements Serializable {
     public List<String> getQueryColumnsList() {
         return queryColumns;
     }
+
     /**
      * Gets boolean value deciding if requests outgoing HTTP-requests for layer should be done via proxy
      *
@@ -743,11 +739,16 @@ public class Layer implements Serializable {
     }
 
     /**
-     * @return query columns as jOOQ table type record
+     * @return query columns as QueryColumnTypeRecord
      */
     @JsonIgnore
     public QueryColumnTypeRecord getQueryColumns() {
-        return queryColumns;
+        if (queryColumns != null) {
+            QueryColumnTypeRecord qRecord = new QueryColumnTypeRecord();
+            queryColumns.forEach(qRecord::add);
+            return qRecord;
+        }
+        return null;
     }
 
     /**
@@ -756,7 +757,11 @@ public class Layer implements Serializable {
      * @param queryColumns list of query columns
      */
     public void setQueryColumns(QueryColumnTypeRecord queryColumns) {
-        this.queryColumns = queryColumns;
+        if (queryColumns == null) {
+            this.queryColumns = Collections.emptyList();
+        } else {
+            this.queryColumns = queryColumns.stream().collect(Collectors.toList());
+        }
     }
 
     /**
@@ -774,6 +779,13 @@ public class Layer implements Serializable {
     public void setBackground(String background) {
         this.background = "1".equals(background);
     }
+
+     /** Set query columns for the layer
+     *
+     * @param queryColumns list of query columns
+     */
+    public void setQueryColumns(List<String> queryColumns) { this.queryColumns = queryColumns; }
+
     /**
      * Gets parent layer id.
      *
