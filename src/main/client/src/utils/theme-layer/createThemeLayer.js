@@ -36,3 +36,27 @@ export const createThemeLayer = async (
 
     setLayerList(newLayerList);
 };
+
+/**
+ * Set default renderer for given layer.
+ *
+ * @param {Object} featureLayer Layer which renderer is being reset.
+ * @param {Object} layer Layer containing the default renderer.
+ * @param {Object[]} layerList List of layers.
+ * @param {Function} setLayerList Function for setting updated layer list.
+ */
+export const resetLayerTheme = (
+    featureLayer: Object,
+    layer: Object,
+    layerList: Object[],
+    setLayerList: (Object[]) => void,
+) => {
+    featureLayer.renderer = layer.renderer;
+    featureLayer.legendEnabled = false;
+
+    const newLayerList = layerList.map(l => ({
+        ...l,
+        renderer: l.id === layer.id ? null : l.renderer,
+    }));
+    setLayerList(newLayerList);
+};
