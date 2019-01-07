@@ -6,6 +6,7 @@ import mapView from './mapView';
 import mapTools from './mapTools';
 import userLayer from './userLayer';
 import mapDraw from './mapDraw';
+import layerLegend from './layerLegend';
 
 export default combineReducers({
     layerGroups,
@@ -15,4 +16,5 @@ export default combineReducers({
     mapTools,
     userLayer,
     mapDraw,
+    layerLegend,
 });

@@ -30,6 +30,10 @@ const Modal = styled.div`
     -o-animation: ${fadeInModal} 0.3s;
     animation: ${fadeInModal} 0.3s;
     
+    .modal-content-scroll-wrapper {
+        background: ${styles.colorBackgroundWhite};
+    };
+    
     ${props => props.fadeOut && css`
         -webkit-animation: ${fadeOutModal} 0.3s;
         -moz-animation: ${fadeOutModal} 0.3s;
@@ -43,7 +47,7 @@ const Modal = styled.div`
     
     @media only screen and (max-width: 768px) {
         width: 90%;
-    }
+    };
 `;
 
 Modal.Content = Content;

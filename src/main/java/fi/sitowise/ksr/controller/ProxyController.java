@@ -83,6 +83,7 @@ public class ProxyController {
                         action = LayerAction.DELETE_LAYER;
                     }
                     break;
+                case "generaterenderer":
                 case "query":
                     layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);
                     break;

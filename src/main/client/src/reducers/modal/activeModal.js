@@ -4,15 +4,18 @@ import { SET_ACTIVE_MODAL, SET_DROPZONE_ACTIVE } from '../../constants/actionTyp
 const initialState = {
     activeModal: '',
     dropzone: false,
+    data: null,
 };
 
 type State = {
     activeModal: string,
     dropzone: boolean,
+    data: any,
 };
 
 type Action = {
     activeModal: string,
+    data: any,
     type: string,
 };
 
@@ -22,6 +25,7 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 activeModal: action.activeModal,
+                data: action.data,
             };
         case SET_DROPZONE_ACTIVE:
             return {

@@ -40,7 +40,7 @@ const ModalView = ({
                 <i className="fas fa-times" />
             </button>
         </Modal.Header>
-        <Scrollbars autoHeight autoHeightMax={300}>
+        <Scrollbars autoHeight autoHeightMax={500} className="modal-content-scroll-wrapper">
             <Modal.Content>
                 {content}
             </Modal.Content>

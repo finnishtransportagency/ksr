@@ -211,3 +211,7 @@ export const removeLayersView = (layerIds: Array<number>) => ({
     type: types.REMOVE_LAYER_FROM_VIEW,
     layerIds,
 });
+
+export const toggleLayerLegend = () => ({
+    type: types.TOGGLE_LAYER_LEGEND,
+});

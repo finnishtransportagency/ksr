@@ -9,11 +9,11 @@ const Footer = styled.div`
     
     button {
         margin-left: 1em;
-    }
+    };
     
     ${props => props.hidden && css`
         display: none;
-    `}
+    `};
     
     @media only screen and (max-width: 768px) {
         flex-direction: column;
@@ -21,8 +21,8 @@ const Footer = styled.div`
         button {
             align-self: stretch;
             margin: 0.5rem 0;
-        }
-    }
+        };
+    };
 `;
 
 export default Footer;

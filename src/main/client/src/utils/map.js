@@ -118,6 +118,7 @@ export const addLayers = async (
                         outFields: ['*'],
                         definitionExpression: layer.definitionExpression,
                         refreshInterval: 5,
+                        legendEnabled: false,
                     });
 
                     if (layer._source === 'search') {

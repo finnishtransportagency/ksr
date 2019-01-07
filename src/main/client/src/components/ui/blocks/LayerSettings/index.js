@@ -27,6 +27,10 @@ const Icons = styled.div`
     i:hover {
         cursor: pointer;
     }
+    
+    .theme-layer-created {
+        color: ${styles.mapHighlightStroke};
+    }
 `;
 
 const Drag = styled.div`

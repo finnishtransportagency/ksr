@@ -5,6 +5,7 @@ describe('confirmModal reducer', () => {
     const initialState = {
         activeModal: '',
         dropzone: false,
+        data: null,
     };
 
     it('should return initial state', () => {
@@ -17,6 +18,7 @@ describe('confirmModal reducer', () => {
         expect(JSON.stringify(reducer(undefined, {
             type: types.SET_ACTIVE_MODAL,
             activeModal: 'test',
+            data: null,
         }))).toEqual(JSON.stringify({
             activeModal: {
                 ...initialState,

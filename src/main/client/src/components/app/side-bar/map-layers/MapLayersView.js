@@ -14,14 +14,37 @@ type Props = {
     activeTab: string,
     setActiveModal: (modal: string) => void,
     setDropzoneActive: () => void,
+    layerLegendActive: boolean,
+    toggleLayerLegend: () => void,
 };
 
 const MapLayersView = ({
-    handleButtonClickLayers, activeTab, setActiveModal, setDropzoneActive,
+    handleButtonClickLayers,
+    activeTab,
+    setActiveModal,
+    setDropzoneActive,
+    layerLegendActive,
+    toggleLayerLegend,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
             <H1>{strings.mapLayers.title}</H1>
+            <div
+                className="toggle-button"
+                tabIndex="0"
+                role="button"
+                onClick={toggleLayerLegend}
+                onKeyPress={toggleLayerLegend}
+            >
+                <span>{strings.mapLayers.toggleLayerLegend}</span>
+                <i
+                    className={
+                        layerLegendActive
+                            ? 'fas fa-toggle-on'
+                            : 'fas fa-toggle-off'
+                    }
+                />
+            </div>
         </SideBar.Header>
         <SideBar.Content layerSettings={activeTab === 'active'}>
             <ButtonLayerNavWrapper>

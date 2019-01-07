@@ -22,7 +22,7 @@ export const Wrapper = styled.div`
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
         .esri-popup__button, .esri-popup__header-container, .esri-attribution__sources,
-        .esri-popup__feature-menu-item {
+        .esri-popup__feature-menu-item, .esri-legend--card__carousel-indicator {
             outline: none;
         };
         
@@ -141,6 +141,16 @@ export const Wrapper = styled.div`
             
             .esri-scale-bar {
                 margin-bottom: 1em;
+            };
+            
+            .esri-legend--stacked {
+                margin-right: 60px;
+                margin-bottom: 120px;
+                min-width: 200px;
+            };
+            
+            .esri-legend--card__section {
+                min-width: 200px;
             };
         };
     };

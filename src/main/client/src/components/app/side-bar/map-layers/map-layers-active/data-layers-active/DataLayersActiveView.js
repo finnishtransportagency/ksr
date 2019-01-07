@@ -30,6 +30,7 @@ const DataLayersActiveView = ({
                         createNonSpatialFeature={createNonSpatialFeature}
                         onOpacityChange={() => {}}
                         onToggleVisibility={() => {}}
+                        createThemeLayer={() => {}}
                     />
                 ))
             }

@@ -9,6 +9,7 @@ import {
 import { setWorkspace, setWorkspaceRejected, updateWorkspaces } from '../../../../reducers/workspace/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import Workspace from './Workspace';
+import { setLayerList } from '../../../../reducers/map/actions';
 
 const mapStateToProps = state => ({
     workspaceList: state.workspace.workspace.workspaceList,
@@ -41,6 +42,9 @@ const mapDispatchToProps = dispatch => ({
     },
     addNonSpatialContentToTable: (layer, workspaceFeatures) => {
         dispatch(addNonSpatialContentToTable(layer, workspaceFeatures));
+    },
+    setLayerList: (layerList) => {
+        dispatch(setLayerList(layerList));
     },
 });
 

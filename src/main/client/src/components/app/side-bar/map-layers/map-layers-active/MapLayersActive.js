@@ -14,6 +14,7 @@ type Props = {
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     activeAdminTool: string,
     createNonSpatialFeature: () => void,
+    createThemeLayer: (layerId: string) => void,
 };
 
 type State = {
@@ -77,6 +78,7 @@ class MapLayersActive extends Component<Props, State> {
             activeAdminTool,
             createNonSpatialFeature,
             dataLayerList,
+            createThemeLayer,
         } = this.props;
         if (!fetching) {
             return (
@@ -89,6 +91,7 @@ class MapLayersActive extends Component<Props, State> {
                         setActiveAdminTool={setActiveAdminTool}
                         activeAdminTool={activeAdminTool}
                         createNonSpatialFeature={createNonSpatialFeature}
+                        createThemeLayer={createThemeLayer}
                     />
                     <DataLayersActiveView
                         dataLayerList={dataLayerList.filter(l => l.active)}

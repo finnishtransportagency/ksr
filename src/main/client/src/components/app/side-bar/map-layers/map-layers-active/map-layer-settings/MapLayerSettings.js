@@ -16,6 +16,7 @@ type Props = {
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
+    createThemeLayer: (layerId: string) => void,
 };
 
 const MapLayerSettings = ({
@@ -26,6 +27,7 @@ const MapLayerSettings = ({
     setActiveAdminTool,
     activeAdminTool,
     createNonSpatialFeature,
+    createThemeLayer,
 }: Props) => (
     <LayerSettings
         toggledHidden={!layer.visible}
@@ -58,25 +60,38 @@ const MapLayerSettings = ({
                             />
                         </LayerSettings.Icons>
                     }
-                    <LayerSettings.Icons activeAdminTool={activeAdminTool === layer.id}>
-                        { layer._source !== 'search' &&
-                        !layer.userLayer &&
-                        layer._source !== 'shapefile' &&
-                        (layer.type === 'agfs'
-                        || layer.type === 'agfl') &&
-                        (layer.layerPermission.createLayer ||
-                            layer.layerPermission.updateLayer ||
-                            layer.layerPermission.deleteLayer) &&
-                        <i
-                            role="button"
-                            tabIndex={0}
-                            onKeyPress={() => setActiveAdminTool(layer.id, layerList)}
-                            onClick={() => setActiveAdminTool(layer.id, layerList)}
-                            className="fas fa-edit"
-                            title={strings.mapLayerSettings.toggleAdminTool}
-                        />
-                        }
-                    </LayerSettings.Icons>
+                    {
+                        layer.type === 'agfs' &&
+                        <LayerSettings.Icons>
+                            <i
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={() => createThemeLayer(layer.id)}
+                                onClick={() => createThemeLayer(layer.id)}
+                                className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
+                                title={strings.mapLayerSettings.createThemeLayer}
+                            />
+                        </LayerSettings.Icons>
+                    }
+                    {
+                        layer._source !== 'search'
+                        && !layer.userLayer
+                        && layer._source !== 'shapefile'
+                        && (layer.type === 'agfs' || layer.type === 'agfl')
+                        && (layer.layerPermission.createLayer
+                            || layer.layerPermission.updateLayer
+                            || layer.layerPermission.deleteLayer) &&
+                        <LayerSettings.Icons activeAdminTool={activeAdminTool === layer.id}>
+                            <i
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={() => setActiveAdminTool(layer.id, layerList)}
+                                onClick={() => setActiveAdminTool(layer.id, layerList)}
+                                className="fas fa-edit"
+                                title={strings.mapLayerSettings.toggleAdminTool}
+                            />
+                        </LayerSettings.Icons>
+                    }
                 </LayerSettings.ContentTop>
                 {
                     layer.type !== 'agfl' &&
