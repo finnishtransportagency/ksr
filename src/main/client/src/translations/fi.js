@@ -135,6 +135,20 @@ const fi = {
     modalShapefile: {
         title: 'Avaa shape tiedosto',
     },
+    modalThemeLayer: {
+        title: 'Luo teemataso',
+        submit: 'Luo',
+        reset: 'Palauta oletusteema',
+        cancel: 'Peruuta',
+        column: 'Luokiteltava sarake',
+        classificationType: 'Luokituksen tyyppi',
+        equalInterval: 'Tasavälit (equal interval)',
+        naturalBreaks: 'Luonnolliset luokkavälit (natural breaks)',
+        quantile: 'Kvantiili (quantile)',
+        standardDeviation: 'Keskihajonta (standard deviation)',
+        numClasses: 'Välien lukumäärä',
+        infoTooltip: 'Lukumäärän tulee olla välillä 1-10.',
+    },
     dropzoneShape: {
         browse: 'Selaa',
         orText: 'tai',
