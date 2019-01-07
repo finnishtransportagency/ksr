@@ -3,6 +3,7 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.domain.proxy.EsriQueryResponse;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.helper.AuthControllerTestBase;
 import fi.sitowise.ksr.service.ContractService;
 import fi.sitowise.ksr.service.LayerService;
@@ -13,6 +14,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,15 +76,42 @@ public class ContractControllerTests extends AuthControllerTestBase {
                 .thenReturn(eqr);
 
         this.mockMvc.perform(get("/api/contract/457/123")
-            .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=utf-8"))
                 .andExpect(content().json(
                         "{" +
-                        "\"objectIdFieldName\": \"OBJECTID\"" +
-                        ",\"globalIdFieldName\": \"UUID\""+
-                        ",\"fields\": null"+
-                        ",\"features\": null"+
-                        "}"));
+                                "\"objectIdFieldName\": \"OBJECTID\"" +
+                                ",\"globalIdFieldName\": \"UUID\""+
+                                ",\"fields\": null"+
+                                ",\"features\": null"+
+                                "}"));
+    }
+
+    @Test
+    public void testGetContractDetailsNoLayer() throws Exception {
+        Mockito.when(layerService.getLayer(Mockito.eq(112233), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(null);
+
+        this.mockMvc.perform(get("/api/contract/details/112233/123")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetContractDetailsOk() throws Exception {
+        Layer layer = new Layer();
+        layer.setId(112233444L);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(112233444), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(layer);
+
+        Mockito.when(contractService.getContractDetails(Mockito.eq(layer), Mockito.eq(123)))
+                .thenReturn(Collections.emptyList());
+
+        this.mockMvc.perform(get("/api/contract/details/112233444/123")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
     }
 }
