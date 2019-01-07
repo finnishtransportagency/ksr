@@ -31,6 +31,7 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
+    setLayerList: (layerList: Object[]) => void,
 };
 
 class Workspace extends Component<Props, null> {
@@ -84,11 +85,27 @@ class Workspace extends Component<Props, null> {
             searchWorkspaceFeatures,
             updateWorkspaces,
             addNonSpatialContentToTable,
+            setLayerList,
         } = this.props;
         const { body, acceptText, cancelText } = strings.workspace.confirmSelect;
 
         showConfirmModal(body, acceptText, cancelText, () => {
             setWorkspace();
+
+            // Reset layer renderers to default for layers which user has created theme layers.
+            const agfsLayers = layerList.filter(l => l.active && l.type === 'agfs' && l.renderer);
+            agfsLayers.forEach((layer) => {
+                const featureLayer = view.map.findLayerById(layer.id);
+                if (featureLayer) {
+                    featureLayer.renderer = layer.renderer;
+                    featureLayer.legendEnabled = false;
+                }
+            });
+            const newLayerList = layerList.map(l => ({
+                ...l,
+                renderer: agfsLayers.find(layer => layer.id === l.id) ? null : l.renderer,
+            }));
+            setLayerList(newLayerList);
 
             // Fetches users selected workspace.
             fetchWorkspace(workspaceName)
