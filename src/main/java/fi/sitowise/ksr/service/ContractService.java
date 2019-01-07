@@ -1,8 +1,8 @@
 package fi.sitowise.ksr.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
+import fi.sitowise.ksr.domain.contract.ContractLayer;
 import fi.sitowise.ksr.domain.proxy.EsriQueryResponse;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrStringUtils;
@@ -12,13 +12,10 @@ import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
@@ -112,9 +109,9 @@ public class ContractService {
             throw new KsrApiException.ForbiddenException("No contract-layer can be found.");
         }
 
-        String url = createGetFeaturesUrl(targetLayer, fkeys);
+        String url = createGetFeaturesUrl(targetLayer.getUrl(), layer.getRelationColumnIn(), fkeys);
         InputStream is = httpRequestService.getURLContents(url, layer.getUseInternalProxy(), null);
-        return deSerializeResponse(is, targetLayer.getId());
+        return EsriQueryResponse.fromInputStream(is, targetLayer.getId());
     }
 
     /**
@@ -127,15 +124,83 @@ public class ContractService {
      */
     private String joinFilterParams(List<Object> filterParams) {
         return filterParams.stream().map(p -> {
-            if (p == null) { return null; }
-
-            switch(p.getClass().getName()) {
-                case "java.lang.Integer":
-                    return Integer.toString((Integer) p);
-                default:
-                    return String.format("'%s'", p.toString());
+            if (p == null) {
+                return null;
             }
+            else if (p instanceof Integer) {
+                return Integer.toString((Integer) p);
+            }
+            return String.format("'%s'", p.toString());
         }).filter(Objects::nonNull).collect(Collectors.joining(","));
+    }
+
+    /**
+     * Makes a HTTP request to given url.
+     *
+     * @param url Final url to send HTTP request.
+     * @param useProxy Boolean indicating if to use internal proxy.
+     * @param layerId Id of the corresponding layer.
+     * @return Esri JSON response as domain object.
+     */
+    private EsriQueryResponse doEsriQuery(String url, boolean useProxy, String layerId) {
+        InputStream is = httpRequestService.getURLContents(url, useProxy, null);
+        return EsriQueryResponse.fromInputStream(is, layerId);
+    }
+
+    /**
+     * Get Features (objects), from referencing layer, whose relation columns value equals with any of
+     * expectedValues.
+     *
+     * For layers with relation of type "one" or "many" does a simple query.
+     * For layers with relation of type "link" first finds layers that reference to refLayer and then call this
+     * method again (recursively).
+     *
+     *
+     * @param layer Layer which to query.
+     * @param expectedValues List of values to use in search.
+     * @return List of ContractLayers with matching features.
+     */
+    private List<ContractLayer> getReferencingLayerFeatures(Layer layer, List<Object> expectedValues) {
+        String url = createGetFeaturesUrl(
+                layer.getUrl(),
+                layer.getRelationColumnOut(),
+                expectedValues
+        );
+        EsriQueryResponse res = doEsriQuery(url, layer.getUseInternalProxy(), layer.getId());
+        switch (layer.getRelationType()) {
+            case "one":
+            case "many":
+                return Collections.singletonList(new ContractLayer(layer, res));
+            case "link":
+                List<Layer> refLayers = layerService.getReferencingLayers(layer.getId());
+                return refLayers.stream()
+                        .map(refLayer -> {
+                            List<Object> newExpectedValues = res.getAttributeValues(refLayer.getRelationColumnIn());
+                            return getReferencingLayerFeatures(refLayer, newExpectedValues);
+                        })
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList());
+            default:
+                return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Get layers that reference to given layers.
+     *
+     * @param layer Layer whose references to find.
+     * @return List of ContractLayers with queried features.
+     */
+    private List<ContractLayer> getReferencingLayers(Layer layer, EsriQueryResponse contractResponse) {
+        List<Layer> refLayers = layerService.getReferencingLayers(layer.getId());
+        return refLayers.stream()
+                .map(refLayer -> {
+                    List<Object> expectedValues = contractResponse.getAttributeValues(refLayer.getRelationColumnIn());
+                    return getReferencingLayerFeatures(refLayer, expectedValues);
+                })
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -147,28 +212,20 @@ public class ContractService {
      */
     private List<Object> getRelations(Layer layer, int objectID) {
         String url = createGetRelationUrl(layer, objectID);
-        InputStream is = httpRequestService.getURLContents(url, layer.getUseInternalProxy(), null);
-        EsriQueryResponse eQRes = deSerializeResponse(is, layer.getId());
+        EsriQueryResponse eQRes = doEsriQuery(url, layer.getUseInternalProxy(), layer.getId());
         return eQRes.getAttributeValues(layer.getRelationColumnOut());
     }
 
     /**
-     * Deserializes responses InputStream into an EsriQueryResponse -object.
+     * A shorthand method to get a single contract-record.
      *
-     * @param is InputStream to deserialize.
-     * @param layerId Id of the corresponding layer. Only used for logging purposes.
-     * @return EsriQueryResponse -object.
+     * @param layer Layer to search contract from.
+     * @param objectID OBJECTID of the contract.
+     * @return Esri JSON response.
      */
-    private EsriQueryResponse deSerializeResponse(InputStream is, String layerId) {
-        ObjectMapper om = new ObjectMapper();
-        try {
-            return om.readValue(is, EsriQueryResponse.class);
-        } catch (IOException e) {
-            throw new KsrApiException.InternalServerErrorException(
-                    String.format("Error deserializing response from FeatureService. Layer: [%S]", layerId),
-                    e
-            );
-        }
+    private EsriQueryResponse getContract(Layer layer, int objectID) {
+        String url = createGetFeaturesUrl(layer.getUrl(), "OBJECTID", Collections.singletonList(objectID));
+        return doEsriQuery(url, layer.getUseInternalProxy(), layer.getId());
     }
 
     /**
@@ -204,18 +261,19 @@ public class ContractService {
     /**
      * Creates an query-url with a WHERE IN -filter compliant with ArcGIS Feature Service.
      *
-     * @param layer Layer to query.
+     * @param layerUrl Layer url.
+     * @param columnName Name of the filter column.
      * @param fkeys List of foreign keys.
      * @return Query-url compliant with ArcGIS Feature Service.
      */
-    private String createGetFeaturesUrl(Layer layer, List<Object> fkeys) {
+    private String createGetFeaturesUrl(String layerUrl, String columnName, List<Object> fkeys) {
         List<NameValuePair> params = createBasicQueryParams("*");
         params.add(new BasicNameValuePair(
                 "where",
-                String.format("%s IN (%s)", layer.getRelationColumnIn(), joinFilterParams(fkeys))
+                String.format("%s IN (%s)", columnName, joinFilterParams(fkeys))
         ));
 
-        return createUrl(layer.getUrl(), params);
+        return createUrl(layerUrl, params);
     }
 
     /**
@@ -244,5 +302,21 @@ public class ContractService {
         params.add(new BasicNameValuePair("returnGeometry", "false"));
         params.add(new BasicNameValuePair("outFields", outFields));
         return params;
+    }
+
+    /**
+     * Find all referencing layers for a layer, and for those layers query features that have
+     * some relation to given object (objectId). Also returns the object from the given layer itself.
+     *
+     * @param layer Layer whose references to find.
+     * @param objectId Id of the object whose related records to find.
+     * @return List of layers that conform method description.
+     */
+    public List<ContractLayer> getContractDetails(Layer layer, int objectId) {
+        List<ContractLayer> res = new ArrayList<>();
+        EsriQueryResponse contractResponse = getContract(layer, objectId);
+        res.add(new ContractLayer(layer, contractResponse));
+        res.addAll(getReferencingLayers(layer, contractResponse));
+        return res;
     }
 }

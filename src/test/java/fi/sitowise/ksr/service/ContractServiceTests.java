@@ -3,8 +3,10 @@ package fi.sitowise.ksr.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
+import fi.sitowise.ksr.domain.contract.ContractLayer;
 import fi.sitowise.ksr.domain.proxy.EsriQueryResponse;
 import fi.sitowise.ksr.exceptions.KsrApiException;
+import org.apache.http.annotation.Contract;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -46,13 +51,13 @@ public class ContractServiceTests {
         layer.setId(1L);
         layer.setRelationType("one");
         layer.setRelationColumnOut("C_ID");
+        layer.setRelationColumnIn("ID_C");
         layer.setRelationLayerId(2L);
         layer.setUrl("http://test/ksr/1");
         layer.setUseInternalProxy("0");
 
         Layer targetLayer = new Layer();
         targetLayer.setId(2L);
-        targetLayer.setRelationColumnIn("ID_C");
         targetLayer.setUrl("http://test/ksr/2");
         targetLayer.setUseInternalProxy("0");
 
@@ -128,13 +133,13 @@ public class ContractServiceTests {
         layer.setId(1L);
         layer.setRelationType("one");
         layer.setRelationColumnOut("C_ID");
+        layer.setRelationColumnIn("ID_C");
         layer.setRelationLayerId(2L);
         layer.setUrl("http://test/ksr/1");
         layer.setUseInternalProxy("0");
 
         Layer targetLayer = new Layer();
         targetLayer.setId(2L);
-        targetLayer.setRelationColumnIn("ID_C");
         targetLayer.setUrl("http://test/ksr/2");
         targetLayer.setUseInternalProxy("0");
 
@@ -291,6 +296,7 @@ public class ContractServiceTests {
         layer.setId(11L);
         layer.setRelationType("many");
         layer.setRelationColumnOut("C_ID");
+        layer.setRelationColumnIn("C");
         layer.setRelationLayerId(12L);
         layer.setUrl("http://test/ksr/11");
         layer.setUseInternalProxy("0");
@@ -298,15 +304,14 @@ public class ContractServiceTests {
         Layer middleLayer = new Layer();
         middleLayer.setId(12L);
         middleLayer.setRelationType("one");
-        middleLayer.setRelationColumnIn("C");
         middleLayer.setRelationColumnOut("CO");
+        middleLayer.setRelationColumnIn("CO");
         middleLayer.setRelationLayerId(13L);
         middleLayer.setUrl("http://test/ksr/12");
         middleLayer.setUseInternalProxy("0");
 
         Layer targetLayer = new Layer();
         targetLayer.setId(13L);
-        targetLayer.setRelationColumnIn("CO");
         targetLayer.setUrl("http://test/ksr/13");
         targetLayer.setUseInternalProxy("0");
 
@@ -412,6 +417,250 @@ public class ContractServiceTests {
         EsriQueryResponse expected = om.readValue(is4, EsriQueryResponse.class);
 
         Assert.assertEquals(expected, contractService.getContracts(layer, 1000));
+    }
+
+    @Test
+    public void testGetContractDetailsSimple() {
+        Layer layer1 = new Layer();
+        layer1.setId(1L);
+        layer1.setUrl("http://test/ksr/1");
+        layer1.setUseInternalProxy("0");
+
+        Layer layer2 = new Layer();
+        layer2.setId(2L);
+        layer2.setUrl("http://test/ksr/2");
+        layer2.setRelationColumnOut("RELATION_ID_1");
+        layer2.setRelationColumnIn("RELATION_ID");
+        layer2.setRelationType("one");
+        layer2.setRelationLayerId(1L);
+        layer2.setUseInternalProxy("0");
+
+        InputStream is1 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"RELATION_ID\"," +
+                "\"alias\":\"RELATION_ID\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[{" +
+                "\"attributes\":{\"RELATION_ID\":90}}]}").getBytes(StandardCharsets.UTF_8));
+
+        InputStream is2 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"RELATION_ID_1\"," +
+                "\"alias\":\"RELATION_ID_1\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[" +
+                "{\"attributes\":{\"RELATION_ID_1\":90, \"C\":190}}" +
+                "]}").getBytes(StandardCharsets.UTF_8));
+
+        InputStream ise1 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"RELATION_ID\"," +
+                "\"alias\":\"RELATION_ID\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[{" +
+                "\"attributes\":{\"RELATION_ID\":90}}]}").getBytes(StandardCharsets.UTF_8));
+
+        InputStream ise2 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"RELATION_ID_1\"," +
+                "\"alias\":\"RELATION_ID_1\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[" +
+                "{\"attributes\":{\"RELATION_ID_1\":90, \"C\":190}}" +
+                "]}").getBytes(StandardCharsets.UTF_8));
+
+        Mockito.when(
+                layerService.getReferencingLayers(Mockito.eq("1"))
+        ).thenReturn(Arrays.asList(layer2));
+
+        Mockito.when(
+                httpRequestService.getURLContents(
+                        Mockito.eq("http://test/ksr/1/query?f=pjson&returnGeometry=false&outFields=*&where=OBJECTID+IN+%28100%29"),
+                        Mockito.eq(false),
+                        Mockito.isNull()
+                )
+        ).thenReturn(is1);
+
+        Mockito.when(
+                httpRequestService.getURLContents(
+                        Mockito.eq("http://test/ksr/2/query?f=pjson&returnGeometry=false&outFields=*&where=RELATION_ID_1+IN+%2890%29"),
+                        Mockito.eq(false),
+                        Mockito.isNull()
+                )
+        ).thenReturn(is2);
+
+
+        ContractLayer cLayer1 = new ContractLayer(layer1, EsriQueryResponse.fromInputStream(ise1, "1"));
+        ContractLayer cLayer2 = new ContractLayer(layer2, EsriQueryResponse.fromInputStream(ise2, "2"));
+
+        List<ContractLayer> expected = Arrays.asList(cLayer1, cLayer2);
+        List<ContractLayer> actual = contractService.getContractDetails(layer1, 100);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetContractDetailsLink() {
+        Layer layer1 = new Layer();
+        layer1.setId(1L);
+        layer1.setUrl("http://test/ksr/1");
+        layer1.setUseInternalProxy("0");
+
+        Layer layer2 = new Layer();
+        layer2.setId(2L);
+        layer2.setUrl("http://test/ksr/2");
+        layer2.setRelationColumnOut("RELATION_ID_1");
+        layer2.setRelationColumnIn("RELATION_ID");
+        layer2.setRelationType("link");
+        layer2.setRelationLayerId(1L);
+        layer2.setUseInternalProxy("0");
+
+        Layer layer3 = new Layer();
+        layer3.setId(3L);
+        layer3.setUrl("http://test/ksr/3");
+        layer3.setRelationColumnOut("R_ID_2");
+        layer3.setRelationColumnIn("R_ID");
+        layer3.setRelationType("many");
+        layer3.setRelationLayerId(2L);
+        layer3.setUseInternalProxy("0");
+
+        InputStream is1 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"RELATION_ID\"," +
+                "\"alias\":\"RELATION_ID\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[{" +
+                "\"attributes\":{\"RELATION_ID\":90}}]}").getBytes(StandardCharsets.UTF_8));
+
+        InputStream is2 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"RELATION_ID_1\"," +
+                "\"alias\":\"RELATION_ID_1\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[" +
+                "{\"attributes\":{\"RELATION_ID_1\":90, \"R_ID\":190}}" +
+                "]}").getBytes(StandardCharsets.UTF_8));
+
+        InputStream is3 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"R_ID_2\"," +
+                "\"alias\":\"R_ID_2\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[" +
+                "{\"attributes\":{\"R_ID_2\":190}}" +
+                "]}").getBytes(StandardCharsets.UTF_8));
+
+        InputStream ise1 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"RELATION_ID\"," +
+                "\"alias\":\"RELATION_ID\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[{" +
+                "\"attributes\":{\"RELATION_ID\":90}}]}").getBytes(StandardCharsets.UTF_8));
+
+        InputStream ise3 = new ByteArrayInputStream(("{" +
+                "\"objectIdFieldName\":\"OBJECTID\"," +
+                "\"globalIdFieldName\":\"\"," +
+                "\"geometryType\":\"esriGeometryPolygon\"," +
+                "\"spatialReference\":{" +
+                "\"wkid\":102139," +
+                "\"latestWkid\":3067}," +
+                "\"fields\":[{" +
+                "\"name\":\"R_ID_2\"," +
+                "\"alias\":\"R_ID_2\"," +
+                "\"type\":\"esriFieldTypeDouble\"}]," +
+                "\"features\":[" +
+                "{\"attributes\":{\"R_ID_2\":190}}" +
+                "]}").getBytes(StandardCharsets.UTF_8));
+
+        Mockito.when(
+            layerService.getReferencingLayers(Mockito.eq("1"))
+        ).thenReturn(Arrays.asList(layer2));
+
+        Mockito.when(
+            layerService.getReferencingLayers(Mockito.eq("2"))
+        ).thenReturn(Arrays.asList(layer3));
+
+        Mockito.when(
+                httpRequestService.getURLContents(
+                        Mockito.eq("http://test/ksr/1/query?f=pjson&returnGeometry=false&outFields=*&where=OBJECTID+IN+%28100%29"),
+                        Mockito.eq(false),
+                        Mockito.isNull()
+                )
+        ).thenReturn(is1);
+
+        Mockito.when(
+                httpRequestService.getURLContents(
+                        Mockito.eq("http://test/ksr/2/query?f=pjson&returnGeometry=false&outFields=*&where=RELATION_ID_1+IN+%2890%29"),
+                        Mockito.eq(false),
+                        Mockito.isNull()
+                )
+        ).thenReturn(is2);
+
+        Mockito.when(
+                httpRequestService.getURLContents(
+                        Mockito.eq("http://test/ksr/3/query?f=pjson&returnGeometry=false&outFields=*&where=R_ID_2+IN+%28190%29"),
+                        Mockito.eq(false),
+                        Mockito.isNull()
+                )
+        ).thenReturn(is3);
+
+
+        ContractLayer cLayer1 = new ContractLayer(layer1, EsriQueryResponse.fromInputStream(ise1, "1"));
+        ContractLayer cLayer2 = new ContractLayer(layer3, EsriQueryResponse.fromInputStream(ise3, "3"));
+
+        List<ContractLayer> expected = Arrays.asList(cLayer1, cLayer2);
+        List<ContractLayer> actual = contractService.getContractDetails(layer1, 100);
+
+        Assert.assertEquals(expected, actual);
     }
 
 }
