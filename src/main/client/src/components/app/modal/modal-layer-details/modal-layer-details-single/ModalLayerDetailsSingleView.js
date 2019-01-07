@@ -11,11 +11,11 @@ type Props = {
     field: Object,
     handleOnChange: Function,
     fetching: boolean,
-    contractExists: boolean,
+    validContract: boolean,
 };
 
 const ModalLayerDetailsSingleView = ({
-    index, field, handleOnChange, fetching, contractExists,
+    index, field, handleOnChange, fetching, validContract,
 }: Props) => (
     <Fragment>
         <label
@@ -30,15 +30,15 @@ const ModalLayerDetailsSingleView = ({
                     index={index}
                 />
                 <InputInfo
-                    data-balloon={!fetching && contractExists
-                        ? `${field.label}${' '}${strings.modalFeatureContracts.addEditContract.contractFound}`
+                    data-balloon={(!fetching && !validContract) || (field.data.trim().length === 0)
+                        ? `${field.label} ${strings.modalFeatureContracts.addEditContract.contractFound}`
                         : null
                     }
                     data-balloon-pos="left"
                     data-balloon-length="large"
                 >
-                    {!fetching && !contractExists && <i className="fas fa-check" />}
-                    {!fetching && contractExists && <i className="fas fa-exclamation-triangle" />}
+                    {!fetching && validContract && field.data.trim().length > 0 && <i className="fas fa-check" />}
+                    {((!fetching && !validContract) || (field.data.trim().length === 0)) && <i className="fas fa-exclamation-triangle" />}
                     <LoadingIcon size={7} loading={fetching} />
                 </InputInfo>
             </InputWithIcon>}

@@ -6,21 +6,31 @@ type Props = {
     fields: Array<Object>,
     handleOnChange: Function,
     fetching: boolean,
-    contractExists: boolean,
+    validContract: boolean,
 };
 
 const ModalLayerDetailsView = ({
-    fields, handleOnChange, fetching, contractExists,
+    fields, handleOnChange, fetching, validContract,
 }: Props) => (
     <form>
-        {fields && fields.filter(f => f.type !== 'esriFieldTypeOID').map((c, i) => (
+        {fields && fields.filter(field => field.type !== 'esriFieldTypeOID' && !field.nullable).map((field, i) => (
             <ModalLayerDetailsSingleView
-                key={c.value}
+                key={field.value}
                 index={i}
-                field={c}
+                field={field}
                 handleOnChange={handleOnChange}
                 fetching={fetching}
-                contractExists={contractExists}
+                validContract={validContract}
+            />
+        ))}
+        {fields && fields.filter(field => field.type !== 'esriFieldTypeOID' && field.nullable).map((field, i) => (
+            <ModalLayerDetailsSingleView
+                key={field.value}
+                index={i}
+                field={field}
+                handleOnChange={handleOnChange}
+                fetching={fetching}
+                validContract={validContract}
             />
         ))}
     </form>

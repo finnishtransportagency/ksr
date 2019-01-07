@@ -97,6 +97,7 @@ export const mapSelectPopup = async (
             }
 
             if (activeAdminTool && activeAdminTool !== layer.graphic.layer.id
+                && geometryType
                 && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType) {
                 const copyFeatureAction = {
                     title: strings.esriMap.copyFeature,

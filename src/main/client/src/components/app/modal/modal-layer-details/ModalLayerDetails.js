@@ -59,7 +59,11 @@ class ModalFilter extends Component<Props, State> {
             nullable: field.name !== activeLayer.contractIdField,
             data: copiedAttributes && copiedAttributes[field.name] ?
                 copiedAttributes[field.name] : '',
-        }));
+        })).filter(f => (f.type !== 'esriFieldTypeOID'
+                && f.editable
+                && f.name !== activeLayer.relationColumnOut)
+                || (f.name === activeLayer.contractIdField
+                    && f.name === activeLayer.relationColumnOut));
 
         const dataObject = Object.assign({}, ...(dataFields.map(item =>
             ({ [item.name]: item.data }))));
@@ -165,7 +169,16 @@ class ModalFilter extends Component<Props, State> {
     render() {
         const { activeLayer } = this.props;
         const { fetching, contractExists, dataFields } = this.state;
-        const disabled = activeLayer.contractIdField && contractExists;
+        const validContract = activeLayer.type === 'agfl'
+            ? activeLayer.contractIdField && !contractExists
+            : activeLayer.contractIdField && contractExists;
+        const disabled = (activeLayer.contractIdField)
+            && (!validContract
+            || fetching
+            || !nestedVal(
+                dataFields.find(a => a.name === activeLayer.contractIdField),
+                ['data', 'length'],
+            ));
         const modalSubmit = [{
             text: strings.modalLayerDetails.submit,
             handleSubmit: this.handleModalSubmit,
@@ -183,7 +196,7 @@ class ModalFilter extends Component<Props, State> {
                     fields={dataFields}
                     handleOnChange={this.handleOnChange}
                     fetching={fetching}
-                    contractExists={contractExists}
+                    validContract={validContract}
                 />
             </ModalContainer>
         );

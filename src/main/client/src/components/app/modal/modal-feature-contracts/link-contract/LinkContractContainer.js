@@ -8,13 +8,10 @@ const mapStateToProps = (state) => {
     const { layerList } = state.map.layerGroups;
 
     const {
-        currentLayer, contractLinkLayer, contractLayer,
+        contractLayer,
     } = getContractLayers(layerId, layerList);
 
     return {
-        layerId,
-        currentLayer,
-        contractLinkLayer,
         contractLayer,
     };
 };

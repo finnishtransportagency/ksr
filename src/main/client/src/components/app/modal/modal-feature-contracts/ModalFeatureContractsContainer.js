@@ -10,7 +10,7 @@ const mapStateToProps = (state) => {
     const { layerId } = state.contract.contractList;
 
     const {
-        currentLayer, contractLayer,
+        currentLayer, contractLinkLayer, contractLayer,
     } = getContractLayers(layerId, state.map.layerGroups.layerList);
 
     const createLayerPermission = state.adminTool.active.layerId === layerId &&
@@ -24,9 +24,8 @@ const mapStateToProps = (state) => {
     return {
         objectId: state.contract.contractList.objectId,
         currentLayer,
+        contractLinkLayer,
         contractLayer,
-        addressField: currentLayer && currentLayer.addressField,
-        featureType: currentLayer && currentLayer.featureType,
         view: state.map.mapView.view,
         createLayerPermission,
         editLayerPermission,

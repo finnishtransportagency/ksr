@@ -9,7 +9,7 @@ const mapStateToProps = (state) => {
     const { layerList } = state.map.layerGroups;
 
     const {
-        currentLayer, contractLayer,
+        contractLayer,
     } = getContractLayers(layerId, layerList);
 
     return {
@@ -17,7 +17,6 @@ const mapStateToProps = (state) => {
         contractIdField: contractLayer && contractLayer.contractIdField,
         contractDescriptionField: contractLayer && contractLayer.contractDescriptionField,
         contractLayer,
-        currentLayer,
         fields: nestedVal(contractLayer, ['fields']),
     };
 };

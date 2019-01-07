@@ -6,17 +6,14 @@ import LinkContractView from './LinkContractView';
 type Props = {
     contractLinkValidation: (
         validContract?: boolean,
-        contractNumber?: number,
-        contractUpdateLayer?: Object,
+        contractNumber?: string,
         contractUuid?: string,
     ) => void,
-    currentLayer: Object,
-    contractLinkLayer: Object,
     contractLayer: Object,
 };
 
 type State = {
-    contractNumber: number | string,
+    contractNumber: string,
     fetching: boolean,
     contractExists: boolean,
 };
@@ -56,7 +53,7 @@ class LinkContract extends Component<Props, State> {
             this.existsQuery = window.setTimeout(async () => {
                 const signal = this.abortController ? this.abortController.signal : undefined;
 
-                const { contractLinkLayer, contractLayer, currentLayer } = this.props;
+                const { contractLayer } = this.props;
 
                 const res = await queryFeatures(
                     contractLayer.id,
@@ -69,7 +66,6 @@ class LinkContract extends Component<Props, State> {
                     this.props.contractLinkValidation(
                         true,
                         contractNumber,
-                        contractLinkLayer || currentLayer,
                         contractUuid,
                     );
                     this.setState({
