@@ -3,7 +3,7 @@ import { Button } from '../../../ui/elements';
 
 export const WrapperTabbedTable = styled.div`
     width: 100%;
-    height: 52px;
+    height: 58px;
     position: absolute;
     top: 0;
     white-space: nowrap;
