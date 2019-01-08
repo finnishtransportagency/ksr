@@ -130,7 +130,7 @@ pipeline {
                         "sed -i 's/DB_HOST/${DB_HOST}/g' ${properties}",
                         "sed -i 's/DB_NAME/${DB_NAME}/g' ${properties}",
                         "sed -i 's/DB_PORT/${DB_PORT}/g' ${properties}",
-                        "sed -i 's/HTTP_PROXY_HOST/${http_proxy.tokenize(':').take(2).join(':')}/g' ${properties}",
+                        "sed -i 's/HTTP_PROXY_HOST/${http_proxy.tokenize(':')[0..1].join(':')}/g' ${properties}",
                         "sed -i 's/HTTP_PROXY_PORT/${http_proxy.tokenize(':').last()}/g' ${properties}",
                         "sed -i 's/CACHE_CAFFEINE_SPEC/${CACHE_CAFFEINE_SPEC}/g' ${properties}",
                         "sed -i 's,PRINT_SERVICE_URL,${PRINT_SERVICE_URL},g' ${properties}",
