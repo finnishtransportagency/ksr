@@ -4,6 +4,7 @@ import LoadingIcon from '../../shared/LoadingIcon';
 import MapToolsContainer from '../map-tools/MapToolsContainer';
 
 import { Wrapper } from './styles';
+import BaseMapSwitchContainer from '../base-map-switch/BaseMapSwitchContainer';
 
 type Props = {
     activeNav: string,
@@ -21,6 +22,7 @@ const EsriMapView = ({ activeNav, view, isOpenTable }: Props) => (
         <div id="mapView">
             <MapToolsContainer view={view} />
         </div>
+        <BaseMapSwitchContainer />
     </Wrapper>
 );
 
