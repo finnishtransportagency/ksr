@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import * as styles from '../../defaultStyles';
 
 const Slider = styled.div`
-    padding-top: 1rem;
     
     .rc-slider {
         cursor: default;

@@ -45,7 +45,7 @@ const MapLayerSettings = ({
             <LayerSettings.ContentMain>
                 <LayerSettings.ContentTop>
                     <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
-                        <MapLayerTitle layer={layer} />
+                        <MapLayerTitle layer={layer} showLayerGroup />
                     </LayerSettings.Title>
                     {
                         activeAdminTool === layer.id && layer.type === 'agfl' && layer.layerPermission.createLayer &&

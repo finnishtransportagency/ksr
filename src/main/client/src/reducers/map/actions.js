@@ -19,7 +19,10 @@ export const getLayerGroups = () => (dispatch: Function) => {
     });
     fetchLayerGroups()
         .then((r) => {
-            r.map(lg => lg.layers.map(l => layerList.push(l)));
+            r.map(lg => lg.layers.map(l => layerList.push({
+                ...l,
+                layerGroupName: lg.name,
+            })));
             layerList.sort((a, b) => b.layerOrder - a.layerOrder);
             return r;
         })
