@@ -35,6 +35,7 @@ type Layer = {
     geometryType: string,
     fields: Array<Object>,
     id: string,
+    layerGroupName: string,
     layerOrder: number,
     layers: string,
     layerPermission: Object,

@@ -203,6 +203,7 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
         value: index, label: f.alias, type: f.type, name: f.name,
     })),
     id: layer.id,
+    layerGroupName: 'Käyttäjätasot',
     layerOrder: layer.id,
     layers: fileName,
     maxScale: 0,
