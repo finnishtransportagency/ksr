@@ -79,23 +79,25 @@ class EsriMap extends Component<Props> {
                             layerListReversed.forEach((l, i) => {
                                 view.map.reorder(view.map.findLayerById(`${l.id}`, i));
                             });
-                            view.map.layers.forEach((l) => {
-                                // Temporary fix for sketchViewModel index
-                                if (l.id.indexOf('layer') >= 0) {
-                                    view.map.reorder(view
-                                        .map.findLayerById(`${l.id}`, view.map.layers.length));
-                                }
-                            });
+
+                            // Temporary fix for sketchViewModel index.
+                            const graphicsLayers = view.map.layers
+                                .filter(layer => layer.type === 'graphics');
+                            if (graphicsLayers.length) {
+                                view.map.layers.removeMany(graphicsLayers);
+                                view.map.layers.addMany(graphicsLayers);
+                            }
                         });
                 }
             }
 
-            view.map.layers.forEach((l) => {
-                // Temporary fix for sketchViewModel index
-                if (l.id.indexOf('layer') >= 0) {
-                    view.map.reorder(view.map.findLayerById(`${l.id}`, view.map.layers.length));
-                }
-            });
+            // Temporary fix for sketchViewModel index.
+            const graphicsLayers = view.map.layers
+                .filter(layer => layer.type === 'graphics');
+            if (graphicsLayers.length) {
+                view.map.layers.removeMany(graphicsLayers);
+                view.map.layers.addMany(graphicsLayers);
+            }
         }
 
         if (view && view.map) {
