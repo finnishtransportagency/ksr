@@ -6,7 +6,7 @@ import Contract from '../../../../ui/blocks/Contract';
 type Props = {
     contracts: Object[],
     contractUnlinkable: boolean,
-    handleUnlinkContract: (contractNumber: number) => any,
+    handleUnlinkContract: (contractNumber: string) => any,
     setActiveView: Function,
     editLayerPermission: boolean,
 };
