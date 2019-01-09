@@ -63,6 +63,7 @@ public class Layer implements Serializable {
     private String relationColumnOut;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private QueryColumnTypeRecord queryColumns;
+    private boolean background;
 
     /**
      * Construct a Layer.
@@ -105,6 +106,7 @@ public class Layer implements Serializable {
         this.setContractDescriptionField(lr.getContractDescriptionField());
         this.setAlfrescoLinkField(lr.getAlfrescoLinkField());
         this.setCaseManagementLinkField(lr.getCaseManagementLinkField());
+        this.setBackground(lr.getBackground());
 
         if (lr.getQueryColumns() != null) {
             setQueryColumns(lr.getQueryColumns());
@@ -753,5 +755,21 @@ public class Layer implements Serializable {
      */
     public void setQueryColumns(QueryColumnTypeRecord queryColumns) {
         this.queryColumns = queryColumns;
+    }
+
+    /**
+     * Gets if layer can be considered a background layer.
+     *
+     * @return boolean indicating if layer can be considered a background layer.
+     */
+    public boolean isBackground()  {return background; }
+
+    /**
+     * Sets boolean indicating if layer can be considered a background layer.
+     *
+     * @param background String indicating if background layer.
+     */
+    public void setBackground(String background) {
+        this.background = "1".equals(background);
     }
 }
