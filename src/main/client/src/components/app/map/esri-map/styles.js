@@ -134,7 +134,10 @@ export const Wrapper = styled.div`
             };
         `};
         
-        
+        .esri-legend--card {
+            bottom: 60px;
+        }
+
         @media only screen and (max-width: 768px) {
             left: 0;
             width: 100%;
