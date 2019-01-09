@@ -115,3 +115,7 @@ export const SET_USER_INFO = 'SET_USER_INFO';
 // Offline
 export const ADD_EDIT = 'ADD_EDIT';
 export const SET_EDITS = 'SET_EDITS';
+
+// Loading
+export const SET_LOADING = 'SET_LOADING';
+export const REMOVE_LOADING = 'REMOVE_LOADING';
