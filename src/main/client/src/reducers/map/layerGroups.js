@@ -13,6 +13,7 @@ import {
     SET_WORKSPACE_FULFILLED,
     APPLY_DELETED_FEATURES,
     CLEAR_SEARCH_DATA,
+    TOGGLE_LAYER,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -192,6 +193,20 @@ export default (state: State = initialState, action: Action) => {
                     layers: lg.type === 'search' ? [] : lg.layers,
                 })): Array<LayerGroups>),
                 layerList: (state.layerList.filter(l => l._source !== 'search'): Array<Layer>),
+            };
+        case TOGGLE_LAYER:
+            return {
+                ...state,
+                layerList: (state.layerList.map((l) => {
+                    if (l.id === action.layerId) {
+                        return {
+                            ...l,
+                            visible: l.active ? !l.visible : true,
+                            active: true,
+                        };
+                    }
+                    return { ...l };
+                }): Array<Layer>),
             };
         default:
             return state;
