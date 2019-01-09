@@ -1,10 +1,10 @@
 // @flow
 import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
-import { fetchWorkspace, getWorkspaceUuid } from '../../../api/workspace/userWorkspace';
+import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import { queryFeatures } from '../../../utils/queryFeatures';
-import { loadWorkspace } from '../../../utils/workspace/loadWorkspace';
+import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 import {
@@ -15,7 +15,7 @@ import {
 import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
 import { copyFeature } from '../../../utils/map-selection/copyFeature';
-import { removeGraphicsFromMap } from '../../../utils/map';
+import { removeGraphicsFromMap, getLayerFields } from '../../../utils/map';
 
 type Props = {
     layerList: Array<any>,
@@ -53,6 +53,7 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
+    setLayerList: (layerList: Object[]) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -394,43 +395,44 @@ class EsriMap extends Component<Props> {
                     setMapView,
                     setTempGraphicsLayer,
                     addNonSpatialContentToTable,
+                    setLayerList,
                 } = this.props;
 
                 // Set initial view and temp graphics layer to redux
                 setMapView(r.view);
                 setTempGraphicsLayer(r.tempGraphicsLayer);
 
-                /**
-                 * Loads workspace with workspace uuid if url contains workspace parameter.
-                 * e.g. /?workspace=<workspace uuid>
-                 *
-                 * If url doesn't have workspace parameter, latest workspace will be loaded.
-                 */
-                const urlParams = new URLSearchParams(window.location.search);
-                const workspaceUuid = urlParams.get('workspace');
-                let workspace = workspaceUuid && await getWorkspaceUuid(workspaceUuid);
-
+                let workspace = await getWorkspaceFromUrl();
                 if (workspace) {
-                    loadWorkspace(
+                    await loadWorkspace(
                         workspace,
                         layerList,
                         r.view,
                         searchWorkspaceFeatures,
                         addNonSpatialContentToTable,
                         selectFeatures,
+                        setLayerList,
+                        null,
                     );
                 } else {
                     workspace = await fetchWorkspace(null);
                     if (workspace) {
-                        loadWorkspace(
+                        await loadWorkspace(
                             workspace,
                             layerList,
                             r.view,
                             searchWorkspaceFeatures,
                             addNonSpatialContentToTable,
                             selectFeatures,
+                            setLayerList,
+                            null,
                         );
                     } else {
+                        const layersWithFields = await getLayerFields(
+                            layerList,
+                            layerList.filter(layer => layer.visible),
+                        );
+                        setLayerList(layersWithFields);
                         setWorkspaceRejected();
                     }
                 }

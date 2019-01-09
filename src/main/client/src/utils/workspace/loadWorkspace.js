@@ -2,7 +2,8 @@
 import { toast } from 'react-toastify';
 import { fetchGetWorkspaceList } from '../../api/workspace/getWorkspaceList';
 import strings from '../../translations';
-import { addLayers, setCenterPoint } from '../map';
+import { addLayers, getLayerFields, setCenterPoint } from '../map';
+import { getWorkspaceUuid } from '../../api/workspace/userWorkspace';
 
 /**
  * Creates list of feature data saved in workspace.
@@ -144,60 +145,89 @@ export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Obje
 /**
  * Loads given workspace.
  *
- * @param {Object} workspace User specific workspace settings.
+ * @param {Object} workspaceToLoad User specific workspace settings.
  * @param {Object[]} layerList List of layers.
  * @param {Object} view Esri map view.
  * @param {Function} searchWorkspaceFeatures Redux function that handles workspace searches.
  * @param {Function} addNonSpatialContentToTable Adds non spatial content to table.
  * @param {Function} selectFeatures Redux function that handles workspace selections.
+ * @param {Function} setLayerList Redux function that changes layer list.
  * @param {Function} [updateWorkspaces] Redux function that handles workspace fetches.
  */
-export const loadWorkspace = (
-    workspace: Object,
+export const loadWorkspace = async (
+    workspaceToLoad: Object,
     layerList: Object[],
     view: Object,
     searchWorkspaceFeatures: Function,
     addNonSpatialContentToTable: Function,
     selectFeatures: Function,
+    setLayerList: Function,
     updateWorkspaces: ?Function,
 ) => {
-    const layers = updateLayerList(workspace, layerList);
-
-    toast.info(`${strings.workspace.loadingWorkspace} [${workspace.name}]`, {
+    toast.info(`${strings.workspace.loadingWorkspace} [${workspaceToLoad.name}]`, {
         toastId: 'loadingWorkspace',
         autoClose: false,
     });
 
-    addLayers(layers, view, true)
-        .then(() => {
-            setCenterPoint(
-                [workspace.centerLongitude, workspace.centerLatitude],
-                workspace.scale,
-                view,
-            );
-            const nonSpatialLayers = layers.filter(l =>
-                workspace.layers.find(wl => wl.layerId === l.id && l.type === 'agfl'));
+    let layers = updateLayerList(workspaceToLoad, layerList);
+    const workspaceLayers = layers.filter(l =>
+        workspaceToLoad.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
+    layers = await getLayerFields(layerList, workspaceLayers);
+    const { failedLayers } = await addLayers(workspaceLayers, view, true);
 
-            nonSpatialLayers.forEach((nl) => {
-                const nonSpatialWorkspace = workspace.layers.filter(wl =>
-                    nl.id === wl.layerId);
+    // Deactivates failed layers from layerlist.
+    layers = layers.map(l => ({
+        ...l,
+        active: failedLayers.some(fl => fl === l.id) ? false : l.active,
+        visible: failedLayers.some(fl => fl === l.id) ? false : l.visible,
+    }));
+    setLayerList(layers);
 
-                addNonSpatialContentToTable(
-                    nl,
-                    setWorkspaceFeatures(nonSpatialWorkspace),
-                );
-            });
+    // Filters out layers that fail from workspace.
+    const workspace = {
+        ...workspaceToLoad,
+        layers: workspaceToLoad.layers.filter(wl => !failedLayers
+            .some(fl => fl === wl.layerId || fl === wl.userLayerId)),
+    };
 
-            const spatialWorkspace = workspace.layers.filter(wl =>
-                layers.find(l => l.id === wl.layerId && l.type !== 'agfl'));
+    const nonSpatialLayers = layers.filter(l =>
+        workspace.layers.find(wl => wl.layerId === l.id && l.type === 'agfl'));
 
-            const workspaceFeatures = setWorkspaceFeatures(spatialWorkspace);
-            queryWorkspaceFeatures(workspaceFeatures, view)
-                .then((layerFeatures) => {
-                    searchWorkspaceFeatures(workspace, layers);
-                    selectFeatures(layerFeatures);
-                    if (updateWorkspaces) updateWorkspaces(fetchGetWorkspaceList);
-                })
-                .catch(err => console.log(err));
-        });
+    nonSpatialLayers.forEach((nl) => {
+        const nonSpatialWorkspace = workspace.layers.filter(wl =>
+            nl.id === wl.layerId);
+        addNonSpatialContentToTable(
+            nl,
+            setWorkspaceFeatures(nonSpatialWorkspace),
+        );
+    });
+
+    const spatialWorkspace = workspace.layers
+        .filter(wl => layers.find(l => l.id === wl.layerId && l.type !== 'agfl'));
+
+    const workspaceFeatures = setWorkspaceFeatures(spatialWorkspace);
+    const layerFeatures = await queryWorkspaceFeatures(workspaceFeatures, view);
+    searchWorkspaceFeatures(workspace, layers);
+    selectFeatures(layerFeatures);
+    if (updateWorkspaces) updateWorkspaces(fetchGetWorkspaceList);
+
+    view.when(async () => {
+        await setCenterPoint(
+            [workspace.centerLongitude, workspace.centerLatitude],
+            workspace.scale,
+            view,
+        );
+    });
+};
+
+/**
+ * Loads workspace with workspace uuid if url contains workspace parameter.
+ * e.g. /?workspace=<workspace uuid>
+ *
+ * @returns {Object | null} Found workspace or null.
+ */
+export const getWorkspaceFromUrl = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const workspaceUuid = urlParams.get('workspace');
+    return workspaceUuid && getWorkspaceUuid(workspaceUuid);
 };

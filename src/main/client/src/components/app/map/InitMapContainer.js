@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { setMapView, setTempGraphicsLayer, setHasGraphics } from '../../../reducers/map/actions';
+import { setMapView, setTempGraphicsLayer, setHasGraphics, setLayerList } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import { setPropertyInfo } from '../../../reducers/search/actions';
 import {
@@ -66,6 +66,9 @@ const mapDispatchToProps = dispatch => ({
     },
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+    setLayerList: (layerList: Object[]) => {
+        dispatch(setLayerList(layerList));
     },
 });
 
