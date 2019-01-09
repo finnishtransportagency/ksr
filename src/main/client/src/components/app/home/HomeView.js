@@ -11,7 +11,7 @@ import TableContainer from '../table/TableContainer';
 import { LoadingWrapper } from './styles';
 
 type Props = {
-    loadingWorkspace: boolean,
+    loading: boolean,
 };
 
 const toastProps = {
@@ -27,11 +27,11 @@ const toastProps = {
     transition: Slide,
 };
 
-const HomeView = ({ loadingWorkspace }: Props) => (
+const HomeView = ({ loading }: Props) => (
     <Fragment>
-        { loadingWorkspace &&
+        { loading &&
             <LoadingWrapper>
-                <LoadingIcon size={20} loading={loadingWorkspace} />
+                <LoadingIcon size={20} loading={loading} />
             </LoadingWrapper>
         }
         <SideNavContainer />
