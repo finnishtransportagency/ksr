@@ -115,15 +115,25 @@ export const Wrapper = styled.div`
         ${props => props.tableOpen && css`
             height: 50%;
             
-            // Button width multiplied by number of buttons
-            .esri-attribution {
-                margin-left: calc(60px * 5);
-            };
-            
             @media only screen and (max-width: 768px) {
                 height: 100%;
             };
         `};
+
+        ${props => props.tableOpen && !props.adminToolActive && css`
+            // Button width multiplied by number of buttons
+            .esri-attribution {
+                margin-left: calc(60px * 5);
+            };
+        `};
+        
+        ${props => props.tableOpen && props.adminToolActive && css`
+            // Button width multiplied by number of buttons
+            .esri-attribution {
+                margin-left: calc(60px * 7);
+            };
+        `};
+        
         
         @media only screen and (max-width: 768px) {
             left: 0;
@@ -140,7 +150,7 @@ export const Wrapper = styled.div`
             };
             
             .esri-scale-bar {
-                margin-bottom: 1em;
+                margin-bottom: calc(60px + 1em);
             };
             
             .esri-legend--stacked {

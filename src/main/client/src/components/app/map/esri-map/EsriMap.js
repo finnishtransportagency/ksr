@@ -149,10 +149,16 @@ class EsriMap extends Component<Props> {
     }
 
     render() {
-        const { activeNav, isOpenTable, view } = this.props;
+        const {
+            activeNav,
+            isOpenTable,
+            view,
+            activeAdminTool,
+        } = this.props;
 
         return (
             <EsriMapView
+                adminToolActive={activeAdminTool !== ''}
                 activeNav={activeNav}
                 isOpenTable={isOpenTable}
                 view={view}

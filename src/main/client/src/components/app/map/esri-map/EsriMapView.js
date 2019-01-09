@@ -10,12 +10,19 @@ type Props = {
     activeNav: string,
     view: any,
     isOpenTable: boolean,
+    adminToolActive: boolean,
 };
 
-const EsriMapView = ({ activeNav, view, isOpenTable }: Props) => (
+const EsriMapView = ({
+    activeNav,
+    view,
+    isOpenTable,
+    adminToolActive,
+}: Props) => (
     <Wrapper
         sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
         tableOpen={isOpenTable}
+        adminToolActive={adminToolActive}
         loading={!view}
     >
         <LoadingIcon size={0} loading={!view} />
