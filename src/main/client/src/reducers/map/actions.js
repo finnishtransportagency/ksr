@@ -145,6 +145,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                                 layer: {
                                     ...r,
                                     active: r.visible,
+                                    layerGroupName: 'Käyttäjätasot',
                                 },
                             });
                         })
@@ -155,6 +156,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                         layer: {
                             ...l,
                             active: l.visible,
+                            layerGroupName: 'Käyttäjätasot',
                         },
                     });
                 }
