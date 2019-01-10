@@ -64,6 +64,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,8 @@ import java.util.regex.Pattern;
 @Service
 public class HttpRequestService {
     private static final Logger log = LogManager.getLogger(HttpRequestService.class);
+    private static final String VALUE = "value";
+
     private CloseableHttpClient closeableHttpClient;
     private RequestConfig nonProxyRequestConfig;
     private RequestConfig proxyRequestConfig;
@@ -129,7 +132,7 @@ public class HttpRequestService {
         this.proxyRequestConfig = configBase.build();
     }
 
-    public RequestConfig.Builder getRequestConfigBase() {
+    private RequestConfig.Builder getRequestConfigBase() {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(socketTimeout);
         requestConfigBuilder.setCookieSpec(CookieSpecs.IGNORE_COOKIES);
@@ -267,8 +270,8 @@ public class HttpRequestService {
      * @param request HttpServletRequest Request to read headers from
      * @param base HttpRequestBase Target to write headers to
      */
-    public void setBaseHeaders(HttpServletRequest request, HttpRequestBase base) {
-        String[] headerNames = { "Content-Type" };
+    void setBaseHeaders(HttpServletRequest request, HttpRequestBase base) {
+        String[] headerNames = { HttpHeaders.CONTENT_TYPE };
         for (String headerName: headerNames) {
             String headerValue = request.getHeader(headerName);
             if (headerValue != null) {
@@ -283,7 +286,7 @@ public class HttpRequestService {
      * @param endPointUrl URL that should be inspected.
      * @return boolean whether URL should be treated as a GetCapablities URL.
      */
-    public boolean isGetCapabilitiesRequest(String endPointUrl) {
+    boolean isGetCapabilitiesRequest(String endPointUrl) {
         String lowerCasedUrl = endPointUrl.toLowerCase();
         return lowerCasedUrl.contains("wmtscapabilities.xml") || lowerCasedUrl.contains("getcapabilities");
     }
@@ -319,7 +322,7 @@ public class HttpRequestService {
      * @param editedParams edited parameters / querystring from print request.
      * @return Correct HttpRequestBase or GET if no matches found for method.
      */
-    public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
+    HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
                                           String endPointUrl, List<NameValuePair> editedParams, LayerAction action,
                                           Layer layer) {
         HttpRequestBase base;
@@ -346,8 +349,8 @@ public class HttpRequestService {
      * @param response HttpServletResponse where the headers should be added.
      * @param cRes CloseableHttpResponse from where to read the headers.
      */
-    public void setResponseHeaders(HttpServletResponse response, CloseableHttpResponse cRes) {
-        String[] headerNames = { "Content-Type", "Content-Length", "Cache-control", "Expires", "Last-Modified" };
+    void setResponseHeaders(HttpServletResponse response, CloseableHttpResponse cRes) {
+        String[] headerNames = { HttpHeaders.CONTENT_TYPE, "Content-Length", "Cache-control", "Expires", "Last-Modified" };
         for (String headerName : headerNames) {
             Header header = cRes.getFirstHeader(headerName);
             if (header != null) {
@@ -382,7 +385,7 @@ public class HttpRequestService {
      * @return The XML Document with replaced values;
      * @throws XPathExpressionException
      */
-    public Document replaceAttributeValues(Document doc, String xPathExpr, String attributeName, String replaceValue, String replaceWith) throws XPathExpressionException {
+    Document replaceAttributeValues(Document doc, String xPathExpr, String attributeName, String replaceValue, String replaceWith) throws XPathExpressionException {
         XPath xpath = XPathFactory.newInstance().newXPath();
 
         NodeList nodes = (NodeList) xpath.evaluate(xPathExpr, doc, XPathConstants.NODESET);
@@ -405,9 +408,8 @@ public class HttpRequestService {
      * @return byte[] -array of XML Document content.
      * @throws TransformerException
      */
-    public byte[] documentToBytesArray(Document doc) throws TransformerException {
+    byte[] documentToBytesArray(Document doc) throws TransformerException {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         transformer.transform(new DOMSource(doc), new StreamResult(bos));
 
@@ -498,17 +500,17 @@ public class HttpRequestService {
         try {
             String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingOutputController.PRINT_OUTPUT_URL);
             String responseString;
-            responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
+            responseString = EntityUtils.toString(cRes.getEntity(), StandardCharsets.UTF_8);
             JSONParser parser = new JSONParser();
             JSONObject responseJson = (JSONObject) parser.parse(responseString);
             JSONArray responseArray = (JSONArray) (responseJson != null ? responseJson.get("results") : null);
             if (responseArray != null) {
                 for (Object entry : responseArray) {
-                    String value = ((JSONObject) entry).get("value").toString();
+                    String value = ((JSONObject) entry).get(VALUE).toString();
                     JSONObject valueJson = (JSONObject) parser.parse(value);
                     String url = valueJson.get("url").toString();
                     valueJson.replace("url", url.replaceAll(url.split("/_ags_")[0], printOutputUrl));
-                    ((JSONObject) entry).replace("value", valueJson);
+                    ((JSONObject) entry).replace(VALUE, valueJson);
                 }
             }
             if (responseJson != null) {
@@ -533,16 +535,16 @@ public class HttpRequestService {
         try {
             String extractOutputUrl = KsrStringUtils
                     .replaceMultipleSlashes(contextPath + GeoprocessingOutputController.EXTRACT_OUTPUT_URL);
-            String responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
+            String responseString = EntityUtils.toString(cRes.getEntity(), StandardCharsets.UTF_8);
             JSONParser parser = new JSONParser();
             JSONObject responseJson = (JSONObject) parser.parse(responseString);
             if (responseJson != null) {
-                String value = responseJson.get("value").toString();
+                String value = responseJson.get(VALUE).toString();
                 JSONObject valueJson = (JSONObject) parser.parse(value);
                 String url = valueJson.get("url").toString();
                 url = url.replaceAll(url.split("_gpserver")[0], extractOutputUrl);
                 valueJson.replace("url", url.replaceAll("_gpserver", ""));
-                responseJson.replace("value", valueJson);
+                responseJson.replace(VALUE, valueJson);
                 response.setHeader("Content-Length", Integer.toString(
                         responseJson.toString().getBytes().length));
                 response.getWriter().write(responseJson.toString());
@@ -566,7 +568,7 @@ public class HttpRequestService {
      */
     private HttpRequestBase simplePostBase(String url, String body, String contentType) throws UnsupportedEncodingException {
         HttpPost base = new HttpPost(url);
-        base.setHeader("Content-Type", contentType);
+        base.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
         base.setEntity(new StringEntity(body));
         return base;
     }
@@ -599,12 +601,7 @@ public class HttpRequestService {
                     }
                 }
             }
-            try {
-                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                String msg = "Error creating base from POST request";
-                throw new KsrApiException.InternalServerErrorException(msg, e);
-            }
+            ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
         }
         return base;
     }
@@ -626,7 +623,7 @@ public class HttpRequestService {
      * @return Name value pair for Layer and LayerAction.
      */
     private BasicNameValuePair filterParams(String key, String value, Layer layer, LayerAction action) {
-        if (layer != null && key.toLowerCase().equals("features")
+        if (layer != null && key.equalsIgnoreCase("features")
                 && (action == LayerAction.UPDATE_LAYER || action == LayerAction.CREATE_LAYER)
                 && (layer.getUpdaterField() != null
                 || "many".equals(layer.getRelationType()))
@@ -683,12 +680,7 @@ public class HttpRequestService {
             for (NameValuePair entry : editedParams) {
                 params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
             }
-            try {
-                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                String msg = "Error creating base from GET request";
-                throw new KsrApiException.InternalServerErrorException(msg, e);
-            }
+            ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
         } else {
             base = new HttpGet(endPointUrl);
         }
