@@ -48,6 +48,21 @@ public class ContractController {
     }
 
     /**
+     * Get the layer that given layer is relating to.
+     *
+     * @param layerId Id of the layer.
+     * @return Layer that the layer is relating to.
+     */
+    @RequestMapping(value = "/{layerId}", method = { RequestMethod.GET })
+    public Layer getRelatingLayer(@PathVariable int layerId) {
+        Layer layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);
+        if (layer == null || !layer.isHasRelations()) {
+            throw new KsrApiException.NotFoundErrorException("No layer can be found");
+        }
+        return this.contractService.getRelatingLayer(layer);
+    }
+
+    /**
      * Gets all features that relate to given feature on given layer.
      *
      * @param layerId Id of the layer.

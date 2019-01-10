@@ -663,4 +663,81 @@ public class ContractServiceTests {
         Assert.assertEquals(expected, actual);
     }
 
+    @Test(expected = KsrApiException.NotFoundErrorException.class)
+    public void testGetRelatingLayerNullLayer() {
+        contractService.getRelatingLayer(null);
+    }
+
+    @Test(expected = KsrApiException.NotFoundErrorException.class)
+    public void testGetRelatingLayerNoRelationType() {
+        contractService.getRelatingLayer(new Layer());
+    }
+
+    @Test
+    public void testGetRelatingLayerRelationOne() {
+        Layer layer = new Layer();
+        layer.setId(1L);
+        layer.setRelationLayerId(2L);
+        layer.setRelationType("one");
+
+        Layer layer2 = new Layer();
+        layer2.setId(2L);
+
+        Mockito.when(layerService.getLayer(
+                Mockito.eq(2),
+                Mockito.eq(true),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(layer2);
+
+        Assert.assertEquals(layer2, contractService.getRelatingLayer(layer));
+    }
+
+    @Test
+    public void testGetRelatingLayerRelationLink() {
+        Layer layer = new Layer();
+        layer.setId(1L);
+        layer.setRelationLayerId(2L);
+        layer.setRelationType("link");
+
+        Layer layer2 = new Layer();
+        layer2.setId(2L);
+
+        Mockito.when(layerService.getLayer(
+                Mockito.eq(2),
+                Mockito.eq(true),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(layer2);
+
+        Assert.assertEquals(layer2, contractService.getRelatingLayer(layer));
+    }
+
+    @Test
+    public void testGetRelatingLayerRelationMany() {
+        Layer layer = new Layer();
+        layer.setId(1L);
+        layer.setRelationLayerId(2L);
+        layer.setRelationType("many");
+
+        Layer middleLayer = new Layer();
+        middleLayer.setId(2L);
+        middleLayer.setRelationLayerId(3L);
+        middleLayer.setRelationType("link");
+
+        Layer targetLayer = new Layer();
+        targetLayer.setRelationLayerId(3L);
+
+        Mockito.when(layerService.getLayer(
+                Mockito.eq(2),
+                Mockito.eq(true),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(middleLayer);
+
+        Mockito.when(layerService.getLayer(
+                Mockito.eq(3),
+                Mockito.eq(true),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(targetLayer);
+
+        Assert.assertEquals(targetLayer, contractService.getRelatingLayer(layer));
+    }
 }

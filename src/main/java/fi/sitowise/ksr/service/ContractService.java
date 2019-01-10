@@ -319,4 +319,25 @@ public class ContractService {
         res.addAll(getReferencingLayers(layer, contractResponse));
         return res;
     }
+
+    /**
+     * Find layer that the given layer has relation to.
+     *
+     * @param layer Layer that is relating to another layer.
+     * @return Found target layer.
+     */
+    public Layer getRelatingLayer(Layer layer) {
+        if (layer == null || layer.getRelationType() == null) {
+            throw new KsrApiException.NotFoundErrorException("Layer has no target layers.");
+        }
+        switch (layer.getRelationType()) {
+            case "many":
+                return getRelatingLayer(getTargetLayer(layer));
+            case "link":
+            case "one":
+                return getTargetLayer(layer);
+            default:
+                throw new KsrApiException.NotFoundErrorException("Layer has no target layers.");
+        }
+    }
 }

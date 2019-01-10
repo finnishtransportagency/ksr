@@ -114,4 +114,26 @@ public class ContractControllerTests extends AuthControllerTestBase {
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
     }
+
+    @Test
+    public void testGetRelatingLayerNoLayer() throws Exception {
+        Mockito.when(layerService.getLayer(Mockito.eq(1234567), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(null);
+        this.mockMvc.perform(get("/api/contract/1234567")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetRelatingLayerOk() throws Exception {
+        Layer layer = new Layer();
+        layer.setHasRelations(true);
+        Mockito.when(layerService.getLayer(Mockito.eq(135), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(layer);
+        Mockito.when(contractService.getRelatingLayer(Mockito.any()))
+                .thenReturn(new Layer());
+        this.mockMvc.perform(get("/api/contract/135")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isOk());
+    }
 }
