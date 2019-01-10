@@ -27,6 +27,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -61,6 +63,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +78,7 @@ import java.util.regex.Pattern;
  */
 @Service
 public class HttpRequestService {
+    private static final Logger log = LogManager.getLogger(HttpRequestService.class);
     private CloseableHttpClient closeableHttpClient;
     private RequestConfig nonProxyRequestConfig;
     private RequestConfig proxyRequestConfig;
@@ -94,11 +98,8 @@ public class HttpRequestService {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    @Value("${http.proxyHost:#{null}}")
-    private String proxyHost;
-
-    @Value("${http.proxyPort:#{null}}")
-    private Integer proxyPort;
+    @Value("${http.proxy:#{null}}")
+    private String httpProxy;
 
     @PostConstruct
     public void setClient() {
@@ -116,9 +117,14 @@ public class HttpRequestService {
     @PostConstruct
     public void setProxyRequestConfig() {
         RequestConfig.Builder configBase = getRequestConfigBase();
-        if (proxyHost != null && proxyPort != null) {
-            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-            configBase.setProxy(proxy);
+        if (httpProxy != null) {
+            try {
+                URI proxyUrl = new URI(httpProxy);
+                HttpHost proxy = new HttpHost(proxyUrl.getHost(), proxyUrl.getPort(), proxyUrl.getScheme());
+                configBase.setProxy(proxy);
+            } catch (URISyntaxException e) {
+                log.info(String.format("Cannot initialize proxy, invalid proxy-url given: [%s].", httpProxy));
+            }
         }
         this.proxyRequestConfig = configBase.build();
     }
