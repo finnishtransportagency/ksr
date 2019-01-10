@@ -304,7 +304,7 @@ public class KTJService {
                 "Get [%s] PDF print with url: [%s] User: [%s]",
                 printType, pdfUrl, KsrAuthenticationUtils.getCurrentUsername()
         ));
-        InputStream inputStream = httpRequestService.getURLContents(pdfUrl, false, getBasicAuthString());
+        InputStream inputStream = httpRequestService.getURLContents(pdfUrl, true, getBasicAuthString());
 
         try {
             String headerValue = String.format("inline; filename=\"%s\"", filename);
