@@ -139,7 +139,6 @@ public class HttpRequestService {
         return requestConfigBuilder;
     }
 
-
     /**
      * Makes an HTTP POST request and return responses content as a InputStream.
      *
@@ -157,11 +156,36 @@ public class HttpRequestService {
             String contentType,
             boolean useProxy
     ) {
+        return postURLContents(
+                url,
+                new StringEntity(body, StandardCharsets.UTF_8),
+                authentication,
+                contentType,
+                useProxy
+        );
+    }
+
+    /**
+     * Makes an HTTP POST request and return responses content as a InputStream.
+     *
+     * @param url Url
+     * @param body Raw body to POST.
+     * @param authentication Base64 encoded username:password if needed. Otherwise null.
+     * @param contentType Content type of the body.
+     * @param useProxy Boolean indicating whether to proxy request.
+     * @return InputStream of the response body.
+     */
+    public InputStream postURLContents(
+            String url,
+            HttpEntity body,
+            String authentication,
+            String contentType,
+            boolean useProxy
+    ) {
         try {
             HttpRequestBase base = this.simplePostBase(url, body, contentType);
             HttpHost target = URIUtils.extractHost(new URI(url));
             setProxy(base, useProxy);
-
             if (authentication != null) {
                 base.setHeader("Authorization", String.format("Basic %s", authentication));
             }
@@ -561,15 +585,15 @@ public class HttpRequestService {
      * Streamlined to work when POSTing raw content.
      *
      * @param url Url.
-     * @param body POST body as a String.
+     * @param body POST body as a HttpEntity.
      * @param contentType Value of Content-Type Header.
      * @return HttpRequestBase with parameters in place.
      * @throws UnsupportedEncodingException
      */
-    private HttpRequestBase simplePostBase(String url, String body, String contentType) throws UnsupportedEncodingException {
+    private HttpRequestBase simplePostBase(String url, HttpEntity body, String contentType) throws UnsupportedEncodingException {
         HttpPost base = new HttpPost(url);
         base.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
-        base.setEntity(new StringEntity(body));
+        base.setEntity(body);
         return base;
     }
 
