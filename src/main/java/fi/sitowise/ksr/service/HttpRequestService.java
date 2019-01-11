@@ -3,7 +3,7 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.controller.GeoprocessingOutputController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
-import fi.sitowise.ksr.domain.proxy.EditFeature;
+import fi.sitowise.ksr.domain.esri.Feature;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
@@ -630,8 +630,8 @@ public class HttpRequestService {
         ){
             ObjectMapper mapper = new ObjectMapper();
             try {
-                EditFeature[] features = mapper.readValue(value, EditFeature[].class);
-                for (EditFeature feature : features) {
+                Feature[] features = mapper.readValue(value, Feature[].class);
+                for (Feature feature : features) {
                     if (layer.getUpdaterField() != null) {
                         feature.putAttributeValue(
                                 layer.getUpdaterField(),
