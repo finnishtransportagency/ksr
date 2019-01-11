@@ -2,8 +2,7 @@ package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
-import fi.sitowise.ksr.domain.proxy.EsriQueryResponse;
-import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.domain.esri.Response;
 import fi.sitowise.ksr.helper.AuthControllerTestBase;
 import fi.sitowise.ksr.service.ContractService;
 import fi.sitowise.ksr.service.LayerService;
@@ -65,7 +64,7 @@ public class ContractControllerTests extends AuthControllerTestBase {
         layer.setId(457L);
         layer.setHasRelations(true);
 
-        EsriQueryResponse eqr = new EsriQueryResponse();
+        Response eqr = new Response();
         eqr.setObjectIdFieldName("OBJECTID");
         eqr.setGlobalIdFieldName("UUID");
 
@@ -133,6 +132,33 @@ public class ContractControllerTests extends AuthControllerTestBase {
         Mockito.when(contractService.getRelatingLayer(Mockito.any()))
                 .thenReturn(new Layer());
         this.mockMvc.perform(get("/api/contract/135")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testLinkObjects() throws Exception {
+        Layer fromLayer = new Layer();
+        fromLayer.setHasRelations(true);
+
+        Layer toLayer = new Layer();
+        toLayer.setHasRelations(true);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(135), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(fromLayer);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(531), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(toLayer);
+
+        Mockito.when(contractService.linkObjects(
+                Mockito.eq(fromLayer),
+                Mockito.eq(12),
+                Mockito.eq(toLayer),
+                Mockito.eq(21)
+        )) .thenReturn(true);
+
+
+        this.mockMvc.perform(get("/api/contract/link/135/12/531/21")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
                 .andExpect(status().isOk());
     }
