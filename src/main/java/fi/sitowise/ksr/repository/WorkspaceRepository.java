@@ -4,6 +4,7 @@ import fi.sitowise.ksr.domain.Workspace;
 import fi.sitowise.ksr.domain.WorkspaceLayer;
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceLayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
@@ -27,7 +28,7 @@ public class WorkspaceRepository {
     /**
      * Instantiates new workspace repository.
      *
-     * @param context configuration context
+     * @param context Configuration context
      */
     @Autowired
     public WorkspaceRepository(DSLContext context) {
@@ -39,40 +40,44 @@ public class WorkspaceRepository {
      * saved with the given name delete existing workspace before saving
      * the new one.
      *
-     * @param workspace workspace to be saved
-     * @param username username of the user that the workspace is saved for
+     * @param workspace Workspace to be saved.
+     * @param username Username of the user that the workspace is saved for.
      */
     @Transactional
     public void saveWorkspace(Workspace workspace, String username) {
-        deleteWorkspace(workspace.getName(), username);
-
-        Long workspaceId = insertWorkspace(workspace, username);
+        String uuid = deleteWorkspace(workspace.getName(), username);
+        Long workspaceId = insertWorkspace(workspace, username, uuid);
         insertWorkspaceLayers(workspaceId, workspace.getLayers());
     }
 
     /**
      * Delete existing workspace for given user.
      *
-     * @param name name of the workspace to be deleted
-     * @param username username of the user whose workspace is being deleted
-     * @return whether a workspace is deleted or not
+     * @param name Name of the workspace to be deleted.
+     * @param username Username of the user whose workspace is being deleted.
+     *
+     * @return Deleted workspace uuid if workspace existed.
      */
-    public boolean deleteWorkspace(String name, String username) {
+    public String deleteWorkspace(String name, String username) {
         return context
                 .deleteFrom(WORKSPACE)
                 .where(WORKSPACE.NAME.equal(name))
-                    .and(WORKSPACE.USERNAME.equal(username))
-                .execute() > 0;
+                .and(WORKSPACE.USERNAME.equal(username))
+                .returning(WORKSPACE.UUID)
+                .fetchOne()
+                .getUuid();
     }
 
     /**
      * Insert new workspace to database.
      *
-     * @param workspace workspace to be inserted into the database
-     * @param username username of the user whose workspace is being saved
-     * @return id of the inserted workspace
+     * @param workspace Workspace to be inserted into the database.
+     * @param username Username of the user whose workspace is being saved.
+     * @param uuid Uuid of deleted workspace if exists.
+     * 
+     * @return Id of the inserted workspace.
      */
-    private Long insertWorkspace(Workspace workspace, String username) {
+    private Long insertWorkspace(Workspace workspace, String username, String uuid) {
         return context
                 .insertInto(
                         WORKSPACE,
@@ -84,7 +89,7 @@ public class WorkspaceRepository {
                         WORKSPACE.CENTER_LATITUDE
                 )
                 .values(
-                        UUID.randomUUID().toString(),
+                        StringUtils.isNotEmpty(uuid) ? uuid : UUID.randomUUID().toString(),
                         workspace.getName(),
                         username,
                         workspace.getScale(),
@@ -99,16 +104,16 @@ public class WorkspaceRepository {
     /**
      * Insert layer details for a workspace into database.
      *
-     * @param workspaceId id the workspace that the layer details belong to
-     * @param layers layer details to be inserted
-     * @throws DataAccessException if saving workspace layers fails
+     * @param workspaceId Id the workspace that the layer details belong to
+     * @param layers Layer details to be inserted
+     * @throws DataAccessException If saving workspace layers fails
      */
     private void insertWorkspaceLayers(Long workspaceId, List<WorkspaceLayer> layers)
             throws DataAccessException {
         try {
             context
                     .loadInto(WORKSPACE_LAYER)
-                    .loadArrays(layers.stream().map(row -> new Object[] {
+                    .loadArrays(layers.stream().map(row -> new Object[]{
                             workspaceId,
                             row.getLayerId(),
                             row.getUserLayerId(),
@@ -133,13 +138,14 @@ public class WorkspaceRepository {
             throw new DataAccessException("Saving workspace layers failed.", e);
         }
     }
-    
+
     /**
      * Check workspace name existence in database for a user.
      *
-     * @param username name of user
-     * @param name name of the workspace
-     * @return workspace name existence
+     * @param username Name of user.
+     * @param name Name of the workspace.
+     *
+     * @return Workspace name existence.
      */
     public boolean getWorkspaceExistence(String username, String name) {
         return context.fetchExists(
@@ -154,8 +160,9 @@ public class WorkspaceRepository {
      * Fetch list of workspaces for given username. Will sort workspaces
      * by their updated time.
      *
-     * @param username username of the user whose workspaces are fetched
-     * @return list of workspaces sorted by updated time
+     * @param username Username of the user whose workspaces are fetched.
+     *
+     * @return List of workspaces sorted by updated time.
      */
     public List<Workspace> fetchWorkspaceListForUser(String username) {
         return context
@@ -169,9 +176,10 @@ public class WorkspaceRepository {
      * Fetch details for given workspace. If workspace name is not given
      * return latest workspace for the user.
      *
-     * @param workspaceName name of the workspace to be fetched
-     * @param username username of the user whose workspace is fetched
-     * @return workspace and layer details
+     * @param workspaceName Name of the workspace to be fetched.
+     * @param username Username of the user whose workspace is fetched.
+     *
+     * @return Workspace and layer details.
      */
     @Transactional
     public Workspace fetchWorkspaceDetails(String workspaceName, String username) {
@@ -209,8 +217,9 @@ public class WorkspaceRepository {
      *
      * Filters out layers the user does not have a permission and also user defined layers.
      *
-     * @param uuid Uuid of the workspace
-     * @return workspace if found
+     * @param uuid Uuid of the workspace.
+     * 
+     * @return Workspace if found.
      */
     @Transactional
     public Workspace fetchWorkspaceByUuid(UUID uuid, List<String> userGroups) {

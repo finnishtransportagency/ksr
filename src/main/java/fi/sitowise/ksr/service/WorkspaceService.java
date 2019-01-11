@@ -3,6 +3,7 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.domain.Workspace;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.WorkspaceRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,8 @@ public class WorkspaceService {
      * @return whether the workspace was found and deleted or not
      */
     public boolean deleteWorkspace(String workspaceName, String username) {
-        return workspaceRepository.deleteWorkspace(workspaceName, username);
+        String uuid = workspaceRepository.deleteWorkspace(workspaceName, username);
+        return StringUtils.isNotEmpty(uuid);
     }
 
     /**

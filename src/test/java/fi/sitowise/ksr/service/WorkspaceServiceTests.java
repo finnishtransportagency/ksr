@@ -67,6 +67,10 @@ public class WorkspaceServiceTests {
     @Test
     public void testRemoveWorkspaceNotFound() {
         Assert.assertFalse(workspaceService.deleteWorkspace("test workspace", "test-user"));
+        Mockito.when(workspaceRepository.deleteWorkspace("test workspace1", "test-user1")).thenReturn("");
+        Assert.assertFalse(workspaceService.deleteWorkspace("test workspace1", "test-user1"));
+        Mockito.when(workspaceRepository.deleteWorkspace("test workspace2", "test-user")).thenReturn(null);
+        Assert.assertFalse(workspaceService.deleteWorkspace("test workspace2", "test-user"));
     }
 
     /**
@@ -74,8 +78,7 @@ public class WorkspaceServiceTests {
      */
     @Test
     public void testRemoveWorkspaceOk() {
-        Mockito.doReturn(true).when(workspaceRepository)
-                .deleteWorkspace("test workspace", "test-user");
+        Mockito.when(workspaceRepository.deleteWorkspace("test workspace", "test-user")).thenReturn("5e42a6a5-9f09-4f59-96d7-ef37c7e6f9a4");
         Assert.assertTrue(workspaceService.deleteWorkspace("test workspace", "test-user"));
     }
 
