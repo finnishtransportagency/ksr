@@ -120,7 +120,7 @@ public class HttpRequestService {
     @PostConstruct
     public void setProxyRequestConfig() {
         RequestConfig.Builder configBase = getRequestConfigBase();
-        if (httpProxy != null) {
+        if (StringUtils.isNotEmpty(httpProxy)) {
             try {
                 URI proxyUrl = new URI(httpProxy);
                 HttpHost proxy = new HttpHost(proxyUrl.getHost(), proxyUrl.getPort(), proxyUrl.getScheme());
