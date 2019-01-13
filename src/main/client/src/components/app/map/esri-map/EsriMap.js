@@ -18,10 +18,12 @@ type Props = {
     removeLayersView: (layerIds: Object[]) => void,
     legendWidget: ?Object,
     layerLegendActive: boolean,
+    removeLoading: Function,
+    setLayerList: (layerList: Object[]) => void,
 };
 
 class EsriMap extends Component<Props> {
-    componentDidUpdate(prevProps: Props) {
+    async componentDidUpdate(prevProps: Props) {
         const {
             layerList,
             view,
@@ -73,21 +75,33 @@ class EsriMap extends Component<Props> {
                     this.props.removeLayersView(toBeRemoved);
                 }
 
+                const { setLayerList, removeLoading } = this.props;
                 if (newLayers.length) {
-                    addLayers(newLayers, view, prevProps.loadingWorkspace)
-                        .then(() => {
-                            layerListReversed.forEach((l, i) => {
-                                view.map.reorder(view.map.findLayerById(`${l.id}`, i));
-                            });
+                    const { failedLayers } = await addLayers(
+                        newLayers,
+                        view,
+                        prevProps.loadingWorkspace,
+                    );
 
-                            // Temporary fix for sketchViewModel index.
-                            const graphicsLayers = view.map.layers
-                                .filter(layer => layer.type === 'graphics');
-                            if (graphicsLayers.length) {
-                                view.map.layers.removeMany(graphicsLayers);
-                                view.map.layers.addMany(graphicsLayers);
-                            }
-                        });
+                    // Deactivates failed layers from layerlist.
+                    setLayerList(layerList.map(l => ({
+                        ...l,
+                        active: failedLayers.some(fl => fl === l.id) ? false : l.active,
+                        visible: failedLayers.some(fl => fl === l.id) ? false : l.visible,
+                    })));
+                    removeLoading();
+
+                    layerListReversed.forEach((l, i) => {
+                        view.map.reorder(view.map.findLayerById(`${l.id}`, i));
+                    });
+
+                    // Temporary fix for sketchViewModel index.
+                    const graphicsLayers = view.map.layers
+                        .filter(layer => layer.type === 'graphics');
+                    if (graphicsLayers.length) {
+                        view.map.layers.removeMany(graphicsLayers);
+                        view.map.layers.addMany(graphicsLayers);
+                    }
                 }
             }
 
