@@ -92,7 +92,8 @@ export const addLayers = async (
                         opacity: layer.opacity,
                         visible: layer.visible,
                         title: layer.name,
-                        sublayers: layer.layers ? layer.layers.split(',').map(l => ({ name: l })) : null,
+                        legendEnabled: false,
+                        sublayers: layer.layers ? layer.layers.split(',').map(l => ({ name: l, legendEnabled: false })) : null,
                     }), layer.index);
                     break;
                 case 'wmts':
@@ -105,6 +106,7 @@ export const addLayers = async (
                         opacity: layer.opacity,
                         visible: layer.visible,
                         title: layer.name,
+                        legendEnabled: false,
                         activeLayer: {
                             id: layer.layers,
                         },
