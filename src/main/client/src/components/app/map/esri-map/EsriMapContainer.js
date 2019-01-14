@@ -1,7 +1,8 @@
 // @flow
 import { connect } from 'react-redux';
-import { removeLayersView } from '../../../../reducers/map/actions';
+import { removeLayersView, setLayerList } from '../../../../reducers/map/actions';
 import EsriMap from './EsriMap';
+import { removeLoading } from '../../../../reducers/loading/actions';
 
 const mapStateToProps = (state) => {
     const selectedFeatures = state.table.features.layers
@@ -23,6 +24,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     removeLayersView: (layerIds) => {
         dispatch(removeLayersView(layerIds));
+    },
+    removeLoading: () => {
+        dispatch(removeLoading());
+    },
+    setLayerList: (layerList: Object[]) => {
+        dispatch(setLayerList(layerList));
     },
 });
 

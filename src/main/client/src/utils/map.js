@@ -1,5 +1,8 @@
 // @flow
 import esriLoader from 'esri-loader';
+import { toast } from 'react-toastify';
+import { layerData } from '../api/map/layerData';
+import strings from '../translations';
 
 /**
  * Fit map on the extent of given layers.
@@ -58,6 +61,8 @@ export const setCenterPoint = async (
  * @param {Array<Object>} layers Array of layers to be added
  * @param {Object} view Map view to which the layers are added
  * @param {boolean} isWorkspace indicates if adding layers comes from loading workspace.
+ *
+ * @returns {Object} Object containing failed layers.
  */
 export const addLayers = async (
     layers: Array<Object>,
@@ -71,7 +76,8 @@ export const addLayers = async (
         'esri/layers/FeatureLayer',
     ]);
     const searchLayers = [];
-    layers.forEach((layer) => {
+    const failedLayers = [];
+    await Promise.all(layers.map(async (layer) => {
         if (layer.active && !view.map.layers.find(l => l.id === layer.id)) {
             esriConfig.request.trustedServers.push(layer.url);
             switch (layer.type) {
@@ -131,11 +137,21 @@ export const addLayers = async (
                 default:
                     break;
             }
+            const addedLayer = view.map.layers.find(l => l.id === layer.id);
+            if (addedLayer && addedLayer.type !== 'agfl') {
+                await addedLayer
+                    .when()
+                    .catch(() => {
+                        toast.error(`${strings.mapLayers.failedToLoadLayer} [${layer.name}]`);
+                        failedLayers.push(layer.id);
+                    });
+            }
         }
-    });
+    }));
     if (searchLayers.length && !isWorkspace) {
         fitExtent(searchLayers, view);
     }
+    return { failedLayers };
 };
 
 /**
@@ -327,3 +343,41 @@ export const zoomToProperty = (
         }
     }
 };
+
+/**
+ * Adds layer fields and geometry type to layers in layer list. Only added for agfs and agfl layers
+ * and if fields haven't been added before.
+ *
+ * @param {Object[]} layerList Layer list in redux.
+ * @param {Object[]} layers Layers to be activated.
+ */
+export const getLayerFields = async (layerList: Object[], layers: Object[]) => (
+    Promise.all(layerList.map(l => ({ ...l }))
+        .map(async (l) => {
+            if (layers.some(layer => l.id === layer.id)
+                && !l.fields
+                && (l.type === 'agfs' || l.type === 'agfl')) {
+                const layer = await layerData(l.id);
+                if (!layer.error) {
+                    l.geometryType = layer.geometryType;
+                    l.fields = layer.fields && layer.fields
+                        .map((f, index) => ({
+                            value: index,
+                            label: f.alias,
+                            type: f.type,
+                            name: f.name,
+                            editable: f.editable,
+                            nullable: f.nullable,
+                            length: f.length,
+                            domain: f.domain ? {
+                                type: f.domain.type,
+                                name: f.domain.name,
+                                description: f.domain.description,
+                                codedValues: f.domain.codedValues,
+                            } : null,
+                        }));
+                }
+            }
+            return l;
+        }))
+);

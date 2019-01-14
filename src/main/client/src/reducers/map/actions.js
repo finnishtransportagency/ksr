@@ -1,81 +1,27 @@
 // @flow
-import { toast } from 'react-toastify';
 import { fetchLayerGroups } from '../../api/map/layerGroups';
 import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
 import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
-import strings from '../../translations/';
 
-export const getLayerGroups = () => (dispatch: Function) => {
+export const getLayerGroups = () => async (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
-    const layerList = [];
-    const layerQueries = [];
-    const layersToRemove = [];
-    toast.info(strings.mapLayers.loadingLayers, {
-        toastId: 'loadingLayers',
-        autoClose: false,
+
+    const layerGroups = await fetchLayerGroups();
+    const layerList = layerGroups
+        .flatMap(lg => lg.layers.map(layer => ({ ...layer, layerGroupName: lg.name })))
+        .sort((a, b) => b.layerOrder - a.layerOrder);
+
+    return dispatch({
+        type: types.GET_LAYER_GROUPS_FULFILLED,
+        layerGroups: layerGroups.map(lg => ({
+            ...lg,
+            layers: lg.layers.map(layer => layer),
+        })),
+        layerList,
     });
-    fetchLayerGroups()
-        .then((r) => {
-            r.map(lg => lg.layers.map(l => layerList.push({
-                ...l,
-                layerGroupName: lg.name,
-            })));
-            layerList.sort((a, b) => b.layerOrder - a.layerOrder);
-            return r;
-        })
-        .then((r) => {
-            layerList.forEach((l) => {
-                if (l.type === 'agfs' || l.type === 'agfl') {
-                    // Add featurelayer fields and geometryType to layerList
-                    layerQueries.push(layerData(l.id)
-                        .then((layers) => {
-                            if (!layers.error) {
-                                l.geometryType = layers.geometryType;
-                                l.fields =
-                                    layers.fields && layers.fields.map((f, index) => ({
-                                        value: index,
-                                        label: f.alias,
-                                        type: f.type,
-                                        name: f.name,
-                                        editable: f.editable,
-                                        nullable: f.nullable,
-                                        length: f.length,
-                                        domain: f.domain ? {
-                                            type: f.domain.type,
-                                            name: f.domain.name,
-                                            description: f.domain.description,
-                                            codedValues: f.domain.codedValues,
-                                        } : null,
-                                    }));
-                            } else {
-                                toast.error(`${strings.mapLayers.failedToLoadLayer} [${l.name}]`);
-                                layersToRemove.push(l.id);
-                                layerList.find((ll, index) => (
-                                    ll.id === l.id && layerList.splice(index, 1)
-                                ));
-                            }
-                        })
-                        .catch(err => console.log(err)));
-                }
-            });
-            Promise.all(layerQueries)
-                .then(() => r)
-                .then((layerGroups) => {
-                    toast.dismiss('loadingLayers');
-                    return dispatch({
-                        type: types.GET_LAYER_GROUPS_FULFILLED,
-                        layerGroups: layerGroups.map(lg => ({
-                            ...lg,
-                            layers: lg.layers.filter(l => !layersToRemove.includes(l.id)),
-                        })),
-                        layerList,
-                    });
-                });
-        })
-        .catch(err => console.log(err));
 };
 
 export const setLayerList = (layerList: Array<any>) => ({

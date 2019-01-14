@@ -8,9 +8,9 @@ type Props = {
     getMapConfig: Function,
     setWorkspace: Function,
     updateWorkspaces: Function,
-    loadingWorkspace: boolean,
     setUserInfo: Function,
     loadFailedEdits: Function,
+    loading: boolean,
 };
 
 class Home extends Component<Props, null> {
@@ -33,8 +33,8 @@ class Home extends Component<Props, null> {
     }
 
     render() {
-        const { loadingWorkspace } = this.props;
-        return <HomeView loadingWorkspace={loadingWorkspace} />;
+        const { loading } = this.props;
+        return <HomeView loading={loading} />;
     }
 }
 

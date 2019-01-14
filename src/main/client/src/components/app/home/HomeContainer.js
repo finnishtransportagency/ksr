@@ -6,9 +6,10 @@ import { getLayerGroups, getMapConfig } from '../../../reducers/map/actions';
 import { loadFailedEdits } from '../../../reducers/offline/actions';
 import Home from './Home';
 
-const mapStateToProps = state => ({
-    loadingWorkspace: state.workspace.workspace.loadingWorkspace,
-});
+const mapStateToProps = (state) => {
+    const loading = state.workspace.workspace.loadingWorkspace || state.loading;
+    return { loading };
+};
 
 const mapDispatchToProps = dispatch => ({
     updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string) => (

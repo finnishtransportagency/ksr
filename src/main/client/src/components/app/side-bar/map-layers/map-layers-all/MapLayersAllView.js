@@ -8,7 +8,7 @@ type Props = {
     layerGroups: Array<any>,
     layerList: any,
     handleGroupClick: (number) => void,
-    handleLayerClick: (number) => void,
+    handleLayerClick: (number) => Promise<void>,
     activeGroup: number,
 };
 

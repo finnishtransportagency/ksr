@@ -91,6 +91,7 @@ class Workspace extends Component<Props, null> {
 
         showConfirmModal(body, acceptText, cancelText, () => {
             setWorkspace();
+            view.popup.close();
 
             // Reset layer renderers to default for layers which user has created theme layers.
             const agfsLayers = layerList.filter(l => l.active && l.type === 'agfs' && l.renderer);
@@ -109,15 +110,16 @@ class Workspace extends Component<Props, null> {
 
             // Fetches users selected workspace.
             fetchWorkspace(workspaceName)
-                .then((workspace) => {
+                .then(async (workspace) => {
                     if (workspace) {
-                        loadWorkspace(
+                        await loadWorkspace(
                             workspace,
                             layerList,
                             view,
                             searchWorkspaceFeatures,
                             addNonSpatialContentToTable,
                             selectFeatures,
+                            setLayerList,
                             updateWorkspaces,
                         );
                     } else {

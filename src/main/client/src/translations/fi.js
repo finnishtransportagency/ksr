@@ -6,7 +6,6 @@ const fi = {
         shape: 'Avaa shape',
         addNewLayer: 'Uusi taso',
         failedToLoadLayer: 'Tason lataus epäonnistui',
-        loadingLayers: 'Ladataan karttatasoja',
         toggleLayerLegend: 'Selite',
     },
     search: {

@@ -11,6 +11,7 @@ import confirmModal from './confirmModal';
 import contract from './contract';
 import user from './user';
 import offline from './offline';
+import loading from './loading';
 
 export default combineReducers({
     navigation,
@@ -24,4 +25,5 @@ export default combineReducers({
     contract,
     user,
     offline,
+    loading,
 });
