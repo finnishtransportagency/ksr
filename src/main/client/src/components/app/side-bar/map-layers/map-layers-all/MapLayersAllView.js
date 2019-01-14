@@ -38,6 +38,7 @@ const MapLayersAllView = ({
                 </LayerGroup.Header>
                 <LayerGroup.Content hidden={activeGroup !== lg.id}>
                     {lg.layers.filter(layer => layer.relationType !== 'link')
+                        .sort((a, b) => b.layerOrder - a.layerOrder)
                         .map(l => (
                             layerList.find(layer => layer.id === l.id)
                                 ? <MapLayerContainer
