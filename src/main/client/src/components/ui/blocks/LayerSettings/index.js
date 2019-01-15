@@ -47,9 +47,17 @@ const Title = styled.div`
 `;
 
 const Toggle = styled.div`
+    display: flex;
     align-self: center;
-    padding: 1rem;
+    padding: 0 1rem;
+    flex-direction: column;
     cursor: pointer;
+    justify-content: space-evenly;
+    height: 100%;
+    
+    .symbolWrapper {
+        align-self: center;
+    };
 `;
 
 LayerSettings.Content = Content;

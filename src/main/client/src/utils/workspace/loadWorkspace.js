@@ -4,6 +4,7 @@ import { fetchGetWorkspaceList } from '../../api/workspace/getWorkspaceList';
 import strings from '../../translations';
 import { addLayers, getLayerFields, setCenterPoint } from '../map';
 import { getWorkspaceUuid } from '../../api/workspace/userWorkspace';
+import { getLayerLegend } from '../layerLegend';
 
 /**
  * Creates list of feature data saved in workspace.
@@ -170,17 +171,25 @@ export const loadWorkspace = async (
     });
 
     let layers = updateLayerList(workspaceToLoad, layerList);
-    const workspaceLayers = layers.filter(l =>
+    let workspaceLayers = layers.filter(l =>
         workspaceToLoad.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
     layers = await getLayerFields(layerList, workspaceLayers);
     const { failedLayers } = await addLayers(workspaceLayers, view, true);
 
-    // Deactivates failed layers from layerlist.
-    layers = layers.map(l => ({
-        ...l,
-        active: failedLayers.some(fl => fl === l.id) ? false : l.active,
-        visible: failedLayers.some(fl => fl === l.id) ? false : l.visible,
-    }));
+    workspaceLayers = await getLayerLegend(workspaceLayers, view);
+
+    // Deactivate failed layers from layerlist and update legend symbols.
+    layers = layers.map((l) => {
+        const workspaceLayer = workspaceLayers.find(wsl => wsl.id === l.id);
+        return {
+            ...l,
+            active: failedLayers.some(fl => fl === l.id) ? false : l.active,
+            visible: failedLayers.some(fl => fl === l.id) ? false : l.visible,
+            legendSymbol: workspaceLayer && workspaceLayer.legendSymbol
+                ? workspaceLayer.legendSymbol
+                : null,
+        };
+    });
     setLayerList(layers);
 
     // Filters out layers that fail from workspace.
