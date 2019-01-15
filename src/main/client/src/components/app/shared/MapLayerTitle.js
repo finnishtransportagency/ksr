@@ -9,112 +9,53 @@ type Props = {
 };
 
 const MapLayerTitle = ({ layer, showLayerGroup }: Props) => {
+    let iconClass = '';
     switch (layer._source) {
         case 'search': {
-            return (
-                <Fragment>
-                    <MapLayerTitleWrapper>
-                        <Icon>
-                            <i className="fas fa-search" />
-                        </Icon>
-                        <Text>
-                            <span>{layer.name ? layer.name : layer.title}</span>
-                        </Text>
-                    </MapLayerTitleWrapper>
-                    {showLayerGroup &&
-                    <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup>
-                        <Icon />
-                        <Text>
-                            <span>{layer.layerGroupName}</span>
-                        </Text>
-                    </MapLayerTitleWrapper>
-                    }
-                </Fragment>
-            );
+            iconClass = 'fas fa-search';
+            break;
         }
         case 'shapefile': {
-            return (
-                <Fragment>
-                    <MapLayerTitleWrapper>
-                        <Icon>
-                            <i className="far fa-file" />
-                        </Icon>
-                        <Text>
-                            <span>{layer.name ? layer.name : layer.title}</span>
-                        </Text>
-                    </MapLayerTitleWrapper>
-                    {showLayerGroup &&
-                    <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup>
-                        <Icon />
-                        <Text>
-                            <span>{layer.layerGroupName}</span>
-                        </Text>
-                    </MapLayerTitleWrapper>
-                    }
-                </Fragment>
-            );
+            iconClass = 'far fa-file';
+            break;
         }
         default:
             if (layer.userLayer) {
-                return (
-                    <Fragment>
-                        <MapLayerTitleWrapper>
-                            <Icon>
-                                <i className="fas fa-user" />
-                            </Icon>
-                            <Text>
-                                <span>{layer.name ? layer.name : layer.title}</span>
-                            </Text>
-                        </MapLayerTitleWrapper>
-                        {showLayerGroup &&
-                        <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup>
-                            <Icon />
-                            <Text>
-                                <span>{layer.layerGroupName}</span>
-                            </Text>
-                        </MapLayerTitleWrapper>
-                        }
-                    </Fragment>
-                );
+                iconClass = 'fas fa-user';
+                break;
             } else if (layer.type === 'agfl') {
-                return (
-                    <Fragment>
-                        <MapLayerTitleWrapper>
-                            <Icon>
-                                <i className="fas fa-table" />
-                            </Icon>
-                            <Text>
-                                <span>{layer.name ? layer.name : layer.title}</span>
-                            </Text>
-                        </MapLayerTitleWrapper>
-                        {showLayerGroup &&
-                        <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup>
-                            <Icon />
-                            <Text>
-                                <span>{layer.layerGroupName}</span>
-                            </Text>
-                        </MapLayerTitleWrapper>
-                        }
-                    </Fragment>
-                );
+                iconClass = 'fas fa-table';
+                break;
             }
-            return (
-                <Fragment>
-                    <MapLayerTitleWrapper>
-                        <Text>
-                            <span>{layer.name ? layer.name : layer.title}</span>
-                        </Text>
-                    </MapLayerTitleWrapper>
-                    {showLayerGroup &&
-                    <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup>
-                        <Text>
-                            <span>{layer.layerGroupName}</span>
-                        </Text>
-                    </MapLayerTitleWrapper>
-                    }
-                </Fragment>
-            );
     }
+
+    return (
+        <Fragment>
+            <MapLayerTitleWrapper>
+                {
+                    iconClass &&
+                    <Icon>
+                        <i className={iconClass} />
+                    </Icon>
+                }
+                <Text>
+                    <span>{layer.name ? layer.name : layer.title}</span>
+                </Text>
+            </MapLayerTitleWrapper>
+            {
+                showLayerGroup &&
+                <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup>
+                    <Text>
+                        <span>{layer.layerGroupName}</span>
+                    </Text>
+                </MapLayerTitleWrapper>
+            }
+        </Fragment>
+    );
+};
+
+MapLayerTitle.defaultProps = {
+    showLayerGroup: false,
 };
 
 export default MapLayerTitle;
