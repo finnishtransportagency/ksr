@@ -118,7 +118,7 @@ class Workspace extends Component<Props, null> {
                     if (workspace) {
                         await loadWorkspace(
                             workspace,
-                            layerList,
+                            newLayerList,
                             view,
                             searchWorkspaceFeatures,
                             addNonSpatialContentToTable,
