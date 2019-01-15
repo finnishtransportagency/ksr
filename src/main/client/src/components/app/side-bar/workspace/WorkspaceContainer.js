@@ -9,13 +9,14 @@ import {
 import { setWorkspace, setWorkspaceRejected, updateWorkspaces } from '../../../../reducers/workspace/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import Workspace from './Workspace';
-import { setLayerList } from '../../../../reducers/map/actions';
+import { setLayerList, toggleLayerLegend } from '../../../../reducers/map/actions';
 
 const mapStateToProps = state => ({
     workspaceList: state.workspace.workspace.workspaceList,
     selectedFeatures: state.table.features.layers,
     view: state.map.mapView.view,
     layerList: state.map.layerGroups.layerList,
+    layerLegendActive: state.map.layerLegend.layerLegendActive,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -45,6 +46,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setLayerList: (layerList) => {
         dispatch(setLayerList(layerList));
+    },
+    toggleLayerLegend: () => {
+        dispatch(toggleLayerLegend());
     },
 });
 
