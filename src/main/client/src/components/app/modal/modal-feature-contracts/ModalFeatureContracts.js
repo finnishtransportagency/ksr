@@ -9,6 +9,7 @@ import AddContractContrainer from './add-contract/AddContractContainer';
 import save from '../../../../utils/saveFeatureData';
 import EditContractContainer from './edit-contract/EditContractContainer';
 import { nestedVal } from '../../../../utils/nestedValue';
+import { getLayerFields } from '../../../../utils/map';
 
 type Props = {
     removeContractListInfo: Function,
@@ -20,6 +21,8 @@ type Props = {
     createLayerPermission: boolean,
     editLayerPermission: boolean,
     addUpdateLayers: Function,
+    layerList: Object[],
+    setLayerList: (layerList: Object[]) => void,
 };
 
 type State = {
@@ -71,6 +74,32 @@ class ModalFeatureContracts extends Component<Props, State> {
         this.contractLinkValidation = this.contractLinkValidation.bind(this);
         this.setData = this.setData.bind(this);
         this.setActiveView = this.setActiveView.bind(this);
+    }
+
+    async componentDidMount() {
+        const {
+            setLayerList, layerList, contractLayer, contractLinkLayer,
+        } = this.props;
+
+        // Keep link- and add buttons disabled until contract layer fields queried.
+        if (contractLayer && !contractLayer.fields) {
+            // eslint-disable-next-line
+            this.setState({
+                modalSubmit: this.state.modalSubmit.map(ms => ({
+                    ...ms,
+                    disabled: !this.props.createLayerPermission || !this.props.contractLayer.fields,
+                })),
+            });
+
+            const newLayerList = await getLayerFields(
+                layerList,
+                [contractLayer, contractLinkLayer],
+            );
+            setLayerList(newLayerList);
+
+            // eslint-disable-next-line
+            this.setState({ ...this.initialState });
+        }
     }
 
     handleGoBack = () => {

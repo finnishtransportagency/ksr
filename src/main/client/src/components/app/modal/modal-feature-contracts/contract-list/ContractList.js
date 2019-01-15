@@ -149,10 +149,11 @@ class ContractList extends Component<Props, State> {
             contractUnlinkable,
             setActiveView,
             editLayerPermission,
+            contractLayer,
         } = this.props;
 
         return fetchingContracts
-            ? <LoadingIcon loading={fetchingContracts} />
+            ? <LoadingIcon loading={fetchingContracts || !contractLayer.fields} />
             : <ContractListView
                 contracts={contracts}
                 contractUnlinkable={contractUnlinkable}
