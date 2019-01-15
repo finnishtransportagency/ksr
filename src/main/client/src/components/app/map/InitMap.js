@@ -189,6 +189,13 @@ class EsriMap extends Component<Props> {
                 );
                 view.ui.add([scaleBar], 'bottom-left');
 
+                // Change compass widgets default dial icon to compass icon.
+                view.when(() => {
+                    const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
+                    compassIcon.classList.remove('esri-icon-dial');
+                    compassIcon.classList.add('esri-icon-compass');
+                });
+
                 view.on('click', (event) => {
                     view.popup.close();
 
