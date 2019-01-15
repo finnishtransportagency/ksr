@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+
 import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
 
 @RunWith(SpringRunner.class)
@@ -60,5 +62,15 @@ public class KsrStringUtilsTests {
         Assert.assertEquals("/api/proxy/layer/", formatLayerUrl(l.getType(), l.getId()));
         l.setType("wms");
         Assert.assertEquals("/api/proxy/layer/1234/", formatLayerUrl(l.getType(), l.getId()));
+    }
+
+    @Test
+    public void testToString() {
+        Assert.assertEquals("2", KsrStringUtils.toString(2));
+        Assert.assertEquals("'2'", KsrStringUtils.toString("2"));
+        Assert.assertEquals("'asdf'", KsrStringUtils.toString("asdf"));
+        Assert.assertEquals("1,2,3,4", KsrStringUtils.toString(Arrays.asList(1, 2, 3, 4)));
+        Assert.assertEquals("'5','6','7'", KsrStringUtils.toString(Arrays.asList('5', '6', '7')));
+        Assert.assertNull(KsrStringUtils.toString(null));
     }
 }
