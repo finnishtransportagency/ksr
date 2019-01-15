@@ -5,13 +5,20 @@ import fi.sitowise.ksr.jooq.tables.records.LayerPermissionRecord;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.UserLayerRecord;
 import fi.sitowise.ksr.jooq.udt.records.QueryColumnTypeRecord;
+import fi.sitowise.ksr.utils.KsrStringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static fi.sitowise.ksr.utils.EsriUtils.createBasicQueryParams;
+import static fi.sitowise.ksr.utils.EsriUtils.createUrl;
 
 /**
  * A Layer-POJO which represents a map layer.
@@ -802,5 +809,77 @@ public class Layer implements Serializable {
      */
     public void setParentLayer(String parentLayer) {
         this.parentLayer = parentLayer;
+    }
+    /**
+     * Return applyEdits -url for Layer if layer is 'agfs' -layer.
+     *
+     * @return Optional applyEdits -url for Layer if layer is 'agfs' -layer.
+     */
+    @JsonIgnore
+    public Optional<String> getApplyEditsUrl() {
+        if ("agfs".equals(this.getType()) || "agfl".equals(this.getType())) {
+            return Optional.of(
+                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/applyEdits", this.getUrl()))
+            );
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Return deleteFeatures -url for Layer if layer is 'agfs' -layer.
+     *
+     * @return Optional deleteEdits -url for Layer if layer if 'agfs' -layer.
+     */
+    @JsonIgnore
+    public Optional<String> getDeleteFeaturesUrl() {
+        if ("agfs".equals(this.getType()) || "agfl".equals(this.getType())) {
+            return Optional.of(
+                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/deleteFeatures", this.getUrl()))
+            );
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Return url to query features on layer.
+     *
+     * Url is constructed to use FeatureService REST APIs query-endpoint.
+     *
+     * @param columnName Name of the column to use in filter. Only one column supported.
+     * @param value Value to use in filter. Integer, String, List are supported at least.
+     * @return Optional url to use for queries is layer is type of "agfs" or "agfl", otherwise empty Optional.
+     */
+    @JsonIgnore
+    public Optional<String> getGetFeaturesUrl(String columnName, Object value) {
+        List<NameValuePair> params = createBasicQueryParams("*");
+        params.add(new BasicNameValuePair(
+                "where",
+                String.format("%s IN (%s)", columnName, KsrStringUtils.toString(value))
+        ));
+        return "agfs".equals(this.getType())  || "agfl".equals(this.getType())
+                ? Optional.of(createUrl(this.getUrl(), params)) : Optional.empty();
+    }
+
+    /**
+     * Return url to get a single feature from layer using objectId.
+     *
+     * @param objectId ObjectId of the feature.
+     * @return Optional url for querying single feature if layer is type of "agfs" or "agfl", otherwise empty Optional.
+     */
+    @JsonIgnore
+    public Optional<String> getGetWithObjectIdUrl(int objectId) {
+        String getUrl = KsrStringUtils.replaceMultipleSlashes(String.format("%s/%d?f=pjson", this.getUrl(), objectId));
+        return "agfs".equals(this.getType()) || "agfl".equals(this.getType()) ? Optional.of(getUrl) : Optional.empty();
+    }
+
+    /**
+     * Return url for layer definition (?f=pjson).
+     *
+     * @return Optional url for layer definition if layer is type of "agfs" or "agfl", otherwise empty Optional.
+     */
+    @JsonIgnore
+    public Optional<String> getLayerDefitionUrl() {
+        return ("agfs".equals(type) || "agfl".equals(type))
+                ? Optional.of(String.format("%s?f=pjson", url)) : Optional.empty();
     }
 }
