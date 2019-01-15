@@ -356,7 +356,7 @@ export const zoomToProperty = (
 export const getLayerFields = async (layerList: Object[], layers: Object[]) => (
     Promise.all(layerList.map(l => ({ ...l }))
         .map(async (l) => {
-            if (layers.some(layer => l.id === layer.id)
+            if (layers.some(layer => layer && l.id === layer.id)
                 && !l.fields
                 && (l.type === 'agfs' || l.type === 'agfl')) {
                 const layer = await layerData(l.id);
