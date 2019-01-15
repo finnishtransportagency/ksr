@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
 import { addLayers, highlight } from '../../../../utils/map';
 import { setBuffer } from '../../../../utils/buffer';
+import { getLayerLegend } from '../../../../utils/layerLegend';
 
 type Props = {
     view: Object,
@@ -84,11 +85,13 @@ class EsriMap extends Component<Props> {
                     );
 
                     // Deactivates failed layers from layerlist.
-                    setLayerList(layerList.map(l => ({
+                    let newLayerList = layerList.map(l => ({
                         ...l,
                         active: failedLayers.some(fl => fl === l.id) ? false : l.active,
                         visible: failedLayers.some(fl => fl === l.id) ? false : l.visible,
-                    })));
+                    }));
+                    newLayerList = await getLayerLegend(newLayerList, view);
+                    setLayerList(newLayerList);
                     removeLoading();
 
                     layerListReversed.forEach((l, i) => {

@@ -36,6 +36,18 @@ const MapLayerSettings = ({
             {
                 layer.type !== 'agfl' &&
                 <LayerSettings.Toggle onClick={() => onToggleVisibility(layer.id)}>
+                    {
+                        layer.legendSymbol &&
+                        <div
+                            className="symbolWrapper"
+                            ref={(node) => {
+                                if (node) {
+                                    node.innerHTML = '';
+                                    node.appendChild(layer.legendSymbol.cloneNode(true));
+                                }
+                            }}
+                        />
+                    }
                     <i
                         className={layer.visible ? 'fas fa-toggle-on' : 'fas fa-toggle-off'}
                         title={strings.mapLayerSettings.toggleVisibility}
