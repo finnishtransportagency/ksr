@@ -32,6 +32,8 @@ type Props = {
         accept: Function
     ) => void,
     setLayerList: (layerList: Object[]) => void,
+    layerLegendActive: boolean,
+    toggleLayerLegend: () => void,
 };
 
 class Workspace extends Component<Props, null> {
@@ -86,6 +88,8 @@ class Workspace extends Component<Props, null> {
             updateWorkspaces,
             addNonSpatialContentToTable,
             setLayerList,
+            layerLegendActive,
+            toggleLayerLegend,
         } = this.props;
         const { body, acceptText, cancelText } = strings.workspace.confirmSelect;
 
@@ -114,7 +118,7 @@ class Workspace extends Component<Props, null> {
                     if (workspace) {
                         await loadWorkspace(
                             workspace,
-                            layerList,
+                            newLayerList,
                             view,
                             searchWorkspaceFeatures,
                             addNonSpatialContentToTable,
@@ -122,6 +126,7 @@ class Workspace extends Component<Props, null> {
                             setLayerList,
                             updateWorkspaces,
                         );
+                        if (layerLegendActive) toggleLayerLegend();
                     } else {
                         setWorkspaceRejected();
                     }
