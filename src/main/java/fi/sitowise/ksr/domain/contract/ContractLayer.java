@@ -1,8 +1,12 @@
 package fi.sitowise.ksr.domain.contract;
 
 import fi.sitowise.ksr.domain.Layer;
-import fi.sitowise.ksr.domain.proxy.EsriQueryResponse;
+import fi.sitowise.ksr.domain.esri.Feature;
+import fi.sitowise.ksr.domain.esri.QueryFeature;
+import fi.sitowise.ksr.domain.esri.Response;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,34 +18,31 @@ public class ContractLayer {
     private String id;
     private String name;
     private String type;
-    private EsriQueryResponse data;
+    private List<Feature> features;
 
     /**
      * Constructs a ContactLayer from Layer and EsriQueryResponse.
      *
      * @param layer Layer to inherit from.
-     * @param data Esri JSON data.
      */
-    public ContractLayer(Layer layer, EsriQueryResponse data) {
+    public ContractLayer(Layer layer, QueryFeature feature) {
         this.setId(layer.getId());
         this.setType(layer.getType());
         this.setName(layer.getName());
-        this.setData(data);
+        this.setFeatures(Collections.singletonList(feature.getFeature()));
     }
 
     /**
-     * Get Esri JSON-data.
+     * Constructs a ContactLayer from Layer and EsriQueryResponse.
      *
-     * @return the Esri JSON-data.
+     * @param layer Layer to inherit from.
      */
-    public EsriQueryResponse getData() { return data; }
-
-    /**
-     * Set Esri JSON-data.
-     *
-     * @param data Esri JSON-data.
-     */
-    public void setData(EsriQueryResponse data) { this.data = data; }
+    public ContractLayer(Layer layer, Response response) {
+        this.setId(layer.getId());
+        this.setType(layer.getType());
+        this.setName(layer.getName());
+        this.setFeatures(response.getFeatures());
+    }
 
     /**
      * Get Layer id.
@@ -85,6 +86,20 @@ public class ContractLayer {
      */
     public void setType(String type) { this.type = type; }
 
+    /**
+     * Get features in layer.
+     *
+     * @return Features in layer.
+     */
+    public List<Feature> getFeatures() { return features; }
+
+    /**
+     * Set features in layer.
+     *
+     * @param features Features in layer.
+     */
+    public void setFeatures(List<Feature> features) { this.features = features; }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -95,7 +110,7 @@ public class ContractLayer {
 
         ContractLayer cl = (ContractLayer) o;
 
-        return Objects.equals(getData(), cl.getData())
+        return Objects.equals(getFeatures(), cl.getFeatures())
                 && Objects.equals(getId(), cl.getId())
                 && Objects.equals(getName(), cl.getName())
                 && Objects.equals(getType(), cl.getType());
