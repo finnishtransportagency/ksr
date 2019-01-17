@@ -8,6 +8,7 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.ContractService;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class ContractController {
      * @param objectId Id of the object, whose contracts to query.
      * @return Contracts if any.
      */
+    @ApiOperation("Gets contracts for given feature on given layer.")
     @GetMapping(value = "/{layerId}/{objectId}")
     public Response getContracts(@PathVariable int layerId, @PathVariable int objectId) {
         Layer layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);
@@ -53,6 +55,7 @@ public class ContractController {
      * @param layerId Id of the layer.
      * @return Layer that the layer is relating to.
      */
+    @ApiOperation("Get the layer that given layer is relating to.")
     @GetMapping(value = "/{layerId}")
     public Layer getRelatingLayer(@PathVariable int layerId) {
         Layer layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);
@@ -72,6 +75,7 @@ public class ContractController {
      * @param toLayerId Id of the layer in which to relate.
      * @param toObjectId Id of the object in which to relate.
      */
+    @ApiOperation("Link to objects from two distinct layers.")
     @GetMapping(value = "/link/{fromLayerId}/{fromObjectId}/{toLayerId}/{toObjectId}")
     public boolean link(
             @PathVariable int fromLayerId,
@@ -112,6 +116,7 @@ public class ContractController {
      * @param objectId Id of the object, whose contracts to query.
      * @return Related Layers with features.
      */
+    @ApiOperation("Gets all features that relate to given feature on given layer.")
     @GetMapping(value = "/details/{layerId}/{objectId}")
     public List<ContractLayer> getContractDetails(@PathVariable int layerId, @PathVariable int objectId) {
         Layer layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);

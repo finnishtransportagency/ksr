@@ -2,7 +2,9 @@ package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.MapConfig;
 import fi.sitowise.ksr.utils.KsrStringUtils;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +33,8 @@ public class MapConfigController {
      *
      * @return the map information
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ApiOperation("Gets map information.")
+    @GetMapping(value = "")
     public MapConfig getMapInformation() {
         MapConfig mapConfigInformation = new MapConfig();
         mapConfigInformation.setCenter(new int[]{centerLng, centerLat});

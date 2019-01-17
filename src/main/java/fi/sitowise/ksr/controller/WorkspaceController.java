@@ -3,6 +3,7 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.Workspace;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.WorkspaceService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.exception.DataAccessException;
@@ -42,7 +43,8 @@ public class WorkspaceController {
      * @param workspace workspace to be saved into database
      * @return list of workspaces
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @ApiOperation("Save new workspace to database.")
+    @PostMapping(value = "")
     public List<Workspace> saveWorkspace(@Valid @RequestBody Workspace workspace) {
         LOG.info(String.format("%s: Save new workspace to database.", getCurrentUsername()));
         try {
@@ -60,7 +62,8 @@ public class WorkspaceController {
      * @param name name of workspace
      * @return workspace name existence
      */
-    @RequestMapping(value = "/exists", method = RequestMethod.GET)
+    @ApiOperation("Gets workspace name existence.")
+    @GetMapping(value = "/exists")
     public boolean getWorkspaceExistence(@RequestParam String name) {
         LOG.info(String.format("%s: Gets workspace name existence.", getCurrentUsername()));
         try {
@@ -76,7 +79,8 @@ public class WorkspaceController {
      * @param workspaceName name of the workspace to be deleted from database
      * @return list of workspaces
      */
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    @ApiOperation("Delete existing workspace from database.")
+    @DeleteMapping(value = "")
     public List<Workspace> deleteWorkspace(@RequestParam String workspaceName) {
         LOG.info(String.format("%s: Delete existing workspace from database.", getCurrentUsername()));
         if (!workspaceService.deleteWorkspace(workspaceName, getCurrentUsername())) {
@@ -91,7 +95,8 @@ public class WorkspaceController {
      *
      * @return list of workspaces
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ApiOperation("Fetch map of workspace names and update times for current user.")
+    @GetMapping(value = "/list")
     public List<Workspace> getWorkspaceList() {
         LOG.info(String.format("%s: Fetch map of workspace names and update times for current user.", getCurrentUsername()));
         return workspaceService.getWorkspaceListForUser(getCurrentUsername());
@@ -102,7 +107,8 @@ public class WorkspaceController {
      *
      * @return matching workspace if any
      */
-    @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+    @ApiOperation("Fetch a single workspace with uuid.")
+    @GetMapping(value = "/{uuid}")
     public Workspace getWorkspaceByUuid(@PathVariable UUID uuid) {
         LOG.info(String.format("%s: Fetch workspace [%s]", getCurrentUsername(), uuid.toString()));
         return workspaceService.getWorkspaceByUuid(uuid);
@@ -115,7 +121,8 @@ public class WorkspaceController {
      * @param workspaceName name of the workspace to be fetched
      * @return details of the workspace
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ApiOperation("Fetch details for single workspace.")
+    @GetMapping(value = "")
     public Workspace getWorkspaceDetails(@RequestParam (required = false) String workspaceName) {
         LOG.info(String.format("%s: Fetch details for single workspace.", getCurrentUsername()));
         Workspace workspace = workspaceService.getWorkspaceDetails(workspaceName, getCurrentUsername());

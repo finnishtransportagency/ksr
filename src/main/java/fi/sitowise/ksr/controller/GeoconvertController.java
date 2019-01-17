@@ -2,12 +2,13 @@ package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.GeoconvertService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,8 @@ public class GeoconvertController {
      * @param request HTTP request interface.
      * @param response HTTP response where to write the fetch response.
      */
-    @RequestMapping(value = "/**", method = { RequestMethod.GET })
+    @ApiOperation("Convert coordinates to address.")
+    @GetMapping(value = "/**")
     public void getGeoconvertData(HttpServletRequest request, HttpServletResponse response) {
         LOG.info(String.format("%s: Convert coordinates to address.", getCurrentUsername()));
 

@@ -4,6 +4,7 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.GeoprocessingService;
 import fi.sitowise.ksr.utils.KsrRequestUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
+import io.swagger.annotations.ApiOperation;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +55,7 @@ public class GeoprocessingController {
      * @param request HttpServletRequest interface.
      * @param response HttpServletResponse where to write the proxy-response.
      */
+    @ApiOperation("Proxy print request.")
     @RequestMapping(value = "/**", method = { RequestMethod.GET, RequestMethod.POST })
     public void printProxy(HttpServletRequest request, HttpServletResponse response) {
         String serviceEndpoint = KsrRequestUtils
@@ -72,6 +74,7 @@ public class GeoprocessingController {
      * @param request HttpServletRequest interface.
      * @param response HttpServletResponse where to write the proxy-response.
      */
+    @ApiOperation("Proxy extract request.")
     @RequestMapping(value = "/Extract/**", method = { RequestMethod.GET, RequestMethod.POST })
     public void extractProxy(HttpServletRequest request, HttpServletResponse response) {
         String serviceEndpoint = KsrRequestUtils

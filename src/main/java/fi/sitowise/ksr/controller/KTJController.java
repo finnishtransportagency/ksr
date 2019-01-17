@@ -2,6 +2,7 @@ package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.KTJService;
+import io.swagger.annotations.ApiOperation;
 import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +37,8 @@ public class KTJController {
      * @param propertyIdentifier Property identifier.
      * @return FeatureCollection of property details.
      */
-    @RequestMapping(value = "/{propertyIdentifier}", method = { RequestMethod.GET })
+    @ApiOperation("Gets Property details for property with given property identifier.")
+    @GetMapping(value = "/{propertyIdentifier}")
     public FeatureCollection getPropertyDetailsById(@PathVariable String propertyIdentifier) {
         return ktjService.getPropertyDetails(propertyIdentifier);
     }
@@ -50,7 +52,8 @@ public class KTJController {
      * @param y Y coordinate.
      * @return FeatureCollection of property details.
      */
-    @RequestMapping(value = "/", method = { RequestMethod.GET })
+    @ApiOperation("Gets Property details, for property at given position (point).")
+    @GetMapping(value = "/")
     public FeatureCollection getPropertyDetails(@RequestParam("x") Double x, @RequestParam("y") Double y) {
         return ktjService.getPropertyDetails(x, y);
     }
@@ -63,7 +66,8 @@ public class KTJController {
      * @param polygon Polygon coordinates.
      * @return FeatureCollection of property details.
      */
-    @RequestMapping(value = "/", method = { RequestMethod.POST })
+    @ApiOperation("Gets property details from given area (polygon).")
+    @PostMapping(value = "/")
     public FeatureCollection getPropetyDetailsArea(@RequestBody Map<String, String> polygon) {
         if (polygon != null) {
            String polygonValue = polygon.get("polygon");
@@ -77,8 +81,9 @@ public class KTJController {
      * @param propertyIdentifier Property's identifier in either numeric or hyphen format.
      * @param language Language of the prints.
      */
+    @ApiOperation("Get PDF print links for given property.")
     @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER')")
-    @RequestMapping(value = "/pdf/links", method = { RequestMethod.GET })
+    @GetMapping(value = "/pdf/links")
     public Map<String, List<String>> getPropertyPdfLinks(@RequestParam String propertyIdentifier,
             @RequestParam String language) {
         // At least for now KTJ only support Finnish and Swedish as print languages.
@@ -94,8 +99,9 @@ public class KTJController {
      * @param printType Type of the print to be fetched.
      * @param response Http servlet interface to which the response is written.
      */
+    @ApiOperation("Get PDF print from given url.")
     @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER')")
-    @RequestMapping(value = "/pdf/{printType}", method = { RequestMethod.GET })
+    @GetMapping(value = "/pdf/{printType}")
     public void getPropertyPdfPrint(@PathVariable String printType, HttpServletRequest request,
             HttpServletResponse response) {
         ktjService.getPropertyPdfPrint(printType, request, response);

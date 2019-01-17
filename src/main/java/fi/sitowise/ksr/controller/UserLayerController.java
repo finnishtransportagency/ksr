@@ -3,6 +3,7 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.UserLayerService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.exception.DataAccessException;
@@ -31,11 +32,12 @@ public class UserLayerController {
     }
 
     /**
-     * Add user layer to database
-     * @param layer requestbody JSON object that contains layer values to be added
-     * @param userAgent requestheader that contains info about current device
+     * Add user layer to database.
+     * @param layer requestbody JSON object that contains layer values to be added.
+     * @param userAgent requestheader that contains info about current device.
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @ApiOperation("Add user layer to database.")
+    @PostMapping(value = "")
     public Layer postUserLayer(@Valid @RequestBody Layer layer, @RequestHeader(value = "User-Agent") String userAgent) {
         LOG.info(String.format("%s: Add user layer to database.", getCurrentUsername()));
         String[] mobileAgents = {"Mobile", "Tablet", "Mobi", "IEMobile"};
@@ -49,10 +51,11 @@ public class UserLayerController {
     }
 
     /**
-     * Remove user layer from database
-     * @param userLayerId int Id of the layer to be deleted
+     * Remove user layer from database.
+     * @param userLayerId int Id of the layer to be deleted.
      */
-    @RequestMapping(value = "/{userLayerId}", method = RequestMethod.DELETE)
+    @ApiOperation("Remove user layer from database.")
+    @DeleteMapping(value = "/{userLayerId}")
     public void removeUserLayer(@PathVariable("userLayerId") int userLayerId) {
         userLayerService.removeUserLayer(getCurrentUsername(), userLayerId);
     }
