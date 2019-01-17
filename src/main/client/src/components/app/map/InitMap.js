@@ -138,6 +138,7 @@ class EsriMap extends Component<Props> {
                             position: 'top-left',
                         },
                         highlightEnabled: false,
+                        spinnerEnabled: true,
                     },
                     highlightOptions: {
                         color: mapHighlightStroke,
@@ -211,19 +212,20 @@ class EsriMap extends Component<Props> {
 
                         if (this.props.activeTool !== 'drawErase' && !filteredResults.find(item =>
                             item.graphic.layer.type === 'graphics')) {
-                            view.popup.open({ location: event.mapPoint });
-
                             const { activeAdminTool, geometryType } = this.props;
-                            await mapSelectPopup(
-                                filteredResults,
-                                view,
-                                selectFeatures,
-                                layerList,
-                                activeAdminTool,
-                                geometryType,
-                                event.x,
-                                event.y,
-                            );
+                            view.popup.open({
+                                location: event.mapPoint,
+                                promises: [mapSelectPopup(
+                                    filteredResults,
+                                    view,
+                                    selectFeatures,
+                                    layerList,
+                                    activeAdminTool,
+                                    geometryType,
+                                    event.x,
+                                    event.y,
+                                )],
+                            });
                         }
 
                         if (results.length) {
@@ -345,7 +347,7 @@ class EsriMap extends Component<Props> {
                 view.popup.viewModel.watch('selectedFeature', (selectedFeature) => {
                     removeGraphicsFromMap(view, 'selected-popup-feature');
 
-                    if (selectedFeature) {
+                    if (selectedFeature && selectedFeature.geometry) {
                         const newFeature = new Graphic({
                             geometry: selectedFeature.geometry,
                             id: 'selected-popup-feature',

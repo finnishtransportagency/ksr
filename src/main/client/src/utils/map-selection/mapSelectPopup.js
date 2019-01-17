@@ -16,6 +16,9 @@ import { convertEsriGeometryType } from '../type';
  * @param {string} geometryType Geometry type of currently active admin layer.
  * @param {number} x Screen x-coordinate (pixels).
  * @param {number} y Screen y-coordinate (pixels).
+ *
+ * @returns {Promise} Promise that resolves with selected features data or with generic
+ * no features content if no features are found.
  */
 export const mapSelectPopup = async (
     results: Object,
@@ -61,60 +64,65 @@ export const mapSelectPopup = async (
 
             const fieldInfos = [];
 
-            if (layer.graphic.layer && layer.graphic.layer.featureType === 'shapefile') {
-                const columns = layer.graphic.layer.fields.slice(0, 5);
-                columns.forEach((c) => {
-                    fieldInfos.push({
-                        fieldName: c.name,
-                        label: c.name,
-                    });
-                });
-            } else if (layer.graphic.layer) {
-                const matchingLayer = layerList
-                    .find(ll => ll.id === layer.graphic.layer.id.replace('.s', ''));
-
-                if (matchingLayer && matchingLayer.type === 'agfs' && matchingLayer.queryColumnsList) {
-                    const fields = nestedVal(layer, ['graphic', 'layer', 'fields']);
-                    matchingLayer.queryColumnsList.forEach((column) => {
+            if (layer.graphic.layer) {
+                if (layer.graphic.layer.featureType === 'shapefile') {
+                    const columns = layer.graphic.layer.fields.slice(0, 5);
+                    columns.forEach((c) => {
                         fieldInfos.push({
-                            fieldName: column,
-                            label: nestedVal(
-                                fields && fields.find(f => f.name === column),
-                                ['alias'],
-                            ),
+                            fieldName: c.name,
+                            label: c.name,
                         });
                     });
+                } else {
+                    const matchingLayer = layerList
+                        .find(ll => ll.id === layer.graphic.layer.id.replace('.s', ''));
 
-                    if (matchingLayer.hasRelations) {
-                        const contractLink = {
-                            title: strings.modalFeatureContracts.featureContracts,
-                            id: 'contract-link',
-                            className: 'fas fa-tasks',
-                        };
-                        actions.push(contractLink);
+                    if (matchingLayer && matchingLayer.type === 'agfs' && matchingLayer.queryColumnsList) {
+                        const fields = nestedVal(layer, ['graphic', 'layer', 'fields']);
+                        matchingLayer.queryColumnsList.forEach((column) => {
+                            fieldInfos.push({
+                                fieldName: column,
+                                label: nestedVal(
+                                    fields && fields.find(f => f.name === column),
+                                    ['alias'],
+                                ),
+                            });
+                        });
+
+                        if (matchingLayer.hasRelations) {
+                            const contractLink = {
+                                title: strings.modalFeatureContracts.featureContracts,
+                                id: 'contract-link',
+                                className: 'fas fa-tasks',
+                            };
+                            actions.push(contractLink);
+                        }
                     }
                 }
-            }
 
-            if (activeAdminTool && activeAdminTool !== layer.graphic.layer.id
-                && geometryType
-                && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType) {
-                const copyFeatureAction = {
-                    title: strings.esriMap.copyFeature,
-                    id: 'copy-feature',
-                    className: 'far fa-clone',
+                const addCopyAction = activeAdminTool
+                    && activeAdminTool !== layer.graphic.layer.id
+                    && geometryType
+                    && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType;
+                if (addCopyAction) {
+                    const copyFeatureAction = {
+                        title: strings.esriMap.copyFeature,
+                        id: 'copy-feature',
+                        className: 'far fa-clone',
+                    };
+                    actions.push(copyFeatureAction);
+                }
+
+                layer.graphic.layer.popupTemplate = {
+                    title: layer.graphic.layer.title,
+                    content: [{
+                        type: 'fields',
+                        fieldInfos,
+                    }],
+                    lastEditInfoEnabled: false,
+                    actions,
                 };
-                actions.push(copyFeatureAction);
             }
-
-            layer.graphic.layer.popupTemplate = {
-                title: layer.graphic.layer.title,
-                content: [{
-                    type: 'fields',
-                    fieldInfos,
-                }],
-                actions,
-            };
         });
         const graphics = newResults.map(re => re.graphic);
         const filteredGraphics = activeAdminTool
@@ -122,9 +130,14 @@ export const mapSelectPopup = async (
                 && graphic.layer.geometryType !== undefined)
             : graphics.filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined);
         const features = graphicsToEsriJSON(filteredGraphics);
-        view.popup.viewModel.features = graphics;
         selectFeatures(features);
-    } else {
-        view.popup.title = strings.esriMap.noFeatures;
+        return graphics;
     }
+
+    return [{
+        popupTemplate: {
+            title: strings.esriMap.noFeatures,
+            lastEditInfoEnabled: false,
+        },
+    }];
 };

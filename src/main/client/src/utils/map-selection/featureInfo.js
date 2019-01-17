@@ -102,7 +102,7 @@ const fetchFeatureInfo = (
 ) => {
     const url = createGetFeatureInfoUrl(layer, x, y, extent, height, width);
     return getFeatureInfoRequest(url)
-        .then(content => featureInfoToGraphic(layer, content))
+        .then(content => (content ? featureInfoToGraphic(layer, content) : undefined))
         .catch((err) => {
             console.error(err);
         });
