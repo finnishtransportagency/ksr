@@ -14,9 +14,12 @@ export const MapLayerTitleWrapper = styled.div`
 `;
 
 export const Icon = styled.div`
-    font-size: 0.8rem;
     min-width: 1rem;
     max-width: 1rem;
+    
+    i {
+      font-size: 0.8rem;
+    }
 `;
 
 export const Text = styled.div`
