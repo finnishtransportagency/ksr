@@ -337,7 +337,7 @@ class EsriMap extends Component<Props> {
                 view.popup.viewModel.watch('selectedFeature', (selectedFeature) => {
                     removeGraphicsFromMap(view, 'selected-popup-feature');
 
-                    if (selectedFeature) {
+                    if (selectedFeature && selectedFeature.geometry) {
                         const newFeature = new Graphic({
                             geometry: selectedFeature.geometry,
                             id: 'selected-popup-feature',

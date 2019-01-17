@@ -96,9 +96,13 @@ export const mapSelectPopup = async (
                 }
             }
 
-            if (activeAdminTool && activeAdminTool !== layer.graphic.layer.id
+            if (
+                activeAdminTool
+                && layer.graphic.layer
+                && activeAdminTool !== layer.graphic.layer.id
                 && geometryType
-                && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType) {
+                && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType
+            ) {
                 const copyFeatureAction = {
                     title: strings.esriMap.copyFeature,
                     id: 'copy-feature',
@@ -107,14 +111,17 @@ export const mapSelectPopup = async (
                 actions.push(copyFeatureAction);
             }
 
-            layer.graphic.layer.popupTemplate = {
-                title: layer.graphic.layer.title,
-                content: [{
-                    type: 'fields',
-                    fieldInfos,
-                }],
-                actions,
-            };
+            if (layer.graphic.layer) {
+                layer.graphic.layer.popupTemplate = {
+                    title: layer.graphic.layer.title,
+                    content: [{
+                        type: 'fields',
+                        fieldInfos,
+                    }],
+                    lastEditInfoEnabled: false,
+                    actions,
+                };
+            }
         });
         const graphics = newResults.map(re => re.graphic);
         const filteredGraphics = activeAdminTool
