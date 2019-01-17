@@ -8,6 +8,7 @@ export const TextArea = styled.textarea`
     box-sizing: border-box;
     padding: 0.5rem;
     border: 1px solid ${styles.colorBackgroundGrey};
+    margin-top: 6px;
     
     &:focus {
         outline: none;
