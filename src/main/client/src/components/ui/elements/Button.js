@@ -2,8 +2,9 @@ import styled, { css } from 'styled-components';
 import * as styles from '../defaultStyles';
 
 export const Button = styled.button`
-    text-transform: uppercase;
-    font-weight: 700;
+    text-transform: capitalize;
+    font-weight: 500;
+    font-size: 16px;
     border: 0;
     padding: 1rem;
     transition: 0.3s;
@@ -15,7 +16,7 @@ export const Button = styled.button`
     box-shadow: ${styles.shadowDefault};
     
     ${props => props.flat && css`
-         color: ${styles.colorMain};
+         color: ${styles.colorMainLight};
          background: none;
          -webkit-box-shadow: none;
          -moz-box-shadow: none;
@@ -33,7 +34,7 @@ export const Button = styled.button`
             -webkit-box-shadow: ${styles.shadowDark};
             -moz-box-shadow: ${styles.shadowDark};
             box-shadow: ${styles.shadowDark};
-            background: ${styles.colorMainHighlight};
+            background: ${styles.colorMainDark};
             
             ${props => props.disabled && css`
                 -webkit-box-shadow: ${styles.shadowDefault};
@@ -60,7 +61,7 @@ export const Button = styled.button`
             -webkit-box-shadow: ${styles.shadowDark};
             -moz-box-shadow: ${styles.shadowDark};
             box-shadow: ${styles.shadowDark};
-            background: ${styles.colorMainHighlight};
+            background: ${styles.colorMainDark};
             
             ${props => props.disabled && css`
                 -webkit-box-shadow: ${styles.shadowDefault};

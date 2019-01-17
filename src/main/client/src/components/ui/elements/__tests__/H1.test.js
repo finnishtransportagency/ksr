@@ -7,7 +7,7 @@ describe('<H1 />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<H1 />).toJSON();
         expect(wrapper).toMatchSnapshot();
-        expect(wrapper).toHaveStyleRule('font-size', '22px');
-        expect(wrapper).toHaveStyleRule('font-weight', '700');
+        expect(wrapper).toHaveStyleRule('font-size', '20px');
+        expect(wrapper).toHaveStyleRule('font-weight', '500');
     });
 });

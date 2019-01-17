@@ -7,12 +7,12 @@ describe('<Button />', () => {
         const wrapper = renderer.create(<Button />).toJSON();
         expect(wrapper).toMatchSnapshot();
         expect(wrapper).toHaveStyleRule('color', '#F1F1F1');
-        expect(wrapper).toHaveStyleRule('background', '#3DB7E4');
+        expect(wrapper).toHaveStyleRule('background', '#00b0f5');
     });
 
     it('sets correct styles with flat prop', () => {
         const wrapper = renderer.create(<Button flat />).toJSON();
-        expect(wrapper).toHaveStyleRule('color', '#3DB7E4');
+        expect(wrapper).toHaveStyleRule('color', '#49c2f1');
         expect(wrapper).toHaveStyleRule('background', 'none');
     });
 
