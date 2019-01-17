@@ -6,7 +6,7 @@ export const TextInput = styled.input`
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    border: 2px solid transparent;
+    border: 1px solid ${styles.colorBackgroundLightSecondary};
     font-size: 1em;
     
     ${props => props.backgroundDarker && css`
@@ -15,11 +15,11 @@ export const TextInput = styled.input`
     `}
     
     &:focus {
-        border: 2px solid ${styles.colorMain};
+        border: 1px solid ${styles.colorMain};
     }
 
     &:invalid {
-        border: 2px solid ${styles.mapHighlightStroke};
+        border: 1px solid ${styles.mapHighlightStroke};
     }
 `;
 
@@ -27,14 +27,15 @@ export const InputInfo = styled.div`
     position: absolute;
     font-size: 1.5rem;
     right: 0.6rem;
-    top: 0.3rem;
+    top: 0.2rem;
     color: ${styles.colorMain};
 `;
 
 export const InputWithIcon = styled.div`
     position: relative; 
-    background: ${styles.colorBackgroundLight};
+    background: #FFFFFF;
     margin-bottom: 1rem;
+    margin-top: 0.25rem;
     
     input {
         margin: 0;

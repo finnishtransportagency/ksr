@@ -10,7 +10,7 @@ const Content = styled.div`
     .Select-control, .Select.is-focused > .Select-control, .Select.is-focused:not(.is-open) > .Select-control {
         border-radius: 0;
         outline: none;
-        border: none;
+        border: 1px solid ${styles.colorBackgroundLightSecondary};
         background: ${styles.colorBackgroundLight};
         box-shadow: none;
         margin: 0.25rem 0 1rem;

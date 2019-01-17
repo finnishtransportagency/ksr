@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import * as styles from '../../../ui/defaultStyles';
 import { RadioWrapper } from '../../side-bar/search/styles';
 
 export const ModalThemeLayerWrapper = styled.div`
@@ -12,6 +13,6 @@ export const ModalThemeLayerWrapper = styled.div`
     };
     
     .Select-control .Select-input:focus {
-        background-color: #F1F1F1;
+        background: ${styles.colorBackgroundLight};
     }
 `;
