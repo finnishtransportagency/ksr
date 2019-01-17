@@ -9,4 +9,8 @@ import { config } from '../config';
  * @returns {Promise} Promise that will resolve with responses json-content.
  */
 export const getFeatureInfo = (url: string) => fetch(url, config())
-    .then(res => res.json());
+    .then(res => res.json())
+    .catch((error) => {
+        console.error(error);
+        return undefined;
+    });
