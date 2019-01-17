@@ -16,6 +16,9 @@ import { convertEsriGeometryType } from '../type';
  * @param {string} geometryType Geometry type of currently active admin layer.
  * @param {number} x Screen x-coordinate (pixels).
  * @param {number} y Screen y-coordinate (pixels).
+ *
+ * @returns {Promise} Promise that resolves with selected features data or with generic
+ * no features content if no features are found.
  */
 export const mapSelectPopup = async (
     results: Object,
@@ -127,9 +130,14 @@ export const mapSelectPopup = async (
                 && graphic.layer.geometryType !== undefined)
             : graphics.filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined);
         const features = graphicsToEsriJSON(filteredGraphics);
-        view.popup.viewModel.features = graphics;
         selectFeatures(features);
-    } else {
-        view.popup.title = strings.esriMap.noFeatures;
+        return graphics;
     }
+
+    return [{
+        popupTemplate: {
+            title: strings.esriMap.noFeatures,
+            lastEditInfoEnabled: false,
+        },
+    }];
 };
