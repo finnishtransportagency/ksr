@@ -8,7 +8,7 @@ const Input = styled.input`
     cursor: pointer;
         
     &:checked ~ ${Checkmark} {
-        background-color: ${styles.colorMainHighlight};
+        background-color: ${styles.colorMainDark};
     }
 
     &:checked ~ ${Checkmark}:after {

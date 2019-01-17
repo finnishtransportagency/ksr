@@ -64,7 +64,7 @@ const Text = styled.div`
     }
     
     .suggestion.highlight {
-        background-color: ${styles.colorMainHighlight};
+        background-color: ${styles.colorMainDark};
     }
 `;
 

@@ -9,7 +9,7 @@ const Icon = styled.div`
     
     &:hover {
         cursor: pointer;
-        color: ${styles.colorBackgroundDarkBlue};
+        color: ${styles.colorMainDark};
     }
 `;
 

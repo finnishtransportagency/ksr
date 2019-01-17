@@ -134,7 +134,7 @@ class SketchTool extends Component<Props, State> {
                         const geometryType = convertEsriGeometryType(this.props.geometryType);
                         sketchViewModel.create(geometryType);
                         drawNewFeatureButton.style.backgroundColor =
-                            styles.colorBackgroundDarkBlue;
+                            styles.colorMainDark;
                     }
                 });
 
@@ -145,7 +145,7 @@ class SketchTool extends Component<Props, State> {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchRectangle');
                         sketchViewModel.create('rectangle');
-                        drawRectangleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawRectangleButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -156,7 +156,7 @@ class SketchTool extends Component<Props, State> {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchPolygon');
                         sketchViewModel.create('polygon');
-                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawPolygonButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -167,7 +167,7 @@ class SketchTool extends Component<Props, State> {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchCircle');
                         sketchViewModel.create('circle');
-                        drawCircleButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawCircleButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 

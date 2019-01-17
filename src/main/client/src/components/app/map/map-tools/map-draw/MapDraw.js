@@ -230,7 +230,7 @@ class MapDraw extends Component<Props, null> {
                         setActiveTool('drawPolygon');
                         drawingMode('polygon', drawPolygon);
                         this.removeHighlightsFromButtons('draw-polygon');
-                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawPolygonButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -241,7 +241,7 @@ class MapDraw extends Component<Props, null> {
                         setActiveTool('drawPolyline');
                         drawingMode('polyline', drawLine);
                         this.removeHighlightsFromButtons('draw-line');
-                        drawLineButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawLineButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -252,7 +252,7 @@ class MapDraw extends Component<Props, null> {
                         setActiveTool('drawPoint');
                         drawingMode('point', drawPoint);
                         this.removeHighlightsFromButtons('draw-point');
-                        drawPointButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawPointButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -263,7 +263,7 @@ class MapDraw extends Component<Props, null> {
                         setActiveTool('drawText');
                         drawingMode('point', drawText);
                         this.removeHighlightsFromButtons('draw-text');
-                        drawTextButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawTextButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -274,7 +274,7 @@ class MapDraw extends Component<Props, null> {
                         this.resetCurrentTool();
                         setActiveTool('drawErase');
                         this.removeHighlightsFromButtons('draw-erase');
-                        drawEraseButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawEraseButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
             });

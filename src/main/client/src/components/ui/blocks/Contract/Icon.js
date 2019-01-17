@@ -6,7 +6,7 @@ const Icon = styled.i`
     margin-right: ${props => props.edit && '1rem'};
         
     &:hover {
-        color: ${styles.colorBackgroundDarkBlue};
+        color: ${styles.colorMainDark};
         cursor: pointer;
     };
     

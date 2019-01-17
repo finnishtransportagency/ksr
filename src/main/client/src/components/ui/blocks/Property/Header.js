@@ -16,7 +16,7 @@ const Zoom = styled.div`
     outline: none;
     
     &:hover {
-        color: ${styles.colorBackgroundDarkBlue};
+        color: ${styles.colorMainDark};
     }
 `;
 
@@ -29,7 +29,7 @@ const Toggle = styled.div`
     
     &:hover {
         .fa-chevron-up, .fa-chevron-down {
-            color: ${styles.colorBackgroundDarkBlue};
+            color: ${styles.colorMainDark};
         }
     }
 `;

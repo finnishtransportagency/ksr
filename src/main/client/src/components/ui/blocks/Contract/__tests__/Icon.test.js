@@ -10,7 +10,7 @@ describe('<Icon />', () => {
 
     it('has correct style rules', () => {
         const wrapper = renderer.create(<Icon />).toJSON();
-        expect(wrapper).toHaveStyleRule('color', '#0088CE', {
+        expect(wrapper).toHaveStyleRule('color', '#009ae1', {
             modifier: ':hover',
         });
     });

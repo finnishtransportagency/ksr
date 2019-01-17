@@ -10,7 +10,7 @@ const TextColumn = styled.div`
         cursor: pointer;
         
         div:first-of-type {
-            color: ${styles.colorBackgroundDarkBlue};
+            color: ${styles.colorMainDark};
             font-weight: bolder;
         }
     }

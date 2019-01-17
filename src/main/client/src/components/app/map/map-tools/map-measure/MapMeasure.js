@@ -201,7 +201,7 @@ class MapMeasure extends Component<Props, State> {
                         this.removeMeasurement();
                         setActiveTool('drawPolygon');
                         drawingMode('polygon', drawPolygon);
-                        drawPolygonButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawPolygonButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -212,7 +212,7 @@ class MapMeasure extends Component<Props, State> {
                         this.removeMeasurement();
                         setActiveTool('drawPolyline');
                         drawingMode('polyline', drawLine);
-                        drawLineButton.style.backgroundColor = styles.colorBackgroundDarkBlue;
+                        drawLineButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
             });

@@ -98,7 +98,7 @@ export const Wrapper = styled.div`
             outline: none;
     
             &:hover {
-                background: ${styles.colorMainHighlight};
+                background: ${styles.colorMainDark};
                 color: ${styles.colorFontLight};
             };
         };

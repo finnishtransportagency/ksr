@@ -4,7 +4,7 @@ import 'react-table/react-table.css';
 import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
-import { colorMainHighlight, colorMain, colorTableEdited, colorTableEditedDarker } from '../../../ui/defaultStyles';
+import { colorMainDark, colorMain, colorTableEdited, colorTableEditedDarker } from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
 import CustomTableBodyView from './custom-table-body/CustomTableBodyView';
 
@@ -77,7 +77,7 @@ const ReactTableView = ({
                 };
             }}
             getTrProps={(state, r) => {
-                const color = r && r.index % 2 === 0 ? colorMainHighlight : colorMain;
+                const color = r && r.index % 2 === 0 ? colorMainDark : colorMain;
                 return {
                     style: {
                         background: (
