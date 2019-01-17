@@ -11,7 +11,7 @@ type Props = {
 const SideNavView = ({ setActiveNav, activeNav }: Props) => (
     <SideNav>
         <SideNav.Logo onClick={() => { setActiveNav(''); }}>
-            <img src="images/liikennevirasto_logo_2x.png" alt="" />
+            <img src="images/VAYLAwhite.png" alt="" />
         </SideNav.Logo>
         <SideNav.LinkWrapper>
             <div>
