@@ -27,32 +27,61 @@ export const Button = styled.button`
     `}
     
     &:hover {
-        cursor: pointer;
-        -webkit-box-shadow: ${styles.shadowDark};
-        -moz-box-shadow: ${styles.shadowDark};
-        box-shadow: ${styles.shadowDark};
-        background: ${styles.colorMainHighlight};
-        
-        ${props => props.disabled && css`
-            -webkit-box-shadow: ${styles.shadowDefault};
-            -moz-box-shadow: ${styles.shadowDefault};
-            box-shadow: ${styles.shadowDefault};
-            opacity: 0.5;
-            background: ${styles.colorMain};
-            cursor: not-allowed;
-        `}
-        
-        ${props => props.flat && css`
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            background: rgba(0, 0, 0, 0.1);
-        `}
-        
-        ${props => props.flat && props.disabled && css`
-            background: none;
-        `}
-        
+        @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+            /* IE11 Fix, because it does not support media hover */
+            cursor: pointer;
+            -webkit-box-shadow: ${styles.shadowDark};
+            -moz-box-shadow: ${styles.shadowDark};
+            box-shadow: ${styles.shadowDark};
+            background: ${styles.colorMainHighlight};
+            
+            ${props => props.disabled && css`
+                -webkit-box-shadow: ${styles.shadowDefault};
+                -moz-box-shadow: ${styles.shadowDefault};
+                box-shadow: ${styles.shadowDefault};
+                opacity: 0.5;
+                background: ${styles.colorMain};
+                cursor: not-allowed;
+            `}
+            
+            ${props => props.flat && css`
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+                background: rgba(0, 0, 0, 0.1);
+            `}
+            
+            ${props => props.flat && props.disabled && css`
+                background: none;
+            `}
+        }
+        @media (hover) {
+            cursor: pointer;
+            -webkit-box-shadow: ${styles.shadowDark};
+            -moz-box-shadow: ${styles.shadowDark};
+            box-shadow: ${styles.shadowDark};
+            background: ${styles.colorMainHighlight};
+            
+            ${props => props.disabled && css`
+                -webkit-box-shadow: ${styles.shadowDefault};
+                -moz-box-shadow: ${styles.shadowDefault};
+                box-shadow: ${styles.shadowDefault};
+                opacity: 0.5;
+                background: ${styles.colorMain};
+                cursor: not-allowed;
+            `}
+            
+            ${props => props.flat && css`
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+                background: rgba(0, 0, 0, 0.1);
+            `}
+            
+            ${props => props.flat && props.disabled && css`
+                background: none;
+            `}
+        }
     }
     
     &:focus {
