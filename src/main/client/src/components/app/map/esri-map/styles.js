@@ -12,6 +12,10 @@ export const Wrapper = styled.div`
         transition: 0.3s;
         height: 100%;
         
+        .esri-widget {
+            font-family: 'Exo 2', Arial, sans-serif;
+        };
+        
         .esri-scale-bar {
             margin-bottom: 2em;
         };
