@@ -64,6 +64,7 @@ public class Layer implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private QueryColumnTypeRecord queryColumns;
     private boolean background;
+    private String parentLayer;
 
     /**
      * Construct a Layer.
@@ -107,6 +108,7 @@ public class Layer implements Serializable {
         this.setAlfrescoLinkField(lr.getAlfrescoLinkField());
         this.setCaseManagementLinkField(lr.getCaseManagementLinkField());
         this.setBackground(lr.getBackground());
+        this.setParentLayer(lr.getParentLayer());
 
         if (lr.getQueryColumns() != null) {
             setQueryColumns(lr.getQueryColumns());
@@ -771,5 +773,22 @@ public class Layer implements Serializable {
      */
     public void setBackground(String background) {
         this.background = "1".equals(background);
+    }
+    /**
+     * Gets parent layer id.
+     *
+     * @return Parent layer id.
+     */
+    public String getParentLayer() {
+        return parentLayer;
+    }
+
+    /**
+     * Set parent layer Id.
+     *
+     * @param parentLayer Id of the parent layer.
+     */
+    public void setParentLayer(String parentLayer) {
+        this.parentLayer = parentLayer;
     }
 }
