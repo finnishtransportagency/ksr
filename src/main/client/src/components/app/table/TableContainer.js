@@ -45,13 +45,15 @@ const mapStateToProps = (state) => {
     const { addressField, featureType } = state.adminTool.active.layerId
     && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
 
+    const currentTabAdmin = state.table.features.activeTable === state.adminTool.active.layerId;
+
     return {
         isOpen: state.table.toggleTable,
         isOpenFilter: state.table.toggleFilter,
         activeNav: state.navigation.activeNav,
         activeModal: state.modal.activeModal.activeModal,
-        activeUpdate: layer ? layer.layerPermission.updateLayer : false,
-        activeDelete: layer ? layer.layerPermission.deleteLayer : false,
+        activeUpdate: layer && currentTabAdmin ? layer.layerPermission.updateLayer : false,
+        activeDelete: layer && currentTabAdmin ? layer.layerPermission.deleteLayer : false,
         originalLayers,
         editedLayersNoUnderscore,
         selectedData: selectedData.length > 0,
@@ -62,6 +64,7 @@ const mapStateToProps = (state) => {
         addressField,
         view: state.map.mapView.view,
         editedLayers: state.table.features.editedLayers,
+        currentTabAdmin,
     };
 };
 

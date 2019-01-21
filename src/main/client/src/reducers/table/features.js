@@ -106,12 +106,8 @@ export default (state: State = initialState, action: Action) => {
             };
         case SET_ACTIVE_ADMIN_TOOL:
             return {
-                ...initialState,
-                activeTable: state.layers.find(l => l.id === action.layerId && l.type === 'agfl')
-                    ? action.layerId : '',
-                editedLayers: (state.editedLayers.filter(l =>
-                    l.id === action.layerId && l.type === 'agfl'): Object[]),
-                layers: (state.layers.filter(l => l.id === action.layerId && l.type === 'agfl'): Object[]),
+                ...state,
+                editedLayers: state.layers,
             };
         case CLEAR_TABLE_DATA:
             return initialState;

@@ -110,21 +110,6 @@ export default (state: State = initialState, action: Action) => {
                 layerList: addOrReplaceLayers(state.layerList, action.layers),
                 layerGroups: addOrReplaceLayersInSearchGroup(state.layerGroups, action.layers),
             };
-        case SET_ACTIVE_ADMIN_TOOL:
-            return {
-                ...state,
-                layerGroups: (state.layerGroups.map(lg => ({
-                    ...lg,
-                    layers: lg.type === 'search' ? [] : lg.layers,
-                })): Array<LayerGroups>),
-                layerList: (state.layerList
-                    .filter(l => l._source !== 'search')
-                    .map(l => ({
-                        ...l,
-                        visible: l.id === action.layerId ? true : l.visible,
-                        active: l.type === 'agfl' && l.id !== action.layerId ? false : l.active,
-                    })): any),
-            };
         case CLEAR_TABLE_DATA:
             return {
                 ...state,
