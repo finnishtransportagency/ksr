@@ -298,7 +298,6 @@ class EsriMap extends Component<Props> {
                         setPropertyInfo,
                         setContractListInfo,
                         showConfirmModal,
-                        activeAdminTool,
                         authorities,
                         setActiveFeatureMode,
                         sketchViewModel,
@@ -357,7 +356,6 @@ class EsriMap extends Component<Props> {
                         case 'select-intersect':
                             queryFeatures(
                                 geometry,
-                                activeAdminTool,
                                 view,
                                 selectFeatures,
                                 layer && layer.id,

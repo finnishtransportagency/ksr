@@ -2,16 +2,15 @@
 import esriLoader from 'esri-loader';
 
 /**
- * Select features from given geometry
- * @param geometry Object current features geometry
- * @param activeAdminTool string id of current admin tool layer
- * @param view Object esri map view
- * @param selectFeatures Function redux function that selects features
- * @param layerId Number current features layer ID
+ * Select features from given geometry.
+ *
+ * @param {Object} geometry Current features geometry.
+ * @param {Object} view Esri map view.
+ * @param {Function} selectFeatures Redux function that selects features.
+ * @param {number} layerId Current features layer ID.
  */
 export const queryFeatures = (
     geometry: Object,
-    activeAdminTool: string,
     view: Object,
     selectFeatures: Function,
     layerId?: Number,
@@ -50,54 +49,30 @@ export const queryFeatures = (
                                     ymax: geometry.extent.ymax,
                                     spatialReference: epsg3067,
                                 });
-                                if (activeAdminTool && activeAdminTool === layer.id) {
-                                    queries.push(layerView.queryFeatures(queryView)
-                                        .then(results => ({
-                                            id: layer.id,
-                                            title: layer.title,
-                                            objectIdFieldName: layer.objectIdField,
-                                            features: results.features,
-                                            fields: layer.fields,
-                                            _source: 'shapefile',
-                                        })));
-                                } else if (!activeAdminTool) {
-                                    queries.push(layerView.queryFeatures(queryView)
-                                        .then(results => ({
-                                            id: layer.id,
-                                            title: layer.title,
-                                            objectIdFieldName: layer.objectIdField,
-                                            features: results.features,
-                                            fields: layer.fields,
-                                            _source: 'shapefile',
-                                        })));
-                                }
+                                queries.push(layerView.queryFeatures(queryView)
+                                    .then(results => ({
+                                        id: layer.id,
+                                        title: layer.title,
+                                        objectIdFieldName: layer.objectIdField,
+                                        features: results.features,
+                                        fields: layer.fields,
+                                        _source: 'shapefile',
+                                    })));
                             });
                         } else if (layer.visible &&
                             !layer.definitionExpression &&
                             view.scale < layer.minScale &&
                             view.scale > layer.maxScale
                         ) {
-                            if (activeAdminTool && activeAdminTool === layer.id) {
-                                queries.push(layer.queryFeatures(query)
-                                    .then(results => ({
-                                        id: layer.id,
-                                        title: layer.title,
-                                        objectIdFieldName: layer.objectIdField,
-                                        features: results.features,
-                                        fields: layer.fields,
-                                        _source: 'select',
-                                    })));
-                            } else if (!activeAdminTool) {
-                                queries.push(layer.queryFeatures(query)
-                                    .then(results => ({
-                                        id: layer.id,
-                                        title: layer.title,
-                                        objectIdFieldName: layer.objectIdField,
-                                        features: results.features,
-                                        fields: layer.fields,
-                                        _source: 'select',
-                                    })));
-                            }
+                            queries.push(layer.queryFeatures(query)
+                                .then(results => ({
+                                    id: layer.id,
+                                    title: layer.title,
+                                    objectIdFieldName: layer.objectIdField,
+                                    features: results.features,
+                                    fields: layer.fields,
+                                    _source: 'select',
+                                })));
                         }
                     } else if (layer.featureType === 'shapefile' && layer.visible && layer.id !== layerId) {
                         const epsg3067 = new SpatialReference(3067);
@@ -110,27 +85,15 @@ export const queryFeatures = (
                                 ymax: geometry.extent.ymax,
                                 spatialReference: epsg3067,
                             });
-                            if (activeAdminTool && activeAdminTool === layer.id) {
-                                queries.push(layerView.queryFeatures(queryView)
-                                    .then(results => ({
-                                        id: layer.id,
-                                        title: layer.title,
-                                        objectIdFieldName: layer.objectIdField,
-                                        features: results.features,
-                                        fields: layer.fields,
-                                        _source: 'shapefile',
-                                    })));
-                            } else if (!activeAdminTool) {
-                                queries.push(layerView.queryFeatures(queryView)
-                                    .then(results => ({
-                                        id: layer.id,
-                                        title: layer.title,
-                                        objectIdFieldName: layer.objectIdField,
-                                        features: results.features,
-                                        fields: layer.fields,
-                                        _source: 'shapefile',
-                                    })));
-                            }
+                            queries.push(layerView.queryFeatures(queryView)
+                                .then(results => ({
+                                    id: layer.id,
+                                    title: layer.title,
+                                    objectIdFieldName: layer.objectIdField,
+                                    features: results.features,
+                                    fields: layer.fields,
+                                    _source: 'shapefile',
+                                })));
                         });
                     } else if (layer.visible &&
                         !layer.definitionExpression &&
@@ -138,27 +101,15 @@ export const queryFeatures = (
                         view.scale > layer.maxScale &&
                         layer.id !== layerId
                     ) {
-                        if (activeAdminTool && activeAdminTool === layer.id) {
-                            queries.push(layer.queryFeatures(query)
-                                .then(results => ({
-                                    id: layer.id,
-                                    title: layer.title,
-                                    objectIdFieldName: layer.objectIdField,
-                                    features: results.features,
-                                    fields: layer.fields,
-                                    _source: 'select',
-                                })));
-                        } else if (!activeAdminTool) {
-                            queries.push(layer.queryFeatures(query)
-                                .then(results => ({
-                                    id: layer.id,
-                                    title: layer.title,
-                                    objectIdFieldName: layer.objectIdField,
-                                    features: results.features,
-                                    fields: layer.fields,
-                                    _source: 'select',
-                                })));
-                        }
+                        queries.push(layer.queryFeatures(query)
+                            .then(results => ({
+                                id: layer.id,
+                                title: layer.title,
+                                objectIdFieldName: layer.objectIdField,
+                                features: results.features,
+                                fields: layer.fields,
+                                _source: 'select',
+                            })));
                     }
                 }
             });

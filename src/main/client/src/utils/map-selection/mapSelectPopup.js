@@ -142,10 +142,8 @@ export const mapSelectPopup = async (
             }
         });
         const graphics = newResults.map(re => re.graphic);
-        const filteredGraphics = activeAdminTool
-            ? graphics.filter(graphic => graphic.layer && graphic.layer.id === activeAdminTool
-                && graphic.layer.geometryType !== undefined)
-            : graphics.filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined);
+        const filteredGraphics = graphics
+            .filter(graphic => graphic.layer && graphic.layer.geometryType !== undefined);
         const features = graphicsToEsriJSON(filteredGraphics);
         selectFeatures(features);
         return graphics;
