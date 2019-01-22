@@ -16,6 +16,7 @@ const setup = () => {
             cancel: jest.fn(),
             reset: jest.fn(),
         },
+        setActiveFeatureMode: jest.fn(),
     };
     const wrapper = mount(<SketchTool {...props} />);
 

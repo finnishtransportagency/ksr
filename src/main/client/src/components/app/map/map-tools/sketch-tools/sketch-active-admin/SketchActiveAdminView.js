@@ -9,7 +9,8 @@ type Props = {
     removeSketch: () => void,
     drawNewFeatureButtonRef: () => void,
     hasAdminGraphics: boolean,
-    setActiveModal: (modal: string) => void,
+    setActiveModal: (editModeActive: boolean) => void,
+    editModeActive: boolean,
 };
 
 const SketchActiveAdminView = ({
@@ -19,6 +20,7 @@ const SketchActiveAdminView = ({
     drawNewFeatureButtonRef,
     hasAdminGraphics,
     setActiveModal,
+    editModeActive,
 }: Props) => (
     <Fragment>
         <div id="create-new-feature-wrapper">
@@ -43,11 +45,11 @@ const SketchActiveAdminView = ({
                 title={strings.sketchTool.acceptSelection}
                 onClick={
                     hasAdminGraphics ? () => {
-                        setActiveModal('editLayerDetails');
+                        setActiveModal(editModeActive);
                     } : null}
                 onKeyPress={
                     hasAdminGraphics ? () => {
-                        setActiveModal('editLayerDetails');
+                        setActiveModal(editModeActive);
                     } : null}
             >
                 <span className="esri-icon-check-mark" />

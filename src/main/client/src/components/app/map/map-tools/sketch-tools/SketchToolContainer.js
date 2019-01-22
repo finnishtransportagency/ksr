@@ -4,6 +4,7 @@ import {
     setActiveTool,
     setTempGraphicsLayer,
     setActiveToolMenu,
+    setActiveFeatureMode,
 } from '../../../../../reducers/map/actions';
 import { setPropertyInfo } from '../../../../../reducers/search/actions';
 import { selectFeatures, deSelectSelected } from '../../../../../reducers/table/actions';
@@ -19,6 +20,7 @@ const mapStateToProps = state => ({
     data: state.table.features.layers
         .reduce((a, b) => (b.type !== 'agfl' ? a.concat(b.data.filter(d => d._selected)) : a), []),
     activeAdminTool: state.adminTool.active.layerId,
+    editModeActive: state.map.mapTools.activeFeatureMode === 'edit',
     geometryType: state.adminTool.active.geometryType,
     activeModal: state.modal.activeModal,
     isOpen: state.map.mapTools.activeToolMenu === 'sketchTools',
@@ -40,14 +42,17 @@ const mapDispatchToProps = dispatch => ({
     setTempGraphicsLayer: (graphicsLayer) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
     },
-    setActiveModal: (activeModal) => {
-        dispatch(setActiveModal(activeModal));
+    setActiveModal: (editModeActive: boolean) => {
+        dispatch(setActiveModal('editLayerDetails', editModeActive));
     },
     setActiveToolMenu: (activeMenu) => {
         dispatch(setActiveToolMenu(activeMenu));
     },
     setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
         dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
+    },
+    setActiveFeatureMode: (activeFeatureMode: string) => {
+        dispatch(setActiveFeatureMode(activeFeatureMode));
     },
 });
 

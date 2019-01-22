@@ -32,7 +32,7 @@ type Props = {
     activeAdminTool: string,
     setTempGraphicsLayer: Function,
     geometryType: string,
-    setActiveModal: (modal: string) => void,
+    setActiveModal: (editModeActive: boolean) => void,
     isOpen: boolean,
     setActiveToolMenu: Function,
     activeAdminTool: string,
@@ -45,6 +45,8 @@ type Props = {
         authorities: Object[],
     ) => void,
     authorities: Object[],
+    editModeActive: boolean,
+    setActiveFeatureMode: (activeFeatureMode: string) => void,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -241,6 +243,8 @@ class SketchTool extends Component<Props, State> {
     };
 
     removeSketch = () => {
+        const { setActiveFeatureMode } = this.props;
+        setActiveFeatureMode('create');
         const layer = this.props.tempGraphicsLayer;
         layer.graphics = undefined;
         this.props.setTempGraphicsLayer(layer);
@@ -264,7 +268,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, tempGraphicsLayer, setActiveModal, isOpen,
+            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive,
         } = this.props;
 
         const hasSelectedFeatures = data.filter(f => f._source !== 'search').length > 0;
@@ -293,6 +297,7 @@ class SketchTool extends Component<Props, State> {
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
                     hasAdminGraphics={hasAdminGraphics}
                     setActiveModal={setActiveModal}
+                    editModeActive={editModeActive}
                 />
 
             </Fragment>
