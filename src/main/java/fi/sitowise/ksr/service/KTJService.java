@@ -77,7 +77,7 @@ public class KTJService {
 
     private final HttpRequestService httpRequestService;
 
-    @Value("${spring.servlet.context-path:/}")
+    @Value("${server.servlet.context-path:/}")
     String contextPath;
 
     @Value("${ktj.endpoint}")
