@@ -2,7 +2,6 @@ package fi.sitowise.ksr.utils.ktj;
 
 import org.geojson.LngLatAlt;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.geojson.Polygon;
 import org.w3c.dom.Document;
@@ -15,7 +14,6 @@ import java.util.List;
 
 public class GMLUtilsTests {
 
-    @Ignore
     @Test
     public void testParsePolygonsSimple() throws Exception {
         String locationStr = "<ktjkiiwfs:sijainti xmlns:ktjkiiwfs=\"http://xml.nls.fi/ktjkiiwfs/2010/02\" srsName=\"EPSG:3067\" xmlns:wfs=\"http://www.opengis.net/wfs\" timeStamp=\"2018-11-05T09:52:42Z\" xmlns:gml=\"http://www.opengis.net/gml\">" +
@@ -48,7 +46,6 @@ public class GMLUtilsTests {
         Assert.assertEquals(expectedPolygon, polygon);
     }
 
-    @Ignore
     @Test
     public void testParsePolygonsInterior() throws Exception {
         String locationStr = "<ktjkiiwfs:sijainti xmlns:ktjkiiwfs=\"http://xml.nls.fi/ktjkiiwfs/2010/02\" srsName=\"EPSG:3067\" xmlns:wfs=\"http://www.opengis.net/wfs\" timeStamp=\"2018-11-05T09:52:42Z\" xmlns:gml=\"http://www.opengis.net/gml\">" +

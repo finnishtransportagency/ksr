@@ -3,7 +3,6 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.geojson.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -195,7 +194,6 @@ public class KTJServiceTests {
         ktjService.getPropertyDetailsArea( null);
     }
 
-    @Ignore
     @Test
     public void testGetPropertyDetailsCoordinates() {
         setUpCoordinates();
@@ -212,7 +210,7 @@ public class KTJServiceTests {
 
         expectedFeature.setProperty("landArea", 4.432);
         expectedFeature.setProperty("registrationDate", "20170102");
-        expectedFeature.setProperty("propertyIdentifier", "00100200030004");
+        expectedFeature.setProperty("propertyIdentifier", "1-2-3-4");
 
         Polygon expectedPolygon = new Polygon();
         List<LngLatAlt> exterior = new ArrayList<>();
@@ -233,7 +231,6 @@ public class KTJServiceTests {
         Assert.assertEquals(expectedFc, fc);
     }
 
-    @Ignore
     @Test
     public void testGetPropertyDetails() {
         setUp();
@@ -250,7 +247,7 @@ public class KTJServiceTests {
 
         expectedFeature.setProperty("landArea", 4.432);
         expectedFeature.setProperty("registrationDate", "20170102");
-        expectedFeature.setProperty("propertyIdentifier", "00100200030005");
+        expectedFeature.setProperty("propertyIdentifier", "1-2-3-5");
 
         Polygon expectedPolygon = new Polygon();
         List<LngLatAlt> exterior = new ArrayList<>();

@@ -3,7 +3,6 @@ package fi.sitowise.ksr.utils.ktj;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.geojson.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +13,6 @@ import java.util.List;
 
 public class KTJUtilsTests {
 
-    @Ignore
     @Test
     public void testParseKTJResponse() {
         String response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
