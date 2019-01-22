@@ -171,8 +171,8 @@ const fi = {
         drawPolygonSelect: 'Lassovalinta',
         drawCircle: 'Ympyrävalinta',
         removeSelection: 'Poista valinnat',
-        rejectSelection: 'Hylkää kohde',
-        acceptSelection: 'Hyväksy kohde',
+        rejectSelection: 'Hylkää geometria',
+        acceptSelection: 'Hyväksy geometria',
         activeAdmin: 'Luontityökalu',
     },
     mapMeasure: {
