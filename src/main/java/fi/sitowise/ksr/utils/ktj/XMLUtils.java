@@ -91,6 +91,7 @@ public class XMLUtils {
      */
     public static Document parseDocument(InputStream is) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         return builder.parse(is);
     }
