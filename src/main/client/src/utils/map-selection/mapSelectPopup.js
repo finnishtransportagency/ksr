@@ -100,10 +100,13 @@ export const mapSelectPopup = async (
                     }
                 }
 
+                const activeAdminLayer = layerList.find(ll => ll.id === activeAdminTool);
                 const addCopyAction = activeAdminTool
                     && activeAdminTool !== layer.graphic.layer.id
                     && geometryType
-                    && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType;
+                    && convertEsriGeometryType(geometryType) === layer.graphic.layer.geometryType
+                    && activeAdminLayer
+                    && activeAdminLayer.layerPermission.createLayer;
                 if (addCopyAction) {
                     const copyFeatureAction = {
                         title: strings.esriMap.copyFeature,
