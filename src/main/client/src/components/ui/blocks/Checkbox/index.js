@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Input from './Input';
 import Checkmark from './Checkmark';
@@ -26,6 +26,10 @@ const Checkbox = styled.label`
     }
     input:checked ~ span {
         background-color: ${styles.colorMain};
+        
+        ${props => props.layerAllView && css`
+            background-color: ${styles.colorBackgroundLightSecondary};
+        `};         
     }
 `;
 
