@@ -3,6 +3,7 @@ import {
     SET_MAP_TOOLS,
     SET_ACTIVE_TOOL,
     SET_ACTIVE_TOOL_MENU,
+    SET_ACTIVE_FEATURE_MODE,
 } from '../../constants/actionTypes';
 
 const initialState = {
@@ -10,6 +11,7 @@ const initialState = {
     sketchViewModel: {},
     active: '',
     activeToolMenu: '',
+    activeFeatureMode: 'create',
 };
 
 type Action = {
@@ -18,6 +20,7 @@ type Action = {
     sketchViewModel: Object,
     active: string,
     activeToolMenu: string,
+    activeFeatureMode: string,
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -37,6 +40,11 @@ export default (state: Object = initialState, action: Action) => {
             return {
                 ...state,
                 activeToolMenu: state.active === '' ? action.activeToolMenu : state.activeToolMenu,
+            };
+        case SET_ACTIVE_FEATURE_MODE:
+            return {
+                ...state,
+                activeFeatureMode: action.activeFeatureMode,
             };
         default:
             return state;

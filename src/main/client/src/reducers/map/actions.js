@@ -72,6 +72,11 @@ export const setActiveTool = (active: string) => ({
     active,
 });
 
+export const setActiveFeatureMode = (activeFeatureMode: string) => ({
+    type: types.SET_ACTIVE_FEATURE_MODE,
+    activeFeatureMode,
+});
+
 export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
     fetchAddUserLayer(layerValues)
         .then((l) => {
