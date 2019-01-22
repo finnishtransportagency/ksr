@@ -128,6 +128,7 @@ class SketchTool extends Component<Props, State> {
                         setActiveToolMenu('');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else if (!this.props.active) {
+                        view.popup.close();
                         setActiveToolMenu('sketchActiveAdmin');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchActiveAdmin');
