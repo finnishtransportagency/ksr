@@ -98,7 +98,9 @@ const fi = {
     },
     modalLayerDetails: {
         title: 'Luo uusi kohde',
-        submit: 'Tallenna',
+        editTitle: 'Muokkaa kohdetta',
+        submit: 'Luo',
+        editSubmit: 'Tallenna',
         cancel: 'Peruuta',
     },
     modalAddUserLayer: {

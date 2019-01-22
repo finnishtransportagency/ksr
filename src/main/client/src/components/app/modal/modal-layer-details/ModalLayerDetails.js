@@ -20,6 +20,8 @@ type Props = {
     sketchViewModel: Object,
     objectId: Object,
     addUpdateLayers: Function,
+    editModeActive: boolean,
+    setActiveFeatureMode: (string) => void,
 };
 
 type State = {
@@ -27,6 +29,7 @@ type State = {
     fetching: boolean,
     contractExists: boolean,
     data: Object,
+    copiedFeature: ?Object,
 };
 
 const initialState = {
@@ -34,6 +37,7 @@ const initialState = {
     data: {},
     fetching: false,
     contractExists: true,
+    copiedFeature: {},
 };
 
 class ModalFilter extends Component<Props, State> {
@@ -51,8 +55,10 @@ class ModalFilter extends Component<Props, State> {
 
     loadFields = () => {
         const { fields, activeLayer, layer } = this.props;
-        const copiedAttributes = layer.graphics.items.length ?
-            layer.graphics.items[0].attributes : null;
+        const copiedFeature = layer.graphics.items.length ?
+            layer.graphics.items[0] : null;
+        const copiedAttributes = copiedFeature ?
+            copiedFeature.attributes : null;
 
         const dataFields = fields.map(field => ({
             ...field,
@@ -68,7 +74,7 @@ class ModalFilter extends Component<Props, State> {
         const dataObject = Object.assign({}, ...(dataFields.map(item =>
             ({ [item.name]: item.data }))));
 
-        this.setState({ dataFields, data: dataObject });
+        this.setState({ dataFields, data: dataObject, copiedFeature });
     };
 
     handleOnChange = (evt: Object, field: Object) => {
@@ -125,7 +131,7 @@ class ModalFilter extends Component<Props, State> {
         }
     };
 
-    handleModalSubmit = () => {
+    handleModalSubmit = async () => {
         const {
             addressField,
             view,
@@ -135,39 +141,61 @@ class ModalFilter extends Component<Props, State> {
             objectId,
             addUpdateLayers,
             activeLayer,
+            editModeActive,
+            setActiveFeatureMode,
         } = this.props;
 
-        const { data } = this.state;
+        const { data, copiedFeature } = this.state;
         const combinedData = {
             attributes: data,
-            geometry: layer.graphics.items.length ? layer.graphics.items[0].geometry : null,
+            geometry: copiedFeature ? copiedFeature.geometry : null,
         };
-
-        createAddressFields(combinedData, featureType, addressField)
-            .then(r => save.saveData('add', view, originalLayerId, [r]))
-            .then((res) => {
-                if (res && res.addResults && res.addResults.length > 0 && objectId) {
-                    if (layer) {
-                        layer.graphics = undefined;
-                        this.props.setTempGraphicsLayer(layer);
-                    }
-                    this.props.sketchViewModel.cancel();
-                    this.props.sketchViewModel.reset();
-
-                    if (nestedVal(activeLayer, ['type']) === 'agfl') {
-                        addUpdateLayers(
-                            originalLayerId,
-                            objectId.name,
-                            res.addResults[0].objectId,
-                            false,
-                        );
-                    }
+        const feature = await createAddressFields(combinedData, featureType, addressField);
+        let featureId = '';
+        if (editModeActive && copiedFeature) {
+            // Filter unchanged attributes.
+            feature.attributes = Object.entries(feature.attributes).reduce((acc, cur) => {
+                if (cur[1] !== copiedFeature.attributes[cur[0]]
+                    && !(!cur[1] && !copiedFeature.attributes[cur[0]])) {
+                    return { ...acc, [cur[0]]: cur[1] };
                 }
-            });
+                return { ...acc };
+            }, {});
+
+            if (feature.geometry === copiedFeature.initialGeometry) delete feature.geometry;
+
+            // Add object id field and value for the feature.
+            featureId = copiedFeature.attributes[objectId.name];
+            feature.attributes[objectId.name] = featureId;
+            await save.saveData('update', view, originalLayerId, [feature]);
+        } else {
+            const response = await save.saveData('add', view, originalLayerId, [feature]);
+            if (response && response.addResults && response.addResults.length > 0) {
+                featureId = response.addResults[0].objectId;
+            }
+        }
+        if (objectId && featureId) {
+            if (layer) {
+                layer.graphics = undefined;
+                this.props.setTempGraphicsLayer(layer);
+            }
+            this.props.sketchViewModel.cancel();
+            this.props.sketchViewModel.reset();
+
+            if (nestedVal(activeLayer, ['type']) === 'agfl' || editModeActive) {
+                addUpdateLayers(
+                    originalLayerId,
+                    objectId.name,
+                    featureId,
+                    editModeActive,
+                );
+            }
+            setActiveFeatureMode('create');
+        }
     };
 
     render() {
-        const { activeLayer } = this.props;
+        const { activeLayer, editModeActive } = this.props;
         const { fetching, contractExists, dataFields } = this.state;
         const validContract = activeLayer.type === 'agfl'
             ? activeLayer.contractIdField && !contractExists
@@ -180,15 +208,20 @@ class ModalFilter extends Component<Props, State> {
                 ['data', 'length'],
             ));
         const modalSubmit = [{
-            text: strings.modalLayerDetails.submit,
+            text: editModeActive
+                ? strings.modalLayerDetails.editSubmit
+                : strings.modalLayerDetails.submit,
             handleSubmit: this.handleModalSubmit,
             disabled,
             toggleModal: true,
         }];
+        const modalTitle = editModeActive
+            ? strings.modalLayerDetails.editTitle
+            : strings.modalLayerDetails.title;
 
         return (
             <ModalContainer
-                title={strings.modalLayerDetails.title}
+                title={modalTitle}
                 modalSubmit={modalSubmit}
                 cancelText={strings.modalLayerDetails.cancel}
             >
