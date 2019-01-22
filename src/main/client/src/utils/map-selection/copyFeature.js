@@ -32,6 +32,8 @@ export const copyFeature = async (
             copiedFeature.symbol = sketchViewModel.polygonSymbol;
             break;
     }
+
+    copiedFeature.initialGeometry = copiedFeature.geometry;
     copiedFeature.type = 'sketch-graphic';
     tempGraphicsLayer.add(copiedFeature);
     await setTempGraphicsLayer(tempGraphicsLayer);
