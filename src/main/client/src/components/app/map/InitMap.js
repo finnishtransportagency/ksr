@@ -256,7 +256,7 @@ class EsriMap extends Component<Props> {
                 (document.getElementById: Function)('create-new-feature-wrapper').classList
                     .remove('esri-component');
 
-                view.popup.on('trigger-action', (evt) => {
+                view.popup.on('trigger-action', async (evt) => {
                     const {
                         layerList,
                         setActiveModal,
@@ -319,8 +319,8 @@ class EsriMap extends Component<Props> {
                                     acceptText,
                                     cancelText,
                                 } = strings.esriMap.confirmReplace;
-                                showConfirmModal(body, acceptText, cancelText, () => {
-                                    copyFeature(
+                                showConfirmModal(body, acceptText, cancelText, async () => {
+                                    await copyFeature(
                                         view,
                                         tempGraphicsLayer,
                                         copiedFeature,
@@ -329,7 +329,7 @@ class EsriMap extends Component<Props> {
                                     );
                                 });
                             } else {
-                                copyFeature(
+                                await copyFeature(
                                     view,
                                     tempGraphicsLayer,
                                     copiedFeature,

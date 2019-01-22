@@ -11,7 +11,7 @@
  * @param {Object} sketchViewModel SketchViewModel that handles updating the copied geometry.
  * @param {Function} setTempGraphicsLayer Function for updating temporary graphics layer.
  */
-export const copyFeature = (
+export const copyFeature = async (
     view: Object,
     tempGraphicsLayer: Object,
     copiedFeature: Object,
@@ -34,5 +34,8 @@ export const copyFeature = (
     }
     copiedFeature.type = 'sketch-graphic';
     tempGraphicsLayer.add(copiedFeature);
-    setTempGraphicsLayer(tempGraphicsLayer);
+    await setTempGraphicsLayer(tempGraphicsLayer);
+
+    // Set to update mode automatically.
+    sketchViewModel.update([copiedFeature], { tool: 'reshape' });
 };
