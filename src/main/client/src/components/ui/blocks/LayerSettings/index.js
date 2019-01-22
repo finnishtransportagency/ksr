@@ -52,8 +52,8 @@ const Toggle = styled.div`
     padding: 0 1rem;
     flex-direction: column;
     cursor: pointer;
-    justify-content: space-evenly;
-    height: 100%;
+    justify-content: space-around;
+    height: 75%;
     
     .symbolWrapper {
         align-self: center;
