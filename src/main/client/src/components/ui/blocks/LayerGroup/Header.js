@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Header = styled.div`
     display: flex;
@@ -9,6 +9,16 @@ const Header = styled.div`
     &:hover {
         cursor: pointer;
     }
+    
+    ${props => props.subLayer && css`
+        justify-content: flex-end;
+        padding: unset;
+        
+        div {
+            display: block;
+            margin: 0.5rem 0;
+        }
+    `};
 `;
 
 export default Header;

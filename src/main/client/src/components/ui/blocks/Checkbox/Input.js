@@ -5,6 +5,8 @@ const Input = styled.input`
     position: absolute;
     opacity: 0;
     cursor: pointer;
+    height: 0;
+    width: 0;
     
     &:checked ~ span {
         background-color: ${styles.colorMain};
