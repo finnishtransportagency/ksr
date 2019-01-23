@@ -116,6 +116,20 @@ export const mapSelectPopup = async (
                     actions.push(copyFeatureAction);
                 }
 
+                const addEditAction = activeAdminTool
+                    && activeAdminTool === layer.graphic.layer.id
+                    && activeAdminLayer
+                    && activeAdminLayer.layerPermission.createLayer
+                    && activeAdminLayer.layerPermission.updateLayer;
+                if (addEditAction) {
+                    const editFeatureAction = {
+                        title: strings.esriMap.editFeature,
+                        id: 'edit-feature',
+                        className: 'fas fa-edit',
+                    };
+                    actions.push(editFeatureAction);
+                }
+
                 layer.graphic.layer.popupTemplate = {
                     title: layer.graphic.layer.title,
                     content: [{

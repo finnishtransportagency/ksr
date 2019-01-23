@@ -50,6 +50,12 @@ const fi = {
             acceptText: 'Korvaa',
             cancelText: 'Peruuta',
         },
+        editFeature: 'Muokkaa kohdetta',
+        confirmEditReplace: {
+            body: 'Haluatko varmasti hylätä aiemmat muutokset?',
+            acceptText: 'Hylkää',
+            cancelText: 'Peruuta',
+        },
     },
     modalFilter: {
         title: 'Suodata sarakkeita',

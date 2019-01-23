@@ -54,6 +54,8 @@ type Props = {
         accept: Function
     ) => void,
     setLayerList: (layerList: Object[]) => void,
+    setActiveFeatureMode: (activeMode: string) => void,
+    editModeActive: boolean,
 };
 
 class EsriMap extends Component<Props> {
@@ -266,6 +268,10 @@ class EsriMap extends Component<Props> {
                         showConfirmModal,
                         activeAdminTool,
                         authorities,
+                        setActiveFeatureMode,
+                        sketchViewModel,
+                        setTempGraphicsLayer,
+                        editModeActive,
                     } = this.props;
                     const { x, y } = view.popup.location;
 
@@ -282,6 +288,38 @@ class EsriMap extends Component<Props> {
 
                     const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
                     const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
+
+                    const copySelectedFeature = async (activeFeatureMode: string) => {
+                        const copiedFeature = view.popup.viewModel.selectedFeature;
+                        if (tempGraphicsLayer.graphics.length) {
+                            const {
+                                body,
+                                acceptText,
+                                cancelText,
+                            } = editModeActive
+                                ? strings.esriMap.confirmEditReplace
+                                : strings.esriMap.confirmReplace;
+                            showConfirmModal(body, acceptText, cancelText, async () => {
+                                await copyFeature(
+                                    view,
+                                    tempGraphicsLayer,
+                                    copiedFeature,
+                                    sketchViewModel,
+                                    setTempGraphicsLayer,
+                                );
+                                setActiveFeatureMode(activeFeatureMode);
+                            });
+                        } else {
+                            await copyFeature(
+                                view,
+                                tempGraphicsLayer,
+                                copiedFeature,
+                                sketchViewModel,
+                                setTempGraphicsLayer,
+                            );
+                            setActiveFeatureMode(activeFeatureMode);
+                        }
+                    };
 
                     switch (evt.action.id) {
                         case 'select-intersect':
@@ -309,36 +347,12 @@ class EsriMap extends Component<Props> {
                                 setActiveModal('featureContracts');
                             }
                             break;
-                        case 'copy-feature': {
-                            const { sketchViewModel, setTempGraphicsLayer } = this.props;
-                            const copiedFeature = view.popup.viewModel.selectedFeature;
-
-                            if (tempGraphicsLayer.graphics.length) {
-                                const {
-                                    body,
-                                    acceptText,
-                                    cancelText,
-                                } = strings.esriMap.confirmReplace;
-                                showConfirmModal(body, acceptText, cancelText, async () => {
-                                    await copyFeature(
-                                        view,
-                                        tempGraphicsLayer,
-                                        copiedFeature,
-                                        sketchViewModel,
-                                        setTempGraphicsLayer,
-                                    );
-                                });
-                            } else {
-                                await copyFeature(
-                                    view,
-                                    tempGraphicsLayer,
-                                    copiedFeature,
-                                    sketchViewModel,
-                                    setTempGraphicsLayer,
-                                );
-                            }
+                        case 'copy-feature':
+                            await copySelectedFeature('create');
                             break;
-                        }
+                        case 'edit-feature':
+                            await copySelectedFeature('edit');
+                            break;
                         default:
                             break;
                     }
