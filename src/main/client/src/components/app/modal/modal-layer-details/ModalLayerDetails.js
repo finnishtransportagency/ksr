@@ -22,6 +22,7 @@ type Props = {
     addUpdateLayers: Function,
     editModeActive: boolean,
     setActiveFeatureMode: (string) => void,
+    tableLayers: Object[],
 };
 
 type State = {
@@ -143,6 +144,7 @@ class ModalFilter extends Component<Props, State> {
             activeLayer,
             editModeActive,
             setActiveFeatureMode,
+            tableLayers,
         } = this.props;
 
         const { data, copiedFeature } = this.state;
@@ -182,7 +184,11 @@ class ModalFilter extends Component<Props, State> {
             this.props.sketchViewModel.cancel();
             this.props.sketchViewModel.reset();
 
-            if (nestedVal(activeLayer, ['type']) === 'agfl' || editModeActive) {
+            const tableLayer = tableLayers.find(l => l.id === originalLayerId);
+            const featureInTable = tableLayer && tableLayer.data.some(f => f._id === featureId);
+
+            if (nestedVal(activeLayer, ['type']) === 'agfl'
+                || (editModeActive && featureInTable)) {
                 addUpdateLayers(
                     originalLayerId,
                     objectId.name,
