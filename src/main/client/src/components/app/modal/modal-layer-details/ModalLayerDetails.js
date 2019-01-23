@@ -64,7 +64,7 @@ class ModalFilter extends Component<Props, State> {
             ...field,
             nullable: field.name !== activeLayer.contractIdField,
             data: copiedAttributes && copiedAttributes[field.name] ?
-                copiedAttributes[field.name] : '',
+                String(copiedAttributes[field.name]) : '',
         })).filter(f => (f.type !== 'esriFieldTypeOID'
                 && f.editable
                 && f.name !== activeLayer.relationColumnOut)
