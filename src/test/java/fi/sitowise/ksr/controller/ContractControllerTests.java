@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -137,12 +138,11 @@ public class ContractControllerTests extends AuthControllerTestBase {
     }
 
     @Test
-    public void testLinkObjects() throws Exception {
+    public void testLinkObjectsCreated() throws Exception {
         Layer fromLayer = new Layer();
         fromLayer.setHasRelations(true);
 
         Layer toLayer = new Layer();
-        toLayer.setHasRelations(true);
 
         Mockito.when(layerService.getLayer(Mockito.eq(135), Mockito.anyBoolean(), Mockito.any()))
                 .thenReturn(fromLayer);
@@ -155,11 +155,107 @@ public class ContractControllerTests extends AuthControllerTestBase {
                 Mockito.eq(12),
                 Mockito.eq(toLayer),
                 Mockito.eq(21)
-        )) .thenReturn(true);
+        )).thenReturn(true);
 
 
-        this.mockMvc.perform(get("/api/contract/link/135/12/531/21")
+        this.mockMvc.perform(post("/api/contract/link/135/12/531/21")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testLinkObjectsOk() throws Exception {
+        Layer fromLayer = new Layer();
+        fromLayer.setHasRelations(true);
+
+        Layer toLayer = new Layer();
+
+        Mockito.when(layerService.getLayer(Mockito.eq(136), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(fromLayer);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(532), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(toLayer);
+
+        Mockito.when(contractService.linkObjects(
+                Mockito.eq(fromLayer),
+                Mockito.eq(12),
+                Mockito.eq(toLayer),
+                Mockito.eq(21)
+        )).thenReturn(false);
+
+        this.mockMvc.perform(post("/api/contract/link/136/12/532/21")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUnLinkObjectsOk() throws Exception {
+        Layer fromLayer = new Layer();
+        fromLayer.setHasRelations(true);
+
+        Layer toLayer = new Layer();
+        toLayer.setHasRelations(true);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(136), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(fromLayer);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(532), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(toLayer);
+
+        Mockito.doNothing()
+                .when(contractService)
+                .unlinkObjects(Mockito.eq(fromLayer), Mockito.eq(12),  Mockito.eq(toLayer), Mockito.eq(21));
+
+        this.mockMvc.perform(post("/api/contract/unlink/136/12/532/21")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUnLinkObjectsNoLayer1() throws Exception {
+        Layer layer = new Layer();
+        layer.setHasRelations(true);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(136), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(null);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(532), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(layer);
+
+        this.mockMvc.perform(post("/api/contract/unlink/136/12/532/21")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUnLinkObjectsNoLayer2() throws Exception {
+        Layer layer = new Layer();
+        layer.setHasRelations(true);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(136), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(layer);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(532), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(null);
+
+        this.mockMvc.perform(post("/api/contract/unlink/136/12/532/21")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUnLinkObjectsNoRelations() throws Exception {
+        Layer fromLayer = new Layer();
+        Layer toLayer = new Layer();
+
+        Mockito.when(layerService.getLayer(Mockito.eq(136), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(fromLayer);
+
+        Mockito.when(layerService.getLayer(Mockito.eq(532), Mockito.anyBoolean(), Mockito.any()))
+                .thenReturn(toLayer);
+
+        this.mockMvc.perform(post("/api/contract/unlink/136/12/532/21")
+                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
+                .andExpect(status().isNotFound());
     }
 }

@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -76,8 +78,8 @@ public class ContractController {
      * @param toObjectId Id of the object in which to relate.
      */
     @ApiOperation("Link to objects from two distinct layers.")
-    @GetMapping(value = "/link/{fromLayerId}/{fromObjectId}/{toLayerId}/{toObjectId}")
-    public boolean link(
+    @PostMapping(value = "/link/{fromLayerId}/{fromObjectId}/{toLayerId}/{toObjectId}")
+    public ResponseEntity link(
             @PathVariable int fromLayerId,
             @PathVariable int fromObjectId,
             @PathVariable int toLayerId,
@@ -106,7 +108,55 @@ public class ContractController {
             );
             throw new KsrApiException.NotFoundErrorException(String.format("Layer %d not linkable.", fromLayerId));
         }
-        return contractService.linkObjects(fromLayer, fromObjectId, toLayer, toObjectId);
+        if (contractService.linkObjects(fromLayer, fromObjectId, toLayer, toObjectId)) {
+            return new ResponseEntity(HttpStatus.CREATED);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    /**
+     * Unlink to objects from two distinct layers.
+     *
+     * Unlinking is possible if layers are related and user has permission to modify required layers.
+     *
+     * @param fromLayerId Id of the layer whose object to unrelate.
+     * @param fromObjectId Id of the object to unrelate.
+     * @param toLayerId Id of the layer in which to unrelate.
+     * @param toObjectId Id of the object in which to unrelate.
+     */
+    @ApiOperation("Unlink two objects from two distinct layers.")
+    @PostMapping(value = "/unlink/{fromLayerId}/{fromObjectId}/{toLayerId}/{toObjectId}")
+    public ResponseEntity unlink(
+            @PathVariable int fromLayerId,
+            @PathVariable int fromObjectId,
+            @PathVariable int toLayerId,
+            @PathVariable int toObjectId
+    ) {
+        Layer fromLayer = layerService.getLayer(fromLayerId, true, LayerAction.READ_LAYER);
+        Layer toLayer = layerService.getLayer(toLayerId, true, LayerAction.READ_LAYER);
+        if (fromLayer == null || toLayer == null) {
+            LOG.info(
+                    String.format(
+                            "Cannot unlink contracts. Layer [%d] not found for user [%s].",
+                            fromLayer == null ? fromLayerId : toLayerId,
+                            KsrAuthenticationUtils.getCurrentUsername()
+                    )
+            );
+            throw new KsrApiException.NotFoundErrorException(
+                    String.format("Layer %d not found.", fromLayer == null ? fromLayerId : toLayerId)
+            );
+        } else if (!fromLayer.isHasRelations()) {
+            LOG.info(
+                    String.format(
+                            "Cannot unlink contracts. Layer [%d] has not relations. User [%s].",
+                            fromLayerId,
+                            KsrAuthenticationUtils.getCurrentUsername()
+                    )
+            );
+            throw new KsrApiException.NotFoundErrorException(String.format("Layer %d not linkable.", fromLayerId));
+        }
+        contractService.unlinkObjects(fromLayer, fromObjectId, toLayer, toObjectId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**

@@ -12,6 +12,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -752,11 +754,11 @@ public class ContractServiceTests {
                 Mockito.isNull()
         )).thenReturn(is4);
 
-        Assert.assertTrue(contractService.linkObjects(fromLayer, 123, toLayer, 200));
+        Assert.assertFalse(contractService.linkObjects(fromLayer, 123, toLayer, 200));
     }
 
     @Test
-    public void testLinkObjectsMany() {
+    public void testLinkObjectsManyExisting() {
         Layer fromLayer = new Layer();
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
@@ -792,8 +794,9 @@ public class ContractServiceTests {
 
 
         InputStream is1 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"FROM_OUT\": 200}}}".getBytes(StandardCharsets.UTF_8));
-        InputStream is2 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"COLUMN_IN\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is2 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"TO_IN\": 200}}}".getBytes(StandardCharsets.UTF_8));
         InputStream is3 = new ByteArrayInputStream("{\"addResults\":[{\"objectId\":1,\"success\":true}],\"updateResults\":[],\"deleteResults\":[]}".getBytes(StandardCharsets.UTF_8));
+        InputStream is4 = new ByteArrayInputStream("{\"objectIdFieldName\":\"OBJECTID\",\"globalIdFieldName\":\"\",\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":102139,\"latestWkid\":3067},\"fields\":[],\"features\":[{\"attributes\": {\"MIDDLE_IN\":200,\"MIDDLE_OUT\":200}}]}".getBytes(StandardCharsets.UTF_8));
 
         Mockito.when(httpRequestService.getURLContents(
                 Mockito.eq("http://from.layer/1/123?f=pjson"),
@@ -806,6 +809,88 @@ public class ContractServiceTests {
                 Mockito.eq(false),
                 Mockito.isNull()
         )).thenReturn(is2);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://middle.layer/2/query?f=pjson&returnGeometry=false&outFields=*&where=MIDDLE_IN+IN+%28200%29"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is4);
+
+        Mockito.when(layerService.getLayer(
+                Mockito.eq(2),
+                Mockito.anyBoolean(),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(middleLayer);
+
+        Mockito.when(httpRequestService.postURLContents(
+                Mockito.eq("http://middle.layer/2/applyEdits"),
+                Mockito.any(HttpEntity.class),
+                Mockito.isNull(),
+                Mockito.anyString(),
+                Mockito.anyBoolean()
+        )).thenReturn(is3);
+
+        Assert.assertFalse(contractService.linkObjects(fromLayer, 123, toLayer, 200));
+    }
+
+    @Test
+    public void testLinkObjectsManyNonExisting() {
+        Layer fromLayer = new Layer();
+        fromLayer.setId(1L);
+        fromLayer.setType("agfs");
+        fromLayer.setUrl("http://from.layer/1");
+        fromLayer.setRelationType("many");
+        fromLayer.setRelationLayerId(2L);
+        fromLayer.setRelationColumnOut("FROM_OUT");
+        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        LayerPermission fromPermission = new LayerPermission();
+        fromPermission.setUpdateLayer("1");
+        fromPermission.setReadLayer("1");
+        fromLayer.setLayerPermission(fromPermission);
+
+        Layer middleLayer = new Layer();
+        middleLayer.setId(2L);
+        middleLayer.setType("agfl");
+        middleLayer.setUrl("http://middle.layer/2");
+        middleLayer.setRelationType("link");
+        middleLayer.setRelationLayerId(3L);
+        middleLayer.setRelationColumnOut("MIDDLE_OUT");
+        middleLayer.setRelationColumnIn("TO_IN");
+
+        LayerPermission middlePermission = new LayerPermission();
+        middlePermission.setUpdateLayer("1");
+        middlePermission.setReadLayer("1");
+        middleLayer.setLayerPermission(middlePermission);
+
+        Layer toLayer = new Layer();
+        toLayer.setId(3L);
+        toLayer.setUrl("http://to.layer/3");
+        toLayer.setType("agfs");
+
+
+        InputStream is1 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"FROM_OUT\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is2 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"TO_IN\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is3 = new ByteArrayInputStream("{\"addResults\":[{\"objectId\":1,\"success\":true}],\"updateResults\":[],\"deleteResults\":[]}".getBytes(StandardCharsets.UTF_8));
+        InputStream is4 = new ByteArrayInputStream("{\"objectIdFieldName\":\"OBJECTID\",\"globalIdFieldName\":\"\",\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":102139,\"latestWkid\":3067},\"fields\":[],\"features\":[]}".getBytes(StandardCharsets.UTF_8));
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://from.layer/1/123?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is1);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://to.layer/3/200?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is2);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://middle.layer/2/query?f=pjson&returnGeometry=false&outFields=*&where=MIDDLE_IN+IN+%28200%29"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is4);
 
         Mockito.when(layerService.getLayer(
                 Mockito.eq(2),
@@ -881,6 +966,264 @@ public class ContractServiceTests {
         )).thenReturn(middleLayer);
 
         contractService.linkObjects(fromLayer, 123, toLayer, 200);
+    }
+
+    @Test
+    public void testUnLinkObjectsMany() {
+        Layer fromLayer = new Layer();
+        fromLayer.setId(1L);
+        fromLayer.setType("agfs");
+        fromLayer.setUrl("http://from.layer/1");
+        fromLayer.setRelationType("many");
+        fromLayer.setRelationLayerId(2L);
+        fromLayer.setRelationColumnOut("FROM_OUT");
+        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        LayerPermission fromPermission = new LayerPermission();
+        fromPermission.setUpdateLayer("1");
+        fromPermission.setReadLayer("1");
+        fromLayer.setLayerPermission(fromPermission);
+
+        Layer middleLayer = new Layer();
+        middleLayer.setId(2L);
+        middleLayer.setType("agfl");
+        middleLayer.setUrl("http://middle.layer/2");
+        middleLayer.setRelationType("link");
+        middleLayer.setRelationLayerId(3L);
+        middleLayer.setRelationColumnOut("MIDDLE_OUT");
+        middleLayer.setRelationColumnIn("TO_IN");
+
+        LayerPermission middlePermission = new LayerPermission();
+        middlePermission.setUpdateLayer("1");
+        middlePermission.setReadLayer("1");
+        middleLayer.setLayerPermission(middlePermission);
+
+        Layer toLayer = new Layer();
+        toLayer.setId(3L);
+        toLayer.setUrl("http://to.layer/3");
+        toLayer.setType("agfs");
+
+
+        InputStream is1 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"FROM_OUT\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is2 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"TO_IN\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is3 = new ByteArrayInputStream("{\"addResults\":[],\"updateResults\":[],\"deleteResults\":[{\"objectId\":1,\"success\":true}]}".getBytes(StandardCharsets.UTF_8));
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://from.layer/1/123?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is1);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://to.layer/3/200?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is2);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://middle.layer/2/query?f=pjson&returnGeometry=false&outFields=*&where=MIDDLE_IN+IN+%28200%29"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenAnswer(new Answer<InputStream>() {
+            // Cannot use thenReturn because this mock will be invoked multiple times during execution,
+            // and therefore a new InputStream is necessary.
+            public InputStream answer(InvocationOnMock invocation) {
+                return new ByteArrayInputStream("{\"objectIdFieldName\":\"OBJECTID\",\"globalIdFieldName\":\"\",\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":102139,\"latestWkid\":3067},\"fields\":[],\"features\":[{\"attributes\": {\"OBJECTID\":1,\"MIDDLE_IN\":200,\"MIDDLE_OUT\":200}}]}".getBytes(StandardCharsets.UTF_8));
+            }
+        });
+
+        Mockito.when(layerService.getLayer(
+                Mockito.eq(2),
+                Mockito.anyBoolean(),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(middleLayer);
+
+        Mockito.when(httpRequestService.postURLContents(
+                Mockito.eq("http://middle.layer/2/deleteFeatures"),
+                Mockito.any(HttpEntity.class),
+                Mockito.isNull(),
+                Mockito.anyString(),
+                Mockito.anyBoolean()
+        )).thenReturn(is3);
+
+        contractService.unlinkObjects(fromLayer, 123, toLayer, 200);
+    }
+
+    @Test(expected = KsrApiException.ForbiddenException.class)
+    @WithMockUser(username = "test_user")
+    public void testUnLinkObjectsManyNoPermission() {
+        Layer fromLayer = new Layer();
+        fromLayer.setId(1L);
+        fromLayer.setType("agfs");
+        fromLayer.setUrl("http://from.layer/1");
+        fromLayer.setRelationType("many");
+        fromLayer.setRelationLayerId(2L);
+        fromLayer.setRelationColumnOut("FROM_OUT");
+        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        LayerPermission fromPermission = new LayerPermission();
+        fromPermission.setReadLayer("1");
+        fromLayer.setLayerPermission(fromPermission);
+
+        Layer middleLayer = new Layer();
+        middleLayer.setId(2L);
+        middleLayer.setType("agfl");
+        middleLayer.setUrl("http://middle.layer/2");
+        middleLayer.setRelationType("link");
+        middleLayer.setRelationLayerId(3L);
+        middleLayer.setRelationColumnOut("MIDDLE_OUT");
+        middleLayer.setRelationColumnIn("TO_IN");
+
+        LayerPermission middlePermission = new LayerPermission();
+        middlePermission.setReadLayer("1");
+        middleLayer.setLayerPermission(middlePermission);
+
+        Layer toLayer = new Layer();
+        toLayer.setId(3L);
+        toLayer.setUrl("http://to.layer/3");
+        toLayer.setType("agfs");
+
+
+        InputStream is1 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"FROM_OUT\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is2 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"TO_IN\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is3 = new ByteArrayInputStream("{\"addResults\":[],\"updateResults\":[],\"deleteResults\":[{\"objectId\":1,\"success\":true}]}".getBytes(StandardCharsets.UTF_8));
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://from.layer/1/123?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is1);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://to.layer/3/200?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is2);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://middle.layer/2/query?f=pjson&returnGeometry=false&outFields=*&where=MIDDLE_IN+IN+%28200%29"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenAnswer(new Answer<InputStream>() {
+            // Cannot use thenReturn because this mock will be invoked multiple times during execution,
+            // and therefore a new InputStream is necessary.
+            public InputStream answer(InvocationOnMock invocation) {
+                return new ByteArrayInputStream("{\"objectIdFieldName\":\"OBJECTID\",\"globalIdFieldName\":\"\",\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":102139,\"latestWkid\":3067},\"fields\":[],\"features\":[{\"attributes\": {\"OBJECTID\":1,\"MIDDLE_IN\":200,\"MIDDLE_OUT\":200}}]}".getBytes(StandardCharsets.UTF_8));
+            }
+        });
+
+        Mockito.when(layerService.getLayer(
+                Mockito.eq(2),
+                Mockito.anyBoolean(),
+                Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(middleLayer);
+
+        Mockito.when(httpRequestService.postURLContents(
+                Mockito.eq("http://middle.layer/2/deleteFeatures"),
+                Mockito.any(HttpEntity.class),
+                Mockito.isNull(),
+                Mockito.anyString(),
+                Mockito.anyBoolean()
+        )).thenReturn(is3);
+
+        contractService.unlinkObjects(fromLayer, 123, toLayer, 200);
+    }
+
+    @Test
+    public void testUnLinkObjectsSimple() {
+        Layer fromLayer = new Layer();
+        fromLayer.setId(1L);
+        fromLayer.setType("agfs");
+        fromLayer.setUrl("http://from.layer/1");
+        fromLayer.setRelationType("one");
+        fromLayer.setRelationLayerId(2L);
+        fromLayer.setRelationColumnOut("COLUMN_OUT");
+        fromLayer.setRelationColumnIn("COLUMN_IN");
+
+        LayerPermission permission = new LayerPermission();
+        permission.setUpdateLayer("1");
+        fromLayer.setLayerPermission(permission);
+
+        Layer toLayer = new Layer();
+        toLayer.setId(2L);
+        toLayer.setUrl("http://to.layer/2");
+        toLayer.setType("agfs");
+
+
+        InputStream is2 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"COLUMN_IN\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is3 = new ByteArrayInputStream("{\"addResults\":[],\"updateResults\":[{\"objectId\":1,\"success\":true}],\"deleteResults\":[]}".getBytes(StandardCharsets.UTF_8));
+        InputStream is4 = new ByteArrayInputStream("{\"objectIdField\": \"OBJECTID\"}".getBytes(StandardCharsets.UTF_8));
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://to.layer/2/200?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is2);
+
+        Mockito.when(httpRequestService.postURLContents(
+                Mockito.eq("http://from.layer/1/applyEdits"),
+                Mockito.any(HttpEntity.class),
+                Mockito.isNull(),
+                Mockito.anyString(),
+                Mockito.anyBoolean()
+        )).thenReturn(is3);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://from.layer/1?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is4);
+
+        contractService.unlinkObjects(fromLayer, 123, toLayer, 200);
+    }
+
+    @Test(expected = KsrApiException.ForbiddenException.class)
+    @WithMockUser(username = "test_user")
+    public void testUnLinkObjectsSimpleNoPermission() {
+        Layer fromLayer = new Layer();
+        fromLayer.setId(1L);
+        fromLayer.setType("agfs");
+        fromLayer.setUrl("http://from.layer/1");
+        fromLayer.setRelationType("one");
+        fromLayer.setRelationLayerId(2L);
+        fromLayer.setRelationColumnOut("COLUMN_OUT");
+        fromLayer.setRelationColumnIn("COLUMN_IN");
+
+        LayerPermission permission = new LayerPermission();
+        permission.setReadLayer("1");
+        fromLayer.setLayerPermission(permission);
+
+        Layer toLayer = new Layer();
+        toLayer.setId(2L);
+        toLayer.setUrl("http://to.layer/2");
+        toLayer.setType("agfs");
+
+
+        InputStream is2 = new ByteArrayInputStream("{\"feature\":{\"attributes\":{\"COLUMN_IN\": 200}}}".getBytes(StandardCharsets.UTF_8));
+        InputStream is3 = new ByteArrayInputStream("{\"addResults\":[],\"updateResults\":[{\"objectId\":1,\"success\":true}],\"deleteResults\":[]}".getBytes(StandardCharsets.UTF_8));
+        InputStream is4 = new ByteArrayInputStream("{\"objectIdField\": \"OBJECTID\"}".getBytes(StandardCharsets.UTF_8));
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://to.layer/2/200?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is2);
+
+        Mockito.when(httpRequestService.postURLContents(
+                Mockito.eq("http://from.layer/1/applyEdits"),
+                Mockito.any(HttpEntity.class),
+                Mockito.isNull(),
+                Mockito.anyString(),
+                Mockito.anyBoolean()
+        )).thenReturn(is3);
+
+        Mockito.when(httpRequestService.getURLContents(
+                Mockito.eq("http://from.layer/1?f=pjson"),
+                Mockito.eq(false),
+                Mockito.isNull()
+        )).thenReturn(is4);
+
+        contractService.unlinkObjects(fromLayer, 123, toLayer, 200);
     }
 
 }
