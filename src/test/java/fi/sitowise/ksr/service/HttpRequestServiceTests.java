@@ -13,7 +13,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -186,20 +185,6 @@ public class HttpRequestServiceTests {
         Node attribute = attributes.getNamedItem("name");
 
         Assert.assertEquals("replace_this", attribute.getNodeValue());
-    }
-
-    @Ignore
-    @Test
-    public void testDocumentToBytesArray() throws IOException, SAXException, ParserConfigurationException, TransformerException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-
-        String xml = "<a><b>C</b></a>";
-        Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes()));
-
-        Assert.assertEquals(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><a><b>C</b></a>",
-                new String(httpRequestService.documentToBytesArray(doc)));
     }
 
     @Test
