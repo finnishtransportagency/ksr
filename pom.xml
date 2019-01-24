@@ -219,6 +219,11 @@
 			            </configuration>
 			        </execution>
 			    </executions>
+				<configuration>
+					<nonFilteredFileExtensions>
+						<nonFilteredFileExtension>ico</nonFilteredFileExtension>
+					</nonFilteredFileExtensions>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
