@@ -12,6 +12,7 @@ import { handleFailedEdit } from '../reducers/offline/actions';
 import store from '../store';
 import { nestedVal } from './nestedValue';
 import { queryFeatures } from '../api/search/searchQuery';
+import { addUpdateLayers } from '../reducers/table/actions';
 
 /**
  * Convert attribute back to original Feature Layer attribute format.
@@ -150,18 +151,16 @@ const handleDeleteResponse = (res: Object, layer: ?Object) => {
 /**
  * Handle popup update if it is open.
  *
- * @param {Object} layer Updated layer data.
  * @param {Object} view MapView Esri ArcGIS JS MapView.
  * @param {string} layerId string id of the corresponding layer.
  * @param {string} [idFieldName] Name of identifier field.
- * @param {?string} [objectId] Id of feature.
+ * @param {number} [objectId] Id of feature.
  */
 const handlePopupUpdate = (
-    layer: Object,
     view: Object,
     layerId: string,
     idFieldName?: string,
-    objectId?: ?string,
+    objectId?: number,
 ) => {
     if (objectId && idFieldName) {
         queryFeatures(
@@ -190,7 +189,6 @@ const handlePopupUpdate = (
             }
         });
     }
-    return layer;
 };
 
 /**
@@ -200,41 +198,72 @@ const handlePopupUpdate = (
  * @param {Object} view MapView Esri ArcGIS JS MapView.
  * @param {string} layerId string id of the corresponding layer.
  * @param {Object[]} features Array of features.
- * @param {?string} [objectId] Id of feature.
- * @param {string} [idFieldName] Name of identifier field.
+ * @param {string} idFieldName Name of identifier field.
+ * @param {number} [objectId] Id of feature.
  * @param {boolean} [hideToast] Show saving data toast or not.
+ * @param {boolean} [selected] Is the feature selected on the table,
  */
-const saveData = (
+const saveData = async (
     action: string,
     view: Object,
     layerId: string,
     features: Object[],
-    objectId?: ?string,
-    idFieldName?: string,
+    idFieldName: string,
+    objectId?: number,
     hideToast?: boolean,
+    selected?: boolean,
 ) => {
     const params = featureDataToParams(features);
     const layer = findMatchingLayer(view, layerId);
+    const { layers } = store.getState().table.features;
+    const tableLayer = layers.find(l => l.id === layerId);
     if (params) {
         switch (action) {
-            case 'add':
-                return addFeatures(layerId, params.toString()).then(res =>
-                    res && handleSaveResponse(res, layer, hideToast))
-                    .catch((err) => {
-                        store.dispatch(handleFailedEdit('add', [layerId, params.toString()]));
-                        toast.error(`${strings.saveFeatureData.newFeatureSaveError}`);
-                        console.error(err);
-                    });
-            case 'update':
-                return updateFeatures(layerId, params.toString()).then(res =>
-                    res && handleUpdateResponse(res, layerId, layer, hideToast))
-                    .then(layerToUpdated => layerToUpdated &&
-                        handlePopupUpdate(layerToUpdated, view, layerId, idFieldName, objectId))
-                    .catch((err) => {
-                        store.dispatch(handleFailedEdit('update', [layerId, params.toString()]));
-                        toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
-                        console.error(err);
-                    });
+            case 'add': {
+                let res = null;
+                try {
+                    res = await addFeatures(layerId, params.toString());
+                    await handleSaveResponse(res, layer, hideToast);
+                    if (nestedVal(tableLayer, ['type']) === 'agfl' &&
+                        res && res.addResults && res.addResults.length > 0) {
+                        store.dispatch(addUpdateLayers(
+                            layerId,
+                            idFieldName,
+                            objectId || res.addResults[0].objectId,
+                            selected,
+                        ));
+                    }
+                } catch (err) {
+                    store.dispatch(handleFailedEdit('add', [layerId, params.toString()]));
+                    toast.error(`${strings.saveFeatureData.newFeatureSaveError}`);
+                    console.error(err);
+                }
+                return res;
+            }
+            case 'update': {
+                let layerToUpdated = null;
+                try {
+                    const featureInTable = tableLayer &&
+                        tableLayer.data.some(f => f._id === objectId);
+                    const res = await updateFeatures(layerId, params.toString());
+                    layerToUpdated =
+                        await handleUpdateResponse(res, layerId, layer, hideToast);
+                    await handlePopupUpdate(view, layerId, idFieldName, objectId);
+                    if (featureInTable && nestedVal(layerToUpdated, ['features', 'length']) && objectId) {
+                        store.dispatch(addUpdateLayers(
+                            layerId,
+                            idFieldName,
+                            objectId,
+                            selected,
+                        ));
+                    }
+                } catch (err) {
+                    store.dispatch(handleFailedEdit('update', [layerId, params.toString()]));
+                    toast.error(`${strings.saveFeatureData.layerUpdateSaveError}`);
+                    console.error(err);
+                }
+                return layerToUpdated;
+            }
             default:
                 return Promise.reject(new Error(`No handler for action ${action}`));
         }
@@ -349,7 +378,7 @@ const saveEditedFeatureData = (
 
             const layerId = ed.id;
             const idFieldNameWithoutLayerId = ed._idFieldName;
-            let objectId = null;
+            let objectId = 0;
             if (nestedVal(view, ['popup', 'viewModel', 'features']) && view.popup.viewModel.features.length > 0) {
                 const currentData = ed.data.find(d => d._id ===
                     view.popup.viewModel.features[0].attributes[ed._idFieldName]);
@@ -363,7 +392,7 @@ const saveEditedFeatureData = (
             ));
 
             return Promise.all(promisesAddressField)
-                .then(r => save.saveData('update', view, layerId, r, objectId, idFieldNameWithoutLayerId));
+                .then(r => save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId, objectId));
         });
         return Promise.all(promises);
     }

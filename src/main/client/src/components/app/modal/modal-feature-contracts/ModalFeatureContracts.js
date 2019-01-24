@@ -20,7 +20,6 @@ type Props = {
     view: Object,
     createLayerPermission: boolean,
     editLayerPermission: boolean,
-    addUpdateLayers: Function,
     layerList: Object[],
     setLayerList: (layerList: Object[]) => void,
 };
@@ -113,7 +112,7 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     handleSubmitLinkToContract = () => {
         const {
-            objectId, currentLayer, contractLinkLayer, addUpdateLayers, view,
+            objectId, currentLayer, contractLinkLayer, view,
         } = this.props;
         this.setState({
             activeView: 'linkContract',
@@ -133,7 +132,6 @@ class ModalFeatureContracts extends Component<Props, State> {
                         contractLinkLayer || currentLayer,
                         this.state.contractUuid,
                         objectId,
-                        addUpdateLayers,
                         view,
                     );
                     this.setState({ ...this.initialState });
@@ -144,15 +142,30 @@ class ModalFeatureContracts extends Component<Props, State> {
         });
     };
 
-    handleSubmitEditContract = async () => {
-        const { view, contractLayer } = this.props;
-        await save.saveData('update', view, nestedVal(contractLayer, ['id']), [this.state.data]);
-        this.setState({ ...this.initialState });
+    handleSubmitEditContract = () => {
+        const {
+            view, contractLayer,
+        } = this.props;
+        const objectIdField = contractLayer.fields
+            .find(field => field.type === 'esriFieldTypeOID');
+        if (objectIdField) {
+            const objectIdFieldName = objectIdField.name;
+            const objectId = this.state.data.attributes[objectIdFieldName];
+
+            save.saveData(
+                'update',
+                view,
+                nestedVal(contractLayer, ['id']),
+                [this.state.data],
+                objectIdFieldName,
+                objectId,
+            ).then(this.setState({ ...this.initialState }));
+        }
     };
 
     handleSubmitAddContract = () => {
         const {
-            objectId, currentLayer, contractLinkLayer, contractLayer, addUpdateLayers, view,
+            objectId, currentLayer, contractLinkLayer, contractLayer, view,
         } = this.props;
         this.setState({
             activeView: 'addContract',
@@ -167,11 +180,19 @@ class ModalFeatureContracts extends Component<Props, State> {
                             disabled: true,
                         })),
                     });
+                    const objectIdField = contractLayer.fields
+                        .find(field => field.type === 'esriFieldTypeOID');
+                    const objectIdFieldName = objectIdField.name;
+
                     const res = await save.saveData(
                         'add',
                         view,
                         nestedVal(contractLayer, ['id']),
                         [this.state.data],
+                        objectIdFieldName,
+                        undefined,
+                        false,
+                        false,
                     );
                     if (res && res.addResults) {
                         const { contractNumber } = this.state;
@@ -184,7 +205,6 @@ class ModalFeatureContracts extends Component<Props, State> {
                             contractLinkLayer || currentLayer,
                             contractUuid,
                             objectId,
-                            addUpdateLayers,
                             view,
                         );
                     }

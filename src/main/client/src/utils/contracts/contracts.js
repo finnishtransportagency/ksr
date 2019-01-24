@@ -92,7 +92,6 @@ export const getContractLayers = (layerId: string, layerList: Object[]) => {
  * the contracts link layer, or original geometry layer.
  * @param {?string} contractUuid Linkable contracts unique identifier. Only used for link layer.
  * @param {number} objectId Objectid fields value.
- * @param {Function} addUpdateLayers Redux function to call SelectLayer action.
  * @param {Object} view Esri map view.
  *
  * @returns {Promise} Returns when queries completed.
@@ -102,7 +101,6 @@ export const linkToContract = async (
     contractUpdateLayer: Object,
     contractUuid: ?string,
     objectId: number,
-    addUpdateLayers: Function,
     view: Object,
 ) => {
     const { relationColumnIn, relationColumnOut, id } = contractUpdateLayer;
@@ -123,7 +121,7 @@ export const linkToContract = async (
 
             const queryResult = await queryFeatures(id, whereQueryString);
             if (!queryResult.features.length) {
-                const res = await save.saveData('add', view, id, features, objectId.toString(), objectIdFieldName, true);
+                const res = await save.saveData('add', view, id, features, objectIdFieldName, objectId, true, false);
                 if (res && res.addResults.some(r => r.success)) {
                     toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
                 } else {
@@ -140,18 +138,8 @@ export const linkToContract = async (
                 },
             }];
 
-            addUpdateLayers(
-                id,
-                objectIdFieldName,
-                objectId,
-            );
-            const res = await save.saveData('update', view, id, features, objectId.toString(), objectIdFieldName, true);
+            const res = await save.saveData('update', view, id, features, objectIdFieldName, objectId, true);
             if (nestedVal(res, ['features', 'length'])) {
-                addUpdateLayers(
-                    id,
-                    objectIdFieldName,
-                    objectId,
-                );
                 toast.success(strings.modalFeatureContracts.linkContract.contractLinked);
             } else {
                 toast.error(strings.modalFeatureContracts.linkContract.contractLinkedError);

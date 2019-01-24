@@ -2,7 +2,6 @@
 import { connect } from 'react-redux';
 import ModalLayerDetails from './ModalLayerDetails';
 import { setActiveFeatureMode, setTempGraphicsLayer } from '../../../../reducers/map/actions';
-import { addUpdateLayers } from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
     const activeLayer = (
@@ -29,16 +28,12 @@ const mapStateToProps = (state) => {
         view: state.map.mapView.view,
         sketchViewModel: state.map.mapTools.sketchViewModel,
         editModeActive: state.modal.activeModal.data,
-        tableLayers: state.table.features.layers,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
     setTempGraphicsLayer: (graphicsLayer) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
-    },
-    addUpdateLayers: (layerId, ObjectIdFieldName, objectId, selected) => {
-        dispatch(addUpdateLayers(layerId, ObjectIdFieldName, objectId, selected));
     },
     setActiveFeatureMode: (activeFeatureMode: string) => {
         dispatch(setActiveFeatureMode(activeFeatureMode));

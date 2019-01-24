@@ -19,10 +19,8 @@ type Props = {
     activeLayer: Object,
     sketchViewModel: Object,
     objectId: Object,
-    addUpdateLayers: Function,
     editModeActive: boolean,
     setActiveFeatureMode: (string) => void,
-    tableLayers: Object[],
 };
 
 type State = {
@@ -140,11 +138,8 @@ class ModalFilter extends Component<Props, State> {
             featureType,
             layer,
             objectId,
-            addUpdateLayers,
-            activeLayer,
             editModeActive,
             setActiveFeatureMode,
-            tableLayers,
         } = this.props;
 
         const { data, copiedFeature } = this.state;
@@ -153,7 +148,7 @@ class ModalFilter extends Component<Props, State> {
             geometry: copiedFeature ? copiedFeature.geometry : null,
         };
         const feature = await createAddressFields(combinedData, featureType, addressField);
-        let featureId = '';
+        let featureId = 0;
         if (editModeActive && copiedFeature) {
             // Filter unchanged attributes.
             feature.attributes = Object.entries(feature.attributes).reduce((acc, cur) => {
@@ -169,35 +164,18 @@ class ModalFilter extends Component<Props, State> {
             // Add object id field and value for the feature.
             featureId = copiedFeature.attributes[objectId.name];
             feature.attributes[objectId.name] = featureId;
-            await save.saveData('update', view, originalLayerId, [feature]);
+            await save.saveData('update', view, originalLayerId, [feature], objectId.name, featureId);
         } else {
-            const response = await save.saveData('add', view, originalLayerId, [feature]);
-            if (response && response.addResults && response.addResults.length > 0) {
-                featureId = response.addResults[0].objectId;
-            }
+            await save.saveData('add', view, originalLayerId, [feature], objectId.name, undefined, false, false);
         }
-        if (objectId && featureId) {
-            if (layer) {
-                layer.graphics = undefined;
-                this.props.setTempGraphicsLayer(layer);
-            }
-            this.props.sketchViewModel.cancel();
-            this.props.sketchViewModel.reset();
-
-            const tableLayer = tableLayers.find(l => l.id === originalLayerId);
-            const featureInTable = tableLayer && tableLayer.data.some(f => f._id === featureId);
-
-            if (nestedVal(activeLayer, ['type']) === 'agfl'
-                || (editModeActive && featureInTable)) {
-                addUpdateLayers(
-                    originalLayerId,
-                    objectId.name,
-                    featureId,
-                    editModeActive,
-                );
-            }
-            setActiveFeatureMode('create');
+        if (layer) {
+            layer.graphics = undefined;
+            this.props.setTempGraphicsLayer(layer);
         }
+        this.props.sketchViewModel.cancel();
+        this.props.sketchViewModel.reset();
+
+        setActiveFeatureMode('create');
     };
 
     render() {
