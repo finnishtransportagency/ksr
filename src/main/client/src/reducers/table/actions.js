@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { fetchSearchQuery, queryFeatures } from '../../api/search/searchQuery';
 import * as types from '../../constants/actionTypes';
 import strings from '../../translations';
-import { parseData, parseNewUpdateData } from '../../utils/parseFeatureData';
+import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
 
@@ -34,9 +34,11 @@ export const addUpdateLayers = (
         )
             .then((result) => {
                 if (result && result.fields && result.features.length > 0) {
+                    // Add layer Id to result
+                    result.id = layerId;
                     dispatch({
                         type: types.SELECT_FEATURES,
-                        layers: parseNewUpdateData(layerId, [result], selected),
+                        layers: parseData({ layers: [result] }, selected),
                     });
                 }
             });

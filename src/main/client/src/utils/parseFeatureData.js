@@ -79,32 +79,6 @@ export const parseData = (data, selected) => {
 };
 
 /**
- * Parse only feature data from Esri's FeatureService JSON-response.
- *
- * @param {number} id LayerId.
- * @param data Content of FeatureService JSON-response.
- * @param {boolean} selected Whether features should be marked as selected.
- *
- * @returns {Object[]} Array of layers holding respective features.
- */
-export const parseNewUpdateData = (id, data, selected) => {
-    if (data === undefined || data === null) return [];
-    return data.map(l => ({
-        id,
-        _idFieldName: l.objectIdFieldName,
-        data: l.features.map(f => ({
-            ...parseAttributes(id, f.attributes),
-            _id: f.attributes[l.objectIdFieldName],
-            _layerId: id,
-            _selected: f.selected !== undefined ? f.selected : selected,
-            _edited: [],
-            _key: `${id}/${f.attributes[l.objectIdFieldName]}`,
-            _source: 'select',
-        })),
-    }));
-};
-
-/**
  * Merge two arrays of features. If features does not exists in
  * currentData (matching done with '_id') then add it, otherwise
  * update its matching attributes.
