@@ -176,3 +176,7 @@ export const toggleLayer = (layerId: string) => ({
     type: types.TOGGLE_LAYER,
     layerId,
 });
+
+export const toggleMeasurements = () => ({
+    type: types.TOGGLE_MEASUREMENTS,
+});

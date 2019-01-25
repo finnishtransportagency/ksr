@@ -6,6 +6,7 @@ describe('mapDraw reducer', () => {
         const initialState = {
             drawText: '',
             hasGraphics: false,
+            showMeasurements: true,
         };
 
         expect(reducer(undefined, {})).toEqual(initialState);
