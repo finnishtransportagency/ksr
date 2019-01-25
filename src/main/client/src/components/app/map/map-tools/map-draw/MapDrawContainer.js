@@ -5,6 +5,7 @@ import {
     setMapDrawText,
     setActiveToolMenu,
     setHasGraphics,
+    toggleMeasurements,
 } from '../../../../../reducers/map/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapDraw from './MapDraw';
@@ -18,6 +19,7 @@ const mapStateToProps = state => ({
     hasGraphics: state.map.mapDraw.hasGraphics,
     drawTextModalActive: state.modal.activeModal === 'drawText',
     isActive: state.map.mapTools.activeToolMenu === 'drawTools',
+    showMeasurements: state.map.mapDraw.showMeasurements,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -33,6 +35,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setHasGraphics: (hasGraphics) => {
         dispatch(setHasGraphics(hasGraphics));
+    },
+    toggleMeasurements: () => {
+        dispatch(toggleMeasurements());
     },
 });
 

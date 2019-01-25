@@ -17,6 +17,8 @@ type Props = {
     isActive: boolean,
     hasGraphics: boolean,
     setHasGraphics: (hasGraphics: boolean) => void,
+    showMeasurements: boolean,
+    toggleMeasurements: () => void,
 };
 
 class MapDraw extends Component<Props, null> {
@@ -29,6 +31,7 @@ class MapDraw extends Component<Props, null> {
 
         this.removeDrawings = this.removeDrawings.bind(this);
         this.toggleDrawTools = this.toggleDrawTools.bind(this);
+        this.toggleMeasurements = this.toggleMeasurements.bind(this);
     }
 
     componentWillReceiveProps(newProps: any) {
@@ -60,6 +63,7 @@ class MapDraw extends Component<Props, null> {
                 const drawPointButton = (document.getElementById: Function)('draw-point');
                 const drawTextButton = (document.getElementById: Function)('draw-text');
                 const drawEraseButton = (document.getElementById: Function)('draw-erase');
+                const drawToggleMeasurementsButton = (document.getElementById: Function)('toggle-measurements');
 
                 const measureArea = (polygon: Object) => {
                     let planarArea = geometryEngine.planarArea(
@@ -203,6 +207,7 @@ class MapDraw extends Component<Props, null> {
                         type: 'draw-measure-label',
                         complete,
                         id: this.currentGraphicUUID,
+                        visible: this.props.showMeasurements,
                     });
 
                 const drawPolygon = (evt) => {
@@ -340,6 +345,10 @@ class MapDraw extends Component<Props, null> {
                         drawEraseButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
+
+                drawToggleMeasurementsButton.addEventListener('click', () => {
+                    this.toggleMeasurements();
+                });
             });
     };
 
@@ -405,8 +414,39 @@ class MapDraw extends Component<Props, null> {
         this.removeHighlightsFromButtons();
     };
 
+    toggleMeasurements = () => {
+        const { view, toggleMeasurements } = this.props;
+        toggleMeasurements();
+        if (view.graphics.length) {
+            const graphicsToBeRemoved = [];
+            const graphicsToBeAdded = [];
+            view.graphics.forEach((g) => {
+                if (g.type === 'draw-measure-label') {
+                    // JS API 4 does not support hiding and showing graphics based on visibility so
+                    // as a workaround the graphics must be cloned and attributes set manually.
+                    const cloned = g.clone();
+                    cloned.complete = g.complete;
+                    cloned.id = g.id;
+                    cloned.type = g.type;
+                    cloned.visible = !g.visible;
+
+                    graphicsToBeRemoved.push(g);
+                    graphicsToBeAdded.push(cloned);
+                }
+            });
+
+            view.graphics.removeMany(graphicsToBeRemoved);
+            view.graphics.addMany(graphicsToBeAdded);
+        }
+    };
+
     render() {
-        const { view, isActive, hasGraphics } = this.props;
+        const {
+            view,
+            isActive,
+            hasGraphics,
+            showMeasurements,
+        } = this.props;
 
         return (
             <MapDrawView
@@ -415,6 +455,7 @@ class MapDraw extends Component<Props, null> {
                 view={view}
                 toggleDrawTools={this.toggleDrawTools}
                 isActive={isActive}
+                showMeasurements={showMeasurements}
             />
         );
     }

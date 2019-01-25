@@ -245,6 +245,7 @@ const fi = {
         drawErase: 'Poista yksittäinen piirros',
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirrokset',
+        toggleMeasurements: 'Näytä/piilota mittaustulokset',
     },
     modalDrawText: {
         title: 'Lisää tekstiä kartalle',
