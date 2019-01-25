@@ -45,21 +45,18 @@ export const Wrapper = styled.div`
             display: inline-flex;
         };
         
-        #draw-rectangle
-         {
+        #draw-rectangle {
             margin-right: 4px;
         };
         
-        #draw-circle,
-         #accept-create-new-feature {
+        #draw-circle, #accept-create-new-feature {
             margin-left: 4px;
         };
         
         #toggle-select-tools,
         #toggle-measure-tools,
         #toggle-draw-tools,
-        #draw-create-new-feature
-         {
+        #draw-create-new-feature {
             margin-left: 10px;
         };
         
@@ -109,7 +106,7 @@ export const Wrapper = styled.div`
         
         .esri-popup__feature-buttons {
             padding: 0 1em;
-        }
+        };
         
         ${props => props.sideBar && css`
             left: 460px;
