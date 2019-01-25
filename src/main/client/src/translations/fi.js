@@ -181,12 +181,6 @@ const fi = {
         acceptSelection: 'Hyväksy geometria',
         activeAdmin: 'Luontityökalu',
     },
-    mapMeasure: {
-        drawLine: 'Mittaa etäisyys',
-        drawPolygon: 'Mittaa pinta-ala',
-        selectTool: 'Mittaustyökalut',
-        removeDraw: 'Poista mittaukset',
-    },
     mapLayerView: {
         removeTooltip: 'Poista karttataso',
     },

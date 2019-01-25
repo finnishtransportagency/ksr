@@ -183,7 +183,6 @@ class EsriMap extends Component<Props> {
                         compass,
                         locate,
                         track,
-                        'measure-tool-outer-wrapper',
                         'draw-tool-outer-wrapper',
                         'select-tool-outer-wrapper',
                         'create-new-feature-wrapper',
@@ -207,7 +206,6 @@ class EsriMap extends Component<Props> {
                         const { layerList } = this.props;
                         const filteredResults = results.filter(item =>
                             item.graphic.id !== 'buffer'
-                            && item.graphic.id !== 'drawMeasure'
                             && item.graphic.type !== 'draw-graphic'
                             && item.graphic.type !== 'draw-measure-label'
                             && item.graphic.id !== 'selected-popup-feature'
@@ -251,9 +249,6 @@ class EsriMap extends Component<Props> {
                 });
 
                 (document.getElementById: Function)('select-tool-outer-wrapper').classList
-                    .remove('esri-component');
-
-                (document.getElementById: Function)('measure-tool-outer-wrapper').classList
                     .remove('esri-component');
 
                 (document.getElementById: Function)('draw-tool-outer-wrapper').classList
