@@ -1,7 +1,7 @@
-import { setWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQueryMap } from '../loadWorkspace';
+import { getWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQueryMap } from '../loadWorkspace';
 
 describe('loadWorkspace', () => {
-    it('setWorkspaceFeatuers - should return workspace features', () => {
+    it('getWorkspaceFeatures - should return workspace features', () => {
         const workspace = [
             {
                 layerId: '123',
@@ -26,7 +26,7 @@ describe('loadWorkspace', () => {
             { featureId: 8, layerId: '456', selected: false },
         ];
 
-        expect(setWorkspaceFeatures(workspace)).toEqual(expectedResult);
+        expect(getWorkspaceFeatures(workspace)).toEqual(expectedResult);
     });
 
     it('queryWorkspaceFeatures - should return layers on resolved promise', () => {
