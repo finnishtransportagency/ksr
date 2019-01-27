@@ -11,6 +11,7 @@ type Props = {
     setUserInfo: Function,
     loadFailedEdits: Function,
     loading: boolean,
+    setLoading: Function,
 };
 
 class Home extends Component<Props, null> {
@@ -22,8 +23,10 @@ class Home extends Component<Props, null> {
             setWorkspace,
             setUserInfo,
             loadFailedEdits,
+            setLoading,
         } = this.props;
 
+        setLoading();
         setUserInfo();
         setWorkspace();
         getLayerGroups();
