@@ -60,7 +60,7 @@ export const setCenterPoint = async (
  *
  * @param {Array<Object>} layers Array of layers to be added
  * @param {Object} view Map view to which the layers are added
- * @param {boolean} isWorkspace indicates if adding layers comes from loading workspace.
+ * @param {boolean} isWorkspace Indicates if adding layers comes from loading workspace.
  *
  * @returns {Object} Object containing failed layers.
  */
@@ -78,7 +78,7 @@ export const addLayers = async (
     const searchLayers = [];
     const failedLayers = [];
     await Promise.all(layers.map(async (layer) => {
-        if (layer.active && !view.map.layers.find(l => l.id === layer.id)) {
+        if (!view.map.layers.some(l => l.id === layer.id)) {
             esriConfig.request.trustedServers.push(layer.url);
             switch (layer.type) {
                 // sublayers split will work as long as name doesn't contain comma
@@ -139,20 +139,24 @@ export const addLayers = async (
                 default:
                     break;
             }
+
             const addedLayer = view.map.layers.find(l => l.id === layer.id);
             if (addedLayer && addedLayer.type !== 'agfl') {
                 await addedLayer
                     .when()
                     .catch(() => {
+                        view.map.remove(view.map.findLayerById(addedLayer.id));
                         toast.error(`${strings.mapLayers.failedToLoadLayer} [${layer.name}]`);
                         failedLayers.push(layer.id);
                     });
             }
         }
     }));
+
     if (searchLayers.length && !isWorkspace) {
         fitExtent(searchLayers, view);
     }
+
     return { failedLayers };
 };
 
@@ -335,8 +339,10 @@ export const zoomToProperty = (
  *
  * @param {Object[]} layerList Layer list in redux.
  * @param {Object[]} layers Layers to be activated.
+ *
+ * @returns {Promise<Object[]>} Promise layerList object with updated fields.
  */
-export const getLayerFields = async (layerList: Object[], layers: Object[]) => (
+export const getLayerFields = async (layerList: Object[], layers: Object[]): Promise<Object[]> => (
     Promise.all(layerList.map(l => ({ ...l }))
         .map(async (l) => {
             if (layers.some(layer => layer && l.id === layer.id)
@@ -366,3 +372,36 @@ export const getLayerFields = async (layerList: Object[], layers: Object[]) => (
             return l;
         }))
 );
+
+/**
+ * Adds layer fields and geometry type to layer if it doesn't already have them.
+ *
+ * @param {Object} layer Layer to query fields for.
+ *
+ * @returns {Promise<Object>} Layer with fields.
+ */
+export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
+    if (!layer.fields && (layer.type === 'agfs' || layer.type === 'agfl')) {
+        const layerWithFields = await layerData(layer.id);
+        if (!layer.error) {
+            layer.geometryType = layerWithFields.geometryType;
+            layer.fields = layerWithFields.fields && layerWithFields.fields
+                .map((f, index) => ({
+                    value: index,
+                    label: f.alias,
+                    type: f.type,
+                    name: f.name,
+                    editable: f.editable,
+                    nullable: f.nullable,
+                    length: f.length,
+                    domain: f.domain ? {
+                        type: f.domain.type,
+                        name: f.domain.name,
+                        description: f.domain.description,
+                        codedValues: f.domain.codedValues,
+                    } : null,
+                }));
+        }
+    }
+    return layer;
+};
