@@ -3,23 +3,19 @@ import React, { Fragment } from 'react';
 import LayerGroup from '../../../../ui/blocks/LayerGroup';
 import MapLayerContainer from './map-layer/MapLayerContainer';
 import Checkbox from '../../../../ui/blocks/Checkbox';
-import SubLayerContainer from './sub-layer/SubLayerContrainer';
+import SubLayerContainer from './sub-layer/SubLayerContainer';
 
 type Props = {
     layerGroups: Array<any>,
     layerList: any,
     handleGroupClick: (number) => void,
     handleSubGroupClick: (number) => void,
-    handleLayerClick: (number) => Promise<void>,
+    handleLayerClick: (number) => void,
     activeGroup: number,
     activeSubGroup: number,
-    handleLayerGroupClick: (string) => Promise<void>,
-    handleSubLayerGroupClick: (number) => Promise<void>,
+    handleLayerGroupClick: (string) => void,
+    handleSubLayerGroupClick: (number) => void,
     subLayers: Object[],
-};
-
-const divStyle = {
-    outline: 'none',
 };
 
 const MapLayersAllView = ({
@@ -41,6 +37,7 @@ const MapLayersAllView = ({
                     <LayerGroup.Span>{lg.name}</LayerGroup.Span>
                     <Checkbox htmlFor={lg.name} layerAllView>
                         <Checkbox.Input
+                            hidden
                             id={lg.name}
                             name={lg.name}
                             type="checkbox"
@@ -52,7 +49,7 @@ const MapLayersAllView = ({
                         <Checkbox.Checkmark layerAllView />
                     </Checkbox>
                     <div
-                        style={divStyle}
+                        className="arrow-wrapper"
                         role="checkbox"
                         aria-checked="false"
                         aria-labelledby={lg.name}
