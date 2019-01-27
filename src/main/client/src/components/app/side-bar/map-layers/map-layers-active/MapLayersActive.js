@@ -15,6 +15,7 @@ type Props = {
     activeAdminTool: string,
     createNonSpatialFeature: () => void,
     createThemeLayer: (layerId: string) => void,
+    toggleLayer: (layerId: string) => void,
 };
 
 type State = {
@@ -26,7 +27,6 @@ class MapLayersActive extends Component<Props, State> {
         super(props);
 
         this.onDragEnd = this.onDragEnd.bind(this);
-        this.onToggleVisibility = this.onToggleVisibility.bind(this);
         this.onOpacityChange = this.onOpacityChange.bind(this);
     }
 
@@ -44,21 +44,6 @@ class MapLayersActive extends Component<Props, State> {
         );
 
         setLayerList(layerListReorder.concat(dataLayerList));
-    };
-
-    onToggleVisibility = (id: Number) => {
-        const { setLayerList, dataLayerList } = this.props;
-        const mapLayerList = [...this.props.mapLayerList];
-        const newMapLayerList = mapLayerList.map((l) => {
-            if (l.id === id) {
-                return {
-                    ...l,
-                    visible: !l.visible,
-                };
-            }
-            return { ...l };
-        });
-        setLayerList(newMapLayerList.concat(dataLayerList));
     };
 
     onOpacityChange = (evt: Number, id: Number) => {
@@ -79,6 +64,7 @@ class MapLayersActive extends Component<Props, State> {
             createNonSpatialFeature,
             dataLayerList,
             createThemeLayer,
+            toggleLayer,
         } = this.props;
         if (!fetching) {
             return (
@@ -86,7 +72,7 @@ class MapLayersActive extends Component<Props, State> {
                     <MapLayersActiveView
                         mapLayerList={mapLayerList}
                         onDragEnd={this.onDragEnd}
-                        onToggleVisibility={this.onToggleVisibility}
+                        toggleLayer={toggleLayer}
                         onOpacityChange={this.onOpacityChange}
                         setActiveAdminTool={setActiveAdminTool}
                         activeAdminTool={activeAdminTool}

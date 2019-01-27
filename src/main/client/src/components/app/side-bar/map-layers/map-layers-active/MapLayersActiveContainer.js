@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
-import { setLayerList } from '../../../../../reducers/map/actions';
+import { setLayerList, toggleLayer } from '../../../../../reducers/map/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
 
@@ -24,6 +24,9 @@ const mapDispatchToProps = dispatch => ({
     },
     createThemeLayer: (layerId: string) => {
         dispatch(setActiveModal('themeLayer', layerId));
+    },
+    toggleLayer: (layerId: string) => {
+        dispatch(toggleLayer(layerId));
     },
 });
 
