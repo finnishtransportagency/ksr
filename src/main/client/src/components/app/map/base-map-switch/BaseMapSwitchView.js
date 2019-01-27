@@ -1,5 +1,4 @@
 // @flow
-
 import React from 'react';
 import { BaseMapButton, BaseMapContainer } from './styles';
 
@@ -9,6 +8,8 @@ type Props = {
     sideBarOpen: boolean,
     adminToolActive: boolean,
     toggleLayer: (string) => void,
+    activateLayers: (layers: Object[]) => void,
+    loadingLayers: string[],
 };
 
 const BaseMapSwitchView = ({
@@ -17,6 +18,8 @@ const BaseMapSwitchView = ({
     sideBarOpen,
     adminToolActive,
     toggleLayer,
+    activateLayers,
+    loadingLayers,
 }: Props) => (
     <BaseMapContainer
         hidden={layers.length === 0}
@@ -28,9 +31,22 @@ const BaseMapSwitchView = ({
             <BaseMapButton
                 title={layer.name}
                 key={layer.id}
+                disabled={loadingLayers.some(layerId => layerId === layer.id)}
                 flat={!layer.visible || !layer.active}
-                onClick={() => toggleLayer(layer.id)}
-                onKeyPress={() => toggleLayer(layer.id)}
+                onClick={() => {
+                    if (!layer.active) {
+                        activateLayers([layer]);
+                    } else {
+                        toggleLayer(layer.id);
+                    }
+                }}
+                onKeyPress={() => {
+                    if (!layer.active) {
+                        activateLayers([layer]);
+                    } else {
+                        toggleLayer(layer.id);
+                    }
+                }}
             >
                 {layer.name}
             </BaseMapButton>

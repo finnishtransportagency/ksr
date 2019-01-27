@@ -1,8 +1,7 @@
 // @flow
-
 import { connect } from 'react-redux';
 import BaseMapSwitchView from './BaseMapSwitchView';
-import { toggleLayer } from '../../../../reducers/map/actions';
+import { activateLayers, toggleLayer } from '../../../../reducers/map/actions';
 
 const sortNames = (a, b) => {
     const aLower = a.name.toLowerCase();
@@ -27,11 +26,15 @@ const mapStateToProps = state => ({
         || state.navigation.activeNav === 'offline'
     ),
     adminToolActive: state.adminTool.active.layerId !== '',
+    loadingLayers: state.loading.loadingLayers,
 });
 
 const mapDispatchToProps = dispatch => ({
     toggleLayer: (layerId) => {
         dispatch(toggleLayer(layerId));
+    },
+    activateLayers: (layers) => {
+        dispatch(activateLayers(layers));
     },
 });
 
