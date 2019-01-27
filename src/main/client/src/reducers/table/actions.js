@@ -6,6 +6,8 @@ import strings from '../../translations';
 import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
+import { activateLayers } from '../map/actions';
+import { getSingleLayerFields } from '../../utils/map';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -99,6 +101,8 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
             layers: parseData(layersToBeAdded, false),
         });
 
+        dispatch(activateLayers(layersToBeAdded.layers));
+
         if (layersToBeAdded.layers.length) {
             dispatch({
                 type: types.HIDE_LAYER,
@@ -188,11 +192,6 @@ export const searchWorkspaceFeatures = (
             });
         }
 
-        dispatch({
-            type: types.SET_WORKSPACE_FULFILLED,
-            workspace,
-        });
-
         toast.update('loadingWorkspace', {
             render: `${strings.workspace.workspaceLoaded} [${workspace.name}]`,
             type: toast.TYPE.SUCCESS,
@@ -275,7 +274,7 @@ export const addNonSpatialContentToTable = (
     workspaceFeatures?: Object[],
 ) => (dispatch: Function) => {
     fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
-        .then((results) => {
+        .then(async (results) => {
             if (workspaceFeatures) {
                 results.layers.forEach((l) => {
                     l.features.forEach((f) => {
@@ -297,6 +296,17 @@ export const addNonSpatialContentToTable = (
                     };
                 }
                 return { ...l };
+            });
+
+            const layerToUpdate = await getSingleLayerFields({ ...layer });
+
+            dispatch({
+                type: types.UPDATE_LAYER,
+                layer: {
+                    ...layerToUpdate,
+                    active: true,
+                    visible: true,
+                },
             });
 
             dispatch({

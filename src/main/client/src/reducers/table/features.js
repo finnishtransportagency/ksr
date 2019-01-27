@@ -17,9 +17,11 @@ import {
     APPLY_EDITS,
     APPLY_DELETED_FEATURES,
     CLEAR_SEARCH_DATA,
+    DEACTIVATE_LAYER,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
+    getActiveTable,
     mergeLayers,
     syncWithLayersList,
     toggleSelectAll,
@@ -86,6 +88,16 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 ...syncWithLayersList(state.layers, action.layerList, state.activeTable),
+            };
+        case DEACTIVATE_LAYER:
+            return {
+                ...state,
+                layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
+                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId): Object[]),
+                activeTable: getActiveTable(
+                    state.layers.filter(l => l.id !== action.layerId),
+                    state.activeTable,
+                ),
             };
         case DE_SELECT_SELECTED_FEATURES:
             return {
