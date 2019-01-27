@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
 const Input = styled.input`
@@ -15,6 +15,10 @@ const Input = styled.input`
     &:checked ~ span:after {
         display: block;
     }
+    
+    ${({ hidden }) => hidden && css`
+        display: none;
+    `}
 `;
 
 export default Input;
