@@ -7,7 +7,7 @@ const TextColumn = styled.div`
     overflow: hidden;
     
     &:hover {
-        cursor: pointer;
+        cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
         
         div:first-of-type {
             color: ${styles.colorMainDark};

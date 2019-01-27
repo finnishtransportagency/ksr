@@ -14,6 +14,7 @@ type Props = {
     handleReplaceWorkspace: Function,
     handleSelectWorkspace: Function,
     handleShareWorkspace: Function,
+    loadingLayers: boolean,
 }
 
 const WorkspaceView = ({
@@ -23,6 +24,7 @@ const WorkspaceView = ({
     handleReplaceWorkspace,
     handleSelectWorkspace,
     handleShareWorkspace,
+    loadingLayers,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
@@ -58,7 +60,9 @@ const WorkspaceView = ({
                                 <i className="fas fa-share-alt" />
                             </Workspace.Icon>
                             <Workspace.TextColumn
-                                onClick={() => handleSelectWorkspace(workspace.name)}
+                                disabled={loadingLayers}
+                                onClick={() => (!loadingLayers
+                                    && handleSelectWorkspace(workspace.name))}
                                 title={`${workspace.name} ${workspace.updated}`}
                             >
                                 <Workspace.Text>{workspace.name}</Workspace.Text>
