@@ -34,9 +34,12 @@ export default (state: Object = initialState, action: Action) => {
                 const layer = state.view.map.layers.find(l => l.id === layerId);
                 // TODO: Remove workaround once this is fixed in the API.
                 // In ArcGIS JS API 4.10 when removing WMTS layers the library tries to set
-                // visible value false after removing the layer which causes problems so
-                // as a workaround set layer visibility false before removing the layer.
-                if (layer) layer.visible = false;
+                // visible false and opacity 1 after removing the layer which causes problems so
+                // as a workaround set layer visibility and opacity before removing the layer.
+                if (layer) {
+                    layer.visible = false;
+                    layer.opacity = 1;
+                }
                 state.view.map.layers.remove(layer);
             });
             return state;
