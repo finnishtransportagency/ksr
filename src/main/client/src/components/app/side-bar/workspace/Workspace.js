@@ -15,9 +15,6 @@ type Props = {
     workspaceList: Array<Object>,
     setWorkspace: Function,
     setWorkspaceRejected: Function,
-    addNonSpatialContentToTable: Function,
-    selectFeatures: Function,
-    searchWorkspaceFeatures: Function,
     layerList: Array<Object>,
     view: Object,
     selectedFeatures: Array<Object>,
@@ -34,6 +31,9 @@ type Props = {
     setLayerList: (layerList: Object[]) => void,
     layerLegendActive: boolean,
     toggleLayerLegend: () => void,
+    loadingLayers: boolean,
+    activateLayers: (layers: Object[], workspace: Object) => void,
+    deactivateLayer: (layerId: string) => void,
 };
 
 class Workspace extends Component<Props, null> {
@@ -83,13 +83,12 @@ class Workspace extends Component<Props, null> {
             showConfirmModal,
             view,
             layerList,
-            selectFeatures,
-            searchWorkspaceFeatures,
             updateWorkspaces,
-            addNonSpatialContentToTable,
             setLayerList,
             layerLegendActive,
             toggleLayerLegend,
+            activateLayers,
+            deactivateLayer,
         } = this.props;
         const { body, acceptText, cancelText } = strings.workspace.confirmSelect;
 
@@ -120,10 +119,8 @@ class Workspace extends Component<Props, null> {
                             workspace,
                             newLayerList,
                             view,
-                            searchWorkspaceFeatures,
-                            addNonSpatialContentToTable,
-                            selectFeatures,
-                            setLayerList,
+                            activateLayers,
+                            deactivateLayer,
                             updateWorkspaces,
                         );
                         if (layerLegendActive) toggleLayerLegend();
@@ -159,7 +156,7 @@ class Workspace extends Component<Props, null> {
     };
 
     render() {
-        const { setActiveModal, workspaceList } = this.props;
+        const { setActiveModal, workspaceList, loadingLayers } = this.props;
 
         return (
             <WorkspaceView
@@ -169,6 +166,7 @@ class Workspace extends Component<Props, null> {
                 handleReplaceWorkspace={this.handleReplaceWorkspace}
                 handleSelectWorkspace={this.handleSelectWorkspace}
                 handleShareWorkspace={this.handleShareWorkspace}
+                loadingLayers={loadingLayers}
             />
         );
     }

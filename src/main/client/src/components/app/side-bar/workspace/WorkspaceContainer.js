@@ -9,7 +9,7 @@ import {
 import { setWorkspace, setWorkspaceRejected, updateWorkspaces } from '../../../../reducers/workspace/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import Workspace from './Workspace';
-import { setLayerList, toggleLayerLegend } from '../../../../reducers/map/actions';
+import { setLayerList, toggleLayerLegend, activateLayers, deactivateLayer } from '../../../../reducers/map/actions';
 
 const mapStateToProps = state => ({
     workspaceList: state.workspace.workspace.workspaceList,
@@ -17,6 +17,7 @@ const mapStateToProps = state => ({
     view: state.map.mapView.view,
     layerList: state.map.layerGroups.layerList,
     layerLegendActive: state.map.layerLegend.layerLegendActive,
+    loadingLayers: state.loading.loadingLayers.length,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -49,6 +50,12 @@ const mapDispatchToProps = dispatch => ({
     },
     toggleLayerLegend: () => {
         dispatch(toggleLayerLegend());
+    },
+    activateLayers: (layers: Object[], workspace: Object) => {
+        dispatch(activateLayers(layers, workspace));
+    },
+    deactivateLayer: (layerId: string) => {
+        dispatch(deactivateLayer(layerId));
     },
 });
 
