@@ -68,6 +68,20 @@ class ReactTable extends Component<Props> {
         return className;
     };
 
+    getDisplayContent = (cellField: Object, content: any) => {
+        const { domain } = cellField;
+        if (content === null) {
+            return null;
+        } else if (domain && (domain.type === 'codedValue' || domain.type === 'coded-value')) {
+            const codedValue = domain.codedValues.find(cv => cv.code === content);
+            if (codedValue) {
+                return codedValue.name;
+            }
+            return null;
+        }
+        return String(content);
+    };
+
     handleContractClick = (objectId: number) => {
         const {
             setActiveModal, setContractListInfo, activeTable,
@@ -123,6 +137,7 @@ class ReactTable extends Component<Props> {
     ) => {
         const className = this.getCellClassName(contentEditable, cellField, content);
         const { setEditedLayer } = this.props;
+        const textContent = this.getDisplayContent(cellField, content);
         return (
             <div
                 style={{ minHeight: '1rem' }}
@@ -145,7 +160,7 @@ class ReactTable extends Component<Props> {
                     }
                 }}
                 dangerouslySetInnerHTML={{ // eslint-disable-line
-                    __html: DOMPurify.sanitize(content !== null ? String(content) : null),
+                    __html: DOMPurify.sanitize(textContent),
                 }}
             />
         );
