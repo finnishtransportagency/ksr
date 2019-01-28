@@ -133,9 +133,11 @@ public class KTJUtils {
 
             feat.setProperty(
                     "registerUnitType",
-                    XMLUtils.getNodeContent(
-                        registerUnit,
-                        REGISTER_UNIT_TYPE_EL
+                    KTJConstants.getRegisterUnitTypeName(
+                            XMLUtils.getNodeContent(
+                                    registerUnit,
+                                    REGISTER_UNIT_TYPE_EL
+                            )
                     )
             );
 

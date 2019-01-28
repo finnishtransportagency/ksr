@@ -204,7 +204,7 @@ public class KTJServiceTests {
         expectedFeature.setId("00100200030004");
 
         expectedFeature.setProperty("parcelCount", 1);
-        expectedFeature.setProperty("registerUnitType", "1");
+        expectedFeature.setProperty("registerUnitType", "Tila");
         expectedFeature.setProperty("name", "Tonttila");
         expectedFeature.setProperty("municipalityName", "Helsinki");
 
@@ -241,7 +241,7 @@ public class KTJServiceTests {
         expectedFeature.setId("00100200030005");
 
         expectedFeature.setProperty("parcelCount", 1);
-        expectedFeature.setProperty("registerUnitType", "1");
+        expectedFeature.setProperty("registerUnitType", "Tila");
         expectedFeature.setProperty("name", "Tonttila");
         expectedFeature.setProperty("municipalityName", "Helsinki");
 

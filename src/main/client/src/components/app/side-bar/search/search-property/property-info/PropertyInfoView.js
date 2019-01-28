@@ -20,7 +20,7 @@ const PropertyInfoView = ({ properties }: Props) => (
         </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.registerUnitType}</span>
-            <span>{properties.registerUnitType}</span>
+            <span title={properties.registerUnitType}>{properties.registerUnitType}</span>
         </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.name}</span>
