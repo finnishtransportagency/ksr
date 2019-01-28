@@ -171,9 +171,10 @@ const handlePopupUpdate = (
             if (nestedVal(queryResult, ['fields']) &&
                 nestedVal(queryResult, ['features']) &&
                 queryResult.features.length > 0) {
-                if (view.popup.viewModel.features[0]
-                    .attributes[idFieldName] ===
-                    queryResult.features[0].attributes[idFieldName]) {
+                if (idFieldName && nestedVal(
+                    view,
+                    ['popup', 'viewModel', 'features', '0', 'attributes', idFieldName],
+                ) === queryResult.features[0].attributes[idFieldName]) {
                     // find current layer from view
                     const viewLayer = view.map.findLayerById(layerId);
                     if (viewLayer) {
