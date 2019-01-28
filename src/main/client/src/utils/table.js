@@ -74,10 +74,12 @@ export const applyDeletedFeatures = (
     layers: Object[],
     objectIds: string,
     layerId: string,
-): Object[] => layers.filter(layer => layer.id === layerId)
-    .map((layer: Object) => ({
-        ...layer,
-        data: layer.data.filter(d => !objectIds.includes(d._id)),
-    }))
-    .filter((layer: Object) => layer.data.length);
-
+): Object[] => layers.map((layer: Object) => {
+    if (layerId === layer.id) {
+        return {
+            ...layer,
+            data: layer.data.filter(d => !objectIds.includes(d._id)),
+        };
+    }
+    return { ...layer };
+}).filter((layer: Object) => layer.data.length);

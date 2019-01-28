@@ -31,6 +31,9 @@ const mapStateToProps = (state) => {
         .map(l => removeUnderscore(l));
     const originalLayers = tableFeaturesLayers.map(l => removeUnderscore(l));
     const selectedData = tableFeaturesLayers.flatMap(f => f.data.filter(d => d._selected));
+    const selectedAdminData = tableFeaturesLayers
+        .filter(layer => layer.id === state.adminTool.active.layerId)
+        .flatMap(f => f.data.filter(d => d._selected));
     const geometryDataSelected = tableFeaturesLayers
         .flatMap(f => f.data.filter(d => d._selected && d.geometry));
     const activeTableFeatureLayer = tableFeaturesLayers
@@ -57,13 +60,15 @@ const mapStateToProps = (state) => {
         originalLayers,
         editedLayersNoUnderscore,
         selectedData: selectedData.length > 0,
+        selectedAdminData: selectedAdminData.length > 0,
         geometryDataSelected: geometryDataSelected.length > 0,
         activeTableDataSelected,
         activeTableLayer,
         featureType,
         addressField,
         view: state.map.mapView.view,
-        editedLayers: state.table.features.editedLayers,
+        editedLayers: state.table.features.editedLayers
+            .filter(editedLayer => editedLayer.id === state.adminTool.active.layerId),
         currentTabAdmin,
     };
 };

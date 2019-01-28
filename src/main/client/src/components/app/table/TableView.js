@@ -16,6 +16,7 @@ type Props = {
     editedLayers: Array<Object>,
     editedLayersNoUnderscore: Array<Object>,
     selectedData: boolean,
+    selectedAdminData: boolean,
     geometryDataSelected: boolean,
     activeTableDataSelected: boolean,
     activeTableLayer: Object,
@@ -42,6 +43,7 @@ const TableView = ({
     originalLayers,
     editedLayers,
     selectedData,
+    selectedAdminData,
     geometryDataSelected,
     activeTableDataSelected,
     activeTableLayer,
@@ -150,9 +152,9 @@ const TableView = ({
                 <Table.Button
                     title={strings.reactTable.deleteSelected}
                     tableOpen={isOpen}
-                    disabled={!selectedData}
+                    disabled={!selectedAdminData}
                     onClick={
-                        selectedData ? () => {
+                        selectedAdminData ? () => {
                             setActiveModal('deleteSelected');
                         } : null
                     }

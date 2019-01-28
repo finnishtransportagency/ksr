@@ -139,11 +139,23 @@ export default (state: State = initialState, action: Action) => {
         case APPLY_DELETED_FEATURES:
             return {
                 ...state,
-                layers: applyDeletedFeatures(state.layers, action.objectIds, action.layerId),
+                layers: applyDeletedFeatures(
+                    state.layers,
+                    action.objectIds,
+                    action.layerId,
+                ),
                 editedLayers: applyDeletedFeatures(
                     state.editedLayers,
                     action.objectIds,
                     action.layerId,
+                ),
+                activeTable: getActiveTable(
+                    applyDeletedFeatures(
+                        state.layers,
+                        action.objectIds,
+                        action.layerId,
+                    ),
+                    state.activeTable,
                 ),
             };
         default:

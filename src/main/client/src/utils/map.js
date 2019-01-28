@@ -161,12 +161,10 @@ export const addLayers = async (
  *
  * @param {Object} view Esri ArcGIS JS MapView.
  * @param {Array<Object>} selectedFeatures Array of selected features.
- * @param {string }activeAdminTool Id of the current admin tool layer.
  */
 export const highlight = async (
     view: Object,
     selectedFeatures: Array<Object>,
-    activeAdminTool: string,
 ) => {
     const [Query] = await esriLoader.loadModules(['esri/tasks/support/Query']);
     if (view) {
@@ -191,7 +189,20 @@ export const highlight = async (
                     return;
                 }
 
-                if (activeAdminTool && activeAdminTool === layer.id) {
+                if (layer.featureType === 'shapefile') {
+                    view.whenLayerView(layer).then((layerView) => {
+                        const queryView = new Query();
+                        queryView.returnGeometry = true;
+                        queryView.objectIds = ids;
+
+                        layerView.queryFeatures(queryView)
+                            .then((results) => {
+                                if (results) {
+                                    highlightFeatures(layer, layerView, results.features);
+                                }
+                            });
+                    });
+                } else {
                     view.whenLayerView(layer).then((layerView) => {
                         const query = {
                             where: `${objectIdField} IN (${ids.join(',')})`,
@@ -204,34 +215,6 @@ export const highlight = async (
                             }
                         });
                     });
-                } else if (!activeAdminTool) {
-                    if (layer.featureType === 'shapefile') {
-                        view.whenLayerView(layer).then((layerView) => {
-                            const queryView = new Query();
-                            queryView.returnGeometry = true;
-                            queryView.objectIds = ids;
-
-                            layerView.queryFeatures(queryView)
-                                .then((results) => {
-                                    if (results) {
-                                        highlightFeatures(layer, layerView, results.features);
-                                    }
-                                });
-                        });
-                    } else {
-                        view.whenLayerView(layer).then((layerView) => {
-                            const query = {
-                                where: `${objectIdField} IN (${ids.join(',')})`,
-                                outFields: ['*'],
-                                returnGeometry: true,
-                            };
-                            layer.queryFeatures(query).then((results) => {
-                                if (results) {
-                                    highlightFeatures(layer, layerView, results.features);
-                                }
-                            });
-                        });
-                    }
                 }
             }
         });
