@@ -209,6 +209,7 @@ class EsriMap extends Component<Props> {
                             item.graphic.id !== 'buffer'
                             && item.graphic.id !== 'drawMeasure'
                             && item.graphic.type !== 'draw-graphic'
+                            && item.graphic.type !== 'draw-measure-label'
                             && item.graphic.id !== 'selected-popup-feature'
                             && item.graphic.id !== 'propertyArea');
 
@@ -233,8 +234,11 @@ class EsriMap extends Component<Props> {
                         if (results.length) {
                             if (this.props.activeTool === 'drawErase') {
                                 results.forEach((r) => {
-                                    if (r.graphic && r.graphic.type === 'draw-graphic') {
-                                        view.graphics.remove(r.graphic);
+                                    if (r.graphic && (r.graphic.type === 'draw-graphic'
+                                        || r.graphic.type === 'draw-measure-label')) {
+                                        const graphicsToRemove = view.graphics
+                                            .filter(g => g.id === r.graphic.id);
+                                        view.graphics.removeMany(graphicsToRemove);
                                         const hasGraphics = view
                                             && view.graphics
                                             && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;

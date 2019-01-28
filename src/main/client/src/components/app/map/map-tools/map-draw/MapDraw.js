@@ -48,8 +48,9 @@ class MapDraw extends Component<Props, null> {
                 'esri/geometry/Polyline',
                 'esri/geometry/Point',
                 'esri/Graphic',
+                'esri/geometry/geometryEngine',
             ])
-            .then(([Polygon, Polyline, Point, Graphic]) => {
+            .then(([Polygon, Polyline, Point, Graphic, geometryEngine]) => {
                 const {
                     view, draw, setActiveTool,
                 } = this.props;
@@ -59,6 +60,41 @@ class MapDraw extends Component<Props, null> {
                 const drawPointButton = (document.getElementById: Function)('draw-point');
                 const drawTextButton = (document.getElementById: Function)('draw-text');
                 const drawEraseButton = (document.getElementById: Function)('draw-erase');
+
+                const measureArea = (polygon: Object) => {
+                    let planarArea = geometryEngine.planarArea(
+                        polygon,
+                        'square-meters',
+                    );
+                    if (planarArea < 0) {
+                        const simplifiedPolygon = geometryEngine.simplify(polygon);
+                        if (simplifiedPolygon) {
+                            planarArea = geometryEngine.planarArea(
+                                simplifiedPolygon,
+                                'square-meters',
+                            );
+                        }
+                    }
+
+                    let area = '';
+                    if (planarArea >= 10000) {
+                        area = `${parseFloat((planarArea / 10000).toFixed(2))} ha`;
+                    } else if (planarArea > 0 && planarArea < 10000) {
+                        area = `${parseFloat(planarArea.toFixed(2))} m\xB2`;
+                    }
+                    return area;
+                };
+
+                const measureLength = (line: Object) => {
+                    const planarLength = geometryEngine.planarLength(line, 'meters');
+                    let length = '';
+                    if (planarLength >= 1000) {
+                        length = `${parseFloat((planarLength / 1000).toFixed(2))} km`;
+                    } else if (planarLength > 0 && planarLength < 1000) {
+                        length = `${parseFloat(planarLength.toFixed(2))} m`;
+                    }
+                    return length;
+                };
 
                 const createPolygon = vertices =>
                     new Polygon({
@@ -149,35 +185,62 @@ class MapDraw extends Component<Props, null> {
                     return null;
                 };
 
+                const createLabelGraphic = (geometry, value, complete) =>
+                    new Graphic({
+                        geometry: geometry.extent.center,
+                        symbol: {
+                            type: 'text',
+                            color: '#000000',
+                            text: value || '',
+                            xoffset: 3,
+                            yoffset: 3,
+                            font: {
+                                size: 16,
+                                family: 'sans-serif',
+                                weight: 'bold',
+                            },
+                        },
+                        type: 'draw-measure-label',
+                        complete,
+                        id: this.currentGraphicUUID,
+                    });
+
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
 
                     if (vertices.length === 2) {
                         const line = createLine(vertices);
-
                         const graphic = createPolylineGraphic(line, evt.type === 'draw-complete');
-                        view.graphics.forEach(g => g.id === this.currentGraphicUUID
-                            && view.graphics.remove(g));
+                        const graphicsToRemove = view.graphics
+                            .filter(g => g.id === this.currentGraphicUUID);
+
+                        view.graphics.removeMany(graphicsToRemove);
                         view.graphics.add(graphic);
                     } else {
                         const polygon = createPolygon(vertices);
-
+                        const area = measureArea(polygon);
                         const graphic = createPolygonGraphic(polygon, 'solid', evt.type === 'draw-complete');
-                        view.graphics.forEach(g => g.id === this.currentGraphicUUID
-                            && view.graphics.remove(g));
-                        view.graphics.add(graphic);
+                        const graphicLabelMeasure = createLabelGraphic(polygon, area, evt.type === 'draw-complete');
+                        const graphicsToRemove = view.graphics
+                            .filter(g => g.id === this.currentGraphicUUID);
+
+                        view.graphics.removeMany(graphicsToRemove);
+                        view.graphics.addMany([graphic, graphicLabelMeasure]);
                     }
                 };
 
                 const drawLine = (evt) => {
                     const { vertices } = evt;
                     const line = createLine(vertices);
-
+                    const length = measureLength(line);
                     const graphic = createPolylineGraphic(line, evt.type === 'draw-complete');
+                    const graphicLabelMeasure = createLabelGraphic(line, length, evt.type === 'draw-complete');
 
-                    view.graphics.forEach(g => g.id === this.currentGraphicUUID
-                        && view.graphics.remove(g));
-                    view.graphics.add(graphic);
+                    const graphicsToRemove = view.graphics
+                        .filter(g => g.id === this.currentGraphicUUID);
+                    view.graphics.removeMany(graphicsToRemove);
+
+                    view.graphics.addMany([graphic, graphicLabelMeasure]);
                 };
 
                 const drawPoint = (evt) => {
@@ -314,7 +377,8 @@ class MapDraw extends Component<Props, null> {
         this.removeHighlight();
         resetMapTools(draw, sketchViewModel, setActiveTool);
 
-        const graphicsToRemove = view.graphics.filter(g => g.type === 'draw-graphic');
+        const graphicsToRemove = view.graphics
+            .filter(g => (g.type === 'draw-graphic' || g.type === 'draw-measure-label'));
         view.graphics.removeMany(graphicsToRemove);
         setActiveTool('');
 
