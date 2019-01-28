@@ -23,6 +23,7 @@ describe('<BaseMapSwitchView />', () => {
             sideBarOpen: false,
             adminToolActive: false,
             toggleLayer: jest.fn(),
+            loadingLayers: [],
         };
 
         return {

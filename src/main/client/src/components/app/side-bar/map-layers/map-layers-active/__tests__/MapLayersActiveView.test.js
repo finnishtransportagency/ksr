@@ -91,6 +91,7 @@ const setup = () => {
         ],
         setActiveAdminTool: jest.fn(),
         onDragEnd: () => {},
+        toggleLayer: jest.fn(),
     };
     const wrapper = mount(<MapLayersActiveView {...props} />);
 
@@ -115,5 +116,12 @@ describe('<MapLayersActiveView />', () => {
         expect(wrapper.find(LayerSettings.Icons).find('i')).toHaveLength(4);
         wrapper.find(LayerSettings.Icons).find('i').at(1).simulate('click');
         expect(setActiveAdminTool).toHaveBeenCalled();
+    });
+
+    it('should call toggleLayer on visibility click', () => {
+        const { toggleLayer } = wrapper.props();
+
+        wrapper.find(LayerSettings.Toggle).at(0).simulate('click');
+        expect(toggleLayer).toHaveBeenCalled();
     });
 });

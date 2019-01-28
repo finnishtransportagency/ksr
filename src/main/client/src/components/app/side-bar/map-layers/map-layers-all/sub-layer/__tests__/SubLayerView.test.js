@@ -37,6 +37,7 @@ const setup = (prop) => {
         activeSubGroup: 12,
         handleSubGroupClick: jest.fn(),
         handleSubLayerGroupClick: jest.fn(),
+        loadingLayers: [],
     };
 
     const props = prop || minProps;

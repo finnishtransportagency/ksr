@@ -32,10 +32,10 @@ const setup = (prop) => {
         view: {
             popup: { close: jest.fn() },
         },
-        setLoading: jest.fn(),
-        removeLoading: jest.fn(),
         setlayerList: jest.fn(),
         addNonSpatialContentToTable: jest.fn(),
+        activateLayers: jest.fn(),
+        deactivateLayer: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -69,47 +69,7 @@ describe('<MapLayersAll />', () => {
         expect(wrapper.state('activeGroup')).toBe(1);
     });
 
-    it('handleLayerClick - set layer as active (geometry layer)', async () => {
-        const { props: minProps } = setup();
-        const props = {
-            ...minProps,
-            layerGroups: [
-                {
-                    id: 123,
-                    name: 'Test layergroup',
-                    layers: [
-                        { id: 1, active: false },
-                    ],
-                },
-            ],
-            layerList: [
-                {
-                    id: 1,
-                    active: false,
-                    type: 'agfs',
-                },
-            ],
-        };
-        const { wrapper } = setup(props);
-        const { setLoading, setLayerList } = wrapper.instance().props;
-
-        const layerWithFields = [
-            {
-                id: 1,
-                active: false,
-                type: 'agfs',
-                fields: [],
-            },
-        ];
-        mapUtils.getLayerFields = jest.fn(() => Promise.resolve(layerWithFields));
-
-        await wrapper.instance().handleLayerClick(1);
-        expect(setLoading).toHaveBeenCalled();
-        await mapUtils.getLayerFields();
-        expect(setLayerList).toHaveBeenCalled();
-    });
-
-    it('handleLayerClick - set layer as active (agfl layer)', async () => {
+    it('handleLayerClick - set layer as active', async () => {
         const { props: minProps } = setup();
         const props = {
             ...minProps,
@@ -131,26 +91,10 @@ describe('<MapLayersAll />', () => {
             ],
         };
         const { wrapper } = setup(props);
-        const {
-            setLoading, setLayerList, removeLoading, addNonSpatialContentToTable,
-        } = wrapper.instance().props;
+        const { activateLayers } = wrapper.instance().props;
 
-        const layerWithFields = [
-            {
-                id: 1,
-                active: false,
-                type: 'agfl',
-                fields: [],
-            },
-        ];
-        mapUtils.getLayerFields = jest.fn(() => Promise.resolve(layerWithFields));
-
-        await wrapper.instance().handleLayerClick(1);
-        expect(setLoading).toHaveBeenCalled();
-        await mapUtils.getLayerFields();
-        expect(removeLoading).toHaveBeenCalled();
-        expect(setLayerList).toHaveBeenCalled();
-        expect(addNonSpatialContentToTable).toHaveBeenCalled();
+        wrapper.instance().handleLayerClick(1);
+        expect(activateLayers).toHaveBeenCalled();
     });
 
     it('handleLayerClick - disable layer', async () => {
@@ -180,12 +124,11 @@ describe('<MapLayersAll />', () => {
         };
 
         const { wrapper } = setup(props);
-        const { setLayerList, view } = wrapper.instance().props;
+        const { deactivateLayer } = wrapper.instance().props;
 
         const id = 1;
 
-        await wrapper.instance().handleLayerClick(id);
-        expect(setLayerList).toHaveBeenCalled();
-        expect(view.popup.close).toHaveBeenCalled();
+        wrapper.instance().handleLayerClick(id);
+        expect(deactivateLayer).toHaveBeenCalled();
     });
 });
