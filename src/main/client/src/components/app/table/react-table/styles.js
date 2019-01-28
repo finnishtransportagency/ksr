@@ -78,7 +78,7 @@ export const WrapperReactTable = styled.div`
         
         .rt-tr {
             min-height: 32px;
-            align-items: left;
+            align-items: flex-start;
         };
         
         .rt-thead.-filters .rt-tr {
