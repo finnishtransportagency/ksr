@@ -20,13 +20,28 @@ export const Wrapper = styled.div`
             margin-bottom: 2em;
         };
         
+        .esri-ui-bottom-right {
+            flex-flow: column-reverse;
+        };
+        
+        .esri-legend--card {
+            bottom: 10px;
+        }
+        
+        .esri-coordinate-conversion {
+            margin-bottom: 3em;
+        };
+        
         .esri-attribution {
             margin-left: 60px;
         };
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
         .esri-popup__button, .esri-popup__header-container, .esri-attribution__sources,
-        .esri-popup__feature-menu-item, .esri-legend--card__carousel-indicator {
+        .esri-popup__feature-menu-item, .esri-legend--card__carousel-indicator,
+        .esri-coordinate-conversion__row, .esri-coordinate-conversion__select-row,
+        .esri-coordinate-conversion__display, .esri-coordinate-conversion__mode-toggle,
+        .esri-coordinate-conversion__row-button {
             outline: none;
         };
         
@@ -137,10 +152,6 @@ export const Wrapper = styled.div`
                 margin-left: calc(60px * 7);
             };
         `};
-        
-        .esri-legend--card {
-            bottom: 60px;
-        }
 
         @media only screen and (max-width: 768px) {
             left: 0;
@@ -154,6 +165,10 @@ export const Wrapper = styled.div`
                 bottom: 60px;
                 margin-left: 0;
                 margin-right: 60px;
+            };
+            
+            .esri-coordinate-conversion {
+                bottom: 60px;
             };
             
             .esri-scale-bar {
