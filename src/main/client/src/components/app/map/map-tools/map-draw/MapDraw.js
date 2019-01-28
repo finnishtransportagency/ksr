@@ -17,6 +17,8 @@ type Props = {
     isActive: boolean,
     hasGraphics: boolean,
     setHasGraphics: (hasGraphics: boolean) => void,
+    showMeasurements: boolean,
+    toggleMeasurements: () => void,
 };
 
 class MapDraw extends Component<Props, null> {
@@ -29,6 +31,7 @@ class MapDraw extends Component<Props, null> {
 
         this.removeDrawings = this.removeDrawings.bind(this);
         this.toggleDrawTools = this.toggleDrawTools.bind(this);
+        this.toggleMeasurements = this.toggleMeasurements.bind(this);
     }
 
     componentWillReceiveProps(newProps: any) {
@@ -48,8 +51,9 @@ class MapDraw extends Component<Props, null> {
                 'esri/geometry/Polyline',
                 'esri/geometry/Point',
                 'esri/Graphic',
+                'esri/geometry/geometryEngine',
             ])
-            .then(([Polygon, Polyline, Point, Graphic]) => {
+            .then(([Polygon, Polyline, Point, Graphic, geometryEngine]) => {
                 const {
                     view, draw, setActiveTool,
                 } = this.props;
@@ -59,6 +63,42 @@ class MapDraw extends Component<Props, null> {
                 const drawPointButton = (document.getElementById: Function)('draw-point');
                 const drawTextButton = (document.getElementById: Function)('draw-text');
                 const drawEraseButton = (document.getElementById: Function)('draw-erase');
+                const drawToggleMeasurementsButton = (document.getElementById: Function)('toggle-measurements');
+
+                const measureArea = (polygon: Object) => {
+                    let planarArea = geometryEngine.planarArea(
+                        polygon,
+                        'square-meters',
+                    );
+                    if (planarArea < 0) {
+                        const simplifiedPolygon = geometryEngine.simplify(polygon);
+                        if (simplifiedPolygon) {
+                            planarArea = geometryEngine.planarArea(
+                                simplifiedPolygon,
+                                'square-meters',
+                            );
+                        }
+                    }
+
+                    let area = '';
+                    if (planarArea >= 10000) {
+                        area = `${parseFloat((planarArea / 10000).toFixed(2))} ha`;
+                    } else if (planarArea > 0 && planarArea < 10000) {
+                        area = `${parseFloat(planarArea.toFixed(2))} m\xB2`;
+                    }
+                    return area;
+                };
+
+                const measureLength = (line: Object) => {
+                    const planarLength = geometryEngine.planarLength(line, 'meters');
+                    let length = '';
+                    if (planarLength >= 1000) {
+                        length = `${parseFloat((planarLength / 1000).toFixed(2))} km`;
+                    } else if (planarLength > 0 && planarLength < 1000) {
+                        length = `${parseFloat(planarLength.toFixed(2))} m`;
+                    }
+                    return length;
+                };
 
                 const createPolygon = vertices =>
                     new Polygon({
@@ -149,35 +189,63 @@ class MapDraw extends Component<Props, null> {
                     return null;
                 };
 
+                const createLabelGraphic = (geometry, value, complete) =>
+                    new Graphic({
+                        geometry: geometry.extent.center,
+                        symbol: {
+                            type: 'text',
+                            color: '#000000',
+                            text: value || '',
+                            xoffset: 3,
+                            yoffset: 3,
+                            font: {
+                                size: 16,
+                                family: 'sans-serif',
+                                weight: 'bold',
+                            },
+                        },
+                        type: 'draw-measure-label',
+                        complete,
+                        id: this.currentGraphicUUID,
+                        visible: this.props.showMeasurements,
+                    });
+
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
 
                     if (vertices.length === 2) {
                         const line = createLine(vertices);
-
                         const graphic = createPolylineGraphic(line, evt.type === 'draw-complete');
-                        view.graphics.forEach(g => g.id === this.currentGraphicUUID
-                            && view.graphics.remove(g));
+                        const graphicsToRemove = view.graphics
+                            .filter(g => g.id === this.currentGraphicUUID);
+
+                        view.graphics.removeMany(graphicsToRemove);
                         view.graphics.add(graphic);
                     } else {
                         const polygon = createPolygon(vertices);
-
+                        const area = measureArea(polygon);
                         const graphic = createPolygonGraphic(polygon, 'solid', evt.type === 'draw-complete');
-                        view.graphics.forEach(g => g.id === this.currentGraphicUUID
-                            && view.graphics.remove(g));
-                        view.graphics.add(graphic);
+                        const graphicLabelMeasure = createLabelGraphic(polygon, area, evt.type === 'draw-complete');
+                        const graphicsToRemove = view.graphics
+                            .filter(g => g.id === this.currentGraphicUUID);
+
+                        view.graphics.removeMany(graphicsToRemove);
+                        view.graphics.addMany([graphic, graphicLabelMeasure]);
                     }
                 };
 
                 const drawLine = (evt) => {
                     const { vertices } = evt;
                     const line = createLine(vertices);
-
+                    const length = measureLength(line);
                     const graphic = createPolylineGraphic(line, evt.type === 'draw-complete');
+                    const graphicLabelMeasure = createLabelGraphic(line, length, evt.type === 'draw-complete');
 
-                    view.graphics.forEach(g => g.id === this.currentGraphicUUID
-                        && view.graphics.remove(g));
-                    view.graphics.add(graphic);
+                    const graphicsToRemove = view.graphics
+                        .filter(g => g.id === this.currentGraphicUUID);
+                    view.graphics.removeMany(graphicsToRemove);
+
+                    view.graphics.addMany([graphic, graphicLabelMeasure]);
                 };
 
                 const drawPoint = (evt) => {
@@ -277,6 +345,10 @@ class MapDraw extends Component<Props, null> {
                         drawEraseButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
+
+                drawToggleMeasurementsButton.addEventListener('click', () => {
+                    this.toggleMeasurements();
+                });
             });
     };
 
@@ -314,7 +386,8 @@ class MapDraw extends Component<Props, null> {
         this.removeHighlight();
         resetMapTools(draw, sketchViewModel, setActiveTool);
 
-        const graphicsToRemove = view.graphics.filter(g => g.type === 'draw-graphic');
+        const graphicsToRemove = view.graphics
+            .filter(g => (g.type === 'draw-graphic' || g.type === 'draw-measure-label'));
         view.graphics.removeMany(graphicsToRemove);
         setActiveTool('');
 
@@ -341,8 +414,39 @@ class MapDraw extends Component<Props, null> {
         this.removeHighlightsFromButtons();
     };
 
+    toggleMeasurements = () => {
+        const { view, toggleMeasurements } = this.props;
+        toggleMeasurements();
+        if (view.graphics.length) {
+            const graphicsToBeRemoved = [];
+            const graphicsToBeAdded = [];
+            view.graphics.forEach((g) => {
+                if (g.type === 'draw-measure-label') {
+                    // JS API 4 does not support hiding and showing graphics based on visibility so
+                    // as a workaround the graphics must be cloned and attributes set manually.
+                    const cloned = g.clone();
+                    cloned.complete = g.complete;
+                    cloned.id = g.id;
+                    cloned.type = g.type;
+                    cloned.visible = !g.visible;
+
+                    graphicsToBeRemoved.push(g);
+                    graphicsToBeAdded.push(cloned);
+                }
+            });
+
+            view.graphics.removeMany(graphicsToBeRemoved);
+            view.graphics.addMany(graphicsToBeAdded);
+        }
+    };
+
     render() {
-        const { view, isActive, hasGraphics } = this.props;
+        const {
+            view,
+            isActive,
+            hasGraphics,
+            showMeasurements,
+        } = this.props;
 
         return (
             <MapDrawView
@@ -351,6 +455,7 @@ class MapDraw extends Component<Props, null> {
                 view={view}
                 toggleDrawTools={this.toggleDrawTools}
                 isActive={isActive}
+                showMeasurements={showMeasurements}
             />
         );
     }

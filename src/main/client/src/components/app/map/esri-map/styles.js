@@ -32,7 +32,6 @@ export const Wrapper = styled.div`
         
         #select-tool-outer-wrapper,
         #create-new-feature-wrapper,
-        #measure-tool-outer-wrapper,
         #draw-tool-outer-wrapper,
         #toggle-select-tools,
         #draw-rectangle,
@@ -45,21 +44,17 @@ export const Wrapper = styled.div`
             display: inline-flex;
         };
         
-        #draw-rectangle
-         {
+        #draw-rectangle {
             margin-right: 4px;
         };
         
-        #draw-circle,
-         #accept-create-new-feature {
+        #draw-circle, #accept-create-new-feature {
             margin-left: 4px;
         };
         
         #toggle-select-tools,
-        #toggle-measure-tools,
         #toggle-draw-tools,
-        #draw-create-new-feature
-         {
+        #draw-create-new-feature {
             margin-left: 10px;
         };
         
@@ -78,20 +73,16 @@ export const Wrapper = styled.div`
         .esri-compass,
         .esri-zoom .esri-interactive,
         .esri-disabled,
-        #draw-measure-polygon,
-        #draw-measure-line,
         #draw-erase,
         #draw-polygon,
         #draw-line,
         #draw-point,
         #draw-text,
         #toggle-select-tools,
-        #toggle-measure-tools,
         #toggle-draw-tools,
         #draw-rectangle,
         #draw-polygon-select,
         #draw-circle,
-        #remove-measurement,
         #remove-draw,
         #draw-create-new-feature,
         #reject-create-new-feature,
@@ -109,7 +100,7 @@ export const Wrapper = styled.div`
         
         .esri-popup__feature-buttons {
             padding: 0 1em;
-        }
+        };
         
         ${props => props.sideBar && css`
             left: 460px;

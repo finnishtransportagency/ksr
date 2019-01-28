@@ -181,12 +181,6 @@ const fi = {
         acceptSelection: 'Hyväksy geometria',
         activeAdmin: 'Luontityökalu',
     },
-    mapMeasure: {
-        drawLine: 'Mittaa etäisyys',
-        drawPolygon: 'Mittaa pinta-ala',
-        selectTool: 'Mittaustyökalut',
-        removeDraw: 'Poista mittaukset',
-    },
     mapLayerView: {
         removeTooltip: 'Poista karttataso',
     },
@@ -245,6 +239,7 @@ const fi = {
         drawErase: 'Poista yksittäinen piirros',
         selectTool: 'Piirtotyökalut',
         removeDraw: 'Poista piirrokset',
+        toggleMeasurements: 'Näytä/piilota mittaustulokset',
     },
     modalDrawText: {
         title: 'Lisää tekstiä kartalle',

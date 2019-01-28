@@ -14,9 +14,10 @@ export const resetMapTools = (draw: Object, sketchViewModel: Object, setActiveTo
     draw.reset();
     sketchViewModel.reset();
     setActiveTool('');
-    [...document.getElementsByClassName('esri-widget--button')].forEach((element) => {
-        element.style.background = styles.colorMain;
-    });
+    [...document.getElementsByClassName('esri-widget--button:not(#toggle-measurements)')]
+        .forEach((element) => {
+            element.style.background = styles.colorMain;
+        });
 };
 
 /**
@@ -27,6 +28,7 @@ export const resetMapTools = (draw: Object, sketchViewModel: Object, setActiveTo
 */
 export const removeTemporaryDrawings = (view: Object) => {
     // Removes temporary drawings (graphic.complete === false)
-    const graphicsToRemove = view.graphics.filter(g => g.type === 'draw-graphic' && !g.complete);
+    const graphicsToRemove = view.graphics
+        .filter(g => (g.type === 'draw-graphic' || g.type === 'draw-measure-label') && !g.complete);
     view.graphics.removeMany(graphicsToRemove);
 };
