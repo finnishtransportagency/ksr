@@ -1,6 +1,8 @@
 // @flow
 import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
+import clone from 'clone';
+import { isMobile } from 'react-device-detect';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import { queryFeatures } from '../../../utils/queryFeatures';
@@ -87,6 +89,8 @@ class EsriMap extends Component<Props> {
                 'esri/layers/GraphicsLayer',
                 'esri/Graphic',
                 'esri/widgets/Legend',
+                'esri/widgets/CoordinateConversion',
+                'esri/widgets/CoordinateConversion/support/Conversion',
             ])
             .then(([
                 MapView,
@@ -101,6 +105,8 @@ class EsriMap extends Component<Props> {
                 GraphicsLayer,
                 Graphic,
                 Legend,
+                CoordinateConversion,
+                Conversion,
             ]) => {
                 const {
                     mapCenter,
@@ -190,6 +196,33 @@ class EsriMap extends Component<Props> {
                     'top-right',
                 );
                 view.ui.add([scaleBar], 'bottom-left');
+
+                if (!isMobile) {
+                    const coordinateWidget = new CoordinateConversion({
+                        view,
+                        multipleConversions: false,
+                    });
+
+                    const formats = coordinateWidget.formats
+                        .filter(f => f.name === 'basemap' || f.name === 'xy');
+
+                    const epsg = formats.items.find(format => format.name === 'basemap');
+                    const wgs = formats.items.find(format => format.name === 'xy');
+
+                    if (epsg && wgs) {
+                        const epsgClone = clone(epsg, true, 3);
+                        epsgClone.name = 'EPSG:3067';
+                        const wgsClone = clone(wgs, true, 3);
+                        wgsClone.name = 'WGS84';
+
+                        coordinateWidget.formats.removeAll();
+                        coordinateWidget.formats.addMany([epsgClone, wgsClone]);
+
+                        coordinateWidget.conversions.removeAll();
+                        coordinateWidget.conversions.add(new Conversion({format: epsgClone}));
+                        view.ui.add([coordinateWidget], 'bottom-right');
+                    }
+                }
 
                 // Change compass widgets default dial icon to compass icon.
                 view.when(() => {
