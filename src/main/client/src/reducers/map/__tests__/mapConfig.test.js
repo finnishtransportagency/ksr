@@ -45,4 +45,45 @@ describe('Map config reducer', () => {
             extractServiceUrl: expectedResult.extractServiceUrl,
         })).toEqual(expectedResult);
     });
+
+    it('should handle SET_SCALE if scale has changed', () => {
+        const initialState = {
+            mapCenter: [],
+            mapScale: 5000,
+            printServiceUrl: null,
+            extractServiceUrl: null,
+            fetching: false,
+        };
+
+        const expectedResult = {
+            ...initialState,
+            mapScale: 10000,
+        };
+
+        const action = {
+            type: types.SET_SCALE,
+            mapScale: 10000,
+        };
+
+        expect(reducer(initialState, action)).toEqual(expectedResult);
+    });
+
+    it('should return current state in SET_SCALE if scale has not changed', () => {
+        const initialState = {
+            mapCenter: [],
+            mapScale: 5000,
+            printServiceUrl: null,
+            extractServiceUrl: null,
+            fetching: false,
+        };
+
+        const action = {
+            type: types.SET_SCALE,
+            mapScale: 5000,
+        };
+
+        // expect().toBe because we wan't to compare object references
+        // instead of object content
+        expect(reducer(initialState, action)).toBe(initialState);
+    });
 });

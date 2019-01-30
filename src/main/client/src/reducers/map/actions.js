@@ -304,3 +304,8 @@ export const toggleLayer = (layerId: string) => ({
 export const toggleMeasurements = () => ({
     type: types.TOGGLE_MEASUREMENTS,
 });
+
+export const setScale = (mapScale: number) => ({
+    type: types.SET_SCALE,
+    mapScale,
+});
