@@ -51,13 +51,20 @@ const Toggle = styled.div`
     align-self: center;
     padding: 0 1rem;
     flex-direction: column;
-    cursor: pointer;
     justify-content: space-around;
     height: 75%;
     
     .symbolWrapper {
         align-self: center;
     };
+
+    ${props => !props.viewable && css`
+        cursor: grab;
+    `}
+
+    ${props => props.viewable && css`
+        cursor: pointer;
+    `}
 `;
 
 LayerSettings.Content = Content;
