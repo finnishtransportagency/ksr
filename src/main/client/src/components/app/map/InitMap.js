@@ -59,13 +59,13 @@ type Props = {
     removeLoading: () => void,
     activateLayers: (layers: Object[], workspace?: Object) => void,
     deactivateLayer: (layerId: string) => void,
+    setScale: number => void,
 };
 
 class EsriMap extends Component<Props> {
     legendWidget: ?Object = null;
 
-    // eslint-disable-line react/sort-comp
-    printWidget: ?Object = null; // eslint-disable-line react/sort-comp
+    printWidget: ?Object = null;
 
     componentDidUpdate(prevProps: Props) {
         const { initialLoading } = this.props;
@@ -94,6 +94,7 @@ class EsriMap extends Component<Props> {
             CoordinateConversion,
             Conversion,
             Search,
+            watchUtils,
         ] = await esriLoader
             .loadModules([
                 'esri/views/MapView',
@@ -111,6 +112,7 @@ class EsriMap extends Component<Props> {
                 'esri/widgets/CoordinateConversion',
                 'esri/widgets/CoordinateConversion/support/Conversion',
                 'esri/widgets/Search',
+                'esri/core/watchUtils',
             ]);
 
         const {
@@ -118,6 +120,7 @@ class EsriMap extends Component<Props> {
             mapScale,
             selectFeatures,
             printServiceUrl,
+            setScale,
         } = this.props;
 
         // GraphicsLayer to hold graphics created via sketch view model
@@ -248,6 +251,10 @@ class EsriMap extends Component<Props> {
             const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
             compassIcon.classList.remove('esri-icon-dial');
             compassIcon.classList.add('esri-icon-compass');
+        });
+
+        watchUtils.watch(view, 'scale', () => {
+            setScale(view.scale);
         });
 
         view.on('click', (event) => {
