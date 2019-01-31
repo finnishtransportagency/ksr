@@ -10,7 +10,6 @@ type Props = {
 const CustomTableBodyView = (props: Props) => (
     <CustomTableBodyWrapper {...props} className="rt-tbody" >
         <Scrollbars
-            autoHide
             renderView={scrollProps => <div {...scrollProps} className="tbody-scroll-wrapper" />}
             renderTrackHorizontal={scrollProps =>
                 <div {...scrollProps} className="track-horizontal" style={{ display: 'none' }} />}

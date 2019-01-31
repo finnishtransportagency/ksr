@@ -11,7 +11,6 @@ type Props = {
 const CustomTableView = ({ children, className, ...rest }: Props) => (
     <CustomTableWrapper className="rt-rtable" role="grid" {...rest} >
         <Scrollbars
-            autoHide
             renderView={scrollProps => <div {...scrollProps} className="rtable-scroll-wrapper" />}
             renderTrackVertical={scrollProps =>
                 <div {...scrollProps} className="track-vertical" style={{ display: 'none' }} />}
