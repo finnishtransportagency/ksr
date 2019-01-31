@@ -23,7 +23,7 @@ export const addContractColumn = (
             maxWidth: 30,
             sortable: false,
             filterable: false,
-            resizeable: false,
+            resizable: false,
             Cell: (row: Object) => (
                 <div
                     title={type === 'agfs'
