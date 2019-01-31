@@ -146,17 +146,17 @@ export const WrapperReactTable = styled.div`
     };
 
     @media only screen and (max-width: 768px) {
-      width: 100%;
-      top: 52px;
-      height: calc(100% - 60px - 52px);
+        width: 100%;
+        top: 52px;
+        height: calc(100% - 60px - 52px);
     };
 `;
 
 export const WrapperReactTableNoTable = styled.div`
-  text-align: center;
-  width: 100%;
-  top: 80px;
-  position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 80px;
+    position: absolute;
 `;
 
 export const TableSelect = styled.select`
