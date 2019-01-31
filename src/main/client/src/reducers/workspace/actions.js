@@ -3,6 +3,10 @@ import moment from 'moment';
 import { toast } from 'react-toastify';
 import * as types from '../../constants/actionTypes';
 import strings from '../../translations/fi';
+import { getWorkspaceFeatures, queryWorkspaceFeatures } from '../../utils/workspace/loadWorkspace';
+import { addNonSpatialContentToTable, searchWorkspaceFeatures } from '../table/actions';
+import { parseData } from '../../utils/parseFeatureData';
+import { getSingleLayerFields } from '../../utils/map';
 
 /**
  * Handles workspace fetches and workspace list update.
@@ -71,6 +75,46 @@ export const updateWorkspaces = (
             }
         })
         .catch(err => console.log(err));
+};
+
+/**
+ * Sets all the spatial-, nonSpatial- and search features from loaded workspace.
+ *
+ * @param {Object} workspace Workspace to be loaded.
+ * @param {Object[]} layers List of layers to be activated for the workspace.
+ */
+export const setWorkspaceFeatures = (
+    workspace: Object,
+    layers: Object[],
+) => async (dispatch: Function, getState: Function) => {
+    const spatialWorkspace = workspace.layers
+        .filter(wl => layers.find(l => l.id === wl.layerId && l.type !== 'agfl'));
+    const workspaceFeatures = getWorkspaceFeatures(spatialWorkspace);
+    const layerFeatures = await queryWorkspaceFeatures(
+        workspaceFeatures,
+        dispatch(getState).map.mapView.view,
+    );
+
+    dispatch({
+        type: types.SELECT_FEATURES,
+        layers: parseData(layerFeatures, true),
+    });
+
+    dispatch(searchWorkspaceFeatures(workspace, dispatch(getState).map.layerGroups.layerList));
+
+    const nonSpatialLayers = layers
+        .filter(l => workspace && workspace.layers
+            .find(wl => wl.layerId === l.id && l.type === 'agfl'));
+
+    nonSpatialLayers.forEach(async (nonSpatialLayer) => {
+        const nonSpatialWorkspace = workspace && workspace.layers
+            .filter(wl => nonSpatialLayer.id === wl.layerId);
+
+        dispatch(addNonSpatialContentToTable(
+            nonSpatialLayer,
+            getWorkspaceFeatures(nonSpatialWorkspace),
+        ));
+    });
 };
 
 export const setWorkspace = () => (dispatch: Function) => {

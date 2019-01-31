@@ -11,7 +11,7 @@ import MapLayerTitle from '../../../../shared/MapLayerTitle';
 type Props = {
     layer: Object,
     layerList: Object[],
-    onToggleVisibility: (Number) => void,
+    toggleLayer: (layerId: string) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     createNonSpatialFeature: () => void,
@@ -23,7 +23,7 @@ const MapLayerSettings = ({
     layer,
     layerList,
     onOpacityChange,
-    onToggleVisibility,
+    toggleLayer,
     setActiveAdminTool,
     activeAdminTool,
     createNonSpatialFeature,
@@ -37,7 +37,7 @@ const MapLayerSettings = ({
                 layer.type !== 'agfl' &&
                 <LayerSettings.Toggle
                     title={strings.mapLayerSettings.toggleVisibility}
-                    onClick={() => onToggleVisibility(layer.id)}
+                    onClick={() => toggleLayer(layer.id)}
                 >
                     {
                         layer.legendSymbol &&

@@ -31,6 +31,9 @@ const mapStateToProps = (state) => {
         .map(l => removeUnderscore(l));
     const originalLayers = tableFeaturesLayers.map(l => removeUnderscore(l));
     const selectedData = tableFeaturesLayers.flatMap(f => f.data.filter(d => d._selected));
+    const selectedAdminData = tableFeaturesLayers
+        .filter(layer => layer.id === state.adminTool.active.layerId)
+        .flatMap(f => f.data.filter(d => d._selected));
     const geometryDataSelected = tableFeaturesLayers
         .flatMap(f => f.data.filter(d => d._selected && d.geometry));
     const activeTableFeatureLayer = tableFeaturesLayers
@@ -45,23 +48,28 @@ const mapStateToProps = (state) => {
     const { addressField, featureType } = state.adminTool.active.layerId
     && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
 
+    const currentTabAdmin = state.table.features.activeTable === state.adminTool.active.layerId;
+
     return {
         isOpen: state.table.toggleTable,
         isOpenFilter: state.table.toggleFilter,
         activeNav: state.navigation.activeNav,
         activeModal: state.modal.activeModal.activeModal,
-        activeUpdate: layer ? layer.layerPermission.updateLayer : false,
-        activeDelete: layer ? layer.layerPermission.deleteLayer : false,
+        activeUpdate: layer && currentTabAdmin ? layer.layerPermission.updateLayer : false,
+        activeDelete: layer && currentTabAdmin ? layer.layerPermission.deleteLayer : false,
         originalLayers,
         editedLayersNoUnderscore,
         selectedData: selectedData.length > 0,
+        selectedAdminData: selectedAdminData.length > 0,
         geometryDataSelected: geometryDataSelected.length > 0,
         activeTableDataSelected,
         activeTableLayer,
         featureType,
         addressField,
         view: state.map.mapView.view,
-        editedLayers: state.table.features.editedLayers,
+        editedLayers: state.table.features.editedLayers
+            .filter(editedLayer => editedLayer.id === state.adminTool.active.layerId),
+        currentTabAdmin,
     };
 };
 

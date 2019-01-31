@@ -17,14 +17,13 @@ import {
 import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
 import { copyFeature } from '../../../utils/map-selection/copyFeature';
-import { removeGraphicsFromMap, getLayerFields } from '../../../utils/map';
+import { removeGraphicsFromMap } from '../../../utils/map';
 
 type Props = {
     layerList: Array<any>,
     mapCenter: Array<number>,
     mapScale: number,
     printServiceUrl: ?string,
-    addNonSpatialContentToTable: Function,
     selectFeatures: Function,
     setMapView: (view: Object) => void,
     activeAdminTool: string,
@@ -33,7 +32,6 @@ type Props = {
     setTempGraphicsLayer: (graphicsLayer: Object) => void,
     activeTool: string,
     setHasGraphics: (hasGraphics: boolean) => void,
-    searchWorkspaceFeatures: Function,
     setWorkspaceRejected: Function,
     initialLoading: boolean,
     setActiveModal: Function,
@@ -55,9 +53,11 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
-    setLayerList: (layerList: Object[]) => void,
     setActiveFeatureMode: (activeMode: string) => void,
     editModeActive: boolean,
+    removeLoading: () => void,
+    activateLayers: (layers: Object[], workspace?: Object) => void,
+    deactivateLayer: (layerId: string) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -298,7 +298,6 @@ class EsriMap extends Component<Props> {
                         setPropertyInfo,
                         setContractListInfo,
                         showConfirmModal,
-                        activeAdminTool,
                         authorities,
                         setActiveFeatureMode,
                         sketchViewModel,
@@ -357,7 +356,6 @@ class EsriMap extends Component<Props> {
                         case 'select-intersect':
                             queryFeatures(
                                 geometry,
-                                activeAdminTool,
                                 view,
                                 selectFeatures,
                                 layer && layer.id,
@@ -439,18 +437,19 @@ class EsriMap extends Component<Props> {
                     }
                 });
 
+                const { removeLoading } = this.props;
+                view.when(() => removeLoading());
+
                 return { view, tempGraphicsLayer };
             })
             .then(async (r) => {
                 const {
                     setWorkspaceRejected,
                     layerList,
-                    selectFeatures,
-                    searchWorkspaceFeatures,
                     setMapView,
                     setTempGraphicsLayer,
-                    addNonSpatialContentToTable,
-                    setLayerList,
+                    activateLayers,
+                    deactivateLayer,
                 } = this.props;
 
                 // Set initial view and temp graphics layer to redux
@@ -463,11 +462,8 @@ class EsriMap extends Component<Props> {
                         workspace,
                         layerList,
                         r.view,
-                        searchWorkspaceFeatures,
-                        addNonSpatialContentToTable,
-                        selectFeatures,
-                        setLayerList,
-                        null,
+                        activateLayers,
+                        deactivateLayer,
                     );
                 } else {
                     workspace = await fetchWorkspace(null);
@@ -476,18 +472,11 @@ class EsriMap extends Component<Props> {
                             workspace,
                             layerList,
                             r.view,
-                            searchWorkspaceFeatures,
-                            addNonSpatialContentToTable,
-                            selectFeatures,
-                            setLayerList,
-                            null,
+                            activateLayers,
+                            deactivateLayer,
                         );
                     } else {
-                        const layersWithFields = await getLayerFields(
-                            layerList,
-                            layerList.filter(layer => layer.visible),
-                        );
-                        setLayerList(layersWithFields);
+                        activateLayers(layerList.filter(layer => layer.visible));
                         setWorkspaceRejected();
                     }
                 }

@@ -1,10 +1,11 @@
 // @flow
 import { toast } from 'react-toastify';
 import { fetchGetWorkspaceList } from '../../api/workspace/getWorkspaceList';
+import { setLayerList } from '../../reducers/map/actions';
 import strings from '../../translations';
-import { addLayers, getLayerFields, setCenterPoint } from '../map';
+import { setCenterPoint } from '../map';
 import { getWorkspaceUuid } from '../../api/workspace/userWorkspace';
-import { getLayerLegend } from '../layerLegend';
+import store from '../../store';
 
 /**
  * Creates list of feature data saved in workspace.
@@ -13,7 +14,7 @@ import { getLayerLegend } from '../layerLegend';
  *
  * @returns {Object[]} List of layer features saved in workspace.
  */
-export const setWorkspaceFeatures = (workspace: Object[]) => {
+export const getWorkspaceFeatures = (workspace: Object[]) => {
     const workspaceFeatures = [];
     if (workspace) {
         workspace.forEach((layer) => {
@@ -108,10 +109,10 @@ export const updateLayerList = (workspace: Object, layerList: Object[]): Object[
 
             return {
                 ...ll,
-                active: true,
-                visible: ws.visible,
                 opacity: ws.opacity,
                 layerOrder: ws.layerOrder,
+                visible: false,
+                active: false,
             };
         }
         return {
@@ -146,78 +147,40 @@ export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Obje
 /**
  * Loads given workspace.
  *
- * @param {Object} workspaceToLoad User specific workspace settings.
+ * @param {Object} workspace User specific workspace settings.
  * @param {Object[]} layerList List of layers.
  * @param {Object} view Esri map view.
- * @param {Function} searchWorkspaceFeatures Redux function that handles workspace searches.
- * @param {Function} addNonSpatialContentToTable Adds non spatial content to table.
- * @param {Function} selectFeatures Redux function that handles workspace selections.
- * @param {Function} setLayerList Redux function that changes layer list.
+ * @param {Function} activateLayers Redux function that handles layer activation.
+ * @param {Function} deactivateLayer Redux function that handles layer deactivation.
  * @param {Function} [updateWorkspaces] Redux function that handles workspace fetches.
  */
 export const loadWorkspace = async (
-    workspaceToLoad: Object,
+    workspace: Object,
     layerList: Object[],
     view: Object,
-    searchWorkspaceFeatures: Function,
-    addNonSpatialContentToTable: Function,
-    selectFeatures: Function,
-    setLayerList: Function,
+    activateLayers: Function,
+    deactivateLayer: Function,
     updateWorkspaces: ?Function,
 ) => {
-    toast.info(`${strings.workspace.loadingWorkspace} [${workspaceToLoad.name}]`, {
+    toast.info(`${strings.workspace.loadingWorkspace} [${workspace.name}]`, {
         toastId: 'loadingWorkspace',
         autoClose: false,
     });
 
-    let layers = updateLayerList(workspaceToLoad, layerList);
-    let workspaceLayers = layers.filter(l =>
-        workspaceToLoad.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
-    layers = await getLayerFields(layerList, workspaceLayers);
-    const { failedLayers } = await addLayers(workspaceLayers, view, true);
+    const workspaceLayerList = updateLayerList(workspace, layerList);
+    store.dispatch(setLayerList(workspaceLayerList));
 
-    workspaceLayers = await getLayerLegend(workspaceLayers, view);
+    const workspaceLayers = layerList.filter(l =>
+        workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
 
-    // Deactivate failed layers from layerlist and update legend symbols.
-    layers = layers.map((l) => {
-        const workspaceLayer = workspaceLayers.find(wsl => wsl.id === l.id);
-        return {
-            ...l,
-            active: failedLayers.some(fl => fl === l.id) ? false : l.active,
-            visible: failedLayers.some(fl => fl === l.id) ? false : l.visible,
-            legendSymbol: workspaceLayer && workspaceLayer.legendSymbol
-                ? workspaceLayer.legendSymbol
-                : null,
-        };
-    });
-    setLayerList(layers);
-
-    // Filters out layers that fail from workspace.
-    const workspace = {
-        ...workspaceToLoad,
-        layers: workspaceToLoad.layers.filter(wl => !failedLayers
-            .some(fl => fl === wl.layerId || fl === wl.userLayerId)),
-    };
-
-    const nonSpatialLayers = layers.filter(l =>
-        workspace.layers.find(wl => wl.layerId === l.id && l.type === 'agfl'));
-
-    nonSpatialLayers.forEach((nl) => {
-        const nonSpatialWorkspace = workspace.layers.filter(wl =>
-            nl.id === wl.layerId);
-        addNonSpatialContentToTable(
-            nl,
-            setWorkspaceFeatures(nonSpatialWorkspace),
-        );
+    layerList.forEach((l) => {
+        if (l.active && !workspaceLayers.some(wl => wl.id === l.id)) {
+            deactivateLayer(l.id);
+        }
     });
 
-    const spatialWorkspace = workspace.layers
-        .filter(wl => layers.find(l => l.id === wl.layerId && l.type !== 'agfl'));
+    activateLayers(workspaceLayers, workspace);
 
-    const workspaceFeatures = setWorkspaceFeatures(spatialWorkspace);
-    const layerFeatures = await queryWorkspaceFeatures(workspaceFeatures, view);
-    searchWorkspaceFeatures(workspace, layers);
-    selectFeatures(layerFeatures);
     if (updateWorkspaces) updateWorkspaces(fetchGetWorkspaceList);
 
     view.when(async () => {

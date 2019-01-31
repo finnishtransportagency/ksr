@@ -13,6 +13,5 @@ describe('<LayerGroup.Header />', () => {
         expect(wrapper).toHaveStyleRule('display', 'flex');
         expect(wrapper).toHaveStyleRule('flex-direction', 'row');
         expect(wrapper).toHaveStyleRule('justify-content', 'space-between');
-        expect(wrapper).toHaveStyleRule('padding', '1rem');
     });
 });

@@ -1,8 +1,9 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import LayerGroup from '../../../../../ui/blocks/LayerGroup';
 import strings from '../../../../../../translations';
+import LoadingIcon from '../../../../shared/LoadingIcon';
 
 type Props = {
     layer: Object,
@@ -17,6 +18,7 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
+    loadingLayers: string[],
 };
 
 const MapLayerView = ({
@@ -27,11 +29,13 @@ const MapLayerView = ({
     inputDisabled,
     layerList,
     showConfirmModal,
+    loadingLayers,
 }: Props) => (
     <LayerGroup.Layer>
+        {loadingLayers.some(ll => ll === layer.id) && <LoadingIcon size={6} loading />}
         <LayerGroup.Layer.Label htmlFor={layer.id}>
             <input
-                disabled={inputDisabled}
+                disabled={inputDisabled || loadingLayers.some(ll => ll === layer.id)}
                 onChange={handleLayerClick}
                 checked={checked}
                 type="checkbox"
@@ -40,9 +44,9 @@ const MapLayerView = ({
             />
             {
                 layer.type === 'agfl' &&
-                <React.Fragment>
+                <Fragment>
                     <i className="fas fa-table" />{' '}<span>{layer.name}</span>
-                </React.Fragment>
+                </Fragment>
             }
             {
                 layer.type !== 'agfl' && <span>{layer.name}</span>
@@ -56,12 +60,14 @@ const MapLayerView = ({
                         data-balloon={strings.mapLayerView.removeTooltip}
                         data-balloon-pos="left"
                         onClick={() => {
-                            showConfirmModal(
-                                strings.modalRemoveUserLayer.content,
-                                strings.modalRemoveUserLayer.submit,
-                                strings.modalRemoveUserLayer.cancel,
-                                () => { removeUserLayer(layerList); },
-                            );
+                            if (!loadingLayers.some(ll => ll === layer.id)) {
+                                showConfirmModal(
+                                    strings.modalRemoveUserLayer.content,
+                                    strings.modalRemoveUserLayer.submit,
+                                    strings.modalRemoveUserLayer.cancel,
+                                    () => { removeUserLayer(layerList); },
+                                );
+                            }
                         }}
                     >
                         <i className="fas fa-trash" />

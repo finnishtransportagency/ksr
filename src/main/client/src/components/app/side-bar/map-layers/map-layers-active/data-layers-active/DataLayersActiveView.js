@@ -31,6 +31,7 @@ const DataLayersActiveView = ({
                         onOpacityChange={() => {}}
                         onToggleVisibility={() => {}}
                         createThemeLayer={() => {}}
+                        toggleLayer={() => {}}
                     />
                 ))
             }

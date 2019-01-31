@@ -4,12 +4,12 @@ import { setUserInfo } from '../../../reducers/user/actions';
 import { setWorkspace, updateWorkspaces } from '../../../reducers/workspace/actions';
 import { getLayerGroups, getMapConfig } from '../../../reducers/map/actions';
 import { loadFailedEdits } from '../../../reducers/offline/actions';
+import { setLoading } from '../../../reducers/loading/actions';
 import Home from './Home';
 
-const mapStateToProps = (state) => {
-    const loading = state.workspace.workspace.loadingWorkspace || state.loading;
-    return { loading };
-};
+const mapStateToProps = state => ({
+    loading: state.loading.loading,
+});
 
 const mapDispatchToProps = dispatch => ({
     updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string) => (
@@ -29,6 +29,9 @@ const mapDispatchToProps = dispatch => ({
     ),
     loadFailedEdits: () => (
         dispatch(loadFailedEdits())
+    ),
+    setLoading: () => (
+        dispatch(setLoading())
     ),
 });
 

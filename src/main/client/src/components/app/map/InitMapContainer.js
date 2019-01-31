@@ -4,14 +4,14 @@ import {
     setMapView,
     setTempGraphicsLayer,
     setHasGraphics,
-    setLayerList,
     setActiveFeatureMode,
+    activateLayers,
+    deactivateLayer,
 } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import { setPropertyInfo } from '../../../reducers/search/actions';
 import {
     setSingleLayerGeometry,
-    searchWorkspaceFeatures,
     selectFeatures,
     addNonSpatialContentToTable,
 } from './../../../reducers/table/actions';
@@ -19,6 +19,7 @@ import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/
 import InitMap from './InitMap';
 import { setContractListInfo } from '../../../reducers/contract/actions';
 import { showConfirmModal } from '../../../reducers/confirmModal/actions';
+import { removeLoading } from '../../../reducers/loading/actions';
 
 const mapStateToProps = state => ({
     layerList: state.map.layerGroups.layerList,
@@ -53,9 +54,6 @@ const mapDispatchToProps = dispatch => ({
     setHasGraphics: (hasGraphics) => {
         dispatch(setHasGraphics(hasGraphics));
     },
-    searchWorkspaceFeatures: (queryMap, layerList) => {
-        dispatch(searchWorkspaceFeatures(queryMap, layerList));
-    },
     setWorkspace: () => {
         dispatch(setWorkspace());
     },
@@ -74,11 +72,17 @@ const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    setLayerList: (layerList: Object[]) => {
-        dispatch(setLayerList(layerList));
-    },
     setActiveFeatureMode: (activeFeatureMode: string) => {
         dispatch(setActiveFeatureMode(activeFeatureMode));
+    },
+    removeLoading: () => {
+        dispatch(removeLoading());
+    },
+    activateLayers: (layers: Object[], workspace?: Object) => {
+        dispatch(activateLayers(layers, workspace));
+    },
+    deactivateLayer: (layerId) => {
+        dispatch(deactivateLayer(layerId));
     },
 });
 

@@ -5,6 +5,11 @@ import { layerData } from '../../api/map/layerData';
 import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
+import { addLayers, getSingleLayerFields } from '../../utils/map';
+import { reorderLayers } from '../../utils/reorder';
+import { addNonSpatialContentToTable } from '../table/actions';
+import { getLayerLegend } from '../../utils/layerLegend';
+import { setWorkspaceFeatures } from '../workspace/actions';
 
 export const getLayerGroups = () => async (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
@@ -28,6 +33,113 @@ export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
     layerList,
 });
+
+export const updateLayer = (layer: Object) => ({
+    type: types.UPDATE_LAYER,
+    layer,
+});
+
+/**
+ * Handles activating new layers. Works with single layer, layer group or workspace.
+ *
+ * Sets loading to all layers that are being activated. If layer added successfully to map view
+ * it will be updated into layer list. If a layer fails it will not be added to layer list and
+ * toast will be shown for the failing layer.
+ *
+ * If called from workspace load, will also handle zooming to saved extent and updating workspace
+ * load toast after everything has been successfully loaded from the workspace.
+ *
+ * @param {Object[]} layers Layers to be activated.
+ * @param {Object} [workspace] Workspace to be loaded.
+ */
+export const activateLayers = (
+    layers: Object[],
+    workspace?: Object,
+) => async (dispatch: Function, getState: Function) => {
+    const { view } = dispatch(getState).map.mapView;
+    const { activeAdminTool } = dispatch(getState).adminTool.active.layerId;
+
+    view.popup.close();
+
+    dispatch({
+        type: types.SET_LOADING_LAYERS,
+        layerIds: layers.map(l => l.id),
+    });
+
+    const { failedLayers } = await addLayers(
+        layers,
+        view,
+        workspace !== undefined,
+    );
+
+    await Promise.all(layers.map(async (layer) => {
+        if (!failedLayers.some(layerId => layerId === layer.id)) {
+            if (layer.id === activeAdminTool) {
+                dispatch({
+                    type: types.SET_ACTIVE_ADMIN_TOOL,
+                    layerId: '',
+                    layerList: dispatch(getState).map.layerGroups.layerList,
+                });
+            }
+
+            if (layer.type === 'agfl') {
+                if (workspace === undefined) dispatch(addNonSpatialContentToTable(layer));
+            } else {
+                let layerToUpdate = await getSingleLayerFields({ ...layer });
+                layerToUpdate = await getLayerLegend(
+                    layerToUpdate,
+                    dispatch(getState).map.mapView.view,
+                );
+
+                const workspaceLayer = workspace !== undefined && workspace.layers
+                    .find(wl => wl.layerId === layer.id || wl.userLayerId === layer.id);
+
+                dispatch({
+                    type: types.UPDATE_LAYER,
+                    layer: {
+                        ...layerToUpdate,
+                        active: true,
+                        visible: workspaceLayer
+                            ? workspaceLayer.visible
+                            : true,
+                        opacity: workspaceLayer
+                            ? workspaceLayer.opacity
+                            : layer.opacity,
+                    },
+                });
+
+                if (workspace === undefined) {
+                    const reorderedLayerList = reorderLayers(
+                        dispatch(getState).map.layerGroups.layerGroups,
+                        dispatch(getState).map.layerGroups.layerList,
+                        layer,
+                    );
+
+                    dispatch(setLayerList(reorderedLayerList));
+                }
+            }
+        } else {
+            dispatch({
+                type: types.DEACTIVATE_LAYER,
+                layerId: layer.id,
+            });
+        }
+    }));
+
+    if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layers));
+};
+
+export const deactivateLayer = (layerId: string) => (dispatch: Function) => {
+    dispatch({
+        type: types.DEACTIVATE_LAYER,
+        layerId,
+    });
+
+    dispatch({
+        type: types.REMOVE_LAYER_FROM_VIEW,
+        layerIds: [layerId],
+    });
+};
 
 export const getActiveLayerTab = () => ({
     type: types.GET_ACTIVE_LAYER_TAB,
@@ -91,25 +203,31 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                             return l;
                         })
                         .then((r) => {
+                            const userLayer = {
+                                ...r,
+                                active: false,
+                                layerGroupName: 'Käyttäjätasot',
+                            };
+
                             dispatch({
                                 type: types.ADD_USER_LAYER,
-                                layer: {
-                                    ...r,
-                                    active: r.visible,
-                                    layerGroupName: 'Käyttäjätasot',
-                                },
+                                layer: userLayer,
                             });
+                            dispatch(activateLayers([userLayer]));
                         })
                         .catch(err => console.log(err));
                 } else {
+                    const userLayer = {
+                        ...l,
+                        active: false,
+                        layerGroupName: 'Käyttäjätasot',
+                    };
+
                     dispatch({
                         type: types.ADD_USER_LAYER,
-                        layer: {
-                            ...l,
-                            active: l.visible,
-                            layerGroupName: 'Käyttäjätasot',
-                        },
+                        layer: userLayer,
                     });
+                    dispatch(activateLayers([userLayer]));
                 }
             }
         })

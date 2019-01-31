@@ -8,12 +8,13 @@ import {
     GET_LAYER_GROUPS_FULFILLED,
     HIDE_LAYER,
     REMOVE_USER_LAYER_FULFILLED,
-    SET_ACTIVE_ADMIN_TOOL,
     SET_LAYER_LIST,
     SET_WORKSPACE_FULFILLED,
     APPLY_DELETED_FEATURES,
     CLEAR_SEARCH_DATA,
     TOGGLE_LAYER,
+    UPDATE_LAYER,
+    DEACTIVATE_LAYER,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -110,21 +111,6 @@ export default (state: State = initialState, action: Action) => {
                 layerList: addOrReplaceLayers(state.layerList, action.layers),
                 layerGroups: addOrReplaceLayersInSearchGroup(state.layerGroups, action.layers),
             };
-        case SET_ACTIVE_ADMIN_TOOL:
-            return {
-                ...state,
-                layerGroups: (state.layerGroups.map(lg => ({
-                    ...lg,
-                    layers: lg.type === 'search' ? [] : lg.layers,
-                })): Array<LayerGroups>),
-                layerList: (state.layerList
-                    .filter(l => l._source !== 'search')
-                    .map(l => ({
-                        ...l,
-                        visible: l.id === action.layerId ? true : l.visible,
-                        active: l.type === 'agfl' && l.id !== action.layerId ? false : l.active,
-                    })): any),
-            };
         case CLEAR_TABLE_DATA:
             return {
                 ...state,
@@ -203,6 +189,30 @@ export default (state: State = initialState, action: Action) => {
                             ...l,
                             visible: l.active ? !l.visible : true,
                             active: true,
+                        };
+                    }
+                    return { ...l };
+                }): Array<Layer>),
+            };
+        case UPDATE_LAYER:
+            return {
+                ...state,
+                layerList: (state.layerList.map((l) => {
+                    if (l.id === action.layer.id) {
+                        return { ...action.layer };
+                    }
+                    return { ...l };
+                }): Array<Layer>),
+            };
+        case DEACTIVATE_LAYER:
+            return {
+                ...state,
+                layerList: (state.layerList.map((l) => {
+                    if (l.id === action.layerId) {
+                        return {
+                            ...l,
+                            active: false,
+                            visible: false,
                         };
                     }
                     return { ...l };

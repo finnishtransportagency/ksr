@@ -2,28 +2,25 @@
 import React, { Component } from 'react';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersAllView from './MapLayersAllView';
-import { reorderLayers } from '../../../../../utils/reorder';
-import { getLayerFields } from '../../../../../utils/map';
 
 type Props = {
     layerGroups: Array<any>,
     layerList: any,
+    subLayers: Object[],
     fetching: boolean,
-    setLayerList: (Array<any>) => void,
-    activeAdminTool: string,
-    view: Object,
-    setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
-    addNonSpatialContentToTable: Object => void,
-    setLoading: Function,
-    removeLoading: Function,
+    loadingLayers: string[],
+    activateLayers: (layers: Object[]) => void,
+    deactivateLayer: (layerId: string) => void,
 };
 
 type State = {
     activeGroup: number,
+    activeSubGroup: number,
 };
 
 const initialState = {
     activeGroup: 0,
+    activeSubGroup: 0,
 };
 
 class MapLayersActive extends Component<Props, State> {
@@ -33,7 +30,10 @@ class MapLayersActive extends Component<Props, State> {
         this.state = { ...initialState };
 
         this.handleGroupClick = this.handleGroupClick.bind(this);
+        this.handleSubGroupClick = this.handleSubGroupClick.bind(this);
         this.handleLayerClick = this.handleLayerClick.bind(this);
+        this.handleLayerGroupClick = this.handleLayerGroupClick.bind(this);
+        this.handleSubLayerGroupClick = this.handleSubLayerGroupClick.bind(this);
     }
 
     handleGroupClick = (id: number) => {
@@ -46,50 +46,65 @@ class MapLayersActive extends Component<Props, State> {
         }
     };
 
-    handleLayerClick = async (id: number) => {
-        const {
-            setLayerList,
-            activeAdminTool,
-            setActiveAdminTool,
-            layerGroups,
-            view,
-            addNonSpatialContentToTable,
-            setLoading,
-            removeLoading,
-        } = this.props;
-        let layerList = [...this.props.layerList];
+    handleSubGroupClick = (id: number) => {
+        const { activeSubGroup } = this.state;
+
+        if (activeSubGroup === id) {
+            this.setState({ activeSubGroup: 0 });
+        } else {
+            this.setState({ activeSubGroup: id });
+        }
+    };
+
+    handleLayerClick = (id: number) => {
+        const { activateLayers, deactivateLayer, layerList } = this.props;
         const foundLayer = layerList.find(l => l.id === id);
-        view.popup.close();
-
-        if (foundLayer.id === activeAdminTool) setActiveAdminTool('', layerList);
-
-        layerList = layerList.map(layer => ({
-            ...layer,
-            active: layer.id === foundLayer.id ? !layer.active : layer.active,
-            visible: layer.id === foundLayer.id ? !layer.active : layer.active,
-        }));
-        layerList = reorderLayers(layerGroups, layerList, foundLayer);
 
         if (!foundLayer.active) {
-            if (foundLayer.type === 'agfl') {
-                setLoading();
-                layerList = await getLayerFields(layerList, [foundLayer]);
-                removeLoading();
-                setLayerList(layerList);
-                addNonSpatialContentToTable(foundLayer);
-            } else {
-                setLoading(); // Loading should be removed after layer has been added to map.
-                layerList = await getLayerFields(layerList, [foundLayer]);
-                setLayerList(layerList);
-            }
+            activateLayers([foundLayer]);
         } else {
-            setLayerList(layerList);
+            deactivateLayer(foundLayer.id);
+        }
+    };
+
+    handleLayerGroupClick = (layerGroupName: string) => {
+        const { layerList } = this.props;
+        const foundLayers = layerList.filter(l =>
+            l.layerGroupName === layerGroupName
+            && l.relationType !== 'link'
+            && l._source !== 'shapefile');
+
+        this.updateLayerList(foundLayers);
+    };
+
+    handleSubLayerGroupClick = (id: number) => {
+        const { subLayers, layerList } = this.props;
+        const parentLayer = layerList.filter(l => l.id === id);
+        const filteredSublayers = subLayers.filter(l => l.parentLayer === id);
+        const foundLayers = [...new Set([...parentLayer, ...filteredSublayers])];
+
+        this.updateLayerList(foundLayers);
+    };
+
+    updateLayerList = (foundLayers: Object[]) => {
+        const { activateLayers, deactivateLayer, loadingLayers } = this.props;
+        const active = foundLayers.every(l => l.active);
+
+        if (active) {
+            foundLayers.forEach(foundLayer => deactivateLayer(foundLayer.id));
+        } else {
+            const layersToBeActivated = foundLayers.filter(foundLayer => (
+                !foundLayer.active && !loadingLayers.some(layerId => layerId === foundLayer.id)
+            ));
+            if (layersToBeActivated.length) activateLayers(layersToBeActivated);
         }
     };
 
     render() {
-        const { activeGroup } = this.state;
-        const { layerGroups, fetching, layerList } = this.props;
+        const { activeGroup, activeSubGroup } = this.state;
+        const {
+            layerGroups, fetching, layerList, subLayers,
+        } = this.props;
 
         if (!fetching) {
             return (
@@ -97,8 +112,13 @@ class MapLayersActive extends Component<Props, State> {
                     layerGroups={layerGroups}
                     layerList={layerList}
                     handleGroupClick={this.handleGroupClick}
+                    handleSubGroupClick={this.handleSubGroupClick}
                     handleLayerClick={this.handleLayerClick}
                     activeGroup={activeGroup}
+                    activeSubGroup={activeSubGroup}
+                    handleLayerGroupClick={this.handleLayerGroupClick}
+                    handleSubLayerGroupClick={this.handleSubLayerGroupClick}
+                    subLayers={subLayers}
                 />
             );
         }

@@ -1,7 +1,7 @@
-import { setWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQueryMap } from '../loadWorkspace';
+import { getWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQueryMap } from '../loadWorkspace';
 
 describe('loadWorkspace', () => {
-    it('setWorkspaceFeatuers - should return workspace features', () => {
+    it('getWorkspaceFeatures - should return workspace features', () => {
         const workspace = [
             {
                 layerId: '123',
@@ -26,7 +26,7 @@ describe('loadWorkspace', () => {
             { featureId: 8, layerId: '456', selected: false },
         ];
 
-        expect(setWorkspaceFeatures(workspace)).toEqual(expectedResult);
+        expect(getWorkspaceFeatures(workspace)).toEqual(expectedResult);
     });
 
     it('queryWorkspaceFeatures - should return layers on resolved promise', () => {
@@ -159,29 +159,29 @@ describe('loadWorkspace', () => {
         const expectedResult = [
             {
                 id: '789',
-                active: true,
-                visible: true,
+                visible: false,
+                active: false,
                 opacity: 0.6,
                 layerOrder: 0,
             },
             {
                 id: '456',
-                active: true,
                 visible: false,
+                active: false,
                 opacity: 0.2,
                 layerOrder: 1,
             },
             {
                 id: '10789',
-                active: true,
                 visible: false,
+                active: false,
                 opacity: 0.3,
                 layerOrder: 2,
             },
             {
                 id: '123.s',
-                active: true,
-                visible: true,
+                visible: false,
+                active: false,
                 opacity: 1,
                 layerOrder: 3,
                 definitionExpression: 'Search query',

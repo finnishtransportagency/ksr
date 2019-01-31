@@ -10,9 +10,10 @@ type Props = {
     layers: Array<Object>,
     activeTable: string,
     setActiveTable: Function,
+    activeAdmin: string,
 };
 
-const TabbedTableView = ({ layers, activeTable, setActiveTable }: Props) => (
+const TabbedTableView = ({ layers, activeTable, setActiveTable, activeAdmin }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
             <Scrollbars
@@ -23,6 +24,7 @@ const TabbedTableView = ({ layers, activeTable, setActiveTable }: Props) => (
                 {
                     layers.map(l => (
                         <ButtonTabbedTableTab
+                            admin={activeAdmin === l.id}
                             key={l.id}
                             flat
                             title={l.title}

@@ -17,9 +17,11 @@ import {
     APPLY_EDITS,
     APPLY_DELETED_FEATURES,
     CLEAR_SEARCH_DATA,
+    DEACTIVATE_LAYER,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
+    getActiveTable,
     mergeLayers,
     syncWithLayersList,
     toggleSelectAll,
@@ -87,6 +89,16 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 ...syncWithLayersList(state.layers, action.layerList, state.activeTable),
             };
+        case DEACTIVATE_LAYER:
+            return {
+                ...state,
+                layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
+                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId): Object[]),
+                activeTable: getActiveTable(
+                    state.layers.filter(l => l.id !== action.layerId),
+                    state.activeTable,
+                ),
+            };
         case DE_SELECT_SELECTED_FEATURES:
             return {
                 ...state,
@@ -106,12 +118,8 @@ export default (state: State = initialState, action: Action) => {
             };
         case SET_ACTIVE_ADMIN_TOOL:
             return {
-                ...initialState,
-                activeTable: state.layers.find(l => l.id === action.layerId && l.type === 'agfl')
-                    ? action.layerId : '',
-                editedLayers: (state.editedLayers.filter(l =>
-                    l.id === action.layerId && l.type === 'agfl'): Object[]),
-                layers: (state.layers.filter(l => l.id === action.layerId && l.type === 'agfl'): Object[]),
+                ...state,
+                editedLayers: state.layers,
             };
         case CLEAR_TABLE_DATA:
             return initialState;
@@ -143,11 +151,23 @@ export default (state: State = initialState, action: Action) => {
         case APPLY_DELETED_FEATURES:
             return {
                 ...state,
-                layers: applyDeletedFeatures(state.layers, action.objectIds, action.layerId),
+                layers: applyDeletedFeatures(
+                    state.layers,
+                    action.objectIds,
+                    action.layerId,
+                ),
                 editedLayers: applyDeletedFeatures(
                     state.editedLayers,
                     action.objectIds,
                     action.layerId,
+                ),
+                activeTable: getActiveTable(
+                    applyDeletedFeatures(
+                        state.layers,
+                        action.objectIds,
+                        action.layerId,
+                    ),
+                    state.activeTable,
                 ),
             };
         default:

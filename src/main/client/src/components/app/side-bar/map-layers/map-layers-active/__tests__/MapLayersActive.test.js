@@ -27,6 +27,8 @@ const setup = (prop) => {
         ],
         fetching: true,
         setLayerList: jest.fn(),
+        activateLayers: jest.fn(),
+        deactivateLayer: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -68,22 +70,6 @@ describe('<MapLayersActive />', () => {
 
         wrapper.instance().onDragEnd(result);
         expect(setLayerList).toHaveBeenCalled();
-    });
-
-    it('should handle onToggleVisibility correctly', () => {
-        const { wrapper } = setup();
-        const { setLayerList, mapLayerList } = wrapper.instance().props;
-        const id = 2;
-        const foundLayer = mapLayerList.find(layer => layer.id === id);
-
-        expect(foundLayer.visible).toBe(true);
-        wrapper.instance().onToggleVisibility(id);
-        expect(setLayerList).toHaveBeenCalled();
-
-        const newLayerList = setLayerList.mock.calls[0][0];
-        const newFoundLayer = newLayerList.find(layer => layer.id === id);
-
-        expect(newFoundLayer.visible).toBe(false);
     });
 
     it('should handle onOpacityChange correctly', () => {

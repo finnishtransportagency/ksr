@@ -499,7 +499,7 @@ describe('Layer group reducer', () => {
                     attribution: 'Maanmittauslaitos',
                     id: '25',
                     type: 'wmts',
-                    visible: true,
+                    visible: false,
                     opacity: 0.7,
                     authentication: null,
                     layerOrder: 1,
@@ -511,7 +511,7 @@ describe('Layer group reducer', () => {
                     queryable: false,
                     queryColumnsList: null,
                     userLayer: false,
-                    active: true,
+                    active: false,
                     definitionExpression: null,
                 },
                 {
@@ -522,7 +522,7 @@ describe('Layer group reducer', () => {
                     attribution: 'Esri',
                     id: '81',
                     type: 'agfs',
-                    visible: true,
+                    visible: false,
                     opacity: 0.4,
                     authentication: null,
                     layerOrder: 2,
@@ -540,7 +540,7 @@ describe('Layer group reducer', () => {
                         'kuntanro',
                     ],
                     userLayer: false,
-                    active: true,
+                    active: false,
                     geometryType: 'esriGeometryPolygon',
                     fields: [
                         {

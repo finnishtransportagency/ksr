@@ -35,7 +35,6 @@ type Props = {
     setActiveModal: (editModeActive: boolean) => void,
     isOpen: boolean,
     setActiveToolMenu: Function,
-    activeAdminTool: string,
     layerList: Object[],
     propertyAreaSearch: boolean,
     setPropertyInfo: (
@@ -185,7 +184,6 @@ class SketchTool extends Component<Props, State> {
                         const { geometry } = event.graphic;
                         const {
                             active,
-                            activeAdminTool,
                             selectFeatures,
                             propertyAreaSearch,
                             setPropertyInfo,
@@ -212,7 +210,6 @@ class SketchTool extends Component<Props, State> {
 
                             queryFeatures(
                                 geometry,
-                                activeAdminTool,
                                 view,
                                 selectFeatures,
                             );

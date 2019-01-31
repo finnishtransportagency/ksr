@@ -8,6 +8,7 @@ const mapStateToProps = (state, ownProps) => ({
     layer: ownProps.layer,
     checked: ownProps.checked,
     layerList: state.map.layerGroups.layerList,
+    loadingLayers: state.loading.loadingLayers,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

@@ -2,9 +2,8 @@
 import equals from 'nano-equal';
 import React, { Component } from 'react';
 import EsriMapView from './EsriMapView';
-import { addLayers, highlight } from '../../../../utils/map';
+import { highlight } from '../../../../utils/map';
 import { setBuffer } from '../../../../utils/buffer';
-import { getLayerLegend } from '../../../../utils/layerLegend';
 
 type Props = {
     view: Object,
@@ -16,11 +15,8 @@ type Props = {
     layers: Array<Object>,
     loadingWorkspace: boolean,
     printWidget: any,
-    removeLayersView: (layerIds: Object[]) => void,
     legendWidget: ?Object,
     layerLegendActive: boolean,
-    removeLoading: Function,
-    setLayerList: (layerList: Object[]) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -41,14 +37,6 @@ class EsriMap extends Component<Props> {
         ) {
             const layerListReversed = [...layerList].reverse();
             const newLayers = [];
-            const toBeRemoved = [];
-
-            // Remove shapefile from view.map.layers if it has been removed from layerList
-            view.map.layers.filter(l => !layerListReversed.some(ll => ll.id === l.id))
-                .filter(k => k.featureType)
-                .forEach((k) => {
-                    toBeRemoved.push(k.id);
-                });
 
             // Update layer settings
             layerListReversed.filter(l => l.type !== 'agfl').forEach((l, i) => {
@@ -57,13 +45,10 @@ class EsriMap extends Component<Props> {
                     if (layer && l.id === layer.id) {
                         layer.visible = l.visible;
                         layer.opacity = l.opacity;
-                        if (!l.active) toBeRemoved.push(layer.id);
                     }
                 });
 
                 if (l.active && !view.map.findLayerById(l.id)) {
-                    l.visible = true;
-                    l.index = i;
                     newLayers.push(l);
                 }
 
@@ -72,28 +57,7 @@ class EsriMap extends Component<Props> {
             });
 
             if (!loadingWorkspace) {
-                if (toBeRemoved.length > 0) {
-                    this.props.removeLayersView(toBeRemoved);
-                }
-
-                const { setLayerList, removeLoading } = this.props;
                 if (newLayers.length) {
-                    const { failedLayers } = await addLayers(
-                        newLayers,
-                        view,
-                        prevProps.loadingWorkspace,
-                    );
-
-                    // Deactivates failed layers from layerlist.
-                    let newLayerList = layerList.map(l => ({
-                        ...l,
-                        active: failedLayers.some(fl => fl === l.id) ? false : l.active,
-                        visible: failedLayers.some(fl => fl === l.id) ? false : l.visible,
-                    }));
-                    newLayerList = await getLayerLegend(newLayerList, view);
-                    setLayerList(newLayerList);
-                    removeLoading();
-
                     layerListReversed.forEach((l, i) => {
                         view.map.reorder(view.map.findLayerById(`${l.id}`, i));
                     });
@@ -136,11 +100,11 @@ class EsriMap extends Component<Props> {
         }
 
         if (!loadingWorkspace && loadingWorkspace !== prevProps.loadingWorkspace) {
-            highlight(view, this.props.selectedFeatures, this.props.activeAdminTool);
+            highlight(view, this.props.selectedFeatures);
         }
 
         if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
-            highlight(view, this.props.selectedFeatures, this.props.activeAdminTool);
+            highlight(view, this.props.selectedFeatures);
         }
 
         if (!equals(prevProps.activeAdminTool, this.props.activeAdminTool)) {

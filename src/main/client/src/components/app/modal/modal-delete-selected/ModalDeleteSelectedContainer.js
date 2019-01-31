@@ -4,12 +4,10 @@ import { saveDeletedFeatures } from '../../../../reducers/table/actions';
 import ModalDeleteSelected from './ModalDeleteSelected';
 
 const mapStateToProps = (state) => {
-    const selectedData = [];
-
-    state.table.features.layers.forEach((l) => {
-        l.data.forEach(d => d._selected && !selectedData
-            .find(sd => sd._id === d._id) && selectedData.push(d));
-    });
+    const selectedData = state.table.features.layers
+        .filter(layer => layer.id === state.adminTool.active.layerId)
+        .flatMap(layer => layer.data)
+        .filter(data => data._selected);
 
     const { queryColumnsList } = state.map.layerGroups.layerList
         .find(lg => lg.id === state.adminTool.active.layerId);

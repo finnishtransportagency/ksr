@@ -61,17 +61,25 @@ describe('reducers - table - features', () => {
         const expected = {
             layers: [
                 {
+                    id: '12',
+                    type: 'agfs',
+                },
+                {
                     id: '123',
                     type: 'agfl',
                 },
             ],
             editedLayers: [
                 {
+                    id: '12',
+                    type: 'agfs',
+                },
+                {
                     id: '123',
                     type: 'agfl',
                 },
             ],
-            activeTable: '123',
+            activeTable: '',
             fetching: false,
             singleLayerGeometry: {},
         };
@@ -114,17 +122,25 @@ describe('reducers - table - features', () => {
         const expected = {
             layers: [
                 {
+                    id: '12',
+                    type: 'agfl',
+                },
+                {
                     id: '123',
                     type: 'agfl',
                 },
             ],
             editedLayers: [
                 {
+                    id: '12',
+                    type: 'agfl',
+                },
+                {
                     id: '123',
                     type: 'agfl',
                 },
             ],
-            activeTable: '123',
+            activeTable: '',
             fetching: false,
             singleLayerGeometry: {},
         };
@@ -165,8 +181,26 @@ describe('reducers - table - features', () => {
         };
 
         const expected = {
-            layers: [],
-            editedLayers: [],
+            layers: [
+                {
+                    id: '12',
+                    type: 'agfs',
+                },
+                {
+                    id: '123',
+                    type: 'agfl',
+                },
+            ],
+            editedLayers: [
+                {
+                    id: '12',
+                    type: 'agfs',
+                },
+                {
+                    id: '123',
+                    type: 'agfl',
+                },
+            ],
             activeTable: '',
             fetching: false,
             singleLayerGeometry: {},
