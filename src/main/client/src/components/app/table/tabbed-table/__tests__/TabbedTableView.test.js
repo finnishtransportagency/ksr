@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import sinon from 'sinon';
 import TabbedTableView from '../TabbedTableView';
 import { WrapperTabbedTable, ButtonTabbedTableTab } from '../styles';
 
@@ -21,7 +20,7 @@ const setup = () => {
             },
         ],
         activeTable: '6',
-        setActiveTable: sinon.spy(),
+        setActiveTable: jest.fn(),
     };
 
     const wrapper = shallow(<TabbedTableView {...props} />);
@@ -47,6 +46,6 @@ describe('<TabbedTableView />', () => {
     it('<ButtonTabbedTableTab /> fires a click', () => {
         const button = wrapper.find(ButtonTabbedTableTab).at(0);
         button.simulate('click');
-        expect(props.setActiveTable.calledOnce).toBe(true);
+        expect(props.setActiveTable.mock.calls.length).toBe(1);
     });
 });
