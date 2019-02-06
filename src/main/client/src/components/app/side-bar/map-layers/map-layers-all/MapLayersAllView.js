@@ -42,7 +42,7 @@ const MapLayersAllView = ({
                             name={lg.name}
                             type="checkbox"
                             checked={layerList.filter(layer =>
-                                layer.layerGroupName === lg.name &&
+                                layer.layerGroupName === lg.name && !layer.parentLayer &&
                                 layer.relationType !== 'link').every(l => l.active)}
                             onChange={() => handleLayerGroupClick(lg.name)}
                         />

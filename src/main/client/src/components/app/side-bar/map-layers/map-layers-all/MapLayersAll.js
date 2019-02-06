@@ -71,6 +71,7 @@ class MapLayersActive extends Component<Props, State> {
         const { layerList } = this.props;
         const foundLayers = layerList.filter(l =>
             l.layerGroupName === layerGroupName
+            && !l.parentLayer
             && l.relationType !== 'link'
             && l._source !== 'shapefile');
 
