@@ -15,7 +15,6 @@ type State = {
 };
 
 const initialState = {
-    isOpen: false,
     editSketchIcon: 'polygon',
 };
 
