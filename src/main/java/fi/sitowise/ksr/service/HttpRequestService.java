@@ -665,11 +665,11 @@ public class HttpRequestService {
 
                     if (action == LayerAction.CREATE_LAYER
                             && "many".equals(layer.getRelationType())
-                            && !layer.getRelationColumnIn().isEmpty()
-                            && layer.getRelationColumnIn() != null
+                            && layer.getRelationColumnIn() == null
+                            && layer.getRelationColumnOut() == null
                     ) {
                         feature.putAttributeValue(
-                                layer.getRelationColumnIn(),
+                                "CONTRACT_UUID",
                                 UUID.randomUUID().toString()
                         );
                     }
