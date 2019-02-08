@@ -121,7 +121,7 @@ class MapDraw extends Component<Props, null> {
 
                 const createPolygonGraphic = (geometry, style, complete): any =>
                     new Graphic({
-                        geometry: geometry.extent.width ? geometry : null,
+                        geometry,
                         symbol: {
                             type: 'simple-fill',
                             style,
@@ -138,7 +138,7 @@ class MapDraw extends Component<Props, null> {
 
                 const createPolylineGraphic = (geometry, complete): any =>
                     new Graphic({
-                        geometry: geometry.extent.width ? geometry : null,
+                        geometry,
                         symbol: {
                             type: 'simple-line',
                             color: '#660066',
