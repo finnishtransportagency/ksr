@@ -58,17 +58,20 @@ class EditContract extends Component<Props, State> {
             .then((contracts) => {
                 const contract = contracts
                     .find(a => a.attributes.CONTRACT_NUMBER === contractNumber);
-                const attributes = fields.filter(f => (f.type === 'esriFieldTypeOID'
-                    || (f.editable && f.name !== contractLayer.relationColumnOut
-                        && f.name !== contractLayer.contractIdField))).map(
-                    field => ({
-                        ...field,
-                        data: contract
-                            ? contract.attributes[field.name]
-                            : contracts[0].attributes[field.name],
-                    }),
-                    {},
-                );
+                const attributes = fields
+                    .filter(f => (f.type === 'esriFieldTypeOID'
+                        || (f.editable
+                            && f.name !== 'CONTRACT_UUID'
+                            && f.name !== contractLayer.contractIdField)))
+                    .map(
+                        field => ({
+                            ...field,
+                            data: contract
+                                ? contract.attributes[field.name]
+                                : contracts[0].attributes[field.name],
+                        }),
+                        {},
+                    );
                 this.setState({ contractData: attributes });
                 const attributesObject = Object.assign({}, ...(attributes.map(item =>
                     ({ [item.name]: item.data }))));

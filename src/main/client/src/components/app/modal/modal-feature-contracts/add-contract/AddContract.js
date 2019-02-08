@@ -48,7 +48,7 @@ class AddContract extends Component<Props, State> {
         const data = fields
             .filter(f => (f.type !== 'esriFieldTypeOID'
                 && f.editable
-                && f.name !== contractLayer.relationColumnOut)
+                && f.name !== 'CONTRACT_UUID')
                 || (f.name === contractLayer.contractIdField
                     && f.name === contractLayer.relationColumnOut))
             .map(field => ({

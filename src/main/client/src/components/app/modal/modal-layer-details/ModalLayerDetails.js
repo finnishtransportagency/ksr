@@ -66,6 +66,7 @@ class ModalFilter extends Component<Props, State> {
                 String(copiedAttributes[field.name]) : '',
         })).filter(f => (f.type !== 'esriFieldTypeOID'
                 && f.editable
+                && f.name !== 'CONTRACT_UUID'
                 && f.name !== activeLayer.relationColumnOut)
                 || (f.name === activeLayer.contractIdField
                     && f.name === activeLayer.relationColumnOut));
