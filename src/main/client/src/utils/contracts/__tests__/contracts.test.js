@@ -98,7 +98,6 @@ describe('contracts', () => {
 
         const expectedResult = {
             currentLayer: { id: '1', relationLayerId: '10', relationType: 'one' },
-            contractLinkLayer: null,
             contractLayer: { id: '10', relationType: 'one' },
         };
 
@@ -114,7 +113,6 @@ describe('contracts', () => {
 
         const expectedResult = {
             currentLayer: { id: '1', relationLayerId: '10', relationType: 'many' },
-            contractLinkLayer: { id: '10', relationLayerId: '11', relationType: 'link' },
             contractLayer: { id: '11', relationType: 'many' },
         };
 
