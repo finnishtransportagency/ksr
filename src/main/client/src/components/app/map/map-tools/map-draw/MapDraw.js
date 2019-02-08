@@ -66,20 +66,10 @@ class MapDraw extends Component<Props, null> {
                 const drawToggleMeasurementsButton = (document.getElementById: Function)('toggle-measurements');
 
                 const measureArea = (polygon: Object) => {
-                    let planarArea = geometryEngine.planarArea(
+                    const planarArea = geometryEngine.planarArea(
                         polygon,
                         'square-meters',
                     );
-                    if (planarArea < 0) {
-                        const simplifiedPolygon = geometryEngine.simplify(polygon);
-                        if (simplifiedPolygon) {
-                            planarArea = geometryEngine.planarArea(
-                                simplifiedPolygon,
-                                'square-meters',
-                            );
-                        }
-                    }
-
                     let area = '';
                     if (planarArea >= 10000) {
                         area = `${parseFloat((planarArea / 10000).toFixed(2))} ha`;
@@ -127,7 +117,9 @@ class MapDraw extends Component<Props, null> {
                             style,
                             color: [102, 0, 102, 0.5],
                             outline: {
-                                color: '#470047',
+                                color: geometry.isSelfIntersecting || geometry.rings.length > 1
+                                    ? '#CC3300'
+                                    : '#470047',
                                 width: 2,
                             },
                         },
@@ -223,14 +215,33 @@ class MapDraw extends Component<Props, null> {
                         view.graphics.add(graphic);
                     } else {
                         const polygon = createPolygon(vertices);
-                        const area = measureArea(polygon);
-                        const graphic = createPolygonGraphic(polygon, 'solid', evt.type === 'draw-complete');
-                        const graphicLabelMeasure = createLabelGraphic(polygon, area, evt.type === 'draw-complete');
-                        const graphicsToRemove = view.graphics
-                            .filter(g => g.id === this.currentGraphicUUID);
+                        const simplifiedPolygon = geometryEngine.simplify(polygon);
+                        if (simplifiedPolygon) {
+                            const geometryIsValid = !simplifiedPolygon.isSelfIntersecting
+                                && simplifiedPolygon.rings.length === 1;
+                            const area = measureArea(simplifiedPolygon);
+                            const graphic = createPolygonGraphic(
+                                simplifiedPolygon,
+                                'solid',
+                                evt.type === 'draw-complete' && geometryIsValid,
+                            );
+                            const graphicLabelMeasure = createLabelGraphic(
+                                simplifiedPolygon,
+                                area,
+                                evt.type === 'draw-complete' && geometryIsValid,
+                            );
+                            const graphicsToRemove = view.graphics
+                                .filter(g => g.id === this.currentGraphicUUID);
 
-                        view.graphics.removeMany(graphicsToRemove);
-                        view.graphics.addMany([graphic, graphicLabelMeasure]);
+                            view.graphics.removeMany(graphicsToRemove);
+                            view.graphics.addMany([graphic, graphicLabelMeasure]);
+
+                            if (!geometryIsValid) {
+                                evt.preventDefault();
+                            } else if (evt.type === 'draw-complete') {
+                                this.removeHighlight();
+                            }
+                        }
                     }
                 };
 
@@ -246,6 +257,10 @@ class MapDraw extends Component<Props, null> {
                     view.graphics.removeMany(graphicsToRemove);
 
                     view.graphics.addMany([graphic, graphicLabelMeasure]);
+
+                    if (evt.type === 'draw-complete') {
+                        this.removeHighlight();
+                    }
                 };
 
                 const drawPoint = (evt) => {
@@ -257,6 +272,10 @@ class MapDraw extends Component<Props, null> {
                     view.graphics.forEach(g => g.id === this.currentGraphicUUID
                         && view.graphics.remove(g));
                     view.graphics.add(graphic);
+
+                    if (evt.type === 'draw-complete') {
+                        this.removeHighlight();
+                    }
                 };
 
                 const drawText = (evt) => {
@@ -270,6 +289,10 @@ class MapDraw extends Component<Props, null> {
 
                     if (graphic !== null) {
                         view.graphics.add(graphic);
+                    }
+
+                    if (evt.type === 'draw-complete') {
+                        this.removeHighlight();
                     }
                 };
 
@@ -287,8 +310,6 @@ class MapDraw extends Component<Props, null> {
                     } else if (geometry === 'point') {
                         action.on(['cursor-update', 'draw-complete'], drawGeometry);
                     }
-
-                    action.on('draw-complete', this.removeHighlight);
                 };
 
                 drawPolygonButton.addEventListener('click', () => {
