@@ -8,10 +8,7 @@ import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
 const mapStateToProps = (state) => {
     const { layerId, objectId } = state.contract.contractList;
     const { layerList } = state.map.layerGroups;
-
-    const {
-        currentLayer, contractLinkLayer, contractLayer,
-    } = getContractLayers(layerId, layerList);
+    const { currentLayer, contractLayer } = getContractLayers(layerId, layerList);
 
     const editLayerPermission = state.adminTool.active.layerId === layerId &&
         nestedVal(currentLayer, ['layerPermission', 'updateLayer']) &&
@@ -20,7 +17,6 @@ const mapStateToProps = (state) => {
     return {
         objectId,
         currentLayer,
-        contractLinkLayer,
         contractLayer,
         contractIdField: nestedVal(contractLayer, ['contractIdField']),
         contractDescriptionField: nestedVal(contractLayer, ['contractDescriptionField']),

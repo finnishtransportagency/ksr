@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
-import { fetchContractRelation } from '../../../../../api/contract/contractRelations';
-import { deleteFeatures } from '../../../../../api/map/deleteFeatures';
+import { fetchContractRelation, unlinkContract } from '../../../../../api/contract/contractRelations';
 import strings from '../../../../../translations';
-import { contractListTexts, getUnlinkParams } from '../../../../../utils/contracts/contracts';
+import { contractListTexts } from '../../../../../utils/contracts/contracts';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import ContractListView from './ContractListView';
+import { nestedVal } from '../../../../../utils/nestedValue';
 
 type Props = {
     objectId: number,
@@ -14,7 +14,6 @@ type Props = {
     contractDescriptionField: string,
     contractUnlinkable: boolean,
     currentLayer: Object,
-    contractLinkLayer: Object,
     contractLayer: Object,
     alfrescoLinkField: string,
     caseManagementLinkField: string,
@@ -79,15 +78,15 @@ class ContractList extends Component<Props, State> {
     handleUnlinkContract = (contractNumber: string) => {
         const {
             currentLayer,
-            contractLinkLayer,
             contractLayer,
             objectId,
-            contractIdField,
-            contractDescriptionField,
-            alfrescoLinkField,
-            caseManagementLinkField,
             showConfirmModal,
         } = this.props;
+
+        const objectIdField = nestedVal(
+            contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+            ['label'],
+        );
 
         const {
             content, submit, cancel,
@@ -98,44 +97,30 @@ class ContractList extends Component<Props, State> {
             cancel,
             async () => {
                 this.setState({ fetchingContracts: true });
+
+                const { contracts } = this.state;
+
+                const contractObjectId = nestedVal(
+                    contracts.find(a => a.id === contractNumber),
+                    ['attributes', objectIdField],
+                );
+                const unlinkSuccess = await unlinkContract(
+                    currentLayer.id,
+                    objectId,
+                    contractLayer.id,
+                    contractObjectId,
+                );
+
                 const {
                     contractUnlinked, contractUnlinkError,
                 } = strings.modalFeatureContracts.linkContract;
-                try {
-                    const params = await getUnlinkParams(
-                        contractLinkLayer,
-                        contractLayer,
-                        contractNumber,
-                    );
-                    const deletedFeatures = await deleteFeatures(
-                        contractLinkLayer.id,
-                        params,
-                    );
-
-                    const { deleteResults } = deletedFeatures;
-                    if (deleteResults && deleteResults.length) {
-                        let contracts = await fetchContractRelation(
-                            currentLayer.id,
-                            objectId,
-                        );
-                        contracts = await contractListTexts(
-                            contracts,
-                            contractIdField,
-                            contractDescriptionField,
-                            alfrescoLinkField,
-                            caseManagementLinkField,
-                        );
-
-                        toast.success(contractUnlinked);
-                        this.setState({
-                            contracts,
-                            fetchingContracts: false,
-                        });
-                    } else {
-                        toast.error(contractUnlinkError);
-                        this.setState({ fetchingContracts: false });
-                    }
-                } catch (error) {
+                if (unlinkSuccess) {
+                    toast.success(contractUnlinked);
+                    this.setState({
+                        contracts: contracts.filter(contract => contract.id !== contractNumber),
+                        fetchingContracts: false,
+                    });
+                } else {
                     toast.error(contractUnlinkError);
                     this.setState({ fetchingContracts: false });
                 }
