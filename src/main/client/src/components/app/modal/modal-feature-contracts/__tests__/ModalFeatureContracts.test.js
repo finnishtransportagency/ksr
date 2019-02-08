@@ -47,7 +47,7 @@ describe('<ModalFeatureContracts />', () => {
     it('contractLinkValidation - should reset to initial state when false passed as parameter', () => {
         const { contractLinkValidation } = wrapper.instance();
         contractLinkValidation(false);
-        expect(wrapper.state('contractNumber')).toBe(null);
+        expect(wrapper.state('contractNumber')).toBe('');
         expect(wrapper.state('contractUuid')).toBe('');
     });
 

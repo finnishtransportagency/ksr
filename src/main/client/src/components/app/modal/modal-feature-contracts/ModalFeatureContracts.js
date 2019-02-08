@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import strings from '../../../../translations';
-import { getUuidForNewContract, linkToContract } from '../../../../utils/contracts/contracts';
+import { linkToContract, updateContractLink } from '../../../../utils/contracts/contracts';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import ContractListContainer from './contract-list/ContractListContainer';
 import LinkContractContainer from './link-contract/LinkContractContainer';
@@ -15,7 +15,6 @@ type Props = {
     removeContractListInfo: Function,
     objectId: number,
     currentLayer: Object,
-    contractLinkLayer: Object,
     contractLayer: Object,
     view: Object,
     createLayerPermission: boolean,
@@ -29,7 +28,7 @@ type State = {
     title: string,
     validContractLink: boolean,
     modalSubmit: Object[],
-    contractNumber: ?string,
+    contractNumber: string,
     contractUuid: string,
     data: Object,
 };
@@ -57,7 +56,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                 disabled: !this.props.editLayerPermission,
                 toggleModal: false,
             }],
-            contractNumber: null,
+            contractNumber: '',
             contractUpdateLayer: {},
             contractUuid: '',
             data: {},
@@ -76,9 +75,7 @@ class ModalFeatureContracts extends Component<Props, State> {
     }
 
     async componentDidMount() {
-        const {
-            setLayerList, layerList, contractLayer, contractLinkLayer,
-        } = this.props;
+        const { setLayerList, layerList, contractLayer } = this.props;
 
         // Keep link- and add buttons disabled until contract layer fields queried.
         if (contractLayer && !contractLayer.fields) {
@@ -92,7 +89,7 @@ class ModalFeatureContracts extends Component<Props, State> {
 
             const newLayerList = await getLayerFields(
                 layerList,
-                [contractLayer, contractLinkLayer],
+                [contractLayer],
             );
             setLayerList(newLayerList);
 
@@ -112,7 +109,7 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     handleSubmitLinkToContract = () => {
         const {
-            objectId, currentLayer, contractLinkLayer, view,
+            objectId, currentLayer, contractLayer, view,
         } = this.props;
         this.setState({
             activeView: 'linkContract',
@@ -127,13 +124,20 @@ class ModalFeatureContracts extends Component<Props, State> {
                             disabled: true,
                         })),
                     });
-                    await linkToContract(
-                        this.state.contractNumber,
-                        contractLinkLayer || currentLayer,
-                        this.state.contractUuid,
-                        objectId,
-                        view,
-                    );
+
+                    const { contractNumber } = this.state;
+
+                    if (currentLayer.relationType === 'many') {
+                        await linkToContract(
+                            contractNumber,
+                            currentLayer,
+                            objectId,
+                            contractLayer,
+                        );
+                    } else {
+                        await updateContractLink(contractNumber, currentLayer, objectId, view);
+                    }
+
                     this.setState({ ...this.initialState });
                 },
                 disabled: true,
@@ -142,7 +146,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         });
     };
 
-    handleSubmitEditContract = () => {
+    handleSubmitEditContract = async () => {
         const {
             view, contractLayer,
         } = this.props;
@@ -152,20 +156,22 @@ class ModalFeatureContracts extends Component<Props, State> {
             const objectIdFieldName = objectIdField.name;
             const objectId = this.state.data.attributes[objectIdFieldName];
 
-            save.saveData(
+            await save.saveData(
                 'update',
                 view,
                 nestedVal(contractLayer, ['id']),
                 [this.state.data],
                 objectIdFieldName,
                 objectId,
-            ).then(this.setState({ ...this.initialState }));
+            );
+
+            this.setState({ ...this.initialState });
         }
     };
 
     handleSubmitAddContract = () => {
         const {
-            objectId, currentLayer, contractLinkLayer, contractLayer, view,
+            objectId, currentLayer, contractLayer, view,
         } = this.props;
         this.setState({
             activeView: 'addContract',
@@ -196,17 +202,17 @@ class ModalFeatureContracts extends Component<Props, State> {
                     );
                     if (res && res.addResults) {
                         const { contractNumber } = this.state;
-                        const contractUuid = contractNumber && contractLinkLayer
-                            ? await getUuidForNewContract(contractLayer, contractNumber)
-                            : null;
 
-                        await linkToContract(
-                            contractNumber,
-                            contractLinkLayer || currentLayer,
-                            contractUuid,
-                            objectId,
-                            view,
-                        );
+                        if (currentLayer.relationType === 'many') {
+                            await linkToContract(
+                                contractNumber,
+                                currentLayer,
+                                objectId,
+                                contractLayer,
+                            );
+                        } else {
+                            await updateContractLink(contractNumber, currentLayer, objectId, view);
+                        }
                     }
                     this.setState({ ...this.initialState });
                 },
@@ -234,7 +240,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         } else {
             this.setState({
                 ...this.state,
-                contractNumber: null,
+                contractNumber: '',
                 contractUuid: '',
                 modalSubmit: this.state.modalSubmit.map(ms => ({
                     ...ms,
