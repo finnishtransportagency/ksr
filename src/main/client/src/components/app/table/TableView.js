@@ -162,7 +162,6 @@ const TableView = ({
                     <i className="fas fa-eraser" />
                 </Table.Button>
             }
-
         </Table.ButtonWrapper>
         <TabbedTableContainer />
     </Table>
