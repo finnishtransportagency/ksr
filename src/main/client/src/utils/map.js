@@ -405,3 +405,14 @@ export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
     }
     return layer;
 };
+
+/**
+ * Zoom to given features.
+ *
+ * @param {Object} view Esri ArcGIS JS MapView.
+ * @param {Object[]} features Features to zoom to.
+ */
+export const zoomToFeatures = (view: Object, features: Object[]) => {
+    const geometries = features.map(feature => feature.geometry);
+    if (geometries) view.goTo(geometries);
+};
