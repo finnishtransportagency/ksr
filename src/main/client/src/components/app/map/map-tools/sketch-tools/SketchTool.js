@@ -12,10 +12,12 @@ import { convertEsriGeometryType } from '../../../../../utils/type';
 
 type State = {
     editSketchIcon: string,
+    validGeometry: boolean,
 };
 
 const initialState = {
     editSketchIcon: 'polygon',
+    validGeometry: true,
 };
 
 type Props = {
@@ -111,6 +113,7 @@ class SketchTool extends Component<Props, State> {
                     setActiveTool,
                     tempGraphicsLayer,
                     setActiveToolMenu,
+                    editModeActive,
                 } = this.props;
 
                 const drawNewFeatureButton = this.drawNewFeatureButton.current;
@@ -158,6 +161,7 @@ class SketchTool extends Component<Props, State> {
                         setActiveTool('sketchPolygon');
                         sketchViewModel.create('polygon');
                         drawPolygonButton.style.backgroundColor = styles.colorMainDark;
+                        this.setState({ validGeometry: true });
                     }
                 });
 
@@ -172,17 +176,57 @@ class SketchTool extends Component<Props, State> {
                     }
                 });
 
+                const createSketchLineGraphic = (isValid: boolean) => (
+                    {
+                        type: 'simple-line',
+                        style: 'dash',
+                        color: isValid ? 'rgba(12, 207, 255, 1)' : 'rgba(204, 51, 0, 1)',
+                        width: 2,
+                    }
+                );
+
+                const createSketchOutlineGraphic = (isValid: boolean, updateActive?: boolean) => {
+                    const color = updateActive ? 'rgba(12, 207, 255, 1)' : 'rgba(0, 0, 0, 1)';
+                    return {
+                        type: 'simple-line',
+                        style: 'solid',
+                        color: isValid ? color : 'rgba(204, 51, 0, 1)',
+                        width: 2,
+                    };
+                };
+
                 const addGraphic = (graphic) => {
+                    if (graphic.geometry.type === 'polygon' && (graphic.geometry.isSelfIntersecting
+                        || graphic.geometry.rings.length > 1)) {
+                        const clonedSymbol = graphic.symbol.clone();
+                        clonedSymbol.outline = createSketchOutlineGraphic(false);
+                        graphic.symbol = clonedSymbol;
+
+                        this.setState({ validGeometry: false });
+                    }
                     graphic.type = 'sketch-graphic';
                     this.props.setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
                 const selectFeaturesFromDraw = (event) => {
-                    if (event.state === 'complete') {
+                    const { active } = this.props;
+                    if (
+                        event.state === 'active'
+                        && event.tool === 'polygon'
+                        && active === 'sketchActiveAdmin'
+                    ) {
+                        if (event.graphic.geometry.isSelfIntersecting
+                            || event.graphic.geometry.rings.length > 1) {
+                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(false);
+                            this.setState({ validGeometry: false });
+                        } else {
+                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(true);
+                            this.setState({ validGeometry: true });
+                        }
+                    } else if (event.state === 'complete') {
                         const { graphic } = event;
                         const { geometry } = event.graphic;
                         const {
-                            active,
                             selectFeatures,
                             propertyAreaSearch,
                             setPropertyInfo,
@@ -220,7 +264,30 @@ class SketchTool extends Component<Props, State> {
                         setActiveTool('');
                     }
                 };
+
+                const onUpdate = (event) => {
+                    if (event.graphics[0].geometry.isSelfIntersecting
+                        || (!editModeActive && event.graphics[0].geometry.rings.length > 1)) {
+                        const clonedSymbol = event.graphics[0].symbol.clone();
+                        clonedSymbol.outline = createSketchOutlineGraphic(false);
+                        event.graphics[0].symbol = clonedSymbol;
+
+                        this.setState({ validGeometry: false });
+                    } else {
+                        const updateModeActive = event.type === 'redo'
+                            || event.type === 'undo'
+                            || (event.type === 'update' && event.state !== 'cancel'
+                                && event.state !== 'complete');
+                        const clonedSymbol = event.graphics[0].symbol.clone();
+                        clonedSymbol.outline = createSketchOutlineGraphic(true, updateModeActive);
+                        event.graphics[0].symbol = clonedSymbol;
+
+                        this.setState({ validGeometry: true });
+                    }
+                };
+
                 sketchViewModel.on('create', selectFeaturesFromDraw);
+                sketchViewModel.on(['redo', 'undo', 'update'], onUpdate);
             });
     };
 
@@ -266,6 +333,7 @@ class SketchTool extends Component<Props, State> {
         const {
             data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive,
         } = this.props;
+        const { validGeometry } = this.state;
 
         const hasSelectedFeatures = data.filter(f => f._source !== 'search').length > 0;
 
@@ -294,8 +362,8 @@ class SketchTool extends Component<Props, State> {
                     hasAdminGraphics={hasAdminGraphics}
                     setActiveModal={setActiveModal}
                     editModeActive={editModeActive}
+                    validGeometry={validGeometry}
                 />
-
             </Fragment>
         );
     }
