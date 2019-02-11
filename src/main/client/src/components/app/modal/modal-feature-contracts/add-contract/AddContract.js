@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { queryFeatures } from '../../../../../api/search/searchQuery';
 import ModalLayerDetailsView from '../../modal-layer-details/ModalLayerDetailsView';
+import { nestedVal } from '../../../../../utils/nestedValue';
 
 type Props = {
     contractLinkValidation: (
@@ -29,6 +30,7 @@ const initialState = {
 class AddContract extends Component<Props, State> {
     abortController: ?Object = null; // eslint-disable-line react/sort-comp
     existsQuery: ?number = 0; // eslint-disable-line react/sort-comp
+    _isMounted: boolean = true;
 
     constructor(props: Props) {
         super(props);
@@ -48,9 +50,7 @@ class AddContract extends Component<Props, State> {
         const data = fields
             .filter(f => (f.type !== 'esriFieldTypeOID'
                 && f.editable
-                && f.name !== 'CONTRACT_UUID')
-                || (f.name === contractLayer.contractIdField
-                    && f.name === contractLayer.relationColumnOut))
+                && f.name !== 'CONTRACT_UUID'))
             .map(field => ({
                 ...field,
                 nullable: field.name !== contractLayer.contractIdField,
@@ -64,15 +64,15 @@ class AddContract extends Component<Props, State> {
         const { contractData } = this.state;
         const { contractLayer, setData } = this.props;
 
-        this.setState({
-            fetching: true,
-        });
-
         const newData = contractData.map(f => ({
             ...f,
             data: f.name === name ? value : f.data,
         }));
-        this.setState({ contractData: newData });
+
+        this.setState({
+            fetching: true,
+            contractData: newData,
+        });
 
         window.clearTimeout(this.existsQuery);
         if (this.abortController) this.abortController.abort();
@@ -94,21 +94,30 @@ class AddContract extends Component<Props, State> {
                     signal,
                 );
 
-                if (res.features && res.features.length < 1) {
-                    this.props.contractLinkValidation(
-                        true,
-                        value,
-                        '',
-                    );
-                    this.setState({
-                        fetching: false,
-                        contractExists: false,
-                    });
-                } else {
-                    this.setState({
-                        fetching: false,
-                        contractExists: true,
-                    });
+                const contractNumber = nestedVal(
+                    this.state.contractData
+                        .find(data => data.name === contractLayer.contractIdField),
+                    ['data'],
+                );
+
+                // Don't do anything if value doesn't match the contract number in state
+                if (this._isMounted && value === contractNumber) {
+                    if (res.features && res.features.length < 1) {
+                        this.props.contractLinkValidation(
+                            true,
+                            value,
+                            '',
+                        );
+                        this.setState({
+                            fetching: false,
+                            contractExists: false,
+                        });
+                    } else {
+                        this.setState({
+                            fetching: false,
+                            contractExists: true,
+                        });
+                    }
                 }
             }, 300);
         } else {
@@ -120,6 +129,10 @@ class AddContract extends Component<Props, State> {
             });
         }
     };
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
     render() {
         const { contractData, fetching, contractExists } = this.state;

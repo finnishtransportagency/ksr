@@ -27,6 +27,7 @@ const initialState = {
 class LinkContract extends Component<Props, State> {
     abortController: ?Object = null; // eslint-disable-line react/sort-comp
     existsQuery: ?number = 0; // eslint-disable-line react/sort-comp
+    _isMounted: boolean = true;
 
     constructor(props: Props) {
         super(props);
@@ -61,21 +62,27 @@ class LinkContract extends Component<Props, State> {
                     signal,
                 );
 
-                if (res.features && res.features.length) {
-                    const contractUuid = res.features[0].attributes.CONTRACT_UUID;
-                    this.props.contractLinkValidation(
-                        true,
-                        contractNumber,
-                        contractUuid,
-                    );
-                    this.setState({
-                        fetching: false,
-                        contractExists: true,
-                    });
-                } else {
-                    this.setState({
-                        fetching: false,
-                    });
+                // Don't do anything if value doesn't match the one in state
+                if (this._isMounted && contractNumber === this.state.contractNumber) {
+                    if (res.features && res.features.length) {
+                        const contractUuid = res.features[0].attributes.CONTRACT_UUID;
+                        this.props.contractLinkValidation(
+                            true,
+                            contractNumber,
+                            contractUuid,
+                        );
+                        this.setState({
+                            fetching: false,
+                            contractExists: true,
+                        });
+                    } else {
+                        this.setState({
+                            fetching: false,
+                            contractExists: false,
+                        });
+
+                        this.props.contractLinkValidation(false);
+                    }
                 }
             }, 300);
         } else {
@@ -85,6 +92,10 @@ class LinkContract extends Component<Props, State> {
             });
         }
     };
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
     render() {
         const {
