@@ -30,7 +30,6 @@ const mapStateToProps = (state) => {
     const editedLayersNoUnderscore = state.table.features.editedLayers
         .map(l => removeUnderscore(l));
     const originalLayers = tableFeaturesLayers.map(l => removeUnderscore(l));
-    const selectedData = tableFeaturesLayers.flatMap(f => f.data.filter(d => d._selected));
     const selectedAdminData = tableFeaturesLayers
         .filter(layer => layer.id === state.adminTool.active.layerId)
         .flatMap(f => f.data.filter(d => d._selected));
@@ -59,7 +58,6 @@ const mapStateToProps = (state) => {
         activeDelete: layer && currentTabAdmin ? layer.layerPermission.deleteLayer : false,
         originalLayers,
         editedLayersNoUnderscore,
-        selectedData: selectedData.length > 0,
         selectedAdminData: selectedAdminData.length > 0,
         geometryDataSelected: geometryDataSelected.length > 0,
         activeTableDataSelected,
