@@ -4,6 +4,7 @@ import equals from 'nano-equal';
 import Table from '../../ui/blocks/Table';
 import strings from '../../../translations';
 import TabbedTableContainer from './tabbed-table/TabbedTableContainer';
+import { zoomToFeatures } from '../../../utils/map';
 
 type Props = {
     toggleTable: Function,
@@ -17,6 +18,7 @@ type Props = {
     editedLayersNoUnderscore: Array<Object>,
     selectedAdminData: boolean,
     geometryDataSelected: boolean,
+    geometryData: Object[],
     activeTableDataSelected: boolean,
     activeTableLayer: Object,
     showConfirmModal: (
@@ -43,6 +45,7 @@ const TableView = ({
     editedLayers,
     selectedAdminData,
     geometryDataSelected,
+    geometryData,
     activeTableDataSelected,
     activeTableLayer,
     showConfirmModal,
@@ -106,6 +109,17 @@ const TableView = ({
                     } : null}
             >
                 <i className="far fa-dot-circle" />
+            </Table.Button>
+            <Table.Button
+                title={strings.reactTable.zoomToSelected}
+                tableOpen={isOpen}
+                disabled={!geometryDataSelected}
+                onClick={
+                    geometryDataSelected ? () => {
+                        zoomToFeatures(view, geometryData);
+                    } : null}
+            >
+                <i className="fas fa-search-plus" />
             </Table.Button>
             <Table.Button
                 title={strings.reactTable.extractSelectedData}

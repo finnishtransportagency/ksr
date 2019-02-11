@@ -60,6 +60,7 @@ const mapStateToProps = (state) => {
         editedLayersNoUnderscore,
         selectedAdminData: selectedAdminData.length > 0,
         geometryDataSelected: geometryDataSelected.length > 0,
+        geometryData: geometryDataSelected,
         activeTableDataSelected,
         activeTableLayer,
         featureType,
