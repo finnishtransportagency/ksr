@@ -331,7 +331,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive,
+            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
         } = this.props;
         const { validGeometry } = this.state;
 
@@ -353,6 +353,7 @@ class SketchTool extends Component<Props, State> {
                     hasSelectedFeatures={hasSelectedFeatures}
                     isOpen={isOpen}
                     view={view}
+                    activeTool={active}
                 />
                 <SketchActiveAdminView
                     editSketchIcon={this.state.editSketchIcon}
@@ -363,6 +364,7 @@ class SketchTool extends Component<Props, State> {
                     setActiveModal={setActiveModal}
                     editModeActive={editModeActive}
                     validGeometry={validGeometry}
+                    activeTool={active}
                 />
             </Fragment>
         );

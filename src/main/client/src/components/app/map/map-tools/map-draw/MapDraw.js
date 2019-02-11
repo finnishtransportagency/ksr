@@ -467,6 +467,7 @@ class MapDraw extends Component<Props, null> {
             isActive,
             hasGraphics,
             showMeasurements,
+            active,
         } = this.props;
 
         return (
@@ -477,6 +478,7 @@ class MapDraw extends Component<Props, null> {
                 toggleDrawTools={this.toggleDrawTools}
                 isActive={isActive}
                 showMeasurements={showMeasurements}
+                activeTool={active}
             />
         );
     }
