@@ -133,14 +133,14 @@ export const Wrapper = styled.div`
         ${props => props.tableOpen && !props.adminToolActive && css`
             // Button width multiplied by number of buttons
             .esri-attribution {
-                margin-left: calc(60px * 5);
+                margin-left: calc(60px * 6);
             };
         `};
         
         ${props => props.tableOpen && props.adminToolActive && css`
             // Button width multiplied by number of buttons
             .esri-attribution {
-                margin-left: calc(60px * 7);
+                margin-left: calc(60px * 8);
             };
         `};
 
