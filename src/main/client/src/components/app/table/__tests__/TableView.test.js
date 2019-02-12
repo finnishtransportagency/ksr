@@ -15,6 +15,7 @@ const setup = (prop) => {
         originalLayers: [],
         editedLayers: [],
         selectedData: false,
+        activeAdminTool: '',
     };
     const props = prop || minProps;
     const wrapper = shallow(<TableView {...props} />);
@@ -42,6 +43,7 @@ describe('<TableView />', () => {
             originalLayers: [],
             editedLayers: [],
             selectedData: false,
+            activeAdminTool: '1',
         };
 
         const { wrapper } = setup(props);
