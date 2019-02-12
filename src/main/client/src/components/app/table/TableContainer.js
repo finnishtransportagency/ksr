@@ -69,6 +69,7 @@ const mapStateToProps = (state) => {
         editedLayers: state.table.features.editedLayers
             .filter(editedLayer => editedLayer.id === state.adminTool.active.layerId),
         currentTabAdmin,
+        activeAdminTool: state.adminTool.active.layerId,
     };
 };
 
