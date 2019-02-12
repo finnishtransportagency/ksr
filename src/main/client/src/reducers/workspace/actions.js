@@ -6,7 +6,6 @@ import strings from '../../translations/fi';
 import { getWorkspaceFeatures, queryWorkspaceFeatures } from '../../utils/workspace/loadWorkspace';
 import { addNonSpatialContentToTable, searchWorkspaceFeatures } from '../table/actions';
 import { parseData } from '../../utils/parseFeatureData';
-import { getSingleLayerFields } from '../../utils/map';
 
 /**
  * Handles workspace fetches and workspace list update.

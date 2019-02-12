@@ -50,10 +50,11 @@ class ModalDrawText extends React.Component<Props, State> {
 
 
     render() {
+        const { text } = this.state;
         const modalSubmit = [{
             text: strings.modalDrawText.submitText,
             handleSubmit: this.handleModalSubmit,
-            disabled: false,
+            disabled: !text,
             toggleModal: true,
         }];
 
