@@ -9,10 +9,11 @@ type Props = {
     toggleDrawTools: Function,
     isActive: boolean,
     showMeasurements: boolean,
+    activeTool: string,
 };
 
 const MapDrawView = ({
-    hasGraphics, removeDrawings, toggleDrawTools, isActive, showMeasurements,
+    hasGraphics, removeDrawings, toggleDrawTools, isActive, showMeasurements, activeTool,
 }: Props) => (
     <Fragment>
         <DrawToolOuterWrapper id="draw-tool-outer-wrapper">
@@ -20,7 +21,7 @@ const MapDrawView = ({
                 id="toggle-draw-tools"
                 role="button"
                 tabIndex={0}
-                className="esri-component esri-widget--button esri-widget esri-interactive"
+                className={`esri-component esri-widget--button esri-widget esri-interactive ${activeTool ? 'disabled' : ''}`}
                 title={strings.mapDraw.selectTool}
                 onClick={() => { toggleDrawTools(); }}
                 onKeyPress={() => { toggleDrawTools(); }}

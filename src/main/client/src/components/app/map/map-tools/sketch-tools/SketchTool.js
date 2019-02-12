@@ -123,7 +123,7 @@ class SketchTool extends Component<Props, State> {
 
                 drawNewFeatureButton.addEventListener('click', (event) => {
                     // user cannot draw more than 1 sketch
-                    if (drawNewFeatureButton.classList.contains('draw-create-new-feature-disabled')) {
+                    if (drawNewFeatureButton.classList.contains('disabled')) {
                         event.preventDefault();
                         return;
                     }
@@ -137,8 +137,7 @@ class SketchTool extends Component<Props, State> {
                         setActiveTool('sketchActiveAdmin');
                         const geometryType = convertEsriGeometryType(this.props.geometryType);
                         sketchViewModel.create(geometryType);
-                        drawNewFeatureButton.style.backgroundColor =
-                            styles.colorMainDark;
+                        drawNewFeatureButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
 
@@ -331,7 +330,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive,
+            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
         } = this.props;
         const { validGeometry } = this.state;
 
@@ -353,6 +352,7 @@ class SketchTool extends Component<Props, State> {
                     hasSelectedFeatures={hasSelectedFeatures}
                     isOpen={isOpen}
                     view={view}
+                    activeTool={active}
                 />
                 <SketchActiveAdminView
                     editSketchIcon={this.state.editSketchIcon}
@@ -363,6 +363,7 @@ class SketchTool extends Component<Props, State> {
                     setActiveModal={setActiveModal}
                     editModeActive={editModeActive}
                     validGeometry={validGeometry}
+                    activeTool={active}
                 />
             </Fragment>
         );

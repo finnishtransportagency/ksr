@@ -12,6 +12,7 @@ type Props = {
     toggleTools: () => void,
     hasSelectedFeatures: boolean,
     isOpen: boolean,
+    activeTool: string,
 };
 
 const SketchToolView = ({
@@ -23,6 +24,7 @@ const SketchToolView = ({
     toggleTools,
     hasSelectedFeatures,
     isOpen,
+    activeTool,
 }: Props) => (
     <Fragment>
         <div id="select-tool-outer-wrapper" >
@@ -68,7 +70,7 @@ const SketchToolView = ({
                 id="toggle-select-tools"
                 role="button"
                 tabIndex={0}
-                className="esri-component esri-widget--button esri-widget esri-interactive"
+                className={`esri-component esri-widget--button esri-widget esri-interactive ${activeTool ? 'disabled' : ''}`}
                 title={strings.sketchTool.selectTool}
                 ref={toggleSelectToolsButtonRef}
                 onClick={() => { toggleTools(); }}
