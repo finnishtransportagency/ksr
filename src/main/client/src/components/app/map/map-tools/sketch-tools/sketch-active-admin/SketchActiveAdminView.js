@@ -1,7 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations/index';
-import Wrapper from './styles';
 
 type Props = {
     editSketchIcon: string,
@@ -12,6 +11,7 @@ type Props = {
     setActiveModal: (editModeActive: boolean) => void,
     editModeActive: boolean,
     validGeometry: boolean,
+    activeTool: string,
 };
 
 const SketchActiveAdminView = ({
@@ -23,9 +23,10 @@ const SketchActiveAdminView = ({
     setActiveModal,
     editModeActive,
     validGeometry,
+    activeTool,
 }: Props) => (
     <Fragment>
-        <Wrapper id="create-new-feature-wrapper">
+        <div id="create-new-feature-wrapper">
             <div
                 style={{ visibility: hasAdminGraphics ? 'visible' : 'hidden' }}
                 id="reject-create-new-feature"
@@ -59,13 +60,13 @@ const SketchActiveAdminView = ({
             <div
                 style={{ visibility: showAdminView ? 'visible' : 'hidden' }}
                 id="draw-create-new-feature"
-                className={`esri-component esri-widget--button esri-widget esri-interactive ${hasAdminGraphics ? 'draw-create-new-feature-disabled' : ''}`}
+                className={`esri-component esri-widget--button esri-widget esri-interactive ${hasAdminGraphics || (activeTool && activeTool !== 'sketchActiveAdmin') ? 'disabled' : ''}`}
                 title={strings.sketchTool.activeAdmin}
                 ref={drawNewFeatureButtonRef}
             >
                 <span className={`esri-icon-${editSketchIcon}`} />
             </div>
-        </Wrapper>
+        </div>
     </Fragment>
 );
 

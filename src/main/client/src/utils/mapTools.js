@@ -1,5 +1,4 @@
 // @flow
-import * as styles from '../components/ui/defaultStyles';
 
 /**
  * Resets draw, sketchViewModel, activeTool and button highlights.
@@ -15,7 +14,7 @@ export const resetMapTools = (draw: Object, sketchViewModel: Object, setActiveTo
     setActiveTool('');
     [...document.querySelectorAll('.esri-ui-top-right .esri-widget--button:not(#toggle-measurements)')]
         .forEach((element) => {
-            element.style.background = styles.colorMain;
+            element.style.removeProperty('background');
         });
 };
 
