@@ -260,7 +260,6 @@ class SketchTool extends Component<Props, State> {
                             tempGraphicsLayer.remove(event.graphic);
                         }
                         resetMapTools(draw, sketchViewModel, setActiveTool);
-                        setActiveTool('');
                     }
                 };
 
