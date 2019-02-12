@@ -25,6 +25,10 @@ const Label = styled.label`
             z-index: 1;
         }
     `}
+    
+    ${props => props.failOnLoad && css`
+        color: ${styles.colorDanger};
+    `}
 `;
 
 export default Label;
