@@ -85,7 +85,7 @@ export const activateLayers = (
             if (layer.type === 'agfl') {
                 if (workspace === undefined) dispatch(addNonSpatialContentToTable(layer));
             } else {
-                let layerToUpdate = await getSingleLayerFields({ ...layer });
+                let layerToUpdate = await getSingleLayerFields({ ...layer, failOnLoad: false });
                 layerToUpdate = await getLayerLegend(
                     layerToUpdate,
                     dispatch(getState).map.mapView.view,
@@ -122,6 +122,7 @@ export const activateLayers = (
             dispatch({
                 type: types.DEACTIVATE_LAYER,
                 layerId: layer.id,
+                failOnLoad: true,
             });
         }
     }));
