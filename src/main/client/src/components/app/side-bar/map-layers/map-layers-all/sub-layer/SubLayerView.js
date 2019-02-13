@@ -83,7 +83,7 @@ const SubLayerView = ({
                     <LayerGroup.Layer.Label htmlFor={sub.id} failOnLoad={sub.failOnLoad}>
                         <input
                             onChange={() => handleLayerClick(sub.id)}
-                            checked={nestedVal(layerList.find(l => l.id === layer.id), ['active'], false)}
+                            checked={nestedVal(layerList.find(l => l.id === sub.id), ['active'], false)}
                             type="checkbox"
                             value={sub.name}
                             id={sub.id}
