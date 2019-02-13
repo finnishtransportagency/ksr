@@ -33,7 +33,7 @@ const SubLayerView = ({
                 {loadingLayers.some(ll => ll === layer.id) && <LoadingIcon size={6} loading />}
                 <input
                     onChange={() => handleLayerClick(layer.id)}
-                    checked={nestedVal(layerList.find(l => l.id === layer.id), ['active'])}
+                    checked={nestedVal(layerList.find(l => l.id === layer.id), ['active'], false)}
                     type="checkbox"
                     value={layer.name}
                     id={layer.id}
@@ -46,7 +46,7 @@ const SubLayerView = ({
                     id={layer.name}
                     name={layer.name}
                     type="checkbox"
-                    checked={nestedVal(layerList.find(l => l.id === layer.id), ['active']) &&
+                    checked={nestedVal(layerList.find(l => l.id === layer.id), ['active'], false) &&
                     subLayers.filter(sl =>
                         sl.parentLayer === layer.id &&
                         !sl.failOnLoad &&
@@ -83,7 +83,7 @@ const SubLayerView = ({
                     <LayerGroup.Layer.Label htmlFor={sub.id} failOnLoad={sub.failOnLoad}>
                         <input
                             onChange={() => handleLayerClick(sub.id)}
-                            checked={nestedVal(layerList.find(l => l.id === layer.id), ['active'])}
+                            checked={nestedVal(layerList.find(l => l.id === layer.id), ['active'], false)}
                             type="checkbox"
                             value={sub.name}
                             id={sub.id}

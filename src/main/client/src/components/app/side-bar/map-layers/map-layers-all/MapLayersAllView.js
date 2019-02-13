@@ -97,7 +97,7 @@ const MapLayersAllView = ({
                                     key={l.id}
                                     layer={l}
                                     handleLayerClick={handleLayerClick}
-                                    checked={nestedVal(layerList.find(layer => layer.id === l.id), ['active'])}
+                                    checked={nestedVal(layerList.find(layer => layer.id === l.id), ['active'], false)}
                                 />
                                 : <SubLayerContainer
                                     key={l.id}
