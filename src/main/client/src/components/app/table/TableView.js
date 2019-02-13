@@ -117,8 +117,8 @@ const TableView = ({
                 tableOpen={isOpen}
                 disabled={!geometryDataSelected}
                 onClick={
-                    geometryDataSelected ? () => {
-                        zoomToFeatures(view, geometryData);
+                    geometryDataSelected ? async () => {
+                        await zoomToFeatures(view, geometryData);
                     } : null}
             >
                 <i className="fas fa-search-plus" />

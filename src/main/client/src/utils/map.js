@@ -412,7 +412,31 @@ export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
  * @param {Object} view Esri ArcGIS JS MapView.
  * @param {Object[]} features Features to zoom to.
  */
-export const zoomToFeatures = (view: Object, features: Object[]) => {
-    const geometries = features.map(feature => feature.geometry);
+export const zoomToFeatures = async (view: Object, features: Object[]) => {
+    const [Point, Polygon, Polyline] = await esriLoader.loadModules([
+        'esri/geometry/Point',
+        'esri/geometry/Polygon',
+        'esri/geometry/Polyline',
+    ]);
+    const geometries = features.map((feature) => {
+        if (feature.geometry.x && feature.geometry.y && !feature.geometry.__accessor__) {
+            return new Point({
+                x: feature.geometry.x,
+                y: feature.geometry.y,
+                spatialReference: { wkid: 3067 },
+            });
+        } else if (feature.geometry.rings && !feature.geometry.__accessor__) {
+            return new Polygon({
+                rings: feature.geometry.rings,
+                spatialReference: { wkid: 3067 },
+            });
+        } else if (feature.geometry.paths && !feature.geometry.__accessor__) {
+            return new Polyline({
+                paths: feature.geometry.paths,
+                spatialReference: { wkid: 3067 },
+            });
+        }
+        return feature.geometry;
+    });
     if (geometries) view.goTo(geometries);
 };
