@@ -11,8 +11,8 @@ import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 import {
     colorBackgroundDark,
+    colorFeatureHighlight,
     colorMainDark,
-    mapHighlightStroke,
 } from '../../ui/defaultStyles';
 import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
@@ -149,7 +149,7 @@ class EsriMap extends Component<Props> {
                         spinnerEnabled: true,
                     },
                     highlightOptions: {
-                        color: mapHighlightStroke,
+                        color: colorFeatureHighlight,
                         fillOpacity: 0,
                     },
                 });
