@@ -18,10 +18,11 @@
  *
  * @param {Object} obj Object containing deeply nested values.
  * @param {string[]} list List of nested values to find in object.
+ * @param {any} [defaultValue] If the resolved value is undefined, the defaultValue is returned in its place.
  *
- * @returns {any} Found nested value or null.
+ * @returns {any} Found nested value or defaultValue.
  */
-export const nestedVal = (obj: ?Object, list: string[]): any =>
+export const nestedVal = (obj: ?Object, list: string[], defaultValue?: any = null): any =>
     (list instanceof Array && obj instanceof Object
-        ? list.reduce((val, next) => ((val && val[next]) ? val[next] : null), obj)
-        : null);
+        ? list.reduce((val, next) => ((val && val[next]) ? val[next] : defaultValue), obj)
+        : defaultValue);

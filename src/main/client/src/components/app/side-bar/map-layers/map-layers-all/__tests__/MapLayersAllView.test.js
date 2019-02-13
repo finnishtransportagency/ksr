@@ -27,6 +27,7 @@ const setup = () => {
                 id: 2, visible: true, name: 'Layer 2', active: true,
             },
         ],
+        loadingLayers: [],
         handleGroupClick: () => {},
         activeGroup: 1,
     };

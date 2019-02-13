@@ -49,4 +49,14 @@ describe('nestedValue.js', () => {
         expect(nestedVal(123, 123)).toEqual(null);
         expect(nestedVal(objList.find(o => o.id === 999), ['name'])).toEqual(null);
     });
+    it('nestedVal - should return defaultValue if anything fails', () => {
+        const obj2 = null;
+
+        const list = ['user', 'doesntexist', 'account', 'id'];
+        const objList = [{ id: 123, name: 'name 123' }, { id: 456, name: 'name 456' }];
+
+        expect(nestedVal(obj2, list, true)).toEqual(true);
+        expect(nestedVal(obj2, list, 1)).toEqual(1);
+        expect(nestedVal(objList.find(o => o.id === 999), ['name'], 'defaultName')).toEqual('defaultName');
+    });
 });

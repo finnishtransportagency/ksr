@@ -71,6 +71,7 @@ class MapLayersActive extends Component<Props, State> {
         const { layerList } = this.props;
         const foundLayers = layerList.filter(l =>
             l.layerGroupName === layerGroupName
+            && !l.parentLayer
             && l.relationType !== 'link'
             && l._source !== 'shapefile');
 
@@ -88,7 +89,9 @@ class MapLayersActive extends Component<Props, State> {
 
     updateLayerList = (foundLayers: Object[]) => {
         const { activateLayers, deactivateLayer, loadingLayers } = this.props;
-        const active = foundLayers.every(l => l.active);
+        const active = foundLayers.filter(f => !f.failOnLoad).length > 0 ?
+            foundLayers.filter(f => !f.failOnLoad).every(l => l.active) :
+            foundLayers.every(l => l.active);
 
         if (active) {
             foundLayers.forEach(foundLayer => deactivateLayer(foundLayer.id));
@@ -103,7 +106,7 @@ class MapLayersActive extends Component<Props, State> {
     render() {
         const { activeGroup, activeSubGroup } = this.state;
         const {
-            layerGroups, fetching, layerList, subLayers,
+            layerGroups, fetching, layerList, subLayers, loadingLayers,
         } = this.props;
 
         if (!fetching) {
@@ -119,6 +122,7 @@ class MapLayersActive extends Component<Props, State> {
                     handleLayerGroupClick={this.handleLayerGroupClick}
                     handleSubLayerGroupClick={this.handleSubLayerGroupClick}
                     subLayers={subLayers}
+                    loadingLayers={loadingLayers}
                 />
             );
         }

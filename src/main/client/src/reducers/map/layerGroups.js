@@ -36,6 +36,7 @@ type Layer = {
     caseManagementLinkField: string,
     geometryType: string,
     fields: Array<Object>,
+    failOnLoad: boolean,
     id: string,
     layerGroupName: string,
     layerOrder: number,
@@ -71,6 +72,7 @@ type Action = {
     layerId: string,
     layer: Object,
     workspace: Object,
+    failOnLoad: boolean,
 };
 
 const initialState = {
@@ -213,6 +215,7 @@ export default (state: State = initialState, action: Action) => {
                             ...l,
                             active: false,
                             visible: false,
+                            failOnLoad: action.failOnLoad ? action.failOnLoad : false,
                         };
                     }
                     return { ...l };
