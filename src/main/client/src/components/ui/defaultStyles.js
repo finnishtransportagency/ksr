@@ -16,7 +16,6 @@ export const colorBackgroundWhite = '#FFFFFF';
 export const colorBackgroundDark = '#444444';
 export const colorBackgroundDarkSecondary = '#4B4B4B';
 
-export const mapHighlightStroke = '#DA1414';
 export const mapShapefileHighlight = '#86c866';
 export const colorFeatureHighlight = '#00DDFF';
 export const colorTableEdited = '#F79421';

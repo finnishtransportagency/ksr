@@ -125,7 +125,7 @@ export const WrapperReactTable = styled.div`
         }
 
         .content-not-valid {
-            border: 2px solid ${styles.mapHighlightStroke};
+            border: 2px solid ${styles.colorDanger};
         };
         
         .contract-icon {
