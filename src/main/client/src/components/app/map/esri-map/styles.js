@@ -32,6 +32,10 @@ export const Wrapper = styled.div`
             margin-bottom: 3em;
         };
         
+        .esri-coordinate-conversion__select-row {
+            flex-basis: 100px;
+        };
+        
         .esri-attribution {
             margin-left: 60px;
         };
