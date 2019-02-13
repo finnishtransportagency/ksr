@@ -19,7 +19,7 @@ export const TextInput = styled.input`
     }
 
     &:invalid {
-        border: 1px solid ${styles.mapHighlightStroke};
+        border: 1px solid ${styles.colorDanger};
     }
 `;
 
@@ -63,6 +63,6 @@ export const InputWithIcon = styled.div`
     }
     
     .fa-exclamation-triangle {
-        color: ${styles.mapHighlightStroke}
+        color: ${styles.colorDanger}
     }
 `;

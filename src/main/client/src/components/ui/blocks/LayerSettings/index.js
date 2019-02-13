@@ -21,7 +21,7 @@ const Icons = styled.div`
     text-align: right;
     
     ${props => props.activeAdminTool && css`
-        color: ${styles.mapHighlightStroke};
+        color: ${styles.colorDanger};
     `}
     
     i:hover {
@@ -29,7 +29,7 @@ const Icons = styled.div`
     }
     
     .theme-layer-created {
-        color: ${styles.mapHighlightStroke};
+        color: ${styles.colorDanger};
     }
 `;
 
