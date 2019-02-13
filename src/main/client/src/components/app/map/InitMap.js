@@ -211,7 +211,7 @@ class EsriMap extends Component<Props> {
 
                     if (epsg && wgs) {
                         const epsgClone = clone(epsg, true, 3);
-                        epsgClone.name = 'EPSG:3067';
+                        epsgClone.name = 'ETRS-TM35FIN';
                         const wgsClone = clone(wgs, true, 3);
                         wgsClone.name = 'WGS84';
 
