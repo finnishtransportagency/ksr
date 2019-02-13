@@ -219,7 +219,7 @@ class EsriMap extends Component<Props> {
                         coordinateWidget.formats.addMany([epsgClone, wgsClone]);
 
                         coordinateWidget.conversions.removeAll();
-                        coordinateWidget.conversions.add(new Conversion({format: epsgClone}));
+                        coordinateWidget.conversions.add(new Conversion({ format: epsgClone }));
                         view.ui.add([coordinateWidget], 'bottom-right');
                     }
                 }
