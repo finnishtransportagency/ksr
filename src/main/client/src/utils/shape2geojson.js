@@ -2,7 +2,7 @@
 import * as shapefile from 'shapefile';
 import esriLoader from 'esri-loader';
 import moment from 'moment';
-import { mapShapefileHighlight as highlight } from '../components/ui/defaultStyles';
+import { colorShapefileHighlight } from '../components/ui/defaultStyles';
 
 /**
  * Create Esri geometry type.
@@ -125,7 +125,7 @@ export const createSymbol = (geometry: Object) => {
                 type: 'simple', // autocasts as new SimpleRenderer()
                 symbol: {
                     type: 'simple-marker',
-                    color: highlight,
+                    color: colorShapefileHighlight,
                     style: 'circle',
                     size: 8,
                     outline: {
@@ -139,7 +139,7 @@ export const createSymbol = (geometry: Object) => {
                 type: 'simple', // autocasts as new SimpleRenderer()
                 symbol: {
                     type: 'simple-fill',
-                    color: highlight,
+                    color: colorShapefileHighlight,
                     style: 'solid',
                     outline: {
                         color: '#000000',
@@ -153,7 +153,7 @@ export const createSymbol = (geometry: Object) => {
                 symbol: {
                     type: 'simple-line',
                     style: 'solid',
-                    color: highlight,
+                    color: colorShapefileHighlight,
                     width: 2,
                 },
             };
