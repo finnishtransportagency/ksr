@@ -25,8 +25,8 @@ const BaseMapContainer = styled.div`
 
     ${props => props.tableOpen && !props.sideBarOpen && !props.adminToolActive && css`
         bottom: calc(50vh + 16px);
-        left: calc(60px * 6);
-        width: calc(100vw - 60px * 6);
+        left: calc(60px * 7);
+        width: calc(100vw - 60px * 7);
         @media only screen and (max-width: 768px) {
             display: none;
         };
@@ -34,8 +34,8 @@ const BaseMapContainer = styled.div`
 
     ${props => props.tableOpen && !props.sideBarOpen && props.adminToolActive && css`
         bottom: calc(50vh + 16px);
-        left: calc(60px * 8);
-        width: calc(100vw - 60px * 8);
+        left: calc(60px * 9);
+        width: calc(100vw - 60px * 9);
         @media only screen and (max-width: 768px) {
             display: none;
         };
@@ -51,8 +51,8 @@ const BaseMapContainer = styled.div`
 
     ${props => props.tableOpen && props.sideBarOpen && !props.adminToolActive && css`
         bottom: calc(50vh + 16px);
-        left: calc(400px + 6 * 60px);
-        width: calc(100vw - 400px - 60px * 6);
+        left: calc(400px + 7 * 60px);
+        width: calc(100vw - 400px - 60px * 7);
         @media only screen and (max-width: 768px) {
             display: none;
         };
@@ -60,8 +60,8 @@ const BaseMapContainer = styled.div`
 
     ${props => props.tableOpen && props.sideBarOpen && props.adminToolActive && css`
         bottom: calc(50vh + 16px);
-        left: calc(400px + 8 * 60px);
-        width: calc(100vw - 400px - 60px * 8);
+        left: calc(400px + 9 * 60px);
+        width: calc(100vw - 400px - 60px * 9);
         @media only screen and (max-width: 768px) {
             display: none;
         };

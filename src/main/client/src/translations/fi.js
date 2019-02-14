@@ -36,6 +36,7 @@ const fi = {
         saveEditedData: 'Tallenna muutokset',
         bufferSelectedData: 'Puskurialue valituille kohteille',
         extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
+        zoomToSelected: 'Kohdista valittuihin kohteisiin',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',

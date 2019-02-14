@@ -15,6 +15,7 @@ const setup = (prop) => {
         originalLayers: [],
         editedLayers: [],
         selectedData: false,
+        activeAdminTool: '',
     };
     const props = prop || minProps;
     const wrapper = shallow(<TableView {...props} />);
@@ -27,7 +28,7 @@ describe('<TableView />', () => {
         const { wrapper } = setup();
 
         expect(wrapper.find(Table).length).toBe(1);
-        expect(wrapper.find(Table.Button).length).toBe(5);
+        expect(wrapper.find(Table.Button).length).toBe(6);
         expect(wrapper.find(TabbedTableContainer).length).toBe(1);
     });
 
@@ -42,9 +43,10 @@ describe('<TableView />', () => {
             originalLayers: [],
             editedLayers: [],
             selectedData: false,
+            activeAdminTool: '1',
         };
 
         const { wrapper } = setup(props);
-        expect(wrapper.find(Table.Button).length).toBe(7);
+        expect(wrapper.find(Table.Button).length).toBe(8);
     });
 });
