@@ -111,6 +111,13 @@ export const Wrapper = styled.div`
                 background: ${styles.colorMainDark};
                 color: ${styles.colorFontLight};
             };
+            
+            &.disabled {
+                pointer-events: none;
+                cursor: default;
+                opacity: 0.5;
+                background: ${styles.colorFontDisabled};
+            };
         };
         
         .esri-popup__feature-buttons {

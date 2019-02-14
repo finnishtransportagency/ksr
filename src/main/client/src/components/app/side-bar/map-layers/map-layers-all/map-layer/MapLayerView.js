@@ -4,6 +4,7 @@ import React, { Fragment } from 'react';
 import LayerGroup from '../../../../../ui/blocks/LayerGroup';
 import strings from '../../../../../../translations';
 import LoadingIcon from '../../../../shared/LoadingIcon';
+import { nestedVal } from '../../../../../../utils/nestedValue';
 
 type Props = {
     layer: Object,
@@ -16,7 +17,7 @@ type Props = {
         body: string,
         acceptText: string,
         cancelText: string,
-        accept: Function
+        accept: Function,
     ) => void,
     loadingLayers: string[],
 };
@@ -33,7 +34,10 @@ const MapLayerView = ({
 }: Props) => (
     <LayerGroup.Layer>
         {loadingLayers.some(ll => ll === layer.id) && <LoadingIcon size={6} loading />}
-        <LayerGroup.Layer.Label htmlFor={layer.id}>
+        <LayerGroup.Layer.Label
+            htmlFor={layer.id}
+            failOnLoad={nestedVal(layerList.find(l => l.id === layer.id), ['failOnLoad'])}
+        >
             <input
                 disabled={inputDisabled || loadingLayers.some(ll => ll === layer.id)}
                 onChange={handleLayerClick}

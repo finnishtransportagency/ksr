@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -776,7 +777,7 @@ public class Layer implements Serializable {
      *
      * @return boolean indicating if layer can be considered a background layer.
      */
-    public boolean isBackground()  {return background; }
+    public boolean isBackground()  { return background; }
 
     /**
      * Sets boolean indicating if layer can be considered a background layer.
@@ -807,8 +808,12 @@ public class Layer implements Serializable {
      *
      * @param parentLayer Id of the parent layer.
      */
-    public void setParentLayer(String parentLayer) {
-        this.parentLayer = parentLayer;
+    public void setParentLayer(Long parentLayer) {
+        if (Objects.isNull(parentLayer)) {
+            this.parentLayer = null;
+        } else {
+            this.parentLayer = String.valueOf(parentLayer);
+        }
     }
     /**
      * Return applyEdits -url for Layer if layer is 'agfs' -layer.

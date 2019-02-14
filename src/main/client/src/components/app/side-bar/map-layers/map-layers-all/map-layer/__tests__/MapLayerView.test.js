@@ -13,6 +13,14 @@ const setup = (prop) => {
         handleLayerClick: jest.fn(),
         checked: true,
         loadingLayers: [],
+        layerList: [
+            {
+                id: 12,
+                name: 'Test layer 1',
+                userLayer: false,
+                failOnLoad: false,
+            },
+        ],
     };
 
     const props = prop || minProps;
@@ -43,6 +51,14 @@ describe('<MapLayerView />', () => {
             handleLayerClick: jest.fn(),
             checked: false,
             loadingLayers: [],
+            layerList: [
+                {
+                    id: 1234,
+                    name: 'Test layer 2',
+                    userLayer: false,
+                    failOnLoad: false,
+                },
+            ],
         };
         const { wrapper } = setup(props);
         const checkbox = wrapper.find({ type: 'checkbox' });
@@ -69,6 +85,13 @@ describe('<MapLayerView />', () => {
             handleLayerClick: jest.fn(),
             checked: true,
             loadingLayers: [],
+            layerList: [
+                {
+                    id: 1234,
+                    name: 'Test layer 2',
+                    userLayer: true,
+                },
+            ],
         };
         const { wrapper } = setup(props);
         expect(wrapper.find(LayerGroup.Layer.RemoveIcon).exists()).toBe(true);

@@ -10,6 +10,7 @@ export const fetchLayerGroups = () => (
                 layers: lg.layers.map(l => ({
                     ...l,
                     active: l.visible,
+                    failOnLoad: false,
                 })),
             }
         )))
