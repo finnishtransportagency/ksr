@@ -260,9 +260,9 @@ const fi = {
         cancelText: 'Peruuta',
         backText: 'Takaisin',
         listView: {
-            title: 'Sopimukset kohteelle',
+            title: 'Kohteeseen liittyvät sopimukset',
             noContracts: 'Kohteella ei ole vielä sopimuksia, voit luoda uuden sopimuksen kohteelle tai linkittää olemassa olevan sopimuksen kohteelle.',
-            details: 'Sopimuksen lisätiedot',
+            features: 'Sopimukseen liittyvät kohteet',
             edit: 'Muokkaa sopimusta',
             unlink: 'Poista sopimuksen linkitys kohteelta',
             caseManagementLink: 'Asianhallinta',
@@ -286,6 +286,16 @@ const fi = {
             submit: 'Poista',
             cancel: 'Peruuta',
             content: 'Haluatko varmasti poistaa sopimuksen linkityksen kohteelta?',
+        },
+    },
+    modalContractDetails: {
+        cancelText: 'Peruuta',
+        backText: 'Takaisin',
+        errorNoFeaturesFound: 'Ei löydettyjä kohteita',
+        errorNoAttributesFound: 'Ei löydettyjä tietoja.',
+        listView: {
+            title: 'Sopimukseen liittyvät kohteet',
+            details: 'Näytä lisätiedot',
         },
     },
     saveFeatureData: {
