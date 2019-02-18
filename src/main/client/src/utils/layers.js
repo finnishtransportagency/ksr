@@ -63,3 +63,14 @@ export const addLayerToUserGroup = (
     }
     return { ...lg };
 });
+
+/**
+ * Returns boolean indicating if layer is viewable at given scale.
+ *
+ * @param {Object} layer Layer whose viewability to query.
+ * @param {number} mapScale Map scale.
+ * @returns {boolean} Is layer viewable at given scale.
+ */
+export const layerViewable = (layer: Object, mapScale: number) => (
+    layer.maxScale < mapScale && (layer.minScale > mapScale || layer.minScale === 0)
+);
