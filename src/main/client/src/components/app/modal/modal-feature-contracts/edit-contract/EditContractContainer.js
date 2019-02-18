@@ -23,6 +23,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const EditContractContrainer = connect(mapStateToProps, null)(EditContract);
+const EditContractContrainer = connect(mapStateToProps)(EditContract);
 
 export default EditContractContrainer;

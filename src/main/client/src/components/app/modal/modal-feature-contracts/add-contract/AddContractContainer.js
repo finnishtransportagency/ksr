@@ -21,6 +21,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const AddContractContrainer = connect(mapStateToProps, null)(AddContract);
+const AddContractContrainer = connect(mapStateToProps)(AddContract);
 
 export default AddContractContrainer;

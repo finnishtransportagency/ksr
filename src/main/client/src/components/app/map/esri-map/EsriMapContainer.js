@@ -19,6 +19,6 @@ const mapStateToProps = (state) => {
     });
 };
 
-const EsriMapContainer = connect(mapStateToProps, null)(EsriMap);
+const EsriMapContainer = connect(mapStateToProps)(EsriMap);
 
 export default EsriMapContainer;
