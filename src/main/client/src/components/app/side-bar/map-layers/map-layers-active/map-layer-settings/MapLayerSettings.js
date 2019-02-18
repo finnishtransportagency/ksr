@@ -7,6 +7,8 @@ import strings from '../../../../../../translations';
 
 import LayerSettings from '../../../../../ui/blocks/LayerSettings';
 import MapLayerTitle from '../../../../shared/MapLayerTitle';
+import MapLayerToggle from './MapLayerToggle';
+import { layerViewable } from '../../../../../../utils/layers';
 
 type Props = {
     layer: Object,
@@ -17,6 +19,7 @@ type Props = {
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
     createThemeLayer: (layerId: string) => void,
+    mapScale: number,
 };
 
 const MapLayerSettings = ({
@@ -28,31 +31,24 @@ const MapLayerSettings = ({
     activeAdminTool,
     createNonSpatialFeature,
     createThemeLayer,
+    mapScale,
 }: Props) => (
     <LayerSettings
-        toggledHidden={!layer.visible}
+        toggledHidden={
+            !layer.visible
+            || (mapScale && !layerViewable(layer, mapScale))
+        }
     >
         <LayerSettings.Content>
             {
-                layer.type !== 'agfl' &&
-                <LayerSettings.Toggle
-                    title={strings.mapLayerSettings.toggleVisibility}
-                    onClick={() => toggleLayer(layer.id)}
-                >
-                    {
-                        layer.legendSymbol &&
-                        <div
-                            className="symbolWrapper"
-                            ref={(node) => {
-                                if (node) {
-                                    node.innerHTML = '';
-                                    node.appendChild(layer.legendSymbol.cloneNode(true));
-                                }
-                            }}
-                        />
-                    }
-                    <i className={layer.visible ? 'fas fa-toggle-on' : 'fas fa-toggle-off'} />
-                </LayerSettings.Toggle>
+                layer.type !== 'agfl'
+                && (
+                    <MapLayerToggle
+                        layer={layer}
+                        mapScale={mapScale}
+                        toggleLayer={toggleLayer}
+                    />
+                )
             }
             <LayerSettings.ContentMain>
                 <LayerSettings.ContentTop>
@@ -60,30 +56,34 @@ const MapLayerSettings = ({
                         <MapLayerTitle layer={layer} showLayerGroup />
                     </LayerSettings.Title>
                     {
-                        activeAdminTool === layer.id && layer.type === 'agfl' && layer.layerPermission.createLayer &&
-                        <LayerSettings.Icons>
-                            <i
-                                className="fas fa-plus"
-                                role="button"
-                                tabIndex={0}
-                                onKeyPress={() => createNonSpatialFeature()}
-                                onClick={() => createNonSpatialFeature()}
-                                title={strings.mapLayerSettings.addNewFeature}
-                            />
-                        </LayerSettings.Icons>
+                        activeAdminTool === layer.id && layer.type === 'agfl' && layer.layerPermission.createLayer
+                        && (
+                            <LayerSettings.Icons>
+                                <i
+                                    className="fas fa-plus"
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => createNonSpatialFeature()}
+                                    onClick={() => createNonSpatialFeature()}
+                                    title={strings.mapLayerSettings.addNewFeature}
+                                />
+                            </LayerSettings.Icons>
+                        )
                     }
                     {
-                        layer.type === 'agfs' &&
-                        <LayerSettings.Icons>
-                            <i
-                                role="button"
-                                tabIndex={0}
-                                onKeyPress={() => createThemeLayer(layer.id)}
-                                onClick={() => createThemeLayer(layer.id)}
-                                className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
-                                title={strings.mapLayerSettings.createThemeLayer}
-                            />
-                        </LayerSettings.Icons>
+                        layer.type === 'agfs'
+                        && (
+                            <LayerSettings.Icons>
+                                <i
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => createThemeLayer(layer.id)}
+                                    onClick={() => createThemeLayer(layer.id)}
+                                    className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
+                                    title={strings.mapLayerSettings.createThemeLayer}
+                                />
+                            </LayerSettings.Icons>
+                        )
                     }
                     {
                         layer._source !== 'search'
@@ -92,30 +92,34 @@ const MapLayerSettings = ({
                         && (layer.type === 'agfs' || layer.type === 'agfl')
                         && (layer.layerPermission.createLayer
                             || layer.layerPermission.updateLayer
-                            || layer.layerPermission.deleteLayer) &&
-                        <LayerSettings.Icons activeAdminTool={activeAdminTool === layer.id}>
-                            <i
-                                role="button"
-                                tabIndex={0}
-                                onKeyPress={() => setActiveAdminTool(layer.id, layerList)}
-                                onClick={() => setActiveAdminTool(layer.id, layerList)}
-                                className="fas fa-edit"
-                                title={strings.mapLayerSettings.toggleAdminTool}
-                            />
-                        </LayerSettings.Icons>
+                            || layer.layerPermission.deleteLayer)
+                        && (
+                            <LayerSettings.Icons activeAdminTool={activeAdminTool === layer.id}>
+                                <i
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => setActiveAdminTool(layer.id, layerList)}
+                                    onClick={() => setActiveAdminTool(layer.id, layerList)}
+                                    className="fas fa-edit"
+                                    title={strings.mapLayerSettings.toggleAdminTool}
+                                />
+                            </LayerSettings.Icons>
+                        )
                     }
                 </LayerSettings.ContentTop>
                 {
-                    layer.type !== 'agfl' &&
-                    <LayerSettings.Slider>
-                        <Slider
-                            min={0}
-                            max={1}
-                            step={0.01}
-                            defaultValue={layer.opacity}
-                            onChange={evt => onOpacityChange(evt, layer.id)}
-                        />
-                    </LayerSettings.Slider>
+                    layer.type !== 'agfl'
+                    && (
+                        <LayerSettings.Slider>
+                            <Slider
+                                min={0}
+                                max={1}
+                                step={0.01}
+                                defaultValue={layer.opacity}
+                                onChange={evt => onOpacityChange(evt, layer.id)}
+                            />
+                        </LayerSettings.Slider>
+                    )
                 }
             </LayerSettings.ContentMain>
         </LayerSettings.Content>

@@ -29,6 +29,7 @@ const setup = (prop) => {
         setLayerList: jest.fn(),
         activateLayers: jest.fn(),
         deactivateLayer: jest.fn(),
+        mapScale: 50000,
     };
 
     const props = prop || minProps;

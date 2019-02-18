@@ -92,6 +92,7 @@ const setup = () => {
         setActiveAdminTool: jest.fn(),
         onDragEnd: () => {},
         toggleLayer: jest.fn(),
+        mapScale: 50000,
     };
     const wrapper = mount(<MapLayersActiveView {...props} />);
 

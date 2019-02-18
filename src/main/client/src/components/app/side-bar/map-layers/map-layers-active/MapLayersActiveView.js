@@ -13,6 +13,7 @@ type Props = {
     activeAdminTool: string,
     createThemeLayer: (layerId: string) => void,
     toggleLayer: (layerId: string) => void,
+    mapScale: number,
 };
 
 const MapLayersView = ({
@@ -24,6 +25,7 @@ const MapLayersView = ({
     createNonSpatialFeature,
     createThemeLayer,
     toggleLayer,
+    mapScale,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -48,6 +50,7 @@ const MapLayersView = ({
                                                 activeAdminTool={activeAdminTool}
                                                 createNonSpatialFeature={createNonSpatialFeature}
                                                 createThemeLayer={createThemeLayer}
+                                                mapScale={mapScale}
                                             />
                                         )}
                                     </div>

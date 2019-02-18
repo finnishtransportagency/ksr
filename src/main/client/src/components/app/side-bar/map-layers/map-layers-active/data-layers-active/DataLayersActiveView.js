@@ -7,6 +7,7 @@ type Props = {
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
+    mapScale: number,
 };
 
 const DataLayersActiveView = ({
@@ -14,6 +15,7 @@ const DataLayersActiveView = ({
     setActiveAdminTool,
     activeAdminTool,
     createNonSpatialFeature,
+    mapScale,
 }: Props) => {
     if (dataLayerList.length === 0) return null;
     return (
@@ -32,6 +34,7 @@ const DataLayersActiveView = ({
                         onToggleVisibility={() => {}}
                         createThemeLayer={() => {}}
                         toggleLayer={() => {}}
+                        mapScale={mapScale}
                     />
                 ))
             }

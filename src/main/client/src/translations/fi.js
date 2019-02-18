@@ -316,6 +316,8 @@ const fi = {
         createThemeLayer: 'Luo teemataso',
         toggleAdminTool: 'Muokkaus päälle/pois',
         toggleVisibility: 'Näytä/piilota karttataso',
+        zoomIn: 'Lähennä karttaa nähdäksesi karttatason',
+        zoomOut: 'Loitonna karttaa nähdäksesi karttatason',
     },
     searchProperty: {
         propertyIdentifier: 'Kiinteistötunnus',

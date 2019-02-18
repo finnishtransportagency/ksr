@@ -16,6 +16,7 @@ type Props = {
     createNonSpatialFeature: () => void,
     createThemeLayer: (layerId: string) => void,
     toggleLayer: (layerId: string) => void,
+    mapScale: number,
 };
 
 type State = {
@@ -47,8 +48,7 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     onOpacityChange = (evt: Number, id: Number) => {
-        const { setLayerList, dataLayerList } = this.props;
-        const mapLayerList = [...this.props.mapLayerList];
+        const { setLayerList, dataLayerList, mapLayerList } = this.props;
         const foundLayer = mapLayerList.find(l => l.id === id);
 
         foundLayer.opacity = evt;
@@ -65,6 +65,7 @@ class MapLayersActive extends Component<Props, State> {
             dataLayerList,
             createThemeLayer,
             toggleLayer,
+            mapScale,
         } = this.props;
         if (!fetching) {
             return (
@@ -78,12 +79,14 @@ class MapLayersActive extends Component<Props, State> {
                         activeAdminTool={activeAdminTool}
                         createNonSpatialFeature={createNonSpatialFeature}
                         createThemeLayer={createThemeLayer}
+                        mapScale={mapScale}
                     />
                     <DataLayersActiveView
                         dataLayerList={dataLayerList.filter(l => l.active)}
                         setActiveAdminTool={setActiveAdminTool}
                         activeAdminTool={activeAdminTool}
                         createNonSpatialFeature={createNonSpatialFeature}
+                        mapScale={mapScale}
                     />
                 </Fragment>
             );

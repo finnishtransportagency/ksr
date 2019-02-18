@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
     dataLayerList: state.map.layerGroups.layerList.filter(l => l.type === 'agfl'),
     fetching: state.map.layerGroups.fetching,
     activeAdminTool: state.adminTool.active.layerId,
+    mapScale: state.map.mapConfig.mapScale,
 });
 
 const mapDispatchToProps = dispatch => ({
