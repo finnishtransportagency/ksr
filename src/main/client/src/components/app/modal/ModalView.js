@@ -14,6 +14,7 @@ import ConfirmModalContainer from '../shared/confirm-modal/ConfirmModalContainer
 import ModalDrawTextContainer from './modal-draw-text/ModalDrawTextContainer';
 import ModalOfflineSavedView from './modal-offline-saved/ModalOfflineSavedView';
 import ModalThemeLayerContainer from './modal-theme-layer/ModalThemeLayerContainer';
+import ModalContractDetailsContainer from './modal-contract-details/ModalContractDetailsContainer';
 
 type Props = {
     activeModal: string,
@@ -34,6 +35,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'featureContracts' && <ModalFeatureContractsContainer />}
         {activeModal === 'offlineSave' && <ModalOfflineSavedView />}
         {activeModal === 'themeLayer' && <ModalThemeLayerContainer />}
+        {activeModal === 'contractDetails' && <ModalContractDetailsContainer />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );
