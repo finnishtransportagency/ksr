@@ -3,7 +3,6 @@ import { shallow } from 'enzyme';
 import LoadingIcon from '../../../../shared/LoadingIcon';
 import MapLayersAll from '../MapLayersAll';
 import MapLayersAllView from '../MapLayersAllView';
-import * as mapUtils from '../../../../../../utils/map';
 
 const setup = (prop) => {
     const minProps = {
