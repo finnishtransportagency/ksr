@@ -334,46 +334,6 @@ export const zoomToProperty = (
 };
 
 /**
- * Adds layer fields and geometry type to layers in layer list. Only added for agfs and agfl layers
- * and if fields haven't been added before.
- *
- * @param {Object[]} layerList Layer list in redux.
- * @param {Object[]} layers Layers to be activated.
- *
- * @returns {Promise<Object[]>} Promise layerList object with updated fields.
- */
-export const getLayerFields = async (layerList: Object[], layers: Object[]): Promise<Object[]> => (
-    Promise.all(layerList.map(l => ({ ...l }))
-        .map(async (l) => {
-            if (layers.some(layer => layer && l.id === layer.id)
-                && !l.fields
-                && (l.type === 'agfs' || l.type === 'agfl')) {
-                const layer = await layerData(l.id);
-                if (!layer.error) {
-                    l.geometryType = layer.geometryType;
-                    l.fields = layer.fields && layer.fields
-                        .map((f, index) => ({
-                            value: index,
-                            label: f.alias,
-                            type: f.type,
-                            name: f.name,
-                            editable: f.editable,
-                            nullable: f.nullable,
-                            length: f.length,
-                            domain: f.domain ? {
-                                type: f.domain.type,
-                                name: f.domain.name,
-                                description: f.domain.description,
-                                codedValues: f.domain.codedValues,
-                            } : null,
-                        }));
-                }
-            }
-            return l;
-        }))
-);
-
-/**
  * Adds layer fields and geometry type to layer if it doesn't already have them.
  *
  * @param {Object} layer Layer to query fields for.
