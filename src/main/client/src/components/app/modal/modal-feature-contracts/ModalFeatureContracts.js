@@ -9,7 +9,7 @@ import AddContractContrainer from './add-contract/AddContractContainer';
 import save from '../../../../utils/saveFeatureData';
 import EditContractContainer from './edit-contract/EditContractContainer';
 import { nestedVal } from '../../../../utils/nestedValue';
-import { getLayerFields } from '../../../../utils/map';
+import { getSingleLayerFields } from '../../../../utils/map';
 
 type Props = {
     removeContractListInfo: Function,
@@ -19,8 +19,7 @@ type Props = {
     view: Object,
     createLayerPermission: boolean,
     editLayerPermission: boolean,
-    layerList: Object[],
-    setLayerList: (layerList: Object[]) => void,
+    updateLayerFields: (layerId: string, fields: Object[]) => void,
 };
 
 type State = {
@@ -75,7 +74,7 @@ class ModalFeatureContracts extends Component<Props, State> {
     }
 
     async componentDidMount() {
-        const { setLayerList, layerList, contractLayer } = this.props;
+        const { updateLayerFields, contractLayer } = this.props;
 
         // Keep link- and add buttons disabled until contract layer fields queried.
         if (contractLayer && !contractLayer.fields) {
@@ -87,11 +86,10 @@ class ModalFeatureContracts extends Component<Props, State> {
                 })),
             });
 
-            const newLayerList = await getLayerFields(
-                layerList,
-                [contractLayer],
-            );
-            setLayerList(newLayerList);
+            if (!contractLayer.fields) {
+                const { id, fields } = await getSingleLayerFields(contractLayer);
+                updateLayerFields(id, fields);
+            }
 
             // eslint-disable-next-line
             this.setState({ ...this.initialState });
@@ -298,6 +296,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                     {activeView === 'linkContract' && <LinkContractContainer contractLinkValidation={this.contractLinkValidation} />}
                     {activeView === 'addContract' && <AddContractContrainer contractLinkValidation={this.contractLinkValidation} setData={this.setData} />}
                     {activeView === 'editContract' && <EditContractContainer contractLinkValidation={this.contractLinkValidation} setData={this.setData} contractNumber={contractNumber} />}
+                    {activeView === 'showDetails' && <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ratione, tenetur.</p>}
                 </Fragment>
             </ModalContainer>
         );
