@@ -23,11 +23,16 @@ const ModalShapefileView = ({
         multiple
         accept={acceptedExtensions}
     >
-        <DropzoneText>
-            <p>{strings.dropzoneShape.dropText}</p>
-            <p>{strings.dropzoneShape.orText}</p>
-            <Button>{strings.dropzoneShape.browse}</Button>
-        </DropzoneText>
+        {
+            ({ getRootProps, getInputProps }) => (
+                <DropzoneText {...getRootProps()}>
+                    <p>{strings.dropzoneShape.dropText}</p>
+                    <p>{strings.dropzoneShape.orText}</p>
+                    <input {...getInputProps()} />
+                    <Button>{strings.dropzoneShape.browse}</Button>
+                </DropzoneText>
+            )
+        }
     </Dropzone>
 );
 
