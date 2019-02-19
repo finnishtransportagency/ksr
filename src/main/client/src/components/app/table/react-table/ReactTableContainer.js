@@ -35,8 +35,8 @@ const mapDispatchToProps = dispatch => ({
     setEditedLayer: (data) => {
         dispatch(setEditedLayer(data));
     },
-    setActiveModal: (activeModal) => {
-        dispatch(setActiveModal(activeModal));
+    setActiveModal: (activeModal, modalData) => {
+        dispatch(setActiveModal(activeModal, modalData));
     },
     setContractListInfo: (layerId, objectId) => {
         dispatch(setContractListInfo(layerId, objectId));
