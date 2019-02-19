@@ -1,16 +1,22 @@
 // @flow
 import React from 'react';
 import strings from '../../translations';
+import * as styles from '../../components/ui/defaultStyles';
 
 /**
- * Adds clickable contract icon to table if layer has contract relations.
+ * Adds clickable layer details icon to table if layer has contract relations.
  *
  * @param {Function} handleContractClick Opens contract modal and saves objectId to redux.
- * @param {Object[]} columns Currently active layers table columns.
+ * @param {Object[]} columns Currently active layer's table columns.
+ * @param {string} type Currently active layer's type.
  *
- * @returns {Object[]} Modified columns with contract icon added as first column.
+ * @returns {Object[]} Modified columns with layer details icon added as first column.
  */
-export const addContractColumn = (handleContractClick: Function, columns: Object[]) => ([
+export const addContractColumn = (
+    handleContractClick: Function,
+    columns: Object[],
+    type: string,
+) => ([
     {
         columns: [{
             width: 30,
@@ -20,20 +26,22 @@ export const addContractColumn = (handleContractClick: Function, columns: Object
             resizeable: false,
             Cell: (row: Object) => (
                 <div
-                    title={strings.modalFeatureContracts.featureContracts}
+                    title={type === 'agfs'
+                        ? strings.modalFeatureContracts.listView.title
+                        : strings.modalContractDetails.listView.title}
                     role="button"
                     tabIndex={0}
                     onClick={() => handleContractClick(row.original._id)}
                     onKeyPress={() => handleContractClick(row.original._id)}
                     className="contract-icon"
                 >
-                    <i className="fas fa-tasks" />
+                    <i className="fas fa-external-link-square-alt" />
                 </div>
             ),
             style: {
                 textAlign: 'center',
                 userSelect: 'none',
-                background: '#4B4B4B',
+                background: styles.colorBackgroundDarkSecondary,
                 color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',

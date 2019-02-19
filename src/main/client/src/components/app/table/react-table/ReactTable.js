@@ -22,7 +22,7 @@ type Props = {
     layerList: Array<Object>,
     activeTable: string,
     activeAdminTool: string,
-    setActiveModal: (activeModal: string) => void,
+    setActiveModal: (activeModal: string, modalData: any) => void,
     setContractListInfo: (layerId: string, objectId: number) => void,
 };
 
@@ -93,11 +93,23 @@ class ReactTable extends Component<Props> {
 
     handleContractClick = (objectId: number) => {
         const {
-            setActiveModal, setContractListInfo, activeTable,
+            setActiveModal, setContractListInfo, activeTable, layerList,
         } = this.props;
         const layerId = activeTable.replace('.s', '');
-        setActiveModal('featureContracts');
-        setContractListInfo(layerId, objectId);
+        const layer = layerList.find(l => l.id === layerId);
+
+        if (layer && layer.type === 'agfl') {
+            const modalData = {
+                contractObjectId: objectId,
+                layerId,
+                source: 'table',
+            };
+
+            setActiveModal('contractDetails', modalData);
+        } else {
+            setActiveModal('featureContracts');
+            setContractListInfo(layerId, objectId);
+        }
     };
 
     isCellEditable = (currentLayer: Object, cellField: Object) => {
@@ -215,10 +227,13 @@ class ReactTable extends Component<Props> {
             const { columns, data } = layer;
 
             const currentLayer: any = layerList.find(ll => ll.id === layer.id);
-            const contractColumns = currentLayer
+            const contractColumns = (currentLayer
             && currentLayer.hasRelations
-            && currentLayer.type !== 'agfl'
-                ? addContractColumn(this.handleContractClick, columns)
+            && currentLayer.type !== 'agfl')
+            || (currentLayer.type === 'agfl'
+                && !currentLayer.relationColumnIn
+                && !currentLayer.relationColumnOutnull)
+                ? addContractColumn(this.handleContractClick, columns, currentLayer.type)
                 : null;
 
             return (
