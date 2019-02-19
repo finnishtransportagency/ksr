@@ -1,15 +1,20 @@
 import * as types from '../../../constants/actionTypes';
 import reducer from '../layerGroups';
+import store from '../../../store';
+jest.mock('../../../store');
 
 describe('Layer group reducer', () => {
+    
+
     it('should return initial state', () => {
+        
         const initialState = {
             layerGroups: [],
             layerList: [],
             fetching: true,
         };
 
-        expect(reducer(undefined, {})).toEqual(initialState);
+        expect(reducer(undefined, { type: '' })).toEqual(initialState);
     });
 
     it('should handle GET_LAYER_GROUPS', () => {
