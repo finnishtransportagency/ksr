@@ -8,9 +8,9 @@ describe('actions', () => {
         expect(actions.setActiveModal('test')).toEqual(expectedAction);
     });
 
-    it('should create an action to SET dropzone active', () => {
-        const expectedAction = { type: types.SET_DROPZONE_ACTIVE };
+    it('should create an action to TOGGLE dropzone active', () => {
+        const expectedAction = { type: types.TOGGLE_DROPZONE_ACTIVE };
 
-        expect(actions.setDropzoneActive()).toEqual(expectedAction);
+        expect(actions.toggleDropzoneActive()).toEqual(expectedAction);
     });
 });

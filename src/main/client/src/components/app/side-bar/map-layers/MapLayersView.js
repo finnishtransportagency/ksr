@@ -13,7 +13,7 @@ type Props = {
     handleButtonClickLayers: (string) => void,
     activeTab: string,
     setActiveModal: (modal: string) => void,
-    setDropzoneActive: () => void,
+    toggleDropzoneActive: () => void,
     layerLegendActive: boolean,
     toggleLayerLegend: () => void,
 };
@@ -22,7 +22,7 @@ const MapLayersView = ({
     handleButtonClickLayers,
     activeTab,
     setActiveModal,
-    setDropzoneActive,
+    toggleDropzoneActive,
     layerLegendActive,
     toggleLayerLegend,
 }: Props) => (
@@ -94,7 +94,7 @@ const MapLayersView = ({
                         activeLayer={activeTab === 'shape'}
                         onClick={() => {
                             setActiveModal('shapefile');
-                            setDropzoneActive();
+                            toggleDropzoneActive();
                         }}
                     >
                         {strings.mapLayers.shape}

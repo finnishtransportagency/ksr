@@ -27,9 +27,9 @@ describe('confirmModal reducer', () => {
         }));
     });
 
-    it('should handle SET_DROPZONE_ACTIVE', () => {
+    it('should handle TOGGLE_DROPZONE_ACTIVE', () => {
         expect(JSON.stringify(reducer(undefined, {
-            type: types.SET_DROPZONE_ACTIVE,
+            type: types.TOGGLE_DROPZONE_ACTIVE,
         }))).toEqual(JSON.stringify({
             activeModal: {
                 ...initialState,
