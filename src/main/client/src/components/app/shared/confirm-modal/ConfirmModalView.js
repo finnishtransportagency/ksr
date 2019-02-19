@@ -22,7 +22,7 @@ const ConfirmModalView = ({
 }: Props) => (
     <Modal confirm fadeOut={fadeOut}>
         <Modal.Blur />
-        <Modal.Content>
+        <Modal.Content confirm>
             <p>{body}</p>
         </Modal.Content>
         <Modal.Footer>

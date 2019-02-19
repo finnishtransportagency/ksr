@@ -3,7 +3,7 @@ import * as styles from '../../defaultStyles';
 
 const Content = styled.div`
     position: relative;
-    padding: 1rem;
+    padding: ${props => (props.confirm ? '1rem' : '0 1rem')};
     background: #FFFFFF;
     height: auto;
     

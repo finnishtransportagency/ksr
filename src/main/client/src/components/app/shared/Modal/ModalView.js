@@ -45,7 +45,7 @@ const ModalView = ({
                 {content}
             </Modal.Content>
         </Scrollbars>
-        {modalSubmit.length ?
+        {modalSubmit.length || cancelText ?
             <Modal.Footer>
                 {modalSubmit.map((submit, i) => (
                     <Button
