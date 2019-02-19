@@ -39,6 +39,12 @@ export const updateLayer = (layer: Object) => ({
     layer,
 });
 
+export const updateLayerFields = (layerId: string, fields: Object[]) => ({
+    type: types.UPDATE_LAYER_FIELDS,
+    layerId,
+    fields,
+});
+
 /**
  * Handles activating new layers. Works with single layer, layer group or workspace.
  *

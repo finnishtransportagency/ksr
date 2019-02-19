@@ -4,11 +4,10 @@ import { removeContractListInfo } from '../../../../reducers/contract/actions';
 import ModalFeatureContracts from './ModalFeatureContracts';
 import { getContractLayers } from '../../../../utils/contracts/contracts';
 import { nestedVal } from '../../../../utils/nestedValue';
-import { setLayerList } from '../../../../reducers/map/actions';
+import { updateLayerFields } from '../../../../reducers/map/actions';
 
 const mapStateToProps = (state) => {
     const { layerId } = state.contract.contractList;
-    const { layerList } = state.map.layerGroups;
 
     const {
         currentLayer, contractLayer,
@@ -29,7 +28,6 @@ const mapStateToProps = (state) => {
         view: state.map.mapView.view,
         createLayerPermission,
         editLayerPermission,
-        layerList,
     };
 };
 
@@ -37,8 +35,8 @@ const mapDispatchToProps = dispatch => ({
     removeContractListInfo: () => {
         dispatch(removeContractListInfo());
     },
-    setLayerList: (layerList) => {
-        dispatch(setLayerList(layerList));
+    updateLayerFields: (layerId, fields) => {
+        dispatch(updateLayerFields(layerId, fields));
     },
 });
 

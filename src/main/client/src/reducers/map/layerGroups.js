@@ -15,6 +15,7 @@ import {
     TOGGLE_LAYER,
     UPDATE_LAYER,
     DEACTIVATE_LAYER,
+    UPDATE_LAYER_FIELDS,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -73,6 +74,7 @@ type Action = {
     layer: Object,
     workspace: Object,
     failOnLoad: boolean,
+    fields: Object[],
 };
 
 const initialState = {
@@ -202,6 +204,19 @@ export default (state: State = initialState, action: Action) => {
                 layerList: (state.layerList.map((l) => {
                     if (l.id === action.layer.id) {
                         return { ...action.layer };
+                    }
+                    return { ...l };
+                }): Array<Layer>),
+            };
+        case UPDATE_LAYER_FIELDS:
+            return {
+                ...state,
+                layerList: (state.layerList.map((l) => {
+                    if (l.id === action.layerId) {
+                        return {
+                            ...l,
+                            fields: action.fields,
+                        };
                     }
                     return { ...l };
                 }): Array<Layer>),
