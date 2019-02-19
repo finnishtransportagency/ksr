@@ -58,7 +58,9 @@ const featureInfoToGraphic = (layer, content) => (
                 || typeof feat.properties[c] === 'boolean'
             ) {
                 return a.concat([{ name: c, value: String(feat.properties[c]).trim() }]);
-            } if (feat.properties[c] === null) {
+            }
+
+            if (feat.properties[c] === null) {
                 return a.concat([{ name: c, value: '--' }]);
             }
             return a;

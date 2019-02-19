@@ -9,7 +9,7 @@ type Props = {
     handleUnlinkContract: (contractNumber: string) => any,
     setActiveView: Function,
     editLayerPermission: boolean,
-    handleContractDetailsClick: (contractNumber: number) => void,
+    handleContractDetailsClick: (contractNumber: number) => Promise<any>,
 };
 
 const ContractListView = ({

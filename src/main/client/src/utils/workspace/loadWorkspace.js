@@ -152,6 +152,7 @@ export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Obje
  * @param {Function} activateLayers Redux function that handles layer activation.
  * @param {Function} deactivateLayer Redux function that handles layer deactivation.
  * @param {Function} [updateWorkspaces] Redux function that handles workspace fetches.
+ *
  * @returns {void}
  */
 export const loadWorkspace = async (
