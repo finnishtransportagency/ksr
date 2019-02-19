@@ -4,6 +4,7 @@ import { getContractLayers } from '../../../../../utils/contracts/contracts';
 import { nestedVal } from '../../../../../utils/nestedValue';
 import ContractList from './ContractList';
 import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
+import { setActiveModal } from '../../../../../reducers/modal/actions';
 
 const mapStateToProps = (state) => {
     const { layerId, objectId } = state.contract.contractList;
@@ -30,6 +31,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+    setActiveModal: (activeModal: string, data: Object[]) => {
+        dispatch(setActiveModal(activeModal, data));
     },
 });
 
