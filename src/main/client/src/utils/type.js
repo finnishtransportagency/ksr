@@ -6,7 +6,7 @@
  *
  * @returns {string} Parsed input type.
  */
-export const parseColumnType = (type: String) => {
+export const parseColumnType = (type: string) => {
     let typeValue = null;
     switch (type) {
         case 'esriFieldTypeString':

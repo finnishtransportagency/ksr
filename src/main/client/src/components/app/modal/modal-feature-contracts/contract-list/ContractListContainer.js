@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    setActiveModal: (activeModal: string, data: Object[]) => {
+    setActiveModal: (activeModal: string, data: any) => {
         dispatch(setActiveModal(activeModal, data));
     },
 });

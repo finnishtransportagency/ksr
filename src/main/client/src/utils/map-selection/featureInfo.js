@@ -116,7 +116,7 @@ const fetchFeatureInfo = (
  *
  * @returns {Array} A new array that is flattened and is a result of func.
  */
-const flatMap = (arr, func) => (
+const flatMap = (arr, func): Object[] => (
     arr.reduce((acc, cur) => acc.concat(func(cur)), [])
 );
 

@@ -48,7 +48,7 @@ export const fetchSearchSuggestions = (
     queryColumn: string,
     signal: any,
 ) => {
-    const suggestions = [];
+    const suggestions: any = [];
     return fetch(`api/proxy/layer/${layerId}/query?${
         querystring.stringify({
             where: whereQueryString,

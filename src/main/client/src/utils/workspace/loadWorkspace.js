@@ -43,7 +43,7 @@ export const getWorkspaceFeatures = (workspace: Object[]) => {
 export const queryWorkspaceFeatures = (
     workspaceFeatures: Object[],
     view: Object,
-) => new Promise((resolve) => {
+): Promise<any> => new Promise((resolve) => {
     const queries = [];
 
     view.map.layers.forEach((layer) => {

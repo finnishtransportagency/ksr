@@ -25,7 +25,7 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
-    setActiveModal: (activeModal: string, data: Object[]) => void,
+    setActiveModal: (activeModal: string, data: any) => void,
 };
 
 type State = {

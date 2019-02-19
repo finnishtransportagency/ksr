@@ -68,7 +68,7 @@ export const createAddressFields = (
     data: Object,
     featureType: string,
     addressField: string,
-) => new Promise((resolve) => {
+): Promise<any> => new Promise((resolve) => {
     if (!featureType || !addressField || !data.geometry) {
         resolve(data);
     } else {
