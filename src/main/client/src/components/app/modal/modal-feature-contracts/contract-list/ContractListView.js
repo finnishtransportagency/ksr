@@ -9,6 +9,7 @@ type Props = {
     handleUnlinkContract: (contractNumber: string) => any,
     setActiveView: Function,
     editLayerPermission: boolean,
+    handleContractDetailsClick: (contractNumber: number) => void,
 };
 
 const ContractListView = ({
@@ -17,6 +18,7 @@ const ContractListView = ({
     handleUnlinkContract,
     setActiveView,
     editLayerPermission,
+    handleContractDetailsClick,
 }: Props) => (
     <Fragment>
         { !contracts.length && <p>{strings.modalFeatureContracts.listView.noContracts}</p> }
@@ -25,8 +27,9 @@ const ContractListView = ({
                 <Contract key={contract.id}>
                     <Contract.IconWrapper>
                         <Contract.IconWrapper.Icon
-                            title={strings.modalFeatureContracts.listView.details}
-                            className="fas fa-th-list"
+                            title={strings.modalFeatureContracts.listView.features}
+                            className="fas fa-external-link-square-alt"
+                            onClick={() => handleContractDetailsClick(contract.id)}
                         />
                     </Contract.IconWrapper>
                     <Contract.TextWrapper>
