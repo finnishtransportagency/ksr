@@ -9,7 +9,6 @@ const setup = () => {
             { name: 'Field1', editable: true },
             { name: 'Field2', editable: true },
             { name: 'Field3', editable: true },
-            { name: 'columnOut', editable: true },
         ],
         dataFields: [],
         data: {},

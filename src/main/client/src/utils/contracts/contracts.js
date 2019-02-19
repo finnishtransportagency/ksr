@@ -152,11 +152,11 @@ export const updateContractLink = async (
         ['name'],
     );
 
-    if (objectIdFieldName && layer.contractIdField) {
+    if (objectIdFieldName && layer.relationColumnOut) {
         const features = [{
             attributes: {
                 [objectIdFieldName]: objectId,
-                [layer.contractIdField]: contractNumber,
+                [layer.relationColumnOut]: contractNumber,
             },
         }];
 

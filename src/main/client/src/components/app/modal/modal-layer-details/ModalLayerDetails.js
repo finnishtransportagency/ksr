@@ -61,14 +61,14 @@ class ModalFilter extends Component<Props, State> {
 
         const dataFields = fields.map(field => ({
             ...field,
-            nullable: field.name !== activeLayer.contractIdField,
+            nullable: field.name !== activeLayer.relationColumnOut,
             data: copiedAttributes && copiedAttributes[field.name] ?
                 String(copiedAttributes[field.name]) : '',
         })).filter(f => (f.type !== 'esriFieldTypeOID'
                 && f.editable
                 && f.name !== 'CONTRACT_UUID'
                 && f.name !== activeLayer.relationColumnOut)
-                || (f.name === activeLayer.contractIdField
+                || (f.name === activeLayer.relationColumnOut
                     && f.name === activeLayer.relationColumnOut));
 
         const dataObject = Object.assign({}, ...(dataFields.map(item =>
@@ -101,14 +101,14 @@ class ModalFilter extends Component<Props, State> {
 
         const { activeLayer } = this.props;
 
-        if (value && field.name === activeLayer.contractIdField) {
+        if (value && field.name === activeLayer.relationColumnOut) {
             this.setState({ fetching: true, contractExists: true });
 
             this.existsQuery = window.setTimeout(() => {
                 const signal = this.abortController ? this.abortController.signal : undefined;
                 queryFeatures(
                     activeLayer.id,
-                    `${activeLayer.contractIdField} = '${value}'`,
+                    `${activeLayer.relationColumnOut} = '${value}'`,
                     signal,
                 ).then((r) => {
                     if (r.features && r.features.length < 1) {
@@ -183,13 +183,13 @@ class ModalFilter extends Component<Props, State> {
         const { activeLayer, editModeActive } = this.props;
         const { fetching, contractExists, dataFields } = this.state;
         const validContract = activeLayer.type === 'agfl'
-            ? activeLayer.contractIdField && !contractExists
-            : activeLayer.contractIdField && contractExists;
-        const disabled = (activeLayer.contractIdField)
+            ? activeLayer.relationColumnOut && !contractExists
+            : activeLayer.relationColumnOut && contractExists;
+        const disabled = (activeLayer.relationColumnOut)
             && (!validContract
             || fetching
             || !nestedVal(
-                dataFields.find(a => a.name === activeLayer.contractIdField),
+                dataFields.find(a => a.name === activeLayer.relationColumnOut),
                 ['data', 'length'],
             ));
         const modalSubmit = [{
