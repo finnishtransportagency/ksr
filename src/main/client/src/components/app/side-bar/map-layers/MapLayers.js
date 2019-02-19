@@ -6,7 +6,7 @@ type Props = {
     setActiveLayerTab: (string) => void,
     activeTab: string,
     setActiveModal: (modal: string) => void,
-    setDropzoneActive: () => void,
+    toggleDropzoneActive: () => void,
     toggleLayerLegend: () => void,
     layerLegendActive: boolean,
 };
@@ -36,7 +36,7 @@ class MapLayers extends Component<Props, State> {
         const {
             activeTab,
             setActiveModal,
-            setDropzoneActive,
+            toggleDropzoneActive,
             layerLegendActive,
         } = this.props;
 
@@ -45,7 +45,7 @@ class MapLayers extends Component<Props, State> {
                 handleButtonClickLayers={this.handleButtonClickLayers}
                 activeTab={activeTab}
                 setActiveModal={setActiveModal}
-                setDropzoneActive={setDropzoneActive}
+                toggleDropzoneActive={toggleDropzoneActive}
                 layerLegendActive={layerLegendActive}
                 toggleLayerLegend={this.toggleLayerLegend}
             />

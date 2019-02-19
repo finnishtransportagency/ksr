@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import ModalShapefile from './ModalShapefile';
-import { setActiveModal, setDropzoneActive } from '../../../../reducers/modal/actions';
+import { setActiveModal, toggleDropzoneActive } from '../../../../reducers/modal/actions';
 import { addShapefile } from '../../../../reducers/map/actions';
 
 const mapStateToProps = state => ({
@@ -14,8 +14,8 @@ const mapDispatchToProps = dispatch => ({
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));
     },
-    setDropzoneActive: () => {
-        dispatch(setDropzoneActive());
+    toggleDropzoneActive: () => {
+        dispatch(toggleDropzoneActive());
     },
     addShapefile: (layer) => {
         dispatch(addShapefile(layer));

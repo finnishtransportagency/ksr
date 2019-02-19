@@ -11,7 +11,7 @@ const setup = (prop) => {
         setActiveModal: jest.fn(),
         layerList: [],
         addShapefile: jest.fn(),
-        setDropzoneActive: jest.fn(),
+        toggleDropzoneActive: jest.fn(),
         dropzone: true,
     };
 

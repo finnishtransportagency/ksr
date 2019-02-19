@@ -6,7 +6,7 @@ import {
     setActiveLayerTab,
     toggleLayerLegend,
 } from '../../../../reducers/map/actions';
-import { setActiveModal, setDropzoneActive } from '../../../../reducers/modal/actions';
+import { setActiveModal, toggleDropzoneActive } from '../../../../reducers/modal/actions';
 import MapLayers from './MapLayers';
 
 const mapStateToProps = state => ({
@@ -28,8 +28,8 @@ const mapDispatchToProps = dispatch => ({
     setActiveModal: (activeModal) => {
         dispatch(setActiveModal(activeModal));
     },
-    setDropzoneActive: () => {
-        dispatch(setDropzoneActive());
+    toggleDropzoneActive: () => {
+        dispatch(toggleDropzoneActive());
     },
     toggleLayerLegend: () => {
         dispatch(toggleLayerLegend());

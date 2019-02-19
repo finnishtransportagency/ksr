@@ -14,7 +14,7 @@ type Props = {
     setActiveModal: Function,
     layerList: Array<any>,
     addShapefile: Function,
-    setDropzoneActive: Function,
+    toggleDropzoneActive: Function,
     dropzone: boolean,
 };
 const initialState = {
@@ -37,7 +37,7 @@ class ModalShapefile extends Component<Props, State> {
             const fileUpload = this.fileMobileUpload.current;
             if (fileUpload !== null) {
                 this.fileMobileUpload.current.open();
-                this.props.setDropzoneActive();
+                this.props.toggleDropzoneActive();
             }
         }
     }
