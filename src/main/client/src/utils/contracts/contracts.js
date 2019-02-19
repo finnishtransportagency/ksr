@@ -1,4 +1,5 @@
 // @flow
+import moment from 'moment';
 import { toast } from 'react-toastify';
 import { queryFeatures } from '../../api/search/searchQuery';
 import strings from '../../translations';
@@ -175,4 +176,84 @@ export const updateContractLink = async (
     }
 
     return toast.error(strings.modalFeatureContracts.linkContract.contractLinkedError);
+};
+
+/**
+ * Creates a list from found feature attributes.
+ *
+ * @param {Object} layer Currently active layer in contract details modal.
+ * @param {Object[]} contractDetails List containing contract feature details.
+ * @param {Object} activeFeature Active feature's layer and feature Id.
+ *
+ * @returns {Array[]} List with found attributes names and values.
+ */
+export const getFeatureAttributes = (
+    layer: Object,
+    contractDetails: Object[],
+    activeFeature: Object,
+): any[] => {
+    const idField: string = nestedVal(layer, ['contractIdField']);
+    const features: Object[] = nestedVal(
+        contractDetails.find(l => l.id === activeFeature.layerId),
+        ['features'],
+        [],
+    );
+
+    return Object.entries(nestedVal(
+        features.find(feature => feature.attributes[idField] === activeFeature.featureId),
+        ['attributes'],
+        {},
+    ));
+};
+
+/**
+ * Parse attribute values to more readable form.
+ *
+ * @param {Object} layer Currently active layer in contract details modal.
+ * @param {any[]} attribute Single attribute with name and value.
+ *
+ * @returns {{name: string, value: *}} Parsed values.
+ */
+export const getAttribute = (layer: Object, attribute: any[]): Object => {
+    const name = nestedVal(
+        layer.fields.find(f => f.name === attribute[0]),
+        ['label'],
+        attribute[0],
+    );
+    const value = attribute[1];
+    const type = nestedVal(
+        layer.fields.find(f => f.name === attribute[0]),
+        ['type'],
+    );
+
+    switch (type) {
+        case 'esriFieldTypeString':
+            return {
+                name,
+                value: value ? String(value).trim() : null,
+            };
+        case 'esriFieldTypeSmallInteger':
+        case 'esriFieldTypeInteger':
+            return {
+                name,
+                value: Number.isNaN(parseInt(value, 10)) ? null : parseInt(value, 10),
+            };
+        case 'esriFieldTypeDouble':
+            return {
+                name,
+                value: Number.isNaN(parseFloat(value)) ? null : parseFloat(value).toFixed(3),
+            };
+        case 'esriFieldTypeDate':
+            return {
+                name,
+                value: Number.isNaN((new Date(value)).getTime())
+                    ? null
+                    : moment(new Date(value)).format('DD.MM.YYYY HH:mm'),
+            };
+        default:
+            return {
+                name,
+                value: null,
+            };
+    }
 };
