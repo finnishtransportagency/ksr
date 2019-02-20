@@ -1,4 +1,4 @@
-import { contractListTexts, getContractLayers } from '../contracts';
+import { contractListTexts, getAttribute, getContractLayers, getFeatureAttributes } from '../contracts';
 
 describe('contracts', () => {
     it('contractListTexts - should return array with correct values', () => {
@@ -117,5 +117,56 @@ describe('contracts', () => {
         };
 
         expect(getContractLayers('1', layerList)).toEqual(expectedResult);
+    });
+
+    it('getAttribute - should return object with name and value', () => {
+        const layer = {
+            name: 'Layer 1',
+            id: '123',
+            contractIdField: 'idField',
+            contractDescriptionField: 'field2',
+            fields: [
+                { name: 'idField', type: 'esriFieldTypeOID' },
+                { name: 'name2', type: 'esriFieldTypeString' },
+                { name: 'name3', type: 'esriFieldTypeInteger' },
+            ],
+        };
+
+        const attribute1 = ['idField', 123456];
+        const expectedValue1 = { name: 'idField', value: null };
+        expect(getAttribute(layer, attribute1)).toEqual(expectedValue1);
+
+        const attribute2 = ['name2', 'value1'];
+        const expectedValue2 = { name: 'name2', value: 'value1' };
+        expect(getAttribute(layer, attribute2)).toEqual(expectedValue2);
+
+        const attribute3 = ['name3', 123];
+        const expectedValue3 = { name: 'name3', value: 123 };
+        expect(getAttribute(layer, attribute3)).toEqual(expectedValue3);
+    });
+
+    it('getFeatureAttributes - should return list of attribute values', () => {
+        const layer = {
+            name: 'Layer 1',
+            id: '123',
+            contractIdField: 'idField',
+            contractDescriptionField: 'field2',
+            fields: [
+                { name: 'idField', type: 'esriFieldTypeOID' },
+                { name: 'name2', type: 'esriFieldTypeString' },
+                { name: 'name3', type: 'esriFieldTypeInteger' },
+            ],
+        };
+        const contractDetails = [{
+            id: '123',
+            name: 'Layer 1',
+            features: [
+                { attributes: { idField: 123, name2: 'Value 2', name3: 1000 } },
+            ],
+        }];
+        const activeFeature = { layerName: 'Layer 1', layerId: '123', featureId: 123 };
+
+        const expectedValue = [['idField', 123], ['name2', 'Value 2'], ['name3', 1000]];
+        expect(getFeatureAttributes(layer, contractDetails, activeFeature)).toEqual(expectedValue);
     });
 });
