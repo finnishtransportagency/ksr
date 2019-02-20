@@ -241,7 +241,7 @@ export const removeUserLayer = (layerId: string) => ({
 });
 
 export const removeUserLayerConfirmed = (
-    layerId: String,
+    layerId: string,
     layerList: Array<Object>,
 ) => (dispatch: Function) => {
     deleteUserLayer(layerId).then((res) => {

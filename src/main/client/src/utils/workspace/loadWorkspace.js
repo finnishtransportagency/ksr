@@ -19,12 +19,11 @@ export const getWorkspaceFeatures = (workspace: Object[]) => {
     if (workspace) {
         workspace.forEach((layer) => {
             if (!layer.definitionExpression) {
-                layer.selectedFeaturesList.forEach(feature =>
-                    workspaceFeatures.push({
-                        layerId: layer.layerId === null ? layer.userLayerId : layer.layerId,
-                        featureId: parseInt(feature.id, 10),
-                        selected: feature.highlight,
-                    }));
+                layer.selectedFeaturesList.forEach(feature => workspaceFeatures.push({
+                    layerId: layer.layerId === null ? layer.userLayerId : layer.layerId,
+                    featureId: parseInt(feature.id, 10),
+                    selected: feature.highlight,
+                }));
             }
         });
     }
@@ -38,12 +37,12 @@ export const getWorkspaceFeatures = (workspace: Object[]) => {
  * @param {Object[]} workspaceFeatures List of layer features saved in workspace.
  * @param {Object} view Esri map view.
  *
- * @returns {Promise} List of layer feature data.
+ * @returns {Promise<Object>} List of layer feature data.
  */
 export const queryWorkspaceFeatures = (
     workspaceFeatures: Object[],
     view: Object,
-) => new Promise((resolve) => {
+): Promise<Object> => new Promise((resolve) => {
     const queries = [];
 
     view.map.layers.forEach((layer) => {
@@ -59,8 +58,8 @@ export const queryWorkspaceFeatures = (
                 queries.push(layer.queryFeatures(query)
                     .then((results) => {
                         results.features.forEach((f) => {
-                            const selectedObj = workspaceFeatures.find(obj =>
-                                obj.featureId === f.attributes[layer.objectIdField]);
+                            const selectedObj = workspaceFeatures
+                                .find(obj => obj.featureId === f.attributes[layer.objectIdField]);
                             if (selectedObj) {
                                 f.selected = selectedObj.selected;
                             }
@@ -133,8 +132,8 @@ export const updateLayerList = (workspace: Object, layerList: Object[]): Object[
  */
 export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Object, string> => {
     const queryMap = new Map();
-    workspace.layers.forEach(layer => layer.definitionExpression &&
-        queryMap.set(
+    workspace.layers.forEach(layer => layer.definitionExpression
+        && queryMap.set(
             {
                 ...layer,
                 layer: layerList.find(l => l.id === layer.layerId),
@@ -153,6 +152,7 @@ export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Obje
  * @param {Function} activateLayers Redux function that handles layer activation.
  * @param {Function} deactivateLayer Redux function that handles layer deactivation.
  * @param {Function} [updateWorkspaces] Redux function that handles workspace fetches.
+ * @returns {void}
  */
 export const loadWorkspace = async (
     workspace: Object,
@@ -170,8 +170,8 @@ export const loadWorkspace = async (
     const workspaceLayerList = updateLayerList(workspace, layerList);
     store.dispatch(setLayerList(workspaceLayerList));
 
-    const workspaceLayers = layerList.filter(l =>
-        workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
+    const workspaceLayers = layerList
+        .filter(l => workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
 
     layerList.forEach((l) => {
         if (l.active && !workspaceLayers.some(wl => wl.id === l.id)) {

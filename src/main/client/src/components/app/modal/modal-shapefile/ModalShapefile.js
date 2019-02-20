@@ -32,12 +32,12 @@ class ModalShapefile extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { dropzone } = this.props;
+        const { dropzone, toggleDropzoneActive } = this.props;
         if (dropzone) {
             const fileUpload = this.fileMobileUpload.current;
             if (fileUpload !== null) {
                 this.fileMobileUpload.current.open();
-                this.props.toggleDropzoneActive();
+                toggleDropzoneActive();
             }
         }
     }
@@ -45,10 +45,11 @@ class ModalShapefile extends Component<Props, State> {
     onDrop = async (acceptedFiles: any) => {
         if (acceptedFiles.length < 1) return;
 
+        const { layerList, view, addShapefile } = this.props;
+
         const fileName = acceptedFiles.find(a => a).name.split('.').shift();
 
-        if (this.props.layerList.some(l =>
-            l.name === fileName)) {
+        if (layerList.some(l => l.name === fileName)) {
             return;
         }
 
@@ -57,14 +58,14 @@ class ModalShapefile extends Component<Props, State> {
         shape2geoJson(
             contents,
             fileName,
-            this.props.view,
-            this.props.layerList,
-            this.props.addShapefile,
+            view,
+            layerList,
+            addShapefile,
         );
         this.closeModal();
     };
 
-    readFile = (file: any, contents: any) => new Promise((resolve) => {
+    readFile = (file: any, contents: any): Promise<void> => new Promise((resolve) => {
         if (file.name.split('.').pop() === 'shp' || file.name.split('.').pop() === 'dbf') {
             const reader = new FileReader();
             reader.onload = (event) => {
@@ -77,13 +78,15 @@ class ModalShapefile extends Component<Props, State> {
     });
 
     closeModal = () => {
-        this.props.setActiveModal('');
+        const { setActiveModal } = this.props;
+        setActiveModal('');
     };
 
     // Assign constructor ref flowtypes
     fileMobileUpload: any;
 
     render() {
+        const { acceptedFileExtensions } = this.state;
         return (
             <Fragment>
                 <MediaQuery query="(min-width: 769px)">
@@ -93,7 +96,7 @@ class ModalShapefile extends Component<Props, State> {
                     >
                         <ModalShapefileView
                             onDrop={this.onDrop}
-                            acceptedExtensions={this.state.acceptedFileExtensions}
+                            acceptedExtensions={acceptedFileExtensions}
                             fileUploadRef={this.fileMobileUpload}
                             closeModal={this.closeModal}
                         />
@@ -102,7 +105,7 @@ class ModalShapefile extends Component<Props, State> {
                 <MediaQuery query="(max-width: 768px)">
                     <ModalShapefileView
                         onDrop={this.onDrop}
-                        acceptedExtensions={this.state.acceptedFileExtensions}
+                        acceptedExtensions={acceptedFileExtensions}
                         fileUploadRef={this.fileMobileUpload}
                         closeModal={this.closeModal}
                     />
