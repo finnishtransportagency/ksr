@@ -29,7 +29,7 @@ const setup = () => {
         ],
         loadingLayers: [],
         handleGroupClick: () => {},
-        activeGroup: 1,
+        activeGroups: [1],
     };
     const wrapper = shallow(<MapLayersAllView {...props} />);
 
