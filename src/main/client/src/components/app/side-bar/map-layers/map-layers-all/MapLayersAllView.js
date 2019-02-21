@@ -13,8 +13,8 @@ type Props = {
     handleGroupClick: (number) => void,
     handleSubGroupClick: (number) => void,
     handleLayerClick: (number) => void,
-    activeGroup: number,
-    activeSubGroup: number,
+    activeGroups: number[],
+    activeSubGroups: number[],
     handleLayerGroupClick: (string) => void,
     handleSubLayerGroupClick: (number) => void,
     loadingLayers: string[],
@@ -26,16 +26,16 @@ const MapLayersAllView = ({
     handleGroupClick,
     handleSubGroupClick,
     handleLayerClick,
-    activeGroup,
-    activeSubGroup,
+    activeGroups,
+    activeSubGroups,
     handleLayerGroupClick,
     handleSubLayerGroupClick,
     loadingLayers,
 }: Props) => (
     <Fragment>
         {layerGroups.map(lg => lg.layers.length > 0 && (
-            <LayerGroup key={lg.id} active={activeGroup === lg.id}>
                 <LayerGroup.Header >
+            <LayerGroup key={lg.id} active={activeGroups.some(group => group === lg.id)}>
                     <LayerGroup.Span
                         onClick={() => handleGroupClick(lg.id)}
                     >
@@ -79,14 +79,14 @@ const MapLayersAllView = ({
                     >
                         <i
                             className={
-                                activeGroup === lg.id
+                                activeGroups.some(group => group === lg.id)
                                     ? 'fas fa-chevron-up'
                                     : 'fas fa-chevron-down'
                             }
                         />
                     </div>
                 </LayerGroup.Header>
-                <LayerGroup.Content hidden={activeGroup !== lg.id}>
+                <LayerGroup.Content hidden={!activeGroups.some(group => group === lg.id)}>
                     {lg.layers.filter(layer => layer.relationType !== 'link')
                         .sort((a, b) => b.layerOrder - a.layerOrder)
                         .map(l => (
@@ -103,7 +103,7 @@ const MapLayersAllView = ({
                                     key={l.id}
                                     layer={l}
                                     handleLayerClick={handleLayerClick}
-                                    activeSubGroup={activeSubGroup}
+                                    activeSubGroups={activeSubGroups}
                                     handleSubGroupClick={handleSubGroupClick}
                                     handleSubLayerGroupClick={handleSubLayerGroupClick}
                                 />

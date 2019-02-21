@@ -34,7 +34,7 @@ const setup = (prop) => {
                 id: 20, visible: true, name: 'Layer 20', active: false, parentLayer: 1,
             },
         ],
-        activeSubGroup: 12,
+        activeSubGroups: [],
         handleSubGroupClick: jest.fn(),
         handleSubLayerGroupClick: jest.fn(),
         loadingLayers: [],

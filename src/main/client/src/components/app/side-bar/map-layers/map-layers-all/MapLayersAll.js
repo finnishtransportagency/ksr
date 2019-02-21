@@ -11,23 +11,15 @@ type Props = {
     loadingLayers: string[],
     activateLayers: (layers: Object[]) => void,
     deactivateLayer: (layerId: string) => void,
+    activeGroups: number[],
+    activeSubGroups: number[],
+    setActiveGroups: (activeGroups: number[]) => void,
+    setActiveSubGroups: (activeSubGroups: number[]) => void,
 };
 
-type State = {
-    activeGroup: number,
-    activeSubGroup: number,
-};
-
-const initialState = {
-    activeGroup: 0,
-    activeSubGroup: 0,
-};
-
-class MapLayersActive extends Component<Props, State> {
+class MapLayersActive extends Component<Props> {
     constructor(props: Props) {
         super(props);
-
-        this.state = { ...initialState };
 
         this.handleGroupClick = this.handleGroupClick.bind(this);
         this.handleSubGroupClick = this.handleSubGroupClick.bind(this);
@@ -37,23 +29,19 @@ class MapLayersActive extends Component<Props, State> {
     }
 
     handleGroupClick = (id: number) => {
-        const { activeGroup } = this.state;
+        const { activeGroups, setActiveGroups } = this.props;
 
-        if (activeGroup === id) {
-            this.setState({ activeGroup: 0 });
-        } else {
-            this.setState({ activeGroup: id });
-        }
+        const newGroups = activeGroups.filter(group => group !== id);
+        if (newGroups.length === activeGroups.length) newGroups.push(id);
+        setActiveGroups(newGroups);
     };
 
     handleSubGroupClick = (id: number) => {
-        const { activeSubGroup } = this.state;
+        const { activeSubGroups, setActiveSubGroups } = this.props;
 
-        if (activeSubGroup === id) {
-            this.setState({ activeSubGroup: 0 });
-        } else {
-            this.setState({ activeSubGroup: id });
-        }
+        const newSubGroups = activeSubGroups.filter(group => group !== id);
+        if (newSubGroups.length === activeSubGroups.length) newSubGroups.push(id);
+        setActiveSubGroups(newSubGroups);
     };
 
     handleLayerClick = (id: number) => {
@@ -104,9 +92,14 @@ class MapLayersActive extends Component<Props, State> {
     };
 
     render() {
-        const { activeGroup, activeSubGroup } = this.state;
         const {
-            layerGroups, fetching, layerList, subLayers, loadingLayers,
+            layerGroups,
+            fetching,
+            layerList,
+            subLayers,
+            loadingLayers,
+            activeGroups,
+            activeSubGroups,
         } = this.props;
 
         if (!fetching) {
@@ -117,8 +110,8 @@ class MapLayersActive extends Component<Props, State> {
                     handleGroupClick={this.handleGroupClick}
                     handleSubGroupClick={this.handleSubGroupClick}
                     handleLayerClick={this.handleLayerClick}
-                    activeGroup={activeGroup}
-                    activeSubGroup={activeSubGroup}
+                    activeGroups={activeGroups}
+                    activeSubGroups={activeSubGroups}
                     handleLayerGroupClick={this.handleLayerGroupClick}
                     handleSubLayerGroupClick={this.handleSubLayerGroupClick}
                     subLayers={subLayers}

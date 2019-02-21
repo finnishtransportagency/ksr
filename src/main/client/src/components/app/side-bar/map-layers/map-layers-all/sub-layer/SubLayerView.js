@@ -10,7 +10,7 @@ type Props = {
     handleLayerClick: (number) => void,
     layerList: any,
     subLayers: Object[],
-    activeSubGroup: number,
+    activeSubGroups: number[],
     handleSubGroupClick: (number) => void,
     handleSubLayerGroupClick: (number) => void,
     loadingLayers: string[],
@@ -21,14 +21,14 @@ const SubLayerView = ({
     handleLayerClick,
     layerList,
     subLayers,
-    activeSubGroup,
+    activeSubGroups,
     handleSubGroupClick,
     handleSubLayerGroupClick,
     loadingLayers,
 }: Props) => (
     <Fragment>
         {layer && !layer.parentLayer &&
-        <LayerGroup.Header subLayer active={activeSubGroup === layer.id}>
+        <LayerGroup.Header subLayer active={activeSubGroups.some(group => group === layer.id)}>
             <LayerGroup.Layer.Label subLayer htmlFor={layer.id} failOnLoad={layer.failOnLoad}>
                 {loadingLayers.some(ll => ll === layer.id) && <LoadingIcon size={6} loading />}
                 <input
@@ -66,7 +66,7 @@ const SubLayerView = ({
             >
                 <i
                     className={
-                        activeSubGroup === layer.id
+                        activeSubGroups.some(group => group === layer.id)
                             ? 'fas fa-chevron-up'
                             : 'fas fa-chevron-down'
                     }
@@ -78,7 +78,11 @@ const SubLayerView = ({
             .map(sub => ((
                 sub.parentLayer === layer.id)
                 ?
-                <LayerGroup.Content subLayer hidden={activeSubGroup !== layer.id} key={sub.id}>
+                <LayerGroup.Content
+                    subLayer
+                    hidden={!activeSubGroups.some(group => group === layer.id)}
+                    key={sub.id}
+                >
                     {loadingLayers.some(ll => ll === sub.id) && <LoadingIcon size={6} loading />}
                     <LayerGroup.Layer.Label htmlFor={sub.id} failOnLoad={sub.failOnLoad}>
                         <input

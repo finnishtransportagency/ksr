@@ -16,6 +16,10 @@ type Props = {
     toggleDropzoneActive: () => void,
     layerLegendActive: boolean,
     toggleLayerLegend: () => void,
+    activeGroups: number[],
+    activeSubGroups: number[],
+    setActiveGroups: (activeGroups: number[]) => void,
+    setActiveSubGroups: (activeSubGroups: number[]) => void,
 };
 
 const MapLayersView = ({
@@ -25,6 +29,10 @@ const MapLayersView = ({
     toggleDropzoneActive,
     layerLegendActive,
     toggleLayerLegend,
+    activeGroups,
+    activeSubGroups,
+    setActiveGroups,
+    setActiveSubGroups,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
@@ -69,7 +77,15 @@ const MapLayersView = ({
                 renderThumbVertical={scrollProps =>
                     <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
             >
-                {activeTab === 'all' && <MapLayersAllContainer />}
+                {
+                    activeTab === 'all' &&
+                    <MapLayersAllContainer
+                        activeGroups={activeGroups}
+                        activeSubGroups={activeSubGroups}
+                        setActiveGroups={setActiveGroups}
+                        setActiveSubGroups={setActiveSubGroups}
+                    />
+                }
                 {activeTab === 'active' && <MapLayersActiveContainer />}
             </Scrollbars>
             <ButtonLayerAddWrapper>

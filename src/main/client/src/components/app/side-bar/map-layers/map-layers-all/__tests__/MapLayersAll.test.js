@@ -35,6 +35,10 @@ const setup = (prop) => {
         addNonSpatialContentToTable: jest.fn(),
         activateLayers: jest.fn(),
         deactivateLayer: jest.fn(),
+        activeGroups: [],
+        activeSubGroups: [],
+        setActiveGroups: jest.fn(),
+        setActiveSubGroups: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -62,10 +66,18 @@ describe('<MapLayersAll />', () => {
 
     it('should handle handleGroupClick correctly', () => {
         const { wrapper } = setup();
-        const id = 1;
+        const { setActiveGroups } = wrapper.instance().props;
 
-        wrapper.instance().handleGroupClick(id);
-        expect(wrapper.state('activeGroup')).toBe(1);
+        wrapper.instance().handleGroupClick(1);
+        expect(setActiveGroups).toHaveBeenCalled();
+    });
+
+    it('should handle handleSubGroupClick correctly', () => {
+        const { wrapper } = setup();
+        const { setActiveSubGroups } = wrapper.instance().props;
+
+        wrapper.instance().handleSubGroupClick(1);
+        expect(setActiveSubGroups).toHaveBeenCalled();
     });
 
     it('handleLayerClick - set layer as active', async () => {
