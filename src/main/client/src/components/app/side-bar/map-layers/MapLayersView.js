@@ -107,6 +107,7 @@ const MapLayersView = ({
                 {
                     activeTab === 'all' &&
                     <MapLayersAllContainer
+                        layersToFind={layersToFind}
                         activeGroups={activeGroups}
                         activeSubGroups={activeSubGroups}
                         setActiveGroups={setActiveGroups}
