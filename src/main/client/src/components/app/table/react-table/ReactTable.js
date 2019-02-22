@@ -50,11 +50,16 @@ class ReactTable extends Component<Props> {
         }
     }
 
-    getCellContent = (layer: Object, cellField: Object, cellInfo: Object) => (
-        cellField && cellField.type === 'esriFieldTypeDate' ?
-            (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString() :
-            layer.data[cellInfo.index][cellInfo.column.id]
-    );
+    getCellContent = (layer: Object, cellField: Object, cellInfo: Object) => {
+        if (cellField && cellField.type === 'esriFieldTypeDate') {
+            return (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString();
+        } else if (cellField && cellField.type === 'esriFieldTypeDouble') {
+            return layer.data[cellInfo.index][cellInfo.column.id]
+                ? layer.data[cellInfo.index][cellInfo.column.id].toFixed(3)
+                : '0.000';
+        }
+        return layer.data[cellInfo.index][cellInfo.column.id];
+    };
 
     getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
         let className = '';

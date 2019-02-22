@@ -42,9 +42,6 @@ export const parseAttributes = (id, attributes) => {
     const a = Object.entries(attributes);
     const newObject = {};
     for (let i = 0; i < a.length; i += 1) {
-        if (Number.isFinite(a[i][1]) && !Number.isInteger(a[i][1])) {
-            a[i][1] = Number(`${Math.round(`${a[i][1]}e${3}`)}e-${3}`);
-        }
         Object.assign(newObject, { [`${id}/${a[i][0]}`]: a[i][1] });
     }
     return newObject;
