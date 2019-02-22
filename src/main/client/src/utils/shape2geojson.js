@@ -3,62 +3,7 @@ import * as shapefile from 'shapefile';
 import esriLoader from 'esri-loader';
 import moment from 'moment';
 import { colorShapefileHighlight } from '../components/ui/defaultStyles';
-
-/**
- * Create Esri geometry type.
- *
- * @param {Object} geometry Features geometry.
- * @param {Function} Point esri/geometry/Point.
- * @param {Function} Polyline esri/geometry/Polyline.
- * @param {Function} Polygon esri/geometry/Polygon.
- * @param {Function} Multipoint esri/geometry/Multipoint.
- *
- * @returns Esri geometryType.
- */
-export const createGeometry = (
-    geometry: Object,
-    Point: Function,
-    Polyline: Function,
-    Polygon: Function,
-    Multipoint: Function,
-) => {
-    if (geometry === null || geometry === undefined) {
-        return null;
-    }
-
-    switch (geometry.type.toLowerCase()) {
-        case 'point':
-            return new Point({
-                x: geometry.coordinates[0],
-                y: geometry.coordinates[1],
-                spatialReference: { wkid: 3067 },
-            });
-        case 'polyline':
-        case 'linestring':
-            return new Polyline({
-                hasZ: false,
-                hasM: true,
-                paths: geometry.coordinates,
-                spatialReference: { wkid: 3067 },
-            });
-        case 'polygon':
-            return new Polygon({
-                hasZ: false,
-                hasM: true,
-                rings: geometry.coordinates,
-                spatialReference: { wkid: 3067 },
-            });
-        case 'multipoint':
-            return new Multipoint({
-                hasZ: false,
-                hasM: true,
-                points: geometry.coordinates,
-                spatialReference: { wkid: 3067 },
-            });
-        default:
-            return null;
-    }
-};
+import { convert } from './geojson';
 
 /**
  * Create Esri attribute information from geojson properties.
@@ -86,25 +31,14 @@ export const createAttributes = (properties: Object[], index: number) => {
  * Create Graphics from geojson data.
  *
  * @param {Object} geoJson Shapefile as geojson.
- * @param {Function} Point esri/geometry/Point.
- * @param {Function} Polyline esri/geometry/Polyline.
- * @param {Function} Polygon esri/geometry/Polygon.
- * @param {Function} Multipoint esri/geometry/Multipoint.
  *
- * @returns {Object[]} List of geometries and attributes
+ * @returns {Promise<Object[]>} List of geometries and attributes
  */
-export const createGraphics = (
-    geoJson: Object,
-    Point: Function,
-    Polyline: Function,
-    Polygon: Function,
-    Multipoint: Function,
-) =>
-    // Create an array of Graphics from each GeoJSON feature
-    geoJson.features.map((feature, i) => ({
-        geometry: createGeometry(feature.geometry, Point, Polyline, Polygon, Multipoint),
+export const createGraphics = (geoJson: Object) => Promise.all(geoJson
+    .features.map(async (feature, i) => ({
+        geometry: await convert(feature.geometry, 3067, 3067),
         attributes: createAttributes(feature.properties, i),
-    }));
+    })));
 
 /**
  * Create symbol for renderer.
@@ -268,48 +202,19 @@ export const createLayer = (
  * @param {Object} view esri/views/MapView.
  * @param {Object[]} layerList List of layers.
  * @param {Function} addShapefile Redux action to add shapefile layer to layerList.
+ * @returns {void}
  */
-export const shape2geoJson = (
+export const shape2geoJson = async (
     contents: Object,
     fileName: string,
     view: Object,
     layerList: Array<any>,
     addShapefile: Function,
 ) => {
-    esriLoader
-        .loadModules([
-            'esri/layers/FeatureLayer',
-            'esri/geometry/Point',
-            'esri/geometry/Polyline',
-            'esri/geometry/Polygon',
-            'esri/geometry/Multipoint',
-        ])
-        .then(([
-            FeatureLayer,
-            Point,
-            Polyline,
-            Polygon,
-            Multipoint,
-        ]) => {
-            if (contents.shp && contents.dbf) {
-                shapefile.read(contents.shp, contents.dbf)
-                    .then((geojson) => {
-                        const graphics = createGraphics(
-                            geojson,
-                            Point,
-                            Polyline,
-                            Polygon,
-                            Multipoint,
-                        );
-                        createLayer(
-                            graphics,
-                            fileName,
-                            FeatureLayer,
-                            view,
-                            layerList,
-                            addShapefile,
-                        );
-                    });
-            }
-        });
+    const [FeatureLayer] = await esriLoader.loadModules(['esri/layers/FeatureLayer']);
+    if (contents.shp && contents.dbf) {
+        const geojson = await shapefile.read(contents.shp, contents.dbf);
+        const graphics = await createGraphics(geojson);
+        createLayer(graphics, fileName, FeatureLayer, view, layerList, addShapefile);
+    }
 };
