@@ -60,6 +60,10 @@ export const WrapperReactTable = styled.div`
                     overflow: hidden;
                     text-overflow: ellipsis;
                 };
+                
+                &.decimal {
+                    text-align: right;
+                };
             };
         
             .rt-tr-group {

@@ -27,6 +27,7 @@ export const parseColumns = (id, data) => {
             description: f.domain.description,
             codedValues: f.domain.codedValues,
         } : null,
+        className: f.type === 'double' || f.type === 'esriFieldTypeDouble' ? 'decimal' : '',
     }));
 };
 

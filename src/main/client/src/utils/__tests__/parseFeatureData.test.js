@@ -127,30 +127,35 @@ describe('parseFeatureData', () => {
                 accessor: '123/l.1.a',
                 show: true,
                 domain: null,
+                className: '',
             },
             {
                 Header: 'L 2 A',
                 accessor: '123/l.2.a',
                 show: true,
                 domain: null,
+                className: '',
             },
             {
                 Header: 'L 3 A',
                 accessor: '123/l.3.a',
                 show: true,
                 domain: null,
+                className: '',
             },
             {
                 Header: 'geom',
                 accessor: '123/GEOM',
                 show: false,
                 domain: null,
+                className: '',
             },
             {
                 Header: 'objectid',
                 accessor: '123/OBJECTID',
                 show: false,
                 domain: null,
+                className: '',
             },
         ];
 
@@ -263,12 +268,14 @@ describe('parseFeatureData', () => {
                         accessor: '123/l.1.a',
                         show: true,
                         domain: null,
+                        className: '',
                     },
                     {
                         Header: 'L2A',
                         accessor: '123/l.2.a',
                         show: true,
                         domain: null,
+                        className: '',
                     },
                 ],
                 data: [
@@ -295,12 +302,14 @@ describe('parseFeatureData', () => {
                         accessor: '456/l.1.a',
                         show: true,
                         domain: null,
+                        className: '',
                     },
                     {
                         Header: 'L2A',
                         accessor: '456/l.2.a',
                         show: true,
                         domain: null,
+                        className: '',
                     },
                 ],
                 data: [
@@ -327,12 +336,14 @@ describe('parseFeatureData', () => {
                         accessor: '789/l.1.a',
                         show: true,
                         domain: null,
+                        className: '',
                     },
                     {
                         Header: 'L2A',
                         accessor: '789/l.2.a',
                         show: true,
                         domain: null,
+                        className: '',
                     },
                 ],
                 data: [
@@ -389,8 +400,18 @@ describe('parseFeatureData', () => {
                 id: '123',
                 title: 'layer123',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: 'l.1.a',
+                        show: true,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: 'l.2.a',
+                        show: true,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
@@ -404,8 +425,18 @@ describe('parseFeatureData', () => {
                 id: '456',
                 title: 'layer456',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: 'l.1.a',
+                        show: true,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: 'l.2.a',
+                        show: true,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
@@ -419,8 +450,18 @@ describe('parseFeatureData', () => {
                 id: '789',
                 title: 'layer789',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: 'l.1.a',
+                        show: true,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: 'l.2.a',
+                        show: true,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
@@ -436,8 +477,18 @@ describe('parseFeatureData', () => {
             id: '789',
             title: 'layer789',
             columns: [
-                { Header: 'L1A', accessor: 'l.1.a', show: true },
-                { Header: 'L2A', accessor: 'l.2.a', show: true },
+                {
+                    Header: 'L1A',
+                    accessor: 'l.1.a',
+                    show: true,
+                    className: '',
+                },
+                {
+                    Header: 'L2A',
+                    accessor: 'l.2.a',
+                    show: true,
+                    className: '',
+                },
             ],
             data: [
                 {
