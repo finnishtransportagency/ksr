@@ -8,6 +8,7 @@ const fi = {
         failedToLoadLayer: 'Tason lataus epäonnistui',
         toggleLayerLegend: 'Selite',
         filterAllLayers: 'Hae karttatasoja',
+        noLayersFound: 'Ei hakua vastaavia karttatasoja',
     },
     search: {
         title: 'Haku',

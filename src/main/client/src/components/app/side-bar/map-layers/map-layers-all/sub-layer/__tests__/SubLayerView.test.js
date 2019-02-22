@@ -38,6 +38,7 @@ const setup = (prop) => {
         handleSubGroupClick: jest.fn(),
         handleSubLayerGroupClick: jest.fn(),
         loadingLayers: [],
+        layersToFind: '',
     };
 
     const props = prop || minProps;
