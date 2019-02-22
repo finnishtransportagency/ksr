@@ -46,7 +46,10 @@ class MapLayers extends Component<Props, State> {
     };
 
     handleButtonClickLayers = (tab: string) => {
-        const { setActiveLayerTab } = this.props;
+        const { activeTab, setActiveLayerTab } = this.props;
+        if (activeTab !== tab) {
+            document.getElementsByClassName('layer-view-inner-scroll-wrapper')[0].scrollTop = 0;
+        }
         setActiveLayerTab(tab);
     };
 
