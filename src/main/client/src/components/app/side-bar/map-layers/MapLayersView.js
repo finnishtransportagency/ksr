@@ -102,6 +102,8 @@ const MapLayersView = ({
             <Scrollbars
                 autoHide
                 className={`layer-view-scroll-wrapper ${activeTab}`}
+                renderView={scrollProps =>
+                    <div {...scrollProps} className="layer-view-inner-scroll-wrapper" />}
                 renderThumbVertical={scrollProps =>
                     <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
             >
