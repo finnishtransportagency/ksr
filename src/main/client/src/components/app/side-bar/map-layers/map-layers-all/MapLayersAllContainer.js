@@ -1,8 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
-import { setLayerList, activateLayers, deactivateLayer } from '../../../../../reducers/map/actions';
+import { activateLayers, deactivateLayer } from '../../../../../reducers/map/actions';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
-import { addNonSpatialContentToTable } from '../../../../../reducers/table/actions';
 import MapLayersAll from './MapLayersAll';
 
 const mapStateToProps = state => ({
@@ -16,14 +15,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setLayerList: (layerList) => {
-        dispatch(setLayerList(layerList));
-    },
     setActiveAdminTool: (layerId, layerList) => {
         dispatch(setActiveAdminTool(layerId, layerList));
-    },
-    addNonSpatialContentToTable: (layer) => {
-        dispatch(addNonSpatialContentToTable(layer));
     },
     activateLayers: (layers) => {
         dispatch(activateLayers(layers));
