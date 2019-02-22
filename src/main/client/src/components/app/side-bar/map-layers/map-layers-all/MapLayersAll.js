@@ -11,6 +11,7 @@ type Props = {
     loadingLayers: string[],
     activateLayers: (layers: Object[]) => void,
     deactivateLayer: (layerId: string) => void,
+    layersToFind: string,
     activeGroups: number[],
     activeSubGroups: number[],
     setActiveGroups: (activeGroups: number[]) => void,
@@ -56,23 +57,35 @@ class MapLayersActive extends Component<Props> {
     };
 
     handleLayerGroupClick = (layerGroupName: string) => {
-        const { layerList } = this.props;
+        const { layerList, layersToFind, subLayers } = this.props;
         const foundLayers = layerList.filter(l =>
             l.layerGroupName === layerGroupName
             && !l.parentLayer
             && l.relationType !== 'link'
-            && l._source !== 'shapefile');
+            && l._source !== 'shapefile'
+            && (layersToFind
+                ? (l.layerGroupName.toLowerCase().includes(layersToFind)
+                    || l.name.toLowerCase().includes(layersToFind)
+                    || subLayers.some(layer => layer.parentLayer === l.id
+                        && layer.name.toLowerCase().includes(layersToFind)))
+                : true));
 
         this.updateLayerList(foundLayers);
     };
 
     handleSubLayerGroupClick = (id: number) => {
-        const { subLayers, layerList } = this.props;
-        const parentLayer = layerList.filter(l => l.id === id);
-        const filteredSublayers = subLayers.filter(l => l.parentLayer === id);
-        const foundLayers = [...new Set([...parentLayer, ...filteredSublayers])];
+        const { subLayers, layerList, layersToFind } = this.props;
+        const parentLayer = layerList.find(l => l.id === id);
+        const filteredSubLayers = parentLayer
+            ? [parentLayer, ...subLayers.filter(l => l.parentLayer === id
+                && (layersToFind
+                    ? (l.name.toLowerCase().includes(layersToFind)
+                        || parentLayer.name.toLowerCase().includes(layersToFind)
+                        || parentLayer.layerGroupName.toLowerCase().includes(layersToFind))
+                    : true))]
+            : [];
 
-        this.updateLayerList(foundLayers);
+        this.updateLayerList(filteredSubLayers);
     };
 
     updateLayerList = (foundLayers: Object[]) => {
@@ -98,14 +111,33 @@ class MapLayersActive extends Component<Props> {
             layerList,
             subLayers,
             loadingLayers,
+            layersToFind,
             activeGroups,
             activeSubGroups,
         } = this.props;
 
+        let newLayerList = [];
+        let layersToFindTrimmed = '';
+        if (layersToFind) {
+            layersToFindTrimmed = layersToFind.trim().toLowerCase();
+            newLayerList = layerGroups.map(group => (
+                {
+                    ...group,
+                    layers: group.name.toLowerCase().includes(layersToFindTrimmed)
+                        ? group.layers
+                        : group.layers.filter(layer => layer.name
+                            .toLowerCase().includes(layersToFindTrimmed)
+                            || subLayers.find(subLayer => subLayer.name
+                                .toLowerCase().includes(layersToFindTrimmed)
+                                && subLayer.parentLayer === layer.id)),
+                }
+            ));
+        }
+
         if (!fetching) {
             return (
                 <MapLayersAllView
-                    layerGroups={layerGroups}
+                    layerGroups={newLayerList.length ? newLayerList : layerGroups}
                     layerList={layerList}
                     handleGroupClick={this.handleGroupClick}
                     handleSubGroupClick={this.handleSubGroupClick}
@@ -116,6 +148,7 @@ class MapLayersActive extends Component<Props> {
                     handleSubLayerGroupClick={this.handleSubLayerGroupClick}
                     subLayers={subLayers}
                     loadingLayers={loadingLayers}
+                    layersToFind={layersToFindTrimmed}
                 />
             );
         }
