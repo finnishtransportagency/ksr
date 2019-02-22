@@ -14,6 +14,7 @@ type Props = {
     handleSubGroupClick: (number) => void,
     handleSubLayerGroupClick: (number) => void,
     loadingLayers: string[],
+    layersToFind: string,
 };
 
 const SubLayerView = ({
@@ -25,6 +26,7 @@ const SubLayerView = ({
     handleSubGroupClick,
     handleSubLayerGroupClick,
     loadingLayers,
+    layersToFind,
 }: Props) => (
     <Fragment>
         {layer && !layer.parentLayer &&
@@ -46,11 +48,19 @@ const SubLayerView = ({
                     id={layer.name}
                     name={layer.name}
                     type="checkbox"
-                    checked={nestedVal(layerList.find(l => l.id === layer.id), ['active'], false) &&
-                    subLayers.filter(sl =>
-                        sl.parentLayer === layer.id &&
-                        !sl.failOnLoad &&
-                        sl.relationType !== 'link').every(l => l.active)}
+                    checked={
+                        nestedVal(layerList.find(l => l.id === layer.id), ['active'], false)
+                        && subLayers.filter(sl =>
+                            sl.parentLayer === layer.id &&
+                            !sl.failOnLoad &&
+                            sl.relationType !== 'link'
+                            && (layersToFind
+                                ? (sl.name.toLowerCase().includes(layersToFind)
+                                    || layer.name.toLowerCase().includes(layersToFind)
+                                    || layer.layerGroupName.toLowerCase().includes(layersToFind))
+                                : true))
+                            .every(l => l.active)
+                    }
                     onChange={() => handleSubLayerGroupClick(layer.id)}
                 />
                 <Checkbox.Checkmark layerAllView />
@@ -75,8 +85,12 @@ const SubLayerView = ({
         </LayerGroup.Header>
         }
         {layer && !layer.parentLayer && subLayers.sort((a, b) => b.layerOrder - a.layerOrder)
-            .map(sub => ((
-                sub.parentLayer === layer.id)
+            .map(sub => ((sub.parentLayer === layer.id
+                && (layersToFind
+                    ? (sub.name.toLowerCase().includes(layersToFind)
+                        || layer.name.toLowerCase().includes(layersToFind)
+                        || layer.layerGroupName.toLowerCase().includes(layersToFind))
+                    : true))
                 ?
                 <LayerGroup.Content
                     subLayer
