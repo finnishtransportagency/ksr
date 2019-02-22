@@ -4,10 +4,15 @@ import MediaQuery from 'react-responsive';
 import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
 import SideBar from '../../../ui/blocks/SideBar';
-import { H1 } from '../../../ui/elements';
+import { H1, TextInput } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
 import MapLayersAllContainer from './map-layers-all/MapLayersAllContainer';
-import { ButtonLayerNav, ButtonLayerNavWrapper, ButtonLayerAddWrapper } from './styles';
+import {
+    ButtonLayerNav,
+    ButtonLayerNavWrapper,
+    ButtonLayerAddWrapper,
+    LayerFilterWrapper,
+} from './styles';
 
 type Props = {
     handleButtonClickLayers: (string) => void,
@@ -20,6 +25,8 @@ type Props = {
     activeSubGroups: number[],
     setActiveGroups: (activeGroups: number[]) => void,
     setActiveSubGroups: (activeSubGroups: number[]) => void,
+    handleInputChange: (event: Object) => void,
+    layersToFind: string,
 };
 
 const MapLayersView = ({
@@ -33,6 +40,8 @@ const MapLayersView = ({
     activeSubGroups,
     setActiveGroups,
     setActiveSubGroups,
+    handleInputChange,
+    layersToFind,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
@@ -71,9 +80,28 @@ const MapLayersView = ({
                     {strings.mapLayers.all}
                 </ButtonLayerNav>
             </ButtonLayerNavWrapper>
+            {
+                activeTab === 'all' &&
+                <LayerFilterWrapper>
+                    <label htmlFor="filterAllLayers">
+                        <span>{strings.mapLayers.filterAllLayers}</span>
+                        <TextInput
+                            backgroundDarker
+                            type="text"
+                            placeholder=""
+                            id="filterAllLayers"
+                            name="filterAllLayers"
+                            autoComplete="off"
+                            onChange={handleInputChange}
+                            value={layersToFind}
+                            maxLength={50}
+                        />
+                    </label>
+                </LayerFilterWrapper>
+            }
             <Scrollbars
                 autoHide
-                className="layer-view-scroll-wrapper"
+                className={`layer-view-scroll-wrapper ${activeTab}`}
                 renderThumbVertical={scrollProps =>
                     <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
             >
