@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import MapLayersView from './MapLayersView';
 
 type Props = {
+    layerGroups: Object,
     setActiveLayerTab: (string) => void,
     activeTab: string,
     setActiveModal: (modal: string) => void,
@@ -54,9 +55,15 @@ class MapLayers extends Component<Props, State> {
     };
 
     handleInputChange = (event: Object) => {
+        const { layerGroups } = this.props;
         const layersToFind = event.target.value;
+        const activeGroups = layersToFind ? layerGroups.layerGroups.map(group => group.id) : [];
+        const activeSubGroups = layersToFind
+            ? layerGroups.layerList.filter(layer => layer.parentLayer)
+                .map(layer => layer.parentLayer)
+            : [];
 
-        this.setState({ layersToFind });
+        this.setState({ layersToFind, activeGroups, activeSubGroups });
     };
 
     render() {
