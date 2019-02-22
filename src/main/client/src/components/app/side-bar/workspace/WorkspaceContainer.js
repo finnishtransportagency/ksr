@@ -1,11 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
-import {
-    addNonSpatialContentToTable,
-    searchWorkspaceFeatures,
-    selectFeatures,
-} from '../../../../reducers/table/actions';
+import { searchWorkspaceFeatures, selectFeatures } from '../../../../reducers/table/actions';
 import { setWorkspace, setWorkspaceRejected, updateWorkspaces } from '../../../../reducers/workspace/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import Workspace from './Workspace';
@@ -41,9 +37,6 @@ const mapDispatchToProps = dispatch => ({
     },
     searchWorkspaceFeatures: (workspace, layerList) => {
         dispatch(searchWorkspaceFeatures(workspace, layerList));
-    },
-    addNonSpatialContentToTable: (layer, workspaceFeatures) => {
-        dispatch(addNonSpatialContentToTable(layer, workspaceFeatures));
     },
     setLayerList: (layerList) => {
         dispatch(setLayerList(layerList));

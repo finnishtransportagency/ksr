@@ -27,12 +27,9 @@ const setup = (prop) => {
             },
         ],
         fetching: true,
-        setLayerList: jest.fn(),
         view: {
             popup: { close: jest.fn() },
         },
-        setlayerList: jest.fn(),
-        addNonSpatialContentToTable: jest.fn(),
         activateLayers: jest.fn(),
         deactivateLayer: jest.fn(),
         activeGroups: [],

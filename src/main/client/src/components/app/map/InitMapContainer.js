@@ -10,11 +10,7 @@ import {
 } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import { setPropertyInfo } from '../../../reducers/search/actions';
-import {
-    setSingleLayerGeometry,
-    selectFeatures,
-    addNonSpatialContentToTable,
-} from './../../../reducers/table/actions';
+import { setSingleLayerGeometry, selectFeatures } from './../../../reducers/table/actions';
 import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/actions';
 import InitMap from './InitMap';
 import { setContractListInfo } from '../../../reducers/contract/actions';
@@ -62,9 +58,6 @@ const mapDispatchToProps = dispatch => ({
     },
     setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
         dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
-    },
-    addNonSpatialContentToTable: (layer, workspaceFeatures) => {
-        dispatch(addNonSpatialContentToTable(layer, workspaceFeatures));
     },
     setContractListInfo: (layerId, objectId) => {
         dispatch(setContractListInfo(layerId, objectId));
