@@ -32,3 +32,7 @@ export const ButtonLayerAddWrapper = styled.div`
         }
     }
 `;
+
+export const LayerFilterWrapper = styled.div`
+    padding: 0 1rem;
+`;

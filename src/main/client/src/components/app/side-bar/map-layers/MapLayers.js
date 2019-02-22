@@ -14,11 +14,13 @@ type Props = {
 type State = {
     activeGroups: number[],
     activeSubGroups: number[],
+    layersToFind: string,
 };
 
 const initialState = {
     activeGroups: [],
     activeSubGroups: [],
+    layersToFind: '',
 };
 
 class MapLayers extends Component<Props, State> {
@@ -29,6 +31,7 @@ class MapLayers extends Component<Props, State> {
 
         this.handleButtonClickLayers = this.handleButtonClickLayers.bind(this);
         this.toggleLayerLegend = this.toggleLayerLegend.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
         this.setActiveGroups = this.setActiveGroups.bind(this);
         this.setActiveSubGroups = this.setActiveSubGroups.bind(this);
     }
@@ -50,8 +53,14 @@ class MapLayers extends Component<Props, State> {
         this.props.toggleLayerLegend();
     };
 
+    handleInputChange = (event: Object) => {
+        const layersToFind = event.target.value;
+
+        this.setState({ layersToFind });
+    };
+
     render() {
-        const { activeGroups, activeSubGroups } = this.state;
+        const { layersToFind, activeGroups, activeSubGroups } = this.state;
         const {
             activeTab,
             setActiveModal,
@@ -67,6 +76,8 @@ class MapLayers extends Component<Props, State> {
                 setDropzoneActive={setDropzoneActive}
                 layerLegendActive={layerLegendActive}
                 toggleLayerLegend={this.toggleLayerLegend}
+                handleInputChange={this.handleInputChange}
+                layersToFind={layersToFind}
                 activeGroups={activeGroups}
                 activeSubGroups={activeSubGroups}
                 setActiveGroups={this.setActiveGroups}
