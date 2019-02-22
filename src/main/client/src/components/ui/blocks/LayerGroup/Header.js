@@ -15,7 +15,7 @@ const Header = styled.div`
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-right: 0.5rem;
+        padding-right: 0.5rem;
     }
     
     ${props => props.subLayer && css`
