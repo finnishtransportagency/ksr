@@ -1,13 +1,13 @@
 // @flow
 
 /**
-* Add or replace layers in layerlist.
+* Add or replace layers in layer list.
 * If there is already a layer with same id, then replace that with new one.
 *
-* @param layerList Array of layers
-* @param layersToBeAdded Array of layers to be added
+* @param {Object[]} layerList Array of layers.
+* @param {Object[]} layersToBeAdded Array of layers to be added.
 *
-* @returns layers Array of layers with new layer
+* @returns {Object[]} layers Array of layers including the new layer.
 */
 export const addOrReplaceLayers = (layerList: Object[], layersToBeAdded: Object[]) => {
     let layers = [...layerList];
@@ -23,14 +23,13 @@ export const addOrReplaceLayers = (layerList: Object[], layersToBeAdded: Object[
 };
 
 /**
-* Add or replace layers in layergroup for search-layers.
-* If layerGroup for search-features does not exists, then
-* no action will be taken.
+* Add or replace layers in layer group for search-layers.
+* If layer group for search-features does not exist no action will be taken.
 *
-* @param layerGroups Array of layergroups
-* @param layers Array of layers to be added
+* @param {Object[]} layerGroups Array of layer groups.
+* @param {Object[]} layers Array of layers to be added.
 *
-* @returns layerGroups Updated layerGroups
+* @returns {Object[]} layerGroups Updated layer groups.
 */
 export const addOrReplaceLayersInSearchGroup = (
     layerGroups: Object[],
@@ -45,12 +44,12 @@ export const addOrReplaceLayersInSearchGroup = (
 );
 
 /**
- * Add user layer or shapefile to layergroup
+ * Add user layer or shapefile to layer group.
  *
- * @param layerGroups Array of layergroups
- * @param layer Object of layer values
+ * @param {Object[]} layerGroups Array of layer groups.
+ * @param {Object} layer Object with layer values.
  *
- * @returns layerGroups Updated layerGroups
+ * @returns {Object[]} layerGroups Updated layer groups.
  */
 export const addLayerToUserGroup = (
     layerGroups: Object[],
