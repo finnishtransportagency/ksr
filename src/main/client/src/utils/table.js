@@ -5,13 +5,11 @@
 * features real attributes. After that, initialize _edited into an
 * empty Array.
 *
-* @param data Object A single feature
-*
-* @return Object Features edits applied, if any done
-*
+* @param {Object} data Object A single feature.
+* @return {Object} Object Features edits applied, if any done.
 */
 export const clearEdits = (data: Object) => (
-    Object.entries(data).reduce((a, c: [string, any]) => {
+    Object.entries(data).reduce((a: Object, c: [string, any]) => {
         if (c[0] === '_edited' && Array.isArray(c[1])) {
             c[1].forEach((value) => {
                 a[value.title] = value.editedData;
@@ -26,14 +24,13 @@ export const clearEdits = (data: Object) => (
 * Call's clearEdits -method for each feature, whose id is
 * present in editFeatures -array.
 *
-* @param data Object[] Array of layers data
-* @param editFeatures Number[] Array of objectIds
-*
-* @return Object[] Array of data, where edits are applied
+* @param {Object[]} data Array of layers data.
+* @param {number[]} editFeatures Array of objectIds.
+* @return {Object[]} Array of data, where edits are applied.
 */
 export const handleData = (
     data: Object[],
-    editFeatures: Number[],
+    editFeatures: number[],
 ): Object[] => data.map((d: Object) => (
     editFeatures.includes(d._id) ? clearEdits(d) : { ...d }
 ));
@@ -41,11 +38,9 @@ export const handleData = (
 /**
 * Applies edits on layers, which were succesfully saved.
 *
-* @param layers Object[] Array of maplayers
-* @param edits Object[] Response from applyEdits from ArcGIS Server
-*
-* @return Object[] Array of maplayers, were edits are applied
-*
+* @param {Object[]} layers Array of maplayers.
+* @param {Object[]} edits Response from applyEdits from ArcGIS Server.
+* @return {Object[]} Array of maplayers, were edits are applied.
 */
 export const applyEdits = (
     layers: Object[],

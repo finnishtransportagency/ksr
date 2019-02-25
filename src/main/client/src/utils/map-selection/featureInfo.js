@@ -58,7 +58,7 @@ const featureInfoToGraphic = (layer, content) => (
                 || typeof feat.properties[c] === 'boolean'
             ) {
                 return a.concat([{ name: c, value: String(feat.properties[c]).trim() }]);
-            } else if (feat.properties[c] === null) {
+            } if (feat.properties[c] === null) {
                 return a.concat([{ name: c, value: '--' }]);
             }
             return a;
@@ -116,8 +116,8 @@ const fetchFeatureInfo = (
  *
  * @returns {Array} A new array that is flattened and is a result of func.
  */
-const flatMap = (arr, func) => (
-    arr.reduce((acc, cur) => acc.concat(func(cur)), [])
+const flatMap = (arr, func): any[] => (
+    arr.reduce((acc, cur) => (acc.concat(func(cur)): any[]), [])
 );
 
 /**

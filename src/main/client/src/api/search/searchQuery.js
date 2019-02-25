@@ -17,20 +17,19 @@ export const fetchSearchQuery = (
     queryString: string,
     title: string,
     data: Object,
-): any =>
-    fetch(`api/proxy/layer/${layerId}/query?${
-        querystring.stringify({
-            where: queryString,
-            f: 'pjson',
-            outFields: '*',
-        })
-    }`, config())
-        .then(r => r.json())
-        .then((r) => {
-            if (!r.error && r.features.length > 0) data.layers.push({ ...r, id: layerId, title });
-            return data;
-        })
-        .catch(err => console.log(err));
+): any => fetch(`api/proxy/layer/${layerId}/query?${
+    querystring.stringify({
+        where: queryString,
+        f: 'pjson',
+        outFields: '*',
+    })
+}`, config())
+    .then(r => r.json())
+    .then((r) => {
+        if (!r.error && r.features.length > 0) data.layers.push({ ...r, id: layerId, title });
+        return data;
+    })
+    .catch(err => console.log(err));
 
 /**
  * Fetch search suggestions for given column.
@@ -40,34 +39,31 @@ export const fetchSearchQuery = (
  * @param {string} queryColumn Column which the suggestions are fetched for.
  * @param {any} signal Request signal which can be used to abort the request.
  *
- * @returns {String[]} Suggested search words.
+ * @returns {string[]} Suggested search words.
  */
 export const fetchSearchSuggestions = (
     layerId: string,
     whereQueryString: string,
     queryColumn: string,
     signal: any,
-) => {
-    const suggestions = [];
-    return fetch(`api/proxy/layer/${layerId}/query?${
-        querystring.stringify({
-            where: whereQueryString,
-            f: 'pjson',
-            outFields: queryColumn,
-        })
-    }`, { ...config(), signal })
-        .then(handleErrors)
-        .then(r => r.json())
-        .then((r) => {
-            if (!r.error && r.features.length) {
-                r.features.forEach((feature) => {
-                    suggestions.push(feature.attributes[queryColumn]);
-                });
-            }
-            return suggestions.slice(0, 10);
-        })
-        .catch(err => console.log(err));
-};
+) => fetch(`api/proxy/layer/${layerId}/query?${
+    querystring.stringify({
+        where: whereQueryString,
+        f: 'pjson',
+        outFields: queryColumn,
+    })
+}`, { ...config(), signal })
+    .then(handleErrors)
+    .then(r => r.json())
+    .then((r) => {
+        if (!r.error && r.features.length) {
+            return r.features
+                .map(feature => feature.attributes[queryColumn])
+                .slice(0, 10);
+        }
+        return [];
+    })
+    .catch(err => console.log(err));
 
 /**
  * Query for finding features with given layer and query string.

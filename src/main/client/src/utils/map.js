@@ -252,27 +252,25 @@ export const drawPropertyArea = async (
         'esri/geometry/Polygon',
         'esri/Graphic',
     ]);
-    const createPolygon = vertices =>
-        new Polygon({
-            rings: vertices,
-            spatialReference: view.spatialReference,
-        });
+    const createPolygon = vertices => new Polygon({
+        rings: vertices,
+        spatialReference: view.spatialReference,
+    });
 
-    const createPolygonGraphic = (geometry, propertyId): any =>
-        new Graphic({
-            geometry,
-            symbol: {
-                type: 'simple-fill',
-                style: 'solid',
-                color: 'rgba(247, 69, 69, 0.75)',
-                outline: {
-                    color: '#444444',
-                    width: 1,
-                },
+    const createPolygonGraphic = (geometry, propertyId): any => new Graphic({
+        geometry,
+        symbol: {
+            type: 'simple-fill',
+            style: 'solid',
+            color: 'rgba(247, 69, 69, 0.75)',
+            outline: {
+                color: '#444444',
+                width: 1,
             },
-            id: 'propertyArea',
-            propertyId,
-        });
+        },
+        id: 'propertyArea',
+        propertyId,
+    });
 
     let propertyGraphics = [];
     features.forEach((property) => {
@@ -425,12 +423,12 @@ export const zoomToFeatures = async (view: Object, features: Object[]) => {
                 y: feature.geometry.y,
                 spatialReference: { wkid: 3067 },
             });
-        } else if (feature.geometry.rings && !feature.geometry.__accessor__) {
+        } if (feature.geometry.rings && !feature.geometry.__accessor__) {
             return new Polygon({
                 rings: feature.geometry.rings,
                 spatialReference: { wkid: 3067 },
             });
-        } else if (feature.geometry.paths && !feature.geometry.__accessor__) {
+        } if (feature.geometry.paths && !feature.geometry.__accessor__) {
             return new Polyline({
                 paths: feature.geometry.paths,
                 spatialReference: { wkid: 3067 },

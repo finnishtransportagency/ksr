@@ -64,7 +64,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         });
     };
 
-    handleTypeChange = (type: String) => {
+    handleTypeChange = (type: string) => {
         const { layerValues } = this.state;
         this.setState({
             layerValues: {
@@ -74,7 +74,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         });
     };
 
-    handleCheckboxChange = (name: String) => {
+    handleCheckboxChange = (name: string) => {
         const { layerValues } = this.state;
         this.setState({
             layerValues: {
@@ -123,8 +123,8 @@ class ModalAddUserLayer extends Component<Props, State> {
         const { layerValues, optionsType } = this.state;
 
         const disabled = layerValues.type !== 'agfs'
-            ? layerValues.name.length > 0 && layerValues.url.length > 0 &&
-            layerValues.layers.length > 0
+            ? layerValues.name.length > 0 && layerValues.url.length > 0
+            && layerValues.layers.length > 0
             : layerValues.name.length > 0 && layerValues.url.length > 0;
 
         const modalSubmit = [{

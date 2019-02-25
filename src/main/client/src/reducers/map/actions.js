@@ -197,10 +197,9 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                 if (l.type === 'agfs') {
                     layerData(l.id)
                         .then((layer) => {
-                            l.fields =
-                                layer.fields && layer.fields.map((f, index) => ({
-                                    value: index, label: f.alias, type: f.type, name: f.name,
-                                }));
+                            l.fields = layer.fields && layer.fields.map((f, index) => ({
+                                value: index, label: f.alias, type: f.type, name: f.name,
+                            }));
                             return l;
                         })
                         .then((r) => {
@@ -241,7 +240,7 @@ export const removeUserLayer = (layerId: string) => ({
 });
 
 export const removeUserLayerConfirmed = (
-    layerId: String,
+    layerId: string,
     layerList: Array<Object>,
 ) => (dispatch: Function) => {
     deleteUserLayer(layerId).then((res) => {

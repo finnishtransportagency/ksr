@@ -6,7 +6,7 @@
  *
  * @returns {string} Parsed input type.
  */
-export const parseColumnType = (type: String) => {
+export const parseColumnType = (type: string) => {
     let typeValue = null;
     switch (type) {
         case 'esriFieldTypeString':
@@ -39,8 +39,7 @@ export const findGeometryType = (
     layerId: string,
     layerList: Object[],
 ) => {
-    const layer = layerList.find(l =>
-        l.id === layerId);
+    const layer = layerList.find(l => l.id === layerId);
     if (layer) {
         return layer.geometryType;
     }
