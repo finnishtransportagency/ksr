@@ -14,10 +14,10 @@ export const parseColumns = (id, data) => {
     return data.map(f => ({
         Header: f.alias,
         accessor: `${id}/${f.name}`,
-        show: f.type !== 'geometry' &&
-            f.name.toLowerCase() !== 'objectid' &&
-            f.name.toLowerCase() !== 'objectid_1' &&
-            f.name.toLowerCase() !== 'symbolidentifier',
+        show: f.type !== 'geometry'
+            && f.name.toLowerCase() !== 'objectid'
+            && f.name.toLowerCase() !== 'objectid_1'
+            && f.name.toLowerCase() !== 'symbolidentifier',
         editable: f.editable,
         nullable: f.nullable,
         length: f.length,
@@ -92,9 +92,9 @@ export const mergeData = (currentData, newData) => {
         const matchingFeature = data.find(f => f._id === newFeature._id);
         if (matchingFeature) {
             Object.keys(matchingFeature).forEach((key) => {
-                matchingFeature[key] = newFeature[key] === undefined ?
-                    matchingFeature[key] :
-                    newFeature[key];
+                matchingFeature[key] = newFeature[key] === undefined
+                    ? matchingFeature[key]
+                    : newFeature[key];
                 return matchingFeature;
             });
         } else {
@@ -187,8 +187,8 @@ export const updateLayerColumns = (activeTable, columns, currentLayers) => (
  */
 export const syncWithLayersList = (currentLayers, layerList, currentActiveTable) => {
     const layers = currentLayers.filter(l => layerList.find(ll => (
-        (ll.id === l.id && l.id.indexOf('.s') > 0) ||
-        (ll.id === l.id && ll.active === true))) !== undefined);
+        (ll.id === l.id && l.id.indexOf('.s') > 0)
+        || (ll.id === l.id && ll.active === true))) !== undefined);
 
     const editedLayers = clone(layers, true, 3);
     const activeTable = getActiveTable(layers, currentActiveTable);

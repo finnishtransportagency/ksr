@@ -6,7 +6,7 @@ import { addContractColumn } from '../../../../utils/contracts/contractColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';
 import { WrapperReactTableNoTable, TableSelect } from './styles';
-import strings from './../../../../translations';
+import strings from '../../../../translations';
 
 type Props = {
     fetching: boolean,
@@ -53,7 +53,9 @@ class ReactTable extends Component<Props> {
     getCellContent = (layer: Object, cellField: Object, cellInfo: Object) => {
         if (cellField && cellField.type === 'esriFieldTypeDate') {
             return (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString();
-        } else if (cellField && cellField.type === 'esriFieldTypeDouble') {
+        }
+
+        if (cellField && cellField.type === 'esriFieldTypeDouble') {
             return layer.data[cellInfo.index][cellInfo.column.id]
                 ? layer.data[cellInfo.index][cellInfo.column.id].toFixed(3)
                 : '0.000';
@@ -77,7 +79,9 @@ class ReactTable extends Component<Props> {
         const { domain } = cellField;
         if (content === null) {
             return null;
-        } else if (domain && (domain.type === 'codedValue' || domain.type === 'coded-value')) {
+        }
+
+        if (domain && (domain.type === 'codedValue' || domain.type === 'coded-value')) {
             const codedValue = domain.codedValues.find(cv => cv.code === content);
             if (codedValue) {
                 return codedValue.name;
@@ -105,7 +109,8 @@ class ReactTable extends Component<Props> {
     };
 
     toggleSelection = (id: string, shiftKey: string, row: Object) => {
-        this.props.toggleSelection(row);
+        const { toggleSelection } = this.props;
+        toggleSelection(row);
     };
 
     renderSelect = (cellField: Object, content: any, layer: Object, cellInfo: Object) => {
@@ -181,9 +186,9 @@ class ReactTable extends Component<Props> {
                 const contentEditable = this.isCellEditable(currentLayer, cellField);
                 const content = this.getCellContent(layer, cellField, cellInfo);
                 if (
-                    cellField.domain &&
-                    (cellField.domain.type === 'codedValue' || cellField.domain.type === 'coded-value') &&
-                    contentEditable
+                    cellField.domain
+                    && (cellField.domain.type === 'codedValue' || cellField.domain.type === 'coded-value')
+                    && contentEditable
                 ) {
                     return this.renderSelect(cellField, content, layer, cellInfo);
                 }
@@ -204,24 +209,28 @@ class ReactTable extends Component<Props> {
                     {strings.table.noTableText}
                 </WrapperReactTableNoTable>
             );
-        } else if (!fetching && layerList) {
+        }
+
+        if (!fetching && layerList) {
             const { columns, data } = layer;
 
             const currentLayer: any = layerList.find(ll => ll.id === layer.id);
-            const contractColumns = currentLayer &&
-            currentLayer.hasRelations &&
-            currentLayer.type !== 'agfl'
+            const contractColumns = currentLayer
+            && currentLayer.hasRelations
+            && currentLayer.type !== 'agfl'
                 ? addContractColumn(this.handleContractClick, columns)
                 : null;
 
-            return (<ReactTableView
-                data={data}
-                toggleSelection={this.toggleSelection}
-                columns={contractColumns || columns}
-                selectAll={selectAll}
-                toggleSelectAll={() => toggleSelectAll(layer.id)}
-                renderEditable={this.renderEditable}
-            />);
+            return (
+                <ReactTableView
+                    data={data}
+                    toggleSelection={this.toggleSelection}
+                    columns={contractColumns || columns}
+                    selectAll={selectAll}
+                    toggleSelectAll={() => toggleSelectAll(layer.id)}
+                    renderEditable={this.renderEditable}
+                />
+            );
         }
         return <LoadingIcon loading={fetching} />;
     }
