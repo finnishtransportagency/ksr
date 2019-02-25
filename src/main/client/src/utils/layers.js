@@ -1,3 +1,5 @@
+// @flow
+
 /**
 * Add or replace layers in layerlist.
 * If there is already a layer with same id, then replace that with new one.
@@ -7,7 +9,7 @@
 *
 * @returns layers Array of layers with new layer
 */
-export const addOrReplaceLayers = (layerList, layersToBeAdded) => {
+export const addOrReplaceLayers = (layerList: Object[], layersToBeAdded: Object[]) => {
     let layers = [...layerList];
     layersToBeAdded.forEach((layer) => {
         const i = layers.findIndex(l => l.id === layer.id);
@@ -30,7 +32,10 @@ export const addOrReplaceLayers = (layerList, layersToBeAdded) => {
 *
 * @returns layerGroups Updated layerGroups
 */
-export const addOrReplaceLayersInSearchGroup = (layerGroups, layers) => (
+export const addOrReplaceLayersInSearchGroup = (
+    layerGroups: Object[],
+    layers: Object[],
+): Object[] => (
     layerGroups.map((lg) => {
         if (lg.type === 'search') {
             return { ...lg, layers: addOrReplaceLayers(lg.layers, layers) };
@@ -47,7 +52,10 @@ export const addOrReplaceLayersInSearchGroup = (layerGroups, layers) => (
  *
  * @returns layerGroups Updated layerGroups
  */
-export const addLayerToUserGroup = (layerGroups, layer) => layerGroups.map((lg) => {
+export const addLayerToUserGroup = (
+    layerGroups: Object[],
+    layer: Object,
+): Object[] => layerGroups.map((lg) => {
     if (lg.name === 'Käyttäjätasot') {
         return {
             ...lg,
