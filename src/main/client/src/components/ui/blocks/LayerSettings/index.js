@@ -56,6 +56,7 @@ const Toggle = styled.div`
     
     .symbolWrapper {
         align-self: center;
+        max-width: 1em;
     };
 
     ${props => !props.viewable && css`
