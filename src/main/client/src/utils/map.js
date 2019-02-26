@@ -383,12 +383,16 @@ export const zoomToFeatures = async (view: Object, features: Object[]) => {
                 y: feature.geometry.y,
                 spatialReference: { wkid: 3067 },
             });
-        } if (feature.geometry.rings && !feature.geometry.__accessor__) {
+        }
+
+        if (feature.geometry.rings && !feature.geometry.__accessor__) {
             return new Polygon({
                 rings: feature.geometry.rings,
                 spatialReference: { wkid: 3067 },
             });
-        } if (feature.geometry.paths && !feature.geometry.__accessor__) {
+        }
+
+        if (feature.geometry.paths && !feature.geometry.__accessor__) {
             return new Polyline({
                 paths: feature.geometry.paths,
                 spatialReference: { wkid: 3067 },
