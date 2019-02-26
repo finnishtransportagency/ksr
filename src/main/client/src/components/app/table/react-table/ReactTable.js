@@ -192,7 +192,7 @@ class ReactTable extends Component<Props> {
         const { layer, layerList, activeTable } = this.props;
         const currentLayer = layerList.find(l => l.id === activeTable);
 
-        if (currentLayer) {
+        if (currentLayer && currentLayer.fields) {
             const cellField = currentLayer.fields.find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
             if (cellField) {
                 const contentEditable = this.isCellEditable(currentLayer, cellField);
@@ -230,7 +230,8 @@ class ReactTable extends Component<Props> {
             const contractColumns = (currentLayer
             && currentLayer.hasRelations
             && currentLayer.type !== 'agfl')
-            || (currentLayer.type === 'agfl'
+            || (currentLayer
+                && currentLayer.type === 'agfl'
                 && !currentLayer.relationColumnIn
                 && !currentLayer.relationColumnOutnull)
                 ? addContractColumn(this.handleContractClick, columns, currentLayer.type)
