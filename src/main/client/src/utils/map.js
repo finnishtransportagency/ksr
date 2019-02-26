@@ -182,7 +182,7 @@ export const highlight = async (
         view.map.layers.forEach((layer) => {
             if (layer.queryFeatures) {
                 const ids = selectedFeatures
-                    .filter(f => f._layerId.startsWith(layer.id))
+                    .filter(f => f._layerId === layer.id)
                     .map(f => parseInt(f._id, 10));
                 const { objectIdField } = layer;
 
