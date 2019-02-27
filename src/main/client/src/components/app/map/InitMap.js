@@ -18,6 +18,7 @@ import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
 import { copyFeature } from '../../../utils/map-selection/copyFeature';
 import { removeGraphicsFromMap } from '../../../utils/map';
+import { DigitransitLocatorBuilder } from '../../../utils/geocode';
 
 type Props = {
     layerList: Array<any>,
@@ -61,7 +62,9 @@ type Props = {
 };
 
 class EsriMap extends Component<Props> {
-    legendWidget: ?Object = null; // eslint-disable-line react/sort-comp
+    legendWidget: ?Object = null;
+
+    // eslint-disable-line react/sort-comp
     printWidget: ?Object = null; // eslint-disable-line react/sort-comp
 
     componentDidUpdate(prevProps: Props) {
@@ -72,10 +75,26 @@ class EsriMap extends Component<Props> {
         }
     }
 
-    initMap = () => {
+    async initMap() {
         esriLoader.loadCss('https://js.arcgis.com/4.10/esri/css/main.css');
 
-        esriLoader
+        const [
+            MapView,
+            Map,
+            Locate,
+            Track,
+            ScaleBar,
+            SpatialReference,
+            Compass,
+            Point,
+            Print,
+            GraphicsLayer,
+            Graphic,
+            Legend,
+            CoordinateConversion,
+            Conversion,
+            Search,
+        ] = await esriLoader
             .loadModules([
                 'esri/views/MapView',
                 'esri/Map',
@@ -91,398 +110,392 @@ class EsriMap extends Component<Props> {
                 'esri/widgets/Legend',
                 'esri/widgets/CoordinateConversion',
                 'esri/widgets/CoordinateConversion/support/Conversion',
-            ])
-            .then(([
-                MapView,
-                Map,
-                Locate,
-                Track,
-                ScaleBar,
-                SpatialReference,
-                Compass,
-                Point,
-                Print,
-                GraphicsLayer,
-                Graphic,
-                Legend,
-                CoordinateConversion,
-                Conversion,
-            ]) => {
-                const {
-                    mapCenter,
-                    mapScale,
-                    selectFeatures,
-                    printServiceUrl,
-                } = this.props;
+                'esri/widgets/Search',
+            ]);
 
-                // GraphicsLayer to hold graphics created via sketch view model
-                const tempGraphicsLayer = new GraphicsLayer();
-                const map = new Map({
-                    layers: [tempGraphicsLayer],
-                });
+        const {
+            mapCenter,
+            mapScale,
+            selectFeatures,
+            printServiceUrl,
+        } = this.props;
 
-                const epsg3067 = new SpatialReference(3067);
+        // GraphicsLayer to hold graphics created via sketch view model
+        const tempGraphicsLayer = new GraphicsLayer();
+        const map = new Map({
+            layers: [tempGraphicsLayer],
+        });
 
-                const center = new Point({
-                    x: mapCenter[0],
-                    y: mapCenter[1],
-                    spatialReference: epsg3067,
-                });
+        const epsg3067 = new SpatialReference(3067);
 
-                const view = new MapView({
-                    container: 'mapView',
-                    map,
-                    center,
-                    scale: mapScale,
-                    spatialReference: epsg3067,
-                    constraints: {
-                        maxScale: 500,
-                        minScale: 5000000,
-                    },
-                    popup: {
-                        autoOpenEnabled: false,
-                        collapseEnabled: false,
-                        dockOptions: {
-                            position: 'top-left',
-                        },
-                        highlightEnabled: false,
-                        spinnerEnabled: true,
-                    },
-                    highlightOptions: {
-                        color: colorFeatureHighlight,
-                        fillOpacity: 0,
-                    },
-                });
+        const center = new Point({
+            x: mapCenter[0],
+            y: mapCenter[1],
+            spatialReference: epsg3067,
+        });
 
-                const compass = new Compass({
-                    view,
-                });
+        const view = new MapView({
+            container: 'mapView',
+            map,
+            center,
+            scale: mapScale,
+            spatialReference: epsg3067,
+            constraints: {
+                maxScale: 500,
+                minScale: 5000000,
+            },
+            popup: {
+                autoOpenEnabled: false,
+                collapseEnabled: false,
+                dockOptions: {
+                    position: 'top-left',
+                },
+                highlightEnabled: false,
+                spinnerEnabled: true,
+            },
+            highlightOptions: {
+                color: colorFeatureHighlight,
+                fillOpacity: 0,
+            },
+        });
 
-                const locate = new Locate({
-                    view,
-                });
+        const compass = new Compass({
+            view,
+        });
 
-                const track = new Track({
-                    view,
-                });
+        const locate = new Locate({
+            view,
+        });
 
-                const scaleBar = new ScaleBar({
-                    view,
-                    unit: 'metric',
-                });
+        const track = new Track({
+            view,
+        });
 
-                this.legendWidget = new Legend({
-                    view,
-                    style: {
-                        type: 'card',
-                    },
-                });
+        const scaleBar = new ScaleBar({
+            view,
+            unit: 'metric',
+        });
 
-                this.printWidget = new Print({
-                    view,
-                    printServiceUrl,
-                });
+        const search = new Search({
+            view,
+            locationEnabled: false,
+            includeDefaultSources: false,
+            sources: [
+                {
+                    locator: new (await DigitransitLocatorBuilder.build())(),
+                    placeholder: strings.geocode.placeholder,
+                    name: 'Digitransit',
+                },
+            ],
+        });
 
-                view.ui.move('zoom', 'top-right');
-                view.ui.add(
-                    [
-                        compass,
-                        locate,
-                        track,
-                        'draw-tool-outer-wrapper',
-                        'select-tool-outer-wrapper',
-                        'create-new-feature-wrapper',
-                    ],
-                    'top-right',
-                );
-                view.ui.add([scaleBar], 'bottom-left');
+        this.legendWidget = new Legend({
+            view,
+            style: {
+                type: 'card',
+            },
+        });
 
-                if (!isMobile) {
-                    const coordinateWidget = new CoordinateConversion({
-                        view,
-                        multipleConversions: false,
-                    });
+        this.printWidget = new Print({
+            view,
+            printServiceUrl,
+        });
 
-                    const formats = coordinateWidget.formats
-                        .filter(f => f.name === 'basemap' || f.name === 'xy');
+        view.ui.add([search], 'top-right');
+        view.ui.move('zoom', 'top-right');
+        view.ui.add(
+            [
+                compass,
+                locate,
+                track,
+                'draw-tool-outer-wrapper',
+                'select-tool-outer-wrapper',
+                'create-new-feature-wrapper',
+            ],
+            'top-right',
+        );
+        view.ui.add([scaleBar], 'bottom-left');
 
-                    const epsg = formats.items.find(format => format.name === 'basemap');
-                    const wgs = formats.items.find(format => format.name === 'xy');
+        if (!isMobile) {
+            const coordinateWidget = new CoordinateConversion({
+                view,
+                multipleConversions: false,
+            });
 
-                    if (epsg && wgs) {
-                        const epsgClone = clone(epsg, true, 3);
-                        epsgClone.name = 'ETRS-TM35FIN';
-                        const wgsClone = clone(wgs, true, 3);
-                        wgsClone.name = 'WGS84';
+            const formats = coordinateWidget.formats
+                .filter(f => f.name === 'basemap' || f.name === 'xy');
 
-                        coordinateWidget.formats.removeAll();
-                        coordinateWidget.formats.addMany([epsgClone, wgsClone]);
+            const epsg = formats.items.find(format => format.name === 'basemap');
+            const wgs = formats.items.find(format => format.name === 'xy');
 
-                        coordinateWidget.conversions.removeAll();
-                        coordinateWidget.conversions.add(new Conversion({ format: epsgClone }));
-                        view.ui.add([coordinateWidget], 'bottom-right');
-                    }
-                }
+            if (epsg && wgs) {
+                const epsgClone = clone(epsg, true, 3);
+                epsgClone.name = 'ETRS-TM35FIN';
+                const wgsClone = clone(wgs, true, 3);
+                wgsClone.name = 'WGS84';
 
-                // Change compass widgets default dial icon to compass icon.
-                view.when(() => {
-                    const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
-                    compassIcon.classList.remove('esri-icon-dial');
-                    compassIcon.classList.add('esri-icon-compass');
-                });
+                coordinateWidget.formats.removeAll();
+                coordinateWidget.formats.addMany([epsgClone, wgsClone]);
 
-                view.on('click', (event) => {
-                    view.popup.close();
+                coordinateWidget.conversions.removeAll();
+                coordinateWidget.conversions.add(new Conversion({ format: epsgClone }));
+                view.ui.add([coordinateWidget], 'bottom-right');
+            }
+        }
 
-                    view.hitTest(event).then(async (response) => {
-                        const { results } = response;
-                        const { layerList } = this.props;
-                        const filteredResults = results.filter(item =>
-                            item.graphic.id !== 'buffer'
+        // Change compass widgets default dial icon to compass icon.
+        view.when(() => {
+            const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
+            compassIcon.classList.remove('esri-icon-dial');
+            compassIcon.classList.add('esri-icon-compass');
+        });
+
+        view.on('click', (event) => {
+            view.popup.close();
+
+            view.hitTest(event).then(async (response) => {
+                const { results } = response;
+                const { layerList, activeTool, setHasGraphics } = this.props;
+                const filteredResults = results.filter(item => item.graphic.id !== 'buffer'
                             && item.graphic.type !== 'draw-graphic'
                             && item.graphic.type !== 'draw-measure-label'
                             && item.graphic.id !== 'selected-popup-feature'
                             && item.graphic.id !== 'propertyArea');
 
-                        if (this.props.activeTool !== 'drawErase' && !filteredResults.find(item =>
-                            item.graphic.layer.type === 'graphics')) {
-                            const { activeAdminTool, geometryType } = this.props;
-                            view.popup.open({
-                                location: event.mapPoint,
-                                promises: [mapSelectPopup(
-                                    filteredResults,
-                                    view,
-                                    selectFeatures,
-                                    layerList,
-                                    activeAdminTool,
-                                    geometryType,
-                                    event.x,
-                                    event.y,
-                                )],
-                            });
-                        }
+                if (activeTool !== 'drawErase' && !filteredResults.find(item => item.graphic.layer.type === 'graphics')) {
+                    const { activeAdminTool, geometryType } = this.props;
+                    view.popup.open({
+                        location: event.mapPoint,
+                        promises: [mapSelectPopup(
+                            filteredResults,
+                            view,
+                            selectFeatures,
+                            layerList,
+                            activeAdminTool,
+                            geometryType,
+                            event.x,
+                            event.y,
+                        )],
+                    });
+                }
 
-                        if (results.length) {
-                            if (this.props.activeTool === 'drawErase') {
-                                results.forEach((r) => {
-                                    if (r.graphic && (r.graphic.type === 'draw-graphic'
+                if (results.length) {
+                    if (activeTool === 'drawErase') {
+                        results.forEach((r) => {
+                            if (r.graphic && (r.graphic.type === 'draw-graphic'
                                         || r.graphic.type === 'draw-measure-label')) {
-                                        const graphicsToRemove = view.graphics
-                                            .filter(g => g.id === r.graphic.id);
-                                        view.graphics.removeMany(graphicsToRemove);
-                                        const hasGraphics = view
+                                const graphicsToRemove = view.graphics
+                                    .filter(g => g.id === r.graphic.id);
+                                view.graphics.removeMany(graphicsToRemove);
+                                const hasGraphics = view
                                             && view.graphics
                                             && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
-                                        this.props.setHasGraphics(hasGraphics);
-                                    }
-                                });
+                                setHasGraphics(hasGraphics);
                             }
-                        }
-                    });
-                });
-
-                (document.getElementById: Function)('select-tool-outer-wrapper').classList
-                    .remove('esri-component');
-
-                (document.getElementById: Function)('draw-tool-outer-wrapper').classList
-                    .remove('esri-component');
-
-                (document.getElementById: Function)('create-new-feature-wrapper').classList
-                    .remove('esri-component');
-
-                view.popup.on('trigger-action', async (evt) => {
-                    const {
-                        layerList,
-                        setActiveModal,
-                        setSingleLayerGeometry,
-                        setPropertyInfo,
-                        setContractListInfo,
-                        showConfirmModal,
-                        authorities,
-                        setActiveFeatureMode,
-                        sketchViewModel,
-                        setTempGraphicsLayer,
-                        editModeActive,
-                    } = this.props;
-                    const { x, y } = view.popup.location;
-
-                    const selectedFeature = nestedVal(
-                        view,
-                        ['popup', 'viewModel', 'selectedFeature'],
-                    );
-
-                    const geometry = nestedVal(selectedFeature, ['geometry']);
-                    const layer = layerList.find(ll => nestedVal(
-                        selectedFeature,
-                        ['layer', 'id'],
-                    ) === ll.id);
-
-                    const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
-                    const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
-
-                    const copySelectedFeature = async (activeFeatureMode: string) => {
-                        const copiedFeature = view.popup.viewModel.selectedFeature;
-                        if (tempGraphicsLayer.graphics.length) {
-                            const {
-                                body,
-                                acceptText,
-                                cancelText,
-                            } = editModeActive
-                                ? strings.esriMap.confirmEditReplace
-                                : strings.esriMap.confirmReplace;
-                            showConfirmModal(body, acceptText, cancelText, async () => {
-                                await copyFeature(
-                                    view,
-                                    tempGraphicsLayer,
-                                    copiedFeature,
-                                    sketchViewModel,
-                                    setTempGraphicsLayer,
-                                );
-                                setActiveFeatureMode(activeFeatureMode);
-                            });
-                        } else {
-                            await copyFeature(
-                                view,
-                                tempGraphicsLayer,
-                                copiedFeature,
-                                sketchViewModel,
-                                setTempGraphicsLayer,
-                            );
-                            setActiveFeatureMode(activeFeatureMode);
-                        }
-                    };
-
-                    switch (evt.action.id) {
-                        case 'select-intersect':
-                            queryFeatures(
-                                geometry,
-                                view,
-                                selectFeatures,
-                                layer && layer.id,
-                            );
-                            break;
-                        case 'set-buffer':
-                            setSingleLayerGeometry(geometry);
-                            setActiveModal('bufferSelectedData');
-                            break;
-                        case 'get-property-info':
-                            setPropertyInfo({ x, y }, view, 'propertyArea', authorities);
-                            break;
-                        case 'google-street-view':
-                            getStreetViewLink(x, y);
-                            break;
-                        case 'contract-link':
-                            if (layer) {
-                                setContractListInfo(layer.id, objectId);
-                                setActiveModal('featureContracts');
-                            }
-                            break;
-                        case 'copy-feature':
-                            await copySelectedFeature('create');
-                            break;
-                        case 'edit-feature':
-                            await copySelectedFeature('edit');
-                            break;
-                        default:
-                            break;
-                    }
-                });
-
-                view.popup.viewModel.watch('selectedFeature', (selectedFeature) => {
-                    removeGraphicsFromMap(view, 'selected-popup-feature');
-
-                    if (selectedFeature && selectedFeature.geometry) {
-                        const newFeature = new Graphic({
-                            geometry: selectedFeature.geometry,
-                            id: 'selected-popup-feature',
                         });
-                        switch (newFeature.geometry.type) {
-                            case 'point':
-                                newFeature.symbol = {
-                                    type: 'simple-marker',
-                                    style: 'circle',
-                                    size: 6,
-                                    color: colorMainDark,
-                                    outline: {
-                                        color: colorBackgroundDark,
-                                        width: 1,
-                                    },
-                                };
-                                break;
-                            case 'polyline':
-                                newFeature.symbol = {
-                                    type: 'simple-line',
-                                    color: colorMainDark,
-                                    width: 2,
-                                };
-                                break;
-                            default:
-                                newFeature.symbol = {
-                                    type: 'simple-fill',
-                                    color: colorMainDark,
-                                    outline: {
-                                        color: colorBackgroundDark,
-                                        width: 1,
-                                    },
-                                };
-                                break;
-                        }
-                        view.graphics.add(newFeature);
-                    }
-                });
-
-                view.popup.watch('visible', (visible) => {
-                    if (!visible) {
-                        removeGraphicsFromMap(view, 'selected-popup-feature');
-                    }
-                });
-
-                const { removeLoading } = this.props;
-                view.when(() => removeLoading());
-
-                return { view, tempGraphicsLayer };
-            })
-            .then(async (r) => {
-                const {
-                    setWorkspaceRejected,
-                    layerList,
-                    setMapView,
-                    setTempGraphicsLayer,
-                    activateLayers,
-                    deactivateLayer,
-                } = this.props;
-
-                // Set initial view and temp graphics layer to redux
-                setMapView(r.view);
-                setTempGraphicsLayer(r.tempGraphicsLayer);
-
-                let workspace = await getWorkspaceFromUrl();
-                if (workspace) {
-                    await loadWorkspace(
-                        workspace,
-                        layerList,
-                        r.view,
-                        activateLayers,
-                        deactivateLayer,
-                    );
-                } else {
-                    workspace = await fetchWorkspace(null);
-                    if (workspace) {
-                        await loadWorkspace(
-                            workspace,
-                            layerList,
-                            r.view,
-                            activateLayers,
-                            deactivateLayer,
-                        );
-                    } else {
-                        activateLayers(layerList.filter(layer => layer.visible));
-                        setWorkspaceRejected();
                     }
                 }
-                window.history.pushState({}, document.title, window.location.pathname);
             });
-    };
+        });
+
+        (document.getElementById: Function)('select-tool-outer-wrapper').classList
+            .remove('esri-component');
+
+        (document.getElementById: Function)('draw-tool-outer-wrapper').classList
+            .remove('esri-component');
+
+        (document.getElementById: Function)('create-new-feature-wrapper').classList
+            .remove('esri-component');
+
+        view.popup.on('trigger-action', async (evt) => {
+            const {
+                layerList,
+                setActiveModal,
+                setSingleLayerGeometry,
+                setPropertyInfo,
+                setContractListInfo,
+                showConfirmModal,
+                authorities,
+                setActiveFeatureMode,
+                sketchViewModel,
+                setTempGraphicsLayer,
+                editModeActive,
+            } = this.props;
+            const { x, y } = view.popup.location;
+
+            const selectedFeature = nestedVal(
+                view,
+                ['popup', 'viewModel', 'selectedFeature'],
+            );
+
+            const geometry = nestedVal(selectedFeature, ['geometry']);
+            const layer = layerList.find(ll => nestedVal(
+                selectedFeature,
+                ['layer', 'id'],
+            ) === ll.id);
+
+            const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
+            const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
+
+            const copySelectedFeature = async (activeFeatureMode: string) => {
+                const copiedFeature = view.popup.viewModel.selectedFeature;
+                if (tempGraphicsLayer.graphics.length) {
+                    const {
+                        body,
+                        acceptText,
+                        cancelText,
+                    } = editModeActive
+                        ? strings.esriMap.confirmEditReplace
+                        : strings.esriMap.confirmReplace;
+                    showConfirmModal(body, acceptText, cancelText, async () => {
+                        await copyFeature(
+                            view,
+                            tempGraphicsLayer,
+                            copiedFeature,
+                            sketchViewModel,
+                            setTempGraphicsLayer,
+                        );
+                        setActiveFeatureMode(activeFeatureMode);
+                    });
+                } else {
+                    await copyFeature(
+                        view,
+                        tempGraphicsLayer,
+                        copiedFeature,
+                        sketchViewModel,
+                        setTempGraphicsLayer,
+                    );
+                    setActiveFeatureMode(activeFeatureMode);
+                }
+            };
+
+            switch (evt.action.id) {
+                case 'select-intersect':
+                    queryFeatures(
+                        geometry,
+                        view,
+                        selectFeatures,
+                        layer && layer.id,
+                    );
+                    break;
+                case 'set-buffer':
+                    setSingleLayerGeometry(geometry);
+                    setActiveModal('bufferSelectedData');
+                    break;
+                case 'get-property-info':
+                    setPropertyInfo({ x, y }, view, 'propertyArea', authorities);
+                    break;
+                case 'google-street-view':
+                    getStreetViewLink(x, y);
+                    break;
+                case 'contract-link':
+                    if (layer) {
+                        setContractListInfo(layer.id, objectId);
+                        setActiveModal('featureContracts');
+                    }
+                    break;
+                case 'copy-feature':
+                    await copySelectedFeature('create');
+                    break;
+                case 'edit-feature':
+                    await copySelectedFeature('edit');
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        view.popup.viewModel.watch('selectedFeature', (selectedFeature) => {
+            removeGraphicsFromMap(view, 'selected-popup-feature');
+
+            if (selectedFeature && selectedFeature.geometry) {
+                const newFeature = new Graphic({
+                    geometry: selectedFeature.geometry,
+                    id: 'selected-popup-feature',
+                });
+                switch (newFeature.geometry.type) {
+                    case 'point':
+                        newFeature.symbol = {
+                            type: 'simple-marker',
+                            style: 'circle',
+                            size: 6,
+                            color: colorMainDark,
+                            outline: {
+                                color: colorBackgroundDark,
+                                width: 1,
+                            },
+                        };
+                        break;
+                    case 'polyline':
+                        newFeature.symbol = {
+                            type: 'simple-line',
+                            color: colorMainDark,
+                            width: 2,
+                        };
+                        break;
+                    default:
+                        newFeature.symbol = {
+                            type: 'simple-fill',
+                            color: colorMainDark,
+                            outline: {
+                                color: colorBackgroundDark,
+                                width: 1,
+                            },
+                        };
+                        break;
+                }
+                view.graphics.add(newFeature);
+            }
+        });
+
+        view.popup.watch('visible', (visible) => {
+            if (!visible) {
+                removeGraphicsFromMap(view, 'selected-popup-feature');
+            }
+        });
+
+        const { removeLoading } = this.props;
+        view.when(() => removeLoading());
+
+        const {
+            setWorkspaceRejected,
+            layerList,
+            setMapView,
+            setTempGraphicsLayer,
+            activateLayers,
+            deactivateLayer,
+        } = this.props;
+
+        // Set initial view and temp graphics layer to redux
+        setMapView(view);
+        setTempGraphicsLayer(tempGraphicsLayer);
+
+        let workspace = await getWorkspaceFromUrl();
+        if (workspace) {
+            await loadWorkspace(
+                workspace,
+                layerList,
+                view,
+                activateLayers,
+                deactivateLayer,
+            );
+        } else {
+            workspace = await fetchWorkspace(null);
+            if (workspace) {
+                await loadWorkspace(
+                    workspace,
+                    layerList,
+                    view,
+                    activateLayers,
+                    deactivateLayer,
+                );
+            } else {
+                activateLayers(layerList.filter(layer => layer.visible));
+                setWorkspaceRejected();
+            }
+        }
+        window.history.pushState({}, document.title, window.location.pathname);
+    }
 
     render() {
         return <EsriMapContainer printWidget={this.printWidget} legendWidget={this.legendWidget} />;

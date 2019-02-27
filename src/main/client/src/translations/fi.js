@@ -357,6 +357,9 @@ const fi = {
             remove: 'Poista muutokset',
         },
     },
+    geocode: {
+        placeholder: 'Hae osoitteella tai paikalla',
+    },
 };
 
 export default fi;
