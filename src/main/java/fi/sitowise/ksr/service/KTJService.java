@@ -31,9 +31,9 @@ public class KTJService {
     private static final Level KTJ_LEVEL = Level.forName("KTJ", 250);
 
     public static final String NUMERIC_IDENTIFIER_PATTERN = "^([0-9]{14})$";
-    public static final String HYPHEN_IDENTIFIER_PATTERN = "^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$";
+    private static final String HYPHEN_IDENTIFIER_PATTERN = "^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$";
 
-    private final String KTJ_WFS_POINT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+    private static final String KTJ_WFS_POINT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
             "<wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ktjkiiwfs=\"http://xml.nls.fi/ktjkiiwfs/2010/02\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1.0\" xsi:schemaLocation=\"http://www.opengis.net/wfs  http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\">" +
             "<wfs:Query typeName=\"ktjkiiwfs:RekisteriyksikonTietoja\">" +
             "<ogc:Filter>" +
@@ -47,7 +47,7 @@ public class KTJService {
             "</wfs:Query>" +
             "</wfs:GetFeature>";
 
-    private final String KTJ_WFS_PROPERTY_IDENTIFIER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+    private static final String KTJ_WFS_PROPERTY_IDENTIFIER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
             "<wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ktjkiiwfs=\"http://xml.nls.fi/ktjkiiwfs/2010/02\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1.0\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\">" +
             "<wfs:Query typeName=\"ktjkiiwfs:RekisteriyksikonTietoja\" srsName=\"EPSG:3067\">" +
             "<ogc:Filter>" +
@@ -59,7 +59,7 @@ public class KTJService {
             "</wfs:Query>" +
             "</wfs:GetFeature>";
 
-    private final String KTJ_WFS_POLYGON = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+    private static final String KTJ_WFS_POLYGON = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
             "<wfs:GetFeature version=\"1.1.0\" xmlns:ktjkiiwfs=\"http://xml.nls.fi/ktjkiiwfs/2010/02\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\">" +
             "<wfs:Query typeName=\"ktjkiiwfs:RekisteriyksikonTietoja\" srsName=\"EPSG:3067\">" +
             "<ogc:Filter>" +
@@ -222,7 +222,7 @@ public class KTJService {
                 language.toUpperCase()
             )
         );
-        pdfLinkMap.put("deed", Arrays.asList(deedUrl));
+        pdfLinkMap.put("deed", Collections.singletonList(deedUrl));
 
         String easementUrl = KsrStringUtils.replaceMultipleSlashes(
             String.format(
@@ -233,7 +233,7 @@ public class KTJService {
                 language.toUpperCase()
             )
         );
-        pdfLinkMap.put("easement", Arrays.asList(easementUrl));
+        pdfLinkMap.put("easement", Collections.singletonList(easementUrl));
 
         String registerUnitUrl = KsrStringUtils.replaceMultipleSlashes(
             String.format(
@@ -244,7 +244,7 @@ public class KTJService {
                 language.toUpperCase()
             )
         );
-        pdfLinkMap.put("registerunit", Arrays.asList(registerUnitUrl));
+        pdfLinkMap.put("registerunit", Collections.singletonList(registerUnitUrl));
 
         String xmlUrl = String.format("%s?rekisteriyksikko=%s&lang=%s",
                 ktjMapEndpointXml, propertyIdentifier, language.toUpperCase());
