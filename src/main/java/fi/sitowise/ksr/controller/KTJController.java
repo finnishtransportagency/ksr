@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(KTJController.ENDPOINT_URL)
 public class KTJController {
-    public final static String ENDPOINT_URL = "/api/property";
+    public static final String ENDPOINT_URL = "/api/property";
     private final KTJService ktjService;
 
     @Autowired
@@ -61,20 +61,23 @@ public class KTJController {
     /**
      * Gets property details from given area (polygon).
      *
-     *  Coordinates must be given in EPSG:3067 spatial reference system.
+     * Coordinates must be given in EPSG:3067 spatial reference system.
      *
-     * @param polygon Polygon coordinates.
+     * @param body Request body.
      * @return FeatureCollection of property details.
      */
     @ApiOperation("Gets property details from given area (polygon).")
     @PostMapping(value = "/")
-    public FeatureCollection getPropetyDetailsArea(@RequestBody Map<String, String> polygon) {
-        if (polygon != null) {
-           String polygonValue = polygon.get("polygon");
-            return  ktjService.getPropertyDetailsArea(polygonValue);
+    public FeatureCollection getPropertyDetailsArea(@RequestBody Map<String, String> body) {
+        String polygon = body.get("polygon");
+        if (polygon != null && polygon.matches("^((\\d+\\.\\d+) (\\d+\\.\\d+) ?)*$")) {
+            return  ktjService.getPropertyDetailsArea(polygon);
         }
-        return new FeatureCollection();
+        throw new KsrApiException.BadRequestException(
+                "Parameter 'polygon' not matching pattern '^((\\d+\\.\\d+) (\\d+\\.\\d+) ?)*$'"
+        );
     }
+
     /**
      * Get PDF print links for given property.
      *
