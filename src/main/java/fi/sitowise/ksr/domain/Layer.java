@@ -468,7 +468,6 @@ public class Layer implements Serializable {
      *
      * @param mobileVisible the mobile visible
      */
-//    @JsonIgnore
     public void setMobileVisible(String mobileVisible) {
         this.mobileVisible = "1".equals(mobileVisible);
     }
