@@ -118,7 +118,7 @@ public class Layer implements Serializable {
         this.setCaseManagementLinkField(lr.getCaseManagementLinkField());
         this.setBackground(lr.getBackground());
         this.setParentLayer(lr.getParentLayer());
-        this.setQueryColumns(lr.getQueryColumns());
+        this.setQueryColumnsCustom(lr.getQueryColumns());
 
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
@@ -154,7 +154,7 @@ public class Layer implements Serializable {
         this.setQueryable(lr.getQueryable());
         this.setUseInternalProxy(lr.getUseInternalProxy());
         this.setUserLayer(true);
-        this.setQueryColumns(lr.getQueryColumns());
+        this.setQueryColumnsCustom(lr.getQueryColumns());
     }
 
     /**
@@ -750,7 +750,7 @@ public class Layer implements Serializable {
      * @return query columns as QueryColumnTypeRecord
      */
     @JsonIgnore
-    public QueryColumnTypeRecord getQueryColumns() {
+    public QueryColumnTypeRecord getQueryColumnsCustom() {
         if (queryColumns != null) {
             QueryColumnTypeRecord qRecord = new QueryColumnTypeRecord();
             queryColumns.forEach(qRecord::add);
@@ -764,7 +764,8 @@ public class Layer implements Serializable {
      *
      * @param queryColumns list of query columns
      */
-    public void setQueryColumns(QueryColumnTypeRecord queryColumns) {
+    @JsonIgnore
+    public void setQueryColumnsCustom(QueryColumnTypeRecord queryColumns) {
         if (queryColumns == null) {
             this.queryColumns = Collections.emptyList();
         } else {
