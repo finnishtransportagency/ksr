@@ -114,7 +114,7 @@ public class UserLayerRepository {
                         layer.getDesktopVisible() ? "1" : "0",
                         layer.getMobileVisible() ? "1" : "0",
                         layer.isQueryable() ? "1" : "0",
-                        layer.getQueryColumns(),
+                        layer.getQueryColumnsCustom(),
                         username
                 )
                 .returning(USER_LAYER.ID)
