@@ -6,6 +6,7 @@ import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import fi.sitowise.ksr.utils.ktj.KTJUtils;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geojson.FeatureCollection;
@@ -27,6 +28,7 @@ import java.util.*;
 public class KTJService {
 
     private static final Logger log = LogManager.getLogger(KTJService.class);
+    private static final Level KTJ_LEVEL = Level.forName("KTJ", 250);
 
     public static final String NUMERIC_IDENTIFIER_PATTERN = "^([0-9]{14})$";
     public static final String HYPHEN_IDENTIFIER_PATTERN = "^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$";
@@ -125,9 +127,8 @@ public class KTJService {
              throw new KsrApiException.BadRequestException("Invalid parameter \"propertyIdentifier\" invalid format.");
         }
 
-        log.info(String.format(
-                "Get property details: [%s]. User: [%s]",
-                propertyIdentifier, KsrAuthenticationUtils.getCurrentUsername()
+        log.log(KTJ_LEVEL, String.format(
+                "[%s] - QUERY ID: [%s]", KsrAuthenticationUtils.getCurrentUsername(), propertyIdentifier
         ));
         return fetchDetails(String.format(KTJ_WFS_PROPERTY_IDENTIFIER, propertyIdentifier));
     }
@@ -145,10 +146,8 @@ public class KTJService {
         if (x == null || y == null) {
             throw new KsrApiException.BadRequestException("Invalid parameters. Both x and y must be defined.");
         }
-
-        log.info(String.format(
-                "Get property details: x: [%f], y: [%f]. User: [%s]",
-                x, y, KsrAuthenticationUtils.getCurrentUsername()
+        log.log(KTJ_LEVEL, String.format(
+                "[%s] - QUERY POINT: x: [%f] y: [%f].", KsrAuthenticationUtils.getCurrentUsername(), x, y
         ));
         return fetchDetails(String.format(KTJ_WFS_POINT, x, y));
     }
@@ -165,10 +164,8 @@ public class KTJService {
         if (polygon == null) {
             throw new KsrApiException.BadRequestException("Invalid parameters. polygon must be defined.");
         }
-
-        log.info(String.format(
-                "Get property details: polygon: [%s]. User: [%s]",
-                polygon, KsrAuthenticationUtils.getCurrentUsername()
+        log.log(KTJ_LEVEL, String.format(
+                "[%s] - QUERY POLYGON: [%s].", KsrAuthenticationUtils.getCurrentUsername(), polygon
         ));
         return fetchDetails(String.format(KTJ_WFS_POLYGON, polygon.replaceAll(",", "")));
     }
@@ -210,9 +207,8 @@ public class KTJService {
      * @return A map containing List of parameter maps to different types of PDF prints.
      */
     public Map<String, List<String>> getPropertyPdfLinks(String propertyIdentifier, String language) {
-        log.info(String.format(
-                "Get PDF print links for property: [%s] User: [%s]",
-                propertyIdentifier, KsrAuthenticationUtils.getCurrentUsername()
+        log.log(KTJ_LEVEL, String.format("[%s] - GET PDF LINKS: ID [%s].",
+                KsrAuthenticationUtils.getCurrentUsername(), propertyIdentifier
         ));
 
         Map<String, List<String>> pdfLinkMap = new HashMap<>();
@@ -300,9 +296,11 @@ public class KTJService {
         } catch (URISyntaxException ue) {
             throw new KsrApiException.InternalServerErrorException("Error building pdf-url.", ue);
         }
-        log.info(String.format(
-                "Get [%s] PDF print with url: [%s] User: [%s]",
-                printType, pdfUrl, KsrAuthenticationUtils.getCurrentUsername()
+        log.log(KTJ_LEVEL, String.format(
+                "[%s] - GET PDF: type: [%s] url: [%s].",
+                KsrAuthenticationUtils.getCurrentUsername(),
+                printType,
+                pdfUrl
         ));
         InputStream inputStream = httpRequestService.getURLContents(pdfUrl, true, getBasicAuthString());
 

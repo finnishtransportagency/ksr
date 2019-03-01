@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn">
+<Configuration status="info">
     <Properties>
         <Property name="basePath">logs</Property>
         <Property name="LOG_PATTERN">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</Property>
+        <Property name="KTJ_PATTERN">[%-3level] %d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</Property>
     </Properties>
+    <CustomLevels>
+        <CustomLevel name="KTJ" intLevel="250" />
+    </CustomLevels>
     <Appenders>
         <!-- Console Appender -->
-        <Console name="Console" target="SYSTEM_OUT" follow="true">
+        <Console name="consoleLog" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
         <!-- File Appenders -->
         <RollingFile name="infoLog" fileName="${basePath}/info/KSR-info.log"
                      filePattern="${basePath}/info/$${date:yyyy-MM}/KSR-info-%d{yyyy-MM-dd}.log">
-            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <LevelRangeFilter maxLevel="INFO" minLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
@@ -20,7 +24,7 @@
         </RollingFile>
         <RollingFile name="errorLog" fileName="${basePath}/error/KSR-error.log"
                      filePattern="${basePath}/error/$${date:yyyy-MM}/KSR-error-%d{yyyy-MM-dd}.log">
-            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <LevelRangeFilter minLevel="FATAL" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
@@ -32,14 +36,28 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
+        <RollingFile name="ktjLog" fileName="${basePath}/ktj/KSR-KTJ.log" filePattern="${basePath}/ktj/$${date:yyyy}/KSR-KTJ-%d{yyyy-MM-dd}.log.gz">
+            <LevelRangeFilter minLevel="KTJ" maxLevel="KTJ" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${KTJ_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${basePath}/ktj" maxDepth="3">
+                    <IfFileName glob="*/KSR-KTJ-*.log.gz"/>
+                    <IfLastModified age="2192d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Logger name="fi.sitowise.ksr" additivity="false" level="info">
             <AppenderRef ref="infoLog"/>
+            <AppenderRef ref="ktjLog" />
             <AppenderRef ref="errorLog"/>
         </Logger>
-        <Root level="warn">
-            <AppenderRef ref="Console"/>
+        <Root level="off">
+            <AppenderRef ref="consoleLog"/>
         </Root>
     </Loggers>
 </Configuration>
