@@ -2,6 +2,9 @@
 import React, { Component } from 'react';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersAllView from './MapLayersAllView';
+import * as types from '../../../../../constants/actionTypes';
+import { parseData } from '../../../../../utils/parseFeatureData';
+import store from '../../../../../store';
 
 type Props = {
     layerGroups: Array<any>,
@@ -50,6 +53,12 @@ class MapLayersActive extends Component<Props> {
         const foundLayer = layerList.find(l => l.id === id);
 
         if (!foundLayer.active) {
+            if (foundLayer.definitionExpression) {
+                store.dispatch({
+                    type: types.SEARCH_FEATURES_FULFILLED,
+                    layers: parseData({ layers: [foundLayer] }, false),
+                });
+            }
             activateLayers([foundLayer]);
         } else {
             deactivateLayer(foundLayer.id);
@@ -97,6 +106,17 @@ class MapLayersActive extends Component<Props> {
         if (active) {
             foundLayers.forEach(foundLayer => deactivateLayer(foundLayer.id));
         } else {
+            const searchLayers = foundLayers.filter(foundLayer => (
+                !foundLayer.active && !loadingLayers.some(layerId => layerId === foundLayer.id)
+                && foundLayer.definitionExpression
+            ));
+            if (searchLayers.length) {
+                store.dispatch({
+                    type: types.SEARCH_FEATURES_FULFILLED,
+                    layers: parseData({ layers: searchLayers }, false),
+                });
+            }
+
             const layersToBeActivated = foundLayers.filter(foundLayer => (
                 !foundLayer.active && !loadingLayers.some(layerId => layerId === foundLayer.id)
             ));
