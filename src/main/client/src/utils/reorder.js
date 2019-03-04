@@ -37,10 +37,10 @@ export const reorderLayers = (layerGroups: Object[], layerList: Object[], foundL
     });
 
     const originalLayerOrder: number = originalLayerList
-        .find(layer => layer.id === foundLayer.id).layerOrder;
+        .find(layer => layer.id === foundLayer.id.replace('.s', '')).layerOrder;
 
     const layersWithLowerOrder: Object[] = originalLayerList
-        .filter(layer => layer.layerOrder < originalLayerOrder);
+        .filter(layer => !layer.definitionExpression && layer.layerOrder < originalLayerOrder);
 
     const startIndex = layerList.findIndex(layer => layer.id === foundLayer.id);
     const endIndex = layerList.filter(ll => ll.id !== foundLayer.id)
