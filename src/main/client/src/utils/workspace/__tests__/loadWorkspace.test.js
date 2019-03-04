@@ -1,4 +1,6 @@
-import { getWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQueryMap } from '../loadWorkspace';
+import {
+    getWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQueryMap,
+} from '../loadWorkspace';
 
 describe('loadWorkspace', () => {
     it('getWorkspaceFeatures - should return workspace features', () => {
@@ -54,8 +56,8 @@ describe('loadWorkspace', () => {
             map: {
                 layers: [
                     {
-                        queryFeatures: jest.fn(query).mockImplementation(() =>
-                            new Promise((resolve) => {
+                        queryFeatures: jest.fn(query)
+                            .mockImplementation(() => new Promise((resolve) => {
                                 resolve(results);
                             })),
                         objectIdField: 'OBJECTID_1',
@@ -115,6 +117,7 @@ describe('loadWorkspace', () => {
                     layerOrder: 3,
                     visible: true,
                     definitionExpression: 'Search query',
+                    _source: 'search',
                 },
             ],
         };
@@ -153,6 +156,7 @@ describe('loadWorkspace', () => {
                 layerOrder: 2,
                 visible: false,
                 definitionExpression: 'Search query',
+                _source: 'search',
             },
         ];
 
@@ -185,6 +189,7 @@ describe('loadWorkspace', () => {
                 opacity: 1,
                 layerOrder: 3,
                 definitionExpression: 'Search query',
+                _source: 'search',
             },
             {
                 id: '123',
@@ -264,11 +269,11 @@ describe('loadWorkspace', () => {
                 visible: true,
                 definitionExpression: 'Search query',
                 layer: {
-                    active: true,
-                    id: '123',
-                    layerOrder: 6,
-                    opacity: 1,
-                    visible: true,
+                    id: '123.s',
+                    layerOrder: 2,
+                    opacity: 0.3,
+                    visible: false,
+                    definitionExpression: 'Search query',
                 },
             },
             'Search query',

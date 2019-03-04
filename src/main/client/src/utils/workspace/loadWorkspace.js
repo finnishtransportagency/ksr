@@ -84,6 +84,16 @@ export const queryWorkspaceFeatures = (
 });
 
 /**
+ * Find layer using layerId or userLayerId from a list.
+ * @param {Object[]} list Workspace list of layers.
+ * @param {Object} layer workspace layer.
+ * @returns {Object} Found layer from the list.
+ */
+const findLayer = (list, layer) => list
+    .find(l => (layer.layerId || layer.userLayerId).replace('.s', '') === (l.id || l.userLayerId));
+
+
+/**
  * Update layer list with workspace settings.
  *
  * Finds all layers saved in workspace data and sets them as active in layer list.
@@ -96,31 +106,35 @@ export const queryWorkspaceFeatures = (
  *
  * @returns {Object[]} Modified layer list with workspace settings.
  */
-export const updateLayerList = (workspace: Object, layerList: Object[]): Object[] => {
-    const workspaceIds = workspace.layers.map(w => (w.definitionExpression ? `${w.layerId}.s` : w.layerId || w.userLayerId));
-    return layerList.filter(ll => ll._source !== 'shapefile').map((ll) => {
-        if (workspaceIds.includes(ll.id)) {
-            const ws = ll.definitionExpression
-                ? workspace.layers.find(w => w.layerId === ll.id.replace('.s', '')
-                    && w.definitionExpression)
-                : workspace.layers.find(w => (w.layerId || w.userLayerId) === ll.id
-                    && !w.definitionExpression);
-
-            return {
-                ...ll,
-                opacity: ws.opacity,
-                layerOrder: ws.layerOrder,
-                visible: false,
-                active: false,
-            };
+export const updateLayerList = (workspace: Object, layerList: Object[]): Object[] => workspace
+    .layers.reduce((acc, wLayer) => {
+        console.log(acc)
+        console.log(wLayer)
+        const match = findLayer(acc, wLayer);
+        if (match && wLayer.definitionExpression) {
+            return [
+                ...acc,
+                {
+                    ...match,
+                    id: `${match.id}.s`,
+                    definitionExpression: wLayer.definitionExpression,
+                    opacity: wLayer.opacity,
+                    layerOrder: wLayer.layerOrder,
+                    visible: false,
+                    active: false,
+                    _source: 'search',
+                },
+            ];
         }
-        return {
-            ...ll,
+        return acc.map(l => ({
+            ...l,
+            opacity: l.id === match.id ? wLayer.opacity : l.opacity,
+            layerOrder: l.id === match.id ? wLayer.layerOrder : l.layerOrder,
             visible: false,
             active: false,
-        };
-    }).sort((a, b) => a.layerOrder - b.layerOrder);
-};
+        }));
+    }, layerList.filter(l => l._source !== 'shapefile' && !l.definitionExpression))
+    .sort((a, b) => a.layerOrder - b.layerOrder);
 
 /**
  * Create map with layers and query strings that can be used to query searches saved in workspace.
@@ -130,18 +144,18 @@ export const updateLayerList = (workspace: Object, layerList: Object[]): Object[
  *
  * @returns {Map<Object, string>} Map with layer as key and query string as value
  */
-export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Object, string> => {
-    const queryMap = new Map();
-    workspace.layers.forEach(layer => layer.definitionExpression
-        && queryMap.set(
-            {
-                ...layer,
-                layer: layerList.find(l => l.id === layer.layerId),
-            },
-            layer.definitionExpression,
-        ));
-    return queryMap;
-};
+export const searchQueryMap = (
+    workspace: Object,
+    layerList: Object[],
+): Map<Object, string> => new Map(workspace.layers
+    .filter(layer => layer.definitionExpression)
+    .map(layer => [{
+        ...layer,
+        layer: layerList.find(l => l.definitionExpression
+        && (l.id.replace('.s', '') === layer.layerId
+            || l.id.replace('.s', '') === layer.userLayerId)),
+    },
+    layer.definitionExpression]));
 
 /**
  * Loads given workspace.
@@ -171,10 +185,14 @@ export const loadWorkspace = async (
     const workspaceLayerList = updateLayerList(workspace, layerList);
     store.dispatch(setLayerList(workspaceLayerList));
 
-    const workspaceLayers = layerList
-        .filter(l => workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
+    const workspaceLayers = workspaceLayerList
+        .filter(l => (l.definitionExpression
+            ? workspace.layers.find(wl => wl.definitionExpression
+                && (wl.layerId === l.id.replace('.s', '')
+                    || wl.userLayerId === l.id.replace('.s', '')))
+            : workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id)));
 
-    layerList.forEach((l) => {
+    workspaceLayerList.forEach((l) => {
         if (l.active && !workspaceLayers.some(wl => wl.id === l.id)) {
             deactivateLayer(l.id);
         }
