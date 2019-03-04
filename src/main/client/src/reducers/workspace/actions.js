@@ -86,8 +86,8 @@ export const setWorkspaceFeatures = (
     workspace: Object,
     layers: Object[],
 ) => async (dispatch: Function, getState: Function) => {
-    const spatialWorkspace = workspace.layers
-        .filter(wl => layers.find(l => l.id === wl.layerId && l.type !== 'agfl'));
+    const spatialWorkspace = workspace.layers.filter(wl => layers.find(l => l.type !== 'agfl'
+        && (l.id === wl.layerId || l.id === wl.userLayerId)));
     const workspaceFeatures = getWorkspaceFeatures(spatialWorkspace);
     const layerFeatures = await queryWorkspaceFeatures(
         workspaceFeatures,

@@ -97,29 +97,60 @@ export const queryWorkspaceFeatures = (
  * @returns {Object[]} Modified layer list with workspace settings.
  */
 export const updateLayerList = (workspace: Object, layerList: Object[]): Object[] => {
-    const workspaceIds = workspace.layers.map(w => (w.definitionExpression ? `${w.layerId}.s` : w.layerId || w.userLayerId));
-    return layerList.filter(ll => ll._source !== 'shapefile').map((ll) => {
+    const workspaceIds = workspace.layers.map((w) => {
+        if (w.definitionExpression) {
+            return w.userLayerId ? `${w.userLayerId}.s` : `${w.layerId}.s`;
+        }
+
+        return w.userLayerId ? w.userLayerId : w.layerId;
+    });
+    const updatedLayerList = layerList.filter(ll => ll._source !== 'shapefile').map((ll) => {
         if (workspaceIds.includes(ll.id)) {
             const ws = ll.definitionExpression
-                ? workspace.layers.find(w => w.layerId === ll.id.replace('.s', '')
-                    && w.definitionExpression)
-                : workspace.layers.find(w => (w.layerId || w.userLayerId) === ll.id
-                    && !w.definitionExpression);
+                ? workspace.layers.find(w => w.definitionExpression
+                    && (w.layerId === ll.id.replace('.s', '')
+                        || w.userLayerId === ll.id.replace('.s', '')))
+                : workspace.layers.find(w => !w.definitionExpression
+                    && (w.layerId === ll.id || w.userLayerId === ll.id));
 
-            return {
-                ...ll,
-                opacity: ws.opacity,
-                layerOrder: ws.layerOrder,
-                visible: false,
-                active: false,
-            };
+            if (ws) {
+                return {
+                    ...ll,
+                    opacity: ws.opacity,
+                    layerOrder: ws.layerOrder,
+                    visible: false,
+                    active: false,
+                };
+            }
         }
         return {
             ...ll,
             visible: false,
             active: false,
         };
-    }).sort((a, b) => a.layerOrder - b.layerOrder);
+    });
+
+    layerList.filter(ll => ll._source !== 'shapefile').forEach((ll) => {
+        const ws = workspace.layers.find(w => (w.layerId === ll.id || w.userLayerId === ll.id)
+                && w.definitionExpression);
+
+        if (ws && !layerList.some(layer => (
+            (ws.layerId && layer.id === ws.layerId.concat('.s'))
+            || (ws.userLayerId && layer.id === ws.userLayerId.concat('.s'))))) {
+            updatedLayerList.push({
+                ...ll,
+                id: `${ll.id}.s`,
+                definitionExpression: ws.definitionExpression,
+                opacity: ws.opacity,
+                layerOrder: ws.layerOrder,
+                visible: false,
+                active: false,
+                _source: 'search',
+            });
+        }
+    });
+
+    return updatedLayerList.sort((a, b) => a.layerOrder - b.layerOrder);
 };
 
 /**
@@ -136,7 +167,9 @@ export const searchQueryMap = (workspace: Object, layerList: Object[]): Map<Obje
         && queryMap.set(
             {
                 ...layer,
-                layer: layerList.find(l => l.id === layer.layerId),
+                layer: layerList.find(l => l.definitionExpression
+                    && (l.id.replace('.s', '') === layer.layerId
+                        || l.id.replace('.s', '') === layer.userLayerId)),
             },
             layer.definitionExpression,
         ));
@@ -171,10 +204,14 @@ export const loadWorkspace = async (
     const workspaceLayerList = updateLayerList(workspace, layerList);
     store.dispatch(setLayerList(workspaceLayerList));
 
-    const workspaceLayers = layerList
-        .filter(l => workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id));
+    const workspaceLayers = workspaceLayerList
+        .filter(l => (l.definitionExpression
+            ? workspace.layers.find(wl => wl.definitionExpression
+                && (wl.layerId === l.id.replace('.s', '')
+                    || wl.userLayerId === l.id.replace('.s', '')))
+            : workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id)));
 
-    layerList.forEach((l) => {
+    workspaceLayerList.forEach((l) => {
         if (l.active && !workspaceLayers.some(wl => wl.id === l.id)) {
             deactivateLayer(l.id);
         }

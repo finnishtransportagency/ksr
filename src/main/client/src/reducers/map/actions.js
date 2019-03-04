@@ -97,8 +97,13 @@ export const activateLayers = (
                     dispatch(getState).map.mapView.view,
                 );
 
-                const workspaceLayer = workspace !== undefined && workspace.layers
-                    .find(wl => wl.layerId === layer.id || wl.userLayerId === layer.id);
+                const workspaceLayer = workspace !== undefined
+                    && (layer.definitionExpression
+                        ? workspace.layers.find(wl => wl.definitionExpression
+                            && (wl.layerId === layer.id.replace('.s', '')
+                                || wl.userLayerId === layer.id.replace('.s', '')))
+                        : workspace.layers.find(wl => wl.layerId === layer.id
+                            || wl.userLayerId === layer.id));
 
                 dispatch({
                     type: types.UPDATE_LAYER,

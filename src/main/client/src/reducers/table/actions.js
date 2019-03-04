@@ -139,7 +139,7 @@ export const searchWorkspaceFeatures = (
         };
         if (selectedLayer.layer) {
             searchQueries.push(fetchSearchQuery(
-                selectedLayer.layerId,
+                selectedLayer.userLayerId ? selectedLayer.userLayerId : selectedLayer.layerId,
                 queryString,
                 selectedLayer.layer.name,
                 layerData,
@@ -161,10 +161,12 @@ export const searchWorkspaceFeatures = (
                                 ...selectedLayer.layer,
                                 name: selectedLayer.layer.name,
                                 definitionExpression: queryString,
-                                visible: true,
+                                visible: selectedLayer.layer.visible,
                                 active: true,
                                 opacity: selectedLayer.opacity,
-                                id: `${selectedLayer.layerId}.s`,
+                                id: selectedLayer.userLayerId
+                                    ? `${selectedLayer.userLayerId}.s`
+                                    : `${selectedLayer.layerId}.s`,
                                 _source: 'search',
                                 layerGroupName: strings.search.searchLayerGroupName,
                                 title: fetchedLayer.title,
