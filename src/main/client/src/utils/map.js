@@ -340,7 +340,7 @@ export const zoomToProperty = (
  */
 export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
     if (!layer.fields && (layer.type === 'agfs' || layer.type === 'agfl')) {
-        const layerWithFields = await layerData(layer.id);
+        const layerWithFields: Object = await layerData(layer.id);
         if (!layer.error) {
             layer.geometryType = layerWithFields.geometryType;
             layer.fields = layerWithFields.fields && layerWithFields.fields

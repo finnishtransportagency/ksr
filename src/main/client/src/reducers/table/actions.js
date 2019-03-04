@@ -27,24 +27,23 @@ export const addUpdateLayers = (
     objectIdFieldName: string,
     objectId: number,
     selected?: boolean,
-) =>
-    (dispatch: Function) => {
-        queryFeatures(
-            parseInt(layerId, 10),
-            `${objectIdFieldName} = ${objectId}`,
-            null,
-        )
-            .then((result) => {
-                if (result && result.fields && result.features.length > 0) {
-                    // Add layer Id to result
-                    result.id = layerId;
-                    dispatch({
-                        type: types.SELECT_FEATURES,
-                        layers: parseData({ layers: [result] }, selected),
-                    });
-                }
-            });
-    };
+) => (dispatch: Function) => {
+    queryFeatures(
+        parseInt(layerId, 10),
+        `${objectIdFieldName} = ${objectId}`,
+        null,
+    )
+        .then((result) => {
+            if (result && result.fields && result.features.length > 0) {
+                // Add layer Id to result
+                result.id = layerId;
+                dispatch({
+                    type: types.SELECT_FEATURES,
+                    layers: parseData({ layers: [result] }, selected),
+                });
+            }
+        });
+};
 
 export const setColumns = (columns: Array<Object>) => ({
     type: types.SET_COLUMNS,
@@ -148,9 +147,9 @@ export const searchWorkspaceFeatures = (
                     if (r.layers.length) {
                         r.layers.forEach((fetchedLayer) => {
                             fetchedLayer.features.map((f) => {
-                                const selectedObj = selectedLayer.selectedFeaturesList.find(obj =>
-                                    parseInt(obj.id, 10) ===
-                                    f.attributes[fetchedLayer.objectIdFieldName]);
+                                const selectedObj = selectedLayer.selectedFeaturesList.find(obj => (
+                                    parseInt(obj.id, 10) === f
+                                        .attributes[fetchedLayer.objectIdFieldName]));
                                 if (selectedObj) {
                                     f.selected = selectedObj.highlight;
                                 }
@@ -284,8 +283,8 @@ export const addNonSpatialContentToTable = (
             if (workspaceFeatures) {
                 results.layers.forEach((l) => {
                     l.features.forEach((f) => {
-                        const selectedObj = workspaceFeatures && workspaceFeatures.find(obj =>
-                            obj.featureId === f.attributes[l.objectIdFieldName]);
+                        const selectedObj = workspaceFeatures && workspaceFeatures.find(obj => (
+                            obj.featureId === f.attributes[l.objectIdFieldName]));
                         if (selectedObj) {
                             f.selected = selectedObj.selected;
                         }

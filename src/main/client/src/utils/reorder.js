@@ -28,7 +28,7 @@ export const reorder = (list: Object[], startIndex: number, endIndex: number): O
  * @returns {Object[]} Reordered layer list.
  */
 export const reorderLayers = (layerGroups: Object[], layerList: Object[], foundLayer: Object) => {
-    let originalLayerList: any = [];
+    let originalLayerList: Object[] = [];
     layerGroups.forEach((layerGroup) => {
         layerGroup.layers.filter(layer => layerList
             .filter(ll => ll.active || ll.id === foundLayer.id)
@@ -36,8 +36,9 @@ export const reorderLayers = (layerGroups: Object[], layerList: Object[], foundL
             .forEach((layer) => { originalLayerList = [...originalLayerList, layer]; });
     });
 
-    const originalLayerOrder: number = originalLayerList
-        .find(layer => layer.id === foundLayer.id.replace('.s', '')).layerOrder;
+    const originalLayer = originalLayerList
+        .find(layer => layer.id === foundLayer.id.replace('.s', ''));
+    const originalLayerOrder: number = originalLayer ? originalLayer.layerOrder : 0;
 
     const layersWithLowerOrder: Object[] = originalLayerList
         .filter(layer => !layer.definitionExpression && layer.layerOrder < originalLayerOrder);
