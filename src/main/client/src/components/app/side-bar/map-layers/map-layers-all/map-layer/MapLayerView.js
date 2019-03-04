@@ -8,6 +8,7 @@ import { nestedVal } from '../../../../../../utils/nestedValue';
 
 type Props = {
     layer: Object,
+    isUserlayer: boolean,
     handleLayerClick: (number) => void,
     removeUserLayer: Function,
     checked: boolean,
@@ -24,6 +25,7 @@ type Props = {
 
 const MapLayerView = ({
     layer,
+    isUserlayer,
     handleLayerClick,
     checked,
     removeUserLayer,
@@ -47,19 +49,22 @@ const MapLayerView = ({
                 id={layer.id}
             />
             {
-                layer.type === 'agfl' &&
-                <Fragment>
-                    <i className="fas fa-table" />{' '}<span>{layer.name}</span>
-                </Fragment>
+                layer.type === 'agfl'
+                && (
+                    <Fragment>
+                        <i className="fas fa-table" />
+                        {' '}
+                        <span>{layer.name}</span>
+                    </Fragment>
+                )
             }
             {
                 layer.type !== 'agfl' && <span>{layer.name}</span>
             }
         </LayerGroup.Layer.Label>
         {
-            !layer.userLayer ?
-                null :
-                (
+            layer.userLayer && isUserlayer
+                ? (
                     <LayerGroup.Layer.RemoveIcon
                         data-balloon={strings.mapLayerView.removeTooltip}
                         data-balloon-pos="left"
@@ -77,6 +82,7 @@ const MapLayerView = ({
                         <i className="fas fa-trash" />
                     </LayerGroup.Layer.RemoveIcon>
                 )
+                : null
         }
     </LayerGroup.Layer>
 );

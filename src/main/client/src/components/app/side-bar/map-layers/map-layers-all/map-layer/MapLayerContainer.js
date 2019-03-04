@@ -3,9 +3,12 @@ import { connect } from 'react-redux';
 import { showConfirmModal } from '../../../../../../reducers/confirmModal/actions';
 import { removeUserLayer, removeUserLayerConfirmed } from '../../../../../../reducers/map/actions';
 import MapLayerView from './MapLayerView';
+import strings from '../../../../../../translations';
 
 const mapStateToProps = (state, ownProps) => ({
     layer: ownProps.layer,
+    isUserlayer: ownProps.layer.userLayer
+        && ownProps.layerGroupName === strings.mapLayers.userLayerGroupName,
     checked: ownProps.checked,
     layerList: state.map.layerGroups.layerList,
     loadingLayers: state.loading.loadingLayers,

@@ -1,5 +1,7 @@
 // @flow
 
+import strings from '../translations';
+
 /**
 * Add or replace layers in layer list.
 * If there is already a layer with same id, then replace that with new one.
@@ -55,7 +57,7 @@ export const addLayerToUserGroup = (
     layerGroups: Object[],
     layer: Object,
 ): Object[] => layerGroups.map((lg) => {
-    if (lg.name === 'Käyttäjätasot') {
+    if (lg.name === strings.mapLayers.userLayerGroupName) {
         return {
             ...lg,
             layers: [...lg.layers, layer],
