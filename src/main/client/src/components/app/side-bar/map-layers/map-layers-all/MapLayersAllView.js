@@ -134,6 +134,7 @@ const MapLayersAllView = ({
                                                 inputDisabled={l._source === 'shapefile'}
                                                 key={l.id}
                                                 layer={l}
+                                                layerGroupName={lg.name}
                                                 handleLayerClick={handleLayerClick}
                                                 checked={nestedVal(layerList.find(layer => layer.id === l.id), ['active'], false)}
                                             />

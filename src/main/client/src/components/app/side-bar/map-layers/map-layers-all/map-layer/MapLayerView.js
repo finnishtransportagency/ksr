@@ -8,6 +8,7 @@ import { nestedVal } from '../../../../../../utils/nestedValue';
 
 type Props = {
     layer: Object,
+    layerGroupName: string,
     handleLayerClick: (number) => void,
     removeUserLayer: Function,
     checked: boolean,
@@ -24,6 +25,7 @@ type Props = {
 
 const MapLayerView = ({
     layer,
+    layerGroupName,
     handleLayerClick,
     checked,
     removeUserLayer,
@@ -57,9 +59,8 @@ const MapLayerView = ({
             }
         </LayerGroup.Layer.Label>
         {
-            !layer.userLayer ?
-                null :
-                (
+            layer.userLayer && layerGroupName === strings.mapLayers.userLayerGroupName
+                ? (
                     <LayerGroup.Layer.RemoveIcon
                         data-balloon={strings.mapLayerView.removeTooltip}
                         data-balloon-pos="left"
@@ -77,6 +78,7 @@ const MapLayerView = ({
                         <i className="fas fa-trash" />
                     </LayerGroup.Layer.RemoveIcon>
                 )
+                : null
         }
     </LayerGroup.Layer>
 );

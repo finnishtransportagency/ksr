@@ -9,6 +9,7 @@ const fi = {
         toggleLayerLegend: 'Selite',
         filterAllLayers: 'Hae karttatasoja',
         noLayersFound: 'Ei hakua vastaavia karttatasoja',
+        userLayerGroupName: 'Käyttäjätasot',
     },
     search: {
         title: 'Haku',

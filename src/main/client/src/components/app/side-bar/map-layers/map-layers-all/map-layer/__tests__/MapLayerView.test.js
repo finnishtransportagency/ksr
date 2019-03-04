@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import MapLayerView from '../MapLayerView';
 import LayerGroup from '../../../../../../ui/blocks/LayerGroup';
+import strings from '../../../../../../../translations/fi';
 
 const setup = (prop) => {
     const minProps = {
@@ -10,6 +11,7 @@ const setup = (prop) => {
             name: 'Test layer 1',
             userLayer: false,
         },
+        layerGroupName: 'Testi',
         handleLayerClick: jest.fn(),
         checked: true,
         loadingLayers: [],
@@ -48,6 +50,7 @@ describe('<MapLayerView />', () => {
                 name: 'Test Layer 2',
                 userLayer: false,
             },
+            layerGroupName: 'Testi',
             handleLayerClick: jest.fn(),
             checked: false,
             loadingLayers: [],
@@ -82,6 +85,7 @@ describe('<MapLayerView />', () => {
                 name: 'Test Layer 2',
                 userLayer: true,
             },
+            layerGroupName: strings.mapLayers.userLayerGroupName,
             handleLayerClick: jest.fn(),
             checked: true,
             loadingLayers: [],

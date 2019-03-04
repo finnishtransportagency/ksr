@@ -3,6 +3,7 @@ import * as shapefile from 'shapefile';
 import esriLoader from 'esri-loader';
 import moment from 'moment';
 import { colorShapefileHighlight } from '../components/ui/defaultStyles';
+import strings from '../translations';
 
 /**
  * Create Esri geometry type.
@@ -203,7 +204,7 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
         value: index, label: f.alias, type: f.type, name: f.name,
     })),
     id: layer.id,
-    layerGroupName: 'Käyttäjätasot',
+    layerGroupName: strings.mapLayers.userLayerGroupName,
     layerOrder: layer.id,
     layers: fileName,
     maxScale: 0,

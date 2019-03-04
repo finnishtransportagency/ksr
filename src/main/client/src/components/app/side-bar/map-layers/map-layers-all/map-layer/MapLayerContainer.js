@@ -6,6 +6,7 @@ import MapLayerView from './MapLayerView';
 
 const mapStateToProps = (state, ownProps) => ({
     layer: ownProps.layer,
+    layerGroupName: ownProps.layerGroupName,
     checked: ownProps.checked,
     layerList: state.map.layerGroups.layerList,
     loadingLayers: state.loading.loadingLayers,

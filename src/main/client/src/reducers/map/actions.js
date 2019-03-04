@@ -10,6 +10,7 @@ import { reorderLayers } from '../../utils/reorder';
 import { addNonSpatialContentToTable } from '../table/actions';
 import { getLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
+import strings from '../../translations';
 
 export const getLayerGroups = () => async (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
@@ -217,7 +218,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                             const userLayer = {
                                 ...r,
                                 active: false,
-                                layerGroupName: 'Käyttäjätasot',
+                                layerGroupName: strings.mapLayers.userLayerGroupName,
                             };
 
                             dispatch({
@@ -231,7 +232,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                     const userLayer = {
                         ...l,
                         active: false,
-                        layerGroupName: 'Käyttäjätasot',
+                        layerGroupName: strings.mapLayers.userLayerGroupName,
                     };
 
                     dispatch({
