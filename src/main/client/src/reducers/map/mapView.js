@@ -45,14 +45,14 @@ export default (state: Object = initialState, action: Action) => {
             return state;
         case CLEAR_TABLE_DATA:
             if (state.view && state.view.map) {
-                state.view.map.layers.removeMany(state.view.map.layers.filter(l =>
-                    l.id.endsWith('.s')));
+                state.view.map.layers.removeMany(state.view.map.layers
+                    .filter(l => l.id.endsWith('.s')));
             }
             return state;
         case CLEAR_SEARCH_DATA:
             if (state.view && state.view.map) {
-                state.view.map.layers.removeMany(state.view.map.layers.filter(l =>
-                    l.id === action.layerId));
+                state.view.map.layers.removeMany(state.view.map.layers
+                    .filter(l => l.id === action.layerId));
             }
             return state;
         default:

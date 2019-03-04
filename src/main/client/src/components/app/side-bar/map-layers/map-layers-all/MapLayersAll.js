@@ -67,7 +67,7 @@ class MapLayersActive extends Component<Props> {
 
     handleLayerGroupClick = (layerGroupName: string) => {
         const { layerList, layersToFind, subLayers } = this.props;
-        const foundLayers = layerList.filter(l =>
+        const foundLayers = layerList.filter(l => (
             l.layerGroupName === layerGroupName
             && !l.parentLayer
             && l.relationType !== 'link'
@@ -77,7 +77,7 @@ class MapLayersActive extends Component<Props> {
                     || l.name.toLowerCase().includes(layersToFind)
                     || subLayers.some(layer => layer.parentLayer === l.id
                         && layer.name.toLowerCase().includes(layersToFind)))
-                : true));
+                : true)));
 
         this.updateLayerList(foundLayers);
     };
@@ -99,9 +99,9 @@ class MapLayersActive extends Component<Props> {
 
     updateLayerList = (foundLayers: Object[]) => {
         const { activateLayers, deactivateLayer, loadingLayers } = this.props;
-        const active = foundLayers.filter(f => !f.failOnLoad).length > 0 ?
-            foundLayers.filter(f => !f.failOnLoad).every(l => l.active) :
-            foundLayers.every(l => l.active);
+        const active = foundLayers.filter(f => !f.failOnLoad).length > 0
+            ? foundLayers.filter(f => !f.failOnLoad).every(l => l.active)
+            : foundLayers.every(l => l.active);
 
         if (active) {
             foundLayers.forEach(foundLayer => deactivateLayer(foundLayer.id));

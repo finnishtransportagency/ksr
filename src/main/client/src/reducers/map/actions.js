@@ -208,7 +208,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
             if (!l.error) {
                 if (l.type === 'agfs') {
                     layerData(l.id)
-                        .then((layer) => {
+                        .then((layer: Object) => {
                             l.fields = layer.fields && layer.fields.map((f, index) => ({
                                 value: index, label: f.alias, type: f.type, name: f.name,
                             }));

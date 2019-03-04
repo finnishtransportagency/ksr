@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { fetchDeleteWorkspace } from '../../../../api/workspace/deleteWorkspace';
 import { fetchSaveWorkspace } from '../../../../api/workspace/saveWorkspace';
 import { fetchWorkspace } from '../../../../api/workspace/userWorkspace';
-import strings from '../../../../translations/';
+import strings from '../../../../translations';
 import { createWorkspaceJsonBody } from '../../../../utils/workspace/createWorkspaceJsonBody';
 import { loadWorkspace } from '../../../../utils/workspace/loadWorkspace';
 import WorkspaceView from './WorkspaceView';
