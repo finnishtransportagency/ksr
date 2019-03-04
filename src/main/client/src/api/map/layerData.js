@@ -9,7 +9,7 @@ import { config } from '../config';
  * @returns All data found from layer, that will be passed to layerList
  */
 export const layerData = layerId =>
-    fetch(`api/proxy/layer/${layerId}?${
+    fetch(`api/proxy/layer/${layerId.replace('.s', '')}?${
         querystring.stringify({
             f: 'pjson',
         })
