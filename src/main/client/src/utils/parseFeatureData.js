@@ -57,23 +57,24 @@ export const parseAttributes = (id, attributes) => {
  */
 export const parseData = (data, selected) => {
     if (data === undefined || data === null || data.layers === undefined) return [];
-    return data.layers.map(l => ({
-        id: l.id,
-        title: l.title,
-        columns: parseColumns(l.id, l.fields),
-        _source: l._source,
-        _idFieldName: l.objectIdFieldName,
-        data: l.features.map(f => ({
-            ...parseAttributes(l.id, f.attributes),
-            geometry: f.geometry,
-            _id: f.attributes[l.objectIdFieldName],
-            _layerId: l.id,
-            _selected: f.selected !== undefined ? f.selected : selected,
-            _edited: [],
-            _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
+    return data.layers.filter(l => l)
+        .map(l => ({
+            id: l.id,
+            title: l.title,
+            columns: parseColumns(l.id, l.fields),
             _source: l._source,
-        })),
-    }));
+            _idFieldName: l.objectIdFieldName,
+            data: l.features.map(f => ({
+                ...parseAttributes(l.id, f.attributes),
+                geometry: f.geometry,
+                _id: f.attributes[l.objectIdFieldName],
+                _layerId: l.id,
+                _selected: f.selected !== undefined ? f.selected : selected,
+                _edited: [],
+                _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
+                _source: l._source,
+            })),
+        }));
 };
 
 /**
