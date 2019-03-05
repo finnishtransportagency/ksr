@@ -49,4 +49,8 @@ export const GlobalStyle = createGlobalStyle`
             background: ${colorMain}; 
         };
     };
+    
+    .Select-clear-zone {
+        font-family: Arial, sans-serif;
+    };
 `;
