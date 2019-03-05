@@ -38,7 +38,14 @@
     ],
     "import/prefer-default-export": "off",
     "no-param-reassign": [2, { "props": false }],
-    "react-hooks/rules-of-hooks": "error"
+    "react-hooks/rules-of-hooks": "error",
+    "jsx-a11y/label-has-for": [ 2, {
+      "components": [ "Label" ],
+      "required": {
+        "some": [ "nesting", "id" ]
+      },
+      "allowChildren": false
+    }]
   },
   "env": {
     "browser": true,
