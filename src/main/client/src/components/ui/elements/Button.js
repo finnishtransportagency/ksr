@@ -27,6 +27,10 @@ export const Button = styled.button`
          opacity: 0.5;
     `}
     
+    ${props => props.wide && css`
+        width: 100%;
+    `}
+    
     &:hover {
         @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
             /* IE11 Fix, because it does not support media hover */
