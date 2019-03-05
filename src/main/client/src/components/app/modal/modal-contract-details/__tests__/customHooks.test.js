@@ -1,5 +1,7 @@
 import { testHook, cleanup } from 'react-testing-library';
-import { useCancelText, useDetailList, useFeatureAttributes, useTitle } from '../customHooks';
+import {
+    useCancelText, useDetailList, useFeatureAttributes, useTitle, useModalSubmit,
+} from '../customHooks';
 import strings from '../../../../../translations';
 
 afterEach(cleanup);
@@ -215,5 +217,128 @@ describe('Modal Contract Details - Custom Hooks', () => {
             );
         });
         expect(featureAttributes).toEqual(expectedValue);
+    });
+
+    test('useModalSubmit - should return correct modalSubmit values', () => {
+        let modalSubmit;
+        let activeView;
+        let formOptions;
+        let permission;
+        let detailLayers;
+        const contractDetails = [];
+        const contractLayer = { id: 123 };
+        const contractObjectId = 123;
+        const setActiveView = jest.fn();
+        const activeDetailLayer = { id: 456 };
+        const setDetailAdded = jest.fn();
+        const setFormOptions = jest.fn();
+
+        activeView = '';
+        testHook(() => {
+            modalSubmit = useModalSubmit(
+                contractDetails,
+                activeView,
+                contractLayer,
+                contractObjectId,
+                detailLayers,
+                setActiveView,
+                activeDetailLayer,
+                setDetailAdded,
+                formOptions,
+                setFormOptions,
+                permission,
+                [contractDetails, activeView, detailLayers, formOptions],
+            );
+        });
+        expect(modalSubmit).toEqual([]);
+
+        activeView = 'singleFeatureDetails';
+        testHook(() => {
+            modalSubmit = useModalSubmit(
+                contractDetails,
+                activeView,
+                contractLayer,
+                contractObjectId,
+                detailLayers,
+                setActiveView,
+                activeDetailLayer,
+                setDetailAdded,
+                formOptions,
+                setFormOptions,
+                permission,
+                [contractDetails, activeView, detailLayers, formOptions],
+            );
+        });
+        expect(modalSubmit).toEqual([]);
+
+        activeView = 'chooseDetailLayer';
+        testHook(() => {
+            modalSubmit = useModalSubmit(
+                contractDetails,
+                activeView,
+                contractLayer,
+                contractObjectId,
+                detailLayers,
+                setActiveView,
+                activeDetailLayer,
+                setDetailAdded,
+                formOptions,
+                setFormOptions,
+                permission,
+                [contractDetails, activeView, detailLayers, formOptions],
+            );
+        });
+        expect(modalSubmit).toEqual([]);
+
+        activeView = 'contractDetails';
+        permission = { create: true, edit: true };
+        detailLayers = [{ id: 123 }];
+        testHook(() => {
+            modalSubmit = useModalSubmit(
+                contractDetails,
+                activeView,
+                contractLayer,
+                contractObjectId,
+                detailLayers,
+                setActiveView,
+                activeDetailLayer,
+                setDetailAdded,
+                formOptions,
+                setFormOptions,
+                permission,
+                [contractDetails, activeView, detailLayers, formOptions],
+            );
+        });
+        expect(modalSubmit).toEqual([{
+            disabled: false,
+            handleSubmit: expect.any(Function),
+            text: strings.modalContractDetails.addNewDetail,
+            toggleModal: false,
+        }]);
+
+        activeView = 'addNewDetail';
+        formOptions = { editedFields: { id: 123 }, submitDisabled: false };
+        testHook(() => {
+            modalSubmit = useModalSubmit(
+                contractDetails,
+                activeView,
+                contractLayer,
+                contractObjectId,
+                detailLayers,
+                setActiveView,
+                activeDetailLayer,
+                setDetailAdded,
+                formOptions,
+                setFormOptions,
+                permission,
+                [contractDetails, activeView, detailLayers, formOptions],
+            );
+        });
+        expect(modalSubmit).toEqual([{
+            disabled: false,
+            handleSubmit: expect.any(Function),
+            text: strings.modalContractDetails.newDetail.submit,
+            toggleModal: false,
+        }]);
     });
 });

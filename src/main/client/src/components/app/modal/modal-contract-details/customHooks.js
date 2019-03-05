@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { nestedVal } from '../../../../utils/nestedValue';
 import strings from '../../../../translations';
-import { getAttribute, getFeatureAttributes } from '../../../../utils/contracts/contracts';
+import { getAttribute, getFeatureAttributes, addDetailToContract } from '../../../../utils/contracts/contracts';
 
 /**
  * Updates state with new detail list to be shown for found layers and features.
@@ -111,6 +111,10 @@ export const useTitle = (
                 return setTitle(strings.modalContractDetails.listView.title);
             case 'singleFeatureDetails':
                 return setTitle(`${activeFeature.layerName} ${activeFeature.featureId}`);
+            case 'chooseDetailLayer':
+                return setTitle(strings.modalContractDetails.chooseLayer);
+            case 'addNewDetail':
+                return setTitle(strings.modalContractDetails.newDetail.title);
             default:
                 return setTitle('');
         }
@@ -144,4 +148,83 @@ export const useCancelText = (
     }, [...effectListeners]);
 
     return cancelText;
+};
+
+/**
+ * Updates state with new modal submit values based on active view.
+ *
+ * @param {Object[]} contractDetails List containing contract feature details.
+ * @param {string} activeView Currently active view in modal.
+ * @param {Object} contractLayer Active contract layer in modal.
+ * @param {number} contractObjectId Current contract's object id used in feature save.
+ * @param {Object[]} detailLayers Detail layers connected to contract layer.
+ * @param {Function} setActiveView Set active view after submit.
+ * @param {Object} activeDetailLayer Layer that is currently active on modal form.
+ * @param {Function} setDetailAdded Used to refresh contract list if new detail added.
+ * @param {Object} formOptions Contain's form's field data and whether submit is disabled or not.
+ * @param {Function} setFormOptions Used to set submit to disabled while querying feature save.
+ * @param {Object} permission Permission to create or edit contract layer.
+ * @param effectListeners List of items that useEffect listens to
+ * (contractDetails, activeView, detailLayers, formOptions).
+ */
+export const useModalSubmit = (
+    contractDetails: Object[],
+    activeView: string,
+    contractLayer: Object,
+    contractObjectId: number,
+    detailLayers: Object[],
+    setActiveView: (activeView: string) => void,
+    activeDetailLayer: Object,
+    setDetailAdded: (detailAdded: boolean) => void,
+    formOptions: { editedFields: Object, submitDisabled: boolean },
+    setFormOptions: (formOptions: Object) => void,
+    permission: Object,
+    effectListeners: any[],
+) => {
+    const [modalSubmit, setModalSubmit] = useState([]);
+
+    useEffect(() => {
+        switch (activeView) {
+            case 'contractDetails':
+                if (permission.create) {
+                    setModalSubmit([{
+                        text: strings.modalContractDetails.addNewDetail,
+                        handleSubmit: () => setActiveView('chooseDetailLayer'),
+                        disabled: !detailLayers.length,
+                        toggleModal: false,
+                    }]);
+                }
+                break;
+            case 'singleFeatureDetails':
+                setModalSubmit([]);
+                break;
+            case 'chooseDetailLayer':
+                setModalSubmit([]);
+                break;
+            case 'addNewDetail':
+                setModalSubmit([{
+                    text: strings.modalContractDetails.newDetail.submit,
+                    handleSubmit: async () => {
+                        setFormOptions({ ...formOptions, submitDisabled: true });
+                        const detailAdded = await addDetailToContract(
+                            activeDetailLayer,
+                            contractLayer,
+                            contractObjectId,
+                            formOptions.editedFields,
+                        );
+
+                        setDetailAdded(detailAdded);
+                        setActiveView('contractDetails');
+                    },
+                    disabled: formOptions.submitDisabled,
+                    toggleModal: false,
+                }]);
+                break;
+            default:
+                setModalSubmit([]);
+                break;
+        }
+    }, [...effectListeners]);
+
+    return modalSubmit;
 };
