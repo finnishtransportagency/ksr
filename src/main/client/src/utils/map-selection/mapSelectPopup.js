@@ -93,7 +93,7 @@ export const mapSelectPopup = async (
                             const contractLink = {
                                 title: strings.modalFeatureContracts.featureContracts,
                                 id: 'contract-link',
-                                className: 'fas fa-tasks',
+                                className: 'fas fa-external-link-square-alt',
                             };
                             actions.push(contractLink);
                         }
