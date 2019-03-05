@@ -14,9 +14,6 @@ const mapStateToProps = (state) => {
 
     return {
         objectId,
-        layerId,
-        contractIdField: contractLayer && contractLayer.contractIdField,
-        contractDescriptionField: contractLayer && contractLayer.contractDescriptionField,
         contractLayer,
         currentLayer,
         fields: nestedVal(contractLayer, ['fields']),
