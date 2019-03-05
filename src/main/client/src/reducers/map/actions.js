@@ -8,7 +8,7 @@ import * as types from '../../constants/actionTypes';
 import { addLayers, getSingleLayerFields } from '../../utils/map';
 import { reorderLayers } from '../../utils/reorder';
 import { addNonSpatialContentToTable } from '../table/actions';
-import { getLayerLegend } from '../../utils/layerLegend';
+import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
 
 export const getLayerGroups = () => async (dispatch: Function) => {
@@ -91,8 +91,8 @@ export const activateLayers = (
             if (layer.type === 'agfl') {
                 if (workspace === undefined) dispatch(addNonSpatialContentToTable(layer));
             } else {
-                let layerToUpdate = await getSingleLayerFields({ ...layer, failOnLoad: false });
-                layerToUpdate = await getLayerLegend(
+                const layerToUpdate = await getSingleLayerFields({ ...layer, failOnLoad: false });
+                await setLayerLegend(
                     layerToUpdate,
                     dispatch(getState).map.mapView.view,
                 );

@@ -20,10 +20,8 @@ export const getLegendSymbol = async (symbol: Object) => {
  *
  * @param {Object} layer List of layers.
  * @param {Object} view Esri map view.
- *
- * @returns {Promise} Promise object that contains updated layer with legend symbol.
  */
-export const getLayerLegend = async (
+export const setLayerLegend = async (
     layer: Object,
     view: Object,
 ) => {
@@ -40,5 +38,4 @@ export const getLayerLegend = async (
             }
         }
     }
-    return layer;
 };
