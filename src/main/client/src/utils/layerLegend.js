@@ -25,7 +25,7 @@ export const setLayerLegend = async (
     layer: Object,
     view: Object,
 ) => {
-    if (layer.type === 'agfs' && !layer.legendSymbol) {
+    if ((layer.type === 'agfs' || layer.type === 'feature') && (!layer.legendSymbol)) {
         const fl = view.map.findLayerById(layer.id);
         if (fl && fl.renderer) {
             if (fl.renderer.symbol) {

@@ -4,6 +4,7 @@ import esriLoader from 'esri-loader';
 import moment from 'moment';
 import { colorShapefileHighlight } from '../components/ui/defaultStyles';
 import { convert } from './geojson';
+import { getLegendSymbol } from './layerLegend';
 
 /**
  * Create Esri attribute information from geojson properties.
@@ -143,6 +144,7 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
     maxScale: 0,
     minScale: 0,
     name: fileName,
+    legendSymbol: layer.legendSymbol,
     opacity: 1,
     queryColumnsList: null,
     queryable: false,
@@ -164,7 +166,7 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
  * @param {Object[]} layerList List of layers.
  * @param {Function} addShapefile Redux action to add shapefile layer to layerList.
  */
-export const createLayer = (
+export const createLayer = async (
     graphics: Object,
     fileName: string,
     FeatureLayer: Function,
@@ -190,6 +192,7 @@ export const createLayer = (
         _source: 'shapefile',
     });
 
+    layer.legendSymbol = await getLegendSymbol(layer.renderer.symbol.clone());
     view.map.add(layer);
     addShapefile(convertLayerListFormat(layer, fileName));
 };
@@ -215,6 +218,6 @@ export const shape2geoJson = async (
     if (contents.shp && contents.dbf) {
         const geojson = await shapefile.read(contents.shp, contents.dbf);
         const graphics = await createGraphics(geojson);
-        createLayer(graphics, fileName, FeatureLayer, view, layerList, addShapefile);
+        await createLayer(graphics, fileName, FeatureLayer, view, layerList, addShapefile);
     }
 };
