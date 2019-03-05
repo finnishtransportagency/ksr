@@ -7,12 +7,15 @@ import { updateLayerFields } from '../../../../reducers/map/actions';
 const mapStateToProps = (state) => {
     const { layerId, contractObjectId, source } = state.modal.activeModal.data;
     const { layerList } = state.map.layerGroups;
+    const { layerId: activeAdmin } = state.adminTool.active;
+    const contractLayer = layerList.find(l => l.id === layerId);
 
     return {
-        layerId,
+        contractLayer,
         contractObjectId,
         source,
         layerList,
+        activeAdmin,
     };
 };
 
