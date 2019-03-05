@@ -1,6 +1,7 @@
 // @flow
 import { toast } from 'react-toastify';
 import { queryFeatures } from '../../api/search/searchQuery';
+import store from '../../store';
 import strings from '../../translations';
 import { getContractDocumentUrl } from './contractDocument';
 import { nestedVal } from '../nestedValue';
@@ -128,6 +129,105 @@ export const linkToContract = async (
         default:
             toast.error(contractLinkedError);
     }
+};
+
+/**
+ * Adds and links detail feature to a contract.
+ *
+ * @param {Object} layer Detail layer where feature will be added to.
+ * @param {Object} contractLayer Contract layer that will get new detail link.
+ * @param {number} contractObjectId Contract's object Id.
+ * @param {Object} editedFields Fields/attributes from addNewDetail form.
+ *
+ * @returns {Promise<boolean>} Returns true or false based on successful add/link.
+ */
+export const addDetailToContract = async (
+    layer: Object,
+    contractLayer: Object,
+    contractObjectId: number,
+    editedFields: Object,
+): Promise<boolean> => {
+    const objectIdFieldName = nestedVal(
+        contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+        ['name'],
+    );
+    const contractData = await queryFeatures(
+        contractLayer.id,
+        `${objectIdFieldName} = '${contractObjectId}'`,
+        null,
+    );
+
+    const contractRelationColumn = nestedVal(
+        contractData,
+        ['features', '0', 'attributes', layer.relationColumnIn],
+    );
+
+    if (layer.relationType === 'many') {
+        if (contractRelationColumn) {
+            const features = [{
+                attributes: {
+                    ...editedFields,
+                    [layer.relationColumnOut]: contractRelationColumn,
+                },
+            }];
+
+            const addRes = await save.saveData(
+                'add',
+                store.getState().map.mapView.view,
+                nestedVal(layer, ['id']),
+                features,
+                objectIdFieldName,
+                undefined,
+                false,
+                false,
+            );
+
+            return nestedVal(addRes, ['addResults', '0', 'success'], false);
+        }
+
+        toast.error(strings.modalContractDetails.newDetail.errorAddingFeature);
+        return false;
+    }
+
+    let features = [{
+        attributes: {
+            ...editedFields,
+        },
+    }];
+
+    const addRes = await save.saveData(
+        'add',
+        store.getState().map.mapView.view,
+        nestedVal(layer, ['id']),
+        features,
+        objectIdFieldName,
+        undefined,
+        false,
+        false,
+    );
+
+    if (nestedVal(addRes, ['addResults', '0', 'success'], false)) {
+        features = [{
+            attributes: {
+                [objectIdFieldName]: contractObjectId,
+                [layer.relationColumnOut]: editedFields[layer.relationColumnOut],
+            },
+        }];
+
+        const updateRes = await save.saveData(
+            'update',
+            store.getState().map.mapView.view,
+            contractLayer.id,
+            features,
+            objectIdFieldName,
+            contractObjectId,
+            true,
+        );
+
+        return !!nestedVal(updateRes, ['features', 'length']);
+    }
+
+    return false;
 };
 
 /**
