@@ -1,15 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import FeatureDetailsForm from '../../../shared/feature-details-form/FeatureDetailsForm';
 import ModalLayerDetails from '../ModalLayerDetails';
-import ModalLayerDetailsView from '../ModalLayerDetailsView';
 
 const setup = () => {
     const props = {
-        fields: [
-            { name: 'Field1', editable: true },
-            { name: 'Field2', editable: true },
-            { name: 'Field3', editable: true },
-        ],
         dataFields: [],
         data: {},
         layer: {
@@ -38,53 +33,16 @@ describe('<ModalLayerDetails />', () => {
     const { wrapper } = setup();
 
     it('should render <ModalLayerDetailsView/> ', () => {
-        expect(wrapper.find(ModalLayerDetailsView).exists()).toBe(true);
+        expect(wrapper.find(FeatureDetailsForm).exists()).toBe(true);
     });
 
-    it('should handle loadFields', () => {
-        const expectedResult = [
-            {
-                data: '', editable: true, name: 'Field1', nullable: true,
-            },
-            {
-                data: '', editable: true, name: 'Field2', nullable: true,
-            },
-            {
-                data: '', editable: true, name: 'Field3', nullable: true,
-            },
-        ];
-
-
-        wrapper.instance().loadFields();
-        expect(wrapper.state('dataFields')).toEqual(expectedResult);
-    });
-
-    it('should handle handleOnChange', () => {
-        const expectedResult = [
-            {
-                data: 'Test Value', editable: true, name: 'Field1', nullable: true,
-            },
-            {
-                data: '', editable: true, name: 'Field2', nullable: true,
-            },
-            {
-                data: '', editable: true, name: 'Field3', nullable: true,
-            },
-        ];
-
-        const evt = {
-            target: {
-                name: 'Field1',
-                value: 'Test Value',
-            },
+    it('should handle setFormOptions', () => {
+        const expectedResult = {
+            editedFields: { id: 123 },
+            submitDisabled: false,
         };
 
-        const field = {
-            name: 'Field1',
-        };
-
-        wrapper.instance().handleOnChange(evt, field);
-
-        expect(wrapper.state('dataFields')).toEqual(expectedResult);
+        wrapper.instance().setFormOptions({ editedFields: { id: 123 }, submitDisabled: false });
+        expect(wrapper.state('formOptions')).toEqual(expectedResult);
     });
 });

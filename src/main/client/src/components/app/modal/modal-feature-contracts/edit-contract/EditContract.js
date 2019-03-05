@@ -1,152 +1,99 @@
 // @flow
 import React, { Component } from 'react';
-import { queryFeatures } from '../../../../../api/search/searchQuery';
-import { contractListTexts } from '../../../../../utils/contracts/contracts';
-import ModalLayerDetailsView from '../../modal-layer-details/ModalLayerDetailsView';
 import { fetchContractRelation } from '../../../../../api/contract/contractRelations';
+import FeatureDetailsForm from '../../../shared/feature-details-form/FeatureDetailsForm';
+import LoadingIcon from '../../../shared/LoadingIcon';
 
 type Props = {
-    contractLinkValidation: (
-        validContract?: boolean,
-        contractNumber?: number,
-        contractUuid?: string,
-    ) => void,
     currentLayer: Object,
     contractLayer: Object,
     fields: Array<Object>,
-    setData: Function,
     objectId: number,
     contractNumber: string,
+    setFormOptions: (formOptions: Object) => void,
 };
 
 type State = {
     contractData: Array<Object>,
     fetching: boolean,
     contractExists: boolean,
+    formOptions: Object,
+    existingAttributes: Object,
 };
 
 const initialState = {
     contractData: [],
-    fetching: false,
+    fetching: true,
     contractExists: true,
+    formOptions: {
+        editedFields: [],
+        submitDisabled: true,
+    },
+    existingAttributes: {},
 };
 
 class EditContract extends Component<Props, State> {
-    abortController: ?Object = null; // eslint-disable-line react/sort-comp
-    existsQuery: ?number = 0; // eslint-disable-line react/sort-comp
-
     constructor(props: Props) {
         super(props);
 
         this.state = { ...initialState };
-
-        this.handleOnChange = this.handleOnChange.bind(this);
     }
 
     componentDidMount() {
-        this.loadFields();
+        const { setFormOptions } = this.props;
+        setFormOptions(initialState.formOptions);
+        this.loadExistingAttributes();
     }
 
-    loadFields = () => {
+    loadExistingAttributes = async () => {
         const {
-            currentLayer, objectId, fields, contractLayer, setData, contractNumber,
+            currentLayer, objectId, fields, contractLayer, contractNumber,
         } = this.props;
-        fetchContractRelation(
+
+        const contracts = await fetchContractRelation(
             currentLayer.id,
             objectId,
-        ).then(contracts => contractListTexts(contracts))
-            .then((contracts) => {
-                const contract = contracts
-                    .find(a => a.attributes.CONTRACT_NUMBER === contractNumber);
-                const attributes = fields
-                    .filter(f => (f.type === 'esriFieldTypeOID'
-                        || (f.editable
-                            && f.name !== 'CONTRACT_UUID'
-                            && f.name !== contractLayer.contractIdField)))
-                    .map(
-                        field => ({
-                            ...field,
-                            data: contract
-                                ? contract.attributes[field.name]
-                                : contracts[0].attributes[field.name],
-                        }),
-                        {},
-                    );
-                this.setState({ contractData: attributes });
-                const attributesObject = Object.assign({}, ...(attributes.map(item =>
-                    ({ [item.name]: item.data }))));
-                setData(attributesObject);
-            });
-    };
+        );
 
-    handleOnChange = (evt: Object, field: Object) => {
-        const { name, value } = evt.target;
-        const { contractData } = this.state;
-        const { contractLayer, setData } = this.props;
+        const contract = contracts.features
+            .find(a => a.attributes[contractLayer.contractIdField] === contractNumber);
+
+        const attributes = fields
+            .map(
+                field => ({
+                    ...field,
+                    data: contract
+                        ? contract.attributes[field.name]
+                        : contracts[0].attributes[field.name],
+                }),
+                {},
+            );
+
+        const existingAttributes = attributes.reduce((acc, attr) => ({
+            ...acc,
+            [attr.name]: attr.data,
+        }), {});
 
         this.setState({
-            fetching: true,
+            existingAttributes,
+            fetching: false,
         });
-
-        const newData = contractData.map(f => ({
-            ...f,
-            data: f.name === name ? value : f.data,
-        }));
-        this.setState({ contractData: newData });
-
-        window.clearTimeout(this.existsQuery);
-        if (this.abortController) this.abortController.abort();
-
-        const dataObject = Object.assign({}, ...(newData.map(item =>
-            ({ [item.name]: item.data }))));
-
-        setData(dataObject);
-
-        if (value && field.name === contractLayer.contractIdField) {
-            this.props.contractLinkValidation(false);
-
-            this.existsQuery = window.setTimeout(async () => {
-                const signal = this.abortController ? this.abortController.signal : undefined;
-
-                const res = await queryFeatures(
-                    contractLayer.id,
-                    `${contractLayer.contractIdField} = '${value}'`,
-                    signal,
-                );
-
-                if (res.features && res.features.length < 1) {
-                    this.props.contractLinkValidation(
-                        true,
-                        value,
-                        '',
-                    );
-                    this.setState({
-                        fetching: false,
-                        contractExists: true,
-                    });
-                } else {
-                    this.setState({
-                        fetching: false,
-                        contractExists: false,
-                    });
-                }
-            }, 300);
-        } else {
-            this.setState({
-                fetching: false,
-            });
-        }
     };
 
     render() {
-        const { contractData, fetching, contractExists } = this.state;
+        const { contractLayer, setFormOptions } = this.props;
+        const { fetching, existingAttributes } = this.state;
+
+        if (fetching) {
+            return <LoadingIcon loading={fetching} />;
+        }
 
         return (
-            <ModalLayerDetailsView
-                fields={contractData}
-                handleOnChange={this.handleOnChange}
-                fetching={fetching}
-                validContract={contractExists}
+            <FeatureDetailsForm
+                layer={contractLayer}
+                setFormOptions={setFormOptions}
+                formType="edit"
+                existingAttributes={existingAttributes}
             />
         );
     }

@@ -1,16 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { createAddressFields } from '../../../../utils/geoconvert/createAddressFields';
-import ModalLayerDetailsView from './ModalLayerDetailsView';
 import strings from '../../../../translations';
 import save from '../../../../utils/saveFeatureData';
 import ModalContainer from '../../shared/Modal/ModalContainer';
-import { queryFeatures } from '../../../../api/search/searchQuery';
-import { nestedVal } from '../../../../utils/nestedValue';
-import { toUnixTime } from '../../../../utils/date';
+import FeatureDetailsForm from '../../shared/feature-details-form/FeatureDetailsForm';
 
 type Props = {
-    fields: any,
     layer: Object,
     setTempGraphicsLayer: Function,
     originalLayerId: string,
@@ -25,103 +21,37 @@ type Props = {
 };
 
 type State = {
-    dataFields: Array<Object>,
-    fetching: boolean,
-    contractExists: boolean,
     copiedFeature: ?Object,
+    existingAttributes: Object,
+    formOptions: Object,
 };
 
 const initialState = {
-    dataFields: [],
-    fetching: false,
-    contractExists: true,
-    copiedFeature: {},
+    copiedFeature: null,
+    existingAttributes: {},
+    formOptions: {
+        editedFields: [],
+        submitDisabled: true,
+    },
 };
 
 class ModalFilter extends Component<Props, State> {
-    abortController: ?Object = null;
-
-    existsQuery: ?number = 0;
-
     constructor(props: Props) {
         super(props);
-        this.state = { ...initialState };
+        const copiedFeature = props.layer.graphics.items.length
+            ? props.layer.graphics.items[0]
+            : null;
+
+        const existingAttributes = copiedFeature && copiedFeature.attributes
+            ? copiedFeature.attributes
+            : {};
+
+        this.state = {
+            ...initialState,
+            copiedFeature,
+            existingAttributes,
+        };
     }
-
-    componentDidMount() {
-        this.loadFields();
-    }
-
-    loadFields = () => {
-        const { fields, activeLayer, layer } = this.props;
-        const copiedFeature = layer.graphics.items.length
-            ? layer.graphics.items[0] : null;
-        const copiedAttributes = copiedFeature
-            ? copiedFeature.attributes : null;
-
-        const dataFields = fields.map(field => ({
-            ...field,
-            nullable: field.name !== activeLayer.relationColumnOut,
-            data: copiedAttributes && copiedAttributes[field.name]
-                ? String(copiedAttributes[field.name]) : '',
-        })).filter(f => (f.type !== 'esriFieldTypeOID'
-                && f.editable
-                && f.name !== 'CONTRACT_UUID'
-                && f.name !== activeLayer.relationColumnOut)
-                || (f.name === activeLayer.relationColumnOut
-                    && f.name === activeLayer.relationColumnOut));
-
-        this.setState({ dataFields, copiedFeature });
-    };
-
-    handleOnChange = (evt: Object, field: Object) => {
-        const { name, value } = evt.target;
-        const { dataFields } = this.state;
-        const { activeLayer } = this.props;
-
-        this.setState({
-            fetching: true,
-        });
-
-        const newData = dataFields.map(f => ({
-            ...f,
-            data: f.name === name ? value : f.data,
-        }));
-
-        this.setState({ dataFields: newData });
-
-        window.clearTimeout(this.existsQuery);
-        if (this.abortController) this.abortController.abort();
-
-        if (value && field.name === activeLayer.relationColumnOut) {
-            this.setState({ fetching: true, contractExists: true });
-
-            this.existsQuery = window.setTimeout(() => {
-                const signal = this.abortController ? this.abortController.signal : undefined;
-                queryFeatures(
-                    activeLayer.id,
-                    `${activeLayer.relationColumnOut} = '${value}'`,
-                    signal,
-                ).then((r) => {
-                    if (r.features && r.features.length < 1) {
-                        this.setState({
-                            fetching: false,
-                            contractExists: false,
-                        });
-                    } else {
-                        this.setState({
-                            fetching: false,
-                            contractExists: true,
-                        });
-                    }
-                });
-            }, 300);
-        } else {
-            this.setState({
-                fetching: false,
-            });
-        }
-    };
 
     handleModalSubmit = async () => {
         const {
@@ -133,20 +63,11 @@ class ModalFilter extends Component<Props, State> {
             objectId,
             editModeActive,
             setActiveFeatureMode,
-            sketchViewModel,
-            setTempGraphicsLayer,
         } = this.props;
 
-        const { dataFields, copiedFeature } = this.state;
-
-
-        const data = dataFields.reduce((acc, cur) => {
-            const isDate = cur.type === 'esriFieldTypeDate';
-            return { ...acc, [cur.name]: isDate ? toUnixTime(cur.data) : cur.data };
-        }, {});
-
+        const { copiedFeature, formOptions } = this.state;
         const combinedData = {
-            attributes: data,
+            attributes: formOptions.editedFields,
             geometry: copiedFeature ? copiedFeature.geometry : null,
         };
         const feature = await createAddressFields(combinedData, featureType, addressField);
@@ -170,6 +91,8 @@ class ModalFilter extends Component<Props, State> {
         } else {
             await save.saveData('add', view, originalLayerId, [feature], objectId.name, undefined, false, false);
         }
+
+        const { setTempGraphicsLayer, sketchViewModel } = this.props;
         if (layer) {
             layer.graphics = undefined;
             setTempGraphicsLayer(layer);
@@ -180,25 +103,25 @@ class ModalFilter extends Component<Props, State> {
         setActiveFeatureMode('create');
     };
 
+    setFormOptions = (formOptions: Object) => {
+        this.setState({
+            formOptions: {
+                editedFields: formOptions.editedFields,
+                submitDisabled: formOptions.submitDisabled,
+            },
+        });
+    };
+
     render() {
         const { activeLayer, editModeActive } = this.props;
-        const { fetching, contractExists, dataFields } = this.state;
-        const validContract = activeLayer.type === 'agfl'
-            ? activeLayer.relationColumnOut && !contractExists
-            : activeLayer.relationColumnOut && contractExists;
-        const disabled = (activeLayer.relationColumnOut)
-            && (!validContract
-            || fetching
-            || !nestedVal(
-                dataFields.find(a => a.name === activeLayer.relationColumnOut),
-                ['data', 'length'],
-            ));
+        const { formOptions, existingAttributes } = this.state;
+
         const modalSubmit = [{
             text: editModeActive
                 ? strings.modalLayerDetails.editSubmit
                 : strings.modalLayerDetails.submit,
             handleSubmit: this.handleModalSubmit,
-            disabled,
+            disabled: formOptions.submitDisabled,
             toggleModal: true,
         }];
         const modalTitle = editModeActive
@@ -211,11 +134,11 @@ class ModalFilter extends Component<Props, State> {
                 modalSubmit={modalSubmit}
                 cancelText={strings.modalLayerDetails.cancel}
             >
-                <ModalLayerDetailsView
-                    fields={dataFields}
-                    handleOnChange={this.handleOnChange}
-                    fetching={fetching}
-                    validContract={validContract}
+                <FeatureDetailsForm
+                    layer={activeLayer}
+                    setFormOptions={this.setFormOptions}
+                    formType={Object.entries(existingAttributes).length ? 'edit' : 'add'}
+                    existingAttributes={existingAttributes}
                 />
             </ModalContainer>
         );
