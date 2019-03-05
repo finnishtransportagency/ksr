@@ -296,9 +296,16 @@ const fi = {
         backText: 'Takaisin',
         errorNoFeaturesFound: 'Ei löydettyjä kohteita',
         errorNoAttributesFound: 'Ei löydettyjä tietoja.',
+        chooseLayer: 'Valitse lisätieto taso',
+        addNewDetail: 'Uusi lisätieto',
         listView: {
             title: 'Sopimukseen liittyvät kohteet',
             details: 'Näytä lisätiedot',
+        },
+        newDetail: {
+            title: 'Lisää uusi kohde sopimukselle',
+            submit: 'Tallenna',
+            errorAddingFeature: 'Kohteen luonti epäonnistui',
         },
     },
     saveFeatureData: {
