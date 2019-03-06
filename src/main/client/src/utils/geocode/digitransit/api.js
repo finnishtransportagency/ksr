@@ -2,7 +2,7 @@
 import querystring from 'querystring';
 import { convert } from '../../geojson';
 
-const API_URL = 'http://api.digitransit.fi/geocoding/v1/search';
+const API_URL = 'https://api.digitransit.fi/geocoding/v1/search';
 
 /**
  * Converts a GeoJSON Feature into a AddressCandidate and SuggestionResult
