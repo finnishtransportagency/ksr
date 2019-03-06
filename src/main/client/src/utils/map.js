@@ -20,7 +20,14 @@ export const fitExtent = (layers: Array<Object>, view: Object) => {
     });
 
     Promise.all(extentQueries).then(() => {
-        view.goTo(extents);
+        if (extents && extents.length === 1 && extents[0].height === 0 && extents[0].width === 0) {
+            view.goTo({
+                target: extents,
+                scale: view.constraints.maxScale,
+            });
+        } else if (extents) {
+            view.goTo(extents);
+        }
     });
 };
 
@@ -400,5 +407,12 @@ export const zoomToFeatures = async (view: Object, features: Object[]) => {
         }
         return feature.geometry;
     });
-    if (geometries) view.goTo(geometries);
+    if (geometries && geometries.length === 1 && geometries[0].type === 'point') {
+        view.goTo({
+            target: geometries,
+            scale: view.constraints.maxScale,
+        });
+    } else if (geometries) {
+        view.goTo(geometries);
+    }
 };
