@@ -8,6 +8,10 @@ import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.MultiPolygon;
 import org.geojson.Polygon;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -167,9 +171,11 @@ public class KTJUtils {
 
             feat.setProperty(
                     "registrationDate",
-                    XMLUtils.getNodeContent(
-                            registerUnit,
-                            REGISTER_DATE_EL
+                    KTJUtils.parseDate(
+                            XMLUtils.getNodeContent(
+                                    registerUnit,
+                                    REGISTER_DATE_EL
+                            )
                     )
             );
 
@@ -238,5 +244,19 @@ public class KTJUtils {
             throw new KsrApiException.InternalServerErrorException(
                     "Error parsing KTJ PDF link url.", us);
         }
+    }
+
+    /**
+     * Parses a date from date-string and converts it into an ISO 8601 string.
+     *
+     * @param dateString String representation of the date.
+     * @return ISO 8601 string of the parsed date.
+     */
+    private static String parseDate(String dateString) {
+        DateTimeFormatter parseFormatter = DateTimeFormat.forPattern("YYYYMMdd");
+        parseFormatter.withZone(DateTimeZone.forID("Europe/Helsinki"));
+        DateTime dt = DateTime.parse(dateString, parseFormatter);
+        DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+        return dt.toString(outputFormatter);
     }
 }
