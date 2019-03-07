@@ -66,7 +66,10 @@ public class OAMFilter extends OncePerRequestFilter {
 
         List<String> oamGroups = null;
         if (groups != null && !"".equals(groups)) {
-            oamGroups = Arrays.asList(groups.split(","));
+            oamGroups = Arrays
+                    .stream(groups.split(","))
+                    .filter(Role::contains)
+                    .collect(Collectors.toList());
         }
         
         if (username != null) {
