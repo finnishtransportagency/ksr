@@ -1,5 +1,5 @@
 import querystring from 'querystring';
-import { getHeaders } from '../config';
+import { config } from '../config';
 
 /**
  * Deletes selected workspace from database.
@@ -14,7 +14,7 @@ export const fetchDeleteWorkspace = workspaceName => (
             workspaceName,
         })
     }`, {
-        headers: getHeaders(),
+        ...config(),
         method: 'DELETE',
     })
         .then(r => r.json())
