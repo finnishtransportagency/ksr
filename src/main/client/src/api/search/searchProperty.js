@@ -11,7 +11,7 @@ import { config, handleErrors } from '../config';
  * Can be either X and Y coordinates, string made from area geometry or property identifier.
  * @param {any} signal Abortcontroller signal.
  *
- * @returns {Promise} Promise with property info.
+ * @returns {Promise<Object>} Promise with property info data.
  */
 export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
     if (queryParameter.x && queryParameter.y) {
@@ -29,7 +29,9 @@ export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
                 }
                 return res;
             });
-    } else if (queryParameter.polygon) {
+    }
+
+    if (queryParameter.polygon) {
         return fetch('api/property/', {
             ...config(),
             method: 'POST',
@@ -64,7 +66,7 @@ export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
  * @param {string} propertyIdentifier Property's identifier.
  * @param {string} language Language for the documents.
  *
- * @returns {Promise} Promise with PDF document link urls.
+ * @returns {Promise<Object>} Promise with PDF document link urls.
  */
 export const fetchPropertyPdfLinks = (propertyIdentifier: string, language: string) => (
     fetch(`api/property/pdf/links/?${

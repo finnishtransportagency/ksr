@@ -1,3 +1,4 @@
+// @flow
 import { config } from '../config';
 
 /**
@@ -5,9 +6,9 @@ import { config } from '../config';
  *
  * @param {Object} data Workspace data created with createWorkspaceJsonBody method.
  *
- * @returns {Object} Contains workspace names and last updated times.
+ * @returns {Promise<Object[]>} Contains workspace names and last updated times.
  */
-export const fetchSaveWorkspace = data => (
+export const fetchSaveWorkspace = (data: Object) => (
     fetch('api/workspace', {
         ...config(),
         method: 'POST',
