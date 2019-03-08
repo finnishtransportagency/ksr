@@ -108,8 +108,6 @@ const findLayer = (list, layer) => list
  */
 export const updateLayerList = (workspace: Object, layerList: Object[]): Object[] => workspace
     .layers.reduce((acc, wLayer) => {
-        console.log(acc)
-        console.log(wLayer)
         const match = findLayer(acc, wLayer);
         if (match && wLayer.definitionExpression) {
             return [
