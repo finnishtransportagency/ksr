@@ -1,7 +1,7 @@
-import { getHeaders } from '../config';
+import { config } from '../config';
 
 export const fetchAddUserLayer = data => fetch('api/user-layer', {
-    headers: getHeaders(),
+    ...config(),
     method: 'POST',
     body: JSON.stringify(data),
 })

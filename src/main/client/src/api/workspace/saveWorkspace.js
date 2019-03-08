@@ -1,4 +1,4 @@
-import { getHeaders } from '../config';
+import { config } from '../config';
 
 /**
  * Saves workspace to database.
@@ -9,7 +9,7 @@ import { getHeaders } from '../config';
  */
 export const fetchSaveWorkspace = data => (
     fetch('api/workspace', {
-        headers: getHeaders(),
+        ...config(),
         method: 'POST',
         body: JSON.stringify(data),
     })
