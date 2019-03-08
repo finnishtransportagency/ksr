@@ -2,9 +2,6 @@
 import React, { Component } from 'react';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersAllView from './MapLayersAllView';
-import * as types from '../../../../../constants/actionTypes';
-import { parseData } from '../../../../../utils/parseFeatureData';
-import store from '../../../../../store';
 
 type Props = {
     layerGroups: Array<any>,
@@ -19,6 +16,7 @@ type Props = {
     activeSubGroups: number[],
     setActiveGroups: (activeGroups: number[]) => void,
     setActiveSubGroups: (activeSubGroups: number[]) => void,
+    setSearchFeatures: (layers: Object[]) => void,
 };
 
 class MapLayersActive extends Component<Props> {
@@ -49,15 +47,13 @@ class MapLayersActive extends Component<Props> {
     };
 
     handleLayerClick = (id: number) => {
-        const { activateLayers, deactivateLayer, layerList } = this.props;
+        const {
+            activateLayers, deactivateLayer, layerList, setSearchFeatures,
+        } = this.props;
         const foundLayer = layerList.find(l => l.id === id);
-
-        if (!foundLayer.active) {
+        if (foundLayer && !foundLayer.active) {
             if (foundLayer.definitionExpression) {
-                store.dispatch({
-                    type: types.SEARCH_FEATURES_FULFILLED,
-                    layers: parseData({ layers: [foundLayer] }, false),
-                });
+                setSearchFeatures([foundLayer]);
             }
             activateLayers([foundLayer]);
         } else {
@@ -98,7 +94,9 @@ class MapLayersActive extends Component<Props> {
     };
 
     updateLayerList = (foundLayers: Object[]) => {
-        const { activateLayers, deactivateLayer, loadingLayers } = this.props;
+        const {
+            activateLayers, deactivateLayer, loadingLayers, setSearchFeatures,
+        } = this.props;
         const active = foundLayers.filter(f => !f.failOnLoad).length > 0
             ? foundLayers.filter(f => !f.failOnLoad).every(l => l.active)
             : foundLayers.every(l => l.active);
@@ -111,10 +109,7 @@ class MapLayersActive extends Component<Props> {
                 && foundLayer.definitionExpression
             ));
             if (searchLayers.length) {
-                store.dispatch({
-                    type: types.SEARCH_FEATURES_FULFILLED,
-                    layers: parseData({ layers: searchLayers }, false),
-                });
+                setSearchFeatures(searchLayers);
             }
 
             const layersToBeActivated = foundLayers.filter(foundLayer => (

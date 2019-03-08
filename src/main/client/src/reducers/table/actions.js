@@ -321,3 +321,8 @@ export const addNonSpatialContentToTable = (
         })
         .catch(err => console.error(err));
 };
+
+export const setSearchFeatures = (layers: Object[]) => ({
+    type: types.SEARCH_FEATURES_FULFILLED,
+    layers: parseData({ layers }, false),
+});

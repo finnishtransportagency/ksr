@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { activateLayers, deactivateLayer } from '../../../../../reducers/map/actions';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
 import MapLayersAll from './MapLayersAll';
+import { setSearchFeatures } from '../../../../../reducers/table/actions';
 
 const mapStateToProps = state => ({
     layerGroups: state.map.layerGroups.layerGroups,
@@ -23,6 +24,9 @@ const mapDispatchToProps = dispatch => ({
     },
     deactivateLayer: (layerId) => {
         dispatch(deactivateLayer(layerId));
+    },
+    setSearchFeatures: (layers) => {
+        dispatch(setSearchFeatures(layers));
     },
 });
 
