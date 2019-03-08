@@ -191,9 +191,17 @@ export const searchWorkspaceFeatures = (
         });
 
         if (layersToBeAdded.layers.length) {
+            const addSearchResultLayers = layersToBeAdded.layers.map(l => ({
+                ...l,
+                features: l.features.map(f => ({
+                    ...f,
+                    selected: undefined,
+                })),
+            }));
+
             dispatch({
                 type: types.ADD_SEARCH_RESULTS_LAYER,
-                layers: layersToBeAdded.layers,
+                layers: addSearchResultLayers,
             });
         }
 
