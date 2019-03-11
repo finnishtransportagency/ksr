@@ -25,7 +25,6 @@ import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
  * RestController for maplayer proxy.
  */
 @RestController
-@CrossOrigin
 @RequestMapping(ProxyController.PROXY_URL)
 public class ProxyController {
 
