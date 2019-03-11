@@ -11,7 +11,7 @@ import { config } from '../config';
  */
 export const deleteFeatures = (layerId: string, params: string) => (
     fetch(`api/proxy/layer/${layerId}/deleteFeatures`, {
-        ...config(),
+        ...config('x-www-form-urlencoded'),
         method: 'POST',
         body: params,
     })
