@@ -1,16 +1,19 @@
 // @flow
 import { toast } from 'react-toastify';
 
-export const getHeaders = () => {
+/** Fetch request headers */
+const getHeaders = () => {
     const headers = new Headers();
     headers.append('X-Requested-With', 'XMLHttpRequest');
     headers.append('Content-Type', 'application/json; charset=utf-8');
     return headers;
 };
 
+/** Fetch request config */
 export const config = () => ({
     headers: getHeaders(),
     credentials: 'include',
+    mode: 'cors',
 });
 
 /**

@@ -1,15 +1,16 @@
-import { getHeaders } from '../config';
+// @flow
+import { config } from '../config';
 
 /**
  * Saves workspace to database.
  *
  * @param {Object} data Workspace data created with createWorkspaceJsonBody method.
  *
- * @returns {Object} Contains workspace names and last updated times.
+ * @returns {Promise<Object[]>} Contains workspace names and last updated times.
  */
-export const fetchSaveWorkspace = data => (
+export const fetchSaveWorkspace = (data: Object) => (
     fetch('api/workspace', {
-        headers: getHeaders(),
+        ...config(),
         method: 'POST',
         body: JSON.stringify(data),
     })

@@ -8,7 +8,7 @@ import strings from '../../translations';
  *
  * @param {?string} workspaceName User given workspace name.
  *
- * @return {Object} Contains single workspaces data.
+ * @return {Promise<Object>} Contains single workspaces data.
  */
 export const fetchWorkspace = (workspaceName: ?string) => {
     if (workspaceName) {
@@ -36,7 +36,7 @@ export const fetchWorkspace = (workspaceName: ?string) => {
  *
  * @param {string} workspaceUuid Unique identifier for a workspace.
  *
- * @returns {Promise | null} Promise object with found workspace or null.
+ * @returns {Promise<Object> | Promise<null>} Promise object with found workspace or null.
  */
 export const getWorkspaceUuid = async (workspaceUuid: string) => {
     const res = await fetch(`api/workspace/${workspaceUuid}`, config());

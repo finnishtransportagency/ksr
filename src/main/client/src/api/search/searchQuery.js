@@ -10,7 +10,7 @@ import { config, handleErrors } from '../config';
  * @param {string} title Layer name that will be used in table tab.
  * @param {Object} data Object with empty layer array (added so it works with parseData method).
  *
- * @returns Data that can be used in parseData method to add it to the table.
+ * @returns {Promise<Object>} Data that can be used in parseData method to add it to the table.
  */
 export const fetchSearchQuery = (
     layerId: number,
@@ -39,7 +39,7 @@ export const fetchSearchQuery = (
  * @param {string} queryColumn Column which the suggestions are fetched for.
  * @param {any} signal Request signal which can be used to abort the request.
  *
- * @returns {string[]} Suggested search words.
+ * @returns {Promise<string[]>} Suggested search words.
  */
 export const fetchSearchSuggestions = (
     layerId: string,
@@ -72,7 +72,7 @@ export const fetchSearchSuggestions = (
  * @param {string} whereQueryString Parsed query string that is used in fetch URL.
  * @param {any} signal Request signal which can be used to abort the request.
  *
- * @returns {Promise} Promise object that contains features found with given contract number.
+ * @returns {Promise<Object>} Promise object that contains feature data.
  */
 export const queryFeatures = (
     layerId: number,

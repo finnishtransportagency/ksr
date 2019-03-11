@@ -1,5 +1,5 @@
 // @flow
-import { config, getHeaders, handleErrors } from '../config';
+import { config, handleErrors } from '../config';
 
 /**
  * Gets contract relation data.
@@ -34,15 +34,12 @@ export const linkContract = (
     contractObjectId: number,
 ) => (
     fetch(`api/contract/link/${layerId}/${layerObjectId}/${contractLayerId}/${contractObjectId}`, {
-        headers: getHeaders(),
+        ...config(),
         method: 'POST',
     })
         .then((res) => {
-            if (res.ok && res.status === 201) {
-                return 'created';
-            } else if (res.ok && res.status === 200) {
-                return 'exists';
-            }
+            if (res.ok && res.status === 201) return 'created';
+            if (res.ok && res.status === 200) return 'exists';
             return null;
         })
         .catch(err => console.log(err))
@@ -65,7 +62,7 @@ export const unlinkContract = (
     contractObjectId: number,
 ) => (
     fetch(`api/contract/unlink/${layerId}/${layerObjectId}/${contractLayerId}/${contractObjectId}`, {
-        headers: getHeaders(),
+        ...config(),
         method: 'POST',
     })
         .then(res => res.ok && res.status === 200)

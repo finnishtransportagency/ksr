@@ -1,3 +1,4 @@
+// @flow
 import { config } from '../config';
 
 /**
@@ -5,9 +6,9 @@ import { config } from '../config';
  *
  * @param {string} queryParams Query string that contains x, y and featureType.
  *
- * @returns {Object} The data returned from geoconvert.
+ * @returns {Promise<Object>} The data returned from geoconvert.
  */
-export const fetchGetGeoconvert = queryParams => (
+export const fetchGetGeoconvert = (queryParams: string): Promise<Object> => (
     fetch(`api/geoconvert?${queryParams}`, config())
         .then(r => r.json())
         .catch(err => console.log(err))

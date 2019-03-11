@@ -1,20 +1,21 @@
+// @flow
 import querystring from 'querystring';
-import { getHeaders } from '../config';
+import { config } from '../config';
 
 /**
  * Deletes selected workspace from database.
  *
  * @param {string} workspaceName Workspace to be deleted.
  *
- * @returns {Object} Contains workspace names and last updated times.
+ * @returns {Promise<Object[]>} Promise with remaining workspace names and last updated times.
  */
-export const fetchDeleteWorkspace = workspaceName => (
+export const fetchDeleteWorkspace = (workspaceName: string) => (
     fetch(`api/workspace?${
         querystring.stringify({
             workspaceName,
         })
     }`, {
-        headers: getHeaders(),
+        ...config(),
         method: 'DELETE',
     })
         .then(r => r.json())
