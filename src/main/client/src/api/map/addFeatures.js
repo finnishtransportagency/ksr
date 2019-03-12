@@ -11,7 +11,7 @@ import { config } from '../config';
 */
 export const addFeatures = (layerId: string, params: string) => (
     fetch(`api/proxy/layer/${layerId}/addFeatures`, {
-        ...config(),
+        ...config('x-www-form-urlencoded'),
         method: 'POST',
         body: params,
     })
