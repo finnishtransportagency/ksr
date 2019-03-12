@@ -1,67 +1,11 @@
 // @flow
 import * as shapefile from 'shapefile';
 import esriLoader from 'esri-loader';
-import moment from 'moment';
 import { colorShapefileHighlight } from '../components/ui/defaultStyles';
 import { convert } from './geojson';
 import { getLegendSymbol } from './layerLegend';
+import { toDisplayDate } from './date';
 import strings from '../translations';
-
-/**
- * Create Esri geometry type.
- *
- * @param {Object} geometry Features geometry.
- * @param {Function} Point esri/geometry/Point.
- * @param {Function} Polyline esri/geometry/Polyline.
- * @param {Function} Polygon esri/geometry/Polygon.
- * @param {Function} Multipoint esri/geometry/Multipoint.
- *
- * @returns Esri geometryType.
- */
-export const createGeometry = (
-    geometry: Object,
-    Point: Function,
-    Polyline: Function,
-    Polygon: Function,
-    Multipoint: Function,
-) => {
-    if (geometry === null || geometry === undefined) {
-        return null;
-    }
-
-    switch (geometry.type.toLowerCase()) {
-        case 'point':
-            return new Point({
-                x: geometry.coordinates[0],
-                y: geometry.coordinates[1],
-                spatialReference: { wkid: 3067 },
-            });
-        case 'polyline':
-        case 'linestring':
-            return new Polyline({
-                hasZ: false,
-                hasM: true,
-                paths: geometry.coordinates,
-                spatialReference: { wkid: 3067 },
-            });
-        case 'polygon':
-            return new Polygon({
-                hasZ: false,
-                hasM: true,
-                rings: geometry.coordinates,
-                spatialReference: { wkid: 3067 },
-            });
-        case 'multipoint':
-            return new Multipoint({
-                hasZ: false,
-                hasM: true,
-                points: geometry.coordinates,
-                spatialReference: { wkid: 3067 },
-            });
-        default:
-            return null;
-    }
-};
 
 /**
  * Create Esri attribute information from geojson properties.
@@ -76,7 +20,7 @@ export const createAttributes = (properties: Object[], index: number) => {
     attributes.ObjectID = index;
     Object.entries(properties).forEach(([key, value]) => {
         if (value instanceof Date) {
-            attributes[key] = moment(value).format('DD.MM.YYYY');
+            attributes[key] = toDisplayDate(value);
         } else {
             // No need to validate imported shape data as it is not editable.
             attributes[key] = String(value);

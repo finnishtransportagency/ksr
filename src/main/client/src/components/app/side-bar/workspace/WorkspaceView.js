@@ -6,6 +6,7 @@ import SideBar from '../../../ui/blocks/SideBar';
 import Workspace from '../../../ui/blocks/Workspace';
 import { H1, Button } from '../../../ui/elements';
 import { WorkspaceWrapper } from './styles';
+import { toDisplayDateTime } from '../../../../utils/date';
 
 type Props = {
     setActiveModal: (activeModal: string) => void,
@@ -41,8 +42,7 @@ const WorkspaceView = ({
             <Scrollbars
                 autoHide
                 style={{ height: 'calc(100% - 150px)' }}
-                renderThumbVertical={scrollProps =>
-                    <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
+                renderThumbVertical={scrollProps => <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
             >
                 <WorkspaceWrapper>
                     {workspaceList.map(workspace => (
@@ -63,10 +63,12 @@ const WorkspaceView = ({
                                 disabled={loadingLayers}
                                 onClick={() => (!loadingLayers
                                     && handleSelectWorkspace(workspace.name))}
-                                title={`${workspace.name} ${workspace.updated}`}
+                                title={`${workspace.name} ${toDisplayDateTime(workspace.updateTime)}`}
                             >
                                 <Workspace.Text>{workspace.name}</Workspace.Text>
-                                <Workspace.Text>{workspace.updated}</Workspace.Text>
+                                <Workspace.Text>
+                                    {toDisplayDateTime(workspace.updateTime)}
+                                </Workspace.Text>
                             </Workspace.TextColumn>
                             <Workspace.Icon
                                 onClick={() => handleDeleteWorkspace(workspace.name)}

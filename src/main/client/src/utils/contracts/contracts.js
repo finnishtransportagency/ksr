@@ -1,5 +1,4 @@
 // @flow
-import moment from 'moment';
 import { toast } from 'react-toastify';
 import { queryFeatures } from '../../api/search/searchQuery';
 import strings from '../../translations';
@@ -7,6 +6,7 @@ import { getContractDocumentUrl } from './contractDocument';
 import { nestedVal } from '../nestedValue';
 import { linkContract } from '../../api/contract/contractRelations';
 import save from '../saveFeatureData';
+import { toDisplayDate } from '../date';
 
 /**
  * Gets ID and Description field from contract query, that will be shown in contract list.
@@ -246,9 +246,7 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
         case 'esriFieldTypeDate':
             return {
                 name,
-                value: Number.isNaN((new Date(value)).getTime())
-                    ? null
-                    : moment(new Date(value)).format('DD.MM.YYYY HH:mm'),
+                value: toDisplayDate(value),
             };
         default:
             return {

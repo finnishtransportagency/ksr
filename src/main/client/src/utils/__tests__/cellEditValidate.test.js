@@ -1,4 +1,6 @@
-import { cellEditValidate, getValue, equals, preventKeyPress } from '../cellEditValidate';
+import {
+    cellEditValidate, getValue, equals, preventKeyPress,
+} from '../cellEditValidate';
 
 describe('cellEditValidate.js', () => {
     it('should return correct values for "esriFieldTypeString"', () => {
@@ -60,7 +62,7 @@ describe('cellEditValidate.js', () => {
     it('should return correct values for "esriFieldTypeDate"', () => {
         expect(getValue('esriFieldTypeDate', 'abc123')).toBe(null);
         expect(getValue('esriFieldTypeDate', '')).toBe(null);
-        expect(getValue('esriFieldTypeDate', null)).toBe(0);
+        expect(getValue('esriFieldTypeDate', null)).toBe(null);
         expect(getValue('esriFieldTypeDate', 3)).toBe(3);
         expect(getValue('esriFieldTypeDate', 4.56)).toBe(4);
         expect(getValue('esriFieldTypeDate', -5)).toBe(-5);
