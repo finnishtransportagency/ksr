@@ -18,6 +18,12 @@ const featureFromGraphic = (graphic: Graphic) => (
     }
 );
 
+const sourceFromGraphic = (graphic: Graphic) => {
+    if (graphic.layer.featureType === 'shapefile') return graphic.layer.featureType;
+    if (graphic.layer.id.includes('.s')) return 'search';
+    return 'select';
+};
+
 const layerFromGraphic = (graphic: Graphic) => (
     {
         id: graphic.layer.id,
@@ -25,7 +31,7 @@ const layerFromGraphic = (graphic: Graphic) => (
         objectIdFieldName: graphic.layer.objectIdField,
         globalIdFieldName: '',
         geometryType: graphic.layer.geometryType,
-        _source: graphic.layer.featureType === 'shapefile' ? graphic.layer.featureType : 'select',
+        _source: sourceFromGraphic(graphic),
         spatialReference: {
             wkid: graphic.layer.spatialReference.wkid,
             latestWkid: graphic.layer.spatialReference.latestWkid,
