@@ -46,7 +46,7 @@ export const applyEdits = (
     layers: Object[],
     edits: Object[],
 ): Object[] => layers.map((layer: Object) => {
-    const editLayer = edits.find(e => e.layerId === layer.id);
+    const editLayer = edits.find(e => e.layerId === layer.id.replace('.s', ''));
     if (editLayer) {
         return {
             ...layer,
