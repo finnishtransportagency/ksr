@@ -8,7 +8,7 @@ const setup = () => {
     const props = {
         mapLayerList: [
             {
-                id: 1,
+                id: '1',
                 active: false,
                 name: 'Layer 1',
                 type: 'agfs',
@@ -21,7 +21,7 @@ const setup = () => {
                 },
             },
             {
-                id: 2,
+                id: '2',
                 active: true,
                 name: 'Layer 2',
                 type: 'agfs',
@@ -34,7 +34,7 @@ const setup = () => {
                 },
             },
             {
-                id: 3,
+                id: '3',
                 active: false,
                 name: 'Layer 3',
                 type: 'wms',
@@ -47,14 +47,14 @@ const setup = () => {
                 },
             },
             {
-                id: 4,
+                id: '4',
                 active: true,
                 name: 'Layer 4',
                 type: 'wmts',
                 _source: 'search',
             },
             {
-                id: 5,
+                id: '5',
                 active: true,
                 name: 'Layer 5',
                 type: 'agfs',
@@ -69,14 +69,14 @@ const setup = () => {
         ],
         dataLayerList: [
             {
-                id: 6,
+                id: '6',
                 active: false,
                 name: 'Layer 6',
                 type: 'agfl',
                 _source: 'search',
             },
             {
-                id: 7,
+                id: '7',
                 active: true,
                 name: 'Layer 7',
                 type: 'agfl',

@@ -9,6 +9,7 @@ import LayerSettings from '../../../../../ui/blocks/LayerSettings';
 import MapLayerTitle from '../../../../shared/MapLayerTitle';
 import MapLayerToggle from './MapLayerToggle';
 import { layerViewable } from '../../../../../../utils/layers';
+import { nestedVal } from '../../../../../../utils/nestedValue';
 
 type Props = {
     layer: Object,
@@ -86,20 +87,25 @@ const MapLayerSettings = ({
                         )
                     }
                     {
-                        layer._source !== 'search'
-                        && !layer.userLayer
+                        !layer.userLayer
                         && layer._source !== 'shapefile'
+                        && nestedVal(
+                            layerList.find(l => l.id === layer.id.replace('.s', '')),
+                            ['active'],
+                        )
                         && (layer.type === 'agfs' || layer.type === 'agfl')
                         && (layer.layerPermission.createLayer
                             || layer.layerPermission.updateLayer
                             || layer.layerPermission.deleteLayer)
                         && (
-                            <LayerSettings.Icons activeAdminTool={activeAdminTool === layer.id}>
+                            <LayerSettings.Icons
+                                activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
+                            >
                                 <i
                                     role="button"
                                     tabIndex={0}
-                                    onKeyPress={() => setActiveAdminTool(layer.id, layerList)}
-                                    onClick={() => setActiveAdminTool(layer.id, layerList)}
+                                    onKeyPress={() => setActiveAdminTool(layer.id.replace('.s', ''), layerList)}
+                                    onClick={() => setActiveAdminTool(layer.id.replace('.s', ''), layerList)}
                                     className="fas fa-edit"
                                     title={strings.mapLayerSettings.toggleAdminTool}
                                 />

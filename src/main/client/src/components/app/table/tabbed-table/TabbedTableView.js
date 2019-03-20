@@ -24,7 +24,7 @@ const TabbedTableView = ({ layers, activeTable, setActiveTable, activeAdmin }: P
                 {
                     layers.map(l => (
                         <ButtonTabbedTableTab
-                            admin={activeAdmin === l.id}
+                            admin={activeAdmin === l.id.replace('.s', '')}
                             key={l.id}
                             flat
                             title={l.title}
