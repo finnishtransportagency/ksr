@@ -67,7 +67,8 @@ const findMatchingLayer = (view: Object, layerId: string) => {
     if (layerId === null || layerId === undefined) {
         console.error(`Invalid layerId: ${layerId} supplied.`);
         return null;
-    } else if (view && view.allLayerViews) {
+    }
+    if (view && view.allLayerViews) {
         return view.allLayerViews.find(lv => lv.layer && lv.layer.id === layerId);
     }
     return null;
@@ -118,8 +119,9 @@ const handleUpdateResponse = (
     }
     const layer = {
         layerId,
-        features: Array.isArray(res.updateResults) ?
-            res.updateResults.filter(e => e.success).map(e => e.objectId) : [],
+        features: Array.isArray(res.updateResults)
+            ? res.updateResults.filter(e => e.success).map(e => e.objectId)
+            : [],
     };
 
     if (layer && layer.features && layer.features.length && !hideToast) {
@@ -168,9 +170,9 @@ const handlePopupUpdate = (
             `${idFieldName} = ${objectId}`,
             null,
         ).then((queryResult) => {
-            if (nestedVal(queryResult, ['fields']) &&
-                nestedVal(queryResult, ['features']) &&
-                queryResult.features.length > 0) {
+            if (nestedVal(queryResult, ['fields'])
+                && nestedVal(queryResult, ['features'])
+                && queryResult.features.length > 0) {
                 if (idFieldName && nestedVal(
                     view,
                     ['popup', 'viewModel', 'features', '0', 'attributes', idFieldName],
@@ -179,8 +181,7 @@ const handlePopupUpdate = (
                     const viewLayer = view.map.findLayerById(layerId);
                     if (viewLayer) {
                         // set new feature values to popup
-                        view.popup.features[0].attributes =
-                            queryResult.features[0].attributes;
+                        view.popup.features[0].attributes = queryResult.features[0].attributes;
                         // need to make a change to trigger update
                         const copyLayer = viewLayer.popupTemplate.content;
                         viewLayer.popupTemplate.content = '';
@@ -225,8 +226,8 @@ const saveData = async (
                 try {
                     res = await addFeatures(layerId, params.toString());
                     await handleSaveResponse(res, layer, hideToast);
-                    if (nestedVal(tableLayer, ['type']) === 'agfl' &&
-                        res && res.addResults && res.addResults.length > 0) {
+                    if (nestedVal(tableLayer, ['type']) === 'agfl'
+                        && res && res.addResults && res.addResults.length > 0) {
                         store.dispatch(addUpdateLayers(
                             layerId,
                             idFieldName,
@@ -244,11 +245,10 @@ const saveData = async (
             case 'update': {
                 let layerToUpdated = null;
                 try {
-                    const featureInTable = tableLayer &&
-                        tableLayer.data.some(f => f._id === objectId);
+                    const featureInTable = tableLayer
+                        && tableLayer.data.some(f => f._id === objectId);
                     const res = await updateFeatures(layerId, params.toString());
-                    layerToUpdated =
-                        await handleUpdateResponse(res, layerId, layer, hideToast);
+                    layerToUpdated = await handleUpdateResponse(res, layerId, layer, hideToast);
                     await handlePopupUpdate(view, layerId, idFieldName, objectId);
                     if (featureInTable && nestedVal(layerToUpdated, ['features', 'length']) && objectId) {
                         store.dispatch(addUpdateLayers(
@@ -315,9 +315,9 @@ const saveDeletedFeatureData = (
 * @return Object New reshaped object
 */
 const formatToEsriCompliant = (obj: Object) => obj && Object.entries(obj).reduce(
-    (a, c) => (c[0] === 'geometry' ?
-        { ...a, geometry: c[1] } :
-        { ...a, attributes: { ...a.attributes, [c[0]]: c[1] } }),
+    (a, c) => (c[0] === 'geometry'
+        ? { ...a, geometry: c[1] }
+        : { ...a, attributes: { ...a.attributes, [c[0]]: c[1] } }),
     { attributes: {} },
 );
 
@@ -377,12 +377,14 @@ const saveEditedFeatureData = (
                 .map(d => keepOnlyEdited(d, idFieldName))
                 .map(formatToEsriCompliant);
 
-            const layerId = ed.id;
+            const layerId = ed.id.replace('.s', '');
             const idFieldNameWithoutLayerId = ed._idFieldName;
             let objectId = 0;
-            if (nestedVal(view, ['popup', 'viewModel', 'features']) && view.popup.viewModel.features.length > 0) {
-                const currentData = ed.data.find(d => d._id ===
-                    view.popup.viewModel.features[0].attributes[ed._idFieldName]);
+            if (nestedVal(view, ['popup', 'viewModel', 'features'])
+                && view.popup.viewModel.features.length > 0) {
+                const currentData = ed.data.find(d => (
+                    d._id === view.popup.viewModel.features[0].attributes[ed._idFieldName]
+                ));
                 if (currentData) {
                     objectId = currentData._id;
                 }
