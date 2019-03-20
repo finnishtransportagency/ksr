@@ -1,6 +1,4 @@
 // @flow
-import clone from 'clone';
-
 import {
     CLEAR_TABLE_DATA,
     DE_SELECT_SELECTED_FEATURES,
@@ -28,7 +26,7 @@ import {
     toggleSelection,
     updateLayerColumns,
 } from '../../utils/parseFeatureData';
-import { applyEdits, applyDeletedFeatures } from '../../utils/table';
+import { applyEdits, applyDeletedFeatures, applyEditedLayers } from '../../utils/table';
 
 type State = {
     fetching: boolean,
@@ -93,7 +91,10 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
-                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId): Object[]),
+                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId)
+                    .map(l => (l.id === `${action.layerId}.s`
+                        ? state.layers.find(a => a.id === `${action.layerId}.s`)
+                        : l)): Object[]),
                 activeTable: getActiveTable(
                     state.layers.filter(l => l.id !== action.layerId),
                     state.activeTable,
@@ -130,11 +131,9 @@ export default (state: State = initialState, action: Action) => {
                 editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId): Object[]),
             };
         case SET_EDITED_LAYER: {
-            const editedLayers = clone(state.editedLayers, true, 3);
-            if (editedLayers) editedLayers.find(l => l.id === state.activeTable).data = action.data;
             return {
                 ...state,
-                editedLayers,
+                editedLayers: applyEditedLayers(state.editedLayers, action.data),
             };
         }
         case SET_SINGLE_LAYER_GEOMETRY:
