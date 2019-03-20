@@ -78,3 +78,101 @@ export const applyDeletedFeatures = (
     }
     return { ...layer };
 }).filter((layer: Object) => layer.data.length);
+
+/**
+ * Handles edited columns that doesn't start with layer Id.
+ *
+ * @param {string} key Column's key.
+ * @param {Object} data Edited data with columns.
+ * @param {Object} foundData Found data with matching _id.
+ *
+ * @returns {Object} Column with original or new value.
+ */
+export const columnsWithoutLayerId = (key: string, data: Object, foundData: Object): Object => {
+    const newTitle = edited => `${data._layerId}/${edited.title.split('/')[1]}`;
+
+    return key === '_edited'
+        ? { [key]: foundData._edited.map(edited => ({ ...edited, title: newTitle(edited) })) }
+        : { [key]: data[key] };
+};
+
+/**
+ * Handles edited columns that starts with layer Id and will change the data accordingly.
+ *
+ * e.g. for search layer '123/Objectid: 1' -> '123.s/Objectid: 1' when original layer edited.
+ *
+ * @param {string} key Column's key.
+ * @param {Object} data Edited data with columns.
+ * @param {Object} foundData Found data with matching _id.
+ * @param {Object} editedLayerId Id of currently active layer in table.
+ *
+ * @returns {Object} Column with original or new data.
+ */
+export const columnsWithLayerId = (
+    key: string,
+    data: Object,
+    foundData: Object,
+    editedLayerId: string,
+): Object => {
+    const newKey = `${data._layerId}/${key.split('/')[1]}`;
+    const newValue = foundData[`${editedLayerId}/${key.split('/')[1]}`];
+
+    return foundData
+        ? { [newKey]: newValue }
+        : { [key]: data[key] };
+};
+
+/**
+ * Handles getting data for original- and search layer.
+ *
+ * @param {Object} layer Found edited layer. Either original or search layer.
+ * @param {Object[]} editedData Edited data sent to the feature reducer as action.
+ *
+ * @returns {Object[]} List with new edited data.
+ */
+export const findEditedData = (layer: Object, editedData: Object[]): Object[] => {
+    const edited = {
+        id: editedData[0]._layerId,
+        editedIds: editedData.map(data => data._id),
+    };
+
+    return layer.data.map(data => (edited.editedIds.some(eId => eId === data._id)
+        ? Object.keys(data)
+            .map((key) => {
+                const foundData = editedData.find(eData => eData._id === data._id);
+
+                if (!key.startsWith(data._layerId)) {
+                    return columnsWithoutLayerId(key, data, foundData);
+                }
+
+                return columnsWithLayerId(key, data, foundData, edited.id);
+            }).reduce((acc, cur) => Object.assign({}, acc, cur))
+        : data
+    ));
+};
+
+/**
+ * Handles edited layers for found- and search layer belonging to the layer.
+ *
+ * If layer has search layer active, editing the layer should also edit the search
+ * layer and vice versa.
+ *
+ * @param {Object[]} editedLayers Feature reducers current edited layers.
+ * @param {Object[]} editedData Edited data sent to the feature reducer as action.
+ *
+ * @returns {Object[]} List with new edited layers data.
+ */
+export const applyEditedLayers = (editedLayers: Object[], editedData: Object[]): Object[] => (
+    editedLayers.map((editedLayer) => {
+        const editedLayerId = editedData[0]._layerId;
+
+        if (editedLayer.id.replace('.s', '') === editedLayerId.replace('.s', '')) {
+            return {
+                ...editedLayer,
+                data: findEditedData(editedLayer, editedData),
+            };
+        }
+
+        return editedLayer;
+    })
+);
