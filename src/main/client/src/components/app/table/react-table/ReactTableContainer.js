@@ -7,18 +7,20 @@ import ReactTable from './ReactTable';
 import { toggleSelection, toggleSelectAll, setEditedLayer } from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
-    const layer = state.table.features.activeTable && state.table.features.editedLayers.length
-        ? state.table.features.editedLayers.find(l => l.id === state.table.features.activeTable)
+    const { activeTable, editedLayers } = state.table.features;
+
+    const layerFeatures = activeTable && editedLayers.length
+        ? editedLayers.find(l => l.id === activeTable)
         : null;
 
-    const selectAll = layer && layer.data.length
-        ? layer.data.find(d => !d._selected) === undefined
+    const selectAll = layerFeatures && layerFeatures.data.length
+        ? layerFeatures.data.find(d => !d._selected) === undefined
         : false;
 
     return {
         activeTable: state.table.features.activeTable,
         fetching: state.table.features.fetching,
-        layer,
+        layerFeatures,
         selectAll,
         layerList: state.map.layerGroups.layerList,
         activeAdminTool: state.adminTool.active.layerId,

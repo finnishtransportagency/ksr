@@ -11,7 +11,7 @@ import { toISODate, toDisplayDate } from '../../../../utils/date';
 
 type Props = {
     fetching: boolean,
-    layer: {
+    layerFeatures: {
         id: string,
         data: Array<Object>,
         columns: Array<Object>,
@@ -51,13 +51,16 @@ class ReactTable extends Component<Props> {
         }
     }
 
-    getCellContent = (layer: Object, cellField: Object, cellInfo: Object) => {
+    getCellContent = (cellField: Object, cellInfo: Object) => {
+        const { layerFeatures } = this.props;
+        const { data } = layerFeatures;
+
         if (cellField && cellField.type === 'esriFieldTypeDouble') {
-            return layer.data[cellInfo.index][cellInfo.column.id]
-                ? layer.data[cellInfo.index][cellInfo.column.id].toFixed(3)
+            return data[cellInfo.index][cellInfo.column.id]
+                ? data[cellInfo.index][cellInfo.column.id].toFixed(3)
                 : '0.000';
         }
-        return layer.data[cellInfo.index][cellInfo.column.id];
+        return data[cellInfo.index][cellInfo.column.id];
     };
 
     getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
@@ -109,11 +112,11 @@ class ReactTable extends Component<Props> {
         }
     };
 
-    isCellEditable = (currentLayer: Object, cellField: Object) => {
+    isCellEditable = (activeLayer: Object, cellField: Object) => {
         const { activeAdminTool } = this.props;
-        return activeAdminTool === currentLayer.id
-            && currentLayer._source !== 'shapefile'
-            && currentLayer.layerPermission.updateLayer
+        return activeAdminTool === activeLayer.id
+            && activeLayer._source !== 'shapefile'
+            && activeLayer.layerPermission.updateLayer
             && cellField.editable;
     };
 
@@ -122,8 +125,10 @@ class ReactTable extends Component<Props> {
         toggleSelection(row);
     };
 
-    renderSelect = (cellField: Object, content: any, layer: Object, cellInfo: Object) => {
-        const { setEditedLayer } = this.props;
+    renderSelect = (cellField: Object, content: any, cellInfo: Object) => {
+        const { setEditedLayer, layerFeatures } = this.props;
+        const { data } = layerFeatures;
+
         const options = cellField.domain.codedValues.map(v => (
             <option key={v.code} value={v.code}>{v.name}</option>
         )).concat([
@@ -133,13 +138,14 @@ class ReactTable extends Component<Props> {
         return (
             <TableSelect
                 value={content === null ? '' : content}
-                onChange={(e) => {
-                    setEditedLayer(cellEditValidate(
-                        e.target.value,
-                        layer.data,
+                onChange={(evt) => {
+                    const val = cellEditValidate(
+                        evt.target.value,
+                        data,
                         cellField,
                         cellInfo,
-                    ));
+                    );
+                    setEditedLayer(val);
                 }}
             >
                 {options}
@@ -147,8 +153,10 @@ class ReactTable extends Component<Props> {
         );
     };
 
-    renderDateInput = (cellField: Object, content: any, layer: Object, cellInfo: Object) => {
-        const { setEditedLayer } = this.props;
+    renderDateInput = (cellField: Object, content: any, cellInfo: Object) => {
+        const { setEditedLayer, layerFeatures } = this.props;
+        const { data } = layerFeatures;
+
         return (
             <TableInput
                 type="date"
@@ -157,7 +165,7 @@ class ReactTable extends Component<Props> {
                 onChange={(evt) => {
                     const val = cellEditValidate(
                         evt.target.value,
-                        layer.data,
+                        data,
                         cellField,
                         cellInfo,
                     );
@@ -170,12 +178,13 @@ class ReactTable extends Component<Props> {
     renderDiv = (
         cellField: Object,
         content: any,
-        layer: Object,
         cellInfo: Object,
         contentEditable: boolean,
     ) => {
+        const { setEditedLayer, layerFeatures } = this.props;
+        const { data } = layerFeatures;
+
         const className = this.getCellClassName(contentEditable, cellField, content);
-        const { setEditedLayer } = this.props;
         const textContent = this.getDisplayContent(cellField, content);
         return (
             <div
@@ -185,17 +194,18 @@ class ReactTable extends Component<Props> {
                 className={className}
                 contentEditable={contentEditable}
                 suppressContentEditableWarning
-                onKeyPress={(e) => {
-                    if (contentEditable) preventKeyPress(e, cellField);
+                onKeyPress={(evt) => {
+                    if (contentEditable) preventKeyPress(evt, cellField);
                 }}
-                onBlur={(e) => {
+                onBlur={(evt) => {
                     if (contentEditable) {
-                        setEditedLayer(cellEditValidate(
-                            e.target.innerText,
-                            layer.data,
+                        const val = cellEditValidate(
+                            evt.target.innerText,
+                            data,
                             cellField,
                             cellInfo,
-                        ));
+                        );
+                        setEditedLayer(val);
                     }
                 }}
                 dangerouslySetInnerHTML={{ // eslint-disable-line
@@ -206,28 +216,36 @@ class ReactTable extends Component<Props> {
     };
 
     renderEditable = (cellInfo: Object) => {
-        const { layer, layerList, activeTable } = this.props;
-        const currentLayer = layerList.find(l => l.id === activeTable);
+        const { layerList, activeTable } = this.props;
+        const activeLayer = layerList.find(l => l.id === activeTable);
+        const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
 
-        if (currentLayer && currentLayer.fields) {
-            const cellField = currentLayer.fields.find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
+        if (activeLayer && activeLayer.fields) {
+            let cellField = activeLayer.fields
+                .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
+
             if (cellField) {
-                const contentEditable = this.isCellEditable(currentLayer, cellField);
-                const content = this.getCellContent(layer, cellField, cellInfo);
-                if (
-                    cellField.domain
-                    && (cellField.domain.type === 'codedValue' || cellField.domain.type === 'coded-value')
-                    && contentEditable
-                ) {
-                    return this.renderSelect(cellField, content, layer, cellInfo);
+                if (originalLayer && originalLayer.fields) {
+                    // Get editable values for search layer fields
+                    cellField = originalLayer.fields.find(f => f.name === cellField.name);
                 }
+                const contentEditable = this.isCellEditable(originalLayer, cellField);
+                const content = this.getCellContent(cellField, cellInfo);
+
+                if (cellField.domain
+                    && (cellField.domain.type === 'codedValue'
+                        || cellField.domain.type === 'coded-value')
+                    && contentEditable) {
+                    return this.renderSelect(cellField, content, cellInfo);
+                }
+
                 if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
-                    return this.renderDateInput(cellField, content, layer, cellInfo);
+                    return this.renderDateInput(cellField, content, cellInfo);
                 }
+
                 return this.renderDiv(
                     cellField,
                     cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
-                    layer,
                     cellInfo,
                     contentEditable,
                 );
@@ -238,10 +256,14 @@ class ReactTable extends Component<Props> {
 
     render() {
         const {
-            fetching, layer, selectAll, toggleSelectAll, layerList,
+            fetching,
+            layerFeatures,
+            selectAll,
+            toggleSelectAll,
+            layerList,
         } = this.props;
 
-        if (!layer) {
+        if (!layerFeatures) {
             return (
                 <WrapperReactTableNoTable>
                     {strings.table.noTableText}
@@ -250,17 +272,17 @@ class ReactTable extends Component<Props> {
         }
 
         if (!fetching && layerList) {
-            const { columns, data } = layer;
+            const { columns, data } = layerFeatures;
 
-            const currentLayer: any = layerList.find(ll => ll.id === layer.id);
-            const contractColumns = (currentLayer
-            && currentLayer.hasRelations
-            && currentLayer.type !== 'agfl')
-            || (currentLayer
-                && currentLayer.type === 'agfl'
-                && !currentLayer.relationColumnIn
-                && !currentLayer.relationColumnOutnull)
-                ? addContractColumn(this.handleContractClick, columns, currentLayer.type)
+            const activeLayer: any = layerList.find(ll => ll.id === layerFeatures.id);
+            const contractColumns = (activeLayer
+            && activeLayer.hasRelations
+            && activeLayer.type !== 'agfl')
+            || (activeLayer
+                && activeLayer.type === 'agfl'
+                && !activeLayer.relationColumnIn
+                && !activeLayer.relationColumnOutnull)
+                ? addContractColumn(this.handleContractClick, columns, activeLayer.type)
                 : null;
 
             return (
@@ -269,7 +291,7 @@ class ReactTable extends Component<Props> {
                     toggleSelection={this.toggleSelection}
                     columns={contractColumns || columns}
                     selectAll={selectAll}
-                    toggleSelectAll={() => toggleSelectAll(layer.id)}
+                    toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
                     renderEditable={this.renderEditable}
                 />
             );
