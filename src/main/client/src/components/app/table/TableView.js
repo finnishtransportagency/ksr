@@ -135,52 +135,54 @@ const TableView = ({
                 <i className="fas fa-file-export" />
             </Table.Button>
             {
-                activeAdminTool &&
-                <Fragment>
-                    <Table.Button
-                        title={strings.reactTable.saveEditedData}
-                        tableOpen={isOpen}
-                        disabled={
-                            !activeUpdate
+                activeAdminTool
+                && (
+                    <Fragment>
+                        <Table.Button
+                            title={strings.reactTable.saveEditedData}
+                            tableOpen={isOpen}
+                            disabled={
+                                !activeUpdate
                             || originalLayers.every(o => o._source === 'shapefile')
                             || !originalLayers.length
                             || equals(originalLayers, editedLayersNoUnderscore)
-                        }
-                        onClick={
-                            activeUpdate
+                            }
+                            onClick={
+                                activeUpdate
                             && originalLayers.length
                             && !equals(originalLayers, editedLayersNoUnderscore)
-                                ? () => {
-                                    showConfirmModal(
-                                        strings.modalSaveEditedData.content,
-                                        strings.modalSaveEditedData.submit,
-                                        strings.modalSaveEditedData.cancel,
-                                        () => {
-                                            saveEditedFeatures(
-                                                view,
-                                                editedLayers,
-                                                featureType,
-                                                addressField,
-                                            );
-                                        },
-                                    );
-                                } : null}
-                    >
-                        <i className="fas fa-save" />
-                    </Table.Button>
-                    <Table.Button
-                        title={strings.reactTable.deleteSelected}
-                        tableOpen={isOpen}
-                        disabled={!activeDelete || !selectedAdminData}
-                        onClick={
-                            activeDelete && selectedAdminData ? () => {
-                                setActiveModal('deleteSelected');
-                            } : null
-                        }
-                    >
-                        <i className="fas fa-eraser" />
-                    </Table.Button>
-                </Fragment>
+                                    ? () => {
+                                        showConfirmModal(
+                                            strings.modalSaveEditedData.content,
+                                            strings.modalSaveEditedData.submit,
+                                            strings.modalSaveEditedData.cancel,
+                                            () => {
+                                                saveEditedFeatures(
+                                                    view,
+                                                    editedLayers,
+                                                    featureType,
+                                                    addressField,
+                                                );
+                                            },
+                                        );
+                                    } : null}
+                        >
+                            <i className="fas fa-save" />
+                        </Table.Button>
+                        <Table.Button
+                            title={strings.reactTable.deleteSelected}
+                            tableOpen={isOpen}
+                            disabled={!activeDelete || !selectedAdminData}
+                            onClick={
+                                activeDelete && selectedAdminData ? () => {
+                                    setActiveModal('deleteSelected');
+                                } : null
+                            }
+                        >
+                            <i className="fas fa-eraser" />
+                        </Table.Button>
+                    </Fragment>
+                )
             }
         </Table.ButtonWrapper>
         <TabbedTableContainer />

@@ -1,7 +1,9 @@
 // @flow
 import { connect } from 'react-redux';
 import { showConfirmModal } from '../../../reducers/confirmModal/actions';
-import { toggleFilter, toggleTable, clearTableData, saveEditedFeatures } from '../../../reducers/table/actions';
+import {
+    toggleFilter, toggleTable, clearTableData, saveEditedFeatures,
+} from '../../../reducers/table/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import TableView from './TableView';
 
@@ -37,17 +39,19 @@ const mapStateToProps = (state) => {
         .flatMap(f => f.data.filter(d => d._selected && d.geometry));
     const activeTableFeatureLayer = tableFeaturesLayers
         .find(l => l.id === state.table.features.activeTable);
-    const activeTableDataSelected = activeTableFeatureLayer ?
-        activeTableFeatureLayer.data.some(d => d._selected) : false;
-    const layer = state.map.layerGroups.layerList.find(l =>
-        l.id === state.adminTool.active.layerId);
+    const activeTableDataSelected = activeTableFeatureLayer
+        ? activeTableFeatureLayer.data.some(d => d._selected)
+        : false;
+    const layer = state.map.layerGroups.layerList
+        .find(l => l.id === state.adminTool.active.layerId);
     const activeTableLayer = state.map.layerGroups.layerList
         .find(l => l.id === state.table.features.activeTable && l.type === 'agfs' && l.layers);
 
     const { addressField, featureType } = state.adminTool.active.layerId
     && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
 
-    const currentTabAdmin = state.table.features.activeTable === state.adminTool.active.layerId;
+    const currentTabAdmin = state.table.features.activeTable
+        .replace('.s', '') === state.adminTool.active.layerId;
 
     return {
         isOpen: state.table.toggleTable,
@@ -66,8 +70,8 @@ const mapStateToProps = (state) => {
         featureType,
         addressField,
         view: state.map.mapView.view,
-        editedLayers: state.table.features.editedLayers
-            .filter(editedLayer => editedLayer.id === state.adminTool.active.layerId),
+        editedLayers: [state.table.features.editedLayers
+            .find(editedLayer => editedLayer.id.replace('.s', '') === state.adminTool.active.layerId)],
         currentTabAdmin,
         activeAdminTool: state.adminTool.active.layerId,
     };
