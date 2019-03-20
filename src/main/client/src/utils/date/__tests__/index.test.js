@@ -2,6 +2,29 @@ import {
     toUnixTime, toISODate, toDisplayDateTime, toDisplayDate,
 } from '../index';
 
+const pad = val => (val < 10 ? `0${val}` : `${val}`);
+
+const ISOformat = (date) => {
+    const yyyy = date.getFullYear();
+    const M = pad(date.getMonth() + 1);
+    const d = pad(date.getDate());
+    return `${yyyy}-${M}-${d}`;
+};
+
+const dateFormat = (date) => {
+    const yyyy = date.getFullYear();
+    const M = date.getMonth() + 1;
+    const d = date.getDate();
+    return `${d}.${M}.${yyyy}`;
+};
+
+const dateTimeFormat = (date) => {
+    const hh = pad(date.getHours());
+    const mm = pad(date.getMinutes());
+    const ss = pad(date.getSeconds());
+    return `${dateFormat(date)} ${hh}:${mm}:${ss}`;
+};
+
 
 describe('test - date', () => {
     it('should return unix time - valid date', () => {
@@ -36,15 +59,20 @@ describe('test - date', () => {
 
     it('should return ISODate - valid date', () => {
         const date = new Date('2019-03-11T10:00:00Z');
-        expect(toISODate(date)).toEqual('2019-03-11');
+        const expected = ISOformat(date);
+        expect(toISODate(date)).toEqual(expected);
     });
 
     it('should return ISODate - valid ISO 8601 string', () => {
-        expect(toISODate('2019-03-11T10:00:00Z')).toEqual('2019-03-11');
+        const date = new Date('2019-03-11T10:00:00Z');
+        const expected = ISOformat(date);
+        expect(toISODate('2019-03-11T10:00:00Z')).toEqual(expected);
     });
 
     it('should return ISODate - valid unix time', () => {
-        expect(toISODate(1552298400000)).toEqual('2019-03-11');
+        const date = new Date(1552298400000);
+        const expected = ISOformat(date);
+        expect(toISODate(1552298400000)).toEqual(expected);
     });
 
     it('should return ISODate - null date', () => {
@@ -57,15 +85,20 @@ describe('test - date', () => {
 
     it('should display date time - valid date', () => {
         const date = new Date('2019-03-11T10:00:00Z');
-        expect(toDisplayDateTime(date)).toEqual('11.3.2019 12:00:00');
+        const expected = dateTimeFormat(date);
+        expect(toDisplayDateTime(date)).toEqual(expected);
     });
 
     it('should display date time - valid ISO 8601', () => {
-        expect(toDisplayDateTime('2019-03-11T10:00:00Z')).toEqual('11.3.2019 12:00:00');
+        const date = new Date('2019-03-11T10:00:00Z');
+        const expected = dateTimeFormat(date);
+        expect(toDisplayDateTime('2019-03-11T10:00:00Z')).toEqual(expected);
     });
 
     it('should display date time - valid unix time', () => {
-        expect(toDisplayDateTime(1552298400000)).toEqual('11.3.2019 12:00:00');
+        const date = new Date(1552298400000);
+        const expected = dateTimeFormat(date);
+        expect(toDisplayDateTime(1552298400000)).toEqual(expected);
     });
 
     it('should display date time - invalid date', () => {
@@ -82,15 +115,20 @@ describe('test - date', () => {
 
     it('should display date - valid date', () => {
         const date = new Date('2019-03-11T10:00:00Z');
-        expect(toDisplayDate(date)).toEqual('11.3.2019');
+        const expected = dateFormat(date);
+        expect(toDisplayDate(date)).toEqual(expected);
     });
 
     it('should display date - valid ISO 8601', () => {
-        expect(toDisplayDate('2019-03-11T10:00:00Z')).toEqual('11.3.2019');
+        const date = new Date('2019-03-11T10:00:00Z');
+        const expected = dateFormat(date);
+        expect(toDisplayDate('2019-03-11T10:00:00Z')).toEqual(expected);
     });
 
     it('should display date - valid unix time', () => {
-        expect(toDisplayDate(1552298400000)).toEqual('11.3.2019');
+        const date = new Date(1552298400000);
+        const expected = dateFormat(date);
+        expect(toDisplayDate(1552298400000)).toEqual(expected);
     });
 
     it('should display date - invalid date', () => {
