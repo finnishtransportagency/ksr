@@ -8,6 +8,7 @@ import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
 import { activateLayers } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
+import { nestedVal } from '../../utils/nestedValue';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -251,13 +252,27 @@ export const saveEditedFeatures = (
     editedLayers: Object[],
     featureType: string,
     addressField: string,
-) => (dispatch: Function) => {
+) => (dispatch: Function, getState: Function) => {
     save.saveEditedFeatureData(view, editedLayers, featureType, addressField)
         .then((edits) => {
             dispatch({
                 type: types.APPLY_EDITS,
                 edits,
             });
+
+            const editedLayerId = nestedVal(edits, ['0', 'layerId']);
+
+            const { layerList } = dispatch(getState).map.layerGroups;
+            const foundLayer = layerList.find(layer => layer.id === editedLayerId);
+            const foundSearchLayer = layerList.find(layer => layer.id === `${editedLayerId}.s`);
+
+            if (foundSearchLayer) {
+                const queryMap = new Map([
+                    [foundLayer, foundSearchLayer.definitionExpression],
+                ]);
+
+                dispatch(searchFeatures(queryMap));
+            }
         });
 
     return {
