@@ -162,3 +162,7 @@ export const WrapperReactTableNoTable = styled.div`
 export const TableSelect = styled.select`
     width: 100%;
 `;
+
+export const TableInput = styled.input`
+    width: 100%;
+`;

@@ -1,5 +1,7 @@
 // @flow
 
+import { toUnixTime } from './date';
+
 /**
 * Returns matching edit from edited array.
 *
@@ -35,7 +37,8 @@ export const equals = (a: any, b: any) => {
 
     if (aClean === '' && (bClean === null || bClean === undefined)) {
         return true;
-    } else if ((aClean === null || aClean === undefined) && bClean === '') {
+    }
+    if ((aClean === null || aClean === undefined) && bClean === '') {
         return true;
     }
     return aClean === bClean;
@@ -85,7 +88,7 @@ export const getValue = (type: string, value: string) => {
         case 'esriFieldTypeDouble':
             return Number.isNaN(parseFloat(value)) ? null : parseFloat(value);
         case 'esriFieldTypeDate':
-            return Number.isNaN((new Date(value)).getTime()) ? null : (new Date(value)).getTime();
+            return toUnixTime(value);
         default:
             return value;
     }

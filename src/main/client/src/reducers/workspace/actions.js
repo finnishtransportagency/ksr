@@ -1,5 +1,4 @@
 // @flow
-import moment from 'moment';
 import { toast } from 'react-toastify';
 import * as types from '../../constants/actionTypes';
 import strings from '../../translations/fi';
@@ -25,13 +24,9 @@ export const updateWorkspaces = (
     workspaceFetch(fetchParam)
         .then((r) => {
             if (!r.error) {
-                const workspaceList = r.map(w => ({
-                    ...w,
-                    updated: moment(w.updateTime).format('DD.MM.YYYY HH:mm'),
-                }));
                 dispatch({
                     type: types.GET_WORKSPACE_LIST_FULFILLED,
-                    workspaceList,
+                    workspaceList: r,
                 });
 
                 if (fetchParam && type) {

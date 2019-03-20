@@ -7,6 +7,7 @@ import save from '../../../../utils/saveFeatureData';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import { queryFeatures } from '../../../../api/search/searchQuery';
 import { nestedVal } from '../../../../utils/nestedValue';
+import { toUnixTime } from '../../../../utils/date';
 
 type Props = {
     fields: any,
@@ -27,21 +28,20 @@ type State = {
     dataFields: Array<Object>,
     fetching: boolean,
     contractExists: boolean,
-    data: Object,
     copiedFeature: ?Object,
 };
 
 const initialState = {
     dataFields: [],
-    data: {},
     fetching: false,
     contractExists: true,
     copiedFeature: {},
 };
 
 class ModalFilter extends Component<Props, State> {
-    abortController: ?Object = null; // eslint-disable-line react/sort-comp
-    existsQuery: ?number = 0; // eslint-disable-line react/sort-comp
+    abortController: ?Object = null;
+
+    existsQuery: ?number = 0;
 
     constructor(props: Props) {
         super(props);
@@ -54,16 +54,16 @@ class ModalFilter extends Component<Props, State> {
 
     loadFields = () => {
         const { fields, activeLayer, layer } = this.props;
-        const copiedFeature = layer.graphics.items.length ?
-            layer.graphics.items[0] : null;
-        const copiedAttributes = copiedFeature ?
-            copiedFeature.attributes : null;
+        const copiedFeature = layer.graphics.items.length
+            ? layer.graphics.items[0] : null;
+        const copiedAttributes = copiedFeature
+            ? copiedFeature.attributes : null;
 
         const dataFields = fields.map(field => ({
             ...field,
             nullable: field.name !== activeLayer.relationColumnOut,
-            data: copiedAttributes && copiedAttributes[field.name] ?
-                String(copiedAttributes[field.name]) : '',
+            data: copiedAttributes && copiedAttributes[field.name]
+                ? String(copiedAttributes[field.name]) : '',
         })).filter(f => (f.type !== 'esriFieldTypeOID'
                 && f.editable
                 && f.name !== 'CONTRACT_UUID'
@@ -71,15 +71,13 @@ class ModalFilter extends Component<Props, State> {
                 || (f.name === activeLayer.relationColumnOut
                     && f.name === activeLayer.relationColumnOut));
 
-        const dataObject = Object.assign({}, ...(dataFields.map(item =>
-            ({ [item.name]: item.data }))));
-
-        this.setState({ dataFields, data: dataObject, copiedFeature });
+        this.setState({ dataFields, copiedFeature });
     };
 
     handleOnChange = (evt: Object, field: Object) => {
         const { name, value } = evt.target;
         const { dataFields } = this.state;
+        const { activeLayer } = this.props;
 
         this.setState({
             fetching: true,
@@ -94,12 +92,6 @@ class ModalFilter extends Component<Props, State> {
 
         window.clearTimeout(this.existsQuery);
         if (this.abortController) this.abortController.abort();
-
-        const dataObject = Object.assign({}, ...(newData.map(item =>
-            ({ [item.name]: item.data }))));
-        this.setState({ data: dataObject });
-
-        const { activeLayer } = this.props;
 
         if (value && field.name === activeLayer.relationColumnOut) {
             this.setState({ fetching: true, contractExists: true });
@@ -141,9 +133,18 @@ class ModalFilter extends Component<Props, State> {
             objectId,
             editModeActive,
             setActiveFeatureMode,
+            sketchViewModel,
+            setTempGraphicsLayer,
         } = this.props;
 
-        const { data, copiedFeature } = this.state;
+        const { dataFields, copiedFeature } = this.state;
+
+
+        const data = dataFields.reduce((acc, cur) => {
+            const isDate = cur.type === 'esriFieldTypeDate';
+            return { ...acc, [cur.name]: isDate ? toUnixTime(cur.data) : cur.data };
+        }, {});
+
         const combinedData = {
             attributes: data,
             geometry: copiedFeature ? copiedFeature.geometry : null,
@@ -171,10 +172,10 @@ class ModalFilter extends Component<Props, State> {
         }
         if (layer) {
             layer.graphics = undefined;
-            this.props.setTempGraphicsLayer(layer);
+            setTempGraphicsLayer(layer);
         }
-        this.props.sketchViewModel.cancel();
-        this.props.sketchViewModel.reset();
+        sketchViewModel.cancel();
+        sketchViewModel.reset();
 
         setActiveFeatureMode('create');
     };

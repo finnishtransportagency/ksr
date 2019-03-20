@@ -5,8 +5,9 @@ import { cellEditValidate, preventKeyPress } from '../../../../utils/cellEditVal
 import { addContractColumn } from '../../../../utils/contracts/contractColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';
-import { WrapperReactTableNoTable, TableSelect } from './styles';
+import { WrapperReactTableNoTable, TableSelect, TableInput } from './styles';
 import strings from '../../../../translations';
+import { toISODate, toDisplayDate } from '../../../../utils/date';
 
 type Props = {
     fetching: boolean,
@@ -51,10 +52,6 @@ class ReactTable extends Component<Props> {
     }
 
     getCellContent = (layer: Object, cellField: Object, cellInfo: Object) => {
-        if (cellField && cellField.type === 'esriFieldTypeDate') {
-            return (new Date(layer.data[cellInfo.index][cellInfo.column.id])).toISOString();
-        }
-
         if (cellField && cellField.type === 'esriFieldTypeDouble') {
             return layer.data[cellInfo.index][cellInfo.column.id]
                 ? layer.data[cellInfo.index][cellInfo.column.id].toFixed(3)
@@ -150,6 +147,26 @@ class ReactTable extends Component<Props> {
         );
     };
 
+    renderDateInput = (cellField: Object, content: any, layer: Object, cellInfo: Object) => {
+        const { setEditedLayer } = this.props;
+        return (
+            <TableInput
+                type="date"
+                value={toISODate(content)}
+                title={toDisplayDate(content)}
+                onChange={(evt) => {
+                    const val = cellEditValidate(
+                        evt.target.value,
+                        layer.data,
+                        cellField,
+                        cellInfo,
+                    );
+                    setEditedLayer(val);
+                }}
+            />
+        );
+    };
+
     renderDiv = (
         cellField: Object,
         content: any,
@@ -204,7 +221,16 @@ class ReactTable extends Component<Props> {
                 ) {
                     return this.renderSelect(cellField, content, layer, cellInfo);
                 }
-                return this.renderDiv(cellField, content, layer, cellInfo, contentEditable);
+                if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
+                    return this.renderDateInput(cellField, content, layer, cellInfo);
+                }
+                return this.renderDiv(
+                    cellField,
+                    cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
+                    layer,
+                    cellInfo,
+                    contentEditable,
+                );
             }
         }
         return null;

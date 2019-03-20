@@ -1,8 +1,8 @@
 // @flow
-import moment from 'moment';
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations';
 import { PropertyFeature } from '../styles';
+import { toDisplayDate } from '../../../../../../utils/date';
 
 type Props = {
     properties: Object,
@@ -28,18 +28,16 @@ const PropertyInfoView = ({ properties }: Props) => (
         </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.landArea}</span>
-            <span>{properties.landArea
-                ? properties.landArea.toFixed(2)
-                : ''}
-            {properties.landArea > 0 && ' ha'}
+            <span>
+                {properties.landArea
+                    ? properties.landArea.toFixed(2)
+                    : ''}
+                {properties.landArea > 0 && ' ha'}
             </span>
         </PropertyFeature>
         <PropertyFeature>
             <span>{strings.searchProperty.registrationDate}</span>
-            <span>{properties.registrationDate
-                ? moment(properties.registrationDate, 'YYYYMMDD').format('DD.MM.YYYY')
-                : ''}
-            </span>
+            <span>{toDisplayDate(properties.registrationDate)}</span>
         </PropertyFeature>
     </Fragment>
 );
