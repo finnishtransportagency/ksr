@@ -111,7 +111,7 @@ const SearchFieldView = ({
                                                 className={highlightedIndex === ind ?
                                                     'suggestion highlight' : 'suggestion'}
                                             >
-                                                {item}
+                                                {item.length > 30 ? `${item.slice(0, 30)}...` : item}
                                             </div>
                                         ))
                                     ) : null}
