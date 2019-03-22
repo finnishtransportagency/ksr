@@ -109,7 +109,9 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
             dispatch({
                 type: types.HIDE_LAYER,
                 // Remove '.s' at the end of layer id.
-                layerIds: layersToBeAdded.layers.map(newLayer => newLayer.id.slice(0, -2)),
+                layerIds: layersToBeAdded.layers
+                    .filter(newLayer => newLayer.type !== 'agfl')
+                    .map(newLayer => newLayer.id.slice(0, -2)),
             });
 
             dispatch({
