@@ -1,22 +1,21 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Select from 'react-select';
+import { TextInput } from '../../../../../../ui/elements';
+import FieldInputView from '../FieldInputView';
 
-import ModalLayerDetailsSingleViewInput from '../ModalLayerDetailsSingleViewInput';
-import { TextInput } from '../../../../../ui/elements';
-
-describe('<ModalLayerDetailsSingleViewInput />', () => {
+describe('<FieldInputView />', () => {
     it('should render', () => {
         const field = { name: 'test-field-1', type: 'esriFieldTypeInteger' };
         const props = { field, handleOnChange: jest.fn(), index: 1 };
-        const wrapper = shallow(<ModalLayerDetailsSingleViewInput {...props} />);
+        const wrapper = shallow(<FieldInputView {...props} />);
         expect(wrapper.exists()).toBeTruthy();
     });
 
     it('should contain <TextInput />', () => {
         const field = { name: 'test-field-1', type: 'esriFieldTypeInteger' };
         const props = { field, handleOnChange: jest.fn(), index: 1 };
-        const wrapper = shallow(<ModalLayerDetailsSingleViewInput {...props} />);
+        const wrapper = shallow(<FieldInputView {...props} />);
         expect(wrapper.find(TextInput).length).toBe(1);
     });
 
@@ -30,7 +29,7 @@ describe('<ModalLayerDetailsSingleViewInput />', () => {
             },
         };
         const props = { field, handleOnChange: jest.fn(), index: 1 };
-        const wrapper = shallow(<ModalLayerDetailsSingleViewInput {...props} />);
+        const wrapper = shallow(<FieldInputView {...props} />);
         expect(wrapper.find(Select).length).toBe(1);
     });
 
@@ -44,7 +43,7 @@ describe('<ModalLayerDetailsSingleViewInput />', () => {
             },
         };
         const props = { field, handleOnChange: jest.fn(), index: 1 };
-        const wrapper = shallow(<ModalLayerDetailsSingleViewInput {...props} />);
+        const wrapper = shallow(<FieldInputView {...props} />);
         expect(wrapper.find(Select).length).toBe(1);
     });
 });
