@@ -1,22 +1,22 @@
 // @flow
 import React from 'react';
 import Select from 'react-select';
-
-import { parseColumnType } from '../../../../../utils/type';
-import { TextInput } from '../../../../ui/elements';
+import { parseColumnType } from '../../../../../../utils/type';
+import { TextInput } from '../../../../../ui/elements';
 
 type Props = {
     field: Object,
     handleOnChange: Function,
     index: number,
+    disabled: boolean,
 };
 
-const ModalLayerDetailsSingleViewInput = ({
-    field, handleOnChange, index,
+const FieldInputView = ({
+    field, handleOnChange, index, disabled,
 }: Props) => {
     if (
-        field.domain &&
-        (field.domain.type === 'codedValue' || field.domain.type === 'coded-value')
+        field.domain
+        && (field.domain.type === 'codedValue' || field.domain.type === 'coded-value')
     ) {
         return (
             <Select
@@ -50,8 +50,9 @@ const ModalLayerDetailsSingleViewInput = ({
             autoComplete="off"
             maxLength={field.length}
             required={!field.nullable}
+            disabled={disabled}
         />
     );
 };
 
-export default ModalLayerDetailsSingleViewInput;
+export default FieldInputView;
