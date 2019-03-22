@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import ModalLayerDetailsSingleView from '../ModalLayerDetailsSingleView';
-import ModalLayerDetailsSingleViewInput from '../ModalLayerDetailsSingleViewInput';
+import FieldInputView from '../field-input/FieldInputView';
+import FormFieldView from '../FormFieldView';
 
 const setup = () => {
     const props = {
@@ -15,19 +15,19 @@ const setup = () => {
         contractExists: true,
     };
 
-    const wrapper = shallow(<ModalLayerDetailsSingleView {...props} />);
+    const wrapper = shallow(<FormFieldView {...props} />);
 
     return { wrapper };
 };
 
-describe('<ModalLayerDetailsSingleView />', () => {
+describe('<FormFieldView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {
         expect(wrapper.exists()).toBe(true);
     });
 
-    it('contains <TextInput />', () => {
-        expect(wrapper.find(ModalLayerDetailsSingleViewInput).length).toBe(1);
+    it('contains <FieldInputView />', () => {
+        expect(wrapper.find(FieldInputView).length).toBe(1);
     });
 });
