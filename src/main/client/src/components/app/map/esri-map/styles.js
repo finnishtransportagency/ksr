@@ -33,7 +33,7 @@ export const Wrapper = styled.div`
         };
         
         .esri-coordinate-conversion__select-row {
-            flex-basis: 100px;
+            flex-basis: 110px;
         };
         
         .esri-attribution {
