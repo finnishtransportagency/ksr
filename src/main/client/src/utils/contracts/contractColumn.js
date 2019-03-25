@@ -18,6 +18,7 @@ export const addContractColumn = (
     type: string,
 ) => ([
     {
+        Header: '',
         columns: [{
             width: 30,
             maxWidth: 30,
@@ -48,6 +49,7 @@ export const addContractColumn = (
                 justifyContent: 'center',
             },
         }],
+        fixed: 'left',
     },
     ...columns,
 ]);

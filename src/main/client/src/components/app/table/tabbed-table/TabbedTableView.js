@@ -31,8 +31,9 @@ const TabbedTableView = ({ layers, activeTable, setActiveTable, activeAdmin }: P
                             active={activeTable === l.id}
                             onClick={() => {
                                 setActiveTable(l.id);
-                                if (document.getElementsByClassName('tbody-scroll-wrapper').length) {
-                                    document.getElementsByClassName('tbody-scroll-wrapper')[0].scrollTop = 0;
+                                if (document.getElementsByClassName('rtable-scroll-wrapper').length) {
+                                    document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
+                                    document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollLeft = 0;
                                 }
                             }}
                         >
