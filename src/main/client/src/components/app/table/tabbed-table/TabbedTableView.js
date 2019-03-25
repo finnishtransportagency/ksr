@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 
-import ReactTableContainer from './../react-table/ReactTableContainer';
+import ReactTableContainer from '../react-table/ReactTableContainer';
 import { WrapperTabbedTable, ButtonTabbedTableTab } from './styles';
 import MapLayerTitle from '../../shared/MapLayerTitle';
 
@@ -13,13 +13,19 @@ type Props = {
     activeAdmin: string,
 };
 
-const TabbedTableView = ({ layers, activeTable, setActiveTable, activeAdmin }: Props) => (
+const TabbedTableView = ({
+    layers,
+    activeTable,
+    setActiveTable,
+    activeAdmin,
+}: Props) => (
     <Fragment>
         <WrapperTabbedTable>
             <Scrollbars
                 autoHide
-                renderThumbHorizontal={scrollProps =>
-                    <div {...scrollProps} style={{ backgroundColor: 'rgba(255, 255, 255, 0.4', height: '3px' }} />}
+                renderThumbHorizontal={scrollProps => (
+                    <div {...scrollProps} style={{ backgroundColor: 'rgba(255, 255, 255, 0.4', height: '3px' }} />
+                )}
             >
                 {
                     layers.map(l => (
