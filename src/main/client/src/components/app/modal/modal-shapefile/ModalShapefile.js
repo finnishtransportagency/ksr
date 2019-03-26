@@ -1,115 +1,128 @@
 // @flow
-import React, { Component, createRef, Fragment } from 'react';
-import MediaQuery from 'react-responsive';
+import React, { Component, Fragment } from 'react';
+import { toast } from 'react-toastify';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import strings from '../../../../translations/index';
 import ModalShapefileView from './ModalShapefileView';
-import { shape2geoJson } from '../../../../utils/shape2geojson';
+import { shape2geoJson, convertLayerListFormat } from '../../../../utils/shape2geojson';
 
 type State = {
-    acceptedFileExtensions: string,
+    color: ?string,
+    acceptedFiles: File[],
 };
+
 type Props = {
     view: Object,
     setActiveModal: Function,
     layerList: Array<any>,
     addShapefile: Function,
-    toggleDropzoneActive: Function,
-    dropzone: boolean,
 };
+
 const initialState = {
-    acceptedFileExtensions: '.shp,.dbf',
+    acceptedFiles: [],
+    color: '',
 };
+
+const getFileByExtension = (files, extension) => files
+    && files.find(file => file
+        && file.name
+        && file.name.split('.').pop() === extension);
+
 
 class ModalShapefile extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = { ...initialState };
-
-        this.fileMobileUpload = createRef();
-        this.onDrop = this.onDrop.bind(this);
-        this.closeModal = this.closeModal.bind(this);
     }
 
-    componentDidMount() {
-        const { dropzone, toggleDropzoneActive } = this.props;
-        if (dropzone) {
-            const fileUpload = this.fileMobileUpload.current;
-            if (fileUpload !== null) {
-                this.fileMobileUpload.current.open();
-                toggleDropzoneActive();
-            }
-        }
-    }
+    onDrop = (acceptedFiles: File[]) => {
+        this.setState({ acceptedFiles });
+    };
 
-    onDrop = async (acceptedFiles: any) => {
-        if (acceptedFiles.length < 1) return;
-
+    onSubmit = async () => {
+        const { acceptedFiles, color } = this.state;
         const { layerList, view, addShapefile } = this.props;
 
-        const fileName = acceptedFiles.find(a => a).name.split('.').shift();
+        const shapeFile = getFileByExtension(acceptedFiles, 'shp');
+        const dbfFile = getFileByExtension(acceptedFiles, 'dbf');
 
-        if (layerList.some(l => l.name === fileName)) {
+        const layerName = shapeFile && shapeFile.name && shapeFile.name.split('.')[0];
+        if (!layerName || layerList.some(l => l.name === layerName)) {
+            toast.error(strings.modalShapefile.layerExists);
             return;
         }
 
-        const contents = {};
-        await Promise.all(acceptedFiles.map(file => this.readFile(file, contents)));
-        shape2geoJson(
-            contents,
-            fileName,
-            view,
-            layerList,
-            addShapefile,
-        );
+        const shp = shapeFile && await this.readFile(shapeFile);
+        const dbf = dbfFile && await this.readFile(dbfFile);
+
+        const layerId = Math.max(
+            0, // Initial value for an empty array
+            ...layerList.map(ll => parseInt(ll.id, 10)),
+        ) + 11000;
+
+        if (shp && dbf) {
+            const layer = await shape2geoJson(
+                shp,
+                dbf,
+                layerName,
+                layerId,
+                color,
+            );
+            if (layer) {
+                view.map.add(layer);
+                const definition = convertLayerListFormat(layer);
+                addShapefile(definition);
+            }
+        } else {
+            toast.error(strings.modalShapefile.readError);
+        }
+
         this.closeModal();
     };
 
-    readFile = (file: any, contents: any): Promise<void> => new Promise((resolve) => {
-        if (file.name.split('.').pop() === 'shp' || file.name.split('.').pop() === 'dbf') {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const name = file.name.split('.').pop();
-                contents[name] = event.target.result.slice(0);
-                resolve();
-            };
-            reader.readAsArrayBuffer(file);
-        }
+    readFile = (file: File): Promise<ArrayBuffer> => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            resolve(event.target.result);
+        };
+        reader.readAsArrayBuffer(file);
     });
+
+    setColor = (color: string) => {
+        this.setState({ color });
+    };
 
     closeModal = () => {
         const { setActiveModal } = this.props;
         setActiveModal('');
     };
 
-    // Assign constructor ref flowtypes
-    fileMobileUpload: any;
-
     render() {
-        const { acceptedFileExtensions } = this.state;
+        const { acceptedFiles, color } = this.state;
+        const hasShp = Boolean(getFileByExtension(acceptedFiles, 'shp'));
+        const hasDbf = Boolean(getFileByExtension(acceptedFiles, 'dbf'));
+
+        const modalSubmit = [{
+            text: strings.modalShapefile.submitText,
+            handleSubmit: this.onSubmit,
+            disabled: color === '' || !(hasShp && hasDbf),
+            toggleModal: true,
+        }];
+
         return (
             <Fragment>
-                <MediaQuery query="(min-width: 769px)">
-                    <ModalContainer
-                        title={strings.modalShapefile.title}
-                        modalSubmit={[]}
-                    >
-                        <ModalShapefileView
-                            onDrop={this.onDrop}
-                            acceptedExtensions={acceptedFileExtensions}
-                            fileUploadRef={this.fileMobileUpload}
-                            closeModal={this.closeModal}
-                        />
-                    </ModalContainer>
-                </MediaQuery>
-                <MediaQuery query="(max-width: 768px)">
+                <ModalContainer
+                    title={strings.modalShapefile.title}
+                    modalSubmit={modalSubmit}
+                    cancelText={strings.modalShapefile.cancelText}
+                >
                     <ModalShapefileView
                         onDrop={this.onDrop}
-                        acceptedExtensions={acceptedFileExtensions}
-                        fileUploadRef={this.fileMobileUpload}
-                        closeModal={this.closeModal}
+                        acceptedFiles={acceptedFiles}
+                        color={color}
+                        setColor={this.setColor}
                     />
-                </MediaQuery>
+                </ModalContainer>
             </Fragment>
         );
     }
