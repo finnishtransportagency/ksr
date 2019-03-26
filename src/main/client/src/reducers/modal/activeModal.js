@@ -1,15 +1,13 @@
 // @flow
-import { SET_ACTIVE_MODAL, TOGGLE_DROPZONE_ACTIVE } from '../../constants/actionTypes';
+import { SET_ACTIVE_MODAL } from '../../constants/actionTypes';
 
 const initialState = {
     activeModal: '',
-    dropzone: false,
     data: null,
 };
 
 type State = {
     activeModal: string,
-    dropzone: boolean,
     data: any,
 };
 
@@ -26,11 +24,6 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 activeModal: action.activeModal,
                 data: action.data,
-            };
-        case TOGGLE_DROPZONE_ACTIVE:
-            return {
-                ...state,
-                dropzone: !state.dropzone,
             };
         default:
             return state;
