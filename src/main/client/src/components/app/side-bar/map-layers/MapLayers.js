@@ -7,7 +7,6 @@ type Props = {
     setActiveLayerTab: (string) => void,
     activeTab: string,
     setActiveModal: (modal: string) => void,
-    toggleDropzoneActive: () => void,
     toggleLayerLegend: () => void,
     layerLegendActive: boolean,
 };
@@ -31,7 +30,6 @@ class MapLayers extends Component<Props, State> {
         this.state = { ...initialState };
 
         this.handleButtonClickLayers = this.handleButtonClickLayers.bind(this);
-        this.toggleLayerLegend = this.toggleLayerLegend.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.setActiveGroups = this.setActiveGroups.bind(this);
         this.setActiveSubGroups = this.setActiveSubGroups.bind(this);
@@ -53,10 +51,6 @@ class MapLayers extends Component<Props, State> {
         setActiveLayerTab(tab);
     };
 
-    toggleLayerLegend = () => {
-        this.props.toggleLayerLegend();
-    };
-
     handleInputChange = (event: Object) => {
         const { layerGroups } = this.props;
         const layersToFind = event.target.value;
@@ -74,8 +68,8 @@ class MapLayers extends Component<Props, State> {
         const {
             activeTab,
             setActiveModal,
-            toggleDropzoneActive,
             layerLegendActive,
+            toggleLayerLegend,
         } = this.props;
 
         return (
@@ -83,9 +77,8 @@ class MapLayers extends Component<Props, State> {
                 handleButtonClickLayers={this.handleButtonClickLayers}
                 activeTab={activeTab}
                 setActiveModal={setActiveModal}
-                toggleDropzoneActive={toggleDropzoneActive}
                 layerLegendActive={layerLegendActive}
-                toggleLayerLegend={this.toggleLayerLegend}
+                toggleLayerLegend={toggleLayerLegend}
                 handleInputChange={this.handleInputChange}
                 layersToFind={layersToFind}
                 activeGroups={activeGroups}

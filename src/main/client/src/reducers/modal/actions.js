@@ -6,7 +6,3 @@ export const setActiveModal = (activeModal: string, data?: any) => ({
     activeModal,
     data,
 });
-
-export const toggleDropzoneActive = () => ({
-    type: types.TOGGLE_DROPZONE_ACTIVE,
-});

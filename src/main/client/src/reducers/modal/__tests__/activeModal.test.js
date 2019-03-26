@@ -4,7 +4,6 @@ import reducer from '../index';
 describe('confirmModal reducer', () => {
     const initialState = {
         activeModal: '',
-        dropzone: false,
         data: null,
     };
 
@@ -23,17 +22,6 @@ describe('confirmModal reducer', () => {
             activeModal: {
                 ...initialState,
                 activeModal: 'test',
-            },
-        }));
-    });
-
-    it('should handle TOGGLE_DROPZONE_ACTIVE', () => {
-        expect(JSON.stringify(reducer(undefined, {
-            type: types.TOGGLE_DROPZONE_ACTIVE,
-        }))).toEqual(JSON.stringify({
-            activeModal: {
-                ...initialState,
-                dropzone: !initialState.dropzone,
             },
         }));
     });
