@@ -195,13 +195,11 @@ const ModalContractDetails = (props: Props) => {
                     />
                 )}
                 {activeView === 'addNewDetail' && (
-                    <Fragment>
-                        <FeatureDetailsForm
-                            layer={activeDetailLayer}
-                            setFormOptions={setFormOptions}
-                            formType="add"
-                        />
-                    </Fragment>
+                    <FeatureDetailsForm
+                        layer={activeDetailLayer}
+                        setFormOptions={setFormOptions}
+                        formType="add"
+                    />
                 )}
             </Fragment>
         </ModalContainer>
