@@ -1,6 +1,24 @@
 import clone from 'clone';
 
 /**
+ * Get custom className for column if needed.
+ *
+ * @param {string} type Column type.
+ * @returns {string} Custom className if needed otherwise an empty string.
+ */
+const columnClassName = (type) => {
+    switch (type) {
+        case 'double':
+        case 'esriFieldTypeDouble':
+            return 'decimal';
+        case 'esriFieldTypeDate':
+            return 'date';
+        default:
+            return '';
+    }
+};
+
+/**
  * Parse columns from Esri's fields Array. Returns
  * react-table compatible columns Array.
  *
@@ -27,7 +45,8 @@ export const parseColumns = (id, data) => {
             description: f.domain.description,
             codedValues: f.domain.codedValues,
         } : null,
-        className: f.type === 'double' || f.type === 'esriFieldTypeDouble' ? 'decimal' : '',
+        minWidth: f.type === 'esriFieldTypeDate' ? 140 : 100,
+        className: columnClassName(f.type),
     }));
 };
 

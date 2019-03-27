@@ -77,6 +77,10 @@ export const WrapperReactTable = styled.div`
                 &.decimal {
                     text-align: right;
                 };
+
+                &.date {
+                    min-width: 140px;
+                }
             };
         
             .rt-tr-group {
