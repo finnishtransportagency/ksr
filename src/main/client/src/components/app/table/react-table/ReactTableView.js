@@ -4,9 +4,13 @@ import 'react-table/react-table.css';
 import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
-import { colorMainDark, colorMain, colorTableEdited, colorTableEditedDarker } from '../../../ui/defaultStyles';
+import {
+    colorMainDark,
+    colorMain,
+    colorTableEdited,
+    colorTableEditedDarker,
+} from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
-import CustomTableBodyView from './custom-table-body/CustomTableBodyView';
 
 type Props = {
     data: Array<any>,
@@ -25,12 +29,11 @@ const ReactTableView = ({
     selectAll,
     renderEditable,
 }: Props) => (
-    <WrapperReactTable>
+    <WrapperReactTable columns={columns}>
         <SelectableTable
             className="-striped -highlight"
             data={data}
             TableComponent={CustomTableView}
-            TbodyComponent={CustomTableBodyView}
             columns={columns.map(c => ({
                 ...c,
                 Cell: renderEditable,
@@ -63,28 +66,22 @@ const ReactTableView = ({
             isSelected={r => r._selected}
             selectAll={selectAll}
             onPageChange={() => {
-                document.getElementsByClassName('tbody-scroll-wrapper')[0].scrollTop = 0;
+                document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
             }}
             toggleSelection={toggleSelection}
             toggleAll={toggleSelectAll}
             getTdProps={(state, r, c) => {
-                const color = r && r.index % 2 === 0 ? colorTableEditedDarker : colorTableEdited;
+                const editColor = r && r.index % 2 === 0
+                    ? colorTableEditedDarker
+                    : colorTableEdited;
+                const selectedColor = r && r.index % 2 === 0 ? colorMainDark : colorMain;
+                const color = r && r.row && r.row._original._selected && c.id !== '_selector'
+                    ? selectedColor
+                    : null;
                 return {
                     style: {
                         background: r && r.original._edited && r.original._edited
-                            .find(t => t.title === c.id) ? color : null,
-                    },
-                };
-            }}
-            getTrProps={(state, r) => {
-                const color = r && r.index % 2 === 0 ? colorMainDark : colorMain;
-                return {
-                    style: {
-                        background: (
-                            r &&
-                            r.row &&
-                            r.row._original._selected ? color : null
-                        ),
+                            .find(t => t.title === c.id) ? editColor : color,
                     },
                 };
             }}

@@ -46,7 +46,8 @@ class ReactTable extends Component<Props> {
             const bodyElement = document.getElementsByClassName('rt-tbody')[0];
             const headerElement = document.getElementsByClassName('rt-thead -header')[0];
             const filterElement = document.getElementsByClassName('rt-thead -filters')[0];
-            const tbodyHeight = headerElement.clientHeight + filterElement.clientHeight;
+            // Add two extra pixels to prevent unintended scroll from appearing.
+            const tbodyHeight = headerElement.clientHeight + filterElement.clientHeight + 2;
             bodyElement.style.height = `calc(100% - ${tbodyHeight}px)`;
         }
     }

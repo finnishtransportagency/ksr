@@ -33,7 +33,7 @@ export const Wrapper = styled.div`
         };
         
         .esri-coordinate-conversion__select-row {
-            flex-basis: 100px;
+            flex-basis: 110px;
         };
         
         .esri-attribution {
@@ -185,6 +185,26 @@ export const Wrapper = styled.div`
             
             .esri-legend--card__section {
                 min-width: 200px;
+            };
+        };
+        
+        ${props => props.layerLegendActive && props.tableOpen && css`
+            .esri-coordinate-conversion, .esri-legend--stacked {
+                right: 60px;
+            };
+        `};
+
+        @media only screen and (max-height: 900px) {
+            ${props => (props.layerLegendActive || props.tableOpen) && css`
+                .esri-coordinate-conversion, .esri-legend--stacked {
+                    right: 60px;
+                };
+            `};
+        };
+
+        @media only screen and (max-height: 468px) {
+            .esri-coordinate-conversion, .esri-legend--stacked {
+                right: 60px;
             };
         };
     };

@@ -18,12 +18,13 @@ export const addContractColumn = (
     type: string,
 ) => ([
     {
+        Header: '',
         columns: [{
             width: 30,
             maxWidth: 30,
             sortable: false,
             filterable: false,
-            resizeable: false,
+            resizable: false,
             Cell: (row: Object) => (
                 <div
                     title={type === 'agfs'
@@ -48,7 +49,7 @@ export const addContractColumn = (
                 justifyContent: 'center',
             },
         }],
+        fixed: 'left',
     },
     ...columns,
 ]);
-

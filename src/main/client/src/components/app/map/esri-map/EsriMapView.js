@@ -11,6 +11,7 @@ type Props = {
     view: any,
     isOpenTable: boolean,
     adminToolActive: boolean,
+    layerLegendActive: boolean,
 };
 
 const EsriMapView = ({
@@ -18,12 +19,14 @@ const EsriMapView = ({
     view,
     isOpenTable,
     adminToolActive,
+    layerLegendActive,
 }: Props) => (
     <Wrapper
         sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
         tableOpen={isOpenTable}
         adminToolActive={adminToolActive}
         loading={!view}
+        layerLegendActive={layerLegendActive}
     >
         <LoadingIcon size={0} loading={!view} />
         <div id="mapView">

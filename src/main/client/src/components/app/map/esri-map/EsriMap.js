@@ -118,6 +118,7 @@ class EsriMap extends Component<Props> {
             isOpenTable,
             view,
             activeAdminTool,
+            layerLegendActive,
         } = this.props;
 
         return (
@@ -126,6 +127,7 @@ class EsriMap extends Component<Props> {
                 activeNav={activeNav}
                 isOpenTable={isOpenTable}
                 view={view}
+                layerLegendActive={layerLegendActive}
             />
         );
     }
