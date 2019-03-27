@@ -277,3 +277,22 @@ export const toggleSelectAll = (currentLayers, layerId) => (
         return { ...layer };
     })
 );
+
+/**
+ * Gets the coded value for attribute.
+ *
+ * @param {Object} domain Field's domain containing coded value info.
+ * @param {any} value Original value of the attribute.
+ *
+ * @returns {string} Coded value for attribute.
+ */
+export const getCodedValue = (domain, value) => {
+    if (domain && (domain.type === 'codedValue' || domain.type === 'coded-value')) {
+        const codedValue = domain.codedValues.find(cv => cv.code === value);
+        if (codedValue) {
+            return codedValue.name;
+        }
+        return null;
+    }
+    return String(value);
+};

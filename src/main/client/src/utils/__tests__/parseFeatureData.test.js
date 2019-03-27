@@ -9,6 +9,7 @@ import {
     deSelectFeatures,
     toggleSelection,
     toggleSelectAll,
+    getCodedValue,
 } from '../parseFeatureData';
 
 describe('parseFeatureData', () => {
@@ -744,5 +745,38 @@ describe('parseFeatureData', () => {
 
         const res3 = toggleSelectAll(data3, '123');
         expect(res3).toEqual(expect.arrayContaining(expectedData3));
+    });
+
+    it('getCodedValue - returns correct value', () => {
+        let domain;
+        let value;
+        let expectedValue;
+
+        domain = {};
+        value = '1';
+        expectedValue = '1';
+        expect(getCodedValue(domain, value)).toEqual(expectedValue);
+
+        domain = {
+            type: 'codedValue',
+            codedValues: [{
+                code: '1',
+                name: 'Test code value',
+            }],
+        };
+        value = '1';
+        expectedValue = 'Test code value';
+        expect(getCodedValue(domain, value)).toEqual(expectedValue);
+
+        domain = {
+            type: 'codedValue',
+            codedValues: [{
+                code: '123',
+                name: 'Test code value',
+            }],
+        };
+        value = '1';
+        expectedValue = null;
+        expect(getCodedValue(domain, value)).toEqual(expectedValue);
     });
 });
