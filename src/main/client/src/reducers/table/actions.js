@@ -72,7 +72,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
             layerData,
         )
             .then((r) => {
-                if (r.layers.length) {
+                if (r && r.layers.length) {
                     r.layers.forEach((fetchedLayer) => {
                         const newLayer = {
                             ...selectedLayer,
@@ -147,7 +147,7 @@ export const searchWorkspaceFeatures = (
                 layerData,
             )
                 .then((r) => {
-                    if (r.layers.length) {
+                    if (r && r.layers.length) {
                         r.layers.forEach((fetchedLayer) => {
                             fetchedLayer.features.map((f) => {
                                 const selectedObj = selectedLayer.selectedFeaturesList.find(obj => (
