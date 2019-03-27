@@ -79,7 +79,7 @@ describe('<ContractList />', () => {
         };
 
         const expectedResult = [{
-            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/123',
+            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=/alfrescourl/123&scope=vuokravalvonta&sortField=null',
             caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/123',
             attributes: {
                 alfrescoUrl: '/alfrescourl/123',
@@ -90,7 +90,7 @@ describe('<ContractList />', () => {
             description: 'Description field 1',
             id: 123,
         }, {
-            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/456',
+            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=/alfrescourl/456&scope=vuokravalvonta&sortField=null',
             caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/456',
             attributes: {
                 alfrescoUrl: '/alfrescourl/456',

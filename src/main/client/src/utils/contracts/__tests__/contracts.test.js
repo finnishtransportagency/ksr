@@ -31,7 +31,7 @@ describe('contracts', () => {
             {
                 id: 123,
                 description: 'Test description.',
-                alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/123',
+                alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=/alfrescourl/123&scope=vuokravalvonta&sortField=null',
                 attributes: {
                     alfrescoLinkField: '/alfrescourl/123',
                     caseManagementLinkField: '/casemanagementurl/123',
@@ -43,7 +43,7 @@ describe('contracts', () => {
             {
                 id: 456,
                 description: 'Test description 2.',
-                alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=/alfrescourl/456',
+                alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=/alfrescourl/456&scope=vuokravalvonta&sortField=null',
                 attributes: {
                     alfrescoLinkField: '/alfrescourl/456',
                     caseManagementLinkField: '/casemanagementurl/456',
