@@ -8,6 +8,7 @@ import { nestedVal } from '../nestedValue';
 import { linkContract } from '../../api/contract/contractRelations';
 import save from '../saveFeatureData';
 import { toDisplayDate } from '../date';
+import { getCodedValue } from '../parseFeatureData';
 
 /**
  * Gets ID and Description field from contract query, that will be shown in contract list.
@@ -315,22 +316,25 @@ export const getFeatureAttributes = (
  * @returns {{name: string, value: *}} Parsed values.
  */
 export const getAttribute = (layer: Object, attribute: any[]): Object => {
+    const field = layer.fields.find(f => f.name === attribute[0]);
     const name = nestedVal(
-        layer.fields.find(f => f.name === attribute[0]),
+        field,
         ['label'],
         attribute[0],
     );
     const value = attribute[1];
     const type = nestedVal(
-        layer.fields.find(f => f.name === attribute[0]),
+        field,
         ['type'],
     );
+
+    const { domain } = field;
 
     switch (type) {
         case 'esriFieldTypeString':
             return {
                 name,
-                value: value ? String(value).trim() : null,
+                value: value ? getCodedValue(domain, value).trim() : null,
             };
         case 'esriFieldTypeSmallInteger':
         case 'esriFieldTypeInteger':

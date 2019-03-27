@@ -8,6 +8,7 @@ import ReactTableView from './ReactTableView';
 import { WrapperReactTableNoTable, TableSelect, TableInput } from './styles';
 import strings from '../../../../translations';
 import { toISODate, toDisplayDate } from '../../../../utils/date';
+import { getCodedValue } from '../../../../utils/parseFeatureData';
 
 type Props = {
     fetching: boolean,
@@ -82,14 +83,7 @@ class ReactTable extends Component<Props> {
             return null;
         }
 
-        if (domain && (domain.type === 'codedValue' || domain.type === 'coded-value')) {
-            const codedValue = domain.codedValues.find(cv => cv.code === content);
-            if (codedValue) {
-                return codedValue.name;
-            }
-            return null;
-        }
-        return String(content);
+        return getCodedValue(domain, content);
     };
 
     handleContractClick = (objectId: number) => {
