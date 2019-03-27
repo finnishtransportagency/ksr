@@ -520,18 +520,16 @@ describe('utils/table', () => {
                 },
             ],
         };
-        const editedData = [
-            {
-                _layerId: '123',
-                _id: 1,
-                '123/Testcolumn': 'New value',
-                _edited: [{
-                    originalValue: 'Original value',
-                    editedValue: 'New value',
-                    title: '123/Testcolumn',
-                }],
-            },
-        ];
+        const editedData = {
+            _layerId: '123',
+            _id: 1,
+            '123/Testcolumn': 'New value',
+            _edited: [{
+                originalValue: 'Original value',
+                editedValue: 'New value',
+                title: '123/Testcolumn',
+            }],
+        };
 
         const expectedResult = [
             {
@@ -588,18 +586,16 @@ describe('utils/table', () => {
                 },
             ],
         }];
-        const editedData = [
-            {
-                _layerId: '123',
-                _id: 1,
-                '123/Testcolumn': 'New value',
-                _edited: [{
-                    originalValue: 'Original value',
-                    editedValue: 'New value',
-                    title: '123/Testcolumn',
-                }],
-            },
-        ];
+        const editedData = {
+            _layerId: '123',
+            _id: 1,
+            '123/Testcolumn': 'New value',
+            _edited: [{
+                originalValue: 'Original value',
+                editedValue: 'New value',
+                title: '123/Testcolumn',
+            }],
+        };
 
         const expectedResult = [{
             id: '123',

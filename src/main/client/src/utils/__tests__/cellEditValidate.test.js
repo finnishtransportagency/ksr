@@ -96,32 +96,18 @@ describe('cellEditValidate.js', () => {
         const cellField = { type: 'esriFieldTypeString' };
         const cellInfo = { column: { id: 'COLUMN_2' }, index: 1 };
 
-        const expected = [
-            {
-                COLUMN_1: 'value - 1.1',
-                COLUMN_2: 'value - 1.2',
-                COLUMN_3: 'value - 1.3',
-                _edited: [],
-            },
-            {
-                COLUMN_1: 'value - 2.1',
-                COLUMN_2: 'edit - 2.2',
-                COLUMN_3: 'value - 2.3',
-                _edited: [
-                    {
-                        editedData: 'edit - 2.2',
-                        originalData: 'value - 2.2',
-                        title: 'COLUMN_2',
-                    },
-                ],
-            },
-            {
-                COLUMN_1: 'value - 3.1',
-                COLUMN_2: 'value - 3.2',
-                COLUMN_3: 'value - 3.3',
-                _edited: [],
-            },
-        ];
+        const expected = {
+            COLUMN_1: 'value - 2.1',
+            COLUMN_2: 'edit - 2.2',
+            COLUMN_3: 'value - 2.3',
+            _edited: [
+                {
+                    editedData: 'edit - 2.2',
+                    originalData: 'value - 2.2',
+                    title: 'COLUMN_2',
+                },
+            ],
+        };
 
         expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
@@ -158,26 +144,12 @@ describe('cellEditValidate.js', () => {
         const cellField = { type: 'esriFieldTypeString' };
         const cellInfo = { column: { id: 'COLUMN_2' }, index: 1 };
 
-        const expected = [
-            {
-                COLUMN_1: 'value - 1.1',
-                COLUMN_2: 'value - 1.2',
-                COLUMN_3: 'value - 1.3',
-                _edited: [],
-            },
-            {
-                COLUMN_1: 'value - 2.1',
-                COLUMN_2: 'value - 2.2',
-                COLUMN_3: 'value - 2.3',
-                _edited: [],
-            },
-            {
-                COLUMN_1: 'value - 3.1',
-                COLUMN_2: 'value - 3.2',
-                COLUMN_3: 'value - 3.3',
-                _edited: [],
-            },
-        ];
+        const expected = {
+            COLUMN_1: 'value - 2.1',
+            COLUMN_2: 'value - 2.2',
+            COLUMN_3: 'value - 2.3',
+            _edited: [],
+        };
 
         expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
@@ -214,32 +186,18 @@ describe('cellEditValidate.js', () => {
         const cellField = { type: 'esriFieldTypeString' };
         const cellInfo = { column: { id: 'COLUMN_2' }, index: 1 };
 
-        const expected = [
-            {
-                COLUMN_1: 'value - 1.1',
-                COLUMN_2: 'value - 1.2',
-                COLUMN_3: 'value - 1.3',
-                _edited: [],
-            },
-            {
-                COLUMN_1: 'value - 2.1',
-                COLUMN_2: 'other edit - 2.2',
-                COLUMN_3: 'value - 2.3',
-                _edited: [
-                    {
-                        editedData: 'other edit - 2.2',
-                        originalData: 'value - 2.2',
-                        title: 'COLUMN_2',
-                    },
-                ],
-            },
-            {
-                COLUMN_1: 'value - 3.1',
-                COLUMN_2: 'value - 3.2',
-                COLUMN_3: 'value - 3.3',
-                _edited: [],
-            },
-        ];
+        const expected = {
+            COLUMN_1: 'value - 2.1',
+            COLUMN_2: 'other edit - 2.2',
+            COLUMN_3: 'value - 2.3',
+            _edited: [
+                {
+                    editedData: 'other edit - 2.2',
+                    originalData: 'value - 2.2',
+                    title: 'COLUMN_2',
+                },
+            ],
+        };
 
         expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
@@ -276,34 +234,7 @@ describe('cellEditValidate.js', () => {
         const cellField = { type: 'esriFieldTypeString' };
         const cellInfo = { column: { id: 'COLUMN_2' }, index: 4 };
 
-        const expected = [
-            {
-                COLUMN_1: 'value - 1.1',
-                COLUMN_2: 'value - 1.2',
-                COLUMN_3: 'value - 1.3',
-                _edited: [],
-            },
-            {
-                COLUMN_1: 'value - 2.1',
-                COLUMN_2: 'edit - 2.2',
-                COLUMN_3: 'value - 2.3',
-                _edited: [
-                    {
-                        editedData: 'edit - 2.2',
-                        originalData: 'value - 2.2',
-                        title: 'COLUMN_2',
-                    },
-                ],
-            },
-            {
-                COLUMN_1: 'value - 3.1',
-                COLUMN_2: 'value - 3.2',
-                COLUMN_3: 'value - 3.3',
-                _edited: [],
-            },
-        ];
-
-        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
+        expect(cellEditValidate(value, layerData, cellField, cellInfo)).toBe(null);
     });
 
     it('cellEditValidate - new edit on same row, different column - text', () => {
@@ -326,25 +257,23 @@ describe('cellEditValidate.js', () => {
         const cellField = { type: 'esriFieldTypeString' };
         const cellInfo = { column: { id: 'COLUMN_1' }, index: 0 };
 
-        const expected = [
-            {
-                COLUMN_1: 'edit - 1.1',
-                COLUMN_2: 'edit - 1.2',
-                COLUMN_3: 'value - 1.3',
-                _edited: [
-                    {
-                        editedData: 'edit - 1.1',
-                        originalData: 'value - 1.1',
-                        title: 'COLUMN_1',
-                    },
-                    {
-                        editedData: 'edit - 1.2',
-                        originalData: 'value - 1.2',
-                        title: 'COLUMN_2',
-                    },
-                ],
-            },
-        ];
+        const expected = {
+            COLUMN_1: 'edit - 1.1',
+            COLUMN_2: 'edit - 1.2',
+            COLUMN_3: 'value - 1.3',
+            _edited: [
+                {
+                    editedData: 'edit - 1.1',
+                    originalData: 'value - 1.1',
+                    title: 'COLUMN_1',
+                },
+                {
+                    editedData: 'edit - 1.2',
+                    originalData: 'value - 1.2',
+                    title: 'COLUMN_2',
+                },
+            ],
+        };
 
         expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });
@@ -374,25 +303,23 @@ describe('cellEditValidate.js', () => {
         const cellField = { type: 'esriFieldTypeString' };
         const cellInfo = { column: { id: 'COLUMN_2' }, index: 0 };
 
-        const expected = [
-            {
-                COLUMN_1: 'edit - 1.1',
-                COLUMN_2: 'new edit - 1.2',
-                COLUMN_3: 'value - 1.3',
-                _edited: [
-                    {
-                        editedData: 'edit - 1.1',
-                        originalData: 'value - 1.1',
-                        title: 'COLUMN_1',
-                    },
-                    {
-                        editedData: 'new edit - 1.2',
-                        originalData: 'value - 1.2',
-                        title: 'COLUMN_2',
-                    },
-                ],
-            },
-        ];
+        const expected = {
+            COLUMN_1: 'edit - 1.1',
+            COLUMN_2: 'new edit - 1.2',
+            COLUMN_3: 'value - 1.3',
+            _edited: [
+                {
+                    editedData: 'edit - 1.1',
+                    originalData: 'value - 1.1',
+                    title: 'COLUMN_1',
+                },
+                {
+                    editedData: 'new edit - 1.2',
+                    originalData: 'value - 1.2',
+                    title: 'COLUMN_2',
+                },
+            ],
+        };
 
         expect(cellEditValidate(value, layerData, cellField, cellInfo)).toEqual(expected);
     });

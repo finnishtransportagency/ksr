@@ -140,7 +140,9 @@ class ReactTable extends Component<Props> {
                         cellField,
                         cellInfo,
                     );
-                    setEditedLayer(val);
+                    if (val) {
+                        setEditedLayer(val);
+                    }
                 }}
             >
                 {options}
@@ -164,7 +166,9 @@ class ReactTable extends Component<Props> {
                         cellField,
                         cellInfo,
                     );
-                    setEditedLayer(val);
+                    if (val) {
+                        setEditedLayer(val);
+                    }
                 }}
             />
         );
@@ -200,7 +204,9 @@ class ReactTable extends Component<Props> {
                             cellField,
                             cellInfo,
                         );
-                        setEditedLayer(val);
+                        if (val) {
+                            setEditedLayer(val);
+                        }
                     }
                 }}
                 dangerouslySetInnerHTML={{ // eslint-disable-line
@@ -270,7 +276,7 @@ class ReactTable extends Component<Props> {
             const { columns, data } = layerFeatures;
 
             const activeLayer: any = layerList.find(ll => ll.id === layerFeatures.id);
-            const contractColumns = (activeLayer
+            const tableColumns = (activeLayer
             && activeLayer.hasRelations
             && activeLayer.type !== 'agfl')
             || (activeLayer
@@ -278,13 +284,12 @@ class ReactTable extends Component<Props> {
                 && !activeLayer.relationColumnIn
                 && !activeLayer.relationColumnOutnull)
                 ? addContractColumn(this.handleContractClick, columns, activeLayer.type)
-                : null;
-
+                : columns;
             return (
                 <ReactTableView
                     data={data}
                     toggleSelection={this.toggleSelection}
-                    columns={contractColumns || columns}
+                    columns={tableColumns}
                     selectAll={selectAll}
                     toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
                     renderEditable={this.renderEditable}
