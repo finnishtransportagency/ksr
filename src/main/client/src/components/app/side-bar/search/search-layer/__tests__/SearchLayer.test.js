@@ -30,7 +30,10 @@ const setup = (prop) => {
         searchState: {
             selectedLayer: 0,
             textSearch: '',
-            searchFieldValues: [{}],
+            searchFieldValues: [{
+                queryExpression: '%',
+                queryText: 'Test 123',
+            }],
             optionsField: [{}],
             optionsExpression: [{}],
             fetching: false,

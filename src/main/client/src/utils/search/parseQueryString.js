@@ -28,13 +28,12 @@ export const parseQueryString = (
                 ? `'%${a.queryText}%'`
                 : `'${a.queryText}'`;
 
-            queryString.push(`${a.name} ${expression} ${text}`);
+            queryString.push(`LOWER(${a.name}) ${expression} LOWER(${text})`);
         });
     } else {
         const text = `'%${textSearch}%'`;
 
-        queryColumnsList.forEach(a =>
-            queryString.push(`${a} LIKE ${text}`));
+        queryColumnsList.forEach(a => queryString.push(`LOWER(${a}) LIKE LOWER(${text})`));
     }
 
     return searchFieldValues.length > 0 ? queryString.join(' AND ') : queryString.join(' OR ');

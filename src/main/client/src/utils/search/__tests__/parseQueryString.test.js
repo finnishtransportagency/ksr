@@ -39,7 +39,9 @@ describe('parseQueryString', () => {
             queryColumnsList,
         );
 
-        expect(queryString).toBe("fieldName1 LIKE '%helsinki%' OR fieldName2 LIKE '%helsinki%' OR fieldName3 LIKE '%helsinki%'");
+        expect(queryString).toBe("LOWER(fieldName1) LIKE LOWER('%helsinki%') OR"
+            + ' LOWER(fieldName2) LIKE'
+            + " LOWER('%helsinki%') OR LOWER(fieldName3) LIKE LOWER('%helsinki%')");
     });
 
     it('should parse query string with field search', () => {
@@ -57,7 +59,7 @@ describe('parseQueryString', () => {
             queryColumnsList,
         );
 
-        expect(queryString).toBe("fieldName1 = 'helsinki'");
+        expect(queryString).toBe("LOWER(fieldName1) = LOWER('helsinki')");
 
         searchFieldValues = [
             {
@@ -73,6 +75,6 @@ describe('parseQueryString', () => {
             queryColumnsList,
         );
 
-        expect(queryString2).toBe("fieldName2 LIKE '%turku%'");
+        expect(queryString2).toBe("LOWER(fieldName2) LIKE LOWER('%turku%')");
     });
 });

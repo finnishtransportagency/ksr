@@ -131,7 +131,7 @@ class SearchLayer extends Component<Props, State> {
                 if (suggestionsActive) {
                     const text = `'${evt.target.value}%'`;
                     const queryColumn = searchFieldValues[index].name;
-                    const queryString = `${queryColumn} LIKE ${text}`;
+                    const queryString = `LOWER(${queryColumn}) LIKE LOWER(${text})`;
                     window.clearTimeout(this.state.suggestionQuery);
                     if (this.abortController) {
                         this.abortController.abort();
