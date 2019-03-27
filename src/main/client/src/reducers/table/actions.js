@@ -163,7 +163,7 @@ export const searchWorkspaceFeatures = (
                                 ...selectedLayer.layer,
                                 name: selectedLayer.layer.name,
                                 definitionExpression: queryString,
-                                visible: selectedLayer.layer.visible,
+                                visible: selectedLayer.visible,
                                 active: true,
                                 opacity: selectedLayer.opacity,
                                 id: selectedLayer.userLayerId
@@ -206,6 +206,11 @@ export const searchWorkspaceFeatures = (
                 type: types.ADD_SEARCH_RESULTS_LAYER,
                 layers: addSearchResultLayers,
             });
+
+            layersToBeAdded.layers.map(l => dispatch({
+                type: types.REMOVE_LOADING_LAYER,
+                layerId: l.id,
+            }));
         }
 
         toast.update('loadingWorkspace', {
