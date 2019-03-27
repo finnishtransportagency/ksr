@@ -11,10 +11,10 @@ describe('contractDocument.js', () => {
             diarNumber: 'LIVI/456/789/963',
         };
 
-        expect(getContractDocumentUrl('alfresco', 'contractNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=123');
-        expect(getContractDocumentUrl('alfresco', 'diarNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=LIVI/456/789/963');
-        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=123');
-        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes2)).toBe('https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=LIVI/456/789/963');
+        expect(getContractDocumentUrl('alfresco', 'contractNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=123&scope=vuokravalvonta&sortField=null');
+        expect(getContractDocumentUrl('alfresco', 'diarNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=LIVI/456/789/963&scope=vuokravalvonta&sortField=null');
+        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=123&scope=vuokravalvonta&sortField=null');
+        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes2)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=LIVI/456/789/963&scope=vuokravalvonta&sortField=null');
     });
 
     it('getContractDocumentUrl - should return caseManagement link', () => {

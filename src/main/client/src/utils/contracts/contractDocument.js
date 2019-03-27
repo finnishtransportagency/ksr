@@ -17,7 +17,7 @@ export const getContractDocumentUrl = (type: string, linkField: string, attribut
         const value = attributes[field];
         switch (type) {
             case 'alfresco':
-                return `https://extranet.liikennevirasto.fi/share/page/dp/ws/faceted-search#searchTerm=${value}`;
+                return `https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=${value}&scope=vuokravalvonta&sortField=null`;
             case 'caseManagement':
                 return `https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=${value}`;
             default:
