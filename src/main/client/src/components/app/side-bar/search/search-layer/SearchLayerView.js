@@ -7,6 +7,8 @@ import strings from '../../../../../translations';
 import { Button, TextInput } from '../../../../ui/elements';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import SearchFieldView from './search-field/SearchFieldView';
+import { InputInfo } from '../../../../ui/elements/TextInput';
+import { LabelInfoWrapper } from './styles';
 
 type Props = {
     handleLayerChange: Function,
@@ -75,7 +77,17 @@ const SearchLayerView = ({
                 htmlFor="allFields"
                 hidden={!selectedLayer || searchFieldValues.length > 0}
             >
-                <p>{strings.search.searchAllFields}</p>
+                <LabelInfoWrapper>
+                    <p>{strings.search.searchAllFields}</p>
+                    <InputInfo
+                        select
+                        data-balloon={strings.search.searchAllFieldsInfo}
+                        data-balloon-pos="left"
+                        data-balloon-length="medium"
+                    >
+                        <i className="fas fa-question-circle" />
+                    </InputInfo>
+                </LabelInfoWrapper>
                 <TextInput
                     disabled={fetching}
                     type="text"

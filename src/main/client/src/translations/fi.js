@@ -18,6 +18,7 @@ const fi = {
         buttonClear: 'Tyhjennä',
         chooseLayer: 'Valitse taso',
         searchAllFields: 'Hae kaikista kentistä',
+        searchAllFieldsInfo: 'Haku kohdistuu vain yleisimpiin kenttiin. Mikäli tarvetta tarkemmalle haulle, on mahdollista hakea yksittäiseltä aktiiviselta tasolta kerrallaan haluamillaan kentillä.',
         addField: 'Lisää hakukenttä',
         searchLayerGroupName: 'Hakutulokset',
         allQueryableLayers: 'Kaikki tasot',
