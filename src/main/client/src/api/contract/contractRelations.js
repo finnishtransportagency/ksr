@@ -60,11 +60,14 @@ export const unlinkContract = (
     layerObjectId: number,
     contractLayerId: number,
     contractObjectId: number,
-) => (
+): Promise<boolean> => (
     fetch(`api/contract/unlink/${layerId}/${layerObjectId}/${contractLayerId}/${contractObjectId}`, {
         ...config(),
         method: 'POST',
     })
         .then(res => res.ok && res.status === 200)
-        .catch(err => console.log(err))
+        .catch((err) => {
+            console.log(err);
+            return false;
+        })
 );
