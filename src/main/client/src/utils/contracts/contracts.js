@@ -395,7 +395,7 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
         case 'esriFieldTypeString':
             return {
                 name,
-                value: value && getCodedValue(domain, value)
+                value: value && getCodedValue(domain, value) && name !== 'CONTRACT_UUID'
                     ? getCodedValue(domain, value).trim()
                     : null,
             };
