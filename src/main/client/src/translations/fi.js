@@ -301,11 +301,19 @@ const fi = {
         listView: {
             title: 'Sopimukseen liittyvät kohteet',
             details: 'Näytä lisätiedot',
+            unlink: 'Poista kohteen linkitys sopimukselta',
         },
         newDetail: {
             title: 'Lisää uusi kohde sopimukselle',
             submit: 'Tallenna',
             errorAddingFeature: 'Kohteen luonti epäonnistui',
+        },
+        confirmModalUnlinkContract: {
+            content: 'Haluatko varmasti poistaa kohteen linkityksen sopimukselta?',
+            submit: 'Poista',
+            cancel: 'Peruuta',
+            featureUnlinkSuccess: 'Kohteen linkityksen poisto onnistui.',
+            featureUnlinkError: 'Kohteen linkityksen poisto epäonnistui.',
         },
     },
     saveFeatureData: {
