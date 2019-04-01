@@ -334,7 +334,9 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
         case 'esriFieldTypeString':
             return {
                 name,
-                value: value ? getCodedValue(domain, value).trim() : null,
+                value: value && getCodedValue(domain, value)
+                    ? getCodedValue(domain, value).trim()
+                    : null,
             };
         case 'esriFieldTypeSmallInteger':
         case 'esriFieldTypeInteger':
