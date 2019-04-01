@@ -1,4 +1,6 @@
-import { contractListTexts, getAttribute, getContractLayers, getFeatureAttributes } from '../contracts';
+import {
+    contractListTexts, getAttribute, getContractLayers, getFeatureAttributes,
+} from '../contracts';
 
 describe('contracts', () => {
     it('contractListTexts - should return array with correct values', () => {
@@ -126,22 +128,35 @@ describe('contracts', () => {
             contractIdField: 'idField',
             contractDescriptionField: 'field2',
             fields: [
-                { name: 'idField', type: 'esriFieldTypeOID' },
-                { name: 'name2', type: 'esriFieldTypeString' },
-                { name: 'name3', type: 'esriFieldTypeInteger' },
+                { name: 'objectId', type: 'esriFieldTypeOID' },
+                { name: 'idField', type: 'esriFieldTypeString' },
+                { name: 'name2', label: 'label2', type: 'esriFieldTypeString' },
+                { name: 'name3', label: 'label3', type: 'esriFieldTypeInteger' },
             ],
         };
 
+        const attribute0 = ['objectId', 1];
+        const expectedValue0 = {
+            name: 'objectId', label: 'objectId', value: 1, hidden: true,
+        };
+        expect(getAttribute(layer, attribute0)).toEqual(expectedValue0);
+
         const attribute1 = ['idField', 123456];
-        const expectedValue1 = { name: 'idField', value: null };
+        const expectedValue1 = {
+            name: 'idField', label: 'idField', value: '123456', hidden: false,
+        };
         expect(getAttribute(layer, attribute1)).toEqual(expectedValue1);
 
-        const attribute2 = ['name2', 'value1'];
-        const expectedValue2 = { name: 'name2', value: 'value1' };
+        const attribute2 = ['name2', 'value2'];
+        const expectedValue2 = {
+            name: 'name2', label: 'label2', value: 'value2', hidden: false,
+        };
         expect(getAttribute(layer, attribute2)).toEqual(expectedValue2);
 
         const attribute3 = ['name3', 123];
-        const expectedValue3 = { name: 'name3', value: 123 };
+        const expectedValue3 = {
+            name: 'name3', label: 'label3', value: 123, hidden: false,
+        };
         expect(getAttribute(layer, attribute3)).toEqual(expectedValue3);
     });
 

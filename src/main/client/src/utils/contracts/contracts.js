@@ -380,6 +380,11 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
     const field = layer.fields.find(f => f.name === attribute[0]);
     const name = nestedVal(
         field,
+        ['name'],
+        attribute[0],
+    );
+    const label = nestedVal(
+        field,
         ['label'],
         attribute[0],
     );
@@ -395,6 +400,7 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
         case 'esriFieldTypeString':
             return {
                 name,
+                label,
                 value: value && getCodedValue(domain, value) && name !== 'CONTRACT_UUID'
                     ? getCodedValue(domain, value).trim()
                     : null,
@@ -403,21 +409,25 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
         case 'esriFieldTypeInteger':
             return {
                 name,
+                label,
                 value: Number.isNaN(parseInt(value, 10)) ? null : parseInt(value, 10),
             };
         case 'esriFieldTypeDouble':
             return {
                 name,
+                label,
                 value: Number.isNaN(parseFloat(value)) ? null : parseFloat(value).toFixed(3),
             };
         case 'esriFieldTypeDate':
             return {
                 name,
+                label,
                 value: toDisplayDate(value),
             };
         default:
             return {
                 name,
+                label,
                 value: null,
             };
     }

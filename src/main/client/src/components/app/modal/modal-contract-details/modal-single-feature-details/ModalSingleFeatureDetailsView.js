@@ -11,9 +11,9 @@ const ModalSingleFeatureDetailsView = ({ featureAttributes }: Props): any => (
     featureAttributes.length > 0
         ? featureAttributes.map(attribute => (
             attribute.value !== null && attribute.value !== undefined && attribute.value !== '' && (
-                <ContractFeatureAttribute key={attribute.name}>
+                <ContractFeatureAttribute key={attribute.label}>
                     <ContractFeatureAttribute.Name>
-                        {attribute.name}
+                        {attribute.label}
                     </ContractFeatureAttribute.Name>
                     <ContractFeatureAttribute.Value>
                         {attribute.value}

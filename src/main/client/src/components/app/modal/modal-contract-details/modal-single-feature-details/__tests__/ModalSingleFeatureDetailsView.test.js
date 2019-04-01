@@ -28,13 +28,13 @@ describe('<ModalSingleFeatureDetailsView />', () => {
     it('render - should render all non-empty values', () => {
         const props = {
             featureAttributes: [
-                { name: 'Name 1', value: 123 },
-                { name: 'Name 2', value: 'Value 2' },
-                { name: 'Name 3', value: '123456' },
-                { name: 'Name 4', value: '' },
-                { name: 'Name 5', value: null },
-                { name: 'Name 6', value: 0 },
-                { name: 'Name 7', value: undefined },
+                { name: 'Name 1', label: 'Label 1', value: 123 },
+                { name: 'Name 2', label: 'Label 2', value: 'Value 2' },
+                { name: 'Name 3', label: 'Label 3', value: '123456' },
+                { name: 'Name 4', label: 'Label 4', value: '' },
+                { name: 'Name 5', label: 'Label 5', value: null },
+                { name: 'Name 6', label: 'Label 6', value: 0 },
+                { name: 'Name 7', label: 'Label 7', value: undefined },
             ],
         };
 
@@ -43,16 +43,16 @@ describe('<ModalSingleFeatureDetailsView />', () => {
         expect(wrapper.find(ContractFeatureAttribute).length).toBe(4);
         expect(wrapper.find('p').length).toBe(0);
 
-        expect(wrapper.find(ContractFeatureAttribute.Name).at(0).text()).toBe('Name 1');
+        expect(wrapper.find(ContractFeatureAttribute.Name).at(0).text()).toBe('Label 1');
         expect(wrapper.find(ContractFeatureAttribute.Value).at(0).text()).toBe('123');
 
-        expect(wrapper.find(ContractFeatureAttribute.Name).at(1).text()).toBe('Name 2');
+        expect(wrapper.find(ContractFeatureAttribute.Name).at(1).text()).toBe('Label 2');
         expect(wrapper.find(ContractFeatureAttribute.Value).at(1).text()).toBe('Value 2');
 
-        expect(wrapper.find(ContractFeatureAttribute.Name).at(2).text()).toBe('Name 3');
+        expect(wrapper.find(ContractFeatureAttribute.Name).at(2).text()).toBe('Label 3');
         expect(wrapper.find(ContractFeatureAttribute.Value).at(2).text()).toBe('123456');
 
-        expect(wrapper.find(ContractFeatureAttribute.Name).at(3).text()).toBe('Name 6');
+        expect(wrapper.find(ContractFeatureAttribute.Name).at(3).text()).toBe('Label 6');
         expect(wrapper.find(ContractFeatureAttribute.Value).at(3).text()).toBe('0');
     });
 });
