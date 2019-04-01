@@ -160,7 +160,7 @@ export const useCancelText = (
  * @param {Object[]} detailLayers Detail layers connected to contract layer.
  * @param {Function} setActiveView Set active view after submit.
  * @param {Object} activeDetailLayer Layer that is currently active on modal form.
- * @param {Function} setDetailAdded Used to refresh contract list if new detail added.
+ * @param {Function} setRefreshList Used to refresh contract list if new detail added.
  * @param {Object} formOptions Contain's form's field data and whether submit is disabled or not.
  * @param {Function} setFormOptions Used to set submit to disabled while querying feature save.
  * @param {Object} permission Permission to create or edit contract layer.
@@ -175,7 +175,7 @@ export const useModalSubmit = (
     detailLayers: Object[],
     setActiveView: (activeView: string) => void,
     activeDetailLayer: Object,
-    setDetailAdded: (detailAdded: boolean) => void,
+    setRefreshList: (refreshList: boolean) => void,
     formOptions: { editedFields: Object, submitDisabled: boolean },
     setFormOptions: (formOptions: Object) => void,
     permission: Object,
@@ -213,7 +213,7 @@ export const useModalSubmit = (
                             formOptions.editedFields,
                         );
 
-                        setDetailAdded(detailAdded);
+                        setRefreshList(detailAdded);
                         setActiveView('contractDetails');
                     },
                     disabled: formOptions.submitDisabled,
