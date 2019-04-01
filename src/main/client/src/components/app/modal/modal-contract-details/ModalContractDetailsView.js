@@ -5,15 +5,21 @@ import Contract from '../../../ui/blocks/Contract';
 import LoadingIcon from '../../shared/LoadingIcon';
 
 type Props = {
+    contractLayerId: string,
     detailList: Object[],
-    handleFeatureDetailsClick: (layerName: string, layerId: string, featureId: number) => void,
     fetchingDetailList: boolean,
+    editPermission: boolean,
+    handleFeatureDetailsClick: (layerName: string, layerId: string, featureId: number) => void,
+    handleFeatureUnlinkClick: (layerId: string, featureId: number) => void,
 };
 
 const ModalContractDetailsView = ({
+    contractLayerId,
     detailList,
-    handleFeatureDetailsClick,
     fetchingDetailList,
+    editPermission,
+    handleFeatureDetailsClick,
+    handleFeatureUnlinkClick,
 }: Props) => (
     <Fragment>
         {fetchingDetailList && <LoadingIcon loading={fetchingDetailList} />}
@@ -46,6 +52,18 @@ const ModalContractDetailsView = ({
                                 {feature.description}
                             </Contract.TextWrapper.Text>
                         </Contract.TextWrapper>
+                        <Contract.IconWrapper>
+                            { layer.id !== contractLayerId && editPermission && (
+                                <Contract.IconWrapper.Icon
+                                    unlink
+                                    onClick={() => {
+                                        handleFeatureUnlinkClick(layer.id, feature.id);
+                                    }}
+                                    title={strings.modalContractDetails.listView.unlink}
+                                    className="fas fa-unlink"
+                                />
+                            )}
+                        </Contract.IconWrapper>
                     </Contract>
                 ))}
             </Fragment>

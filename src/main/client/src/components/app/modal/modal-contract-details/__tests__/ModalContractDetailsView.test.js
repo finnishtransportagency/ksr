@@ -5,13 +5,16 @@ import LoadingIcon from '../../../shared/LoadingIcon';
 import strings from '../../../../../translations';
 import Contract from '../../../../ui/blocks/Contract';
 
-const setup = (prop) => {
-    const minProps = {
-        detailList: [],
-        handleFeatureDetailsClick: jest.fn(),
-        fetchingDetailList: true,
-    };
+const minProps = {
+    contractLayerId: '123',
+    detailList: [],
+    fetchingDetailList: true,
+    editPermission: true,
+    handleFeatureDetailsClick: jest.fn(),
+    handleFeatureUnlinkClick: jest.fn(),
+};
 
+const setup = (prop) => {
     const props = prop || minProps;
     const wrapper = mount(<ModalContractDetailsView {...props} />);
 
@@ -27,6 +30,7 @@ describe('<ModalContractDetailsView />', () => {
 
     it('render - should show error text if no details found', () => {
         const props = {
+            ...minProps,
             detailList: [],
             handleFeatureDetailsClick: jest.fn(),
             fetchingDetailList: false,
@@ -42,6 +46,7 @@ describe('<ModalContractDetailsView />', () => {
 
     it('render - should show details list', () => {
         const props = {
+            ...minProps,
             detailList: [{
                 id: '123',
                 name: 'Layer 1',
@@ -74,5 +79,61 @@ describe('<ModalContractDetailsView />', () => {
         wrapper.find(Contract.IconWrapper.Icon).at(1).simulate('click');
         wrapper.find(Contract.IconWrapper.Icon).at(2).simulate('click');
         expect(handleFeatureDetailsClick).toHaveBeenCalledTimes(3);
+    });
+
+    it('render - should show unlink icon for non-contract layers with edit permission', () => {
+        const props = {
+            ...minProps,
+            editPermission: true,
+            contractLayerId: '123',
+            fetchingDetailList: false,
+            detailList: [{
+                id: '123',
+                name: 'Layer 1',
+                features: [
+                    { id: '1', description: 'Description 1' },
+                ],
+            }, {
+                id: '789',
+                name: 'Layer 3',
+                features: [
+                    { id: '123', description: 'Test Description 1' },
+                    { id: '456', description: 'Test Description 2' },
+                    { id: '789', description: 'Test Description 3' },
+                ],
+            }],
+        };
+
+        const { wrapper } = setup(props);
+
+        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(7);
+    });
+
+    it('render - should hide unlink icon without edit permission', () => {
+        const props = {
+            ...minProps,
+            editPermission: false,
+            contractLayerId: '123',
+            fetchingDetailList: false,
+            detailList: [{
+                id: '123',
+                name: 'Layer 1',
+                features: [
+                    { id: '1', description: 'Description 1' },
+                ],
+            }, {
+                id: '789',
+                name: 'Layer 3',
+                features: [
+                    { id: '123', description: 'Test Description 1' },
+                    { id: '456', description: 'Test Description 2' },
+                    { id: '789', description: 'Test Description 3' },
+                ],
+            }],
+        };
+
+        const { wrapper } = setup(props);
+
+        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(4);
     });
 });

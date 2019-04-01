@@ -13,6 +13,7 @@ import ModalSingleFeatureDetailsView from './modal-single-feature-details/ModalS
 import { fetchContractDetails } from '../../../../api/contract/contractDetails';
 import strings from '../../../../translations';
 import { getSingleLayerFields } from '../../../../utils/map';
+import { unlinkFeatureFromContract } from '../../../../utils/contracts/contracts';
 
 type Props = {
     contractLayer: Object,
@@ -22,6 +23,12 @@ type Props = {
     setActiveModal: (activeModal: string) => void,
     updateLayerFields: (layerId: number, fields: Object[]) => void,
     activeAdmin: string,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function
+    ) => void,
 };
 
 const ModalContractDetails = (props: Props) => {
@@ -35,6 +42,7 @@ const ModalContractDetails = (props: Props) => {
         updateLayerFields,
         setActiveModal,
         activeAdmin,
+        showConfirmModal,
     } = props;
 
     const [activeView, setActiveView] = useState('contractDetails');
@@ -47,7 +55,7 @@ const ModalContractDetails = (props: Props) => {
     const [detailLayers, setDetailLayers] = useState([]);
     const [fetchingDetailList, setFetchingDetailList] = useState(true);
     const [activeDetailLayer, setActiveDetailLayer] = useState(null);
-    const [detailAdded, setDetailAdded] = useState(false);
+    const [refreshList, setRefreshList] = useState(false);
     const [formOptions, setFormOptions] = useState({ editedFields: {}, submitDisabled: true });
     const [permission, setPermission] = useState({ create: false, edit: false });
 
@@ -59,7 +67,7 @@ const ModalContractDetails = (props: Props) => {
         detailLayers,
         setActiveView,
         activeDetailLayer,
-        setDetailAdded,
+        setRefreshList,
         formOptions,
         setFormOptions,
         permission,
@@ -105,6 +113,42 @@ const ModalContractDetails = (props: Props) => {
     };
 
     /**
+     * Handles single feature's unlinking from contract.
+     *
+     * @param {string} layerId Detail layer's Id.
+     * @param {number} featureId Feature's Id.
+     */
+    const handleFeatureUnlinkClick = (layerId: string, featureId: number) => {
+        const {
+            content, submit, cancel, featureUnlinkSuccess, featureUnlinkError,
+        } = strings.modalContractDetails.confirmModalUnlinkContract;
+
+        showConfirmModal(
+            content,
+            submit,
+            cancel,
+            async () => {
+                setFetchingDetailList(true);
+                const detailLayer = layerList.find(layer => layer.id === layerId);
+                const unlinkSuccess = await unlinkFeatureFromContract(
+                    contractLayer,
+                    detailLayer,
+                    contractObjectId,
+                    featureId,
+                );
+
+                if (unlinkSuccess) {
+                    toast.success(featureUnlinkSuccess);
+                } else {
+                    toast.error(featureUnlinkError);
+                }
+
+                setRefreshList(true);
+            },
+        );
+    };
+
+    /**
      * Gets data that will be used for generating contract details list. Also saves detail layers
      * to state after contract details and fields found for the layers and checks whether user
      * has permission for contract layer and admin state is active for any of the layers.
@@ -137,7 +181,6 @@ const ModalContractDetails = (props: Props) => {
             await Promise.all(contractDetailsRes.map(async (layer) => {
                 const originalLayer = layerList.find(l => l.id === layer.id);
 
-
                 if (originalLayer && !originalLayer.fields) {
                     const { id, fields } = await getSingleLayerFields(originalLayer);
                     updateLayerFields(id, fields);
@@ -159,11 +202,11 @@ const ModalContractDetails = (props: Props) => {
     }, []);
 
     useEffect(() => {
-        if (detailAdded) {
+        if (refreshList) {
             getContractDetails();
-            setDetailAdded(false);
+            setRefreshList(false);
         }
-    }, [detailAdded]);
+    }, [refreshList]);
 
     return (
         <ModalContainer
@@ -176,9 +219,12 @@ const ModalContractDetails = (props: Props) => {
             <Fragment>
                 {activeView === 'contractDetails' && (
                     <ModalContractDetailsView
+                        contractLayerId={contractLayer.id}
                         detailList={detailList}
-                        handleFeatureDetailsClick={handleFeatureDetailsClick}
                         fetchingDetailList={fetchingDetailList}
+                        editPermission={permission.edit}
+                        handleFeatureDetailsClick={handleFeatureDetailsClick}
+                        handleFeatureUnlinkClick={handleFeatureUnlinkClick}
                     />
                 )}
                 {activeView === 'singleFeatureDetails' && (
