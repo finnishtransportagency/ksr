@@ -400,10 +400,11 @@ export const attributeValue = (
  *
  * @param {Object} layer Currently active layer in contract details modal.
  * @param {any[]} attribute Single attribute with name and value.
+ * @param {boolean} edit Whether feature is being edited or not.
  *
- * @returns {{name: string, value: *}} Parsed values.
+ * @returns {{name: string, label: string, value: *, hidden: boolean}} Parsed values.
  */
-export const getAttribute = (layer: Object, attribute: any[]): Object => {
+export const getAttribute = (layer: Object, attribute: any[], edit: boolean): Object => {
     const field = layer.fields.find(f => f.name === attribute[0]);
     const name = nestedVal(
         field,
@@ -424,13 +425,19 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
     const { domain } = field;
 
     switch (type) {
+        case 'esriFieldTypeOID':
+            return {
+                name,
+                label,
+                value,
+                hidden: true,
+            };
         case 'esriFieldTypeString':
             return {
                 name,
                 label,
-                value: value && getCodedValue(domain, value) && name !== 'CONTRACT_UUID'
-                    ? getCodedValue(domain, value).trim()
-                    : null,
+                value: attributeValue(value, domain, name, edit),
+                hidden: false,
             };
         case 'esriFieldTypeSmallInteger':
         case 'esriFieldTypeInteger':
@@ -438,24 +445,30 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
                 name,
                 label,
                 value: Number.isNaN(parseInt(value, 10)) ? null : parseInt(value, 10),
+                hidden: false,
             };
         case 'esriFieldTypeDouble':
             return {
                 name,
                 label,
                 value: Number.isNaN(parseFloat(value)) ? null : parseFloat(value).toFixed(3),
+                hidden: false,
             };
         case 'esriFieldTypeDate':
             return {
                 name,
                 label,
-                value: toDisplayDate(value),
+                value: edit ? value : toDisplayDate(value),
+                hidden: false,
             };
         default:
             return {
                 name,
                 label,
                 value: null,
+                hidden: false,
+            };
+    }
 };
 
 /**
