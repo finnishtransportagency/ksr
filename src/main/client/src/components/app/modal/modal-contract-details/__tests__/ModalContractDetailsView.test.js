@@ -12,6 +12,7 @@ const minProps = {
     editPermission: true,
     handleFeatureDetailsClick: jest.fn(),
     handleFeatureUnlinkClick: jest.fn(),
+    handleFeatureEditClick: jest.fn(),
 };
 
 const setup = (prop) => {
@@ -75,13 +76,16 @@ describe('<ModalContractDetailsView />', () => {
 
         const { handleFeatureDetailsClick } = wrapper.props();
 
-        wrapper.find(Contract.IconWrapper.Icon).at(0).simulate('click');
-        wrapper.find(Contract.IconWrapper.Icon).at(1).simulate('click');
-        wrapper.find(Contract.IconWrapper.Icon).at(2).simulate('click');
+        wrapper.find(Contract).at(0).find(Contract.IconWrapper.Icon).at(0)
+            .simulate('click');
+        wrapper.find(Contract).at(1).find(Contract.IconWrapper.Icon).at(0)
+            .simulate('click');
+        wrapper.find(Contract).at(2).find(Contract.IconWrapper.Icon).at(0)
+            .simulate('click');
         expect(handleFeatureDetailsClick).toHaveBeenCalledTimes(3);
     });
 
-    it('render - should show unlink icon for non-contract layers with edit permission', () => {
+    it('render - should show correct amount of icons with editPermission', () => {
         const props = {
             ...minProps,
             editPermission: true,
@@ -106,10 +110,32 @@ describe('<ModalContractDetailsView />', () => {
 
         const { wrapper } = setup(props);
 
-        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(7);
+        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(11);
+
+        const { handleFeatureEditClick, handleFeatureUnlinkClick } = wrapper.props();
+
+        wrapper.find(Contract).at(0).find(Contract.IconWrapper.Icon).at(1)
+            .simulate('click');
+        wrapper.find(Contract).at(1).find(Contract.IconWrapper.Icon).at(1)
+            .simulate('click');
+        wrapper.find(Contract).at(2).find(Contract.IconWrapper.Icon).at(1)
+            .simulate('click');
+        wrapper.find(Contract).at(3).find(Contract.IconWrapper.Icon).at(1)
+            .simulate('click');
+        expect(handleFeatureEditClick).toHaveBeenCalledTimes(4);
+
+        wrapper.find(Contract).at(1).find(Contract.IconWrapper.Icon).at(2)
+            .simulate('click');
+        wrapper.find(Contract).at(2).find(Contract.IconWrapper.Icon).at(2)
+            .simulate('click');
+        wrapper.find(Contract).at(3).find(Contract.IconWrapper.Icon).at(2)
+            .simulate('click');
+        expect(wrapper.find(Contract).at(0).find(Contract.IconWrapper.Icon).at(2)
+            .exists()).toBe(false);
+        expect(handleFeatureUnlinkClick).toHaveBeenCalledTimes(3);
     });
 
-    it('render - should hide unlink icon without edit permission', () => {
+    it('render - should show correct amount of icons without editPermission', () => {
         const props = {
             ...minProps,
             editPermission: false,

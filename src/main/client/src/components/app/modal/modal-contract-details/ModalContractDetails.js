@@ -124,6 +124,27 @@ const ModalContractDetails = (props: Props) => {
     };
 
     /**
+     * Handle single feature's edit click.
+     *
+     * @param {string} layerName Layer's name.
+     * @param {string} layerId Layer's Id.
+     * @param {number} featureId Feature's Id.
+     * @param {number} objectId Feature's object Id.
+     */
+    const handleFeatureEditClick = (
+        layerName: string,
+        layerId: string,
+        featureId: number,
+        objectId: number,
+    ) => {
+        setActiveView('editFeature');
+        setActiveFeature({
+            layerName, layerId, featureId, objectId,
+        });
+        setActiveDetailLayer(layerList.find(layer => layer.id === layerId));
+    };
+
+    /**
      * Handles single feature's unlinking from contract.
      *
      * @param {string} layerId Detail layer's Id.
@@ -251,6 +272,7 @@ const ModalContractDetails = (props: Props) => {
                         fetchingDetailList={fetchingDetailList}
                         editPermission={permission.edit}
                         handleFeatureDetailsClick={handleFeatureDetailsClick}
+                        handleFeatureEditClick={handleFeatureEditClick}
                         handleFeatureUnlinkClick={handleFeatureUnlinkClick}
                     />
                 )}

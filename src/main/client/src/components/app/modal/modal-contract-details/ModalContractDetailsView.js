@@ -9,7 +9,18 @@ type Props = {
     detailList: Object[],
     fetchingDetailList: boolean,
     editPermission: boolean,
-    handleFeatureDetailsClick: (layerName: string, layerId: string, featureId: number) => void,
+    handleFeatureDetailsClick: (
+        layerName: string,
+        layerId: string,
+        featureId: number,
+        objectId: number
+    ) => void,
+    handleFeatureEditClick: (
+        layerName: string,
+        layerId: string,
+        featureId: number,
+        objectId: number
+    ) => void,
     handleFeatureUnlinkClick: (layerId: string, featureId: number) => void,
 };
 
@@ -19,6 +30,7 @@ const ModalContractDetailsView = ({
     fetchingDetailList,
     editPermission,
     handleFeatureDetailsClick,
+    handleFeatureEditClick,
     handleFeatureUnlinkClick,
 }: Props) => (
     <Fragment>
@@ -41,6 +53,7 @@ const ModalContractDetailsView = ({
                                     layer.name,
                                     layer.id,
                                     feature.id,
+                                    feature.objectId,
                                 )}
                             />
                         </Contract.IconWrapper>
@@ -53,6 +66,18 @@ const ModalContractDetailsView = ({
                             </Contract.TextWrapper.Text>
                         </Contract.TextWrapper>
                         <Contract.IconWrapper>
+                            { editPermission && (
+                                <Contract.IconWrapper.Icon
+                                    onClick={() => handleFeatureEditClick(
+                                        layer.name,
+                                        layer.id,
+                                        feature.id,
+                                        feature.objectId,
+                                    )}
+                                    title={strings.modalContractDetails.listView.edit}
+                                    className="fas fa-edit"
+                                />
+                            )}
                             { layer.id !== contractLayerId && editPermission && (
                                 <Contract.IconWrapper.Icon
                                     unlink
