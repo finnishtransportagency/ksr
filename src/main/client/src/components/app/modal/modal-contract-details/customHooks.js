@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { nestedVal } from '../../../../utils/nestedValue';
 import strings from '../../../../translations';
 import { getAttribute, getFeatureAttributes, addDetailToContract } from '../../../../utils/contracts/contracts';
+import save from '../../../../utils/saveFeatureData';
+import store from '../../../../store';
 
 /**
  * Updates state with new detail list to be shown for found layers and features.
@@ -23,28 +25,42 @@ export const useDetailList = (
     useEffect(() => {
         setDetailList(contractDetails
             .map((layerDetail) => {
+                const foundLayer = layerList.find(layer => layerDetail.id === layer.id);
                 const idField = nestedVal(
-                    layerList.find(layer => layerDetail.id === layer.id),
+                    foundLayer,
                     ['contractIdField'],
                 );
 
-                const descriptionField = nestedVal(
-                    layerList.find(layer => layerDetail.id === layer.id),
-                    ['contractDescriptionField'],
-                );
+                if (foundLayer) {
+                    const objectIdFieldName = nestedVal(
+                        foundLayer.fields && foundLayer.fields.find(a => a.type === 'esriFieldTypeOID'),
+                        ['name'],
+                    );
 
-                const features = layerDetail.features
-                    ? layerDetail.features
-                        .map(feature => ({
-                            id: nestedVal(feature, ['attributes', idField], ''),
-                            description: nestedVal(feature, ['attributes', descriptionField], ''),
-                        }))
-                    : [];
+                    const descriptionField = nestedVal(
+                        foundLayer,
+                        ['contractDescriptionField'],
+                    );
 
+                    const features = layerDetail.features
+                        ? layerDetail.features
+                            .map(feature => ({
+                                id: nestedVal(feature, ['attributes', idField], ''),
+                                objectId: nestedVal(feature, ['attributes', objectIdFieldName], ''),
+                                description: nestedVal(feature, ['attributes', descriptionField], ''),
+                            }))
+                        : [];
+
+                    return {
+                        id: layerDetail.id,
+                        name: layerDetail.name,
+                        features,
+                    };
+                }
                 return {
-                    id: layerDetail.id,
-                    name: layerDetail.name,
-                    features,
+                    id: null,
+                    name: null,
+                    features: null,
                 };
             }));
     }, [...effectListeners]);
@@ -55,10 +71,10 @@ export const useDetailList = (
 /**
  * Updates state with found feature's attributes.
  *
- * @param contractDetails List containing contract feature details.
- * @param layerList Layer list in redux.
- * @param activeView Currenty active view in modal.
- * @param activeFeature Active feature's layer name and feature Id.
+ * @param {Object[]} contractDetails List containing contract feature details.
+ * @param {Object[] }layerList Layer list in redux.
+ * @param {string} activeView Currenty active view in modal.
+ * @param {Object} activeFeature Active feature's details.
  * @param {any[]} effectListeners List of items that useEffect listens to (activeView).
  *
  * @returns {Object[]} Single feature's attributes.
@@ -73,7 +89,7 @@ export const useFeatureAttributes = (
     const [featureAttributes, setFeatureAttributes] = useState([]);
 
     useEffect(() => {
-        if (activeView === 'singleFeatureDetails') {
+        if (activeView === 'singleFeatureDetails' || activeView === 'editFeature') {
             const layer: Object = layerList.find(l => activeFeature.layerId === l.id);
             const attributes: Object[] = getFeatureAttributes(
                 layer,
@@ -81,7 +97,7 @@ export const useFeatureAttributes = (
                 activeFeature,
             );
             setFeatureAttributes((attributes
-                .map(attribute => getAttribute(layer, attribute)): Object[]));
+                .map(attribute => getAttribute(layer, attribute, activeView === 'editFeature')): Object[]));
         } else {
             setFeatureAttributes([]);
         }
@@ -94,7 +110,7 @@ export const useFeatureAttributes = (
  * Updates state with new modal title.
  *
  * @param {string} activeView Currently active view in modal.
- * @param {Object} activeFeature Active feature's layer name and feature Id.
+ * @param {Object} activeFeature Active feature's details.
  * @param {any[]} effectListeners List of items that useEffect listens to (activeView).
  *
  * @returns {string} Modal's title.
@@ -115,6 +131,8 @@ export const useTitle = (
                 return setTitle(strings.modalContractDetails.chooseLayer);
             case 'addNewDetail':
                 return setTitle(strings.modalContractDetails.newDetail.title);
+            case 'editFeature':
+                return setTitle(strings.modalContractDetails.editFeature.title);
             default:
                 return setTitle('');
         }
@@ -164,6 +182,7 @@ export const useCancelText = (
  * @param {Object} formOptions Contain's form's field data and whether submit is disabled or not.
  * @param {Function} setFormOptions Used to set submit to disabled while querying feature save.
  * @param {Object} permission Permission to create or edit contract layer.
+ * @param {Object} activeFeature Active feature's details.
  * @param effectListeners List of items that useEffect listens to
  * (contractDetails, activeView, detailLayers, formOptions).
  */
@@ -179,6 +198,7 @@ export const useModalSubmit = (
     formOptions: { editedFields: Object, submitDisabled: boolean },
     setFormOptions: (formOptions: Object) => void,
     permission: Object,
+    activeFeature: Object,
     effectListeners: any[],
 ) => {
     const [modalSubmit, setModalSubmit] = useState([]);
@@ -214,6 +234,33 @@ export const useModalSubmit = (
                         );
 
                         setRefreshList(detailAdded);
+                        setActiveView('contractDetails');
+                    },
+                    disabled: formOptions.submitDisabled,
+                    toggleModal: false,
+                }]);
+                break;
+            case 'editFeature':
+                setModalSubmit([{
+                    text: strings.modalContractDetails.editFeature.submit,
+                    handleSubmit: async () => {
+                        setFormOptions({ ...formOptions, submitDisabled: true });
+                        const objectIdFieldName = nestedVal(
+                            activeDetailLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+                            ['name'],
+                        );
+                        const updateRes = await save.saveData(
+                            'update',
+                            store.getState().map.mapView.view,
+                            nestedVal(activeDetailLayer, ['id']),
+                            [{
+                                attributes: { ...formOptions.editedFields },
+                            }],
+                            objectIdFieldName,
+                            activeFeature.objectId,
+                        );
+
+                        setRefreshList(!!nestedVal(updateRes, ['features', 'length']));
                         setActiveView('contractDetails');
                     },
                     disabled: formOptions.submitDisabled,

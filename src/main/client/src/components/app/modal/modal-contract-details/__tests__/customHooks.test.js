@@ -68,18 +68,27 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 id: '123',
                 contractIdField: 'idField',
                 contractDescriptionField: 'descField',
+                fields: [
+                    { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
+                ],
             },
             {
                 name: 'Layer 2',
                 id: '456',
                 contractIdField: 'idField',
                 contractDescriptionField: 'descField',
+                fields: [
+                    { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
+                ],
             },
             {
                 name: 'Layer 3',
                 id: '789',
                 contractIdField: 'idField',
                 contractDescriptionField: 'descField',
+                fields: [
+                    { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
+                ],
             },
         ];
 
@@ -87,14 +96,14 @@ describe('Modal Contract Details - Custom Hooks', () => {
             id: '123',
             name: 'Layer 1',
             features: [
-                { id: '1', description: 'Description 1' },
-                { id: '10', description: 'Description 2' },
+                { id: '1', description: 'Description 1', objectId: 1 },
+                { id: '10', description: 'Description 2', objectId: 2 },
             ],
         }, {
             id: '789',
             name: 'Layer 3',
             features: [
-                { id: '123', description: 'Test Description' },
+                { id: '123', description: 'Test Description', objectId: 1 },
             ],
         }];
 
@@ -103,15 +112,15 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 id: '123',
                 name: 'Layer 1',
                 features: [
-                    { attributes: { idField: '1', descField: 'Description 1' } },
-                    { attributes: { idField: '10', descField: 'Description 2' } },
+                    { attributes: { objectId: 1, idField: '1', descField: 'Description 1' } },
+                    { attributes: { objectId: 2, idField: '10', descField: 'Description 2' } },
                 ],
             },
             {
                 id: '789',
                 name: 'Layer 3',
                 features: [
-                    { attributes: { idField: '123', descField: 'Test Description' } },
+                    { attributes: { objectId: 1, idField: '123', descField: 'Test Description' } },
                 ],
             },
             ];
@@ -194,17 +203,23 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 contractIdField: 'idField',
                 contractDescriptionField: 'field2',
                 fields: [
-                    { name: 'idField', type: 'esriFieldTypeOID' },
-                    { name: 'name2', type: 'esriFieldTypeString' },
-                    { name: 'name3', type: 'esriFieldTypeInteger' },
+                    { name: 'idField', label: 'idField', type: 'esriFieldTypeString' },
+                    { name: 'name2', label: 'label2', type: 'esriFieldTypeString' },
+                    { name: 'name3', label: 'label3', type: 'esriFieldTypeInteger' },
                 ],
             },
         ];
 
         const expectedValue = [
-            { name: 'idField', value: null },
-            { name: 'name2', value: 'Value 2' },
-            { name: 'name3', value: 1000 },
+            {
+                name: 'idField', label: 'idField', value: '123', hidden: false,
+            },
+            {
+                name: 'name2', label: 'label2', value: 'Value 2', hidden: false,
+            },
+            {
+                name: 'name3', label: 'label3', value: 1000, hidden: false,
+            },
         ];
 
         testHook(() => {
@@ -230,8 +245,9 @@ describe('Modal Contract Details - Custom Hooks', () => {
         const contractObjectId = 123;
         const setActiveView = jest.fn();
         const activeDetailLayer = { id: 456 };
-        const setDetailAdded = jest.fn();
+        const setRefreshList = jest.fn();
         const setFormOptions = jest.fn();
+        const activeFeature = { layerName: null, layerId: null, featureId: null };
 
         activeView = '';
         testHook(() => {
@@ -243,10 +259,11 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 detailLayers,
                 setActiveView,
                 activeDetailLayer,
-                setDetailAdded,
+                setRefreshList,
                 formOptions,
                 setFormOptions,
                 permission,
+                activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
         });
@@ -262,10 +279,11 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 detailLayers,
                 setActiveView,
                 activeDetailLayer,
-                setDetailAdded,
+                setRefreshList,
                 formOptions,
                 setFormOptions,
                 permission,
+                activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
         });
@@ -281,10 +299,11 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 detailLayers,
                 setActiveView,
                 activeDetailLayer,
-                setDetailAdded,
+                setRefreshList,
                 formOptions,
                 setFormOptions,
                 permission,
+                activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
         });
@@ -302,10 +321,11 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 detailLayers,
                 setActiveView,
                 activeDetailLayer,
-                setDetailAdded,
+                setRefreshList,
                 formOptions,
                 setFormOptions,
                 permission,
+                activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
         });
@@ -327,10 +347,11 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 detailLayers,
                 setActiveView,
                 activeDetailLayer,
-                setDetailAdded,
+                setRefreshList,
                 formOptions,
                 setFormOptions,
                 permission,
+                activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
         });

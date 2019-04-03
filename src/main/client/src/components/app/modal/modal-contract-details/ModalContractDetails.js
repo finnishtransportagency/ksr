@@ -50,6 +50,7 @@ const ModalContractDetails = (props: Props) => {
         layerName: null,
         layerId: null,
         featureId: null,
+        objectId: null,
     });
     const [contractDetails, setContractDetails] = useState([]);
     const [detailLayers, setDetailLayers] = useState([]);
@@ -58,6 +59,7 @@ const ModalContractDetails = (props: Props) => {
     const [refreshList, setRefreshList] = useState(false);
     const [formOptions, setFormOptions] = useState({ editedFields: {}, submitDisabled: true });
     const [permission, setPermission] = useState({ create: false, edit: false });
+    const [existingAttributes, setExistingAttributes] = useState(null);
 
     const modalSubmit = useModalSubmit(
         contractDetails,
@@ -71,6 +73,7 @@ const ModalContractDetails = (props: Props) => {
         formOptions,
         setFormOptions,
         permission,
+        activeFeature,
         [contractDetails, activeView, detailLayers, formOptions],
     );
     const cancelText = useCancelText(activeView, source, [activeView]);
@@ -106,10 +109,18 @@ const ModalContractDetails = (props: Props) => {
      * @param {string} layerName Layer's name.
      * @param {string} layerId Layer's Id.
      * @param {number} featureId Feature's Id.
+     * @param {number} objectId Feature's object Id.
      */
-    const handleFeatureDetailsClick = (layerName: string, layerId: string, featureId: number) => {
+    const handleFeatureDetailsClick = (
+        layerName: string,
+        layerId: string,
+        featureId: number,
+        objectId: number,
+    ) => {
         setActiveView('singleFeatureDetails');
-        setActiveFeature({ layerName, layerId, featureId });
+        setActiveFeature({
+            layerName, layerId, featureId, objectId,
+        });
     };
 
     /**
@@ -165,8 +176,6 @@ const ModalContractDetails = (props: Props) => {
 
         if (contractDetailsRes && contractDetailsRes.length) {
             if (isMounted) {
-                setContractDetails(contractDetailsRes);
-
                 const createPermission = contractDetailsRes
                     .some(layer => layer.id === activeAdmin)
                     && nestedVal(contractLayer, ['layerPermission', 'createLayer'], false);
@@ -186,7 +195,12 @@ const ModalContractDetails = (props: Props) => {
                     updateLayerFields(id, fields);
                 }
             }));
-            if (isMounted) setDetailLayers(contractDetailsRes.filter(layer => layer.id !== contractLayer.id && layer.type === 'agfl'));
+
+            if (isMounted) {
+                setContractDetails(contractDetailsRes);
+                setDetailLayers(contractDetailsRes
+                    .filter(layer => layer.id !== contractLayer.id && layer.type === 'agfl'));
+            }
         } else {
             toast.error(strings.modalContractDetails.errorNoFeaturesFound);
         }
@@ -201,12 +215,25 @@ const ModalContractDetails = (props: Props) => {
         return () => { isMounted = false; };
     }, []);
 
+    /** Refresh the list if some detail was edited */
     useEffect(() => {
         if (refreshList) {
             getContractDetails();
             setRefreshList(false);
         }
     }, [refreshList]);
+
+    /** Set the existing attributes for feature to be used in edit form */
+    useEffect(() => {
+        if (activeView === 'editFeature' && featureAttributes.length) {
+            setExistingAttributes(featureAttributes.reduce((acc, cur) => {
+                acc[cur.name] = cur.value;
+                return acc;
+            }, {}));
+        } else {
+            setExistingAttributes(null);
+        }
+    }, [featureAttributes]);
 
     return (
         <ModalContainer
@@ -245,6 +272,14 @@ const ModalContractDetails = (props: Props) => {
                         layer={activeDetailLayer}
                         setFormOptions={setFormOptions}
                         formType="add"
+                    />
+                )}
+                {activeView === 'editFeature' && existingAttributes && (
+                    <FeatureDetailsForm
+                        layer={activeDetailLayer}
+                        setFormOptions={setFormOptions}
+                        formType="edit"
+                        existingAttributes={existingAttributes}
                     />
                 )}
             </Fragment>
