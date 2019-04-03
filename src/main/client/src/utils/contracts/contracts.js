@@ -369,6 +369,33 @@ export const getFeatureAttributes = (
 };
 
 /**
+ * Get either the original or coded value based on whether feature is being edited or not.
+ * Edited field wouldn't show correct value if it has been changed to coded value.
+ *
+ * @param {string} value Attribute's value.
+ * @param {Object} domain Field's domain containing coded value info.
+ * @param {string} name Field's name.
+ * @param {boolean} edit Whether feature is being edited or not.
+ *
+ * @returns {string | null} Original or coded value.
+ */
+export const attributeValue = (
+    value: string,
+    domain: Object,
+    name: string,
+    edit: boolean,
+) => {
+    if (value) {
+        if (name === 'CONTRACT_UUID') return null;
+        if (getCodedValue(domain, value) && !edit) {
+            return getCodedValue(domain, value).trim();
+        }
+        return value;
+    }
+    return null;
+};
+
+/**
  * Parse attribute values to more readable form.
  *
  * @param {Object} layer Currently active layer in contract details modal.
@@ -429,6 +456,30 @@ export const getAttribute = (layer: Object, attribute: any[]): Object => {
                 name,
                 label,
                 value: null,
-            };
+};
+
+/**
+ * Compare original and edited value to check if value has been edited.
+ *
+ * @param {Object} field Feature's field.
+ * @param {string} name Edited field's name.
+ * @param {Object} existingAttributes Feature's existing attributes.
+ * @param {string} value Edited value.
+ *
+ * @returns {boolean} Returns whether the value has been edited or not.
+ */
+export const fieldEdited = (
+    field: Object,
+    name: string,
+    existingAttributes: Object,
+    value: string,
+): boolean => {
+    const existingValue = existingAttributes[name];
+    if (field.name === name) {
+        if (value || existingValue) {
+            return existingValue !== value;
+        }
+        return false;
     }
+    return field.edited;
 };
