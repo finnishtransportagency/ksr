@@ -35,11 +35,10 @@ export const queryFeatures = (
             const queries = [];
 
             view.map.layers.forEach((layer) => {
-                if (layer.queryFeatures) {
+                if (layer.queryFeatures && layer.visible) {
                     if (!layerId) {
-                        if (layer.featureType === 'shapefile' && layer.visible &&
-                            !layer.definitionExpression) {
                             const epsg3067 = new SpatialReference(3067);
+                        if (layer.featureType === 'shapefile') {
                             view.whenLayerView(layer).then((layerView) => {
                                 const queryView = new Query();
                                 queryView.geometry = new Extent({
@@ -59,10 +58,9 @@ export const queryFeatures = (
                                         _source: 'shapefile',
                                     })));
                             });
-                        } else if (layer.visible &&
-                            !layer.definitionExpression &&
-                            view.scale < layer.minScale &&
-                            view.scale > layer.maxScale
+                        } else if (!layer.definitionExpression
+                            && view.scale < layer.minScale
+                            && view.scale > layer.maxScale
                         ) {
                             queries.push(layer.queryFeatures(query)
                                 .then(results => ({
@@ -74,8 +72,8 @@ export const queryFeatures = (
                                     _source: 'select',
                                 })));
                         }
-                    } else if (layer.featureType === 'shapefile' && layer.visible && layer.id !== layerId) {
                         const epsg3067 = new SpatialReference(3067);
+                    } else if (layer.featureType === 'shapefile' && layer.id !== layerId) {
                         view.whenLayerView(layer).then((layerView) => {
                             const queryView = new Query();
                             queryView.geometry = new Extent({
@@ -95,11 +93,10 @@ export const queryFeatures = (
                                     _source: 'shapefile',
                                 })));
                         });
-                    } else if (layer.visible &&
-                        !layer.definitionExpression &&
-                        view.scale < layer.minScale &&
-                        view.scale > layer.maxScale &&
-                        layer.id !== layerId
+                    } else if (!layer.definitionExpression
+                        && view.scale < layer.minScale
+                        && view.scale > layer.maxScale
+                        && layer.id !== layerId
                     ) {
                         queries.push(layer.queryFeatures(query)
                             .then(results => ({
