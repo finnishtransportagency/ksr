@@ -66,7 +66,7 @@ const featureInfoToGraphic = (layer, content) => (
             return a;
         }, []);
 
-        const graphic = {
+        return {
             attributes: properties.reduce((a, c) => ({ [c.name]: c.value, ...a }), {}),
             popupTemplate: {
                 title: layer.name,
@@ -78,7 +78,6 @@ const featureInfoToGraphic = (layer, content) => (
                 }],
             },
         };
-        return { graphic };
     })
 );
 
