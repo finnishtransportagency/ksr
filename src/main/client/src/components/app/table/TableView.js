@@ -126,11 +126,22 @@ const TableView = ({
             <Table.Button
                 title={strings.reactTable.extractSelectedData}
                 tableOpen={isOpen}
-                disabled={!activeTableLayer || !geometryDataSelected || !activeTableDataSelected}
+                disabled={
+                    !activeTableLayer
+                    || activeTableLayer._source === 'shapefile'
+                    || !geometryDataSelected
+                    || !activeTableDataSelected
+                }
                 onClick={
-                    activeTableLayer && geometryDataSelected && activeTableDataSelected ? () => {
-                        setActiveModal('extractSelectedData');
-                    } : null}
+                    activeTableLayer
+                    && activeTableLayer._source !== 'shapefile'
+                    && geometryDataSelected
+                    && activeTableDataSelected
+                        ? () => {
+                            setActiveModal('extractSelectedData');
+                        }
+                        : null
+                }
             >
                 <i className="fas fa-file-export" />
             </Table.Button>
