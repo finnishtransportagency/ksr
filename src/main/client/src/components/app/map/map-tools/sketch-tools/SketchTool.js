@@ -114,6 +114,8 @@ class SketchTool extends Component<Props, State> {
                     tempGraphicsLayer,
                     setActiveToolMenu,
                     editModeActive,
+                    geometryType,
+                    setTempGraphicsLayer,
                 } = this.props;
 
                 const drawNewFeatureButton = this.drawNewFeatureButton.current;
@@ -135,8 +137,8 @@ class SketchTool extends Component<Props, State> {
                         setActiveToolMenu('sketchActiveAdmin');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchActiveAdmin');
-                        const geometryType = convertEsriGeometryType(this.props.geometryType);
-                        sketchViewModel.create(geometryType);
+                        const convertedGeometryType = convertEsriGeometryType(geometryType);
+                        sketchViewModel.create(convertedGeometryType);
                         drawNewFeatureButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
@@ -204,7 +206,7 @@ class SketchTool extends Component<Props, State> {
                         this.setState({ validGeometry: false });
                     }
                     graphic.type = 'sketch-graphic';
-                    this.props.setTempGraphicsLayer(tempGraphicsLayer);
+                    setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
                 const selectFeaturesFromDraw = (event) => {
@@ -290,8 +292,10 @@ class SketchTool extends Component<Props, State> {
     };
 
     removeSelection = () => {
-        this.props.deSelectSelected();
-        this.props.view.popup.close();
+        const { deSelectSelected, view } = this.props;
+
+        deSelectSelected();
+        view.popup.close();
     };
 
     toggleSelectTools = () => {
@@ -304,34 +308,46 @@ class SketchTool extends Component<Props, State> {
     };
 
     removeSketch = () => {
-        const { setActiveFeatureMode } = this.props;
+        const {
+            setActiveFeatureMode,
+            setTempGraphicsLayer,
+            sketchViewModel,
+            tempGraphicsLayer,
+        } = this.props;
+
         setActiveFeatureMode('create');
-        const layer = this.props.tempGraphicsLayer;
+        const layer = tempGraphicsLayer;
         layer.graphics = undefined;
-        this.props.setTempGraphicsLayer(layer);
-        this.props.sketchViewModel.cancel();
+        setTempGraphicsLayer(layer);
+        sketchViewModel.cancel();
     };
 
     showAdminView = (): boolean => {
-        if (this.props.activeAdminTool === '') {
+        const { activeAdminTool, layerList } = this.props;
+
+        if (activeAdminTool === '') {
             return false;
         }
-        const layer = this.props.layerList.find(l => l.id === this.props.activeAdminTool);
+        const layer = layerList.find(l => l.id === activeAdminTool);
         return layer ? layer.type !== 'agfl' && layer.layerPermission.createLayer : false;
     };
 
     // Assign constructor ref flowtypes
     drawNewFeatureButton: any;
+
     drawRectangleButton: any;
+
     drawPolygonButton: any;
+
     drawCircleButton: any;
+
     toggleSelectToolsButton: any;
 
     render() {
         const {
             data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
         } = this.props;
-        const { validGeometry } = this.state;
+        const { editSketchIcon, validGeometry } = this.state;
 
         const hasSelectedFeatures = data.length > 0;
         const hasAdminGraphics = tempGraphicsLayer
@@ -353,7 +369,7 @@ class SketchTool extends Component<Props, State> {
                     activeTool={active}
                 />
                 <SketchActiveAdminView
-                    editSketchIcon={this.state.editSketchIcon}
+                    editSketchIcon={editSketchIcon}
                     removeSketch={this.removeSketch}
                     showAdminView={this.showAdminView()}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
