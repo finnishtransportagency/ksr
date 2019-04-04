@@ -4,7 +4,8 @@ import { nestedVal } from '../../../../utils/nestedValue';
 import FeatureDetailsFormView from './FeatureDetailsFormView';
 import { queryFeatures } from '../../../../api/search/searchQuery';
 import { abortFetch } from '../../../../utils/abortFetch';
-import { toUnixTime } from '../../../../utils/date';
+import { toISODate, toUnixTime } from '../../../../utils/date';
+import { fieldEdited } from '../../../../utils/contracts/contracts';
 
 type Props = {
     layer: Object,
@@ -42,6 +43,7 @@ const FeatureDetailsForm = (props: Props) => {
                 ...field,
                 nullable: field.name === layer.contractIdField ? false : field.nullable,
                 data: nestedVal(existingAttributes, [field.name], ''),
+                edited: false,
             }))
             .map(field => ({
                 ...field,
@@ -51,7 +53,16 @@ const FeatureDetailsForm = (props: Props) => {
                     || (layer.contractIdField !== layer.relationColumnOut
                         && layer.relationColumnOut === field.name)
                     || (formType === 'edit' && !field.nullable),
-            }));
+            }))
+            .map((field) => {
+                if (field.type === 'esriFieldTypeDate') {
+                    return {
+                        ...field,
+                        data: toISODate(field.data),
+                    };
+                }
+                return field;
+            });
 
         setFields(foundFields);
 
@@ -67,21 +78,27 @@ const FeatureDetailsForm = (props: Props) => {
 
         return () => setFormOptions({
             editedFields: {},
-            formDisabled: true,
+            submitDisabled: false,
         });
     }, []);
 
     /** Sends form options back to the original layer */
     useEffect(() => {
         if (fields.length) {
-            const editedFields = fields.reduce((acc, field) => {
-                const isDate = field.type === 'esriFieldTypeDate';
-                return { ...acc, [field.name]: isDate ? toUnixTime(field.data) : field.data };
-            }, {});
+            const editedFields = fields.filter(field => field.edited)
+                .reduce((acc, field) => {
+                    const isDate = field.type === 'esriFieldTypeDate';
+                    return { ...acc, [field.name]: isDate ? toUnixTime(field.data) : field.data };
+                }, {});
 
+            const objectIdField = fields.find(field => field.type === 'esriFieldTypeOID');
             setFormOptions({
-                editedFields,
-                submitDisabled: !validForm,
+                editedFields: objectIdField && formType === 'edit'
+                    ? { ...editedFields, [objectIdField.name]: objectIdField.data }
+                    : { ...editedFields },
+                submitDisabled: formType === 'edit'
+                    ? !Object.entries(editedFields).length
+                    : !validForm,
             });
         }
     }, [fields, validForm]);
@@ -106,6 +123,7 @@ const FeatureDetailsForm = (props: Props) => {
         setFields(fields.map(f => ({
             ...f,
             data: f.name === name ? value : f.data,
+            edited: fieldEdited(f, name, existingAttributes, value),
         })));
 
         if (!field.nullable) {
