@@ -333,8 +333,7 @@ class SketchTool extends Component<Props, State> {
         } = this.props;
         const { validGeometry } = this.state;
 
-        const hasSelectedFeatures = data.filter(f => f._source !== 'search').length > 0;
-
+        const hasSelectedFeatures = data.length > 0;
         const hasAdminGraphics = tempGraphicsLayer
             && tempGraphicsLayer.graphics
             && tempGraphicsLayer.graphics.filter(g => g.type === 'sketch-graphic').length > 0;
