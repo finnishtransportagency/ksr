@@ -22,6 +22,14 @@ export const queryFeatures = (
         returnGeometry: true,
     };
     const queries = [];
+    const handleQueryResult = (layer, results, source) => ({
+        id: layer.id,
+        title: layer.title,
+        objectIdFieldName: layer.objectIdField,
+        features: results.features,
+        fields: layer.fields,
+        _source: source,
+    });
 
     view.map.layers.forEach((layer) => {
         if (layer.queryFeatures && layer.visible) {
@@ -29,51 +37,23 @@ export const queryFeatures = (
                 if (layer.featureType === 'shapefile') {
                     view.whenLayerView(layer).then((layerView) => {
                         queries.push(layerView.queryFeatures(query)
-                            .then(results => ({
-                                id: layer.id,
-                                title: layer.title,
-                                objectIdFieldName: layer.objectIdField,
-                                features: results.features,
-                                fields: layer.fields,
-                                _source: 'shapefile',
-                            })));
+                            .then(results => handleQueryResult(layer, results, 'shapefile')));
                     });
                 } else if (view.scale < layer.minScale && view.scale > layer.maxScale) {
                     if (!layer.definitionExpression) {
                         queries.push(layer.queryFeatures(query)
-                            .then(results => ({
-                                id: layer.id,
-                                title: layer.title,
-                                objectIdFieldName: layer.objectIdField,
-                                features: results.features,
-                                fields: layer.fields,
-                                _source: 'select',
-                            })));
+                            .then(results => handleQueryResult(layer, results, 'select')));
                     } else {
                         view.whenLayerView(layer).then((layerView) => {
                             queries.push(layerView.queryFeatures(query)
-                                .then(results => ({
-                                    id: layer.id,
-                                    title: layer.title,
-                                    objectIdFieldName: layer.objectIdField,
-                                    features: results.features,
-                                    fields: layer.fields,
-                                    _source: 'search',
-                                })));
+                                .then(results => handleQueryResult(layer, results, 'search')));
                         });
                     }
                 }
             } else if (layer.featureType === 'shapefile' && layer.id !== layerId) {
                 view.whenLayerView(layer).then((layerView) => {
                     queries.push(layerView.queryFeatures(query)
-                        .then(results => ({
-                            id: layer.id,
-                            title: layer.title,
-                            objectIdFieldName: layer.objectIdField,
-                            features: results.features,
-                            fields: layer.fields,
-                            _source: 'shapefile',
-                        })));
+                        .then(results => handleQueryResult(layer, results, 'shapefile')));
                 });
             } else if (view.scale < layer.minScale
                 && view.scale > layer.maxScale
@@ -81,25 +61,11 @@ export const queryFeatures = (
             ) {
                 if (!layer.definitionExpression) {
                     queries.push(layer.queryFeatures(query)
-                        .then(results => ({
-                            id: layer.id,
-                            title: layer.title,
-                            objectIdFieldName: layer.objectIdField,
-                            features: results.features,
-                            fields: layer.fields,
-                            _source: 'select',
-                        })));
+                        .then(results => handleQueryResult(layer, results, 'select')));
                 } else {
                     view.whenLayerView(layer).then((layerView) => {
                         queries.push(layerView.queryFeatures(query)
-                            .then(results => ({
-                                id: layer.id,
-                                title: layer.title,
-                                objectIdFieldName: layer.objectIdField,
-                                features: results.features,
-                                fields: layer.fields,
-                                _source: 'search',
-                            })));
+                            .then(results => handleQueryResult(layer, results, 'search')));
                     });
                 }
             }
