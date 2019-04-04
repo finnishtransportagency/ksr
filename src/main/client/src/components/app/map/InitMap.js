@@ -86,6 +86,7 @@ class EsriMap extends Component<Props> {
             ScaleBar,
             SpatialReference,
             Compass,
+            Circle,
             Point,
             Print,
             GraphicsLayer,
@@ -104,6 +105,7 @@ class EsriMap extends Component<Props> {
                 'esri/widgets/ScaleBar',
                 'esri/geometry/SpatialReference',
                 'esri/widgets/Compass',
+                'esri/geometry/Circle',
                 'esri/geometry/Point',
                 'esri/widgets/Print',
                 'esri/layers/GraphicsLayer',
@@ -259,24 +261,42 @@ class EsriMap extends Component<Props> {
 
         view.on('click', (event) => {
             view.popup.close();
-
             view.hitTest(event).then(async (response) => {
+                const { activeTool, setHasGraphics } = this.props;
                 const { results } = response;
-                const { layerList, activeTool, setHasGraphics } = this.props;
-                const filteredResults = results.filter(item => item.graphic.id !== 'buffer'
-                            && item.graphic.type !== 'draw-graphic'
-                            && item.graphic.type !== 'draw-measure-label'
-                            && item.graphic.id !== 'selected-popup-feature'
-                            && item.graphic.id !== 'propertyArea');
 
-                if (activeTool !== 'drawErase' && !filteredResults.find(item => item.graphic.layer.type === 'graphics')) {
-                    const { activeAdminTool, geometryType } = this.props;
+                if (activeTool === 'drawErase' && results.length) {
+                    results.forEach((r) => {
+                        if (r.graphic && (r.graphic.type === 'draw-graphic'
+                            || r.graphic.type === 'draw-measure-label')) {
+                            const graphicsToRemove = view.graphics
+                                .filter(g => g.id === r.graphic.id);
+                            view.graphics.removeMany(graphicsToRemove);
+                            const hasGraphics = view
+                                && view.graphics
+                                && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
+                            setHasGraphics(hasGraphics);
+                        }
+                    });
+                } else if (!results.some(item => item.graphic.layer.type === 'graphics')) {
+                    // Flow does not recognize flatMap so use any instead of Object[] for now.
+                    const layers: any = await queryFeatures(
+                        // Use scalable circle as click point to make point and line type features
+                        // clickable as mapPoint coordinates are too precise to be usable.
+                        new Circle({
+                            center: event.mapPoint,
+                            radius: view.scale / 500,
+                        }),
+                        view,
+                        selectFeatures,
+                    );
+                    const features = layers ? layers.flatMap(layer => layer.features) : [];
+                    const { activeAdminTool, geometryType, layerList } = this.props;
                     view.popup.open({
                         location: event.mapPoint,
                         promises: [mapSelectPopup(
-                            filteredResults,
+                            features,
                             view,
-                            selectFeatures,
                             layerList,
                             activeAdminTool,
                             geometryType,
@@ -284,23 +304,6 @@ class EsriMap extends Component<Props> {
                             event.y,
                         )],
                     });
-                }
-
-                if (results.length) {
-                    if (activeTool === 'drawErase') {
-                        results.forEach((r) => {
-                            if (r.graphic && (r.graphic.type === 'draw-graphic'
-                                        || r.graphic.type === 'draw-measure-label')) {
-                                const graphicsToRemove = view.graphics
-                                    .filter(g => g.id === r.graphic.id);
-                                view.graphics.removeMany(graphicsToRemove);
-                                const hasGraphics = view
-                                            && view.graphics
-                                            && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
-                                setHasGraphics(hasGraphics);
-                            }
-                        });
-                    }
                 }
             });
         });
