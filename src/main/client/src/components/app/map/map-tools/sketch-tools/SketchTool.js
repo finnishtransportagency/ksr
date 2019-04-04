@@ -209,7 +209,7 @@ class SketchTool extends Component<Props, State> {
                     setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
-                const selectFeaturesFromDraw = (event) => {
+                const selectFeaturesFromDraw = async (event) => {
                     const { active } = this.props;
                     if (
                         event.state === 'active'
@@ -251,15 +251,15 @@ class SketchTool extends Component<Props, State> {
                                     setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
                                 }
                             }
+                            // Graphic is added to the layer by default so when selecting features
+                            // the added graphic has to removed manually.
+                            tempGraphicsLayer.remove(event.graphic);
 
-                            queryFeatures(
+                            await queryFeatures(
                                 geometry,
                                 view,
                                 selectFeatures,
                             );
-                            // Graphic is added to the layer by default so when selecting features
-                            // the added graphic has to removed manually.
-                            tempGraphicsLayer.remove(event.graphic);
                         }
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     }
