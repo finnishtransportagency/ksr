@@ -52,14 +52,16 @@ const SearchLayerView = ({
     <Scrollbars
         autoHide
         className="sidebar-content-scroll-wrapper"
-        renderView={scrollProps =>
-            <div {...scrollProps} className="sidebar-content-scroll-inner" />}
-        renderThumbVertical={scrollProps =>
-            <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
+        renderView={scrollProps => (
+            <div {...scrollProps} className="sidebar-content-scroll-inner" />
+        )}
+        renderThumbVertical={scrollProps => (
+            <div {...scrollProps} className="sidebar-content-scroll-thumb" />
+        )}
     >
         <form onSubmit={handleSubmit}>
-            <p>{strings.search.chooseLayer}</p>
             <label htmlFor="choose-layer">
+                <p id="choose-layer">{strings.search.chooseLayer}</p>
                 <Select
                     disabled={fetching}
                     onBlurResetsInput={false}
@@ -121,11 +123,13 @@ const SearchLayerView = ({
             <Button disabled={!selectedLayer || fetching}>
                 {strings.search.buttonSearch}
             </Button>
-            <div hidden={!selectedLayer || selectedLayer === 'queryAll' ||
-        selectedLayer === 'queryActive'}
+            <div
+                hidden={!selectedLayer
+                || selectedLayer === 'queryAll'
+                || selectedLayer === 'queryActive'}
             >
-                <p>{strings.search.addField}</p>
                 <label htmlFor="selectField" hidden={!selectedLayer}>
+                    <p id="selectField">{strings.search.addField}</p>
                     <Select
                         disabled={fetching}
                         onBlurResetsInput={false}

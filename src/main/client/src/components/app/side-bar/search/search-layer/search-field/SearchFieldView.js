@@ -55,9 +55,7 @@ const SearchFieldView = ({
                 <Select
                     disabled={fetching}
                     value={field.queryExpression}
-                    onChange={evt =>
-                        handleChangeField('expression', evt, index)
-                    }
+                    onChange={evt => handleChangeField('expression', evt, index)}
                     options={optionsExpression}
                     simpleValue
                     clearable={false}
@@ -108,8 +106,9 @@ const SearchFieldView = ({
                                         suggestions.map((item, ind) => (
                                             <div
                                                 {...getItemProps({ key: ind, ind, item })}
-                                                className={highlightedIndex === ind ?
-                                                    'suggestion highlight' : 'suggestion'}
+                                                className={highlightedIndex === ind
+                                                    ? 'suggestion highlight'
+                                                    : 'suggestion'}
                                             >
                                                 {item.length > 30 ? `${item.slice(0, 30)}...` : item}
                                             </div>
