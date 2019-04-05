@@ -207,10 +207,10 @@ export const searchWorkspaceFeatures = (
                 layers: addSearchResultLayers,
             });
 
-            layersToBeAdded.layers.map(l => dispatch({
-                type: types.REMOVE_LOADING_LAYER,
-                layerId: l.id,
-            }));
+            dispatch({
+                type: types.REMOVE_LOADING_LAYERS,
+                layerIds: layersToBeAdded.layers.map(layer => layer.id),
+            });
         }
 
         toast.update('loadingWorkspace', {

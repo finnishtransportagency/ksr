@@ -26,3 +26,13 @@ export const removeLoadingLayer = (layerId: string) => ({
     type: types.REMOVE_LOADING_LAYER,
     layerId,
 });
+
+/**
+ * Remove multiple layers from loading state.
+ *
+ * @param {string[]} layerIds Layers to be removed from loading state.
+ */
+export const removeLoadingLayers = (layerIds: string[]) => ({
+    type: types.REMOVE_LOADING_LAYERS,
+    layerIds,
+});
