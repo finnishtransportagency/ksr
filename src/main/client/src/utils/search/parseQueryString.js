@@ -25,13 +25,13 @@ export const parseQueryString = (
                 : a.queryExpression;
 
             const text = a.queryExpression === '%'
-                ? `'%${a.queryText.replace("'", "''")}%'`
-                : `'${a.queryText.replace("'", "''")}'`;
+                ? `'%${a.queryText.replace(/'/g, "''")}%'`
+                : `'${a.queryText.replace(/'/g, "''")}'`;
 
             queryString.push(`LOWER(${a.name}) ${expression} LOWER(${text})`);
         });
     } else {
-        const text = `'%${textSearch.replace("'", "''")}%'`;
+        const text = `'%${textSearch.replace(/'/g, "''")}%'`;
 
         queryColumnsList.forEach(a => queryString.push(`LOWER(${a}) LIKE LOWER(${text})`));
     }
