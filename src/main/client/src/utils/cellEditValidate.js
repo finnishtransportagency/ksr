@@ -126,22 +126,23 @@ const applyChange = (row, value, cellInfo, cellField) => {
  * Either adds new data to editedLayer or removes if original and edited matches.
  *
  * @param {any} value Event's targets value.
- * @param {Object} layerData A row/feature array.
+ * @param {Object[]} layerData A row/feature array.
  * @param {Object} cellField Table's Cell-object.
  * @param {Object} cellInfo Table's Field-object.
  *
- * @returns {Object[]} Array of rows, with changes applied.
+ * @returns {?Object} Changed row if any.
  */
 export const cellEditValidate = (
     value: any,
     layerData: Object[],
     cellField: Object,
     cellInfo: Object,
-) => (layerData.map((row, index) => (
-    index === cellInfo.index
-        ? applyChange(row, value, cellInfo, cellField)
-        : { ...row }
-)): Object[]);
+) => {
+    if (cellInfo.index < layerData.length) {
+        return applyChange(layerData[cellInfo.index], value, cellInfo, cellField);
+    }
+    return null;
+};
 
 /**
  * Prevents some keypresses depending on cell type.

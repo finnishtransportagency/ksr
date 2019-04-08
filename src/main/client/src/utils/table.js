@@ -130,26 +130,17 @@ export const columnsWithLayerId = (
  *
  * @returns {Object[]} List with new edited data.
  */
-export const findEditedData = (layer: Object, editedData: Object[]): Object[] => {
-    const edited = {
-        id: editedData[0]._layerId,
-        editedIds: editedData.map(data => data._id),
-    };
-
-    return layer.data.map(data => (edited.editedIds.some(eId => eId === data._id)
+export const findEditedData = (layer: Object, editedData: Object): Object[] => layer.data
+    .map(data => ((editedData._id === data._id)
         ? Object.keys(data)
             .map((key) => {
-                const foundData = editedData.find(eData => eData._id === data._id);
-
                 if (!key.startsWith(data._layerId)) {
-                    return columnsWithoutLayerId(key, data, foundData);
+                    return columnsWithoutLayerId(key, data, editedData);
                 }
 
-                return columnsWithLayerId(key, data, foundData, edited.id);
+                return columnsWithLayerId(key, data, editedData, editedData._layerId);
             }).reduce((acc, cur) => Object.assign({}, acc, cur))
-        : data
-    ));
-};
+        : data));
 
 /**
  * Handles edited layers for found- and search layer belonging to the layer.
@@ -158,13 +149,13 @@ export const findEditedData = (layer: Object, editedData: Object[]): Object[] =>
  * layer and vice versa.
  *
  * @param {Object[]} editedLayers Feature reducers current edited layers.
- * @param {Object[]} editedData Edited data sent to the feature reducer as action.
+ * @param {Object} editedData Edited data sent to the feature reducer as action.
  *
  * @returns {Object[]} List with new edited layers data.
  */
-export const applyEditedLayers = (editedLayers: Object[], editedData: Object[]): Object[] => (
+export const applyEditedLayers = (editedLayers: Object[], editedData: Object): Object[] => (
     editedLayers.map((editedLayer) => {
-        const editedLayerId = editedData[0]._layerId;
+        const editedLayerId = editedData._layerId;
 
         if (editedLayer.id.replace('.s', '') === editedLayerId.replace('.s', '')) {
             return {
