@@ -114,6 +114,8 @@ class SketchTool extends Component<Props, State> {
                     tempGraphicsLayer,
                     setActiveToolMenu,
                     editModeActive,
+                    geometryType,
+                    setTempGraphicsLayer,
                 } = this.props;
 
                 const drawNewFeatureButton = this.drawNewFeatureButton.current;
@@ -135,8 +137,8 @@ class SketchTool extends Component<Props, State> {
                         setActiveToolMenu('sketchActiveAdmin');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                         setActiveTool('sketchActiveAdmin');
-                        const geometryType = convertEsriGeometryType(this.props.geometryType);
-                        sketchViewModel.create(geometryType);
+                        const convertedGeometryType = convertEsriGeometryType(geometryType);
+                        sketchViewModel.create(convertedGeometryType);
                         drawNewFeatureButton.style.backgroundColor = styles.colorMainDark;
                     }
                 });
@@ -204,10 +206,10 @@ class SketchTool extends Component<Props, State> {
                         this.setState({ validGeometry: false });
                     }
                     graphic.type = 'sketch-graphic';
-                    this.props.setTempGraphicsLayer(tempGraphicsLayer);
+                    setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
-                const selectFeaturesFromDraw = (event) => {
+                const selectFeaturesFromDraw = async (event) => {
                     const { active } = this.props;
                     if (
                         event.state === 'active'
@@ -249,15 +251,15 @@ class SketchTool extends Component<Props, State> {
                                     setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
                                 }
                             }
+                            // Graphic is added to the layer by default so when selecting features
+                            // the added graphic has to removed manually.
+                            tempGraphicsLayer.remove(event.graphic);
 
-                            queryFeatures(
+                            await queryFeatures(
                                 geometry,
                                 view,
                                 selectFeatures,
                             );
-                            // Graphic is added to the layer by default so when selecting features
-                            // the added graphic has to removed manually.
-                            tempGraphicsLayer.remove(event.graphic);
                         }
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     }
@@ -290,8 +292,10 @@ class SketchTool extends Component<Props, State> {
     };
 
     removeSelection = () => {
-        this.props.deSelectSelected();
-        this.props.view.popup.close();
+        const { deSelectSelected, view } = this.props;
+
+        deSelectSelected();
+        view.popup.close();
     };
 
     toggleSelectTools = () => {
@@ -304,37 +308,48 @@ class SketchTool extends Component<Props, State> {
     };
 
     removeSketch = () => {
-        const { setActiveFeatureMode } = this.props;
+        const {
+            setActiveFeatureMode,
+            setTempGraphicsLayer,
+            sketchViewModel,
+            tempGraphicsLayer,
+        } = this.props;
+
         setActiveFeatureMode('create');
-        const layer = this.props.tempGraphicsLayer;
+        const layer = tempGraphicsLayer;
         layer.graphics = undefined;
-        this.props.setTempGraphicsLayer(layer);
-        this.props.sketchViewModel.cancel();
+        setTempGraphicsLayer(layer);
+        sketchViewModel.cancel();
     };
 
     showAdminView = (): boolean => {
-        if (this.props.activeAdminTool === '') {
+        const { activeAdminTool, layerList } = this.props;
+
+        if (activeAdminTool === '') {
             return false;
         }
-        const layer = this.props.layerList.find(l => l.id === this.props.activeAdminTool);
+        const layer = layerList.find(l => l.id === activeAdminTool);
         return layer ? layer.type !== 'agfl' && layer.layerPermission.createLayer : false;
     };
 
     // Assign constructor ref flowtypes
     drawNewFeatureButton: any;
+
     drawRectangleButton: any;
+
     drawPolygonButton: any;
+
     drawCircleButton: any;
+
     toggleSelectToolsButton: any;
 
     render() {
         const {
             data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
         } = this.props;
-        const { validGeometry } = this.state;
+        const { editSketchIcon, validGeometry } = this.state;
 
-        const hasSelectedFeatures = data.filter(f => f._source !== 'search').length > 0;
-
+        const hasSelectedFeatures = data.length > 0;
         const hasAdminGraphics = tempGraphicsLayer
             && tempGraphicsLayer.graphics
             && tempGraphicsLayer.graphics.filter(g => g.type === 'sketch-graphic').length > 0;
@@ -354,7 +369,7 @@ class SketchTool extends Component<Props, State> {
                     activeTool={active}
                 />
                 <SketchActiveAdminView
-                    editSketchIcon={this.state.editSketchIcon}
+                    editSketchIcon={editSketchIcon}
                     removeSketch={this.removeSketch}
                     showAdminView={this.showAdminView()}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}

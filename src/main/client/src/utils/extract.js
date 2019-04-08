@@ -32,7 +32,7 @@ export const extractSelected = (
             const featureSet = new FeatureSet({ features: inputGraphicContainer });
 
             return gp.submitJob({
-                Layers_to_Clip: layerId,
+                Layers_to_Clip: layerId.replace('.s', ''),
                 Area_of_Interest: featureSet,
                 Feature_Format: format,
             }).then(result => gp.getResultData(result.jobId, 'Output_Zip_File')

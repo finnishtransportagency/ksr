@@ -155,38 +155,44 @@ const handleDeleteResponse = (res: Object, layer: ?Object) => {
  *
  * @param {Object} view MapView Esri ArcGIS JS MapView.
  * @param {string} layerId string id of the corresponding layer.
- * @param {string} [idFieldName] Name of identifier field.
- * @param {number} [objectId] Id of feature.
+ * @param {string} idFieldName Name of identifier field.
+ * @param {number[]} objectIds List of feature ids.
  */
 const handlePopupUpdate = (
     view: Object,
     layerId: string,
-    idFieldName?: string,
-    objectId?: number,
+    idFieldName: string,
+    objectIds: number[],
 ) => {
-    if (objectId && idFieldName) {
+    if (idFieldName && objectIds && objectIds.length) {
         queryFeatures(
             parseInt(layerId, 10),
-            `${idFieldName} = ${objectId}`,
+            `${idFieldName} IN (${objectIds.join()})`,
             null,
         ).then((queryResult) => {
+            const resultFeatureInPopup = nestedVal(view, ['popup', 'viewModel', 'features'], [])
+                .some(feature => queryResult.features.some(resultFeature => (
+                    resultFeature.attributes[idFieldName] === feature.attributes[idFieldName])));
+
             if (nestedVal(queryResult, ['fields'])
                 && nestedVal(queryResult, ['features'])
-                && queryResult.features.length > 0) {
-                if (idFieldName && nestedVal(
-                    view,
-                    ['popup', 'viewModel', 'features', '0', 'attributes', idFieldName],
-                ) === queryResult.features[0].attributes[idFieldName]) {
-                    // find current layer from view
-                    const viewLayer = view.map.findLayerById(layerId);
-                    if (viewLayer) {
-                        // set new feature values to popup
-                        view.popup.features[0].attributes = queryResult.features[0].attributes;
-                        // need to make a change to trigger update
-                        const copyLayer = viewLayer.popupTemplate.content;
-                        viewLayer.popupTemplate.content = '';
-                        viewLayer.popupTemplate.content = copyLayer;
+                && queryResult.features.length > 0
+                && idFieldName
+                && resultFeatureInPopup
+            ) {
+                queryResult.features.forEach((resultFeature) => {
+                    const featureIndex = view.popup.features.findIndex(feature => (
+                        feature.attributes[idFieldName] === resultFeature.attributes[idFieldName]));
+                    if (featureIndex >= 0) {
+                        view.popup.features[featureIndex].attributes = resultFeature.attributes;
                     }
+                });
+
+                const viewLayer = view.map.findLayerById(layerId);
+                if (viewLayer) {
+                    // Need to make a change to trigger update.
+                    const copyLayer = viewLayer.popupTemplate.content;
+                    viewLayer.popupTemplate.content = copyLayer;
                 }
             }
         });
@@ -249,7 +255,7 @@ const saveData = async (
                         && tableLayer.data.some(f => f._id === objectId);
                     const res = await updateFeatures(layerId, params.toString());
                     layerToUpdated = await handleUpdateResponse(res, layerId, layer, hideToast);
-                    await handlePopupUpdate(view, layerId, idFieldName, objectId);
+                    await handlePopupUpdate(view, layerId, idFieldName, layerToUpdated.features);
                     if (featureInTable && nestedVal(layerToUpdated, ['features', 'length']) && objectId) {
                         store.dispatch(addUpdateLayers(
                             layerId,
