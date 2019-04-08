@@ -161,16 +161,16 @@ const handleDeleteResponse = (res: Object, layer: ?Object) => {
 const handlePopupUpdate = (
     view: Object,
     layerId: string,
-    idFieldName?: string,
-    objectIds?: number[],
+    idFieldName: string,
+    objectIds: number[],
 ) => {
-    if (objectIds && idFieldName) {
+    if (idFieldName && objectIds && objectIds.length) {
         queryFeatures(
             parseInt(layerId, 10),
             `${idFieldName} IN (${objectIds.join()})`,
             null,
         ).then((queryResult) => {
-            const resultFeatureInPopup = nestedVal(view, ['popup', 'viewModel', 'features'])
+            const resultFeatureInPopup = nestedVal(view, ['popup', 'viewModel', 'features'], [])
                 .some(feature => queryResult.features.some(resultFeature => (
                     resultFeature.attributes[idFieldName] === feature.attributes[idFieldName])));
 
