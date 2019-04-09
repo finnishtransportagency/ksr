@@ -11,10 +11,14 @@ describe('contractDocument.js', () => {
             diarNumber: 'LIVI/456/789/963',
         };
 
-        expect(getContractDocumentUrl('alfresco', 'contractNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=123&scope=vuokravalvonta&sortField=null');
-        expect(getContractDocumentUrl('alfresco', 'diarNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=LIVI/456/789/963&scope=vuokravalvonta&sortField=null');
-        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes1)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=123&scope=vuokravalvonta&sortField=null');
-        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes2)).toBe('https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=LIVI/456/789/963&scope=vuokravalvonta&sortField=null');
+        expect(getContractDocumentUrl('alfresco', 'contractNumber', attributes1))
+            .toBe('/api/contract-document?documentType=alfresco&searchValue=123');
+        expect(getContractDocumentUrl('alfresco', 'diarNumber', attributes1))
+            .toBe('/api/contract-document?documentType=alfresco&searchValue=LIVI/456/789/963');
+        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes1))
+            .toBe('/api/contract-document?documentType=alfresco&searchValue=123');
+        expect(getContractDocumentUrl('alfresco', 'contractNumber,diarNumber', attributes2))
+            .toBe('/api/contract-document?documentType=alfresco&searchValue=LIVI/456/789/963');
     });
 
     it('getContractDocumentUrl - should return caseManagement link', () => {
@@ -27,10 +31,14 @@ describe('contractDocument.js', () => {
             diarNumber: 'LIVI/456/789/963',
         };
 
-        expect(getContractDocumentUrl('caseManagement', 'contractNumber', attributes1)).toBe('https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=123');
-        expect(getContractDocumentUrl('caseManagement', 'diarNumber', attributes1)).toBe('https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=LIVI/456/789/963');
-        expect(getContractDocumentUrl('caseManagement', 'contractNumber,diarNumber', attributes1)).toBe('https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=123');
-        expect(getContractDocumentUrl('caseManagement', 'contractNumber,diarNumber', attributes2)).toBe('https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=LIVI/456/789/963');
+        expect(getContractDocumentUrl('caseManagement', 'contractNumber', attributes1))
+            .toBe('/api/contract-document?documentType=caseManagement&searchValue=123');
+        expect(getContractDocumentUrl('caseManagement', 'diarNumber', attributes1))
+            .toBe('/api/contract-document?documentType=caseManagement&searchValue=LIVI/456/789/963');
+        expect(getContractDocumentUrl('caseManagement', 'contractNumber,diarNumber', attributes1))
+            .toBe('/api/contract-document?documentType=caseManagement&searchValue=123');
+        expect(getContractDocumentUrl('caseManagement', 'contractNumber,diarNumber', attributes2))
+            .toBe('/api/contract-document?documentType=caseManagement&searchValue=LIVI/456/789/963');
     });
 
     it('getContractDocumentUrl - should return null', () => {

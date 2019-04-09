@@ -63,15 +63,15 @@ describe('<ContractList />', () => {
         const contracts = {
             features: [{
                 attributes: {
-                    alfrescoUrl: '/alfrescourl/123',
-                    caseManagementUrl: '/casemanagementurl/123',
+                    alfrescoUrl: '123',
+                    caseManagementUrl: '123',
                     contractId: 123,
                     contractDescription: 'Description field 1',
                 },
             }, {
                 attributes: {
-                    alfrescoUrl: '/alfrescourl/456',
-                    caseManagementUrl: '/casemanagementurl/456',
+                    alfrescoUrl: '456',
+                    caseManagementUrl: '456',
                     contractId: 456,
                     contractDescription: 'Description field 2',
                 },
@@ -79,22 +79,22 @@ describe('<ContractList />', () => {
         };
 
         const expectedResult = [{
-            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=/alfrescourl/123&scope=vuokravalvonta&sortField=null',
-            caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/123',
+            alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=123',
+            caseManagementUrl: '/api/contract-document?documentType=caseManagement&searchValue=123',
             attributes: {
-                alfrescoUrl: '/alfrescourl/123',
-                caseManagementUrl: '/casemanagementurl/123',
+                alfrescoUrl: '123',
+                caseManagementUrl: '123',
                 contractDescription: 'Description field 1',
                 contractId: 123,
             },
             description: 'Description field 1',
             id: 123,
         }, {
-            alfrescoUrl: 'https://extranet.liikennevirasto.fi/share/page/site/vuokravalvonta/dp/ws/faceted-search#searchTerm=/alfrescourl/456&scope=vuokravalvonta&sortField=null',
-            caseManagementUrl: 'https://asianhallinta.liikennevirasto.fi/group/asianhallinta/haku#/?q=/casemanagementurl/456',
+            alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=456',
+            caseManagementUrl: '/api/contract-document?documentType=caseManagement&searchValue=456',
             attributes: {
-                alfrescoUrl: '/alfrescourl/456',
-                caseManagementUrl: '/casemanagementurl/456',
+                alfrescoUrl: '456',
+                caseManagementUrl: '456',
                 contractDescription: 'Description field 2',
                 contractId: 456,
             },
