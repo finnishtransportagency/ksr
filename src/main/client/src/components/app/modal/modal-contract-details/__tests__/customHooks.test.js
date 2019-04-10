@@ -68,6 +68,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 id: '123',
                 contractIdField: 'idField',
                 contractDescriptionField: 'descField',
+                alfrescoLinkField: 'alfrescoLinkField',
+                caseManagementLinkField: 'caseManagementLinkField',
                 fields: [
                     { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
                 ],
@@ -77,6 +79,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 id: '456',
                 contractIdField: 'idField',
                 contractDescriptionField: 'descField',
+                alfrescoLinkField: null,
+                caseManagementLinkField: null,
                 fields: [
                     { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
                 ],
@@ -86,6 +90,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 id: '789',
                 contractIdField: 'idField',
                 contractDescriptionField: 'descField',
+                alfrescoLinkField: null,
+                caseManagementLinkField: null,
                 fields: [
                     { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
                 ],
@@ -96,14 +102,28 @@ describe('Modal Contract Details - Custom Hooks', () => {
             id: '123',
             name: 'Layer 1',
             features: [
-                { id: '1', description: 'Description 1', objectId: 1 },
-                { id: '10', description: 'Description 2', objectId: 2 },
+                {
+                    id: '1',
+                    description: 'Description 1',
+                    objectId: 1,
+                    alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=123',
+                    caseManagementUrl: '/api/contract-document?documentType=caseManagement&searchValue=456',
+                },
+                {
+                    id: '10',
+                    description: 'Description 2',
+                    objectId: 2,
+                    alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=789',
+                    caseManagementUrl: null,
+                },
             ],
         }, {
             id: '789',
             name: 'Layer 3',
             features: [
-                { id: '123', description: 'Test Description', objectId: 1 },
+                {
+                    id: '123', description: 'Test Description', objectId: 1, alfrescoUrl: '', caseManagementUrl: '',
+                },
             ],
         }];
 
@@ -112,8 +132,16 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 id: '123',
                 name: 'Layer 1',
                 features: [
-                    { attributes: { objectId: 1, idField: '1', descField: 'Description 1' } },
-                    { attributes: { objectId: 2, idField: '10', descField: 'Description 2' } },
+                    {
+                        attributes: {
+                            objectId: 1, idField: '1', descField: 'Description 1', alfrescoLinkField: '123', caseManagementLinkField: '456',
+                        },
+                    },
+                    {
+                        attributes: {
+                            objectId: 2, idField: '10', descField: 'Description 2', alfrescoLinkField: '789',
+                        },
+                    },
                 ],
             },
             {

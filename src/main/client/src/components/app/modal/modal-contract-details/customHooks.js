@@ -5,6 +5,7 @@ import strings from '../../../../translations';
 import { getAttribute, getFeatureAttributes, addDetailToContract } from '../../../../utils/contracts/contracts';
 import save from '../../../../utils/saveFeatureData';
 import store from '../../../../store';
+import { getContractDocumentUrl } from '../../../../utils/contracts/contractDocument';
 
 /**
  * Updates state with new detail list to be shown for found layers and features.
@@ -25,29 +26,38 @@ export const useDetailList = (
     useEffect(() => {
         setDetailList(contractDetails
             .map((layerDetail) => {
-                const foundLayer = layerList.find(layer => layerDetail.id === layer.id);
-                const idField = nestedVal(
-                    foundLayer,
-                    ['contractIdField'],
-                );
+                const layer = layerList.find(l => layerDetail.id === l.id);
 
-                if (foundLayer) {
+                if (layer) {
                     const objectIdFieldName = nestedVal(
-                        foundLayer.fields && foundLayer.fields.find(a => a.type === 'esriFieldTypeOID'),
+                        layer.fields && layer.fields.find(a => a.type === 'esriFieldTypeOID'),
                         ['name'],
-                    );
-
-                    const descriptionField = nestedVal(
-                        foundLayer,
-                        ['contractDescriptionField'],
                     );
 
                     const features = layerDetail.features
                         ? layerDetail.features
                             .map(feature => ({
-                                id: nestedVal(feature, ['attributes', idField], ''),
+                                id: nestedVal(feature, ['attributes', layer.contractIdField], ''),
                                 objectId: nestedVal(feature, ['attributes', objectIdFieldName], ''),
-                                description: nestedVal(feature, ['attributes', descriptionField], ''),
+                                description: nestedVal(
+                                    feature,
+                                    ['attributes', layer.contractDescriptionField],
+                                    '',
+                                ),
+                                alfrescoUrl: layer.alfrescoLinkField
+                                    ? getContractDocumentUrl(
+                                        'alfresco',
+                                        layer.alfrescoLinkField,
+                                        feature.attributes,
+                                    )
+                                    : '',
+                                caseManagementUrl: layer.caseManagementLinkField
+                                    ? getContractDocumentUrl(
+                                        'caseManagement',
+                                        layer.caseManagementLinkField,
+                                        feature.attributes,
+                                    )
+                                    : '',
                             }))
                         : [];
 
@@ -57,10 +67,11 @@ export const useDetailList = (
                         features,
                     };
                 }
+
                 return {
                     id: null,
                     name: null,
-                    features: null,
+                    features: [],
                 };
             }));
     }, [...effectListeners]);
