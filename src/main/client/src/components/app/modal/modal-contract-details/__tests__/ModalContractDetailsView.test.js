@@ -110,7 +110,7 @@ describe('<ModalContractDetailsView />', () => {
 
         const { wrapper } = setup(props);
 
-        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(11);
+        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(13);
 
         const { handleFeatureEditClick, handleFeatureUnlinkClick } = wrapper.props();
 
@@ -124,14 +124,14 @@ describe('<ModalContractDetailsView />', () => {
             .simulate('click');
         expect(handleFeatureEditClick).toHaveBeenCalledTimes(4);
 
+        wrapper.find(Contract).at(0).find(Contract.IconWrapper.Icon).at(2)
+            .simulate('click');
         wrapper.find(Contract).at(1).find(Contract.IconWrapper.Icon).at(2)
             .simulate('click');
         wrapper.find(Contract).at(2).find(Contract.IconWrapper.Icon).at(2)
             .simulate('click');
         wrapper.find(Contract).at(3).find(Contract.IconWrapper.Icon).at(2)
             .simulate('click');
-        expect(wrapper.find(Contract).at(0).find(Contract.IconWrapper.Icon).at(2)
-            .exists()).toBe(false);
         expect(handleFeatureUnlinkClick).toHaveBeenCalledTimes(3);
     });
 
@@ -160,6 +160,6 @@ describe('<ModalContractDetailsView />', () => {
 
         const { wrapper } = setup(props);
 
-        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(4);
+        expect(wrapper.find(Contract.IconWrapper.Icon).length).toBe(6);
     });
 });

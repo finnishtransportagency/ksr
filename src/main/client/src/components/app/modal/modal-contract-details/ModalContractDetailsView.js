@@ -24,6 +24,9 @@ type Props = {
     handleFeatureUnlinkClick: (layerId: string, featureObjectId: number) => void,
 };
 
+const alfrescoTitle = strings.modalFeatureContracts.listView.alfrescoLink;
+const caseManagementTitle = strings.modalFeatureContracts.listView.caseManagementLink;
+
 const ModalContractDetailsView = ({
     contractLayerId,
     detailList,
@@ -87,6 +90,24 @@ const ModalContractDetailsView = ({
                                     title={strings.modalContractDetails.listView.unlink}
                                     className="fas fa-unlink"
                                 />
+                            )}
+                            { layer.id === contractLayerId && (
+                                <Fragment>
+                                    <Contract.IconWrapper.Icon
+                                        onClick={() => feature.alfrescoUrl
+                                            && window.open(feature.alfrescoUrl, '_blank')}
+                                        title={alfrescoTitle}
+                                        className="fas fa-archive"
+                                        disabled={!feature.alfrescoUrl}
+                                    />
+                                    <Contract.IconWrapper.Icon
+                                        onClick={() => feature.caseManagementUrl
+                                            && window.open(feature.caseManagementUrl, '_blank')}
+                                        title={caseManagementTitle}
+                                        className="fas fa-book"
+                                        disabled={!feature.caseManagementUrl}
+                                    />
+                                </Fragment>
                             )}
                         </Contract.IconWrapper>
                     </Contract>
