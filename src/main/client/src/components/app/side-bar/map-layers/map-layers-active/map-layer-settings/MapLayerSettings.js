@@ -73,6 +73,7 @@ const MapLayerSettings = ({
                     }
                     {
                         layer.type === 'agfs'
+                        && layer._source !== 'shapefile'
                         && (
                             <LayerSettings.Icons>
                                 <i
