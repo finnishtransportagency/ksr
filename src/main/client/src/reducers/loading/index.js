@@ -4,6 +4,7 @@ import {
     REMOVE_LOADING,
     SET_LOADING_LAYERS,
     REMOVE_LOADING_LAYER,
+    REMOVE_LOADING_LAYERS,
     DEACTIVATE_LAYER,
     UPDATE_LAYER,
 } from '../../constants/actionTypes';
@@ -47,6 +48,13 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 loadingLayers: (state.loadingLayers
                     .filter(layerId => layerId !== action.layerId): string[]),
+            };
+        case REMOVE_LOADING_LAYERS:
+            return {
+                ...state,
+                loadingLayers: (state.loadingLayers
+                    .filter(layerId => !action.layerIds
+                        .some(id => id === layerId)): string[]),
             };
         case DEACTIVATE_LAYER:
             return {

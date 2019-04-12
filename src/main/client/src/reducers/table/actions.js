@@ -72,7 +72,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
             layerData,
         )
             .then((r) => {
-                if (r.layers.length) {
+                if (r && r.layers.length) {
                     r.layers.forEach((fetchedLayer) => {
                         const newLayer = {
                             ...selectedLayer,
@@ -109,7 +109,9 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
             dispatch({
                 type: types.HIDE_LAYER,
                 // Remove '.s' at the end of layer id.
-                layerIds: layersToBeAdded.layers.map(newLayer => newLayer.id.slice(0, -2)),
+                layerIds: layersToBeAdded.layers
+                    .filter(newLayer => newLayer.type !== 'agfl')
+                    .map(newLayer => newLayer.id.slice(0, -2)),
             });
 
             dispatch({
@@ -145,7 +147,7 @@ export const searchWorkspaceFeatures = (
                 layerData,
             )
                 .then((r) => {
-                    if (r.layers.length) {
+                    if (r && r.layers.length) {
                         r.layers.forEach((fetchedLayer) => {
                             fetchedLayer.features.map((f) => {
                                 const selectedObj = selectedLayer.selectedFeaturesList.find(obj => (
@@ -161,7 +163,7 @@ export const searchWorkspaceFeatures = (
                                 ...selectedLayer.layer,
                                 name: selectedLayer.layer.name,
                                 definitionExpression: queryString,
-                                visible: selectedLayer.layer.visible,
+                                visible: selectedLayer.visible,
                                 active: true,
                                 opacity: selectedLayer.opacity,
                                 id: selectedLayer.userLayerId
@@ -203,6 +205,11 @@ export const searchWorkspaceFeatures = (
             dispatch({
                 type: types.ADD_SEARCH_RESULTS_LAYER,
                 layers: addSearchResultLayers,
+            });
+
+            dispatch({
+                type: types.REMOVE_LOADING_LAYERS,
+                layerIds: layersToBeAdded.layers.map(layer => layer.id),
             });
         }
 

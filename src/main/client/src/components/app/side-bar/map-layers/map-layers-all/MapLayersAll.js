@@ -140,8 +140,8 @@ class MapLayersActive extends Component<Props> {
                     ...group,
                     layers: group.name.toLowerCase().includes(layersToFindTrimmed)
                         ? group.layers
-                        : group.layers.filter(layer => layer.name
-                            .toLowerCase().includes(layersToFindTrimmed)
+                        : group.layers.filter(layer => layer.relationType !== 'link')
+                            .filter(layer => layer.name.toLowerCase().includes(layersToFindTrimmed)
                             || subLayers.find(subLayer => subLayer.name
                                 .toLowerCase().includes(layersToFindTrimmed)
                                 && subLayer.parentLayer === layer.id)),

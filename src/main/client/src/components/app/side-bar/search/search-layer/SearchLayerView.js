@@ -7,6 +7,8 @@ import strings from '../../../../../translations';
 import { Button, TextInput } from '../../../../ui/elements';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import SearchFieldView from './search-field/SearchFieldView';
+import { InputInfo } from '../../../../ui/elements/TextInput';
+import { LabelInfoWrapper } from './styles';
 
 type Props = {
     handleLayerChange: Function,
@@ -50,14 +52,16 @@ const SearchLayerView = ({
     <Scrollbars
         autoHide
         className="sidebar-content-scroll-wrapper"
-        renderView={scrollProps =>
-            <div {...scrollProps} className="sidebar-content-scroll-inner" />}
-        renderThumbVertical={scrollProps =>
-            <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
+        renderView={scrollProps => (
+            <div {...scrollProps} className="sidebar-content-scroll-inner" />
+        )}
+        renderThumbVertical={scrollProps => (
+            <div {...scrollProps} className="sidebar-content-scroll-thumb" />
+        )}
     >
         <form onSubmit={handleSubmit}>
-            <p>{strings.search.chooseLayer}</p>
             <label htmlFor="choose-layer">
+                <p id="choose-layer">{strings.search.chooseLayer}</p>
                 <Select
                     disabled={fetching}
                     onBlurResetsInput={false}
@@ -75,7 +79,17 @@ const SearchLayerView = ({
                 htmlFor="allFields"
                 hidden={!selectedLayer || searchFieldValues.length > 0}
             >
-                <p>{strings.search.searchAllFields}</p>
+                <LabelInfoWrapper>
+                    <p>{strings.search.searchAllFields}</p>
+                    <InputInfo
+                        select
+                        data-balloon={strings.search.searchAllFieldsInfo}
+                        data-balloon-pos="left"
+                        data-balloon-length="medium"
+                    >
+                        <i className="fas fa-question-circle" />
+                    </InputInfo>
+                </LabelInfoWrapper>
                 <TextInput
                     disabled={fetching}
                     type="text"
@@ -109,11 +123,13 @@ const SearchLayerView = ({
             <Button disabled={!selectedLayer || fetching}>
                 {strings.search.buttonSearch}
             </Button>
-            <div hidden={!selectedLayer || selectedLayer === 'queryAll' ||
-        selectedLayer === 'queryActive'}
+            <div
+                hidden={!selectedLayer
+                || selectedLayer === 'queryAll'
+                || selectedLayer === 'queryActive'}
             >
-                <p>{strings.search.addField}</p>
                 <label htmlFor="selectField" hidden={!selectedLayer}>
+                    <p id="selectField">{strings.search.addField}</p>
                     <Select
                         disabled={fetching}
                         onBlurResetsInput={false}

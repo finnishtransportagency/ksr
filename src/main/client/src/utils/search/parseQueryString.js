@@ -25,16 +25,15 @@ export const parseQueryString = (
                 : a.queryExpression;
 
             const text = a.queryExpression === '%'
-                ? `'%${a.queryText}%'`
-                : `'${a.queryText}'`;
+                ? `'%${a.queryText.replace(/'/g, "''")}%'`
+                : `'${a.queryText.replace(/'/g, "''")}'`;
 
-            queryString.push(`${a.name} ${expression} ${text}`);
+            queryString.push(`LOWER(${a.name}) ${expression} LOWER(${text})`);
         });
     } else {
-        const text = `'%${textSearch}%'`;
+        const text = `'%${textSearch.replace(/'/g, "''")}%'`;
 
-        queryColumnsList.forEach(a =>
-            queryString.push(`${a} LIKE ${text}`));
+        queryColumnsList.forEach(a => queryString.push(`LOWER(${a}) LIKE LOWER(${text})`));
     }
 
     return searchFieldValues.length > 0 ? queryString.join(' AND ') : queryString.join(' OR ');
