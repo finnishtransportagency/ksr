@@ -181,6 +181,11 @@ export const searchWorkspaceFeatures = (
 
                             layersToBeAdded.layers.push(newLayer);
                         });
+                    } else {
+                        dispatch({
+                            type: types.CLEAR_SEARCH_DATA,
+                            layerId: `${selectedLayer.layerId}.s`,
+                        });
                     }
                 })
                 .catch(err => console.log(err)));

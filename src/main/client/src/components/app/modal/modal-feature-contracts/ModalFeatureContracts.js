@@ -156,9 +156,7 @@ class ModalFeatureContracts extends Component<Props, State> {
     };
 
     handleSubmitEditContract = async () => {
-        const {
-            view, contractLayer, objectId,
-        } = this.props;
+        const { view, contractLayer } = this.props;
 
         const objectIdField = contractLayer.fields
             .find(field => field.type === 'esriFieldTypeOID');
@@ -181,7 +179,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                     attributes: this.state.formOptions.editedFields,
                 }],
                 objectIdFieldName,
-                objectId,
+                this.state.formOptions.editedFields[objectIdFieldName],
             );
 
             this.setState({ ...this.initialState });

@@ -303,11 +303,16 @@ const fi = {
             title: 'Sopimukseen liittyvät kohteet',
             details: 'Näytä lisätiedot',
             unlink: 'Poista kohteen linkitys sopimukselta',
+            edit: 'Muokkaa kohdetta',
         },
         newDetail: {
             title: 'Lisää uusi kohde sopimukselle',
             submit: 'Tallenna',
             errorAddingFeature: 'Kohteen luonti epäonnistui',
+        },
+        editFeature: {
+            title: 'Muokkaa kohdetta',
+            submit: 'Tallenna',
         },
         confirmModalUnlinkContract: {
             content: 'Haluatko varmasti poistaa kohteen linkityksen sopimukselta?',
