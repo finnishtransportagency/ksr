@@ -1,20 +1,18 @@
 import React from 'react';
-import { mount } from 'enzyme';
-import Dropzone from 'react-dropzone';
+import { shallow } from 'enzyme';
 import ModalShapefileView from '../ModalShapefileView';
-import { DropzoneText } from '../styles';
-import { Button } from '../../../../ui/elements';
-import strings from '../../../../../translations';
+import ShapefileDropView from '../shapefile-drop/ShapefileDropView';
+import ShapefileColorView from '../shapefile-color/ShapefileColorView';
 
 
 const setup = () => {
     const props = {
         onDrop: jest.fn(),
-        acceptedExtensions: '.shp,.dbf',
-        fileUploadRef: jest.fn(),
-        closeModal: jest.fn(),
+        color: null,
+        setColor: jest.fn(),
+        acceptedFiles: [],
     };
-    const wrapper = mount(<ModalShapefileView {...props} />);
+    const wrapper = shallow(<ModalShapefileView {...props} />);
 
     return { props, wrapper };
 };
@@ -23,11 +21,14 @@ describe('<ModalShapefileView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {
-        expect(wrapper.find(Dropzone).exists()).toBe(true);
+        expect(wrapper.exists()).toBe(true);
     });
-    it('should render children', () => {
-        expect(wrapper.find(Button).length).toBe(1);
-        expect(wrapper.find('p').first().text()).toBe(strings.dropzoneShape.dropText);
-        expect(wrapper.find('p').last().text()).toBe(strings.dropzoneShape.orText);
+
+    it('should have <ShapefileDropView />', () => {
+        expect(wrapper.find(ShapefileDropView).length).toBe(1);
+    });
+
+    it('should have <ShapefileColorView />', () => {
+        expect(wrapper.find(ShapefileColorView).length).toBe(1);
     });
 });

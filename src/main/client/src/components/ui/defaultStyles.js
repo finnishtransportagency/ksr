@@ -17,7 +17,6 @@ export const colorBackgroundDark = '#444444';
 export const colorBackgroundDarkSecondary = '#4B4B4B';
 
 export const colorFeatureHighlight = '#00DDFF';
-export const colorShapefileHighlight = '#86c866';
 
 export const colorTableEdited = '#F79421';
 export const colorTableEditedDarker = '#EC8921';

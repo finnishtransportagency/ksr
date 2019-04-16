@@ -145,7 +145,11 @@ const fi = {
         },
     },
     modalShapefile: {
-        title: 'Avaa shape tiedosto',
+        title: 'Shapefile tason tuonti',
+        submitText: 'Lisää taso',
+        cancelText: 'Kumoa',
+        readError: 'Shapefile tason tuonti epäonnistui.',
+        layerExists: 'Shapefile tason tuonti epäonnistui. Sovelluksessa on jo samanniminen taso',
     },
     modalThemeLayer: {
         title: 'Luo teemataso',
@@ -160,11 +164,6 @@ const fi = {
         standardDeviation: 'Keskihajonta (standard deviation)',
         numClasses: 'Välien lukumäärä',
         infoTooltip: 'Lukumäärän tulee olla välillä 1-10.',
-    },
-    dropzoneShape: {
-        browse: 'Selaa',
-        orText: 'tai',
-        dropText: 'Pudota .shp ja .dbf tiedostot tähän',
     },
     sideNav: {
         search: 'Haku',
@@ -383,6 +382,18 @@ const fi = {
     },
     geocode: {
         placeholder: 'Hae osoitteella tai paikalla',
+    },
+    shapefileColorView: {
+        title: '2) Valitse kohteiden väri',
+        customTitle: 'Valitse vapaavalintainen väri',
+        selectTitle: 'Valitse väri',
+    },
+    shapefileDropView: {
+        title: '1) Avaa Shapefile -tiedosto',
+        selectedFilesText: 'Valitut tiedostot:',
+        browse: 'Selaa',
+        orText: 'tai',
+        dropText: 'Pudota .shp ja .dbf tiedostot tähän',
     },
 };
 

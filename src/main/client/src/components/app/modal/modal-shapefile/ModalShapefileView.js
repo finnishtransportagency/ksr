@@ -1,39 +1,25 @@
 // @flow
-import React from 'react';
-import Dropzone from 'react-dropzone';
-import { Button } from '../../../ui/elements/index';
-import { DropzoneText } from './styles';
-import strings from '../../../../translations/index';
+import React, { Fragment } from 'react';
+import ShapefileColorView from './shapefile-color/ShapefileColorView';
+import ShapefileDropView from './shapefile-drop/ShapefileDropView';
 
 type Props = {
     onDrop: Function,
-    acceptedExtensions: string,
-    fileUploadRef: () => void,
-    closeModal: () => void,
+    acceptedFiles: any[],
+    color: ?string,
+    setColor: (string) => void,
 };
 
 const ModalShapefileView = ({
-    onDrop, acceptedExtensions, fileUploadRef, closeModal,
+    onDrop,
+    acceptedFiles,
+    color,
+    setColor,
 }: Props) => (
-    <Dropzone
-        className="dropzone"
-        ref={fileUploadRef}
-        onDrop={onDrop}
-        onFileDialogCancel={closeModal}
-        multiple
-        accept={acceptedExtensions}
-    >
-        {
-            ({ getRootProps, getInputProps }) => (
-                <DropzoneText {...getRootProps()}>
-                    <p>{strings.dropzoneShape.dropText}</p>
-                    <p>{strings.dropzoneShape.orText}</p>
-                    <input {...getInputProps()} />
-                    <Button>{strings.dropzoneShape.browse}</Button>
-                </DropzoneText>
-            )
-        }
-    </Dropzone>
+    <Fragment>
+        <ShapefileDropView onDrop={onDrop} acceptedFiles={acceptedFiles} />
+        <ShapefileColorView color={color} setColor={setColor} />
+    </Fragment>
 );
 
 export default ModalShapefileView;

@@ -7,10 +7,4 @@ describe('actions', () => {
 
         expect(actions.setActiveModal('test')).toEqual(expectedAction);
     });
-
-    it('should create an action to TOGGLE dropzone active', () => {
-        const expectedAction = { type: types.TOGGLE_DROPZONE_ACTIVE };
-
-        expect(actions.toggleDropzoneActive()).toEqual(expectedAction);
-    });
 });

@@ -1,7 +1,6 @@
 // @flow
 import * as shapefile from 'shapefile';
 import esriLoader from 'esri-loader';
-import { colorShapefileHighlight } from '../components/ui/defaultStyles';
 import { convert } from './geojson';
 import { getLegendSymbol } from './layerLegend';
 import { toDisplayDate } from './date';
@@ -15,7 +14,7 @@ import strings from '../translations';
  *
  * @returns {Object[]} List of attributes.
  */
-export const createAttributes = (properties: Object[], index: number) => {
+const createAttributes = (properties: Object[], index: number) => {
     const attributes = {};
     attributes.ObjectID = index;
     Object.entries(properties).forEach(([key, value]) => {
@@ -34,9 +33,9 @@ export const createAttributes = (properties: Object[], index: number) => {
  *
  * @param {Object} geoJson Shapefile as geojson.
  *
- * @returns {Promise<Object[]>} List of geometries and attributes
+ * @returns {Promise<Object[]>} List of geometries and attributes.
  */
-export const createGraphics = (geoJson: Object) => Promise.all(geoJson
+const createGraphics = (geoJson: Object) => Promise.all(geoJson
     .features.map(async (feature, i) => ({
         geometry: await convert(feature.geometry, 3067, 3067),
         attributes: createAttributes(feature.properties, i),
@@ -46,10 +45,11 @@ export const createGraphics = (geoJson: Object) => Promise.all(geoJson
  * Create symbol for renderer.
  *
  * @param {Object} geometry Features geometry.
+ * @param {?string} color Hex Color Code representation of the symbol color.
  *
  * @returns {Object} Renderer for featureLayer.
  */
-export const createSymbol = (geometry: Object) => {
+const createSymbol = (geometry: Object, color: ?string) => {
     if (geometry === null || geometry === undefined) {
         return null;
     }
@@ -61,7 +61,7 @@ export const createSymbol = (geometry: Object) => {
                 type: 'simple', // autocasts as new SimpleRenderer()
                 symbol: {
                     type: 'simple-marker',
-                    color: colorShapefileHighlight,
+                    color,
                     style: 'circle',
                     size: 8,
                     outline: {
@@ -75,7 +75,7 @@ export const createSymbol = (geometry: Object) => {
                 type: 'simple', // autocasts as new SimpleRenderer()
                 symbol: {
                     type: 'simple-fill',
-                    color: colorShapefileHighlight,
+                    color,
                     style: 'solid',
                     outline: {
                         color: '#000000',
@@ -89,7 +89,7 @@ export const createSymbol = (geometry: Object) => {
                 symbol: {
                     type: 'simple-line',
                     style: 'solid',
-                    color: colorShapefileHighlight,
+                    color,
                     width: 2,
                 },
             };
@@ -101,15 +101,14 @@ export const createSymbol = (geometry: Object) => {
 /**
  * Create EsriFieldTypes.
  *
- * @param {Object} attributes Geojson attributes.
+ * @param {Object} attributes GeoJson attributes.
  *
  * @returns {Object[]} List of fields.
  */
-export const createFields = (attributes: Object) => {
+const createFields = (attributes: Object) => {
     const fields = [];
-    let fieldObj = {};
     Object.entries(attributes).forEach(([key]) => {
-        fieldObj = {};
+        const fieldObj = {};
         fieldObj.name = key;
         fieldObj.alias = key;
         if (key === 'ObjectID') {
@@ -127,11 +126,10 @@ export const createFields = (attributes: Object) => {
  * Convert layer to LayerList format.
  *
  * @param {Object} layer Feature layer.
- * @param {string} fileName Given layer name.
  *
  * @returns {Object} LayerList formatted Object.
  */
-export const convertLayerListFormat = (layer: Object, fileName: string) => ({
+export const convertLayerListFormat = (layer: Object) => ({
     active: true,
     attribution: '',
     authentication: '',
@@ -141,10 +139,10 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
     id: layer.id,
     layerGroupName: strings.mapLayers.userLayerGroupName,
     layerOrder: layer.id,
-    layers: fileName,
+    layers: layer.title,
     maxScale: 0,
     minScale: 0,
-    name: fileName,
+    name: layer.title,
     legendSymbol: layer.legendSymbol,
     opacity: 1,
     queryColumnsList: null,
@@ -158,33 +156,34 @@ export const convertLayerListFormat = (layer: Object, fileName: string) => ({
 });
 
 /**
- * Create FeatureLayer to MapView.
+ * Create FeatureLayer from list of graphics.
  *
- * @param {Object[]} graphics List with graphics data.
- * @param {string} fileName Name of the shapefile.
- * @param {Function} FeatureLayer esri/layers/FeatureLayer.
- * @param {Object} view esri/views/MapView.
- * @param {Object[]} layerList List of layers.
- * @param {Function} addShapefile Redux action to add shapefile layer to layerList.
+ * @param {Object[]} graphics List of ArcGIS JS Graphics.
+ * @param {string} fileName Name of the Shapefile.
+ * @param {number} id  Id of the layer.
+ * @param {?string} color Hex Color Code representation of the symbol color.
+ *
+ * @returns {?Object} Created layer if created, otherwise null.
  */
-export const createLayer = async (
+const createLayer = async (
     graphics: Object,
     fileName: string,
-    FeatureLayer: Function,
-    view: Object,
-    layerList: Array<any>,
-    addShapefile: Function,
+    id: number,
+    color: ?string,
 ) => {
-    if (graphics.length < 1 || graphics[0].geometry === null) return;
-    const maxId = layerList.map(ll => parseInt(ll.id, 10)).reduce((a, b) => Math.max(a, b));
+    const [FeatureLayer] = await esriLoader.loadModules(['esri/layers/FeatureLayer']);
+
+    if (graphics.length < 1 || graphics[0].geometry === null) {
+        return null;
+    }
 
     const layer = new FeatureLayer({
-        id: maxId + 11000,
+        id,
         source: graphics, // autocast as an array of esri/Graphic
         // create an instance of esri/layers/support/Field for each field object
         fields: createFields(graphics[0].attributes),
         objectIdField: 'ObjectID', // This must be defined when creating a layer from Graphics
-        renderer: createSymbol(graphics[0].geometry),
+        renderer: createSymbol(graphics[0].geometry, color),
         outFields: ['*'],
         title: fileName,
         maxScale: 0,
@@ -193,32 +192,34 @@ export const createLayer = async (
         _source: 'shapefile',
     });
 
-    layer.legendSymbol = await getLegendSymbol(layer.renderer.symbol.clone());
-    view.map.add(layer);
-    addShapefile(convertLayerListFormat(layer, fileName));
+    if (layer.renderer && layer.renderer.symbol && layer.renderer.symbol.clone) {
+        layer.legendSymbol = await getLegendSymbol(layer.renderer.symbol.clone());
+    }
+    return layer;
 };
 
 /**
- * Tool for creating geojson from shapefile
+ * Convert a shapefile into ArcGIS JS FeatureLayer.
  *
- * @param {Object} contents Content of dbf and shp files.
- * @param {string} fileName Name of the given layer name.
- * @param {Object} view esri/views/MapView.
- * @param {Object[]} layerList List of layers.
- * @param {Function} addShapefile Redux action to add shapefile layer to layerList.
- * @returns {void}
+ * @param {ArrayBuffer} shp Content of the shp -file as an ArrayBuffer.
+ * @param {ArrayBuffer} dbf Content of the dbf -file as an ArrayBuffer.
+ * @param {string} layerName Name of the given layer name.
+ * @param {number} id Id of the layer to be created.
+ * @param {?string} color Hex Color Code representation of the symbol color.
+ *
+ * @returns {?Object} Created layer if created otherwise null.
  */
 export const shape2geoJson = async (
-    contents: Object,
-    fileName: string,
-    view: Object,
-    layerList: Array<any>,
-    addShapefile: Function,
+    shp: ArrayBuffer,
+    dbf: ArrayBuffer,
+    layerName: string,
+    id: number,
+    color: ?string,
 ) => {
-    const [FeatureLayer] = await esriLoader.loadModules(['esri/layers/FeatureLayer']);
-    if (contents.shp && contents.dbf) {
-        const geojson = await shapefile.read(contents.shp, contents.dbf);
+    if (shp && dbf) {
+        const geojson = await shapefile.read(shp, dbf);
         const graphics = await createGraphics(geojson);
-        await createLayer(graphics, fileName, FeatureLayer, view, layerList, addShapefile);
+        return createLayer(graphics, layerName, id, color);
     }
+    return Promise.resolve(null);
 };

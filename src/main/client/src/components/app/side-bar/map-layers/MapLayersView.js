@@ -18,7 +18,6 @@ type Props = {
     handleButtonClickLayers: (string) => void,
     activeTab: string,
     setActiveModal: (modal: string) => void,
-    toggleDropzoneActive: () => void,
     layerLegendActive: boolean,
     toggleLayerLegend: () => void,
     activeGroups: number[],
@@ -33,7 +32,6 @@ const MapLayersView = ({
     handleButtonClickLayers,
     activeTab,
     setActiveModal,
-    toggleDropzoneActive,
     layerLegendActive,
     toggleLayerLegend,
     activeGroups,
@@ -81,41 +79,43 @@ const MapLayersView = ({
                 </ButtonLayerNav>
             </ButtonLayerNavWrapper>
             {
-                activeTab === 'all' &&
-                <LayerFilterWrapper>
-                    <label htmlFor="filterAllLayers">
-                        <span>{strings.mapLayers.filterAllLayers}</span>
-                        <TextInput
-                            backgroundDarker
-                            type="text"
-                            placeholder=""
-                            id="filterAllLayers"
-                            name="filterAllLayers"
-                            autoComplete="off"
-                            onChange={handleInputChange}
-                            value={layersToFind}
-                            maxLength={50}
-                        />
-                    </label>
-                </LayerFilterWrapper>
+                activeTab === 'all'
+                && (
+                    <LayerFilterWrapper>
+                        <label htmlFor="filterAllLayers"> {/* eslint-disable-line */}
+                            <span>{strings.mapLayers.filterAllLayers}</span>
+                            <TextInput
+                                backgroundDarker
+                                type="text"
+                                placeholder=""
+                                id="filterAllLayers"
+                                name="filterAllLayers"
+                                autoComplete="off"
+                                onChange={handleInputChange}
+                                value={layersToFind}
+                                maxLength={50}
+                            />
+                        </label>
+                    </LayerFilterWrapper>
+                )
             }
             <Scrollbars
                 autoHide
                 className={`layer-view-scroll-wrapper ${activeTab}`}
-                renderView={scrollProps =>
-                    <div {...scrollProps} className="layer-view-inner-scroll-wrapper" />}
-                renderThumbVertical={scrollProps =>
-                    <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
+                renderView={scrollProps => <div {...scrollProps} className="layer-view-inner-scroll-wrapper" />}
+                renderThumbVertical={scrollProps => <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
             >
                 {
-                    activeTab === 'all' &&
-                    <MapLayersAllContainer
-                        layersToFind={layersToFind}
-                        activeGroups={activeGroups}
-                        activeSubGroups={activeSubGroups}
-                        setActiveGroups={setActiveGroups}
-                        setActiveSubGroups={setActiveSubGroups}
-                    />
+                    activeTab === 'all'
+                    && (
+                        <MapLayersAllContainer
+                            layersToFind={layersToFind}
+                            activeGroups={activeGroups}
+                            activeSubGroups={activeSubGroups}
+                            setActiveGroups={setActiveGroups}
+                            setActiveSubGroups={setActiveSubGroups}
+                        />
+                    )
                 }
                 {activeTab === 'active' && <MapLayersActiveContainer />}
             </Scrollbars>
@@ -141,7 +141,6 @@ const MapLayersView = ({
                         activeLayer={activeTab === 'shape'}
                         onClick={() => {
                             setActiveModal('shapefile');
-                            toggleDropzoneActive();
                         }}
                     >
                         {strings.mapLayers.shape}
