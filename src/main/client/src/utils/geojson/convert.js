@@ -46,6 +46,11 @@ const convert = async (
                 paths: geom.coordinates,
                 spatialReference: { wkid: tSrs },
             });
+        case 'multipolygon':
+            return {
+                rings: geom.coordinates.flatMap(c => c),
+                spatialReference: { wkid: tSrs },
+            };
         case 'polygon':
             return new Polygon({
                 rings: geom.coordinates,
