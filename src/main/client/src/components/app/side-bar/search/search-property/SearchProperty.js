@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { zoomToProperty } from '../../../../../utils/map';
+import { validatePropertyId } from '../../../../../utils/property';
 import SearchPropertyView from './SearchPropertyView';
 
 type Props = {
@@ -48,18 +49,9 @@ class SearchProperty extends Component<Props, State> {
         handleClear('propertyArea', view);
     };
 
-    validatePropertyId = (propertyId: string) => {
-        if (typeof propertyId !== 'string') {
-            return false;
-        }
-        const zeroRegexp = RegExp(/^([0-9]{14})$/g);
-        const hyphenRegexp = RegExp(/^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$/g);
-        return zeroRegexp.test(propertyId) || hyphenRegexp.test(propertyId);
-    };
-
     handlePropertyIdChange = (evt: Object) => {
         const propertyId = evt.target.value;
-        const valid = this.validatePropertyId(propertyId);
+        const valid = validatePropertyId(propertyId);
 
         this.setState({
             submitDisabled: !valid,

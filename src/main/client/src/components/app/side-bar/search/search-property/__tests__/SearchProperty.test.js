@@ -11,6 +11,7 @@ describe('<SearchProperty />', () => {
             handleSubmit: jest.fn(),
             handleClear: jest.fn(),
             setPropertyId: jest.fn(),
+            validatePropertyId: jest.fn(),
             view: {},
             authorities: [{ authority: 'KSR_ROLE_ADMIN' }],
         };
@@ -53,23 +54,6 @@ describe('<SearchProperty />', () => {
         const { wrapper, props } = setup();
         wrapper.instance().onClear({ preventDefault: () => {} });
         expect(props.handleClear.mock.calls.length).toBe(1);
-    });
-
-    it('should validatePropertyId', () => {
-        const { wrapper } = setup();
-        expect(wrapper.instance().validatePropertyId(null)).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId(undefined)).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId({})).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId(1)).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId([])).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId(() => {})).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId('a')).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId('1-2-3-4-')).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId('0010020003004')).toBeFalsy();
-        expect(wrapper.instance().validatePropertyId('001002000300400')).toBeFalsy();
-
-        expect(wrapper.instance().validatePropertyId('1-2-3-4')).toBeTruthy();
-        expect(wrapper.instance().validatePropertyId('00100200030004')).toBeTruthy();
     });
 
     it('should handle handlePropertyIdChange', () => {
