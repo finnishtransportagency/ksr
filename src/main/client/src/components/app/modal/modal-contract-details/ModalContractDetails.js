@@ -148,9 +148,9 @@ const ModalContractDetails = (props: Props) => {
      * Handles single feature's unlinking from contract.
      *
      * @param {string} layerId Detail layer's Id.
-     * @param {number} featureId Feature's Id.
+     * @param {number} featureObjectId Feature's object Id.
      */
-    const handleFeatureUnlinkClick = (layerId: string, featureId: number) => {
+    const handleFeatureUnlinkClick = (layerId: string, featureObjectId: number) => {
         const {
             content, submit, cancel, featureUnlinkSuccess, featureUnlinkError,
         } = strings.modalContractDetails.confirmModalUnlinkContract;
@@ -166,7 +166,7 @@ const ModalContractDetails = (props: Props) => {
                     contractLayer,
                     detailLayer,
                     contractObjectId,
-                    featureId,
+                    featureObjectId,
                 );
 
                 if (unlinkSuccess) {

@@ -21,7 +21,7 @@ type Props = {
         featureId: number,
         objectId: number
     ) => void,
-    handleFeatureUnlinkClick: (layerId: string, featureId: number) => void,
+    handleFeatureUnlinkClick: (layerId: string, featureObjectId: number) => void,
 };
 
 const ModalContractDetailsView = ({

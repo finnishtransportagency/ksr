@@ -285,7 +285,7 @@ export const updateContractLink = async (
  * @param {Object} contractLayer Contract layer where feature will be unlinked from.
  * @param {Object} detailLayer Detail layer that contains feature that will be unlinked.
  * @param {number} contractObjectId Contract's object Id.
- * @param {number} featureId Feature's object Id.
+ * @param {number} featureObjectId Feature's object Id.
  *
  * @returns {Promise<boolean>} Promise with unlink success.
  */
@@ -293,12 +293,12 @@ export const unlinkFeatureFromContract = async (
     contractLayer: Object,
     detailLayer: Object,
     contractObjectId: number,
-    featureId: number,
+    featureObjectId: number,
 ): Promise<boolean> => {
     /** Detail linked with a field in detail- or contract layer */
     if (String(detailLayer.relationLayerId) === contractLayer.id) {
         const targetLayer = detailLayer.relationType === 'many' ? detailLayer : contractLayer;
-        const objectId = detailLayer.relationType === 'many' ? featureId : contractObjectId;
+        const objectId = detailLayer.relationType === 'many' ? featureObjectId : contractObjectId;
         const relationColumn = detailLayer.relationType === 'many'
             ? detailLayer.relationColumnOut
             : detailLayer.relationColumnIn;
@@ -331,7 +331,7 @@ export const unlinkFeatureFromContract = async (
     if (String(detailLayer.relationLayerId) !== contractLayer.id) {
         return unlinkContract(
             detailLayer.id,
-            featureId,
+            featureObjectId,
             contractLayer.id,
             contractObjectId,
         );
