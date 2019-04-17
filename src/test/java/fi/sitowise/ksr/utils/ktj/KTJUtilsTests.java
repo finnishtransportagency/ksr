@@ -67,6 +67,7 @@ public class KTJUtilsTests {
 
         expectedFeature.setProperty("parcelCount", 1);
         expectedFeature.setProperty("registerUnitType", "Tila");
+        expectedFeature.setProperty("registerUnitTypeId", "1");
         expectedFeature.setProperty("name", "Tonttila");
         expectedFeature.setProperty("municipalityName", "Helsinki");
 

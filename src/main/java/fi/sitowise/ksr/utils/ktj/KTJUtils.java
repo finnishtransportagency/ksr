@@ -20,7 +20,9 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -146,6 +148,14 @@ public class KTJUtils {
             );
 
             feat.setProperty(
+                    "registerUnitTypeId",
+                    XMLUtils.getNodeContent(
+                            registerUnit,
+                            REGISTER_UNIT_TYPE_EL
+                    )
+            );
+
+            feat.setProperty(
                     "name",
                     XMLUtils.getNodeContent(
                             registerUnit,
@@ -164,8 +174,8 @@ public class KTJUtils {
             feat.setProperty(
                     "municipalityName",
                     XMLUtils.getNodeContent(
-                        registerUnit,
-                        MUNICIPALITY_NAME_FI_EL
+                            registerUnit,
+                            MUNICIPALITY_NAME_FI_EL
                     )
             );
 
@@ -188,7 +198,7 @@ public class KTJUtils {
             parcelStream.map(KTJUtils::parseParcel)
                     .flatMap(Collection::stream)
                     .filter(Objects::nonNull)
-                    .forEach(p -> multiGeom.add(p));
+                    .forEach(multiGeom::add);
 
             feat.setGeometry(multiGeom);
             return feat;
@@ -226,15 +236,15 @@ public class KTJUtils {
      */
     private static String parsePdfLink(String contextPath, Node linkNode) {
         try {
-            URI mapUri = new URI(XMLUtils.getNodeContent(linkNode, PDF_URL_EL));
+            URI mapUri = new URI(Objects.requireNonNull(XMLUtils.getNodeContent(linkNode, PDF_URL_EL)));
             String params = mapUri.getRawQuery();
             return KsrStringUtils.replaceMultipleSlashes(
-                String.format(
-                    "/%s/%s/pdf/map?%s",
-                    contextPath,
-                    KTJController.ENDPOINT_URL,
-                    params == null ? "" : params
-                )
+                    String.format(
+                            "/%s/%s/pdf/map?%s",
+                            contextPath,
+                            KTJController.ENDPOINT_URL,
+                            params == null ? "" : params
+                    )
             );
 
         } catch (XPathExpressionException xe) {
