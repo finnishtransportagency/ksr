@@ -82,7 +82,7 @@ const ModalContractDetailsView = ({
                                 <Contract.IconWrapper.Icon
                                     unlink
                                     onClick={() => {
-                                        handleFeatureUnlinkClick(layer.id, feature.id);
+                                        handleFeatureUnlinkClick(layer.id, feature.objectId);
                                     }}
                                     title={strings.modalContractDetails.listView.unlink}
                                     className="fas fa-unlink"
