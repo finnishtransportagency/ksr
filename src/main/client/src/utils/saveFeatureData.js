@@ -209,7 +209,7 @@ const handlePopupUpdate = (
  * @param {string} idFieldName Name of identifier field.
  * @param {number} [objectId] Id of feature.
  * @param {boolean} [hideToast] Show saving data toast or not.
- * @param {boolean} [selected] Is the feature selected on the table,
+ * @param {boolean} [selected] Is the feature selected on the table.
  */
 const saveData = async (
     action: string,

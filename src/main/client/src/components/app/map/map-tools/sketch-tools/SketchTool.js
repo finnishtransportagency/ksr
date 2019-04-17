@@ -9,6 +9,7 @@ import SketchToolView from './SketchToolView';
 import SketchActiveAdminView from './sketch-active-admin/SketchActiveAdminView';
 import { queryFeatures } from '../../../../../utils/queryFeatures';
 import { convertEsriGeometryType } from '../../../../../utils/type';
+import { nestedVal } from '../../../../../utils/nestedValue';
 
 type State = {
     editSketchIcon: string,
@@ -65,7 +66,7 @@ class SketchTool extends Component<Props, State> {
     }
 
     componentWillReceiveProps(newProps: any) {
-        const { sketchViewModel, activeAdminTool } = this.props;
+        const { sketchViewModel, activeAdminTool, setActiveTool } = this.props;
 
         if (sketchViewModel !== newProps.sketchViewModel && newProps.sketchViewModel.initialized) {
             this.sketchTool();
@@ -97,7 +98,7 @@ class SketchTool extends Component<Props, State> {
             // Remove temp sketch
             if (newProps.draw.initialized) {
                 this.removeSketch();
-                resetMapTools(newProps.draw, sketchViewModel, this.props.setActiveTool);
+                resetMapTools(newProps.draw, sketchViewModel, setActiveTool);
             }
         }
     }
@@ -124,15 +125,16 @@ class SketchTool extends Component<Props, State> {
                 const drawCircleButton = this.drawCircleButton.current;
 
                 drawNewFeatureButton.addEventListener('click', (event) => {
+                    const { active } = this.props;
                     // user cannot draw more than 1 sketch
                     if (drawNewFeatureButton.classList.contains('disabled')) {
                         event.preventDefault();
                         return;
                     }
-                    if (this.props.active === 'sketchActiveAdmin') {
+                    if (active === 'sketchActiveAdmin') {
                         setActiveToolMenu('');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
-                    } else if (!this.props.active) {
+                    } else if (!active) {
                         view.popup.close();
                         setActiveToolMenu('sketchActiveAdmin');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
@@ -144,7 +146,8 @@ class SketchTool extends Component<Props, State> {
                 });
 
                 drawRectangleButton.addEventListener('click', () => {
-                    if (this.props.active === 'sketchRectangle') {
+                    const { active } = this.props;
+                    if (active === 'sketchRectangle') {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
@@ -155,7 +158,8 @@ class SketchTool extends Component<Props, State> {
                 });
 
                 drawPolygonButton.addEventListener('click', () => {
-                    if (this.props.active === 'sketchPolygon') {
+                    const { active } = this.props;
+                    if (active === 'sketchPolygon') {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
@@ -167,7 +171,8 @@ class SketchTool extends Component<Props, State> {
                 });
 
                 drawCircleButton.addEventListener('click', () => {
-                    if (this.props.active === 'sketchCircle') {
+                    const { active } = this.props;
+                    if (active === 'sketchCircle') {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
@@ -329,7 +334,7 @@ class SketchTool extends Component<Props, State> {
             return false;
         }
         const layer = layerList.find(l => l.id === activeAdminTool);
-        return layer ? layer.type !== 'agfl' && layer.layerPermission.createLayer : false;
+        return layer ? layer.type !== 'agfl' && !nestedVal(layer, ['propertyIdField']) && layer.layerPermission.createLayer : false;
     };
 
     // Assign constructor ref flowtypes
