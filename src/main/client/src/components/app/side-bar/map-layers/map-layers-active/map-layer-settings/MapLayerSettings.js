@@ -57,26 +57,24 @@ const MapLayerSettings = ({
                         <MapLayerTitle layer={layer} showLayerGroup />
                     </LayerSettings.Title>
                     {
-                        activeAdminTool === layer.id && layer.type === 'agfl' && layer.layerPermission.createLayer
-                        && (
-                            <LayerSettings.Icons>
-                                <i
-                                    className="fas fa-plus"
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyPress={() => createNonSpatialFeature()}
-                                    onClick={() => createNonSpatialFeature()}
-                                    title={strings.mapLayerSettings.addNewFeature}
-                                />
-                            </LayerSettings.Icons>
-                        )
+                        <LayerSettings.Icons>
+                            <LayerSettings.Icon
+                                hidden={activeAdminTool !== layer.id || (layer.type !== 'agfl' && !nestedVal(layer, ['propertyIdField'])) || !layer.layerPermission.createLayer}
+                                className="fas fa-plus"
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={() => createNonSpatialFeature()}
+                                onClick={() => createNonSpatialFeature()}
+                                title={strings.mapLayerSettings.addNewFeature}
+                            />
+                        </LayerSettings.Icons>
                     }
                     {
                         layer.type === 'agfs'
                         && layer._source !== 'shapefile'
                         && (
                             <LayerSettings.Icons>
-                                <i
+                                <LayerSettings.Icon
                                     role="button"
                                     tabIndex={0}
                                     onKeyPress={() => createThemeLayer(layer.id)}
@@ -102,7 +100,7 @@ const MapLayerSettings = ({
                             <LayerSettings.Icons
                                 activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
                             >
-                                <i
+                                <LayerSettings.Icon
                                     role="button"
                                     tabIndex={0}
                                     onKeyPress={() => setActiveAdminTool(layer.id.replace('.s', ''), layerList)}

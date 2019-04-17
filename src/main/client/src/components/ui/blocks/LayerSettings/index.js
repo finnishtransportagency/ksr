@@ -33,6 +33,14 @@ const Icons = styled.div`
     }
 `;
 
+const Icon = styled.i`
+    visibility: visible;
+    
+    ${props => props.hidden && css`
+            visibility: hidden;
+         `}
+`;
+
 const Drag = styled.div`
     flex: 1;
     align-self: center;
@@ -71,6 +79,7 @@ const Toggle = styled.div`
 LayerSettings.Content = Content;
 LayerSettings.Drag = Drag;
 LayerSettings.Icons = Icons;
+LayerSettings.Icon = Icon;
 LayerSettings.Slider = Slider;
 LayerSettings.Title = Title;
 LayerSettings.Toggle = Toggle;

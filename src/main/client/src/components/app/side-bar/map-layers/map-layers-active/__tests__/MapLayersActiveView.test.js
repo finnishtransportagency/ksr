@@ -90,6 +90,7 @@ const setup = () => {
             },
         ],
         setActiveAdminTool: jest.fn(),
+        createThemeLayer: jest.fn(),
         onDragEnd: () => {},
         toggleLayer: jest.fn(),
         mapScale: 50000,
@@ -114,8 +115,8 @@ describe('<MapLayersActiveView />', () => {
 
     it('should set active admintool on click', () => {
         const { setActiveAdminTool } = wrapper.props();
-        expect(wrapper.find(LayerSettings.Icons).find('i')).toHaveLength(4);
-        wrapper.find(LayerSettings.Icons).find('i').at(1).simulate('click');
+        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(7);
+        wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(2).simulate('click');
         expect(setActiveAdminTool).toHaveBeenCalled();
     });
 
