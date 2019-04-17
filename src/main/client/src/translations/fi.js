@@ -395,6 +395,13 @@ const fi = {
         orText: 'tai',
         dropText: 'Pudota .shp ja .dbf tiedostot tähän',
     },
+    property: {
+        errorToast: {
+            invalidFormat: 'Kiinteistötunnus ei ole oikeassa muodossa.',
+            geometryMissing: 'Kiinteistötunnuksella ei ole geometriaa.',
+            propertyAlreadyExist: 'Kiinteistötunnus on olemassa jo järjestelmässä.',
+        },
+    },
 };
 
 export default fi;

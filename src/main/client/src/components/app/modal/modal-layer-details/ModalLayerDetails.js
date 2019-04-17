@@ -1,10 +1,15 @@
 // @flow
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
 import { createAddressFields } from '../../../../utils/geoconvert/createAddressFields';
 import strings from '../../../../translations';
 import save from '../../../../utils/saveFeatureData';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import FeatureDetailsForm from '../../shared/feature-details-form/FeatureDetailsForm';
+import { formatPropertyInfoToSaveFormat, propertyIdFormat, validatePropertyId } from '../../../../utils/property';
+import { queryFeatures } from '../../../../api/search/searchQuery';
+import { zoomToFeatures } from '../../../../utils/map';
+import { fetchPropertyInfo } from '../../../../api/search/searchProperty';
 
 type Props = {
     layer: Object,
@@ -53,6 +58,52 @@ class ModalFilter extends Component<Props, State> {
         };
     }
 
+    handlePropertySubmit = async (combinedData: Object) => {
+        const {
+            view,
+            originalLayerId,
+            objectId,
+            activeLayer,
+        } = this.props;
+
+        if (validatePropertyId(combinedData.attributes[activeLayer.propertyIdField])) {
+            const propertyId = propertyIdFormat(
+                combinedData.attributes[activeLayer.propertyIdField],
+            );
+            // check if property id exist in the database.
+            let foundObject = await queryFeatures(
+                parseInt(originalLayerId, 10),
+                `${activeLayer.propertyIdField} = '${propertyId}'`,
+                null,
+            );
+            if (Array.isArray(foundObject.features) && foundObject.features.length > 0) {
+                toast.error(strings.property.errorToast.propertyAlreadyExist);
+            } else {
+                const data = await fetchPropertyInfo(
+                    combinedData.attributes[activeLayer.propertyIdField],
+                    null,
+                );
+                const formatFeature = await formatPropertyInfoToSaveFormat(data);
+                if (formatFeature[0] && formatFeature[0].geometry !== null) {
+                    await save.saveData('add', view, originalLayerId, formatFeature, objectId.name, undefined, false, false);
+                    // found newly added property so we can zoom to feature.
+                    foundObject = await queryFeatures(
+                        parseInt(originalLayerId, 10),
+                        `${activeLayer.propertyIdField} = '${propertyId}'`,
+                        null,
+                    );
+                    if (Array.isArray(foundObject.features) && foundObject.features.length > 0) {
+                        await zoomToFeatures(view, foundObject.features);
+                    }
+                } else {
+                    toast.error(strings.property.errorToast.geometryMissing);
+                }
+            }
+        } else {
+            toast.error(strings.property.errorToast.invalidFormat);
+        }
+    };
+
     handleModalSubmit = async () => {
         const {
             addressField,
@@ -63,6 +114,7 @@ class ModalFilter extends Component<Props, State> {
             objectId,
             editModeActive,
             setActiveFeatureMode,
+            activeLayer,
         } = this.props;
 
         const { copiedFeature, formOptions } = this.state;
@@ -88,6 +140,8 @@ class ModalFilter extends Component<Props, State> {
             featureId = copiedFeature.attributes[objectId.name];
             feature.attributes[objectId.name] = featureId;
             await save.saveData('update', view, originalLayerId, [feature], objectId.name, featureId);
+        } else if (activeLayer.propertyIdField) {
+            await this.handlePropertySubmit(combinedData);
         } else {
             await save.saveData('add', view, originalLayerId, [feature], objectId.name, undefined, false, false);
         }
