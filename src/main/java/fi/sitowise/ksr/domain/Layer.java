@@ -74,6 +74,7 @@ public class Layer implements Serializable {
     private List<String> queryColumns;
     private boolean background;
     private String parentLayer;
+    private String propertyIdField;
 
     /**
      * Construct a Layer.
@@ -119,6 +120,7 @@ public class Layer implements Serializable {
         this.setBackground(lr.getBackground());
         this.setParentLayer(lr.getParentLayer());
         this.setQueryColumnsCustom(lr.getQueryColumns());
+        this.setPropertyIdField(lr.getPropertyIdField());
 
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
@@ -887,5 +889,23 @@ public class Layer implements Serializable {
     public Optional<String> getLayerDefitionUrl() {
         return ("agfs".equals(type) || "agfl".equals(type))
                 ? Optional.of(String.format("%s?f=pjson", url)) : Optional.empty();
+    }
+
+    /**
+     * Gets property id field.
+     *
+     * @return String property id field.
+     */
+    public String getPropertyIdField() {
+        return propertyIdField;
+    }
+
+    /**
+     * Sets property id field.
+     *
+     * @param propertyIdField String property id field.
+     */
+    public void setPropertyIdField(String propertyIdField) {
+        this.propertyIdField = propertyIdField;
     }
 }
