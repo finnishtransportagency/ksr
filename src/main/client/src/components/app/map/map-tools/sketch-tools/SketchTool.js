@@ -115,7 +115,6 @@ class SketchTool extends Component<Props, State> {
                     tempGraphicsLayer,
                     setActiveToolMenu,
                     editModeActive,
-                    geometryType,
                     setTempGraphicsLayer,
                 } = this.props;
 
@@ -125,7 +124,7 @@ class SketchTool extends Component<Props, State> {
                 const drawCircleButton = this.drawCircleButton.current;
 
                 drawNewFeatureButton.addEventListener('click', (event) => {
-                    const { active } = this.props;
+                    const { active, geometryType } = this.props;
                     // user cannot draw more than 1 sketch
                     if (drawNewFeatureButton.classList.contains('disabled')) {
                         event.preventDefault();
