@@ -2,6 +2,8 @@ package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ContractDocumentService {
+
+    private static final Logger LOG = LogManager.getLogger(ContractDocumentService.class);
 
     @Value("${contractdocument.alfresco.search.url}")
     private String alfrescoUrl;
@@ -28,6 +32,7 @@ public class ContractDocumentService {
         String redirectUrl;
 
         if (StringUtils.isEmpty(documentType) || StringUtils.isEmpty(searchValue)) {
+            LOG.info(String.format("Cannot redirect to contract document URL, invalid query parameters given: [documentType=%s&searchValue=%s]", documentType, searchValue));
             throw new KsrApiException.BadRequestException("Invalid query parameters given.");
         }
 
@@ -39,6 +44,7 @@ public class ContractDocumentService {
                 redirectUrl = String.format("%s#/?q=%s", caseManagementUrl, searchValue);
                 break;
             default:
+                LOG.info(String.format("Cannot redirect to contract document URL, invalid document type given: [%s]", documentType));
                 throw new KsrApiException.BadRequestException("Invalid query parameters given.");
         }
 
