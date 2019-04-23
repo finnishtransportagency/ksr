@@ -24,11 +24,18 @@ export const parseQueryString = (
                 ? 'LIKE'
                 : a.queryExpression;
 
-            const text = a.queryExpression === '%'
-                ? `'%${a.queryText.replace(/'/g, "''")}%'`
-                : `'${a.queryText.replace(/'/g, "''")}'`;
+            if (a.type === 'esriFieldTypeOID'
+                || a.type === 'esriFieldTypeSmallInteger'
+                || a.type === 'esriFieldTypeInteger'
+                || a.type === 'esriFieldTypeDouble') {
+                queryString.push(`${a.name} ${expression} ${a.queryText}`);
+            } else {
+                const text = a.queryExpression === '%'
+                    ? `'%${a.queryText.replace(/'/g, "''")}%'`
+                    : `'${a.queryText.replace(/'/g, "''")}'`;
 
-            queryString.push(`LOWER(${a.name}) ${expression} LOWER(${text})`);
+                queryString.push(`LOWER(${a.name}) ${expression} LOWER(${text})`);
+            }
         });
     } else {
         const text = `'%${textSearch.replace(/'/g, "''")}%'`;
