@@ -76,5 +76,22 @@ describe('parseQueryString', () => {
         );
 
         expect(queryString2).toBe("LOWER(fieldName2) LIKE LOWER('%turku%')");
+
+        searchFieldValues = [
+            {
+                name: 'fieldName3',
+                queryExpression: '<=',
+                queryText: '3',
+                type: 'esriFieldTypeSmallInteger',
+            },
+        ];
+        const queryString3 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString3).toBe('fieldName3 <= 3');
     });
 });

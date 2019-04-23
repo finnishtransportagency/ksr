@@ -102,6 +102,7 @@ class SearchLayer extends Component<Props, State> {
             label: field.label,
             queryExpression: '%',
             queryText: '',
+            type: field.type,
         };
         const searchFields = [...searchFieldValues, newField]
             .map((f, index) => ({ ...f, id: index }));
