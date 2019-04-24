@@ -73,6 +73,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 fields: [
                     { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
                 ],
+                layerPermission: { updateLayer: true, createLayer: true },
             },
             {
                 name: 'Layer 2',
@@ -117,6 +118,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                     caseManagementUrl: null,
                 },
             ],
+            createPermission: true,
+            editPermission: true,
         }, {
             id: '789',
             name: 'Layer 3',
@@ -125,6 +128,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                     id: '123', description: 'Test Description', objectId: 1, alfrescoUrl: '', caseManagementUrl: '',
                 },
             ],
+            createPermission: false,
+            editPermission: false,
         }];
 
         testHook(() => {
@@ -276,6 +281,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
         const setRefreshList = jest.fn();
         const setFormOptions = jest.fn();
         const activeFeature = { layerName: null, layerId: null, featureId: null };
+        const activeAdmin = '123';
+        const detailList = [{ id: '123' }];
 
         activeView = '';
         testHook(() => {
@@ -290,7 +297,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 setRefreshList,
                 formOptions,
                 setFormOptions,
-                permission,
+                activeAdmin,
+                detailList,
                 activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
@@ -310,7 +318,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 setRefreshList,
                 formOptions,
                 setFormOptions,
-                permission,
+                activeAdmin,
+                detailList,
                 activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
@@ -330,7 +339,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 setRefreshList,
                 formOptions,
                 setFormOptions,
-                permission,
+                activeAdmin,
+                detailList,
                 activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
@@ -352,7 +362,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 setRefreshList,
                 formOptions,
                 setFormOptions,
-                permission,
+                activeAdmin,
+                detailList,
                 activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );
@@ -378,7 +389,8 @@ describe('Modal Contract Details - Custom Hooks', () => {
                 setRefreshList,
                 formOptions,
                 setFormOptions,
-                permission,
+                activeAdmin,
+                detailList,
                 activeFeature,
                 [contractDetails, activeView, detailLayers, formOptions],
             );

@@ -88,18 +88,20 @@ describe('<ModalContractDetailsView />', () => {
     it('render - should show correct amount of icons with editPermission', () => {
         const props = {
             ...minProps,
-            editPermission: true,
             contractLayerId: '123',
             fetchingDetailList: false,
+            activeAdmin: true,
             detailList: [{
                 id: '123',
                 name: 'Layer 1',
+                editPermission: true,
                 features: [
                     { id: '1', description: 'Description 1' },
                 ],
             }, {
                 id: '789',
                 name: 'Layer 3',
+                editPermission: true,
                 features: [
                     { id: '123', description: 'Test Description 1' },
                     { id: '456', description: 'Test Description 2' },
@@ -138,18 +140,19 @@ describe('<ModalContractDetailsView />', () => {
     it('render - should show correct amount of icons without editPermission', () => {
         const props = {
             ...minProps,
-            editPermission: false,
             contractLayerId: '123',
             fetchingDetailList: false,
             detailList: [{
                 id: '123',
                 name: 'Layer 1',
+                editPermission: false,
                 features: [
                     { id: '1', description: 'Description 1' },
                 ],
             }, {
                 id: '789',
                 name: 'Layer 3',
+                editPermission: false,
                 features: [
                     { id: '123', description: 'Test Description 1' },
                     { id: '456', description: 'Test Description 2' },

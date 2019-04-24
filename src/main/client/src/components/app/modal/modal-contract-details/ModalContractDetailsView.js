@@ -3,12 +3,13 @@ import React, { Fragment } from 'react';
 import strings from '../../../../translations';
 import Contract from '../../../ui/blocks/Contract';
 import LoadingIcon from '../../shared/LoadingIcon';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     contractLayerId: string,
     detailList: Object[],
     fetchingDetailList: boolean,
-    editPermission: boolean,
+    activeAdmin: boolean,
     handleFeatureDetailsClick: (
         layerName: string,
         layerId: string,
@@ -31,7 +32,7 @@ const ModalContractDetailsView = ({
     contractLayerId,
     detailList,
     fetchingDetailList,
-    editPermission,
+    activeAdmin,
     handleFeatureDetailsClick,
     handleFeatureEditClick,
     handleFeatureUnlinkClick,
@@ -69,7 +70,7 @@ const ModalContractDetailsView = ({
                             </Contract.TextWrapper.Text>
                         </Contract.TextWrapper>
                         <Contract.IconWrapper>
-                            { editPermission && (
+                            { activeAdmin && layer.editPermission && (
                                 <Contract.IconWrapper.Icon
                                     onClick={() => handleFeatureEditClick(
                                         layer.name,
@@ -81,7 +82,13 @@ const ModalContractDetailsView = ({
                                     className="fas fa-edit"
                                 />
                             )}
-                            { layer.id !== contractLayerId && editPermission && (
+                            { layer.id !== contractLayerId
+                                && activeAdmin
+                                && layer.editPermission
+                                && nestedVal(
+                                    detailList.find(l => l.id === contractLayerId),
+                                    ['editPermission'],
+                                ) && (
                                 <Contract.IconWrapper.Icon
                                     unlink
                                     onClick={() => {

@@ -33,6 +33,16 @@ export const useDetailList = (
                         layer.fields && layer.fields.find(a => a.type === 'esriFieldTypeOID'),
                         ['name'],
                     );
+                    const createPermission = nestedVal(
+                        layer,
+                        ['layerPermission', 'createLayer'],
+                        false,
+                    );
+                    const editPermission = nestedVal(
+                        layer,
+                        ['layerPermission', 'updateLayer'],
+                        false,
+                    );
 
                     const features = layerDetail.features
                         ? layerDetail.features
@@ -65,6 +75,8 @@ export const useDetailList = (
                         id: layerDetail.id,
                         name: layerDetail.name,
                         features,
+                        createPermission,
+                        editPermission,
                     };
                 }
 
@@ -192,7 +204,8 @@ export const useCancelText = (
  * @param {Function} setRefreshList Used to refresh contract list if new detail added.
  * @param {Object} formOptions Contain's form's field data and whether submit is disabled or not.
  * @param {Function} setFormOptions Used to set submit to disabled while querying feature save.
- * @param {Object} permission Permission to create or edit contract layer.
+ * @param {string} activeAdmin Currently active layer's Id in admin mode.
+ * @param {Object[]} detailList List containing contract and detail layers.
  * @param {Object} activeFeature Active feature's details.
  * @param effectListeners List of items that useEffect listens to
  * (contractDetails, activeView, detailLayers, formOptions).
@@ -208,7 +221,8 @@ export const useModalSubmit = (
     setRefreshList: (refreshList: boolean) => void,
     formOptions: { editedFields: Object, submitDisabled: boolean },
     setFormOptions: (formOptions: Object) => void,
-    permission: Object,
+    activeAdmin: string,
+    detailList: Object[],
     activeFeature: Object,
     effectListeners: any[],
 ) => {
@@ -217,7 +231,7 @@ export const useModalSubmit = (
     useEffect(() => {
         switch (activeView) {
             case 'contractDetails':
-                if (permission.create) {
+                if (detailList.some(layer => layer.id === activeAdmin)) {
                     setModalSubmit([{
                         text: strings.modalContractDetails.addNewDetail,
                         handleSubmit: () => setActiveView('chooseDetailLayer'),

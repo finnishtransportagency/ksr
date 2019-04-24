@@ -58,9 +58,9 @@ const ModalContractDetails = (props: Props) => {
     const [activeDetailLayer, setActiveDetailLayer] = useState(null);
     const [refreshList, setRefreshList] = useState(false);
     const [formOptions, setFormOptions] = useState({ editedFields: {}, submitDisabled: true });
-    const [permission, setPermission] = useState({ create: false, edit: false });
     const [existingAttributes, setExistingAttributes] = useState(null);
 
+    const detailList = useDetailList(contractDetails, layerList, [contractDetails]);
     const modalSubmit = useModalSubmit(
         contractDetails,
         activeView,
@@ -72,13 +72,13 @@ const ModalContractDetails = (props: Props) => {
         setRefreshList,
         formOptions,
         setFormOptions,
-        permission,
+        activeAdmin,
+        detailList,
         activeFeature,
         [contractDetails, activeView, detailLayers, formOptions],
     );
     const cancelText = useCancelText(activeView, source, [activeView]);
     const title = useTitle(activeView, activeFeature, [activeView]);
-    const detailList = useDetailList(contractDetails, layerList, [contractDetails]);
     const featureAttributes = useFeatureAttributes(
         contractDetails,
         layerList,
@@ -196,18 +196,6 @@ const ModalContractDetails = (props: Props) => {
         );
 
         if (contractDetailsRes && contractDetailsRes.length) {
-            if (isMounted) {
-                const createPermission = contractDetailsRes
-                    .some(layer => layer.id === activeAdmin)
-                    && nestedVal(contractLayer, ['layerPermission', 'createLayer'], false);
-
-                const editPermission = contractDetailsRes
-                    .some(layer => layer.id === activeAdmin)
-                && nestedVal(contractLayer, ['layerPermission', 'updateLayer'], false);
-
-                setPermission({ create: createPermission, edit: editPermission });
-            }
-
             await Promise.all(contractDetailsRes.map(async (layer) => {
                 const originalLayer = layerList.find(l => l.id === layer.id);
 
@@ -270,7 +258,7 @@ const ModalContractDetails = (props: Props) => {
                         contractLayerId={contractLayer.id}
                         detailList={detailList}
                         fetchingDetailList={fetchingDetailList}
-                        editPermission={permission.edit}
+                        activeAdmin={detailList.some(layer => layer.id === activeAdmin)}
                         handleFeatureDetailsClick={handleFeatureDetailsClick}
                         handleFeatureEditClick={handleFeatureEditClick}
                         handleFeatureUnlinkClick={handleFeatureUnlinkClick}
@@ -284,6 +272,7 @@ const ModalContractDetails = (props: Props) => {
                 {activeView === 'chooseDetailLayer' && (
                     <DetailLayerSelect
                         detailLayers={detailLayers}
+                        detailList={detailList}
                         setActiveView={setActiveView}
                         setActiveDetailLayer={setActiveDetailLayer}
                         layerList={layerList}
