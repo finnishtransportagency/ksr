@@ -33,26 +33,26 @@ describe('contracts', () => {
             {
                 id: 123,
                 description: 'Test description.',
-                alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=123',
+                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
                 attributes: {
                     alfrescoLinkField: '123',
                     caseManagementLinkField: '123',
                     contractDescription: 'Test description.',
                     contractId: 123,
                 },
-                caseManagementUrl: '/api/contract-document?documentType=caseManagement&searchValue=123',
+                caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=123',
             },
             {
                 id: 456,
                 description: 'Test description 2.',
-                alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=456',
+                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=456',
                 attributes: {
                     alfrescoLinkField: '456',
                     caseManagementLinkField: '456',
                     contractDescription: 'Test description 2.',
                     contractId: 456,
                 },
-                caseManagementUrl: '/api/contract-document?documentType=caseManagement&searchValue=456',
+                caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=456',
             },
         ];
 

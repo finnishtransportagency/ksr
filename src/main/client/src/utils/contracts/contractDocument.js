@@ -21,7 +21,7 @@ export const getContractDocumentUrl = (
         const searchValue = attributes[field];
 
         if (documentType === 'alfresco' || documentType === 'caseManagement') {
-            return `/api/contract-document?documentType=${documentType}&searchValue=${searchValue}`;
+            return `${window.location.href}api/contract-document?documentType=${documentType}&searchValue=${searchValue}`;
         }
     }
     return null;

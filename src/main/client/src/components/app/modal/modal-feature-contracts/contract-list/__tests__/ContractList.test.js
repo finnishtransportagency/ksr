@@ -79,8 +79,8 @@ describe('<ContractList />', () => {
         };
 
         const expectedResult = [{
-            alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=123',
-            caseManagementUrl: '/api/contract-document?documentType=caseManagement&searchValue=123',
+            alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
+            caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=123',
             attributes: {
                 alfrescoUrl: '123',
                 caseManagementUrl: '123',
@@ -90,8 +90,8 @@ describe('<ContractList />', () => {
             description: 'Description field 1',
             id: 123,
         }, {
-            alfrescoUrl: '/api/contract-document?documentType=alfresco&searchValue=456',
-            caseManagementUrl: '/api/contract-document?documentType=caseManagement&searchValue=456',
+            alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=456',
+            caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=456',
             attributes: {
                 alfrescoUrl: '456',
                 caseManagementUrl: '456',
