@@ -1,7 +1,6 @@
 // @flow
 import React, { Fragment, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { nestedVal } from '../../../../utils/nestedValue';
 import FeatureDetailsForm from '../../shared/feature-details-form/FeatureDetailsForm';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import DetailLayerSelect from './detail-layer-select/DetailLayerSelect';
