@@ -174,10 +174,5 @@ public class KTJControllerTests extends AuthControllerTestBase {
                 get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
                         .headers(this.getHeadersWithGroup("KSR_ROLE_USER"))
         ).andExpect(status().isForbidden());
-
-        this.mockMvc.perform(
-                get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
-                        .headers(this.getHeadersWithGroup("KSR_ROLE_EXTERNAL_UPDATER"))
-        ).andExpect(status().isForbidden());
     }
 }
