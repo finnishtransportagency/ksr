@@ -85,7 +85,7 @@ public class KTJController {
      * @param language Language of the prints.
      */
     @ApiOperation("Get PDF print links for given property.")
-    @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER')")
+    @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_EXTERNAL_UPDATER', 'KSR_ROLE_NAMED_USER')")
     @GetMapping(value = "/pdf/links")
     public Map<String, List<String>> getPropertyPdfLinks(@RequestParam String propertyIdentifier,
             @RequestParam String language) {
@@ -103,7 +103,7 @@ public class KTJController {
      * @param response Http servlet interface to which the response is written.
      */
     @ApiOperation("Get PDF print from given url.")
-    @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER')")
+    @PreAuthorize("hasAnyAuthority('KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_EXTERNAL_UPDATER', 'KSR_ROLE_NAMED_USER')")
     @GetMapping(value = "/pdf/{printType}")
     public void getPropertyPdfPrint(@PathVariable String printType, HttpServletRequest request,
             HttpServletResponse response) {
