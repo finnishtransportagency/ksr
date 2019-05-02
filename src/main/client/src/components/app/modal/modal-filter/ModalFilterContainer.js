@@ -14,7 +14,8 @@ const mapStateToProps = (state) => {
         filteredColumns = layer.columns.filter(key => key.Header.toLowerCase() !== 'objectid'
             && key.Header.toLowerCase() !== 'objectid_1'
             && key.Header.toLowerCase() !== 'symbolidentifier'
-            && key.Header.toLowerCase() !== 'geom');
+            && key.Header.toLowerCase() !== 'geom'
+            && key.Header.toLowerCase() !== 'contract_uuid');
     }
 
     return {

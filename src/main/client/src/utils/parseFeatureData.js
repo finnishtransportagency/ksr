@@ -35,7 +35,8 @@ export const parseColumns = (id, data) => {
         show: f.type !== 'geometry'
             && f.name.toLowerCase() !== 'objectid'
             && f.name.toLowerCase() !== 'objectid_1'
-            && f.name.toLowerCase() !== 'symbolidentifier',
+            && f.name.toLowerCase() !== 'symbolidentifier'
+            && f.name.toLowerCase() !== 'contract_uuid',
         editable: f.editable,
         nullable: f.nullable,
         length: f.length,
