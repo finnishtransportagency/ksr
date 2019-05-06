@@ -282,7 +282,7 @@ class ReactTable extends Component<Props> {
             || (activeLayer
                 && activeLayer.type === 'agfl'
                 && !activeLayer.relationColumnIn
-                && !activeLayer.relationColumnOutnull)
+                && !activeLayer.relationColumnOut)
                 ? addContractColumn(this.handleContractClick, columns, activeLayer.type)
                 : columns;
             return (
