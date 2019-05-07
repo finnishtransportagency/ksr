@@ -88,7 +88,13 @@ export const mapSelectPopup = async (
                             });
                         });
 
-                        if (matchingLayer.hasRelations) {
+                        const relationLayer = matchingLayer
+                            && layerList.find(ll => (
+                                ll.id === String(matchingLayer.relationLayerId)));
+
+                        if (matchingLayer.hasRelations
+                            && relationLayer
+                            && relationLayer.layerPermission.readLayer) {
                             const contractLink = {
                                 title: strings.modalFeatureContracts.featureContracts,
                                 id: 'contract-link',
