@@ -75,9 +75,14 @@ export const setPropertyInfo = (
                     })),
                 });
 
-                const allowedUsers = ['KSR_ROLE_ADMIN', 'KSR_ROLE_UPDATER', 'KSR_ROLE_NAMED_USER'];
-                const hasPermission = allowedUsers.some(allowedUser =>
-                    authorities.find(auth => auth.authority === allowedUser));
+                const allowedUsers = [
+                    'KSR_ROLE_ADMIN',
+                    'KSR_ROLE_UPDATER',
+                    'KSR_ROLE_EXTERNAL_UPDATER',
+                    'KSR_ROLE_NAMED_USER',
+                ];
+                const hasPermission = allowedUsers.some(allowedUser => (
+                    authorities.find(auth => auth.authority === allowedUser)));
 
                 drawPropertyArea(view, result.features);
 

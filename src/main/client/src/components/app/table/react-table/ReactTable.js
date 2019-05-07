@@ -276,13 +276,17 @@ class ReactTable extends Component<Props> {
             const { columns, data } = layerFeatures;
 
             const activeLayer: any = layerList.find(ll => ll.id === layerFeatures.id);
+            const relationLayer = activeLayer
+                && layerList.find(ll => ll.id === String(activeLayer.relationLayerId));
             const tableColumns = (activeLayer
             && activeLayer.hasRelations
-            && activeLayer.type !== 'agfl')
+            && activeLayer.type !== 'agfl'
+            && relationLayer
+            && relationLayer.layerPermission.readLayer)
             || (activeLayer
                 && activeLayer.type === 'agfl'
                 && !activeLayer.relationColumnIn
-                && !activeLayer.relationColumnOutnull)
+                && !activeLayer.relationColumnOut)
                 ? addContractColumn(this.handleContractClick, columns, activeLayer.type)
                 : columns;
             return (
