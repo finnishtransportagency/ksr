@@ -1,11 +1,15 @@
 package fi.sitowise.ksr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceLayerRecord;
 import fi.sitowise.ksr.jooq.udt.records.FeatureTableTypeRecord;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * POJO representing a workspace layer.
@@ -24,6 +28,8 @@ public class WorkspaceLayer implements Serializable {
     private boolean visible;
     private double opacity;
     private int layerOrder;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private FeatureTableTypeRecord selectedFeatures;
 
     /**
@@ -64,7 +70,7 @@ public class WorkspaceLayer implements Serializable {
      * @param layerId id of the referenced layer
      */
     public void setLayerId(Long layerId) {
-        this.layerId = String.valueOf(layerId);
+        this.layerId = layerId != null ? String.valueOf(layerId) : null;
     }
 
     /**
@@ -80,7 +86,7 @@ public class WorkspaceLayer implements Serializable {
      * @param userLayerId id of the referenced user layer
      */
     public void setUserLayerId(Long userLayerId) {
-        this.userLayerId = String.valueOf(userLayerId);
+        this.userLayerId = userLayerId != null ? String.valueOf(userLayerId) : null;
     }
 
     /**
@@ -148,10 +154,23 @@ public class WorkspaceLayer implements Serializable {
     }
 
     /**
-     * @return list of selected features
+     * @return selected features as jOOQ table type record
      */
+    @JsonIgnore
     public FeatureTableTypeRecord getSelectedFeatures() {
         return selectedFeatures;
+    }
+
+    /**
+     * @return list of selected features
+     */
+    public List<Feature> getSelectedFeaturesList() {
+        List<Feature> features = new ArrayList<>();
+        if (selectedFeatures != null) {
+            selectedFeatures.forEach(feature -> features.add(new Feature(feature.getId(), feature.getHighlight())));
+        }
+
+        return features;
     }
 
     /**

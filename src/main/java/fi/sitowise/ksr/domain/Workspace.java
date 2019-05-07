@@ -2,11 +2,13 @@ package fi.sitowise.ksr.domain;
 
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceLayerRecord;
 import fi.sitowise.ksr.jooq.tables.records.WorkspaceRecord;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
@@ -20,10 +22,13 @@ public class Workspace implements Serializable {
     private String name;
 
     private int id;
+    private UUID uuid;
     private int scale;
     private int centerLongitude;
     private int centerLatitude;
     private Timestamp updateTime;
+    
+    @ApiModelProperty(hidden = true)
     private List<WorkspaceLayer> layers;
 
     /**
@@ -46,7 +51,11 @@ public class Workspace implements Serializable {
         this.centerLongitude = wsr.getCenterLongitude();
         this.centerLatitude = wsr.getCenterLatitude();
         this.updateTime = wsr.getUpdated();
-        this.layers = wslr.stream().map(WorkspaceLayer::new).collect(Collectors.toList());
+        this.uuid = UUID.fromString(wsr.getUuid());
+
+        if (wslr != null) {
+            this.layers = wslr.stream().map(WorkspaceLayer::new).collect(Collectors.toList());
+        }
     }
 
     /**
@@ -160,4 +169,16 @@ public class Workspace implements Serializable {
     public void setLayers(List<WorkspaceLayer> layers) {
         this.layers = layers;
     }
+
+    /**
+     * @return UUID -identifier for the workspace
+     */
+    public UUID getUuid() { return uuid; }
+
+    /**
+     * Set UUID of the workspace.
+     *
+     * @param uuid UUID of the workspace
+     */
+    public void setUuid(UUID uuid) { this.uuid = uuid; }
 }

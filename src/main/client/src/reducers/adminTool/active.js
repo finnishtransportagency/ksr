@@ -1,6 +1,6 @@
 // @flow
-import { SET_ACTIVE_ADMIN_TOOL } from '../../constants/actionTypes';
-import { findGeometryType } from '../../utils/geometryTypeFinder';
+import { DEACTIVATE_LAYER, SET_ACTIVE_ADMIN_TOOL, SET_WORKSPACE } from '../../constants/actionTypes';
+import { findGeometryType } from '../../utils/type';
 
 const initialState = {
     layerId: '',
@@ -25,6 +25,12 @@ export default (state: State = initialState, action: Action) => {
                 layerId: state.layerId === action.layerId ? '' : action.layerId,
                 geometryType: findGeometryType(action.layerId, action.layerList),
             };
+        case DEACTIVATE_LAYER:
+            return action.layerId === state.layerId
+                ? initialState
+                : state;
+        case SET_WORKSPACE:
+            return initialState;
         default:
             return state;
     }

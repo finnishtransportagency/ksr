@@ -6,45 +6,94 @@ import MapLayersActiveView from '../MapLayersActiveView';
 
 const setup = () => {
     const props = {
-        layerList: [
+        mapLayerList: [
             {
-                id: 1,
+                id: '1',
                 active: false,
                 name: 'Layer 1',
                 type: 'agfs',
-                source: 'search',
+                _source: 'search',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
             {
-                id: 2,
+                id: '2',
                 active: true,
                 name: 'Layer 2',
                 type: 'agfs',
-                source: 'select',
+                _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
             {
-                id: 3,
+                id: '3',
                 active: false,
                 name: 'Layer 3',
                 type: 'wms',
-                source: 'select',
+                _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
             {
-                id: 4,
+                id: '4',
                 active: true,
                 name: 'Layer 4',
                 type: 'wmts',
-                source: 'search'
+                _source: 'search',
             },
             {
-                id: 5,
+                id: '5',
                 active: true,
                 name: 'Layer 5',
                 type: 'agfs',
-                source: 'select',
+                _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
+            },
+        ],
+        dataLayerList: [
+            {
+                id: '6',
+                active: false,
+                name: 'Layer 6',
+                type: 'agfl',
+                _source: 'search',
+            },
+            {
+                id: '7',
+                active: true,
+                name: 'Layer 7',
+                type: 'agfl',
+                _source: 'select',
+                layerPermission: {
+                    createLayer: true,
+                    readLayer: true,
+                    updateLayer: false,
+                    deleteLayer: false,
+                },
             },
         ],
         setActiveAdminTool: jest.fn(),
+        createThemeLayer: jest.fn(),
         onDragEnd: () => {},
+        toggleLayer: jest.fn(),
+        mapScale: 50000,
     };
     const wrapper = mount(<MapLayersActiveView {...props} />);
 
@@ -66,8 +115,15 @@ describe('<MapLayersActiveView />', () => {
 
     it('should set active admintool on click', () => {
         const { setActiveAdminTool } = wrapper.props();
-        expect(wrapper.find(LayerSettings.Icons).find('i')).toHaveLength(2);
-        wrapper.find(LayerSettings.Icons).find('i').at(0).simulate('click');
+        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(7);
+        wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(2).simulate('click');
         expect(setActiveAdminTool).toHaveBeenCalled();
+    });
+
+    it('should call toggleLayer on visibility click', () => {
+        const { toggleLayer } = wrapper.props();
+
+        wrapper.find(LayerSettings.Toggle).at(0).simulate('click');
+        expect(toggleLayer).toHaveBeenCalled();
     });
 });

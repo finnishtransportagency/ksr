@@ -9,12 +9,14 @@ const setup = () => {
         data: [],
         activeAdminTool: '',
         draw: {},
-        tempGraphicsLayer: { graphics: { grap: {} } },
-        setTempGrapLayer: jest.fn(),
+        tempGraphicsLayer: { graphics: [] },
+        setTempGraphicsLayer: jest.fn(),
         setActiveTool: jest.fn(),
         sketchViewModel: {
+            cancel: jest.fn(),
             reset: jest.fn(),
         },
+        setActiveFeatureMode: jest.fn(),
     };
     const wrapper = mount(<SketchTool {...props} />);
 

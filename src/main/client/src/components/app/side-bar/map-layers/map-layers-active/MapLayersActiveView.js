@@ -1,35 +1,38 @@
 // @flow
 import React, { Fragment } from 'react';
 import type { DropResult } from 'react-beautiful-dnd';
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import LayerSettings from '../../../../ui/blocks/LayerSettings';
-import MapLayerTitle from '../../../shared/MapLayerTitle';
+import MapLayerSettings from './map-layer-settings/MapLayerSettings';
 
 type Props = {
-    layerList: Array<any>,
+    mapLayerList: Object[],
     onDragEnd: (DropResult) => void,
-    onToggleVisibility: (Number) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
     setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
-    adminToolActive: string,
+    createNonSpatialFeature: () => void,
+    activeAdminTool: string,
+    createThemeLayer: (layerId: string) => void,
+    toggleLayer: (layerId: string) => void,
+    mapScale: number,
 };
 
 const MapLayersView = ({
-    layerList,
+    mapLayerList,
     onDragEnd,
     onOpacityChange,
-    onToggleVisibility,
     setActiveAdminTool,
-    adminToolActive,
+    activeAdminTool,
+    createNonSpatialFeature,
+    createThemeLayer,
+    toggleLayer,
+    mapScale,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
                 {dropProvided => (
                     <div ref={dropProvided.innerRef}>
-                        {layerList.map((l, i) => (
+                        {mapLayerList.map((l, i) => (
                             <Draggable key={l.id} draggableId={l.id} index={i}>
                                 {provided => (
                                     <div
@@ -38,75 +41,17 @@ const MapLayersView = ({
                                         {...provided.dragHandleProps}
                                     >
                                         {l.active && (
-                                            <LayerSettings
-                                                toggledHidden={!l.visible}
-                                            >
-                                                <LayerSettings.Content>
-                                                    <LayerSettings.Toggle
-                                                        onClick={() =>
-                                                            onToggleVisibility(l.id)
-                                                        }
-                                                    >
-                                                        <i
-                                                            className={
-                                                                l.visible
-                                                                    ? 'fas fa-toggle-on'
-                                                                    : 'fas fa-toggle-off'
-                                                            }
-                                                        />
-                                                    </LayerSettings.Toggle>
-                                                    <LayerSettings.ContentMain>
-                                                        <LayerSettings.ContentTop >
-                                                            <LayerSettings.Title >
-                                                                <MapLayerTitle layer={l} />
-                                                            </LayerSettings.Title>
-                                                            <LayerSettings.Icons
-                                                                activeAdminTool={
-                                                                    adminToolActive === l.id
-                                                                }
-                                                            >
-                                                                { l._source !== 'search' &&
-                                                                !l.userLayer &&
-                                                                l.type === 'agfs' &&
-                                                                <i
-                                                                    role="button"
-                                                                    tabIndex={0}
-                                                                    onKeyPress={() =>
-                                                                        setActiveAdminTool(
-                                                                            l.id,
-                                                                            layerList,
-                                                                        )
-                                                                    }
-                                                                    onClick={() =>
-                                                                        setActiveAdminTool(
-                                                                            l.id,
-                                                                            layerList,
-                                                                        )
-                                                                    }
-                                                                    className="fas fa-edit"
-                                                                />
-                                                                }
-                                                            </LayerSettings.Icons>
-                                                        </LayerSettings.ContentTop>
-                                                        <LayerSettings.Slider>
-                                                            <Slider
-                                                                min={0}
-                                                                max={1}
-                                                                step={0.01}
-                                                                defaultValue={
-                                                                    l.opacity
-                                                                }
-                                                                onChange={evt =>
-                                                                    onOpacityChange(
-                                                                        evt,
-                                                                        l.id,
-                                                                    )
-                                                                }
-                                                            />
-                                                        </LayerSettings.Slider>
-                                                    </LayerSettings.ContentMain>
-                                                </LayerSettings.Content>
-                                            </LayerSettings>
+                                            <MapLayerSettings
+                                                layer={l}
+                                                layerList={mapLayerList}
+                                                onOpacityChange={onOpacityChange}
+                                                toggleLayer={toggleLayer}
+                                                setActiveAdminTool={setActiveAdminTool}
+                                                activeAdminTool={activeAdminTool}
+                                                createNonSpatialFeature={createNonSpatialFeature}
+                                                createThemeLayer={createThemeLayer}
+                                                mapScale={mapScale}
+                                            />
                                         )}
                                     </div>
                                 )}

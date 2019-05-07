@@ -17,16 +17,28 @@ const LayerSettings = styled.div`
 `;
 
 const Icons = styled.div`
-    flex: 2;
+    flex: 1;
     text-align: right;
     
     ${props => props.activeAdminTool && css`
-        color: ${styles.mapHighlightStroke};
+        color: ${styles.colorDanger};
     `}
     
     i:hover {
         cursor: pointer;
     }
+    
+    .theme-layer-created {
+        color: ${styles.colorDanger};
+    }
+`;
+
+const Icon = styled.i`
+    visibility: visible;
+    
+    ${props => props.hidden && css`
+            visibility: hidden;
+         `}
 `;
 
 const Drag = styled.div`
@@ -37,17 +49,37 @@ const Drag = styled.div`
 
 const Title = styled.div`
     flex: 8;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Toggle = styled.div`
+    display: flex;
     align-self: center;
-    padding: 1rem;
-    cursor: pointer;
+    padding: 0 1rem;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 75%;
+    
+    .symbolWrapper {
+        align-self: center;
+        max-width: 1em;
+    };
+
+    ${props => !props.viewable && css`
+        cursor: grab;
+    `}
+
+    ${props => props.viewable && css`
+        cursor: pointer;
+    `}
 `;
 
 LayerSettings.Content = Content;
 LayerSettings.Drag = Drag;
 LayerSettings.Icons = Icons;
+LayerSettings.Icon = Icon;
 LayerSettings.Slider = Slider;
 LayerSettings.Title = Title;
 LayerSettings.Toggle = Toggle;

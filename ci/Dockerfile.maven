@@ -1,4 +1,4 @@
-FROM maven:latest
+FROM maven:3-jdk-8
 ARG JENKINS_UID=1000
 ENV TZ=EEST
 RUN adduser --system --uid ${JENKINS_UID} jenkins

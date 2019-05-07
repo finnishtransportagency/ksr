@@ -1,29 +1,34 @@
 // @flow
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations/index';
-import Wrapper from './styles';
 
 type Props = {
     editSketchIcon: string,
-    activeAdminTool: string,
+    showAdminView: boolean,
     removeSketch: () => void,
     drawNewFeatureButtonRef: () => void,
-    tempGraphicsLayer: Object,
-    setActiveModal: (modal: string) => void,
+    hasAdminGraphics: boolean,
+    setActiveModal: (editModeActive: boolean) => void,
+    editModeActive: boolean,
+    validGeometry: boolean,
+    activeTool: string,
 };
 
 const SketchActiveAdminView = ({
     editSketchIcon,
-    activeAdminTool,
+    showAdminView,
     removeSketch,
     drawNewFeatureButtonRef,
-    tempGraphicsLayer,
+    hasAdminGraphics,
     setActiveModal,
+    editModeActive,
+    validGeometry,
+    activeTool,
 }: Props) => (
     <Fragment>
         <div id="create-new-feature-wrapper">
             <div
-                style={{ visibility: tempGraphicsLayer && tempGraphicsLayer.graphics && tempGraphicsLayer.graphics.length > 0 ? 'visible' : 'hidden' }}
+                style={{ visibility: hasAdminGraphics ? 'visible' : 'hidden' }}
                 id="reject-create-new-feature"
                 role="button"
                 tabIndex={0}
@@ -35,38 +40,32 @@ const SketchActiveAdminView = ({
                 <span className="esri-icon-close" />
             </div>
             <div
-                style={{ visibility: tempGraphicsLayer && tempGraphicsLayer.graphics && tempGraphicsLayer.graphics.length > 0 ? 'visible' : 'hidden' }}
+                style={{ visibility: hasAdminGraphics ? 'visible' : 'hidden' }}
                 id="accept-create-new-feature"
                 role="button"
                 tabIndex={0}
-                className="esri-component esri-widget--button esri-widget esri-interactive"
+                className={`esri-component esri-widget--button esri-widget esri-interactive ${validGeometry ? '' : 'disabled'}`}
                 title={strings.sketchTool.acceptSelection}
                 onClick={
-                    tempGraphicsLayer &&
-                    tempGraphicsLayer.graphics &&
-                    tempGraphicsLayer.graphics.length > 0 ? () => {
-                            setActiveModal('editLayerDetails');
-                        } : null}
+                    hasAdminGraphics && validGeometry ? () => {
+                        setActiveModal(editModeActive);
+                    } : null}
                 onKeyPress={
-                    tempGraphicsLayer &&
-                    tempGraphicsLayer.graphics &&
-                    tempGraphicsLayer.graphics.length > 0 ? () => {
-                            setActiveModal('editLayerDetails');
-                        } : null}
+                    hasAdminGraphics && validGeometry ? () => {
+                        setActiveModal(editModeActive);
+                    } : null}
             >
                 <span className="esri-icon-check-mark" />
             </div>
-            <Wrapper>
-                <div
-                    style={{ visibility: activeAdminTool === '' ? 'hidden' : 'visible' }}
-                    id="draw-create-new-feature"
-                    className={`esri-component esri-widget--button esri-widget esri-interactive ${tempGraphicsLayer && tempGraphicsLayer.graphics && tempGraphicsLayer.graphics.length > 0 ? 'draw-create-new-feature-disabled' : ''}`}
-                    title={strings.sketchTool.activeAdmin}
-                    ref={drawNewFeatureButtonRef}
-                >
-                    <span className={`esri-icon-${editSketchIcon}`} />
-                </div>
-            </Wrapper>
+            <div
+                style={{ visibility: showAdminView ? 'visible' : 'hidden' }}
+                id="draw-create-new-feature"
+                className={`esri-component esri-widget--button esri-widget esri-interactive ${hasAdminGraphics || (activeTool && activeTool !== 'sketchActiveAdmin') ? 'disabled' : ''}`}
+                title={strings.sketchTool.activeAdmin}
+                ref={drawNewFeatureButtonRef}
+            >
+                <span className={`esri-icon-${editSketchIcon}`} />
+            </div>
         </div>
     </Fragment>
 );

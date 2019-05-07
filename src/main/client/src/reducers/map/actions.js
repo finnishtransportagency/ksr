@@ -5,43 +5,153 @@ import { layerData } from '../../api/map/layerData';
 import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
+import { addLayers, getSingleLayerFields } from '../../utils/map';
+import { reorderLayers } from '../../utils/reorder';
+import { addNonSpatialContentToTable } from '../table/actions';
+import { setLayerLegend } from '../../utils/layerLegend';
+import { setWorkspaceFeatures } from '../workspace/actions';
+import strings from '../../translations';
 
-export const getLayerGroups = () => (dispatch: Function) => {
+export const getLayerGroups = () => async (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
-    const layerList = [];
-    fetchLayerGroups()
-        .then((r) => {
-            r.map(lg => lg.layers.map(l => layerList.push(l)));
-            layerList.sort((a, b) => b.layerOrder - a.layerOrder);
-            return r;
-        })
-        .then((r) => {
-            layerList.forEach((l, i) => {
-                if (l.type === 'agfs') {
-                    // Add featurelayer fields and geometryType to layerList
-                    layerData(l.id)
-                        .then((layers) => {
-                            layerList[i].geometryType = layers.geometryType;
-                            layerList[i].fields =
-                                layers.fields && layers.fields.map((f, index) => ({
-                                    value: index, label: f.alias, type: f.type, name: f.name,
-                                }));
-                        })
-                        .catch(err => console.log(err));
-                }
-            });
-            return r;
-        })
-        .then(r => dispatch({
-            type: types.GET_LAYER_GROUPS_FULFILLED,
-            layerGroups: r,
-            layerList,
-        }))
-        .catch(err => console.log(err));
+
+    const layerGroups = await fetchLayerGroups();
+    const layerList = layerGroups
+        .flatMap(lg => lg.layers.map(layer => ({ ...layer, layerGroupName: lg.name })))
+        .sort((a, b) => b.layerOrder - a.layerOrder);
+
+    return dispatch({
+        type: types.GET_LAYER_GROUPS_FULFILLED,
+        layerGroups: layerGroups.map(lg => ({
+            ...lg,
+            layers: lg.layers.map(layer => layer),
+        })),
+        layerList,
+    });
 };
 
-export const setLayerList = (layerList: Array<any>) => (dispatch: Function) => {
-    dispatch({ type: types.SET_LAYER_LIST, layerList });
+export const setLayerList = (layerList: Array<any>) => ({
+    type: types.SET_LAYER_LIST,
+    layerList,
+});
+
+export const updateLayer = (layer: Object) => ({
+    type: types.UPDATE_LAYER,
+    layer,
+});
+
+export const updateLayerFields = (layerId: string, fields: Object[]) => ({
+    type: types.UPDATE_LAYER_FIELDS,
+    layerId,
+    fields,
+});
+
+/**
+ * Handles activating new layers. Works with single layer, layer group or workspace.
+ *
+ * Sets loading to all layers that are being activated. If layer added successfully to map view
+ * it will be updated into layer list. If a layer fails it will not be added to layer list and
+ * toast will be shown for the failing layer.
+ *
+ * If called from workspace load, will also handle zooming to saved extent and updating workspace
+ * load toast after everything has been successfully loaded from the workspace.
+ *
+ * @param {Object[]} layers Layers to be activated.
+ * @param {Object} [workspace] Workspace to be loaded.
+ */
+export const activateLayers = (
+    layers: Object[],
+    workspace?: Object,
+) => async (dispatch: Function, getState: Function) => {
+    const { view } = dispatch(getState).map.mapView;
+    const { activeAdminTool } = dispatch(getState).adminTool.active.layerId;
+
+    view.popup.close();
+
+    dispatch({
+        type: types.SET_LOADING_LAYERS,
+        layerIds: layers.map(l => l.id),
+    });
+
+    const { failedLayers } = await addLayers(
+        layers,
+        view,
+        workspace !== undefined,
+    );
+
+    await Promise.all(layers.map(async (layer) => {
+        if (!failedLayers.some(layerId => layerId === layer.id)) {
+            if (layer.id === activeAdminTool) {
+                dispatch({
+                    type: types.SET_ACTIVE_ADMIN_TOOL,
+                    layerId: '',
+                    layerList: dispatch(getState).map.layerGroups.layerList,
+                });
+            }
+
+            if (layer.type === 'agfl') {
+                if (workspace === undefined) dispatch(addNonSpatialContentToTable(layer));
+            } else {
+                const layerToUpdate = await getSingleLayerFields({ ...layer, failOnLoad: false });
+                await setLayerLegend(
+                    layerToUpdate,
+                    dispatch(getState).map.mapView.view,
+                );
+
+                const workspaceLayer = workspace !== undefined
+                    && (layer.definitionExpression
+                        ? workspace.layers.find(wl => wl.definitionExpression
+                            && (wl.layerId === layer.id.replace('.s', '')
+                                || wl.userLayerId === layer.id.replace('.s', '')))
+                        : workspace.layers.find(wl => wl.layerId === layer.id
+                            || wl.userLayerId === layer.id));
+
+                dispatch({
+                    type: types.UPDATE_LAYER,
+                    layer: {
+                        ...layerToUpdate,
+                        active: true,
+                        visible: workspaceLayer
+                            ? workspaceLayer.visible
+                            : true,
+                        opacity: workspaceLayer
+                            ? workspaceLayer.opacity
+                            : layer.opacity,
+                    },
+                });
+
+                if (workspace === undefined) {
+                    const reorderedLayerList = reorderLayers(
+                        dispatch(getState).map.layerGroups.layerGroups,
+                        dispatch(getState).map.layerGroups.layerList,
+                        layer,
+                    );
+
+                    dispatch(setLayerList(reorderedLayerList));
+                }
+            }
+        } else {
+            dispatch({
+                type: types.DEACTIVATE_LAYER,
+                layerId: layer.id,
+                failOnLoad: true,
+            });
+        }
+    }));
+
+    if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layers));
+};
+
+export const deactivateLayer = (layerId: string) => (dispatch: Function) => {
+    dispatch({
+        type: types.DEACTIVATE_LAYER,
+        layerId,
+    });
+
+    dispatch({
+        type: types.REMOVE_LAYER_FROM_VIEW,
+        layerIds: [layerId],
+    });
 };
 
 export const getActiveLayerTab = () => ({
@@ -61,40 +171,35 @@ export const getMapConfig = () => (dispatch: Function) => {
             mapCenter: r.center,
             mapScale: r.scale,
             printServiceUrl: r.printServiceUrl,
+            extractServiceUrl: r.extractServiceUrl,
         }))
         .catch(err => console.log(err));
 };
 
-export const setMapView = (view: any) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_MAP_VIEW,
-        view,
-    });
-};
+export const setMapView = (view: any) => ({
+    type: types.SET_MAP_VIEW,
+    view,
+});
 
-export const setTempGrapLayer = (graphicsLayer: Object) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_GRAPH_LAYER,
-        graphicsLayer,
-    });
-};
+export const setTempGraphicsLayer = (graphicsLayer: Object) => ({
+    type: types.SET_GRAPH_LAYER,
+    graphicsLayer,
+});
 
-export const setMapTools = (draw: Object, sketchViewModel: Object) => (dispatch: Function) => {
-    dispatch({
-        type: types.SET_MAP_TOOLS,
-        draw,
-        sketchViewModel,
-    });
-};
+export const setMapTools = (draw: Object, sketchViewModel: Object) => ({
+    type: types.SET_MAP_TOOLS,
+    draw,
+    sketchViewModel,
+});
 
 export const setActiveTool = (active: string) => ({
     type: types.SET_ACTIVE_TOOL,
     active,
 });
 
-export const setEditMode = (editMode: string) => ({
-    type: types.SET_EDIT_MODE,
-    editMode,
+export const setActiveFeatureMode = (activeFeatureMode: string) => ({
+    type: types.SET_ACTIVE_FEATURE_MODE,
+    activeFeatureMode,
 });
 
 export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
@@ -103,31 +208,38 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
             if (!l.error) {
                 if (l.type === 'agfs') {
                     layerData(l.id)
-                        .then((layer) => {
-                            l.fields =
-                                layer.fields && layer.fields.map((f, index) => ({
-                                    value: index, label: f.alias, type: f.type, name: f.name,
-                                }));
+                        .then((layer: Object) => {
+                            l.fields = layer.fields && layer.fields.map((f, index) => ({
+                                value: index, label: f.alias, type: f.type, name: f.name,
+                            }));
                             return l;
                         })
                         .then((r) => {
+                            const userLayer = {
+                                ...r,
+                                active: false,
+                                layerGroupName: strings.mapLayers.userLayerGroupName,
+                            };
+
                             dispatch({
                                 type: types.ADD_USER_LAYER,
-                                layer: {
-                                    ...r,
-                                    active: r.visible,
-                                },
+                                layer: userLayer,
                             });
+                            dispatch(activateLayers([userLayer]));
                         })
                         .catch(err => console.log(err));
                 } else {
+                    const userLayer = {
+                        ...l,
+                        active: false,
+                        layerGroupName: strings.mapLayers.userLayerGroupName,
+                    };
+
                     dispatch({
                         type: types.ADD_USER_LAYER,
-                        layer: {
-                            ...l,
-                            active: l.visible,
-                        },
+                        layer: userLayer,
                     });
+                    dispatch(activateLayers([userLayer]));
                 }
             }
         })
@@ -140,14 +252,14 @@ export const removeUserLayer = (layerId: string) => ({
 });
 
 export const removeUserLayerConfirmed = (
-    layerId: String,
+    layerId: string,
     layerList: Array<Object>,
 ) => (dispatch: Function) => {
     deleteUserLayer(layerId).then((res) => {
         if (res.ok) {
             dispatch({
                 type: types.REMOVE_LAYER_FROM_VIEW,
-                layerId,
+                layerIds: [layerId],
             });
             dispatch({
                 type: types.SET_LAYER_LIST,
@@ -160,3 +272,46 @@ export const removeUserLayerConfirmed = (
         }
     }).catch(e => console.error(e));
 };
+
+export const addShapefile = (layer: Object) => ({
+    type: types.ADD_SHAPEFILE_LAYER,
+    layer,
+});
+
+export const setMapDrawText = (text: string) => ({
+    type: types.SET_MAP_DRAW_TEXT,
+    drawText: text,
+});
+
+export const setActiveToolMenu = (activeToolMenu: string) => ({
+    type: types.SET_ACTIVE_TOOL_MENU,
+    activeToolMenu,
+});
+
+export const setHasGraphics = (hasGraphics: boolean) => ({
+    type: types.SET_HAS_GRAPHICS,
+    hasGraphics,
+});
+
+export const removeLayersView = (layerIds: Array<number>) => ({
+    type: types.REMOVE_LAYER_FROM_VIEW,
+    layerIds,
+});
+
+export const toggleLayerLegend = () => ({
+    type: types.TOGGLE_LAYER_LEGEND,
+});
+
+export const toggleLayer = (layerId: string) => ({
+    type: types.TOGGLE_LAYER,
+    layerId,
+});
+
+export const toggleMeasurements = () => ({
+    type: types.TOGGLE_MEASUREMENTS,
+});
+
+export const setScale = (mapScale: number) => ({
+    type: types.SET_SCALE,
+    mapScale,
+});

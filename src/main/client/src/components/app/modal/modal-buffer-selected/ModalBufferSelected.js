@@ -13,10 +13,12 @@ type Props = {
 
 type State = {
     bufferSize: number,
+    submitDisabled: boolean,
 };
 
 const initialState = {
     bufferSize: 0,
+    submitDisabled: false,
 };
 
 class ModalBufferSelected extends Component<Props, State> {
@@ -33,12 +35,29 @@ class ModalBufferSelected extends Component<Props, State> {
     }
 
     handleBufferChange = (e: Object) => {
-        this.setState({ bufferSize: e.target.value });
+        const submitDisabled = e.target.value < -100000 || e.target.value > 100000;
+        this.setState({
+            bufferSize: e.target.value,
+            submitDisabled,
+        });
     };
 
     render() {
         const { selectedGeometryData, view } = this.props;
-        const { bufferSize } = this.state;
+        const { bufferSize, submitDisabled } = this.state;
+
+        const modalSubmit = [{
+            text: strings.modalAddUserLayer.submit,
+            handleSubmit: () => {
+                setBuffer(
+                    view,
+                    selectedGeometryData,
+                    bufferSize,
+                );
+            },
+            disabled: submitDisabled,
+            toggleModal: true,
+        }];
 
         return (
             <ModalContainer
@@ -47,14 +66,7 @@ class ModalBufferSelected extends Component<Props, State> {
                         strings.modalBufferSelectedData.singleTitle :
                         strings.modalBufferSelectedData.title
                 }
-                handleModalSubmit={() => {
-                    setBuffer(
-                        view,
-                        selectedGeometryData,
-                        bufferSize,
-                    );
-                }}
-                submitText={strings.modalBufferSelectedData.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalBufferSelectedData.cancel}
             >
                 <ModalBufferSelectedView

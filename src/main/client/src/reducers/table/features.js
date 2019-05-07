@@ -1,6 +1,4 @@
 // @flow
-import clone from 'clone';
-
 import {
     CLEAR_TABLE_DATA,
     DE_SELECT_SELECTED_FEATURES,
@@ -14,15 +12,21 @@ import {
     SET_SINGLE_LAYER_GEOMETRY,
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
+    APPLY_EDITS,
+    APPLY_DELETED_FEATURES,
+    CLEAR_SEARCH_DATA,
+    DEACTIVATE_LAYER,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
+    getActiveTable,
     mergeLayers,
     syncWithLayersList,
     toggleSelectAll,
     toggleSelection,
     updateLayerColumns,
 } from '../../utils/parseFeatureData';
+import { applyEdits, applyDeletedFeatures, applyEditedLayers } from '../../utils/table';
 
 type State = {
     fetching: boolean,
@@ -43,6 +47,8 @@ type Action = {
     search: boolean,
     data: Object,
     geometry: Object,
+    edits: Array<Object>,
+    objectIds: string,
 };
 
 const initialState = {
@@ -54,7 +60,6 @@ const initialState = {
 };
 
 export default (state: State = initialState, action: Action) => {
-    const editedLayers = clone(state.editedLayers, true, 3);
     switch (action.type) {
         case SELECT_FEATURES:
             return {
@@ -82,6 +87,19 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 ...syncWithLayersList(state.layers, action.layerList, state.activeTable),
             };
+        case DEACTIVATE_LAYER:
+            return {
+                ...state,
+                layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
+                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId)
+                    .map(l => (l.id === `${action.layerId}.s`
+                        ? state.layers.find(a => a.id === `${action.layerId}.s`)
+                        : l)): Object[]),
+                activeTable: getActiveTable(
+                    state.layers.filter(l => l.id !== action.layerId),
+                    state.activeTable,
+                ),
+            };
         case DE_SELECT_SELECTED_FEATURES:
             return {
                 ...state,
@@ -100,19 +118,56 @@ export default (state: State = initialState, action: Action) => {
                 editedLayers: toggleSelectAll(state.editedLayers, action.layerId),
             };
         case SET_ACTIVE_ADMIN_TOOL:
-            return initialState;
-        case CLEAR_TABLE_DATA:
-            return initialState;
-        case SET_EDITED_LAYER:
-            if (editedLayers) editedLayers.find(l => l.id === state.activeTable).data = action.data;
             return {
                 ...state,
-                editedLayers,
+                editedLayers: state.layers,
             };
+        case CLEAR_TABLE_DATA:
+            return initialState;
+        case CLEAR_SEARCH_DATA:
+            return {
+                ...state,
+                layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
+                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId): Object[]),
+            };
+        case SET_EDITED_LAYER: {
+            return {
+                ...state,
+                editedLayers: applyEditedLayers(state.editedLayers, action.data),
+            };
+        }
         case SET_SINGLE_LAYER_GEOMETRY:
             return {
                 ...state,
                 singleLayerGeometry: action.geometry,
+            };
+        case APPLY_EDITS:
+            return {
+                ...state,
+                layers: applyEdits(state.editedLayers, action.edits),
+                editedLayers: applyEdits(state.editedLayers, action.edits),
+            };
+        case APPLY_DELETED_FEATURES:
+            return {
+                ...state,
+                layers: applyDeletedFeatures(
+                    state.layers,
+                    action.objectIds,
+                    action.layerId,
+                ),
+                editedLayers: applyDeletedFeatures(
+                    state.editedLayers,
+                    action.objectIds,
+                    action.layerId,
+                ),
+                activeTable: getActiveTable(
+                    applyDeletedFeatures(
+                        state.layers,
+                        action.objectIds,
+                        action.layerId,
+                    ),
+                    state.activeTable,
+                ),
             };
         default:
             return state;

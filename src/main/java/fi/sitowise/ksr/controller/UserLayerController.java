@@ -3,14 +3,17 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.service.UserLayerService;
+import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Arrays;
+
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
 
 /**
  * Rest controller for user layer
@@ -21,37 +24,39 @@ public class UserLayerController {
 
     private final UserLayerService userLayerService;
 
+    private static final Logger LOG = LogManager.getLogger(UserLayerController.class);
+
     @Autowired
     public UserLayerController(UserLayerService userLayerService) {
         this.userLayerService = userLayerService;
     }
 
     /**
-     * Add user layer to database
-     * @param layer requestbody JSON object that contains layer values to be added
-     * @param userAgent requestheader that contains info about current device
+     * Add user layer to database.
+     * @param layer requestbody JSON object that contains layer values to be added.
+     * @param userAgent requestheader that contains info about current device.
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @ApiOperation("Add user layer to database.")
+    @PostMapping(value = "")
     public Layer postUserLayer(@Valid @RequestBody Layer layer, @RequestHeader(value = "User-Agent") String userAgent) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOG.info(String.format("%s: Add user layer to database.", getCurrentUsername()));
         String[] mobileAgents = {"Mobile", "Tablet", "Mobi", "IEMobile"};
         boolean isMobile = Arrays.stream(mobileAgents).parallel().anyMatch(userAgent::contains);
 
         try {
-            return userLayerService.addUserLayer(authentication.getName(), layer, isMobile);
+            return userLayerService.addUserLayer(getCurrentUsername(), layer, isMobile);
         } catch (DataAccessException e) {
-            String msg = "Error creating new user layer";
-            throw new KsrApiException.InternalServerErrorException(msg, e);
+            throw new KsrApiException.InternalServerErrorException("Error creating new user layer", e);
         }
     }
 
     /**
-     * Remove user layer from database
-     * @param userLayerId int Id of the layer to be deleted
+     * Remove user layer from database.
+     * @param userLayerId int Id of the layer to be deleted.
      */
-    @RequestMapping(value = "/{userLayerId}", method = RequestMethod.DELETE)
+    @ApiOperation("Remove user layer from database.")
+    @DeleteMapping(value = "/{userLayerId}")
     public void removeUserLayer(@PathVariable("userLayerId") int userLayerId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userLayerService.removeUserLayer(authentication.getName(), userLayerId);
+        userLayerService.removeUserLayer(getCurrentUsername(), userLayerId);
     }
 }

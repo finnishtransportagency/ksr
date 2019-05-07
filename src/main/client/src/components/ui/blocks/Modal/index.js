@@ -1,5 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
+import { fadeInModal, fadeOutModal } from '../../keyframes/modal';
 import Blur from './Blur';
 import Content from './Content';
 import Footer from './Footer';
@@ -24,10 +25,29 @@ const Modal = styled.div`
     transition: 0.6s;
     background: #FFFFFF;
     overflow: hidden;
+    -webkit-animation: ${fadeInModal} 0.3s;
+    -moz-animation: ${fadeInModal} 0.3s;
+    -o-animation: ${fadeInModal} 0.3s;
+    animation: ${fadeInModal} 0.3s;
+    
+    .modal-content-scroll-wrapper {
+        background: ${styles.colorBackgroundWhite};
+    };
+    
+    ${props => props.fadeOut && css`
+        -webkit-animation: ${fadeOutModal} 0.3s;
+        -moz-animation: ${fadeOutModal} 0.3s;
+        -o-animation: ${fadeOutModal} 0.3s;
+        animation: ${fadeOutModal} 0.3s;
+    `};
+    
+    ${props => props.confirm && css`
+        width: 350px;
+    `};
     
     @media only screen and (max-width: 768px) {
         width: 90%;
-    }
+    };
 `;
 
 Modal.Content = Content;

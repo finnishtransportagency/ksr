@@ -18,7 +18,7 @@ describe('components', () => {
             expect(wrapper.find(SideNav).length).toBe(1);
             expect(wrapper.find(SideNav.Logo).length).toBe(1);
             expect(wrapper.find(SideNav.LinkWrapper).length).toBe(1);
-            expect(wrapper.find(SideNav.Link).length).toBe(4);
+            expect(wrapper.find(SideNav.Link).length).toBe(5);
         });
     });
 });

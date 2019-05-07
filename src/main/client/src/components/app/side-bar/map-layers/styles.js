@@ -19,4 +19,20 @@ export const ButtonLayerAddWrapper = styled.div`
     position: absolute;
     bottom: 0;
     width: calc(100% - 2rem);
+    
+    button {
+        width: calc(50% - 0.5rem);
+        
+        &:first-of-type {
+            margin-right: 0.5rem;
+        }
+        
+        &:last-of-type {
+            margin-left: 0.5rem;
+        }
+    }
+`;
+
+export const LayerFilterWrapper = styled.div`
+    padding: 0 1rem;
 `;

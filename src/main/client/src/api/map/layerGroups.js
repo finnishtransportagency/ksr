@@ -1,6 +1,12 @@
+// @flow
 import { config } from '../config';
 import strings from '../../translations';
 
+/**
+ * Get layer group data from database.
+ *
+ * @returns {Promise<Object[]>} Promise with layer group data.
+ */
 export const fetchLayerGroups = () => (
     fetch('api/layergroup', config())
         .then(r => r.json())
@@ -10,6 +16,7 @@ export const fetchLayerGroups = () => (
                 layers: lg.layers.map(l => ({
                     ...l,
                     active: l.visible,
+                    failOnLoad: false,
                 })),
             }
         )))

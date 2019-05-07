@@ -1,8 +1,18 @@
-import { getHeaders } from '../config';
+// @flow
+import { config } from '../config';
 
-export const fetchAddUserLayer = data => fetch('api/user-layer', {
-    headers: getHeaders(),
-    method: 'POST',
-    body: JSON.stringify(data),
-})
-    .then(r => r.json());
+/**
+ * Adds user layer to the database.
+ *
+ * @param {Object} layerValues Contains new user layer values.
+ *
+ * @returns {Promise<Object>} Promise with added layer data.
+ */
+export const fetchAddUserLayer = (layerValues: Object) => (
+    fetch('api/user-layer', {
+        ...config(),
+        method: 'POST',
+        body: JSON.stringify(layerValues),
+    })
+        .then(r => r.json())
+);

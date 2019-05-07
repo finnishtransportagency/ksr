@@ -1,4 +1,4 @@
-import { 
+import {
     mergeData,
     updateLayerColumns,
     parseColumns,
@@ -9,6 +9,7 @@ import {
     deSelectFeatures,
     toggleSelection,
     toggleSelectAll,
+    getCodedValue,
 } from '../parseFeatureData';
 
 describe('parseFeatureData', () => {
@@ -50,7 +51,7 @@ describe('parseFeatureData', () => {
             {
                 n: 4,
                 _id: 'd',
-                _selected: true,
+                _selected: undefined,
                 _source: 'select',
             },
             {
@@ -97,45 +98,85 @@ describe('parseFeatureData', () => {
             {
                 alias: 'L 1 A',
                 name: 'l.1.a',
+                type: 'string',
             },
             {
                 alias: 'L 2 A',
                 name: 'l.2.a',
+                type: 'string',
             },
             {
                 alias: 'L 3 A',
                 name: 'l.3.a',
+                type: 'string',
+            },
+            {
+                alias: 'geom',
+                name: 'GEOM',
+                type: 'geometry',
+            },
+            {
+                alias: 'objectid',
+                name: 'OBJECTID',
+                type: 'string',
             },
         ];
 
         const aExpected = [
             {
                 Header: 'L 1 A',
-                accessor: 'l.1.a',
+                accessor: '123/l.1.a',
                 show: true,
+                domain: null,
+                minWidth: 100,
+                className: '',
             },
             {
                 Header: 'L 2 A',
-                accessor: 'l.2.a',
+                accessor: '123/l.2.a',
                 show: true,
+                domain: null,
+                minWidth: 100,
+                className: '',
             },
             {
                 Header: 'L 3 A',
-                accessor: 'l.3.a',
+                accessor: '123/l.3.a',
                 show: true,
+                domain: null,
+                minWidth: 100,
+                className: '',
+            },
+            {
+                Header: 'geom',
+                accessor: '123/GEOM',
+                show: false,
+                domain: null,
+                minWidth: 100,
+                className: '',
+            },
+            {
+                Header: 'objectid',
+                accessor: '123/OBJECTID',
+                show: false,
+                domain: null,
+                minWidth: 100,
+                className: '',
             },
         ];
 
-        expect(parseColumns(null)).toEqual([]);
-        expect(parseColumns(undefined)).toEqual([]);
-        expect(parseColumns(a)).toEqual(aExpected);
+        expect(parseColumns(null, null)).toEqual([]);
+        expect(parseColumns(undefined, undefined)).toEqual([]);
+        expect(parseColumns(123, a)).toEqual(aExpected);
     });
 
     it('mergeLayers - should merge layers', () => {
         const currentLayers = [
             {
                 id: '123',
-                data: [{ _id: 'a123', _source: 'search', _selected: false }],
+                data: [{
+                    _id: 'a123', CONTRACT_NR: '123', _source: 'search', _selected: false,
+                }],
             },
             {
                 id: '456',
@@ -150,7 +191,9 @@ describe('parseFeatureData', () => {
         const newLayers = [
             {
                 id: '123',
-                data: [{ _id: 'a123', _source: 'search', _selected: true }],
+                data: [{
+                    _id: 'a123', CONTRACT_NR: '456', _source: 'search', _selected: true,
+                }],
             },
             {
                 id: '111',
@@ -165,15 +208,21 @@ describe('parseFeatureData', () => {
         const expectedLayers = [
             {
                 id: '123',
-                data: [{ _id: 'a123', _source: 'search', _selected: true }],
+                data: [{
+                    _id: 'a123', CONTRACT_NR: '456', _source: 'search', _selected: true,
+                }],
             },
             {
-                id: '111',
-                data: [{ _id: 'b456', _source: 'select', _selected: true }],
+                id: '456',
+                data: [{ _id: 'a456', _source: 'select', _selected: true }],
             },
             {
                 id: '789',
                 data: [{ _id: 'a789', _source: 'search', _selected: false }],
+            },
+            {
+                id: '111',
+                data: [{ _id: 'b456', _source: 'select', _selected: true }],
             },
         ];
 
@@ -192,6 +241,7 @@ describe('parseFeatureData', () => {
                     title: 'layer123',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a123', name: 'f1' } }],
+                    _source: 'select',
                 },
                 {
                     id: '456',
@@ -199,6 +249,7 @@ describe('parseFeatureData', () => {
                     title: 'layer456',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a456', name: 'f2' } }],
+                    _source: 'search',
                 },
                 {
                     id: '789',
@@ -206,6 +257,7 @@ describe('parseFeatureData', () => {
                     title: 'layer789',
                     fields: [{ alias: 'L1A', name: 'l.1.a' }, { alias: 'L2A', name: 'l.2.a' }],
                     features: [{ attributes: { id: 'a789', name: 'f3' } }],
+                    _source: 'select',
                 },
             ],
         };
@@ -215,14 +267,29 @@ describe('parseFeatureData', () => {
                 id: '123',
                 title: 'layer123',
                 _source: 'select',
+                _idFieldName: 'id',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: '123/l.1.a',
+                        show: true,
+                        domain: null,
+                        minWidth: 100,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: '123/l.2.a',
+                        show: true,
+                        domain: null,
+                        minWidth: 100,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
-                        id: 'a123',
-                        name: 'f1',
+                        '123/id': 'a123',
+                        '123/name': 'f1',
                         _id: 'a123',
                         _layerId: '123',
                         _selected: false,
@@ -235,20 +302,35 @@ describe('parseFeatureData', () => {
             {
                 id: '456',
                 title: 'layer456',
-                _source: 'select',
+                _source: 'search',
+                _idFieldName: 'id',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: '456/l.1.a',
+                        show: true,
+                        domain: null,
+                        minWidth: 100,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: '456/l.2.a',
+                        show: true,
+                        domain: null,
+                        minWidth: 100,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
-                        id: 'a456',
-                        name: 'f2',
+                        '456/id': 'a456',
+                        '456/name': 'f2',
                         _id: 'a456',
                         _layerId: '456',
                         _selected: false,
                         _key: '456/a456',
-                        _source: 'select',
+                        _source: 'search',
                         _edited: [],
                     },
                 ],
@@ -257,14 +339,29 @@ describe('parseFeatureData', () => {
                 id: '789',
                 title: 'layer789',
                 _source: 'select',
+                _idFieldName: 'id',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: '789/l.1.a',
+                        show: true,
+                        domain: null,
+                        minWidth: 100,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: '789/l.2.a',
+                        show: true,
+                        domain: null,
+                        minWidth: 100,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
-                        id: 'a789',
-                        name: 'f3',
+                        '789/id': 'a789',
+                        '789/name': 'f3',
                         _id: 'a789',
                         _layerId: '789',
                         _selected: false,
@@ -276,16 +373,16 @@ describe('parseFeatureData', () => {
             },
         ];
 
-        expect(parseData(null, null, null)).toEqual([]);
-        expect(parseData(null, true, 'select')).toEqual([]);
-        expect(parseData(data, false, 'select')).toEqual(expect.arrayContaining(expectedData));
+        expect(parseData(null, null)).toEqual([]);
+        expect(parseData(null, true)).toEqual([]);
+        expect(parseData(data, false)).toEqual(expect.arrayContaining(expectedData));
     });
 
     it('getActiveTable - should return correct table id', () => {
-        const a = [{ id: '1' }, { id: '2'}, { id: '3' }];
+        const a = [{ id: '1' }, { id: '2' }, { id: '3' }];
         expect(getActiveTable(a, '2')).toBe('2');
 
-        const b = [{ id: '1' }, { id: '2'}, { id: '3' }];
+        const b = [{ id: '1' }, { id: '2' }, { id: '3' }];
         expect(getActiveTable(b, '10')).toBe('1');
 
         const c = [];
@@ -315,8 +412,20 @@ describe('parseFeatureData', () => {
                 id: '123',
                 title: 'layer123',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: 'l.1.a',
+                        show: true,
+                        minWidth: 100,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: 'l.2.a',
+                        show: true,
+                        minWidth: 100,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
@@ -330,8 +439,20 @@ describe('parseFeatureData', () => {
                 id: '456',
                 title: 'layer456',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: 'l.1.a',
+                        show: true,
+                        minWidth: 100,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: 'l.2.a',
+                        show: true,
+                        minWidth: 100,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
@@ -345,8 +466,20 @@ describe('parseFeatureData', () => {
                 id: '789',
                 title: 'layer789',
                 columns: [
-                    { Header: 'L1A', accessor: 'l.1.a', show: true },
-                    { Header: 'L2A', accessor: 'l.2.a', show: true },
+                    {
+                        Header: 'L1A',
+                        accessor: 'l.1.a',
+                        show: true,
+                        minWidth: 100,
+                        className: '',
+                    },
+                    {
+                        Header: 'L2A',
+                        accessor: 'l.2.a',
+                        show: true,
+                        minWidth: 100,
+                        className: '',
+                    },
                 ],
                 data: [
                     {
@@ -362,8 +495,20 @@ describe('parseFeatureData', () => {
             id: '789',
             title: 'layer789',
             columns: [
-                { Header: 'L1A', accessor: 'l.1.a', show: true },
-                { Header: 'L2A', accessor: 'l.2.a', show: true },
+                {
+                    Header: 'L1A',
+                    accessor: 'l.1.a',
+                    show: true,
+                    minWidth: 100,
+                    className: '',
+                },
+                {
+                    Header: 'L2A',
+                    accessor: 'l.2.a',
+                    show: true,
+                    minWidth: 100,
+                    className: '',
+                },
             ],
             data: [
                 {
@@ -619,5 +764,38 @@ describe('parseFeatureData', () => {
 
         const res3 = toggleSelectAll(data3, '123');
         expect(res3).toEqual(expect.arrayContaining(expectedData3));
+    });
+
+    it('getCodedValue - returns correct value', () => {
+        let domain;
+        let value;
+        let expectedValue;
+
+        domain = {};
+        value = '1';
+        expectedValue = '1';
+        expect(getCodedValue(domain, value)).toEqual(expectedValue);
+
+        domain = {
+            type: 'codedValue',
+            codedValues: [{
+                code: '1',
+                name: 'Test code value',
+            }],
+        };
+        value = '1';
+        expectedValue = 'Test code value';
+        expect(getCodedValue(domain, value)).toEqual(expectedValue);
+
+        domain = {
+            type: 'codedValue',
+            codedValues: [{
+                code: '123',
+                name: 'Test code value',
+            }],
+        };
+        value = '1';
+        expectedValue = null;
+        expect(getCodedValue(domain, value)).toEqual(expectedValue);
     });
 });

@@ -9,6 +9,7 @@ public class MapConfig implements Serializable {
     private int scale;
     private int[] center;
     private String printServiceUrl;
+    private String extractServiceUrl;
 
     /**
      * Gets printServiceUrl
@@ -30,6 +31,24 @@ public class MapConfig implements Serializable {
      */
     public void setPrintServiceUrl(String printServiceUrl) {
         this.printServiceUrl = printServiceUrl;
+    }
+
+    /**
+     * Get url for data extraction service.
+     *
+     * @return Data extraction service url.
+     */
+    public String getExtractServiceUrl() {
+        return extractServiceUrl;
+    }
+
+    /**
+     * Set url for data extraction service.
+     *
+     * @param extractServiceUrl Data extraction service url.
+     */
+    public void setExtractServiceUrl(String extractServiceUrl) {
+        this.extractServiceUrl = extractServiceUrl;
     }
 
     /**

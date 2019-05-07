@@ -1,19 +1,20 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
-import fi.sitowise.ksr.utils.KsrStringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUserGroups;
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUsername;
+import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
 
 /**
  * Layer group service.
@@ -21,11 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class LayerGroupService {
 
-    @Value("${server.servlet.context-path}")
-    private String contextPath;
-
     private final LayerGroupRepository layerGroupRepository;
     private final UserLayerRepository userLayerRepository;
+
+    private static final Logger LOG = LogManager.getLogger(LayerGroupService.class);
 
     /**
      * Instantiates a new Layer group service.
@@ -45,7 +45,7 @@ public class LayerGroupService {
      * @return List of LayerGroups
      */
     public List<LayerGroup> getLayerGroups(boolean isMobile) {
-        List<String> userGroups = getUserGroups();
+        List<String> userGroups = getCurrentUserGroups();
         if (userGroups == null) {
             return new ArrayList<>();
         }
@@ -59,32 +59,17 @@ public class LayerGroupService {
         for (LayerGroup lg : combinedLayerGroups) {
             if (lg.getLayers() != null) {
                 for (Layer l : lg.getLayers()) {
-                    String formatUrl = String.format("%s/%s/%s/", contextPath, ProxyController.PROXY_URL, l.getId());
-
                     l.setVisible(isMobile ? l.getMobileVisible() : l.getDesktopVisible());
-                    l.setUrl(KsrStringUtils.replaceMultipleSlashes(formatUrl));
+                    l.setUrl(formatLayerUrl(l.getType(), l.getId()));
                 }
             }
         }
-        System.out.println(combinedLayerGroups);
-        return combinedLayerGroups;
-    }
 
-    /**
-     * Get List of users usergroups.
-     *
-     * @return List of usergroups
-     */
-    public List<String> getUserGroups() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-            if (authorities == null) {
-                return null;
-            }
-            return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        if (combinedLayerGroups.size() < 1) {
+            LOG.info(String.format("%s: User does not have any layergroups or layers.", getCurrentUsername()));
         }
-        return null;
+
+        return combinedLayerGroups;
     }
 
     /**
@@ -95,7 +80,7 @@ public class LayerGroupService {
      LayerGroup createUserLayerGroup(List<LayerGroup> layerGroups) {
          int maxId = Collections.max(layerGroups, Comparator.comparing(LayerGroup::getId)).getId();
          int maxGroupOrder = Collections.max(layerGroups, Comparator.comparing(LayerGroup::getGroupOrder)).getGroupOrder();
-         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         Authentication authentication = getAuthentication();
 
          LayerGroup layerGroup = new LayerGroup();
          layerGroup.setName("Käyttäjätasot");

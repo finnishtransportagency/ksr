@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
 const Checkmark = styled.span`
@@ -19,6 +19,9 @@ const Checkmark = styled.span`
         width: 3px;
         height: 7px;
         border: solid ${styles.colorBackgroundWhite};
+        ${props => props.layerAllView && css`
+            border: solid ${styles.colorBackgroundDark};
+        `};
         border-width: 0 3px 3px 0;
         -webkit-transform: rotate(45deg);
         -ms-transform: rotate(45deg);

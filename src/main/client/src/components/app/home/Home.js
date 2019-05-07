@@ -1,26 +1,43 @@
 // @flow
 import React, { Component } from 'react';
+import { fetchGetWorkspaceList } from '../../../api/workspace/getWorkspaceList';
 import HomeView from './HomeView';
 
 type Props = {
     getLayerGroups: Function,
     getMapConfig: Function,
+    setWorkspace: Function,
+    updateWorkspaces: Function,
+    setUserInfo: Function,
+    loadFailedEdits: Function,
+    loading: boolean,
+    setLoading: Function,
 };
 
-type State = {
-    /* ... */
-};
-
-class Home extends Component<Props, State> {
+class Home extends Component<Props, null> {
     componentDidMount() {
-        const { getLayerGroups, getMapConfig } = this.props;
+        const {
+            getLayerGroups,
+            getMapConfig,
+            updateWorkspaces,
+            setWorkspace,
+            setUserInfo,
+            loadFailedEdits,
+            setLoading,
+        } = this.props;
 
+        setLoading();
+        setUserInfo();
+        setWorkspace();
         getLayerGroups();
         getMapConfig();
+        updateWorkspaces(fetchGetWorkspaceList);
+        loadFailedEdits();
     }
 
     render() {
-        return <HomeView />;
+        const { loading } = this.props;
+        return <HomeView loading={loading} />;
     }
 }
 

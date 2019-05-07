@@ -1,13 +1,16 @@
 // @flow
 import { connect } from 'react-redux';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
-import { setLayerList } from '../../../../../reducers/map/actions';
+import { setLayerList, toggleLayer } from '../../../../../reducers/map/actions';
+import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
 
 const mapStateToProps = state => ({
-    layerList: state.map.layerGroups.layerList,
+    mapLayerList: state.map.layerGroups.layerList.filter(l => l.type !== 'agfl'),
+    dataLayerList: state.map.layerGroups.layerList.filter(l => l.type === 'agfl'),
     fetching: state.map.layerGroups.fetching,
-    adminToolActive: state.adminTool.active.layerId,
+    activeAdminTool: state.adminTool.active.layerId,
+    mapScale: state.map.mapConfig.mapScale,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -16,6 +19,15 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveAdminTool: (layerId, layerList) => {
         dispatch(setActiveAdminTool(layerId, layerList));
+    },
+    createNonSpatialFeature: () => {
+        dispatch(setActiveModal('editLayerDetails'));
+    },
+    createThemeLayer: (layerId: string) => {
+        dispatch(setActiveModal('themeLayer', layerId));
+    },
+    toggleLayer: (layerId: string) => {
+        dispatch(toggleLayer(layerId));
     },
 });
 

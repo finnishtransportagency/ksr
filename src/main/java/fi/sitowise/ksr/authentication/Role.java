@@ -22,4 +22,18 @@ public class Role {
 	
 	/** The role user. (=Katselukäyttäjä) */
 	public static final String ROLE_USER = "KSR_ROLE_USER";
+
+	/**
+	 * Check if role matches any of the defined roles.
+	 *
+	 * @param role Role to check against defined roles.
+	 * @return True if role matches any of the defined roles otherwise false.
+	 */
+	static final boolean contains(String role) {
+		return ROLE_ADMIN.equalsIgnoreCase(role)
+				|| ROLE_UPDATER.equalsIgnoreCase(role)
+				|| ROLE_EXTERNAL_UPDATER.equalsIgnoreCase(role)
+				|| ROLE_NAMED_USER.equalsIgnoreCase(role)
+				|| ROLE_USER.equalsIgnoreCase(role);
+	}
 }

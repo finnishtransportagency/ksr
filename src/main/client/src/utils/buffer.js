@@ -4,13 +4,11 @@ import esriLoader from 'esri-loader';
 /**
  * Creates an esri.Graphic for highlight purposes from given geometry.
  *
- * Reason that this method takes Graphic and SpatialReference as parameters is
- * that then we can keep this method synchonous. (No need for esri-loader).
+ * Reason that this method takes Graphic as parameters is that then we can keep
+ * this method synchronous. (No need for esri-loader).
  *
- * @param geometry esri.geometry.Geometry Geometry to be used in the Graphic
- * @param srid Spatial reference identifier
- * @param Graphic Graphic class, that is then used to create new objects.
- * @param SpatialReference SpatialReference class, that is used to create a spatialRefence object.
+ * @param {Object} geometry esri.geometry.Geometry object to be used in the Graphic.
+ * @param {Object} Graphic Graphic class, that is then used to create new objects.
  *
  * @returns Graphic Returns Graphic if geometry is one of supported types otherwise null.
  */
@@ -70,10 +68,11 @@ export const createGraphic = (
 };
 
 /**
- * Set buffer for selected features (geometry)
- * @param view contains Graphic data
- * @param selectedGeometryData Array of geometry data
- * @param distance buffer size
+ * Set buffer for selected features (geometry).
+ *
+ * @param {Object} view Esri map view.
+ * @param {Object[]} selectedGeometryData Array of geometry data.
+ * @param {number} distance Buffer size in meters.
  */
 export const setBuffer = (
     view: Object,
@@ -84,14 +83,13 @@ export const setBuffer = (
         .loadModules([
             'esri/Graphic',
             'esri/geometry/geometryEngine',
-            'esri/geometry/SpatialReference',
         ])
         .then(([
             Graphic,
             geometryEngine,
         ]) => {
             if (view) {
-                view.graphics.removeMany(view.graphics.filter(g => g.id === 'buffer'));
+                view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
 
                 if (selectedGeometryData.length > 0) {
                     const featureBuffers = geometryEngine.buffer(

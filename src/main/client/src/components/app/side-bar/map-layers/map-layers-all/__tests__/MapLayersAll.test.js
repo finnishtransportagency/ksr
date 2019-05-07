@@ -6,19 +6,36 @@ import MapLayersAllView from '../MapLayersAllView';
 
 const setup = (prop) => {
     const minProps = {
-        layerGroups: [],
+        layerGroups: [
+            {
+                id: 123,
+                name: 'Test layergroup',
+                layers: [
+                    { id: 1, active: false },
+                    { id: 2, active: false },
+                ],
+            },
+        ],
         layerList: [
             {
                 id: 1,
-                active: true,
+                active: false,
             },
             {
-                id: 1,
+                id: 2,
                 active: true,
             },
         ],
         fetching: true,
-        setLayerList: jest.fn(),
+        view: {
+            popup: { close: jest.fn() },
+        },
+        activateLayers: jest.fn(),
+        deactivateLayer: jest.fn(),
+        activeGroups: [],
+        activeSubGroups: [],
+        setActiveGroups: jest.fn(),
+        setActiveSubGroups: jest.fn(),
     };
 
     const props = prop || minProps;
@@ -46,19 +63,80 @@ describe('<MapLayersAll />', () => {
 
     it('should handle handleGroupClick correctly', () => {
         const { wrapper } = setup();
-        const id = 1;
+        const { setActiveGroups } = wrapper.instance().props;
 
-        wrapper.instance().handleGroupClick(id);
-        expect(wrapper.state('activeGroup')).toBe(1);
+        wrapper.instance().handleGroupClick(1);
+        expect(setActiveGroups).toHaveBeenCalled();
     });
 
-    it('should handle handleLayerClick correctly', () => {
+    it('should handle handleSubGroupClick correctly', () => {
         const { wrapper } = setup();
-        const { setLayerList } = wrapper.instance().props;
+        const { setActiveSubGroups } = wrapper.instance().props;
+
+        wrapper.instance().handleSubGroupClick(1);
+        expect(setActiveSubGroups).toHaveBeenCalled();
+    });
+
+    it('handleLayerClick - set layer as active', async () => {
+        const { props: minProps } = setup();
+        const props = {
+            ...minProps,
+            layerGroups: [
+                {
+                    id: 123,
+                    name: 'Test layergroup',
+                    layers: [
+                        { id: 1, active: false },
+                    ],
+                },
+            ],
+            layerList: [
+                {
+                    id: 1,
+                    active: false,
+                    type: 'agfl',
+                },
+            ],
+        };
+        const { wrapper } = setup(props);
+        const { activateLayers } = wrapper.instance().props;
+
+        wrapper.instance().handleLayerClick(1);
+        expect(activateLayers).toHaveBeenCalled();
+    });
+
+    it('handleLayerClick - disable layer', async () => {
+        const { props: minProps } = setup();
+        const props = {
+            ...minProps,
+            layerGroups: [
+                {
+                    id: 123,
+                    name: 'Test layergroup',
+                    layers: [
+                        { id: 1, active: true },
+                        { id: 2, active: true },
+                    ],
+                },
+            ],
+            layerList: [
+                {
+                    id: 1,
+                    active: true,
+                },
+                {
+                    id: 2,
+                    active: true,
+                },
+            ],
+        };
+
+        const { wrapper } = setup(props);
+        const { deactivateLayer } = wrapper.instance().props;
 
         const id = 1;
 
         wrapper.instance().handleLayerClick(id);
-        expect(setLayerList).toHaveBeenCalled();
+        expect(deactivateLayer).toHaveBeenCalled();
     });
 });

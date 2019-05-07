@@ -1,19 +1,30 @@
 // @flow
 import { SET_ACTIVE_MODAL } from '../../constants/actionTypes';
 
-const initialState = '';
+const initialState = {
+    activeModal: '',
+    data: null,
+};
 
-type State = string;
+type State = {
+    activeModal: string,
+    data: any,
+};
 
 type Action = {
     activeModal: string,
+    data: any,
     type: string,
 };
 
 export default (state: State = initialState, action: Action) => {
     switch (action.type) {
         case SET_ACTIVE_MODAL:
-            return action.activeModal;
+            return {
+                ...state,
+                activeModal: action.activeModal,
+                data: action.data,
+            };
         default:
             return state;
     }

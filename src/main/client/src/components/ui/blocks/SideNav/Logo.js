@@ -8,8 +8,8 @@ const Logo = styled.div`
     justify-content: center;
     
     img {
-        height: 40px;
-        width: 40px;
+        height: 50px;
+        width: 50px;
     }
     
     @media only screen and (max-width: 768px) {

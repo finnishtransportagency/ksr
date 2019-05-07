@@ -11,7 +11,7 @@ type Props = {
 const SideNavView = ({ setActiveNav, activeNav }: Props) => (
     <SideNav>
         <SideNav.Logo onClick={() => { setActiveNav(''); }}>
-            <img src="images/liikennevirasto_logo_2x.png" alt="" />
+            <img src="images/VAYLAwhite.png" alt="" />
         </SideNav.Logo>
         <SideNav.LinkWrapper>
             <div>
@@ -27,7 +27,7 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => (
                     active={activeNav === 'mapLayers'}
                     onClick={() => { setActiveNav('mapLayers'); }}
                 >
-                    <i className="fas fa-map" />
+                    <i className="fas fa-layer-group" />
                 </SideNav.Link>
                 <SideNav.Link
                     title={strings.sideNav.fileExport}
@@ -42,6 +42,13 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => (
                     onClick={() => { setActiveNav('workspace'); }}
                 >
                     <i className="fas fa-briefcase" />
+                </SideNav.Link>
+                <SideNav.Link
+                    title={strings.sideNav.offline}
+                    active={activeNav === 'offline'}
+                    onClick={() => { setActiveNav('offline'); }}
+                >
+                    <i className="fas fa-exchange-alt" />
                 </SideNav.Link>
             </div>
         </SideNav.LinkWrapper>

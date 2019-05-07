@@ -1,5 +1,8 @@
 package fi.sitowise.ksr.service;
 
+import fi.sitowise.ksr.authentication.User;
+import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -8,6 +11,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +21,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -60,12 +68,12 @@ public class HttpRequestServiceTests {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setMethod("GET");
 
-        HttpRequestBase getBase = httpRequestService.getRequestBase(request, null, "http://test.example.com/wms?service=wms&request=GetCapabilities", null);
+        HttpRequestBase getBase = httpRequestService.getRequestBase(request, null, "http://test.example.com/wms?service=wms&request=GetCapabilities", null, null, null);
         Assert.assertEquals("GET", getBase.getMethod());
         Assert.assertNull(getBase.getFirstHeader("Authorization"));
         Assert.assertEquals(new java.net.URI("http://test.example.com/wms?service=wms&request=GetCapabilities"), getBase.getURI());
 
-        HttpRequestBase getAuthBase = httpRequestService.getRequestBase(request, "user:pass", "http://test.2.example.com/wms?service=wms&request=GetCapabilities", null);
+        HttpRequestBase getAuthBase = httpRequestService.getRequestBase(request, "user:pass", "http://test.2.example.com/wms?service=wms&request=GetCapabilities", null, null, null);
         Assert.assertEquals("GET", getAuthBase.getMethod());
         Assert.assertEquals("Basic user:pass", getAuthBase.getFirstHeader("Authorization").getValue());
         Assert.assertEquals(new java.net.URI("http://test.2.example.com/wms?service=wms&request=GetCapabilities"), getAuthBase.getURI());
@@ -78,11 +86,52 @@ public class HttpRequestServiceTests {
         request.setParameter("test", "test");
 
         HttpRequestBase postAuthBase = httpRequestService.getRequestBase(request, "user:pass",
-                "http://test.example.com/query", null);
+                "http://test.example.com/query", null, null, null);
         Assert.assertEquals("POST", postAuthBase.getMethod());
         Assert.assertEquals("Basic user:pass", postAuthBase.getFirstHeader("Authorization").getValue());
         Assert.assertEquals(new java.net.URI("http://test.example.com/query"), postAuthBase.getURI());
         Assert.assertTrue(((HttpPost) postAuthBase).getEntity() instanceof UrlEncodedFormEntity);
+    }
+
+    @Test
+    public void testPostRequestBaseWithParameterFiltering() throws URISyntaxException, IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod("POST");
+        request.setParameter("f", "json");
+        request.setParameter("features", "[{\"attributes\":{\"UPDATER\": \"ASD\", \"ID\": 12}}]");
+
+        Layer layer = new Layer();
+        layer.setUpdaterField("UPDATER");
+
+        User user = new User(
+                "K12345",
+                "Pekka",
+                "Testaaja",
+                null,
+                null,
+                null,
+                null);
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getPrincipal()).thenReturn(user);
+
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+
+        HttpRequestBase postAuthBase = httpRequestService.getRequestBase(request, null,
+                "http://test.example.com/query", null, LayerAction.UPDATE_LAYER, layer);
+
+        Assert.assertEquals("POST", postAuthBase.getMethod());
+        Assert.assertEquals(new java.net.URI("http://test.example.com/query"), postAuthBase.getURI());
+
+        Assert.assertEquals(
+                "f=json&features=%5B%7B%22geometry%22%3Anull%2C%22attributes%22%3A%7B%22UPDATER%22%3A%22P+Testaaja%22%2C%22ID%22%3A12%7D%7D%5D",
+                EntityUtils.toString(((HttpPost) postAuthBase).getEntity())
+        );
+
     }
 
     @Test
@@ -139,19 +188,6 @@ public class HttpRequestServiceTests {
     }
 
     @Test
-    public void testDocumentToBytesArray() throws IOException, SAXException, ParserConfigurationException, TransformerException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-
-        String xml = "<a><b>C</b></a>";
-        Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes()));
-
-        Assert.assertEquals(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><a><b>C</b></a>",
-                new String(httpRequestService.documentToBytesArray(doc)));
-    }
-
-    @Test
     public void testParseDocumentFromEntity() throws IOException, ParserConfigurationException, SAXException {
         InputStream in = new ByteArrayInputStream("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><a><b>C</b></a>".getBytes());
         HttpEntity entity = Mockito.mock(HttpEntity.class);
@@ -170,5 +206,22 @@ public class HttpRequestServiceTests {
         httpRequestService.writeBytesArrayToResponse(testBytes, res);
 
         Assert.assertEquals(testBytes.length, Integer.parseInt(res.getHeader("Content-Length")));
+    }
+
+    @Test
+    public void testSetBaseHeaders() {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(
+                request.getHeader(Mockito.eq("Content-Type"))
+        ).thenReturn("application/x-www-form-urlencoded;charset=UTF-8");
+
+        HttpRequestBase base = new HttpPost();
+
+        httpRequestService.setBaseHeaders(request, base);
+
+        Assert.assertEquals(
+                base.getFirstHeader("Content-Type").getValue(),
+                "application/x-www-form-urlencoded;charset=UTF-8"
+        );
     }
 }

@@ -1,14 +1,17 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import EsriMapContainer from '../../map/EsriMapContainer';
+import InitMapContainer from '../../map/InitMapContainer';
+import ModalContainer from '../../modal/ModalContainer';
 import SideBarContainer from '../../side-bar/SideBarContainer';
 import SideNavContainer from '../../side-nav/SideNavContainer';
 import HomeView from '../HomeView';
 import TableContainer from '../../table/TableContainer';
 
 const setup = () => {
-    const props = {};
-    const wrapper = shallow(<HomeView />);
+    const props = {
+        loadingWorkspace: false,
+    };
+    const wrapper = shallow(<HomeView {...props} />);
 
     return { props, wrapper };
 };
@@ -18,8 +21,9 @@ describe('<HomeView />', () => {
 
     it('should render self', () => {
         expect(wrapper.find(SideNavContainer).length).toBe(1);
-        expect(wrapper.find(EsriMapContainer).length).toBe(1);
+        expect(wrapper.find(InitMapContainer).length).toBe(1);
         expect(wrapper.find(SideBarContainer).length).toBe(1);
         expect(wrapper.find(TableContainer).length).toBe(1);
+        expect(wrapper.find(ModalContainer).length).toBe(1);
     });
 });

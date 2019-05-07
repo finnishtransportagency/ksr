@@ -1,13 +1,21 @@
+// @flow
+import querystring from 'querystring';
 import { config } from '../config';
 
 /**
- * Finds layer
+ * Fetch layer details from database.
  *
- * @param layerId Layer id (ID in database) that is used in fetch URL
+ * @param {string} layerId Layer id (ID in database) that is used in fetch URL. In case of search
+ * layers base layers data will be fetched.
  *
- * @returns All data found from layer, that will be passed to layerList
+ * @returns {Promise<Object>} All data found from layer that will be passed to layer list.
  */
-export const layerData = layerId =>
-    fetch(`api/proxy/layer/${layerId}?f=pjson`, config())
+export const layerData = (layerId: string): Promise<Object> => (
+    fetch(`api/proxy/layer/${layerId.replace('.s', '')}?${
+        querystring.stringify({
+            f: 'pjson',
+        })
+    }`, config())
         .then(r => r.json())
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
+);

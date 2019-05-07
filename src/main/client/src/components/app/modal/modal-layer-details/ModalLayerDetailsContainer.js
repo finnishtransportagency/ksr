@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import ModalLayerDetails from './ModalLayerDetails';
-import { setTempGrapLayer } from '../../../../reducers/map/actions';
+import { setActiveFeatureMode, setTempGraphicsLayer } from '../../../../reducers/map/actions';
 
 const mapStateToProps = (state) => {
     const activeLayer = (
@@ -9,18 +9,31 @@ const mapStateToProps = (state) => {
             state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId) :
             null
     );
+    const { addressField, featureType } = state.map.layerGroups.layerList
+        .find(l => l.id === state.adminTool.active.layerId);
+
+    const objectId = activeLayer && activeLayer.fields.find(f => f.type === 'esriFieldTypeOID');
 
     return {
-        fields: activeLayer ? activeLayer.fields.filter(f => f.type !== 'esriFieldTypeOID') : [],
+        objectId,
+        activeLayer,
         layer: state.map.mapView.graphicsLayer,
+        originalLayerId: state.adminTool.active.layerId,
+        addressField,
+        featureType,
+        view: state.map.mapView.view,
+        sketchViewModel: state.map.mapTools.sketchViewModel,
+        editModeActive: state.modal.activeModal.data,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    setTempGrapLayer: (graphicsLayer) => {
-        dispatch(setTempGrapLayer(graphicsLayer));
+    setTempGraphicsLayer: (graphicsLayer) => {
+        dispatch(setTempGraphicsLayer(graphicsLayer));
     },
-
+    setActiveFeatureMode: (activeFeatureMode: string) => {
+        dispatch(setActiveFeatureMode(activeFeatureMode));
+    },
 });
 
 const ModalLayerDetailsContainer = connect(mapStateToProps, mapDispatchToProps)(ModalLayerDetails);

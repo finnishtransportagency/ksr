@@ -1,11 +1,9 @@
 package fi.sitowise.ksr.domain;
 
 import fi.sitowise.ksr.jooq.tables.records.LayerGroupRecord;
-import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
 
@@ -26,14 +24,14 @@ public class LayerGroup implements Serializable {
     /**
      * Construct a LayerGroup from relevant jOOQ records.
      *
-     * @param lrr LayerGroupRecord, jOOQ generated
-     * @param llr List<LayerRecord>, list of LayerRecords
+     * @param lrr      LayerGroupRecord, jOOQ generated.
+     * @param ll       List of layers.
      */
-    public LayerGroup (LayerGroupRecord lrr, List<LayerRecord> llr) {
+    public LayerGroup (LayerGroupRecord lrr, List<Layer> ll) {
         this.id = toIntExact(lrr.getId());
         this.name = lrr.getName();
         this.groupOrder = lrr.getGroupOrder();
-        this.layers = llr.stream().map(Layer::new).collect(Collectors.toList());
+        this.layers = new ArrayList<>(ll);
     }
 
     /**

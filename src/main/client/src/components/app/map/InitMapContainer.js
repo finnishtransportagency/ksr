@@ -1,0 +1,88 @@
+// @flow
+import { connect } from 'react-redux';
+import {
+    setMapView,
+    setTempGraphicsLayer,
+    setHasGraphics,
+    setActiveFeatureMode,
+    activateLayers,
+    deactivateLayer,
+    setScale,
+} from '../../../reducers/map/actions';
+import { setActiveModal } from '../../../reducers/modal/actions';
+import { setPropertyInfo } from '../../../reducers/search/actions';
+import { setSingleLayerGeometry, selectFeatures } from '../../../reducers/table/actions';
+import { setWorkspace, setWorkspaceRejected } from '../../../reducers/workspace/actions';
+import InitMap from './InitMap';
+import { setContractListInfo } from '../../../reducers/contract/actions';
+import { showConfirmModal } from '../../../reducers/confirmModal/actions';
+import { removeLoading } from '../../../reducers/loading/actions';
+
+const mapStateToProps = state => ({
+    layerList: state.map.layerGroups.layerList,
+    mapCenter: state.map.mapConfig.mapCenter,
+    mapScale: state.map.mapConfig.mapScale,
+    printServiceUrl: state.map.mapConfig.printServiceUrl,
+    activeAdminTool: state.adminTool.active.layerId,
+    sketchViewModel: state.map.mapTools.sketchViewModel,
+    geometryType: state.adminTool.active.geometryType,
+    activeTool: state.map.mapTools.active,
+    initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
+    authorities: state.user.userInfo.authorities,
+    editModeActive: state.map.mapTools.activeFeatureMode === 'edit',
+});
+
+const mapDispatchToProps = dispatch => ({
+    selectFeatures: (features) => {
+        dispatch(selectFeatures(features));
+    },
+    setMapView: (view) => {
+        dispatch(setMapView(view));
+    },
+    setTempGraphicsLayer: (graphicsLayer) => {
+        dispatch(setTempGraphicsLayer(graphicsLayer));
+    },
+    setActiveModal: (activeModal) => {
+        dispatch(setActiveModal(activeModal));
+    },
+    setSingleLayerGeometry: (geometry) => {
+        dispatch(setSingleLayerGeometry(geometry));
+    },
+    setHasGraphics: (hasGraphics) => {
+        dispatch(setHasGraphics(hasGraphics));
+    },
+    setWorkspace: () => {
+        dispatch(setWorkspace());
+    },
+    setWorkspaceRejected: () => {
+        dispatch(setWorkspaceRejected());
+    },
+    setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
+        dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
+    },
+    setContractListInfo: (layerId, objectId) => {
+        dispatch(setContractListInfo(layerId, objectId));
+    },
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+    setActiveFeatureMode: (activeFeatureMode: string) => {
+        dispatch(setActiveFeatureMode(activeFeatureMode));
+    },
+    removeLoading: () => {
+        dispatch(removeLoading());
+    },
+    activateLayers: (layers: Object[], workspace?: Object) => {
+        dispatch(activateLayers(layers, workspace));
+    },
+    deactivateLayer: (layerId) => {
+        dispatch(deactivateLayer(layerId));
+    },
+    setScale: (scale: number) => {
+        dispatch(setScale(scale));
+    },
+});
+
+const InitMapContainer = connect(mapStateToProps, mapDispatchToProps)(InitMap);
+
+export default InitMapContainer;

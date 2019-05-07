@@ -6,6 +6,8 @@ import Content from './Content';
 import Layer from './Layer';
 import Label from './Label';
 import RemoveIcon from './RemoveIcon';
+import Span from './Span';
+import Loading from './Loading';
 
 const LayerGroup = styled.div`
     background: ${styles.colorBackgroundLight};
@@ -34,5 +36,7 @@ LayerGroup.Content = Content;
 LayerGroup.Layer = Layer;
 LayerGroup.Layer.Label = Label;
 LayerGroup.Layer.RemoveIcon = RemoveIcon;
+LayerGroup.Span = Span;
+LayerGroup.Loading = Loading;
 
 export default LayerGroup;

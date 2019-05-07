@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../../ui/defaultStyles';
 
 export const WrapperReactTable = styled.div`
@@ -10,12 +10,20 @@ export const WrapperReactTable = styled.div`
     width: calc(100% - 60px);
     bottom: 0;
     
-    .ReactTable {
+    div.ReactTable {
         border: none;
         box-shadow: inset 0 2px 4px 0 hsla(0, 0%, 0%, 0.25);
         
         .rt-thead.-header {
+            background: ${styles.colorBackgroundDarkSecondary};
             padding-top: 4px;
+        };
+        
+        .rt-th {
+            background: ${styles.colorBackgroundDarkSecondary};
+            min-height: 35px;
+            border-bottom: none;
+            border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
         };
         
         .rt-thead .rt-th.-sort-desc {
@@ -31,7 +39,6 @@ export const WrapperReactTable = styled.div`
         };
         
         .rt-resizable-header {
-            background: ${styles.colorBackgroundDarkSecondary};
             color: ${styles.colorFontLight};
             padding: 0.5rem;
         };
@@ -39,6 +46,10 @@ export const WrapperReactTable = styled.div`
         .rt-thead.-filters {
             background: ${styles.colorBackgroundDarkSecondary};
             border-bottom: 1px solid rgba(0,0,0,0.15);
+            
+            .rt-tr, .rt-th {
+                min-height: 42px;
+            };
             
             input {
                 border-radius: 0;
@@ -54,17 +65,28 @@ export const WrapperReactTable = styled.div`
             .rt-td {
                 padding: 0.75rem 6px;
                 text-align: left;
-                border-right: 1px solid rgba(0, 0, 0, 0.1);
+                border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+                height: 42px;
+                background-color: transparent;
                 
                 div {
                     overflow: hidden;
                     text-overflow: ellipsis;
                 };
+                
+                &.decimal {
+                    text-align: right;
+                };
+
+                &.date {
+                    min-width: 140px;
+                }
             };
         
             .rt-tr-group {
                 border: none;
                 background: ${styles.colorBackgroundLight};
+                max-height: 42px;
             };
         };
         
@@ -73,21 +95,7 @@ export const WrapperReactTable = styled.div`
         };
         
         .rt-tr {
-            min-height: 32px;
-            align-items: left;
-        };
-        
-        .rt-thead.-filters .rt-tr {
-            min-height: 42px;
-        };
-        
-        .rt-thead.-filters .rt-th:nth-of-type(2) {
-            padding-left: 0;
-        };
-        
-        .rt-body .rt-td {
-            border: none;
-            padding: 0.5rem 0;
+            align-items: flex-start;
         };
     
         .rt-tr > .rt-td:first-of-type {
@@ -119,18 +127,70 @@ export const WrapperReactTable = styled.div`
         input[type='checkbox']:hover {
             cursor: pointer;
         };
+        
+        .content-not-editable {
+            outline: none;
+        }
+
+        .content-not-valid {
+            border: 2px solid ${styles.colorDanger};
+        };
+        
+        .contract-icon {
+            cursor: pointer;
+        };
+        
+        .contract-icon:hover {
+            color: ${styles.colorMain};
+        }
+        
+        .contract-icon:focus {
+            outline: none;
+        }
+        
+        .track-vertical {
+            position: absolute;
+            width: 8px !important;
+            top: 84px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 3px;
+        };
+        
+        .track-horizontal {
+            position: absolute;
+            height: 8px !important;
+            left: 32px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 3px;
+        };
+    
+        ${props => props.columns && props.columns.length && props.columns[0].fixed && css`
+            .track-horizontal {
+                left: calc(32px + (${props.columns[0].columns.length} * 30px));
+            };
+        `};
     };
 
     @media only screen and (max-width: 768px) {
-      width: 100%;
-      top: 52px;
-      height: calc(100% - 60px - 52px);
+        width: 100%;
+        top: 52px;
+        height: calc(100% - 60px - 52px);
     };
 `;
 
 export const WrapperReactTableNoTable = styled.div`
-  text-align: center;
-  width: 100%;
-  top: 80px;
-  position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 80px;
+    position: absolute;
+`;
+
+export const TableSelect = styled.select`
+    width: 100%;
+`;
+
+export const TableInput = styled.input`
+    width: 100%;
 `;

@@ -1,4 +1,5 @@
 import { addOrReplaceLayers, addOrReplaceLayersInSearchGroup, addLayerToUserGroup } from '../layers';
+import strings from '../../translations';
 
 describe('layers', () => {
     it('addOrReplaceLayers', () => {
@@ -46,12 +47,12 @@ describe('layers', () => {
     it('addLayerToUserGroup', () => {
         const layerGroups1 = [
             { id: 1 },
-            { id: 2, name: 'Käyttäjätasot', layers: [] },
+            { id: 2, name: strings.mapLayers.userLayerGroupName, layers: [] },
         ];
 
         const layerGroups2 = [
             { id: 1 },
-            { id: 2, name: 'Käyttäjätasot', layers: [{ id: 1, v: 1 }] },
+            { id: 2, name: strings.mapLayers.userLayerGroupName, layers: [{ id: 1, v: 1 }] },
         ];
 
         const layer1 = { id: 1, v: 1 };
@@ -59,12 +60,16 @@ describe('layers', () => {
 
         const expected1 = [
             { id: 1 },
-            { id: 2, name: 'Käyttäjätasot', layers: [{ id: 1, v: 1 }] },
+            { id: 2, name: strings.mapLayers.userLayerGroupName, layers: [{ id: 1, v: 1 }] },
         ];
 
         const expected2 = [
             { id: 1 },
-            { id: 2, name: 'Käyttäjätasot', layers: [{ id: 1, v: 1 }, { id: 2, v: 2 }] },
+            {
+                id: 2,
+                name: strings.mapLayers.userLayerGroupName,
+                layers: [{ id: 1, v: 1 }, { id: 2, v: 2 }],
+            },
         ];
 
         const res1 = addLayerToUserGroup(layerGroups1, layer1);

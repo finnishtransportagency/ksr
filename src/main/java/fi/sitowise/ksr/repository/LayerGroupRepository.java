@@ -1,7 +1,9 @@
 package fi.sitowise.ksr.repository;
 
+import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.jooq.tables.records.LayerGroupRecord;
+import fi.sitowise.ksr.jooq.tables.records.LayerPermissionRecord;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static fi.sitowise.ksr.jooq.Tables.LAYER_GROUP;
-import static fi.sitowise.ksr.jooq.Tables.LAYER;
-import static fi.sitowise.ksr.jooq.Tables.LAYER_PERMISSION;
+import static fi.sitowise.ksr.jooq.Tables.*;
 
 /**
  * Layer group repository.
@@ -38,9 +38,10 @@ public class LayerGroupRepository {
      * @return List of LayerGroups
      */
     public List<fi.sitowise.ksr.domain.LayerGroup> getLayerGroups(List<String> userGroups) {
-        Map<LayerGroupRecord, List<LayerRecord>> groups =
+        Map<LayerGroupRecord, List<Layer>> groups =
                 this.context.select(LAYER_GROUP.fields())
                         .select(LAYER.fields())
+                        .select(LAYER_PERMISSION.fields())
                         .from(LAYER_GROUP)
                         .join(LAYER).on(LAYER.LAYER_GROUP_ID.equal(LAYER_GROUP.ID))
                         .join(LAYER_PERMISSION).on(LAYER_PERMISSION.LAYER_ID.equal(LAYER.ID))
@@ -48,7 +49,10 @@ public class LayerGroupRepository {
                             .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
                         .fetchGroups(
                                 r -> r.into(LAYER_GROUP).into(LayerGroupRecord.class),
-                                r -> r.into(LAYER).into(LayerRecord.class)
+                                r -> new Layer(
+                                        r.into(LAYER).into(LayerRecord.class),
+                                        r.into(LAYER_PERMISSION).into(LayerPermissionRecord.class)
+                                )
                         );
 
         return groups.entrySet().stream().map(

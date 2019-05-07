@@ -1,113 +1,153 @@
 // @flow
 import strings from '../../translations';
-import { graphicsToEsriJSON } from '../arcFormats';
-import { getIntersectFeatures } from './getIntersectFeatures';
-import { getStreetViewLink } from './streetView';
+import { getFeatureInfo } from './featureInfo';
+import { nestedVal } from '../nestedValue';
+import { convertEsriGeometryType } from '../type';
 
 /**
- * Finds and selects visible features on map click
+ * Adds content and custom actions to views popup when map clicked.
  *
- * Opens popup with info about found features
- * and adds new action button for selecting intersecting features
+ * @param {Object} results Results from click event.
+ * @param {Object} view Esri map view.
+ * @param {Object[]} layerList List of layers.
+ * @param {string} activeAdminTool Id of currently active admin layer.
+ * @param {string} geometryType Geometry type of currently active admin layer.
+ * @param {number} x Screen x-coordinate (pixels).
+ * @param {number} y Screen y-coordinate (pixels).
  *
- * @param event Object click event
- * @param view Object esri map view
- * @param selectFeatures Function redux function that selects features
- * @param layerList Array of layers
- * @param adminToolActive string id of current admin tool layer
- * @param setActiveModal set active modal
- * @param setSingleLayerGeometry geometry for single feature
+ * @returns {Promise} Promise that resolves with selected features data or with generic
+ * no features content if no features are found.
  */
-export const mapSelectPopup = (
-    event: Object,
+export const mapSelectPopup = async (
+    results: Object,
     view: Object,
-    selectFeatures: Function,
-    layerList: Array<Object>,
-    adminToolActive: string,
-    setActiveModal: Function,
-    setSingleLayerGeometry: Function,
+    layerList: Object[],
+    activeAdminTool: string,
+    geometryType: string,
+    x: number,
+    y: number,
 ) => {
-    if (event.button === 0) {
-        const swLink = getStreetViewLink(event.mapPoint.x, event.mapPoint.y);
+    const getPropertyInfo = {
+        title: strings.esriMap.getPropertyInfo,
+        id: 'get-property-info',
+        className: 'fas fa-building',
+    };
+    const googleStreetView = {
+        title: strings.esriMap.openGoogleStreetView,
+        id: 'google-street-view',
+        className: 'fas fa-street-view',
+    };
 
-        view.popup = {
-            collapseEnabled: false,
-            dockOptions: {
-                position: 'top-left',
-            },
-        };
+    view.popup.actions = [getPropertyInfo, googleStreetView];
 
-        const point = {
-            x: event.x,
-            y: event.y,
-        };
+    const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
+    const newResults = [...results, ...wmsFeatures];
 
-        view.hitTest(point).then(({ results }) => {
-            const newResults = adminToolActive
-                ? [...results.filter(r => r.graphic.layer.id === adminToolActive)]
-                : [...results];
+    if (newResults.length) {
+        newResults.forEach((feature) => {
+            const selectIntersectAction = {
+                title: strings.esriMap.selectIntersectFeatures,
+                id: 'select-intersect',
+                className: 'esri-icon-maps',
+            };
 
-            newResults.forEach((layer) => {
-                const fieldInfos = [];
-                const queryColumns = layerList
-                    .filter(ll => ll.id === layer.graphic.layer.id)
-                    .map(ll => ll.queryColumns);
+            const setBufferAction = {
+                title: strings.esriMap.setBuffer,
+                id: 'set-buffer',
+                className: 'far fa-dot-circle',
+            };
 
-                if (queryColumns[0]) {
-                    queryColumns[0].forEach((r) => {
+            const actions = [selectIntersectAction, setBufferAction];
+
+            const fieldInfos = [];
+
+            if (feature.layer) {
+                if (feature.layer.featureType === 'shapefile') {
+                    const columns = feature.layer.fields.slice(0, 5);
+                    columns.forEach((c) => {
                         fieldInfos.push({
-                            fieldName: r,
-                            label: r,
+                            fieldName: c.name,
+                            label: c.name,
                         });
                     });
+                } else {
+                    const matchingLayer = layerList
+                        .find(ll => ll.id === feature.layer.id.replace('.s', ''));
+
+                    if (matchingLayer
+                        && matchingLayer.type === 'agfs'
+                        && matchingLayer.queryColumnsList) {
+                        const fields = nestedVal(feature, ['layer', 'fields']);
+                        matchingLayer.queryColumnsList.forEach((column) => {
+                            fieldInfos.push({
+                                fieldName: column,
+                                label: nestedVal(
+                                    fields && fields.find(f => f.name === column),
+                                    ['alias'],
+                                ),
+                            });
+                        });
+
+                        if (matchingLayer.hasRelations) {
+                            const contractLink = {
+                                title: strings.modalFeatureContracts.featureContracts,
+                                id: 'contract-link',
+                                className: 'fas fa-external-link-square-alt',
+                            };
+                            actions.push(contractLink);
+                        }
+                    }
                 }
 
-                const selectIntersectAction = {
-                    title: strings.esriMap.selectIntersectFeatures,
-                    id: 'select-intersect',
-                    className: 'esri-icon-maps',
-                };
+                const activeAdminLayer = layerList.find(ll => ll.id === activeAdminTool);
+                const addCopyAction = activeAdminTool
+                    && activeAdminTool !== feature.layer.id
+                    && geometryType
+                    && convertEsriGeometryType(geometryType) === feature.layer.geometryType
+                    && activeAdminLayer
+                    && activeAdminLayer.layerPermission.createLayer;
+                if (addCopyAction) {
+                    const copyFeatureAction = {
+                        title: strings.esriMap.copyFeature,
+                        id: 'copy-feature',
+                        className: 'far fa-clone',
+                    };
+                    actions.push(copyFeatureAction);
+                }
 
-                const setBufferAction = {
-                    title: strings.esriMap.setBuffer,
-                    id: 'set-buffer',
-                    className: 'far fa-dot-circle',
-                };
+                const addEditAction = activeAdminTool
+                    && activeAdminTool === feature.layer.id
+                    && activeAdminLayer
+                    && activeAdminLayer.layerPermission.createLayer
+                    && activeAdminLayer.layerPermission.updateLayer;
+                if (addEditAction) {
+                    const editFeatureAction = {
+                        title: strings.esriMap.editFeature,
+                        id: 'edit-feature',
+                        className: 'fas fa-edit',
+                    };
+                    actions.push(editFeatureAction);
+                }
 
-                layer.graphic.layer.popupTemplate = {
-                    title: layer.graphic.layer.title,
+                feature.layer.popupTemplate = {
+                    title: feature.layer.title,
                     content: [{
-                        type: 'text',
-                        text: swLink,
-                    }, {
                         type: 'fields',
                         fieldInfos,
                     }],
-                    actions: [selectIntersectAction, setBufferAction],
+                    lastEditInfoEnabled: false,
+                    actions,
                 };
-            });
-
-            const graphics = newResults.map(re => re.graphic);
-
-            view.popup.on('trigger-action', (evt) => {
-                if (evt.action.id === 'select-intersect') {
-                    const layerId = view.popup.viewModel.selectedFeature.layer.id;
-                    const featureGeom = view.popup.viewModel.selectedFeature.geometry;
-                    getIntersectFeatures(
-                        layerId,
-                        featureGeom,
-                        view,
-                        selectFeatures,
-                        adminToolActive,
-                    );
-                } else if (evt.action.id === 'set-buffer') {
-                    setSingleLayerGeometry(view.popup.viewModel.selectedFeature.geometry);
-                    setActiveModal('bufferSelectedData');
-                }
-            });
-
-            const features = graphicsToEsriJSON(graphics);
-            selectFeatures(features);
+            }
         });
+
+        return newResults;
     }
+
+    return [{
+        popupTemplate: {
+            title: strings.esriMap.noFeatures,
+            lastEditInfoEnabled: false,
+        },
+    }];
 };

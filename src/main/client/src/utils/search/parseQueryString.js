@@ -6,7 +6,7 @@
  * @param searchFieldValues Array containing all field search values
  * @param textSearch String from default text search
  * @param fields Array of all attributes included in featurelayer
- * @param queryColumns Array of columns that are queried on general search
+ * @param queryColumnsList Array of columns that are queried on general search
  *
  * @returns Parsed querystring that can be passed to feature fetch URL
  */
@@ -14,7 +14,7 @@ export const parseQueryString = (
     searchFieldValues: Array<any>,
     textSearch: string,
     fields: Array<Object>,
-    queryColumns: Array<string>,
+    queryColumnsList: Array<string>,
 ) => {
     const queryString = [];
 
@@ -24,17 +24,23 @@ export const parseQueryString = (
                 ? 'LIKE'
                 : a.queryExpression;
 
-            const text = a.queryExpression === '%'
-                ? `'%${a.queryText}%'`
-                : `'${a.queryText}'`;
+            if (a.type === 'esriFieldTypeOID'
+                || a.type === 'esriFieldTypeSmallInteger'
+                || a.type === 'esriFieldTypeInteger'
+                || a.type === 'esriFieldTypeDouble') {
+                queryString.push(`${a.name} ${expression} ${a.queryText}`);
+            } else {
+                const text = a.queryExpression === '%'
+                    ? `'%${a.queryText.replace(/'/g, "''")}%'`
+                    : `'${a.queryText.replace(/'/g, "''")}'`;
 
-            queryString.push(`${a.name} ${expression} ${text}`);
+                queryString.push(`LOWER(${a.name}) ${expression} LOWER(${text})`);
+            }
         });
     } else {
-        const text = `'%${textSearch}%'`;
+        const text = `'%${textSearch.replace(/'/g, "''")}%'`;
 
-        queryColumns.forEach(a =>
-            queryString.push(`${a} LIKE ${text}`));
+        queryColumnsList.forEach(a => queryString.push(`LOWER(${a}) LIKE LOWER(${text})`));
     }
 
     return searchFieldValues.length > 0 ? queryString.join(' AND ') : queryString.join(' OR ');

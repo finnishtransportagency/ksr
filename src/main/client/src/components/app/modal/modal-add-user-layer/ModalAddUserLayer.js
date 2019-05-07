@@ -16,17 +16,19 @@ type State = {
 const initialState = {
     layerValues: {
         name: '',
-        type: '',
+        type: 'agfs',
         url: '',
         layers: '',
         opacity: 1,
-        minScale: 577790,
-        maxScale: 9027,
+        minScale: 0,
+        maxScale: 0,
         transparent: true,
         attribution: '',
         desktopVisible: true,
         mobileVisible: true,
         styles: '',
+        queryable: '0',
+        queryColumns: '',
     },
     optionsType: [
         {
@@ -40,14 +42,6 @@ const initialState = {
         {
             value: 'wmts',
             label: 'Web Map Tile Service',
-        },
-        {
-            value: 'wfs',
-            label: 'Web Feature Service',
-        },
-        {
-            value: 'mvt',
-            label: 'Mapnik Vector Tile',
         },
     ],
 };
@@ -70,7 +64,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         });
     };
 
-    handleTypeChange = (type: String) => {
+    handleTypeChange = (type: string) => {
         const { layerValues } = this.state;
         this.setState({
             layerValues: {
@@ -80,7 +74,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         });
     };
 
-    handleCheckboxChange = (name: String) => {
+    handleCheckboxChange = (name: string) => {
         const { layerValues } = this.state;
         this.setState({
             layerValues: {
@@ -106,6 +100,21 @@ class ModalAddUserLayer extends Component<Props, State> {
 
         layerValues.desktopVisible = layerValues.desktopVisible ? '1' : '0';
         layerValues.mobileVisible = layerValues.mobileVisible ? '1' : '0';
+        layerValues.queryColumns = layerValues.queryColumns === ''
+            ? null
+            : layerValues.queryColumns.trim().split(',');
+
+        if (Array.isArray(layerValues.queryColumns)) {
+            layerValues.queryColumns = layerValues.queryColumns.map(c => c.trim());
+        }
+        layerValues.queryable = layerValues.queryColumns ? '1' : '0';
+
+        if (layerValues.type === 'agfs') {
+            layerValues.layers = '';
+        } else {
+            layerValues.queryColumns = null;
+            layerValues.queryable = '0';
+        }
 
         addUserLayer(layerValues);
     };
@@ -113,11 +122,22 @@ class ModalAddUserLayer extends Component<Props, State> {
     render() {
         const { layerValues, optionsType } = this.state;
 
+        const disabled = layerValues.type !== 'agfs'
+            ? layerValues.name.length > 0 && layerValues.url.length > 0
+            && layerValues.layers.length > 0
+            : layerValues.name.length > 0 && layerValues.url.length > 0;
+
+        const modalSubmit = [{
+            text: strings.modalAddUserLayer.submit,
+            handleSubmit: this.handleSubmit,
+            disabled: !disabled,
+            toggleModal: true,
+        }];
+
         return (
             <ModalContainer
                 title={strings.modalAddUserLayer.title}
-                handleModalSubmit={this.handleSubmit}
-                submitText={strings.modalAddUserLayer.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalAddUserLayer.cancel}
             >
                 <ModalAddUserLayerView

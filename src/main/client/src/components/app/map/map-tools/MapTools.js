@@ -1,8 +1,8 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import esriLoader from 'esri-loader';
-import MapMeasureContainer from './map-measure/MapMeasureContainer';
 import SketchToolContainer from './sketch-tools/SketchToolContainer';
+import MapDrawContainer from './map-draw/MapDrawContainer';
 
 type Props = {
     view: Object,
@@ -12,7 +12,7 @@ type Props = {
 
 class MapTools extends Component<Props> {
     componentWillReceiveProps(newProps: any) {
-        if (this.props.view !== newProps.view && newProps.view._setup) {
+        if (this.props.view !== newProps.view) {
             this.mapTools();
         }
     }
@@ -33,6 +33,10 @@ class MapTools extends Component<Props> {
                 const sketchViewModel = new SketchViewModel({
                     view,
                     layer: tempGraphicsLayer,
+                    defaultUpdateOptions: {
+                        tool: 'reshape',
+                        toggleToolOnClick: false,
+                    },
                 });
 
                 setMapTools(draw, sketchViewModel);
@@ -47,7 +51,7 @@ class MapTools extends Component<Props> {
         return (
             <Fragment>
                 <SketchToolContainer />
-                <MapMeasureContainer />
+                <MapDrawContainer />
             </Fragment>
         );
     }

@@ -16,6 +16,13 @@ describe('<LayerSettings.Icons />', () => {
     });
 });
 
+describe('<LayerSettings.Icon />', () => {
+    it('renders correctly', () => {
+        const wrapper = renderer.create(<LayerSettings.Icon />).toJSON();
+        expect(wrapper).toMatchSnapshot();
+    });
+});
+
 describe('<LayerSettings.Drag />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<LayerSettings.Drag />).toJSON();

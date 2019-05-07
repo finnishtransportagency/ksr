@@ -4,46 +4,64 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import Modal from '../../../ui/blocks/Modal/index';
 import { Button, H1 } from '../../../ui/elements/index';
 
+type ModalSubmit = {
+    text: string,
+    handleSubmit: Function,
+    disabled: boolean,
+    toggleModal: boolean,
+};
+
 type Props = {
-    toggleModal: Function,
-    handleModalSubmit: Function,
+    handleModalCancel: Function,
+    modalSubmit: ModalSubmit[],
     content: any,
     title: string,
-    submitText: string,
     cancelText: string,
-    submitDisabled: boolean,
+    fadeOut: boolean,
+    handleSubmit: (index: number) => void,
+    handleGoBack: Function,
 };
 
 const ModalView = ({
-    toggleModal,
-    handleModalSubmit,
+    handleModalCancel,
+    modalSubmit,
     content,
     title,
-    submitText,
     cancelText,
-    submitDisabled,
+    fadeOut,
+    handleSubmit,
+    handleGoBack,
 }: Props) => (
-    <Modal>
+    <Modal fadeOut={fadeOut}>
         <Modal.Blur />
         <Modal.Header>
             <H1 secondary>{title}</H1>
-            <button onClick={toggleModal}>
+            <button onClick={handleModalCancel}>
                 <i className="fas fa-times" />
             </button>
         </Modal.Header>
-        <Scrollbars autoHeight autoHeightMax={300}>
+        <Scrollbars autoHeight autoHeightMax={500} className="modal-content-scroll-wrapper">
             <Modal.Content>
                 {content}
             </Modal.Content>
         </Scrollbars>
-        <Modal.Footer>
-            <Button disabled={submitDisabled} onClick={handleModalSubmit}>
-                {submitText}
-            </Button>
-            <Button flat onClick={toggleModal}>
-                {cancelText}
-            </Button>
-        </Modal.Footer>
+        {modalSubmit.length || cancelText ?
+            <Modal.Footer>
+                {modalSubmit.map((submit, i) => (
+                    <Button
+                        key={submit.text}
+                        disabled={submit.disabled}
+                        onClick={() => handleSubmit(i)}
+                    >
+                        {submit.text}
+                    </Button>
+                ))}
+                <Button flat onClick={handleGoBack || handleModalCancel}>
+                    {cancelText}
+                </Button>
+            </Modal.Footer>
+            : null
+        }
     </Modal>
 );
 

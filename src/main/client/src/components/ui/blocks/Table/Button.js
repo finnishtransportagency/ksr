@@ -3,13 +3,12 @@ import * as styles from '../../defaultStyles';
 
 const Button = styled.div`
     background: ${styles.colorBackgroundDark};
-    display: flex;
+    display: none;
     height: 60px;
     align-items: center;
     justify-content: center;
     font-size: 1.25em;
     left: 0;
-    visibility: hidden;
     width: 60px;
     
     &:hover {
@@ -20,11 +19,11 @@ const Button = styled.div`
     ${props => props.tableOpen && css`
         left: 0;
         position: relative;
-        visibility: visible;
+        display: flex;
     `};
     
     ${props => props.toggleButton && css`
-        visibility: visible;
+        display: flex;
     `};
     
     ${props => props.disabled && css`

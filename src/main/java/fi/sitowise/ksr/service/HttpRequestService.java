@@ -1,12 +1,19 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.controller.PrintOutputController;
+import fi.sitowise.ksr.controller.GeoprocessingOutputController;
+import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.domain.LayerAction;
+import fi.sitowise.ksr.domain.esri.Feature;
 import fi.sitowise.ksr.exceptions.KsrApiException;
+import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,11 +21,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -52,9 +63,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A Service to handle HTTP(S) requests to external servers.
@@ -63,6 +79,9 @@ import java.util.Map;
  */
 @Service
 public class HttpRequestService {
+    private static final Logger log = LogManager.getLogger(HttpRequestService.class);
+    private static final String VALUE = "value";
+
     private CloseableHttpClient closeableHttpClient;
     private RequestConfig nonProxyRequestConfig;
     private RequestConfig proxyRequestConfig;
@@ -82,11 +101,8 @@ public class HttpRequestService {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    @Value("${http.proxyHost:#{null}}")
-    private String proxyHost;
-
-    @Value("${http.proxyPort:#{null}}")
-    private Integer proxyPort;
+    @Value("${http.proxy:#{null}}")
+    private String httpProxy;
 
     @PostConstruct
     public void setClient() {
@@ -104,31 +120,136 @@ public class HttpRequestService {
     @PostConstruct
     public void setProxyRequestConfig() {
         RequestConfig.Builder configBase = getRequestConfigBase();
-        if (proxyHost != null && proxyPort != null) {
-            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-            configBase.setProxy(proxy);
+        if (StringUtils.isNotEmpty(httpProxy)) {
+            try {
+                URI proxyUrl = new URI(httpProxy);
+                HttpHost proxy = new HttpHost(proxyUrl.getHost(), proxyUrl.getPort(), proxyUrl.getScheme());
+                configBase.setProxy(proxy);
+            } catch (URISyntaxException e) {
+                log.info(String.format("Cannot initialize proxy, invalid proxy-url given: [%s].", httpProxy));
+            }
         }
         this.proxyRequestConfig = configBase.build();
     }
 
-    public RequestConfig.Builder getRequestConfigBase() {
+    private RequestConfig.Builder getRequestConfigBase() {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(socketTimeout);
+        requestConfigBuilder.setCookieSpec(CookieSpecs.IGNORE_COOKIES);
         return requestConfigBuilder;
+    }
+
+    /**
+     * Makes an HTTP POST request and return responses content as a InputStream.
+     *
+     * @param url Url
+     * @param body Raw body to POST.
+     * @param authentication Base64 encoded username:password if needed. Otherwise null.
+     * @param contentType Content type of the body.
+     * @param useProxy Boolean indicating whether to proxy request.
+     * @return InputStream of the response body.
+     */
+    public InputStream postURLContents(
+            String url,
+            String body,
+            String authentication,
+            String contentType,
+            boolean useProxy
+    ) {
+        return postURLContents(
+                url,
+                new StringEntity(body, StandardCharsets.UTF_8),
+                authentication,
+                contentType,
+                useProxy
+        );
+    }
+
+    /**
+     * Makes an HTTP POST request and return responses content as a InputStream.
+     *
+     * @param url Url
+     * @param body Raw body to POST.
+     * @param authentication Base64 encoded username:password if needed. Otherwise null.
+     * @param contentType Content type of the body.
+     * @param useProxy Boolean indicating whether to proxy request.
+     * @return InputStream of the response body.
+     */
+    public InputStream postURLContents(
+            String url,
+            HttpEntity body,
+            String authentication,
+            String contentType,
+            boolean useProxy
+    ) {
+        try {
+            HttpRequestBase base = this.simplePostBase(url, body, contentType);
+            HttpHost target = URIUtils.extractHost(new URI(url));
+            setProxy(base, useProxy);
+            if (authentication != null) {
+                base.setHeader("Authorization", String.format("Basic %s", authentication));
+            }
+
+            CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
+            return cRes.getEntity().getContent();
+        } catch (Exception e) {
+            String msg = String.format("Error making HTTP-request. URL: [%s]. Proxy: [%b]", url, useProxy);
+            throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
+    }
+
+    /**
+     * Gets (GET) content of url and returns an InputStream.
+     *
+     * @param url Url to be fetched.
+     * @param useProxy Boolean indicating whether to use proxy or not.
+     * @param authentication Base64 encoded Basic Authentication string if authentication is needed.
+     * @return InputStream of contents.
+     */
+    public InputStream getURLContents(String url, boolean useProxy, String authentication) {
+        try {
+            HttpRequestBase base = this.requestBaseGet(null, url);
+            if (StringUtils.isNotEmpty(authentication)) {
+                base.setHeader(HttpHeaders.AUTHORIZATION, String.format("Basic %s", authentication));
+            }
+            HttpHost target = URIUtils.extractHost(new URI(url));
+            setProxy(base, useProxy);
+            CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
+            return cRes.getEntity().getContent();
+        } catch (Exception e) {
+            String msg = String.format("Error making HTTP-request. URL: [%s]. Proxy: [%b]", url, useProxy);
+            throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
+    }
+
+    /**
+     * Set proxy config for HttpRequestBase if proxy should be used.
+     *
+     * @param base HttpRequestBase of request.
+     * @param useProxy Boolean indicating if proxy should be used.
+     */
+    private void setProxy(HttpRequestBase base, boolean useProxy) {
+        if (useProxy) {
+            base.setConfig(proxyRequestConfig);
+        } else {
+            base.setConfig(nonProxyRequestConfig);
+        }
     }
 
     /**
      * Fetch endPointUrl:s content and write into HttpServletResponse.
      *
-     * @param layerUrl Layer URL that is requested.
+     * @param layer Layer URL that is requested.
      * @param baseUrl Baseurl for proxy-service for given layer.
      * @param endPointUrl The url to be fetched.
-     * @param request HTTP request interface.
-     * @param response HttpServletResponse, where to write the fetched content
-     * @param editedParams List, which contains edited Web_Map_as_JSON for printing
+     * @param request HttpServletRequest interface.
+     * @param response HttpServletResponse where to write the proxy-response.
+     * @param editedParams List which contains edited Web_Map_as_JSON for printing.
+     * @param action Possible action-type.
      */
-    public void fetchToResponse(String layerUrl, String authentication, String baseUrl,
-            String endPointUrl, HttpServletRequest request, HttpServletResponse response, boolean useProxy, List<NameValuePair> editedParams) {
+    public void fetchToResponse(Layer layer, String authentication, String baseUrl, String endPointUrl,
+                                HttpServletRequest request, HttpServletResponse response, boolean useProxy,
+                                List<NameValuePair> editedParams, LayerAction action) {
         try {
             URI endpointURI = new URI(endPointUrl);
             String path = endpointURI.getRawPath();
@@ -138,22 +259,24 @@ public class HttpRequestService {
             HttpRequestBase base = getRequestBase(
                     request,
                     authentication,
-                    KsrStringUtils.replaceMultipleSlashes(String.format("%s/?%s", path, query)),
-                    editedParams);
-            if (useProxy) {
-                base.setConfig(proxyRequestConfig);
-            } else {
-                base.setConfig(nonProxyRequestConfig);
-            }
+                    query == null ? path : KsrStringUtils.replaceMultipleSlashes(String.format("%s?%s", path, query)),
+                    editedParams,
+                    action,
+                    layer
+            );
+            setProxy(base, useProxy);
+            setBaseHeaders(request, base);
             CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
 
             response.setStatus(cRes.getStatusLine().getStatusCode());
             setResponseHeaders(response, cRes);
 
             if (isGetCapabilitiesRequest(endPointUrl)) {
-                setGetCapabilitiesResponse(layerUrl, baseUrl, response, cRes, endPointUrl);
+                setGetCapabilitiesResponse(layer == null ? null : layer.getUrl(), baseUrl, response, cRes, endPointUrl);
             } else if (isPrintOutputRequest(endPointUrl)) {
                 setPrintOutputResponse(response, cRes);
+            } else if (isExtractOutputRequest(endPointUrl)) {
+                setExtractOutputResponse(response, cRes);
             } else {
                 setResponseContent(response, cRes);
             }
@@ -166,12 +289,28 @@ public class HttpRequestService {
     }
 
     /**
+     * Sets specified headers from HttpServletRequest to HttpRequestBase
+     *
+     * @param request HttpServletRequest Request to read headers from
+     * @param base HttpRequestBase Target to write headers to
+     */
+    void setBaseHeaders(HttpServletRequest request, HttpRequestBase base) {
+        String[] headerNames = { HttpHeaders.CONTENT_TYPE };
+        for (String headerName: headerNames) {
+            String headerValue = request.getHeader(headerName);
+            if (headerValue != null) {
+                base.setHeader(headerName, headerValue);
+            }
+        }
+    }
+
+    /**
      * Returns whether given URL should be treated as a GetCapabilities -URL.
      *
      * @param endPointUrl URL that should be inspected.
      * @return boolean whether URL should be treated as a GetCapablities URL.
      */
-    public boolean isGetCapabilitiesRequest(String endPointUrl) {
+    boolean isGetCapabilitiesRequest(String endPointUrl) {
         String lowerCasedUrl = endPointUrl.toLowerCase();
         return lowerCasedUrl.contains("wmtscapabilities.xml") || lowerCasedUrl.contains("getcapabilities");
     }
@@ -187,6 +326,18 @@ public class HttpRequestService {
     }
 
     /**
+     * Returns whether given url should be treated as a extract output request or not.
+     *
+     * @param endPointUrl Url that is inspected.
+     * @return Whether the url should be treated as a extract output request or not.
+     */
+    private boolean isExtractOutputRequest(String endPointUrl) {
+        Pattern urlPattern = Pattern.compile("Extract%20Data%20Task/jobs/(.*)/results/");
+        Matcher matcher = urlPattern.matcher(endPointUrl);
+        return matcher.find();
+    }
+
+    /**
      * Returns a correct HttpRequestBase for given method, endpoint and config.
      *
      * @param request interface for getting request method and POST request parameters.
@@ -195,16 +346,16 @@ public class HttpRequestService {
      * @param editedParams edited parameters / querystring from print request.
      * @return Correct HttpRequestBase or GET if no matches found for method.
      */
-    public HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
-            String endPointUrl, List<NameValuePair> editedParams) {
+    HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
+                                          String endPointUrl, List<NameValuePair> editedParams, LayerAction action,
+                                          Layer layer) {
         HttpRequestBase base;
-        List<NameValuePair> params = new ArrayList<>();
         switch (request.getMethod()) {
             case "GET":
-                base = requestBaseGet(params, editedParams, endPointUrl);
+                base = requestBaseGet(editedParams, endPointUrl);
                 break;
             case "POST":
-                base = requestBasePost(request, params, editedParams, endPointUrl);
+                base = requestBasePost(request, editedParams, endPointUrl, action, layer);
                 break;
             default:
                 base = new HttpGet(endPointUrl);
@@ -222,8 +373,8 @@ public class HttpRequestService {
      * @param response HttpServletResponse where the headers should be added.
      * @param cRes CloseableHttpResponse from where to read the headers.
      */
-    public void setResponseHeaders(HttpServletResponse response, CloseableHttpResponse cRes) {
-        String[] headerNames = { "Content-Type", "Content-Length", "Cache-control", "Expires", "Last-Modified" };
+    void setResponseHeaders(HttpServletResponse response, CloseableHttpResponse cRes) {
+        String[] headerNames = { HttpHeaders.CONTENT_TYPE, "Content-Length", "Cache-control", "Expires", "Last-Modified" };
         for (String headerName : headerNames) {
             Header header = cRes.getFirstHeader(headerName);
             if (header != null) {
@@ -258,7 +409,7 @@ public class HttpRequestService {
      * @return The XML Document with replaced values;
      * @throws XPathExpressionException
      */
-    public Document replaceAttributeValues(Document doc, String xPathExpr, String attributeName, String replaceValue, String replaceWith) throws XPathExpressionException {
+    Document replaceAttributeValues(Document doc, String xPathExpr, String attributeName, String replaceValue, String replaceWith) throws XPathExpressionException {
         XPath xpath = XPathFactory.newInstance().newXPath();
 
         NodeList nodes = (NodeList) xpath.evaluate(xPathExpr, doc, XPathConstants.NODESET);
@@ -281,9 +432,8 @@ public class HttpRequestService {
      * @return byte[] -array of XML Document content.
      * @throws TransformerException
      */
-    public byte[] documentToBytesArray(Document doc) throws TransformerException {
+    byte[] documentToBytesArray(Document doc) throws TransformerException {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         transformer.transform(new DOMSource(doc), new StreamResult(bos));
 
@@ -372,22 +522,24 @@ public class HttpRequestService {
     @SuppressWarnings("unchecked")
     private void setPrintOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
         try {
-            String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + PrintOutputController.PRINT_OUTPUT_URL);
+            String printOutputUrl = KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingOutputController.PRINT_OUTPUT_URL);
             String responseString;
-            responseString = EntityUtils.toString(cRes.getEntity(), "UTF-8");
+            responseString = EntityUtils.toString(cRes.getEntity(), StandardCharsets.UTF_8);
             JSONParser parser = new JSONParser();
             JSONObject responseJson = (JSONObject) parser.parse(responseString);
             JSONArray responseArray = (JSONArray) (responseJson != null ? responseJson.get("results") : null);
             if (responseArray != null) {
                 for (Object entry : responseArray) {
-                    String value = ((JSONObject) entry).get("value").toString();
+                    String value = ((JSONObject) entry).get(VALUE).toString();
                     JSONObject valueJson = (JSONObject) parser.parse(value);
                     String url = valueJson.get("url").toString();
                     valueJson.replace("url", url.replaceAll(url.split("/_ags_")[0], printOutputUrl));
-                    ((JSONObject) entry).replace("value", valueJson);
+                    ((JSONObject) entry).replace(VALUE, valueJson);
                 }
             }
             if (responseJson != null) {
+                response.setHeader("Content-Length", Integer.toString(
+                        responseJson.toString().getBytes().length));
                 response.getWriter().write(responseJson.toString());
             }
         } catch (ParseException | IOException e) {
@@ -397,61 +549,162 @@ public class HttpRequestService {
     }
 
     /**
+     * Replace extract output response body url with proxy url.
+     *
+     * @param response Http servlet response interface where to write the fetched content.
+     * @param cRes Closeable Http response from where to read contents.
+     */
+    @SuppressWarnings("unchecked")
+    private void setExtractOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
+        try {
+            String extractOutputUrl = KsrStringUtils
+                    .replaceMultipleSlashes(contextPath + GeoprocessingOutputController.EXTRACT_OUTPUT_URL);
+            String responseString = EntityUtils.toString(cRes.getEntity(), StandardCharsets.UTF_8);
+            JSONParser parser = new JSONParser();
+            JSONObject responseJson = (JSONObject) parser.parse(responseString);
+            if (responseJson != null) {
+                String value = responseJson.get(VALUE).toString();
+                JSONObject valueJson = (JSONObject) parser.parse(value);
+                String url = valueJson.get("url").toString();
+                url = url.replaceAll(url.split("_gpserver")[0], extractOutputUrl);
+                valueJson.replace("url", url.replaceAll("_gpserver", ""));
+                responseJson.replace(VALUE, valueJson);
+                response.setHeader("Content-Length", Integer.toString(
+                        responseJson.toString().getBytes().length));
+                response.getWriter().write(responseJson.toString());
+            }
+        } catch (ParseException | IOException e) {
+            String msg = "Error creating extract output response.";
+            throw new KsrApiException.InternalServerErrorException(msg, e);
+        }
+    }
+
+    /**
+     * Returns a HttpRequestBase for POST request.
+     *
+     * Streamlined to work when POSTing raw content.
+     *
+     * @param url Url.
+     * @param body POST body as a HttpEntity.
+     * @param contentType Value of Content-Type Header.
+     * @return HttpRequestBase with parameters in place.
+     * @throws UnsupportedEncodingException
+     */
+    private HttpRequestBase simplePostBase(String url, HttpEntity body, String contentType) throws UnsupportedEncodingException {
+        HttpPost base = new HttpPost(url);
+        base.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
+        base.setEntity(body);
+        return base;
+    }
+
+    /**
      * Returns a correct HttpRequestBase from POST request.
      *
      * @param request interface for getting request method and POST request parameters.
-     * @param params List<NameValuePair> empty list
      * @param editedParams edited parameters / querystring from print request.
+     * @param endPointUrl The url to be fetched.
+     * @param action The action type related to request (READ | CREATE | UPDATE | DELETE)
+     * @param layer The Layer related to request
      *
      * @return base
      */
-    private HttpRequestBase requestBasePost(HttpServletRequest request, List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+    private HttpRequestBase requestBasePost(HttpServletRequest request,
+                                            List<NameValuePair> editedParams, String endPointUrl,
+                                            LayerAction action, Layer layer) {
         HttpRequestBase base = new HttpPost(endPointUrl);
+        List<NameValuePair> params = new ArrayList<>();
         if (!CollectionUtils.isEmpty(request.getParameterMap())) {
             if (editedParams != null) {
                 for (NameValuePair entry : editedParams) {
-                    params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
+                    params.add(filterParams(entry.getName(), entry.getValue(), layer, action));
                 }
             } else {
                 for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
                     for (String value : entry.getValue()) {
-                        params.add(new BasicNameValuePair(entry.getKey(), value));
+                        params.add(filterParams(entry.getKey(), value, layer, action));
                     }
                 }
             }
-            try {
-                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
-            } catch (UnsupportedEncodingException e) {
-                String msg = "Error creating base from POST request";
-                throw new KsrApiException.InternalServerErrorException(msg, e);
-            }
+            ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
         }
         return base;
+    }
+
+    /**
+     * Filter / check params for given Layer and LayerAction.
+     *
+     * If LayerAction is either UPDATE_LAYER OR CREATE_LAYER then it populates updater-field with information
+     * from current user if updater-field is defined for Layer.
+     *
+     * If Layer is a contract with type "many" then it populates contract uuid field
+     * with new randomly generated uuid value when new contract is added to the Layer.
+     *
+     * @param key Key of the parameter.
+     * @param value Value of the parameter.
+     * @param layer Layer, where to find field names.
+     * @param action Type of the layer action.
+     *
+     * @return Name value pair for Layer and LayerAction.
+     */
+    private BasicNameValuePair filterParams(String key, String value, Layer layer, LayerAction action) {
+        if (layer != null && key.equalsIgnoreCase("features")
+                && (action == LayerAction.UPDATE_LAYER || action == LayerAction.CREATE_LAYER)
+                && (layer.getUpdaterField() != null
+                || "many".equals(layer.getRelationType()))
+        ){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                Feature[] features = mapper.readValue(value, Feature[].class);
+                for (Feature feature : features) {
+                    if (layer.getUpdaterField() != null) {
+                        feature.putAttributeValue(
+                                layer.getUpdaterField(),
+                                KsrAuthenticationUtils.getCurrentUserUpdaterName()
+                        );
+                    }
+
+                    if (action == LayerAction.CREATE_LAYER
+                            && "many".equals(layer.getRelationType())
+                            && layer.getRelationColumnIn() == null
+                            && layer.getRelationColumnOut() == null
+                    ) {
+                        feature.putAttributeValue(
+                                "CONTRACT_UUID",
+                                UUID.randomUUID().toString()
+                        );
+                    }
+                }
+                String newValue = mapper.writeValueAsString(features);
+                return new BasicNameValuePair(key, newValue);
+
+            } catch (IOException e) {
+                throw new KsrApiException.InternalServerErrorException(
+                        "Error parsing features-JSON.",
+                        e
+                );
+            }
+        }
+        return new BasicNameValuePair(key, value);
     }
 
     /**
      * Returns a correct HttpRequestBase from GET request.
      * Print GET request gets changed to HttpPost
      *
-     * @param params List<NameValuePair> empty list
      * @param editedParams edited parameters / querystring from print request.
      * @param endPointUrl The url to be fetched.
      *
      * @return base
      */
-    private HttpRequestBase requestBaseGet(List<NameValuePair> params, List<NameValuePair> editedParams, String endPointUrl) {
+    private HttpRequestBase requestBaseGet(List<NameValuePair> editedParams, String endPointUrl) {
         HttpRequestBase base;
+        List<NameValuePair> params = new ArrayList<>();
         if (editedParams != null) {
             base = new HttpPost(endPointUrl.split("\\?")[0]);
             for (NameValuePair entry : editedParams) {
                 params.add(new BasicNameValuePair(entry.getName(), entry.getValue()));
             }
-            try {
-                ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params));
-            } catch (UnsupportedEncodingException e) {
-                String msg = "Error creating base from GET request";
-                throw new KsrApiException.InternalServerErrorException(msg, e);
-            }
+            ((HttpPost) base).setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
         } else {
             base = new HttpGet(endPointUrl);
         }

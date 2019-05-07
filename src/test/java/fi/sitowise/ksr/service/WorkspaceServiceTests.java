@@ -1,6 +1,7 @@
 package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Workspace;
+import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.WorkspaceRepository;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Workspace service tests.
@@ -65,6 +67,10 @@ public class WorkspaceServiceTests {
     @Test
     public void testRemoveWorkspaceNotFound() {
         Assert.assertFalse(workspaceService.deleteWorkspace("test workspace", "test-user"));
+        Mockito.when(workspaceRepository.deleteWorkspace("test workspace1", "test-user1")).thenReturn("");
+        Assert.assertFalse(workspaceService.deleteWorkspace("test workspace1", "test-user1"));
+        Mockito.when(workspaceRepository.deleteWorkspace("test workspace2", "test-user")).thenReturn(null);
+        Assert.assertFalse(workspaceService.deleteWorkspace("test workspace2", "test-user"));
     }
 
     /**
@@ -72,8 +78,44 @@ public class WorkspaceServiceTests {
      */
     @Test
     public void testRemoveWorkspaceOk() {
-        Mockito.doReturn(true).when(workspaceRepository)
-                .deleteWorkspace("test workspace", "test-user");
+        Mockito.when(workspaceRepository.deleteWorkspace("test workspace", "test-user")).thenReturn("5e42a6a5-9f09-4f59-96d7-ef37c7e6f9a4");
         Assert.assertTrue(workspaceService.deleteWorkspace("test workspace", "test-user"));
     }
+
+    /**
+     * Test get workspace that exists.
+     */
+    @Test
+    public void testGetWorkspaceOk() {
+        Workspace workspace = new Workspace();
+        workspace.setUuid(UUID.fromString("5e42a6a5-9f09-4f59-96d7-ef37c7e6f9a4"));
+        workspace.setName("Test workspace 1");
+        workspace.setId(1L);
+
+        Mockito.when(workspaceRepository.fetchWorkspaceByUuid(
+                Mockito.eq(UUID.fromString("5e42a6a5-9f09-4f59-96d7-ef37c7e6f9a4")),
+                Mockito.any())
+        ).thenReturn(workspace);
+
+        Workspace expected = new Workspace();
+        expected.setUuid(UUID.fromString("5e42a6a5-9f09-4f59-96d7-ef37c7e6f9a4"));
+        expected.setName("Test workspace 1");
+        expected.setId(1L);
+
+        Workspace returned = workspaceService.getWorkspaceByUuid(UUID.fromString("5e42a6a5-9f09-4f59-96d7-ef37c7e6f9a4"));
+
+        Assert.assertEquals(expected.getName(), returned.getName());
+        Assert.assertEquals(expected.getId(), returned.getId());
+        Assert.assertEquals(expected.getUuid(), returned.getUuid());
+    }
+
+    /**
+     * Test get workspace that does not exists.
+     */
+    @Test(expected = KsrApiException.NotFoundErrorException.class)
+    public void testGetWorkspaceNotFound() {
+        Mockito.when(workspaceRepository.fetchWorkspaceByUuid(Mockito.any(), Mockito.any())).thenReturn(null);
+        workspaceService.getWorkspaceByUuid(UUID.randomUUID());
+    }
+
 }

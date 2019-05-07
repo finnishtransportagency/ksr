@@ -5,8 +5,14 @@ import HomeView from '../HomeView';
 
 const setup = () => {
     const props = {
-        getLayerGroups: () => {},
-        getMapConfig: () => {},
+        getLayerGroups: jest.fn(),
+        getMapConfig: jest.fn(),
+        updateWorkspaces: jest.fn(),
+        setWorkspace: jest.fn(),
+        setUserInfo: jest.fn(),
+        loadingWorkspace: false,
+        loadFailedEdits: jest.fn(),
+        setLoading: jest.fn(),
     };
     const wrapper = shallow(<Home {...props} />);
 

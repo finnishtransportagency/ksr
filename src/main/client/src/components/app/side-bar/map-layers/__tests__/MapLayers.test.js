@@ -7,6 +7,10 @@ const setup = () => {
     const props = {
         setActiveLayerTab: () => {},
         activeTab: '',
+        layerGroups: {
+            layerGroups: [{}],
+            layerList: [{}],
+        },
     };
     const wrapper = shallow(<MapLayers {...props} />);
 
@@ -18,5 +22,20 @@ describe('<MapLayers />', () => {
 
     it('should render self', () => {
         expect(wrapper.find(MapLayersView).exists()).toBe(true);
+    });
+
+    it('should handle handleInputChange correctly', () => {
+        wrapper.setState({ layersToFind: '' });
+        expect(wrapper.state('layersToFind')).toEqual('');
+
+        const evt = {
+            target: {
+                name: 'layersToFind',
+                value: 'layer',
+            },
+        };
+
+        wrapper.instance().handleInputChange(evt);
+        expect(wrapper.state('layersToFind')).toEqual('layer');
     });
 });

@@ -6,6 +6,8 @@ import fi.sitowise.ksr.repository.UserLayerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
+
 /**
  * User Layer service.
  */
@@ -34,31 +36,10 @@ public class UserLayerService {
      */
     @Transactional
     public Layer addUserLayer(String username, Layer layer, boolean isMobile) {
-        String transparent = layer.getTransparent() ? "1" : "0";
-        String desktopVisible = layer.getDesktopVisible() ? "1" : "0";
-        String mobileVisible = layer.getMobileVisible() ? "1" : "0";
-        String styles = layer.getStyles().equals("") ? "default" : layer.getStyles();
-
-        userLayerRepository.addUserLayer(
-                layer.getName(),
-                layer.getType(),
-                layer.getUrl(),
-                layer.getLayers(),
-                styles,
-                layer.getOpacity(),
-                layer.getMinScale(),
-                layer.getMaxScale(),
-                transparent,
-                layer.getAttribution(),
-                desktopVisible,
-                mobileVisible,
-                username
-        );
-
-        int id = userLayerRepository.getMaxUserLayerId();
+        int id = userLayerRepository.addUserLayer(layer, username);
         Layer newLayer = userLayerRepository.getUserLayer(id);
         newLayer.setVisible(isMobile ? newLayer.getMobileVisible() : newLayer.getDesktopVisible());
-
+        newLayer.setUrl(formatLayerUrl(newLayer.getType(), newLayer.getId()));
         return newLayer;
     }
 

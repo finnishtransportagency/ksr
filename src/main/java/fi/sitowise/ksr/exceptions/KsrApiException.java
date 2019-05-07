@@ -19,6 +19,7 @@ public abstract class KsrApiException extends RuntimeException {
      */
     public KsrApiException(String message) {
         super(message);
+        log.error(message);
     }
 
     /**

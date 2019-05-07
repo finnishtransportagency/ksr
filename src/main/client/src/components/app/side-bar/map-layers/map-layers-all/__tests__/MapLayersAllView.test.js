@@ -27,8 +27,11 @@ const setup = () => {
                 id: 2, visible: true, name: 'Layer 2', active: true,
             },
         ],
+        loadingLayers: [],
         handleGroupClick: () => {},
-        activeGroup: 1,
+        activeGroups: [1],
+        layersToFind: '',
+        subLayers: [{}],
     };
     const wrapper = shallow(<MapLayersAllView {...props} />);
 

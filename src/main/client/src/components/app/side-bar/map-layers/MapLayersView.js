@@ -1,25 +1,65 @@
 // @flow
 import React, { Fragment } from 'react';
+import MediaQuery from 'react-responsive';
 import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
 import SideBar from '../../../ui/blocks/SideBar';
-import { H1 } from '../../../ui/elements';
+import { H1, TextInput } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
 import MapLayersAllContainer from './map-layers-all/MapLayersAllContainer';
-import { ButtonLayerNav, ButtonLayerNavWrapper, ButtonLayerAddWrapper } from './styles';
+import {
+    ButtonLayerNav,
+    ButtonLayerNavWrapper,
+    ButtonLayerAddWrapper,
+    LayerFilterWrapper,
+} from './styles';
 
 type Props = {
     handleButtonClickLayers: (string) => void,
     activeTab: string,
-    setActiveModal: Function,
+    setActiveModal: (modal: string) => void,
+    layerLegendActive: boolean,
+    toggleLayerLegend: () => void,
+    activeGroups: number[],
+    activeSubGroups: number[],
+    setActiveGroups: (activeGroups: number[]) => void,
+    setActiveSubGroups: (activeSubGroups: number[]) => void,
+    handleInputChange: (event: Object) => void,
+    layersToFind: string,
 };
 
 const MapLayersView = ({
-    handleButtonClickLayers, activeTab, setActiveModal,
+    handleButtonClickLayers,
+    activeTab,
+    setActiveModal,
+    layerLegendActive,
+    toggleLayerLegend,
+    activeGroups,
+    activeSubGroups,
+    setActiveGroups,
+    setActiveSubGroups,
+    handleInputChange,
+    layersToFind,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
             <H1>{strings.mapLayers.title}</H1>
+            <div
+                className="toggle-button"
+                tabIndex="0"
+                role="button"
+                onClick={toggleLayerLegend}
+                onKeyPress={toggleLayerLegend}
+            >
+                <span>{strings.mapLayers.toggleLayerLegend}</span>
+                <i
+                    className={
+                        layerLegendActive
+                            ? 'fas fa-toggle-on'
+                            : 'fas fa-toggle-off'
+                    }
+                />
+            </div>
         </SideBar.Header>
         <SideBar.Content layerSettings={activeTab === 'active'}>
             <ButtonLayerNavWrapper>
@@ -38,13 +78,45 @@ const MapLayersView = ({
                     {strings.mapLayers.all}
                 </ButtonLayerNav>
             </ButtonLayerNavWrapper>
+            {
+                activeTab === 'all'
+                && (
+                    <LayerFilterWrapper>
+                        <label htmlFor="filterAllLayers"> {/* eslint-disable-line */}
+                            <span>{strings.mapLayers.filterAllLayers}</span>
+                            <TextInput
+                                backgroundDarker
+                                type="text"
+                                placeholder=""
+                                id="filterAllLayers"
+                                name="filterAllLayers"
+                                autoComplete="off"
+                                onChange={handleInputChange}
+                                value={layersToFind}
+                                maxLength={50}
+                            />
+                        </label>
+                    </LayerFilterWrapper>
+                )
+            }
             <Scrollbars
                 autoHide
-                className="layer-view-scroll-wrapper"
-                renderThumbVertical={scrollProps =>
-                    <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
+                className={`layer-view-scroll-wrapper ${activeTab}`}
+                renderView={scrollProps => <div {...scrollProps} className="layer-view-inner-scroll-wrapper" />}
+                renderThumbVertical={scrollProps => <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
             >
-                {activeTab === 'all' && <MapLayersAllContainer />}
+                {
+                    activeTab === 'all'
+                    && (
+                        <MapLayersAllContainer
+                            layersToFind={layersToFind}
+                            activeGroups={activeGroups}
+                            activeSubGroups={activeSubGroups}
+                            setActiveGroups={setActiveGroups}
+                            setActiveSubGroups={setActiveSubGroups}
+                        />
+                    )
+                }
                 {activeTab === 'active' && <MapLayersActiveContainer />}
             </Scrollbars>
             <ButtonLayerAddWrapper>
@@ -56,12 +128,24 @@ const MapLayersView = ({
                 >
                     {strings.mapLayers.addNewLayer}
                 </ButtonLayerNav>
-                <ButtonLayerNav
-                    disabled
-                    tabIndex={0}
-                    role="button"
-                >Shape?
-                </ButtonLayerNav>
+                <MediaQuery query="(min-width: 769px)">
+                    <ButtonLayerNav
+                        activeLayer={activeTab === 'shape'}
+                        onClick={() => { setActiveModal('shapefile'); }}
+                    >
+                        {strings.mapLayers.shape}
+                    </ButtonLayerNav>
+                </MediaQuery>
+                <MediaQuery query="(max-width: 768px)">
+                    <ButtonLayerNav
+                        activeLayer={activeTab === 'shape'}
+                        onClick={() => {
+                            setActiveModal('shapefile');
+                        }}
+                    >
+                        {strings.mapLayers.shape}
+                    </ButtonLayerNav>
+                </MediaQuery>
             </ButtonLayerAddWrapper>
         </SideBar.Content>
     </Fragment>

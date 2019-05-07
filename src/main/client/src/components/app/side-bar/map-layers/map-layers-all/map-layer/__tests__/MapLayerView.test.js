@@ -10,8 +10,18 @@ const setup = (prop) => {
             name: 'Test layer 1',
             userLayer: false,
         },
+        isUserlayer: false,
         handleLayerClick: jest.fn(),
         checked: true,
+        loadingLayers: [],
+        layerList: [
+            {
+                id: 12,
+                name: 'Test layer 1',
+                userLayer: false,
+                failOnLoad: false,
+            },
+        ],
     };
 
     const props = prop || minProps;
@@ -39,8 +49,18 @@ describe('<MapLayerView />', () => {
                 name: 'Test Layer 2',
                 userLayer: false,
             },
+            isUserlayer: false,
             handleLayerClick: jest.fn(),
             checked: false,
+            loadingLayers: [],
+            layerList: [
+                {
+                    id: 1234,
+                    name: 'Test layer 2',
+                    userLayer: false,
+                    failOnLoad: false,
+                },
+            ],
         };
         const { wrapper } = setup(props);
         const checkbox = wrapper.find({ type: 'checkbox' });
@@ -64,8 +84,17 @@ describe('<MapLayerView />', () => {
                 name: 'Test Layer 2',
                 userLayer: true,
             },
+            isUserlayer: true,
             handleLayerClick: jest.fn(),
             checked: true,
+            loadingLayers: [],
+            layerList: [
+                {
+                    id: 1234,
+                    name: 'Test layer 2',
+                    userLayer: true,
+                },
+            ],
         };
         const { wrapper } = setup(props);
         expect(wrapper.find(LayerGroup.Layer.RemoveIcon).exists()).toBe(true);

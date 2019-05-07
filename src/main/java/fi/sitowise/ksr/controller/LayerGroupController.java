@@ -2,6 +2,7 @@ package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.service.LayerGroupService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,8 @@ public class LayerGroupController {
      * @param userAgent the user agent
      * @return List of layergroups
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ApiOperation("Get all Layergroups the user has permissions.")
+    @GetMapping(value = "")
     @ResponseBody
     public List<LayerGroup> getLayerGroups(@RequestHeader(value = "User-Agent") String userAgent) {
         String[] mobileAgents = {"Mobile", "Tablet", "Mobi", "IEMobile"};

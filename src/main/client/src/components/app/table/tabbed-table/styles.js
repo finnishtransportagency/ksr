@@ -1,13 +1,19 @@
 import styled, { css } from 'styled-components';
 import { Button } from '../../../ui/elements';
+import { MapLayerTitleWrapper } from '../../shared/styles';
+import * as styles from '../../../ui/defaultStyles';
 
 export const WrapperTabbedTable = styled.div`
-    width: 100%;
-    height: 52px;
+    width: calc(100% - 60px);
+    height: 58px;
     position: absolute;
     top: 0;
     white-space: nowrap;
     overflow: hidden;
+    
+    @media only screen and (max-width: 768px) {
+        width: 100%;
+    }
 `;
 
 export const ButtonTabbedTableTab = styled(Button)`
@@ -16,6 +22,12 @@ export const ButtonTabbedTableTab = styled(Button)`
     overflow: hidden;
     margin: 0;
     border-bottom: 5px solid transparent;
+    height: 52px;
+    color: ${({ admin }) => admin && styles.colorTableEdited};
+    
+    ${MapLayerTitleWrapper} {
+        justify-content: center;
+    }
 
     ${props => props.active && css`
         border-bottom: 5px solid;

@@ -11,6 +11,7 @@ type Props = {
     view: Object,
     layerList: Array<Object>,
     selectedFeatures: Array<Object>,
+    updateWorkspaces: Function,
 };
 
 type State = {
@@ -44,50 +45,63 @@ class ModalNewWorkspace extends Component<Props, State> {
         window.clearTimeout(this.existsQuery);
         if (this.abortController) this.abortController.abort();
 
-        this.setState({
-            submitDisabled: true,
-            workspaceName,
-            fetching: true,
-        });
+        this.setState({ workspaceName });
 
-        this.existsQuery = window.setTimeout(() => {
-            const signal = this.abortController ? this.abortController.signal : undefined;
-
-            fetchWorkspaceNameExists(
-                workspaceName,
-                signal,
-            ).then((r) => {
-                this.setState({
-                    submitDisabled: r,
-                    fetching: false,
-                });
+        if (workspaceName.trim()) {
+            this.setState({
+                submitDisabled: true,
+                fetching: true,
             });
-        }, 300);
+
+            this.existsQuery = window.setTimeout(() => {
+                const signal = this.abortController ? this.abortController.signal : undefined;
+
+                fetchWorkspaceNameExists(
+                    workspaceName.trim(),
+                    signal,
+                ).then((r) => {
+                    this.setState({
+                        submitDisabled: r,
+                        fetching: false,
+                    });
+                });
+            }, 300);
+        }
     };
 
     handleSubmit = () => {
-        const { layerList, view, selectedFeatures } = this.props;
+        const {
+            layerList,
+            view,
+            selectedFeatures,
+            updateWorkspaces,
+        } = this.props;
         const { workspaceName } = this.state;
 
         const workspaceJson = createWorkspaceJsonBody(
-            workspaceName,
+            workspaceName.trim(),
             layerList,
             view,
             selectedFeatures,
         );
 
-        fetchSaveWorkspace(workspaceJson);
+        updateWorkspaces(fetchSaveWorkspace, workspaceJson, 'create');
     };
 
     render() {
         const { workspaceName, submitDisabled, fetching } = this.state;
 
+        const modalSubmit = [{
+            text: strings.modalNewWorkspace.submit,
+            handleSubmit: this.handleSubmit,
+            disabled: !workspaceName.trim() || submitDisabled || fetching,
+            toggleModal: true,
+        }];
+
         return (
             <ModalContainer
-                submitDisabled={!workspaceName || submitDisabled || fetching}
                 title={strings.modalNewWorkspace.title}
-                handleModalSubmit={this.handleSubmit}
-                submitText={strings.modalNewWorkspace.submit}
+                modalSubmit={modalSubmit}
                 cancelText={strings.modalNewWorkspace.cancel}
             >
                 <ModalNewWorkspaceView

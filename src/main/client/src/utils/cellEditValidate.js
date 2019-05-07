@@ -1,132 +1,173 @@
 // @flow
-import clone from 'clone';
+
+import { toUnixTime } from './date';
 
 /**
- * Does validations about edited cell in table
- * Either adds new data to editedLayer or removes if original and edited matches
- *
- * @param evt Object edited cells event
- * @param layerData Array contains data from current table
- * @param cellField Object contains info about edited field
- * @param cellInfo Object contains info about edited cell
- *
- * @returns data Array that can be passed as edited layer
- */
-export const cellEditValidate = (
-    evt: Object,
-    layerData: Array<Object>,
-    cellField: Object,
-    cellInfo: Object,
-) => {
-    const data = clone(layerData, true, 2);
-    const editedRow = data[cellInfo.index]._edited.find(d => d.title === cellInfo.column.id);
-    const columnValue = data[cellInfo.index];
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
+* Returns matching edit from edited array.
+*
+* @param {Object[]} edited Array of edits.
+* @param {string} title Title of the attribute.
+*
+* @returns {Object} Matching row.
+*/
+const getEdit = (edited, title) => edited.find(d => d.title === title);
 
-    const newValue = (value) => {
-        columnValue._edited.push({
-            title: cellInfo.column.id,
-            originalData: cellValue,
-            editedData: value,
-        });
-        data[cellInfo.index][cellInfo.column.id] = value;
-    };
+/**
+* Returns boolean indicating if there are any edits with given title.
+*
+* @param {Object[]} edited Array of edits.
+* @param {string} title Title of the attribute.
+*
+* @returns {boolean} Boolean indicating if any edits exist.
+*/
+const isNewEdit = (edited, title) => getEdit(edited, title) === undefined;
 
-    if (!editedRow) {
-        if (cellField.type === 'esriFieldTypeString') {
-            if (cellValue.trim() !== evt.target.innerText) {
-                if (evt.target.innerText) {
-                    const value = evt.target.innerText;
-                    newValue(value);
-                } else {
-                    const value = ' ';
-                    newValue(value);
-                }
-            }
-        } else if (cellField.type === 'esriFieldTypeSmallInteger' || cellField.type === 'esriFieldTypeInteger') {
-            const value = parseInt(evt.target.innerText, 10);
-            if (cellValue !== value) {
-                if (evt.target.innerText.trim()) {
-                    newValue(value);
-                    data[cellInfo.index][cellInfo.column.id] = value;
-                } else if (cellValue) {
-                    newValue(0);
-                    data[cellInfo.index][cellInfo.column.id] = 0;
-                }
-            }
-        } else if (cellField.type === 'esriFieldTypeDouble') {
-            if (cellValue !== parseFloat(evt.target.innerText)) {
-                if (evt.target.innerText) {
-                    const value = parseFloat(evt.target.innerText);
-                    newValue(value);
-                    data[cellInfo.index][cellInfo.column.id] = value;
-                } else {
-                    newValue(' ');
-                    data[cellInfo.index][cellInfo.column.id] = ' ';
-                }
-            }
-        }
-    } else if (editedRow.editedData !== editedRow.originalData) {
-        if (cellField.type === 'esriFieldTypeString') {
-            if (editedRow.originalData === ' ' && !evt.target.innerText.trim()) {
-                const value = ' ';
-                editedRow.editedData = value;
-                data[cellInfo.index][cellInfo.column.id] = value;
-            } else {
-                const value = evt.target.innerText;
-                editedRow.editedData = value;
-                data[cellInfo.index][cellInfo.column.id] = value;
-            }
-        } else if (cellField.type === 'esriFieldTypeSmallInteger' || cellField.type === 'esriFieldTypeInteger') {
-            const value = parseInt(evt.target.innerText, 10);
-            editedRow.editedData = !Number.isNaN(value)
-                ? value
-                : 0;
-            data[cellInfo.index][cellInfo.column.id] = value;
-        } else if (cellField.type === 'esriFieldTypeDouble') {
-            const value = parseFloat(evt.target.innerText);
-            editedRow.editedData = value;
-            data[cellInfo.index][cellInfo.column.id] = value;
-        }
+/**
+* Check if values are equal.
+* String values are considered equal if a is null or undefined and b is empty string and vice versa.
+*
+* @param {any} a The value to check equality against.
+* @param {any} b The value whose equality to check against a.
+*
+* @returns {boolean} Boolean indicating if values are equal.
+*/
+export const equals = (a: any, b: any) => {
+    const aClean = typeof a === 'string' ? a.trim() : a;
+    const bClean = typeof b === 'string' ? b.trim() : b;
+
+    if (aClean === '' && (bClean === null || bClean === undefined)) {
+        return true;
     }
-
-    if (editedRow) {
-        if (editedRow.editedData === editedRow.originalData) {
-            const foundIndex = columnValue._edited.indexOf(editedRow);
-            if (foundIndex !== -1) {
-                data[cellInfo.index][cellInfo.column.id] = editedRow.originalData;
-                columnValue._edited.splice(foundIndex, 1);
-            }
-        }
+    if ((aClean === null || aClean === undefined) && bClean === '') {
+        return true;
     }
-
-    return data;
+    return aClean === bClean;
 };
 
 /**
- * Prevents some keypresses depending on cell type
- * String cells allow everything
- * Int cells allow numbers only
- * Double cells allow numbers and dots
+* Adds or updates edited value into edits-Array.
+*
+* @param {Object[]} edited Array of edited values.
+* @param {string} title Column title.
+* @param {(string | number)} value Current edited value.
+* @param {(string | number)} originalData Original value.
+*
+* @returns {Object[]} New array of edited values.
+*/
+const addEditedValue = (edited, title, value, originalData) => edited.reduce(
+    (acc, cur) => {
+        if (equals(cur.originalData, value) && cur.title === title) {
+            return acc;
+        }
+        return acc.concat(cur.title === title ? { ...cur, editedData: value } : { ...cur });
+    },
+    isNewEdit(edited, title) && !equals(originalData, value) ? [
+        {
+            title,
+            originalData,
+            editedData: value,
+        },
+    ] : [],
+);
+
+/**
+* Get value of given type.
+*
+* @param {string} type Value type.
+* @param {string} value Value to convert.
+*
+* @returns {(string | number)} Value converted to corresponding type.
+*/
+export const getValue = (type: string, value: string) => {
+    switch (type) {
+        case 'esriFieldTypeString':
+            return value ? String(value).trim() : null;
+        case 'esriFieldTypeSmallInteger':
+        case 'esriFieldTypeInteger':
+            return Number.isNaN(parseInt(value, 10)) ? null : parseInt(value, 10);
+        case 'esriFieldTypeDouble':
+            return Number.isNaN(parseFloat(value)) ? null : parseFloat(value);
+        case 'esriFieldTypeDate':
+            return toUnixTime(value);
+        default:
+            return value;
+    }
+};
+
+/**
+* Returns a new row with changes.
+*
+* @param {Object} row A row/feature.
+* @param {any} value Events targets value.
+* @param {Object} cellInfo Table's Cell-object.
+* @param {Object} cellField Table's Field-object.
+*
+* @returns {Object} Row with changes.
+*/
+const applyChange = (row, value, cellInfo, cellField) => {
+    const newValue = getValue(
+        cellField.type,
+        value,
+    );
+    return {
+        ...row,
+        [cellInfo.column.id]: newValue,
+        _edited: addEditedValue(
+            row._edited,
+            cellInfo.column.id,
+            newValue,
+            row[cellInfo.column.id],
+        ),
+    };
+};
+
+/**
+ * Does validations about edited cell in table.
+ * Either adds new data to editedLayer or removes if original and edited matches.
  *
- * @param e Object edited cells event
- * @param cellField Object contains info about edited field
+ * @param {any} value Event's targets value.
+ * @param {Object[]} layerData A row/feature array.
+ * @param {Object} cellField Table's Cell-object.
+ * @param {Object} cellInfo Table's Field-object.
  *
- * @returns prevents keypress or null
+ * @returns {?Object} Changed row if any.
+ */
+export const cellEditValidate = (
+    value: any,
+    layerData: Object[],
+    cellField: Object,
+    cellInfo: Object,
+) => {
+    if (cellInfo.index < layerData.length) {
+        return applyChange(layerData[cellInfo.index], value, cellInfo, cellField);
+    }
+    return null;
+};
+
+/**
+ * Prevents some keypresses depending on cell type.
+ * Prevents keypress if text will be longer than length in cellField.
+ * String cells allow everything.
+ * Int cells allow numbers only.
+ * Double cells allow numbers and dots.
+ *
+ * @param {Object} e Edited cells event.
+ * @param {Object} cellField Contains info about edited field.
+ *
+ * @returns method call or null
  */
 export const preventKeyPress = (e: Object, cellField: Object) => {
+    if (Number.isInteger(cellField.length) && e.target.innerText.length >= cellField.length) {
+        return e.preventDefault();
+    }
     switch (cellField.type) {
-        case ('esriFieldTypeSmallInteger'):
+        case 'esriFieldTypeInteger':
+        case 'esriFieldTypeSmallInteger':
             if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ') {
                 return e.preventDefault();
             }
             break;
-        case ('esriFieldTypeInteger'):
-            if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ') {
-                return e.preventDefault();
-            }
-            break;
-        case ('esriFieldTypeDouble'):
+        case 'esriFieldTypeDouble':
             if (e.key !== '.' && (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ')) {
                 return e.preventDefault();
             }

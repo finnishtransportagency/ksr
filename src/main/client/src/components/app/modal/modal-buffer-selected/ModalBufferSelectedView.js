@@ -17,12 +17,11 @@ const ModalBufferSelectedView = ({ handleBufferChange }: Props) => (
                 index="bufferSelectedView"
                 type="number"
                 placeholder="0"
-                min={0}
+                min={-100000}
+                max={100000}
                 onChange={handleBufferChange}
             />
         </label>
-
-
     </Fragment>
 );
 

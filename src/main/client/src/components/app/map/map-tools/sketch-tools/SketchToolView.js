@@ -10,8 +10,9 @@ type Props = {
     drawCircleButtonRef: () => void,
     toggleSelectToolsButtonRef: () => void,
     toggleTools: () => void,
+    hasSelectedFeatures: boolean,
     isOpen: boolean,
-    data: Array<Object>,
+    activeTool: string,
 };
 
 const SketchToolView = ({
@@ -21,13 +22,14 @@ const SketchToolView = ({
     drawCircleButtonRef,
     toggleSelectToolsButtonRef,
     toggleTools,
+    hasSelectedFeatures,
     isOpen,
-    data,
+    activeTool,
 }: Props) => (
     <Fragment>
         <div id="select-tool-outer-wrapper" >
             <div
-                style={{ visibility: data.length ? 'visible' : 'hidden' }}
+                style={{ visibility: hasSelectedFeatures ? 'visible' : 'hidden' }}
                 id="remove-selection"
                 role="button"
                 tabIndex={0}
@@ -68,7 +70,7 @@ const SketchToolView = ({
                 id="toggle-select-tools"
                 role="button"
                 tabIndex={0}
-                className="esri-component esri-widget--button esri-widget esri-interactive"
+                className={`esri-component esri-widget--button esri-widget esri-interactive ${activeTool ? 'disabled' : ''}`}
                 title={strings.sketchTool.selectTool}
                 ref={toggleSelectToolsButtonRef}
                 onClick={() => { toggleTools(); }}

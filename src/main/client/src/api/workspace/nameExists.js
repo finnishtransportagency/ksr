@@ -1,15 +1,24 @@
+// @flow
+import querystring from 'querystring';
 import { config } from '../config';
 
 /**
  * Checks if workspace name already exists for the current user.
  *
- * @param workspaceName user given workspace name
- * @param signal Request signal which can be used to abort the request
+ * @param {string} workspaceName User given workspace name.
+ * @param {any} signal Request signal which can be used to abort the request.
  *
- * @return boolean of whether the name exists or not
+ * @return {Promise<boolean>} Whether the name exists or not.
  */
-export const fetchWorkspaceNameExists = (workspaceName, signal) => (
-    fetch(`api/workspace/exists?name=${workspaceName}`, config(), signal)
+export const fetchWorkspaceNameExists = (workspaceName: string, signal: any) => (
+    fetch(`api/workspace/exists?${
+        querystring.stringify({
+            name: workspaceName,
+        })
+    }`, {
+        ...config(),
+        signal,
+    })
         .then(r => r.json())
         .catch(err => console.log(err))
 );

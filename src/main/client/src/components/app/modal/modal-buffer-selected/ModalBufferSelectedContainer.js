@@ -7,7 +7,7 @@ const mapStateToProps = (state) => {
     const selectedGeometryData = [];
     if (state.table.features.singleLayerGeometry.type === undefined) {
         state.table.features.layers.forEach((l) => {
-            l.data.forEach(d => d._selected &&
+            l.data.forEach(d => d._selected && d.geometry &&
                 selectedGeometryData.push(d.geometry));
         });
     } else {

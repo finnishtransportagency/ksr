@@ -8,6 +8,7 @@ export const TextArea = styled.textarea`
     box-sizing: border-box;
     padding: 0.5rem;
     border: 1px solid ${styles.colorBackgroundGrey};
+    margin-top: 6px;
     
     &:focus {
         outline: none;
@@ -18,7 +19,6 @@ export const TextArea = styled.textarea`
 export const FilteredDataTable = styled.table`
     text-align: left;
     display: block;
-    overflow: auto;
     
     th, td {
         padding-right: 1rem;

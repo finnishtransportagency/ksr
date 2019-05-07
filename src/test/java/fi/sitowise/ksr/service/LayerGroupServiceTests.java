@@ -1,21 +1,21 @@
 package fi.sitowise.ksr.service;
 
-import fi.sitowise.ksr.controller.ProxyController;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
+import fi.sitowise.ksr.domain.LayerPermission;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
-import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -23,12 +23,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getAuthentication;
+import static fi.sitowise.ksr.utils.KsrAuthenticationUtils.getCurrentUserGroups;
+import static fi.sitowise.ksr.utils.KsrStringUtils.formatLayerUrl;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 
 /**
  * Layer group service tests.
  */
 @RunWith(SpringRunner.class)
+@SpringBootTest
+@TestPropertySource(properties = "server.servlet.context-path=/")
 @ContextConfiguration(classes = LayerGroupService.class)
 public class LayerGroupServiceTests {
 
@@ -57,7 +62,7 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetUserGroupsWithRoles() {
-        Assert.assertEquals(Arrays.asList("ROLE_ADMIN", "ROLE_USER"), layerGroupService.getUserGroups());
+        Assert.assertEquals(Arrays.asList("ROLE_ADMIN", "ROLE_USER"), getCurrentUserGroups());
     }
 
     /**
@@ -66,7 +71,7 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {})
     public void testGetUserGroupsWithoutRoles() {
-        Assert.assertEquals(Collections.emptyList(), layerGroupService.getUserGroups());
+        Assert.assertEquals(Collections.emptyList(), getCurrentUserGroups());
     }
 
     /**
@@ -74,7 +79,7 @@ public class LayerGroupServiceTests {
      */
     @Test
     public void testGetUserGroupsWithoutAuth() {
-        Assert.assertNull(layerGroupService.getUserGroups());
+        Assert.assertNull(getCurrentUserGroups());
     }
 
     /**
@@ -83,7 +88,7 @@ public class LayerGroupServiceTests {
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetLayerGroups() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         LayerGroup lg = new LayerGroup();
         lg.setId(123);
         lg.setGroupOrder(1);
@@ -103,31 +108,38 @@ public class LayerGroupServiceTests {
     }
 
     /**
-     * Test get layer groups, modify layer url.
+     * Test get layer groups, modify layer url, contains Layer Permission.
      */
     @Test
     @WithMockUser(username = "mock-user", roles = {"ADMIN", "USER"})
     public void testGetLayerGroupsModifyLayerUrl() {
-        String contextPath = "${server.servlet.context-path}";
 
         LayerGroup lg = new LayerGroup();
         lg.setId(123);
 
+        LayerPermission lp = new LayerPermission();
+        lp.setCreateLayer("0");
+        lp.setDeleteLayer("1");
+        lp.setReadLayer("1");
+        lp.setUpdateLayer("0");
+
         Layer l1 = new Layer();
         l1.setId("321");
         l1.setUrl("https://test.example.com");
+        l1.setLayerPermission(lp);
 
         Layer l2 = new Layer();
         l2.setId("543");
         l2.setUrl("https://2.test.example.com");
+        l2.setLayerPermission(lp);
 
         lg.setLayers(Arrays.asList(l1, l2));
 
         Mockito.when(layerGroupRepository.getLayerGroups(Mockito.anyList())).thenReturn(Collections.singletonList(lg));
         for (LayerGroup lgr : layerGroupService.getLayerGroups(false)) {
             for (Layer lr : lgr.getLayers()) {
-                String formatUrl = String.format("%s/%s/%s/", contextPath, ProxyController.PROXY_URL, lr.getId());
-                Assert.assertEquals(KsrStringUtils.replaceMultipleSlashes(formatUrl), lr.getUrl());
+                Assert.assertEquals(formatLayerUrl(lr.getType(), lr.getId()), lr.getUrl());
+                Assert.assertEquals(lp, lr.getLayerPermission());
             }
         }
     }

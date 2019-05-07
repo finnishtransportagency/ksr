@@ -6,6 +6,12 @@ import table from './table';
 import search from './search';
 import modal from './modal';
 import adminTool from './adminTool';
+import workspace from './workspace';
+import confirmModal from './confirmModal';
+import contract from './contract';
+import user from './user';
+import offline from './offline';
+import loading from './loading';
 
 export default combineReducers({
     navigation,
@@ -14,4 +20,10 @@ export default combineReducers({
     search,
     modal,
     adminTool,
+    workspace,
+    confirmModal,
+    contract,
+    user,
+    offline,
+    loading,
 });
