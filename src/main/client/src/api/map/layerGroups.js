@@ -35,6 +35,6 @@ export const fetchLayerGroups = () => (
                     });
                 }
             }
-            return layerGroups;
+            return layerGroups.sort((a, b) => a.groupOrder - b.groupOrder);
         })
 );
