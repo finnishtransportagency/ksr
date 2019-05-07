@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>fi.sitowise</groupId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>war</packaging>
 
 	<name>ksr</name>
@@ -171,7 +171,7 @@
 			                <goal>install-node-and-npm</goal>
 			            </goals>
 			        </execution>
-			
+
 			        <execution>
 			            <id>npm update</id>
 			            <phase>compile</phase>
@@ -183,7 +183,7 @@
 							<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
 			        </execution>
-				    
+
 			        <execution>
 			            <id>Frontend production build</id>
 			            <phase>compile</phase>
