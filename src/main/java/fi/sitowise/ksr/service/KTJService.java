@@ -100,11 +100,17 @@ public class KTJService {
     @Value("${ktj.registerUnitEndpoint}")
     String ktjRegisterUnitEndpointUrl;
 
-    @Value("${ktj.username}")
-    String ktjUsername;
+    @Value("${ktj.wfs.username}")
+    String ktjWfsUsername;
 
-    @Value("${ktj.password}")
-    String ktjPassword;
+    @Value("${ktj.wfs.password}")
+    String ktjWfsPassword;
+
+    @Value("${ktj.print.username}")
+    String ktjPrintUsername;
+
+    @Value("${ktj.print.password}")
+    String ktjPrintPassword;
 
     public KTJService (HttpRequestService httpRequestService) {
         this.httpRequestService = httpRequestService;
@@ -171,14 +177,14 @@ public class KTJService {
     }
 
     /**
-     * A Helper method to invoke a HTTP POST -call to KTJ-endpoint, and finally return FeatureCollection parsed from
+     * A Helper method to invoke a HTTP POST -call to KTJ-WFS-endpoint, and finally return FeatureCollection parsed from
      * response.
      *
      * @param body Raw body that should be POSTed into KTJ-endpoint.
      * @return FeatureCollection.
      */
     private FeatureCollection fetchDetails(String body) {
-        final String authentication = getBasicAuthString();
+        final String authentication = getBasicAuthString(ktjWfsUsername, ktjWfsPassword);
         final InputStream is = httpRequestService.postURLContents(
                 ktjEndpointUrl,
                 body,
@@ -195,8 +201,8 @@ public class KTJService {
      *
      * @return Base64 encoded username:password String for HTTP Basic Auth.
      */
-    private String getBasicAuthString() {
-        return Base64.getEncoder().encodeToString(String.format("%s:%s", ktjUsername, ktjPassword).getBytes());
+    private String getBasicAuthString(String username, String password) {
+        return Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
     }
 
     /**
@@ -249,7 +255,7 @@ public class KTJService {
         String xmlUrl = String.format("%s?rekisteriyksikko=%s&lang=%s",
                 ktjMapEndpointXml, propertyIdentifier, language.toUpperCase());
         InputStream xmlInputStream = httpRequestService.getURLContents(xmlUrl, true,
-                getBasicAuthString());
+                getBasicAuthString(ktjPrintUsername, ktjPrintPassword));
         pdfLinkMap.put("map", KTJUtils.parseKTJPdfLinks(contextPath, xmlInputStream));
 
         return pdfLinkMap;
@@ -302,7 +308,11 @@ public class KTJService {
                 printType,
                 pdfUrl
         ));
-        InputStream inputStream = httpRequestService.getURLContents(pdfUrl, true, getBasicAuthString());
+        InputStream inputStream = httpRequestService.getURLContents(
+                pdfUrl,
+                true,
+                getBasicAuthString(ktjPrintUsername, ktjPrintPassword)
+        );
 
         try {
             String headerValue = String.format("inline; filename=\"%s\"", filename);
