@@ -32,7 +32,7 @@ const PropertyPrintFilesView = ({ links, fetching }: Props) => (
                     </PropertyFeature>
                 ))}
                 { links.map && <p>{strings.searchProperty.propertyPrintFiles.maps}</p>}
-                { links.map.map((url, i) => (
+                { links.map && links.map.map((url, i) => (
                     <PropertyFeature key={(url)}>
                         <a rel="noopener noreferrer" target="_blank" href={url}><span>{strings.searchProperty.propertyPrintFiles.map} {i + 1}</span></a>
                     </PropertyFeature>
