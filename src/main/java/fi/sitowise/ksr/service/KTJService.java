@@ -85,26 +85,32 @@ public class KTJService {
     @Value("${ktj.endpoint}")
     String ktjEndpointUrl;
 
-    @Value("${ktj.deedEndpoint}")
+    @Value("${ktj.deedEndpoint:}")
     String ktjDeedEndpointUrl;
 
-    @Value("${ktj.easementEndpoint}")
+    @Value("${ktj.easementEndpoint:}")
     String ktjEasementEndpointUrl;
 
-    @Value("${ktj.mapEndpoint.xml}")
+    @Value("${ktj.mapEndpoint.xml:}")
     String ktjMapEndpointXml;
 
-    @Value("${ktj.mapEndpoint.url}")
+    @Value("${ktj.mapEndpoint.url:}")
     String ktjMapEndpointUrl;
 
-    @Value("${ktj.registerUnitEndpoint}")
+    @Value("${ktj.registerUnitEndpoint:}")
     String ktjRegisterUnitEndpointUrl;
 
-    @Value("${ktj.username}")
-    String ktjUsername;
+    @Value("${ktj.wfs.username}")
+    String ktjWfsUsername;
 
-    @Value("${ktj.password}")
-    String ktjPassword;
+    @Value("${ktj.wfs.password}")
+    String ktjWfsPassword;
+
+    @Value("${ktj.print.username}")
+    String ktjPrintUsername;
+
+    @Value("${ktj.print.password}")
+    String ktjPrintPassword;
 
     public KTJService (HttpRequestService httpRequestService) {
         this.httpRequestService = httpRequestService;
@@ -171,14 +177,14 @@ public class KTJService {
     }
 
     /**
-     * A Helper method to invoke a HTTP POST -call to KTJ-endpoint, and finally return FeatureCollection parsed from
+     * A Helper method to invoke a HTTP POST -call to KTJ-WFS-endpoint, and finally return FeatureCollection parsed from
      * response.
      *
      * @param body Raw body that should be POSTed into KTJ-endpoint.
      * @return FeatureCollection.
      */
     private FeatureCollection fetchDetails(String body) {
-        final String authentication = getBasicAuthString();
+        final String authentication = getBasicAuthString(ktjWfsUsername, ktjWfsPassword);
         final InputStream is = httpRequestService.postURLContents(
                 ktjEndpointUrl,
                 body,
@@ -195,8 +201,8 @@ public class KTJService {
      *
      * @return Base64 encoded username:password String for HTTP Basic Auth.
      */
-    private String getBasicAuthString() {
-        return Base64.getEncoder().encodeToString(String.format("%s:%s", ktjUsername, ktjPassword).getBytes());
+    private String getBasicAuthString(String username, String password) {
+        return Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
     }
 
     /**
@@ -213,44 +219,52 @@ public class KTJService {
 
         Map<String, List<String>> pdfLinkMap = new HashMap<>();
 
-        String deedUrl = KsrStringUtils.replaceMultipleSlashes(
-            String.format(
-                "/%s/%s/pdf/deed?kiinteistotunnus=%s&lang=%s",
-                contextPath,
-                KTJController.ENDPOINT_URL,
-                propertyIdentifier,
-                language.toUpperCase()
-            )
-        );
-        pdfLinkMap.put("deed", Collections.singletonList(deedUrl));
+        if (!ktjDeedEndpointUrl.isEmpty()) {
+            String deedUrl = KsrStringUtils.replaceMultipleSlashes(
+                    String.format(
+                            "/%s/%s/pdf/deed?kiinteistotunnus=%s&lang=%s",
+                            contextPath,
+                            KTJController.ENDPOINT_URL,
+                            propertyIdentifier,
+                            language.toUpperCase()
+                    )
+            );
+            pdfLinkMap.put("deed", Collections.singletonList(deedUrl));
+        }
 
-        String easementUrl = KsrStringUtils.replaceMultipleSlashes(
-            String.format(
-                "/%s/%s/pdf/easement?kiinteistotunnus=%s&lang=%s",
-                contextPath,
-                KTJController.ENDPOINT_URL,
-                propertyIdentifier,
-                language.toUpperCase()
-            )
-        );
-        pdfLinkMap.put("easement", Collections.singletonList(easementUrl));
+        if (!ktjEasementEndpointUrl.isEmpty()) {
+            String easementUrl = KsrStringUtils.replaceMultipleSlashes(
+                    String.format(
+                            "/%s/%s/pdf/easement?kiinteistotunnus=%s&lang=%s",
+                            contextPath,
+                            KTJController.ENDPOINT_URL,
+                            propertyIdentifier,
+                            language.toUpperCase()
+                    )
+            );
+            pdfLinkMap.put("easement", Collections.singletonList(easementUrl));
+        }
 
-        String registerUnitUrl = KsrStringUtils.replaceMultipleSlashes(
-            String.format(
-                "/%s/%s/pdf/registerunit?kiinteistotunnus=%s&lang=%s",
-                contextPath,
-                KTJController.ENDPOINT_URL,
-                propertyIdentifier,
-                language.toUpperCase()
-            )
-        );
-        pdfLinkMap.put("registerunit", Collections.singletonList(registerUnitUrl));
+        if (!ktjRegisterUnitEndpointUrl.isEmpty()) {
+            String registerUnitUrl = KsrStringUtils.replaceMultipleSlashes(
+                    String.format(
+                            "/%s/%s/pdf/registerunit?kiinteistotunnus=%s&lang=%s",
+                            contextPath,
+                            KTJController.ENDPOINT_URL,
+                            propertyIdentifier,
+                            language.toUpperCase()
+                    )
+            );
+            pdfLinkMap.put("registerunit", Collections.singletonList(registerUnitUrl));
+        }
 
-        String xmlUrl = String.format("%s?rekisteriyksikko=%s&lang=%s",
-                ktjMapEndpointXml, propertyIdentifier, language.toUpperCase());
-        InputStream xmlInputStream = httpRequestService.getURLContents(xmlUrl, true,
-                getBasicAuthString());
-        pdfLinkMap.put("map", KTJUtils.parseKTJPdfLinks(contextPath, xmlInputStream));
+        if (!ktjMapEndpointUrl.isEmpty()) {
+            String xmlUrl = String.format("%s?rekisteriyksikko=%s&lang=%s",
+                    ktjMapEndpointXml, propertyIdentifier, language.toUpperCase());
+            InputStream xmlInputStream = httpRequestService.getURLContents(xmlUrl, true,
+                    getBasicAuthString(ktjPrintUsername, ktjPrintPassword));
+            pdfLinkMap.put("map", KTJUtils.parseKTJPdfLinks(contextPath, xmlInputStream));
+        }
 
         return pdfLinkMap;
     }
@@ -270,29 +284,33 @@ public class KTJService {
             switch (printType) {
                 case "deed":
                     filename = "lainhuutotodistus.pdf";
-                    uri = new URIBuilder(ktjDeedEndpointUrl);
+                    uri = ktjDeedEndpointUrl.isEmpty() ? null : new URIBuilder(ktjDeedEndpointUrl);
                     break;
                 case "easement":
                     filename = "rasitustodistus.pdf";
-                    uri = new URIBuilder(ktjEasementEndpointUrl);
+                    uri = ktjEasementEndpointUrl.isEmpty() ? null : new URIBuilder(ktjEasementEndpointUrl);
                     break;
                 case "map":
                     filename = "karttaote.pdf";
-                    uri = new URIBuilder(ktjMapEndpointUrl);
+                    uri = ktjMapEndpointUrl.isEmpty() ? null : new URIBuilder(ktjMapEndpointUrl);
                     break;
                 case "registerunit":
                     filename = "kiinteistorekisteriote.pdf";
-                    uri = new URIBuilder(ktjRegisterUnitEndpointUrl);
+                    uri = ktjRegisterUnitEndpointUrl.isEmpty() ? null : new URIBuilder(ktjRegisterUnitEndpointUrl);
                     break;
                 default:
                     throw new KsrApiException.BadRequestException("Invalid print type.");
             }
 
-            for (String paramName: Collections.list(request.getParameterNames())) {
-                uri.setParameter(paramName, request.getParameter(paramName));
-            }
+            if (uri != null) {
+                for (String paramName: Collections.list(request.getParameterNames())) {
+                    uri.setParameter(paramName, request.getParameter(paramName));
+                }
 
-            pdfUrl = uri.build().toString();
+                pdfUrl = uri.build().toString();
+            } else {
+                throw new KsrApiException.BadRequestException("Print type not supported.");
+            }
         } catch (URISyntaxException ue) {
             throw new KsrApiException.InternalServerErrorException("Error building pdf-url.", ue);
         }
@@ -302,7 +320,11 @@ public class KTJService {
                 printType,
                 pdfUrl
         ));
-        InputStream inputStream = httpRequestService.getURLContents(pdfUrl, true, getBasicAuthString());
+        InputStream inputStream = httpRequestService.getURLContents(
+                pdfUrl,
+                true,
+                getBasicAuthString(ktjPrintUsername, ktjPrintPassword)
+        );
 
         try {
             String headerValue = String.format("inline; filename=\"%s\"", filename);
