@@ -271,7 +271,9 @@ class SketchTool extends Component<Props, State> {
 
                 const onUpdate = (event) => {
                     if (event.graphics[0].geometry.isSelfIntersecting
-                        || (!editModeActive && event.graphics[0].geometry.rings.length > 1)) {
+                        || (!editModeActive
+                            && event.graphics[0].geometry.rings
+                            && event.graphics[0].geometry.rings.length > 1)) {
                         const clonedSymbol = event.graphics[0].symbol.clone();
                         clonedSymbol.outline = createSketchOutlineGraphic(false);
                         event.graphics[0].symbol = clonedSymbol;
