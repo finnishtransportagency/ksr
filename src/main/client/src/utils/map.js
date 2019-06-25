@@ -333,7 +333,7 @@ export const zoomToProperty = (
                     },
                 };
             });
-            view.goTo(selectedProperty);
+            view.goTo(selectedProperty.items);
         }
     }
 };

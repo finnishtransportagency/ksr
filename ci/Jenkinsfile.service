@@ -56,8 +56,10 @@ pipeline {
         KTJ_MAP_ENDPOINT_URL = credentials("ktj_map_endpoint_url")
         KTJ_MAP_ENDPOINT_XML = credentials("ktj_map_endpoint_xml")
         KTJ_REGISTER_UNIT_ENDPOINT = credentials("ktj_register_unit_endpoint")
-        KTJ_USERNAME = credentials("ktj_username")
-        KTJ_PASSWORD = credentials("ktj_password")
+        KTJ_WFS_USERNAME = credentials("ktj_wfs_username")
+        KTJ_WFS_PASSWORD = credentials("ktj_wfs_password")
+        KTJ_PRINT_USERNAME = credentials("ktj_print_username")
+        KTJ_PRINT_PASSWORD = credentials("ktj_print_password")
         CONTRACTDOCUMENT_ALFRESCO_SEARCH_URL = credentials("contractdocument_alfresco_search_url")
         CONTRACTDOCUMENT_CASEMANAGEMENT_SEARCH_URL = credentials("contractdocument_casemanagement_search_url")
         PROXY_SOCKET_TIMEOUT = credentials("proxy_socket_timeout")
@@ -145,8 +147,10 @@ pipeline {
                         "sed -i 's,KTJ_MAP_ENDPOINT_URL,${KTJ_MAP_ENDPOINT_URL},g' ${properties}",
                         "sed -i 's,KTJ_MAP_ENDPOINT_XML,${KTJ_MAP_ENDPOINT_XML},g' ${properties}",
                         "sed -i 's,KTJ_REGISTER_UNIT_ENDPOINT,${KTJ_REGISTER_UNIT_ENDPOINT},g' ${properties}",
-                        "sed -i 's,KTJ_USERNAME,${KTJ_USERNAME},g' ${properties}",
-                        "sed -i 's,KTJ_PASSWORD,${KTJ_PASSWORD},g' ${properties}",
+                        "sed -i 's,KTJ_WFS_USERNAME,${KTJ_WFS_USERNAME},g' ${properties}",
+                        "sed -i 's,KTJ_WFS_PASSWORD,${KTJ_WFS_PASSWORD},g' ${properties}",
+                        "sed -i 's,KTJ_PRINT_USERNAME,${KTJ_PRINT_USERNAME},g' ${properties}",
+                        "sed -i 's,KTJ_PRINT_PASSWORD,${KTJ_PRINT_PASSWORD},g' ${properties}",
                         "sed -i 's,CONTRACTDOCUMENT_ALFRESCO_SEARCH_URL,${CONTRACTDOCUMENT_ALFRESCO_SEARCH_URL},g' ${properties}",
                         "sed -i 's,CONTRACTDOCUMENT_CASEMANAGEMENT_SEARCH_URL,${CONTRACTDOCUMENT_CASEMANAGEMENT_SEARCH_URL},g' ${properties}",
                         "sed -i 's,PROXY_SOCKET_TIMEOUT,${PROXY_SOCKET_TIMEOUT},g' ${properties}",
