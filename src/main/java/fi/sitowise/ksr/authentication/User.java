@@ -71,14 +71,10 @@ public class User implements UserDetails {
     private boolean groupNameFilter(String groupName) {
     	switch (groupName.toUpperCase()) {
     		case Role.ROLE_ADMIN:
-    			return true;
-    		case Role.ROLE_EXTERNAL_UPDATER:
-    			return true;
-    		case Role.ROLE_UPDATER:
-    			return true;
-    		case Role.ROLE_NAMED_USER:
-    			return true;
-    		case Role.ROLE_USER:
+            case Role.ROLE_EXTERNAL_UPDATER:
+            case Role.ROLE_UPDATER:
+            case Role.ROLE_NAMED_USER:
+            case Role.ROLE_USER:
     			return true;
     		default:
     			return false;
