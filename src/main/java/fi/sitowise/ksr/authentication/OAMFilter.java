@@ -65,11 +65,16 @@ public class OAMFilter extends OncePerRequestFilter {
         String groups = request.getHeader(this.oamGroupHeader);
 
         List<String> oamGroups = null;
-        if (groups != null && !"".equals(groups)) {
+        if (groups != null) {
             oamGroups = Arrays
                     .stream(groups.split(","))
                     .filter(Role::contains)
                     .collect(Collectors.toList());
+
+            if (oamGroups.isEmpty()) {
+                // No usergroups given in authentication headers, default to KSR_ROLE_USER.
+                oamGroups.add(Role.ROLE_USER);
+            }
         }
         
         if (username != null) {
