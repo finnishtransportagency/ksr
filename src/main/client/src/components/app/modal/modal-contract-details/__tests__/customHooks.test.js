@@ -1,4 +1,5 @@
-import { testHook, cleanup } from 'react-testing-library';
+import { cleanup } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react-hooks'
 import {
     useCancelText, useDetailList, useFeatureAttributes, useTitle, useModalSubmit,
 } from '../customHooks';
@@ -12,7 +13,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         let activeView;
         let activeFeature;
 
-        testHook(() => {
+        renderHook(() => {
             activeView = 'contractDetails';
             activeFeature = { layerName: null, layerId: null, featureId: null };
 
@@ -20,7 +21,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         });
         expect(title).toBe(strings.modalContractDetails.listView.title);
 
-        testHook(() => {
+        renderHook(() => {
             activeView = 'singleFeatureDetails';
             activeFeature = { layerName: 'Layer 1', layerId: null, featureId: 123 };
 
@@ -28,7 +29,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         });
         expect(title).toBe('Layer 1 123');
 
-        testHook(() => {
+        renderHook(() => {
             activeView = 'test123';
             activeFeature = { layerName: null, layerId: null, featureId: null };
 
@@ -42,7 +43,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         let activeView;
         let source;
 
-        testHook(() => {
+        renderHook(() => {
             activeView = 'contractDetails';
             source = 'contractModal';
 
@@ -50,7 +51,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         });
         expect(cancelText).toBe(strings.modalContractDetails.backText);
 
-        testHook(() => {
+        renderHook(() => {
             activeView = 'contractDetails';
             source = 'table';
 
@@ -58,111 +59,6 @@ describe('Modal Contract Details - Custom Hooks', () => {
         });
         expect(cancelText).toBe(strings.modalContractDetails.cancelText);
     });
-
-    test('useDetailList - Should populate detail list with feature Id and description', () => {
-        let detailList;
-        let contractDetails;
-        const layerList = [
-            {
-                name: 'Layer 1',
-                id: '123',
-                contractIdField: 'idField',
-                contractDescriptionField: 'descField',
-                alfrescoLinkField: 'alfrescoLinkField',
-                caseManagementLinkField: 'caseManagementLinkField',
-                fields: [
-                    { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
-                ],
-                layerPermission: { updateLayer: true, createLayer: true },
-            },
-            {
-                name: 'Layer 2',
-                id: '456',
-                contractIdField: 'idField',
-                contractDescriptionField: 'descField',
-                alfrescoLinkField: null,
-                caseManagementLinkField: null,
-                fields: [
-                    { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
-                ],
-            },
-            {
-                name: 'Layer 3',
-                id: '789',
-                contractIdField: 'idField',
-                contractDescriptionField: 'descField',
-                alfrescoLinkField: null,
-                caseManagementLinkField: null,
-                fields: [
-                    { name: 'objectId', label: 'objectId', type: 'esriFieldTypeOID' },
-                ],
-            },
-        ];
-
-        const expectedValue = [{
-            id: '123',
-            name: 'Layer 1',
-            features: [
-                {
-                    id: '1',
-                    description: 'Description 1',
-                    objectId: 1,
-                    alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
-                    caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=456',
-                },
-                {
-                    id: '10',
-                    description: 'Description 2',
-                    objectId: 2,
-                    alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=789',
-                    caseManagementUrl: null,
-                },
-            ],
-            createPermission: true,
-            editPermission: true,
-        }, {
-            id: '789',
-            name: 'Layer 3',
-            features: [
-                {
-                    id: '123', description: 'Test Description', objectId: 1, alfrescoUrl: '', caseManagementUrl: '',
-                },
-            ],
-            createPermission: false,
-            editPermission: false,
-        }];
-
-        testHook(() => {
-            contractDetails = [{
-                id: '123',
-                name: 'Layer 1',
-                features: [
-                    {
-                        attributes: {
-                            objectId: 1, idField: '1', descField: 'Description 1', alfrescoLinkField: '123', caseManagementLinkField: '456',
-                        },
-                    },
-                    {
-                        attributes: {
-                            objectId: 2, idField: '10', descField: 'Description 2', alfrescoLinkField: '789',
-                        },
-                    },
-                ],
-            },
-            {
-                id: '789',
-                name: 'Layer 3',
-                features: [
-                    { attributes: { objectId: 1, idField: '123', descField: 'Test Description' } },
-                ],
-            },
-            ];
-
-            detailList = useDetailList(contractDetails, layerList, [contractDetails]);
-        });
-        expect(detailList).toEqual(expectedValue);
-    });
-
     test('useFeatureAttributes - not single feature view - Should return empty list', () => {
         let featureAttributes;
         let contractDetails;
@@ -191,7 +87,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
 
         const expectedValue = [];
 
-        testHook(() => {
+        renderHook(() => {
             activeView = 'contractDetails';
 
             featureAttributes = useFeatureAttributes(
@@ -204,7 +100,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         });
         expect(featureAttributes).toEqual(expectedValue);
 
-        testHook(() => {
+        renderHook(() => {
             activeView = '';
 
             featureAttributes = useFeatureAttributes(
@@ -255,7 +151,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
             },
         ];
 
-        testHook(() => {
+        renderHook(() => {
             featureAttributes = useFeatureAttributes(
                 contractDetails,
                 layerList,
@@ -285,7 +181,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         const detailList = [{ id: '123' }];
 
         activeView = '';
-        testHook(() => {
+        renderHook(() => {
             modalSubmit = useModalSubmit(
                 contractDetails,
                 activeView,
@@ -306,7 +202,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         expect(modalSubmit).toEqual([]);
 
         activeView = 'singleFeatureDetails';
-        testHook(() => {
+        renderHook(() => {
             modalSubmit = useModalSubmit(
                 contractDetails,
                 activeView,
@@ -327,7 +223,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         expect(modalSubmit).toEqual([]);
 
         activeView = 'chooseDetailLayer';
-        testHook(() => {
+        renderHook(() => {
             modalSubmit = useModalSubmit(
                 contractDetails,
                 activeView,
@@ -350,7 +246,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         activeView = 'contractDetails';
         permission = { create: true, edit: true };
         detailLayers = [{ id: 123 }];
-        testHook(() => {
+        renderHook(() => {
             modalSubmit = useModalSubmit(
                 contractDetails,
                 activeView,
@@ -377,7 +273,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
 
         activeView = 'addNewDetail';
         formOptions = { editedFields: { id: 123 }, submitDisabled: false };
-        testHook(() => {
+        renderHook(() => {
             modalSubmit = useModalSubmit(
                 contractDetails,
                 activeView,
