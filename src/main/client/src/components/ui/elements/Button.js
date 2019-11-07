@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import * as styles from '../defaultStyles';
 
 export const Button = styled.button`
-    text-transform: capitalize;
     font-weight: 500;
     font-size: 16px;
     border: 0;
