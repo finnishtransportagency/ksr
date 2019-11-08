@@ -27,7 +27,7 @@ const SketchToolView = ({
     activeTool,
 }: Props) => (
     <Fragment>
-        <div id="select-tool-outer-wrapper" >
+        <div id="select-tool-outer-wrapper">
             <div
                 style={{ visibility: hasSelectedFeatures ? 'visible' : 'hidden' }}
                 id="remove-selection"
@@ -40,7 +40,7 @@ const SketchToolView = ({
             >
                 <span className="esri-icon-close" />
             </div>
-            <SelectToolWrapper toggleTools={isOpen} id="select-tool-wrapper" >
+            <SelectToolWrapper toggleTools={isOpen} id="select-tool-wrapper">
                 <div
                     id="draw-rectangle"
                     className="esri-component esri-widget--button esri-widget esri-interactive"

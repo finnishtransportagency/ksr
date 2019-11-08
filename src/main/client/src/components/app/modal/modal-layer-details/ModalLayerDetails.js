@@ -152,7 +152,6 @@ class ModalFilter extends Component<Props, State> {
             setTempGraphicsLayer(layer);
         }
         sketchViewModel.cancel();
-        sketchViewModel.reset();
 
         setActiveFeatureMode('create');
     };
