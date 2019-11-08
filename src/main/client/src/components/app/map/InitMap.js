@@ -76,7 +76,7 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        esriLoader.loadCss('https://js.arcgis.com/4.11/esri/css/main.css');
+        esriLoader.loadCss('https://js.arcgis.com/4.13/esri/css/main.css');
 
         const [
             MapView,

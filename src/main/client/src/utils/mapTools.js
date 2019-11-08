@@ -10,7 +10,7 @@
  */
 export const resetMapTools = (draw: Object, sketchViewModel: Object, setActiveTool: Function) => {
     draw.reset();
-    sketchViewModel.reset();
+    sketchViewModel.cancel();
     setActiveTool('');
     [...document.querySelectorAll('.esri-ui-top-right .esri-widget--button:not(#toggle-measurements)')]
         .forEach((element) => {
