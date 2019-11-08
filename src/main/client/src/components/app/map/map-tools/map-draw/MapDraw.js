@@ -34,12 +34,13 @@ class MapDraw extends Component<Props, null> {
         this.toggleMeasurements = this.toggleMeasurements.bind(this);
     }
 
-    componentWillReceiveProps(newProps: any) {
-        if (this.props.draw !== newProps.draw && newProps.draw.initialized) {
+    componentDidUpdate(prevProps: Props) {
+        const { draw, active } = this.props;
+        if (draw !== prevProps.draw && draw.initialized) {
             this.mapDraw();
-        } else if (this.props.active !== newProps.active
-                    && this.props.active === 'drawText'
-                    && newProps.active === '') {
+        } else if (active !== prevProps.active
+                    && active === 'drawText'
+                    && prevProps.active === '') {
             this.removeHighlightFromButton('draw-text');
         }
     }
@@ -55,7 +56,7 @@ class MapDraw extends Component<Props, null> {
             ])
             .then(([Polygon, Polyline, Point, Graphic, geometryEngine]) => {
                 const {
-                    view, draw, setActiveTool,
+                    view, draw, setActiveTool, active, showMeasurements,
                 } = this.props;
 
                 const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
@@ -90,74 +91,68 @@ class MapDraw extends Component<Props, null> {
                     return length;
                 };
 
-                const createPolygon = vertices =>
-                    new Polygon({
-                        rings: vertices,
-                        spatialReference: view.spatialReference,
-                    });
+                const createPolygon = vertices => new Polygon({
+                    rings: vertices,
+                    spatialReference: view.spatialReference,
+                });
 
-                const createLine = vertices =>
-                    new Polyline({
-                        paths: vertices,
-                        spatialReference: view.spatialReference,
-                    });
+                const createLine = vertices => new Polyline({
+                    paths: vertices,
+                    spatialReference: view.spatialReference,
+                });
 
-                const createPoint = coordinates =>
-                    new Point({
-                        x: coordinates[0],
-                        y: coordinates[1],
-                        spatialReference: view.spatialReference,
-                    });
+                const createPoint = coordinates => new Point({
+                    x: coordinates[0],
+                    y: coordinates[1],
+                    spatialReference: view.spatialReference,
+                });
 
-                const createPolygonGraphic = (geometry, style, complete): any =>
-                    new Graphic({
-                        geometry,
-                        symbol: {
-                            type: 'simple-fill',
-                            style,
-                            color: [102, 0, 102, 0.5],
-                            outline: {
-                                color: geometry.isSelfIntersecting || geometry.rings.length > 1
-                                    ? '#CC3300'
-                                    : '#470047',
-                                width: 2,
-                            },
-                        },
-                        type: 'draw-graphic',
-                        complete,
-                        id: this.currentGraphicUUID,
-                    });
-
-                const createPolylineGraphic = (geometry, complete): any =>
-                    new Graphic({
-                        geometry,
-                        symbol: {
-                            type: 'simple-line',
-                            color: '#660066',
+                const createPolygonGraphic = (geometry, style, complete): any => new Graphic({
+                    geometry,
+                    symbol: {
+                        type: 'simple-fill',
+                        style,
+                        color: [102, 0, 102, 0.5],
+                        outline: {
+                            color: geometry.isSelfIntersecting || geometry.rings.length > 1
+                                ? '#CC3300'
+                                : '#470047',
                             width: 2,
                         },
-                        type: 'draw-graphic',
-                        complete,
-                        id: this.currentGraphicUUID,
-                    });
+                    },
+                    type: 'draw-graphic',
+                    complete,
+                    id: this.currentGraphicUUID,
+                });
 
-                const createPointGraphic = (geometry, complete): any =>
-                    new Graphic({
-                        geometry,
-                        symbol: {
-                            type: 'simple-marker',
-                            color: '#660066',
-                            path: `M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0
+                const createPolylineGraphic = (geometry, complete): any => new Graphic({
+                    geometry,
+                    symbol: {
+                        type: 'simple-line',
+                        color: '#660066',
+                        width: 2,
+                    },
+                    type: 'draw-graphic',
+                    complete,
+                    id: this.currentGraphicUUID,
+                });
+
+                const createPointGraphic = (geometry, complete): any => new Graphic({
+                    geometry,
+                    symbol: {
+                        type: 'simple-marker',
+                        color: '#660066',
+                        path: `M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0
                                 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535
                                 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817
                                 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z`,
-                            size: '24px',
-                            yoffset: '12px',
-                        },
-                        type: 'draw-graphic',
-                        complete,
-                        id: this.currentGraphicUUID,
-                    });
+                        size: '24px',
+                        yoffset: '12px',
+                    },
+                    type: 'draw-graphic',
+                    complete,
+                    id: this.currentGraphicUUID,
+                });
 
                 const createTextGraphic = (geometry, complete): any => {
                     const { drawText } = this.props;
@@ -167,7 +162,7 @@ class MapDraw extends Component<Props, null> {
                             symbol: {
                                 type: 'text',
                                 color: '#000',
-                                text: this.props.drawText,
+                                text: drawText,
                                 font: {
                                     size: 12,
                                     weight: 'bold',
@@ -181,26 +176,25 @@ class MapDraw extends Component<Props, null> {
                     return null;
                 };
 
-                const createLabelGraphic = (geometry, value, complete) =>
-                    new Graphic({
-                        geometry: geometry.extent.center,
-                        symbol: {
-                            type: 'text',
-                            color: '#000000',
-                            text: value || '',
-                            xoffset: 3,
-                            yoffset: 3,
-                            font: {
-                                size: 16,
-                                family: 'sans-serif',
-                                weight: 'bold',
-                            },
+                const createLabelGraphic = (geometry, value, complete) => new Graphic({
+                    geometry: geometry.extent.center,
+                    symbol: {
+                        type: 'text',
+                        color: '#000000',
+                        text: value || '',
+                        xoffset: 3,
+                        yoffset: 3,
+                        font: {
+                            size: 16,
+                            family: 'sans-serif',
+                            weight: 'bold',
                         },
-                        type: 'draw-measure-label',
-                        complete,
-                        id: this.currentGraphicUUID,
-                        visible: this.props.showMeasurements,
-                    });
+                    },
+                    type: 'draw-measure-label',
+                    complete,
+                    id: this.currentGraphicUUID,
+                    visible: showMeasurements,
+                });
 
                 const drawPolygon = (evt) => {
                     const { vertices } = evt;
@@ -313,7 +307,7 @@ class MapDraw extends Component<Props, null> {
                 };
 
                 drawPolygonButton.addEventListener('click', () => {
-                    if (this.props.active === 'drawPolygon') {
+                    if (active === 'drawPolygon') {
                         this.resetCurrentTool();
                     } else {
                         setActiveTool('drawPolygon');
@@ -324,7 +318,7 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawLineButton.addEventListener('click', () => {
-                    if (this.props.active === 'drawPolyline') {
+                    if (active === 'drawPolyline') {
                         this.resetCurrentTool();
                     } else {
                         setActiveTool('drawPolyline');
@@ -335,7 +329,7 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawPointButton.addEventListener('click', () => {
-                    if (this.props.active === 'drawPoint') {
+                    if (active === 'drawPoint') {
                         this.resetCurrentTool();
                     } else {
                         setActiveTool('drawPoint');
@@ -346,7 +340,7 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawTextButton.addEventListener('click', () => {
-                    if (this.props.active === 'drawText') {
+                    if (active === 'drawText') {
                         this.resetCurrentTool();
                     } else {
                         setActiveTool('drawText');
@@ -357,7 +351,7 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawEraseButton.addEventListener('click', () => {
-                    if (this.props.active === 'drawErase') {
+                    if (active === 'drawErase') {
                         this.resetCurrentTool();
                     } else {
                         this.resetCurrentTool();
@@ -381,10 +375,11 @@ class MapDraw extends Component<Props, null> {
     };
 
     removeHighlightsFromButtons = (exceptButton: ?string) => {
+        const { view } = this.props;
         ['draw-polygon', 'draw-line', 'draw-point', 'draw-text', 'draw-erase']
             .filter(i => i !== exceptButton)
             .forEach(b => this.removeHighlightFromButton(b));
-        removeTemporaryDrawings(this.props.view);
+        removeTemporaryDrawings(view);
     };
 
     removeHighlight = () => {
