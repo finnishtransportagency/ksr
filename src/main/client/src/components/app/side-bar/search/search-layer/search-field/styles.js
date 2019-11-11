@@ -25,7 +25,7 @@ const Inputs = styled.div`
 `;
 
 const Expression = styled.div`
-    flex: 1;
+    flex: 3;
     margin-right: 0.5rem;
     
     .Select--single .Select-control {
