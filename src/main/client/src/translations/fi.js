@@ -25,6 +25,14 @@ const fi = {
         allActiveLayers: 'Kaikki aktiiviset tasot',
         layer: 'Taso',
         property: 'Kiinteistö',
+        expression: {
+            exact: 'Täsmälleen',
+            like: 'Sisältää osittain',
+            greaterThan: 'Suurempi kuin',
+            lessThan: 'Pienempi kuin',
+            not: 'Ei sisällä (täsmälleen)',
+            notLike: 'Ei sisällä (osittain)',
+        }
     },
     reactTable: {
         previousText: 'Edellinen',
