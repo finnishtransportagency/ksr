@@ -5,12 +5,10 @@ import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
 import {
-    colorMainDark,
-    colorMain,
-    colorTableEdited,
-    colorTableEditedDarker,
+    colorMain, colorMainDark, colorTableEdited, colorTableEditedDarker,
 } from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
+import { toDisplayDate } from '../../../../utils/date';
 
 type Props = {
     data: Array<any>,
@@ -19,6 +17,7 @@ type Props = {
     toggleSelectAll: Function,
     selectAll: boolean,
     renderEditable: Function,
+    renderFilter: Function,
 };
 
 const ReactTableView = ({
@@ -28,30 +27,36 @@ const ReactTableView = ({
     toggleSelectAll,
     selectAll,
     renderEditable,
+    renderFilter,
 }: Props) => (
     <WrapperReactTable columns={columns}>
         <SelectableTable
             className="-striped -highlight"
             data={data}
             TableComponent={CustomTableView}
+            filterable
             columns={columns.map(c => ({
                 ...c,
                 Cell: renderEditable,
-            }))}
-            filterable
-            defaultFilterMethod={(filter, row) => {
-                const id = filter.pivotId || filter.id;
-                if (row._original[id] !== null && typeof row._original[id] === 'string') {
-                    return (row._original[id] !== undefined
-                        ? String(row._original[id].toLowerCase())
-                            .includes(filter.value.toLowerCase())
-                        : true);
-                }
+                filterMethod: (filter, row) => {
+                    const id = filter.pivotId || filter.id;
+                    if (row._original[id] !== null && typeof row._original[id] === 'string') {
+                        return (row._original[id] !== undefined
+                            ? String(row._original[id].toLowerCase())
+                                .includes(filter.value.toLowerCase())
+                            : true);
+                    }
 
-                return (row._original[id] !== undefined
-                    ? String(row._original[id]).includes(filter.value)
-                    : true);
-            }}
+                    if (row._original[id] !== null && c.className === 'date'
+                        && toDisplayDate(row._original[id]) !== null) {
+                        return (toDisplayDate(row._original[id]).includes(filter.value));
+                    }
+                    return (row._original[id] !== undefined
+                        ? String(row._original[id]).includes(filter.value)
+                        : true);
+                },
+                Filter: ({ column, filter, onChange }) => renderFilter(column, filter, onChange),
+            }))}
             style={{
                 height: '100%',
                 textAlign: 'center',
