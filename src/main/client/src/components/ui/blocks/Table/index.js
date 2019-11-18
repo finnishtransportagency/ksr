@@ -34,7 +34,7 @@ const Table = styled.div`
         height: 0;
         
         ${props => props.tableOpen && css`
-            height: calc(100% - 60px);
+            height: calc(100% - 80px);
             bottom: 60px;
         `};
     }

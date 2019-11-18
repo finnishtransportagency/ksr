@@ -28,7 +28,7 @@ describe('<TableView />', () => {
         const { wrapper } = setup();
 
         expect(wrapper.find(Table).length).toBe(1);
-        expect(wrapper.find(Table.Button).length).toBe(6);
+        expect(wrapper.find(Table.Button).length).toBe(7);
         expect(wrapper.find(TabbedTableContainer).length).toBe(1);
     });
 
@@ -47,6 +47,6 @@ describe('<TableView />', () => {
         };
 
         const { wrapper } = setup(props);
-        expect(wrapper.find(Table.Button).length).toBe(8);
+        expect(wrapper.find(Table.Button).length).toBe(9);
     });
 });

@@ -36,6 +36,7 @@ const fi = {
         rowsText: 'riviä',
         filter: 'Suodata sarakkeita',
         clearTableData: 'Valintojen ja hakujen tyhjennys',
+        downloadCsv: 'Lataa CSV',
         deleteSelected: 'Poista kohteita',
         saveEditedData: 'Tallenna muutokset',
         bufferSelectedData: 'Puskurialue valituille kohteille',

@@ -17,7 +17,7 @@ export const Wrapper = styled.div`
         };
         
         .esri-scale-bar {
-            margin-bottom: 2em;
+            margin-bottom: 2rem;
         };
         
         .esri-ui-bottom-right {
@@ -144,14 +144,14 @@ export const Wrapper = styled.div`
         ${props => props.tableOpen && !props.adminToolActive && css`
             // Button width multiplied by number of buttons
             .esri-attribution {
-                margin-left: calc(60px * 6);
+                margin-left: calc(60px * 7);
             };
         `};
         
         ${props => props.tableOpen && props.adminToolActive && css`
             // Button width multiplied by number of buttons
             .esri-attribution {
-                margin-left: calc(60px * 8);
+                margin-left: calc(60px * 9);
             };
         `};
 
