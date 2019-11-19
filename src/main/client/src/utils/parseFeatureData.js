@@ -11,6 +11,7 @@ const columnClassName = (type) => {
         case 'double':
         case 'esriFieldTypeDouble':
             return 'decimal';
+        case 'date':
         case 'esriFieldTypeDate':
             return 'date';
         default:

@@ -73,6 +73,12 @@ const fi = {
         cancel: 'Peruuta',
         content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
     },
+    modalDownloadCsv: {
+        all: 'Kaikki kohteet',
+        selected: 'Valitut kohteet',
+        title: 'CSV -tiedoston lataus',
+        cancel: 'Peruuta',
+    },
     modalDeleteSelected: {
         title: 'Kohteiden poistaminen',
         submit: 'Poista',

@@ -15,6 +15,7 @@ import ModalDrawTextContainer from './modal-draw-text/ModalDrawTextContainer';
 import ModalOfflineSavedView from './modal-offline-saved/ModalOfflineSavedView';
 import ModalThemeLayerContainer from './modal-theme-layer/ModalThemeLayerContainer';
 import ModalContractDetailsContainer from './modal-contract-details/ModalContractDetailsContainer';
+import ModalDownloadCsvContainer from './modal-donwload-csv/ModalDownloadCsvContainer';
 
 type Props = {
     activeModal: string,
@@ -36,6 +37,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'offlineSave' && <ModalOfflineSavedView />}
         {activeModal === 'themeLayer' && <ModalThemeLayerContainer />}
         {activeModal === 'contractDetails' && <ModalContractDetailsContainer />}
+        {activeModal === 'downloadCSV' && <ModalDownloadCsvContainer />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );
