@@ -8,7 +8,6 @@ const setup = (prop) => {
         field: {},
         index: 0,
         handleChangeField: jest.fn(),
-        optionsExpression: [{}],
         handleRemoveField: jest.fn(),
         fetching: false,
     };

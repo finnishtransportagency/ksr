@@ -9,7 +9,6 @@ type Props = {
         textSearch: string,
         searchFieldValues: Array<Object>,
         optionsField: any,
-        optionsExpression: Array<Object>,
         fetching: boolean,
         suggestions: Array<string>,
         suggestionsActive: boolean,
@@ -31,14 +30,14 @@ class Search extends Component<Props, null> {
     }
 
     toggleSearchSuggestions = () => {
-        const { setSearchState } = this.props;
+        const { setSearchState, searchState } = this.props;
         const {
             selectedLayer,
             textSearch,
             searchFieldValues,
             suggestions,
             suggestionsActive,
-        } = this.props.searchState;
+        } = searchState;
 
         setSearchState(
             selectedLayer,

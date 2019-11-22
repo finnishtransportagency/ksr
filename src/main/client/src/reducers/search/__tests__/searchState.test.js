@@ -6,28 +6,6 @@ const initialState = {
     textSearch: '',
     searchFieldValues: [],
     optionsField: [],
-    optionsExpression: [
-        {
-            value: '%',
-            label: '%',
-        },
-        {
-            value: '<=',
-            label: '<=',
-        },
-        {
-            value: '>=',
-            label: '>=',
-        },
-        {
-            value: '=',
-            label: '=',
-        },
-        {
-            value: '!=',
-            label: '!=',
-        },
-    ],
     fetching: false,
     suggestions: [],
     suggestionsActive: true,
