@@ -17,7 +17,6 @@ type Props = {
         textSearch: string,
         searchFieldValues: Array<Object>,
         optionsField: any,
-        optionsExpression: Array<Object>,
         fetching: boolean,
         suggestions: Array<string>,
         suggestionsActive: boolean,
@@ -253,7 +252,6 @@ class SearchLayer extends Component<Props, State> {
             searchFieldValues,
             textSearch,
             optionsField,
-            optionsExpression,
             fetching,
             suggestions,
             suggestionsActive,
@@ -274,7 +272,6 @@ class SearchLayer extends Component<Props, State> {
                 searchFieldValues={searchFieldValues}
                 textSearch={textSearch}
                 optionsField={optionsField}
-                optionsExpression={optionsExpression}
                 fetching={fetching}
                 suggestions={suggestions}
                 suggestionsActive={suggestionsActive}

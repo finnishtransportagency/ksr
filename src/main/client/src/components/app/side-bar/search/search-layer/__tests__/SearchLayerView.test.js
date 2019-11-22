@@ -20,7 +20,6 @@ const setup = (prop) => {
         ],
         textSearch: '',
         optionsField: [{}],
-        optionsExpression: [{}],
         fetching: false,
     };
 
