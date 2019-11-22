@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { parseQueryString } from '../../../../../utils/search/parseQueryString';
+import { searchFieldIsNumber, parseQueryString } from '../../../../../utils/search/parseQueryString';
 import SearchLayerView from './SearchLayerView';
 import { fetchSearchSuggestions } from '../../../../../api/search/searchQuery';
 
@@ -99,7 +99,9 @@ class SearchLayer extends Component<Props, State> {
             id: searchFieldValues.length,
             name: field.name,
             label: field.label,
-            queryExpression: '%',
+            queryExpression: searchFieldIsNumber(field.type)
+                ? '='
+                : 'LIKE',
             queryText: '',
             type: field.type,
         };
