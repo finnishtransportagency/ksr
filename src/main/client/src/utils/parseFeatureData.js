@@ -344,3 +344,19 @@ export const getCodedValue = (domain, value, toString = false) => {
     }
     return String(value);
 };
+
+/**
+ * Merge Selected Feature columns with Layer Group columns by a key.
+ *
+ * @param {Object[]} selectedFeatureColumns Array of columns.
+ * @param {Object[] }layerGroupColumns Array of columns.
+ *
+ * @returns {Object[]} Merged columns.
+ */
+export const mergeColumnsByHeaderAndLabel = (
+    selectedFeatureColumns,
+    layerGroupColumns,
+) => selectedFeatureColumns.map(sfc => ({
+    ...sfc,
+    ...layerGroupColumns.find(lgc => (lgc.label === sfc.Header)),
+}));
