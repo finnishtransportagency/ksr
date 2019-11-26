@@ -5,16 +5,16 @@ import strings from '../../../../translations';
 import { download, objectToCsv } from '../../../../utils/csvFile';
 
 type Props = {
-    layerFeatures: Object,
+    mergedLayerFeatures: Object,
 };
 
 const ModalDownloadCsv = (props: Props) => {
     const {
-        layerFeatures,
+        mergedLayerFeatures,
     } = props;
 
     const onlyVisibleColumns = () => {
-        const columns = layerFeatures.columns.reduce((fd, d) => {
+        const columns = mergedLayerFeatures.columns.reduce((fd, d) => {
             if (d.show) {
                 fd.push({ ...d });
             }
@@ -25,8 +25,8 @@ const ModalDownloadCsv = (props: Props) => {
     };
 
     const handleSelected = () => {
-        const data = layerFeatures.data.reduce((fd, d) => {
-            if (d._selected) {
+        const data = mergedLayerFeatures.data.reduce((fd, d) => {
+            if (d._selected && !d._filtered) {
                 fd.push({ ...d });
             }
             return fd;
@@ -35,14 +35,20 @@ const ModalDownloadCsv = (props: Props) => {
         const { columns } = onlyVisibleColumns();
 
         const csvData = objectToCsv(data, columns);
-        download(csvData, layerFeatures.title);
+        download(csvData, mergedLayerFeatures.title);
     };
 
     const handleAll = () => {
+        const data = mergedLayerFeatures.data.reduce((fd, d) => {
+            if (!d._filtered) {
+                fd.push({ ...d });
+            }
+            return fd;
+        }, []);
         const { columns } = onlyVisibleColumns();
 
-        const csvData = objectToCsv(layerFeatures.data, columns);
-        download(csvData, layerFeatures.title);
+        const csvData = objectToCsv(data, columns);
+        download(csvData, mergedLayerFeatures.title);
     };
 
     const modalSubmit = [
