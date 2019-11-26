@@ -235,6 +235,11 @@ export const deSelectSelected = () => ({
     type: types.DE_SELECT_SELECTED_FEATURES,
 });
 
+export const setRowFilter = (rows: Object[]) => ({
+    type: types.SET_ROW_FILTER,
+    rows,
+});
+
 export const toggleSelection = (feature: Object) => ({
     type: types.TOGGLE_SELECTION,
     feature,
@@ -327,7 +332,6 @@ export const addNonSpatialContentToTable = (
                     });
                 });
             }
-
             const layers = parseData(results, false).map((l) => {
                 if (l.id === layer.id) {
                     return {

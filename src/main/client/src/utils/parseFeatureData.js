@@ -91,6 +91,7 @@ export const parseData = (data, selected) => {
                 _id: f.attributes[l.objectIdFieldName],
                 _layerId: l.id,
                 _selected: f.selected !== undefined ? f.selected : selected,
+                _filtered: false,
                 _edited: [],
                 _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
                 _source: l._source,
@@ -250,6 +251,29 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
     return { layers, editedLayers, activeTable };
 };
 
+/**
+ * Set filtered info for given features.
+ *
+ * @param {Object[]} currentLayers Array of layers (table-reducer).
+ * @param {string} activeTable Currently filtered table.
+ * @param {Object[]} features Object of selected features.
+ *
+ * @returns {Object[]} Layers updated with feature filtered information.
+ */
+export const setRowFilter = (currentLayers: Object[], activeTable: string, features: Object[]) => (
+    currentLayers.map((layer) => {
+        if (layer.id === activeTable) {
+            return {
+                ...layer,
+                data: layer.data.map(d => ({
+                    ...d,
+                    _filtered: !features.some(f => f.layerId === activeTable && d._id === f.id),
+                })),
+            };
+        }
+        return { ...layer };
+    })
+);
 
 /**
  * Toggles selected-state for given feature.
