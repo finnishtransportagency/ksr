@@ -4,7 +4,9 @@ import { setContractListInfo } from '../../../../reducers/contract/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import ReactTable from './ReactTable';
 
-import { toggleSelection, toggleSelectAll, setEditedLayer } from '../../../../reducers/table/actions';
+import {
+    toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter,
+} from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
     const { activeTable, editedLayers } = state.table.features;
@@ -18,7 +20,7 @@ const mapStateToProps = (state) => {
         : false;
 
     return {
-        activeTable: state.table.features.activeTable,
+        activeTable,
         fetching: state.table.features.fetching,
         layerFeatures,
         selectAll,
@@ -42,6 +44,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setContractListInfo: (layerId, objectId) => {
         dispatch(setContractListInfo(layerId, objectId));
+    },
+    setRowFilter: (activeTable, visibleRows) => {
+        dispatch(setRowFilter(activeTable, visibleRows));
     },
 });
 

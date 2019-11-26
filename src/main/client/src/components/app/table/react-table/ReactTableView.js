@@ -13,6 +13,7 @@ import { toDisplayDate } from '../../../../utils/date';
 type Props = {
     data: Array<any>,
     columns: Array<any>,
+    setRowFilter: Function,
     toggleSelection: Function,
     toggleSelectAll: Function,
     selectAll: boolean,
@@ -23,15 +24,27 @@ type Props = {
 const ReactTableView = ({
     data,
     columns,
+    setRowFilter,
     toggleSelection,
     toggleSelectAll,
     selectAll,
     renderEditable,
     renderFilter,
 }: Props) => (
-    <WrapperReactTable columns={columns}>
+    <WrapperReactTable
+        columns={columns}
+    >
         <SelectableTable
             className="-striped -highlight"
+            onFetchData={(state, instance) => {
+                const currentRecords = instance.getResolvedState().sortedData;
+                const array = [];
+                currentRecords.map(r => array.push({
+                    id: r._original._id,
+                    layerId: r._original._layerId,
+                }));
+                setRowFilter(array);
+            }}
             data={data}
             TableComponent={CustomTableView}
             filterable

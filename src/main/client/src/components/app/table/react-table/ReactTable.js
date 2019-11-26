@@ -18,6 +18,7 @@ type Props = {
         data: Array<Object>,
         columns: Array<Object>,
     },
+    setRowFilter: Function,
     toggleSelection: Function,
     selectAll: boolean,
     toggleSelectAll: Function,
@@ -318,6 +319,7 @@ class ReactTable extends Component<Props> {
             selectAll,
             toggleSelectAll,
             layerList,
+            setRowFilter,
         } = this.props;
 
         if (!layerFeatures) {
@@ -349,6 +351,7 @@ class ReactTable extends Component<Props> {
                 <ReactTableView
                     data={data}
                     toggleSelection={this.toggleSelection}
+                    setRowFilter={setRowFilter}
                     columns={tableColumns}
                     selectAll={selectAll}
                     toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
