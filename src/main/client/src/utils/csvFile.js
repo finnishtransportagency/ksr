@@ -1,5 +1,6 @@
 // @flow
 import { toDisplayDate } from './date';
+import { getCodedValue } from './parseFeatureData';
 
 /**
  * Download CSV file.
@@ -46,9 +47,9 @@ export const objectToCsv = (data: Object[], columns: Object[]) => {
                 return `"${toDisplayDate(Number(escaped))}"`;
             }
             if (c.domain !== null) {
-                const codedValue = c.domain.codedValues.find(cv => cv.code === Number(escaped));
+                const codedValue = getCodedValue(c.domain, escaped, true);
                 if (codedValue) {
-                    return `"${codedValue.name}"`;
+                    return `"${codedValue}"`;
                 }
             }
             return `"${escaped}"`;
