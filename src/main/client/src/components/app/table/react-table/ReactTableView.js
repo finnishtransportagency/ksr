@@ -54,19 +54,21 @@ const ReactTableView = ({
                 filterMethod: (filter, row) => {
                     const id = filter.pivotId || filter.id;
                     if (row._original[id] !== null && typeof row._original[id] === 'string') {
-                        return (row._original[id] !== undefined
-                            ? String(row._original[id].toLowerCase())
-                                .includes(filter.value.toLowerCase())
-                            : true);
+                        if (row._original[id] !== undefined) {
+                            return !!String(row._original[id].toLowerCase())
+                                .includes(filter.value.toLowerCase());
+                        }
+                        return true;
                     }
 
                     if (row._original[id] !== null && c.className === 'date'
                         && toDisplayDate(row._original[id]) !== null) {
-                        return (toDisplayDate(row._original[id]).includes(filter.value));
+                        return toDisplayDate(row._original[id]).includes(filter.value);
                     }
-                    return (row._original[id] !== undefined
-                        ? String(row._original[id]).includes(filter.value)
-                        : true);
+                    if (row._original[id] !== undefined) {
+                        return !!String(row._original[id]).includes(filter.value);
+                    }
+                    return true;
                 },
                 Filter: ({ column, filter, onChange }) => renderFilter(column, filter, onChange),
             }))}
