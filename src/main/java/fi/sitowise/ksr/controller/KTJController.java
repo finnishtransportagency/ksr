@@ -89,11 +89,15 @@ public class KTJController {
     @GetMapping(value = "/pdf/links")
     public Map<String, List<String>> getPropertyPdfLinks(@RequestParam String propertyIdentifier,
             @RequestParam String language) {
+        // TODO: Disabled property PDF -query in KSR-448. 
+        //  Can be added back back after API -agreement has been finished.
+        throw new KsrApiException.ForbiddenException("Service not available.");
+        
         // At least for now KTJ only support Finnish and Swedish as print languages.
-        if (!"fi".equalsIgnoreCase(language) && !"sv".equalsIgnoreCase(language)) {
-            throw new KsrApiException.BadRequestException("Unsupported language.");
-        }
-        return ktjService.getPropertyPdfLinks(propertyIdentifier, language);
+        //if (!"fi".equalsIgnoreCase(language) && !"sv".equalsIgnoreCase(language)) {
+        //    throw new KsrApiException.BadRequestException("Unsupported language.");
+        //}
+        //return ktjService.getPropertyPdfLinks(propertyIdentifier, language);
     }
 
     /**
