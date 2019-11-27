@@ -39,7 +39,7 @@ export const objectToCsv = (data: Object[], columns: Object[]) => {
     // loop over the rows
     data.map((row) => {
         const values = columns.map((c) => {
-            const escaped = String(row[c.accessor]).replace(/"/g, '\\"');
+            const escaped = String(row[c.accessor]).replace(/(\r\n|\n|\r)/gm, ' ').replace(/"/g, '\\"');
             if (escaped === 'null') {
                 return '""';
             }
