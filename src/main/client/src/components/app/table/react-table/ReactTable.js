@@ -115,7 +115,8 @@ class ReactTable extends Component<Props> {
         return activeAdminTool === activeLayer.id
             && activeLayer._source !== 'shapefile'
             && activeLayer.layerPermission.updateLayer
-            && cellField.editable;
+            && cellField.editable
+            && activeLayer.updaterField !== cellField.label;
     };
 
     toggleSelection = (id: string, shiftKey: string, row: Object) => {
