@@ -256,7 +256,7 @@ const fi = {
         drawPoint: 'Piirrä piste',
         drawText: 'Lisää tekstiä',
         drawErase: 'Poista yksittäinen piirros',
-        selectTool: 'Piirtotyökalut',
+        selectTool: 'Piirto- ja mittaustyökalut',
         removeDraw: 'Poista piirrokset',
         toggleMeasurements: 'Näytä/piilota mittaustulokset',
     },
