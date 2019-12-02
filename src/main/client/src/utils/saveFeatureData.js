@@ -207,7 +207,6 @@ const handlePopupUpdate = (
  * @param {string} layerId string id of the corresponding layer.
  * @param {Object[]} features Array of features.
  * @param {string} idFieldName Name of identifier field.
- * @param {number[]} [objectIds] Array of feature ids.
  * @param {boolean} [hideToast] Show saving data toast or not.
  * @param {boolean} [selected] Is the feature selected on the table.
  */
@@ -217,7 +216,6 @@ const saveData = async (
     layerId: string,
     features: Object[],
     idFieldName: string,
-    objectIds?: number[],
     hideToast?: boolean,
     selected?: boolean,
 ) => {
@@ -254,8 +252,8 @@ const saveData = async (
                     const res = await updateFeatures(layerId, params.toString());
                     layerToUpdated = await handleUpdateResponse(res, layerId, layer, hideToast);
                     await handlePopupUpdate(view, layerId, idFieldName, layerToUpdated.features);
-                    if (nestedVal(layerToUpdated, ['features', 'length']) && objectIds.length > 0) {
-                        objectIds.forEach((objectId) => {
+                    if (nestedVal(layerToUpdated, ['features', 'length'])) {
+                        layerToUpdated.features.forEach((objectId: number) => {
                             store.dispatch(addUpdateLayers(
                                 layerId,
                                 idFieldName,
@@ -385,14 +383,13 @@ const saveEditedFeatureData = (
 
             const layerId = ed.id.replace('.s', '');
             const idFieldNameWithoutLayerId = ed._idFieldName;
-            const objectIds = ed.data.map(d => d._id);
 
             const promisesAddressField = features.map(feature => (
                 createAddressFields(feature, featureType, addressField)
             ));
 
             return Promise.all(promisesAddressField)
-                .then(r => save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId, objectIds));
+                .then(r => save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId));
         });
         return Promise.all(promises);
     }
