@@ -83,7 +83,7 @@ describe('parseQueryString', () => {
         searchFieldValues = [
             {
                 name: 'fieldName3',
-                queryExpression: '<=',
+                queryExpression: '<',
                 queryText: '3',
                 type: 'esriFieldTypeSmallInteger',
             },
@@ -95,7 +95,7 @@ describe('parseQueryString', () => {
             queryColumnsList,
         );
 
-        expect(queryString3).toBe('fieldName3 <= 3');
+        expect(queryString3).toBe('fieldName3 < 3');
 
         searchFieldValues = [
             {
@@ -157,12 +157,12 @@ describe('parseQueryString - filterExpressionsByType', () => {
                 types: ['string', 'number'],
             },
             {
-                value: '<=',
+                value: '<',
                 label: strings.search.expression.lessThan,
                 types: ['number'],
             },
             {
-                value: '>=',
+                value: '>',
                 label: strings.search.expression.greaterThan,
                 types: ['number'],
             },

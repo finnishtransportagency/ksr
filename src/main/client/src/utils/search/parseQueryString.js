@@ -35,12 +35,12 @@ export const filterExpressionsByType = (searchType: string): Object[] => {
             types: ['string', 'number'],
         },
         {
-            value: '<=',
+            value: '<',
             label: strings.search.expression.lessThan,
             types: ['number'],
         },
         {
-            value: '>=',
+            value: '>',
             label: strings.search.expression.greaterThan,
             types: ['number'],
         },
