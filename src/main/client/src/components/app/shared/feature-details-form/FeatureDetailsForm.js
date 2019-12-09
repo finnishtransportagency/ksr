@@ -49,7 +49,7 @@ const FeatureDetailsForm = (props: Props) => {
                 ...field,
                 hidden: field.type === 'esriFieldTypeOID'
                     || !field.editable
-                    || field.label === layer.updaterField
+                    || field.name === layer.updaterField
                     || field.name === 'CONTRACT_UUID'
                     || (layer.contractIdField !== layer.relationColumnOut
                         && layer.relationColumnOut === field.name)
