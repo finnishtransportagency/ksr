@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Button } from '../../../ui/elements';
-import { MapLayerTitleWrapper } from '../../shared/styles';
+import { MapLayerTitleWrapper, Icon } from '../../shared/styles';
 import * as styles from '../../../ui/defaultStyles';
 
 export const WrapperTabbedTable = styled.div`
@@ -32,4 +32,20 @@ export const ButtonTabbedTableTab = styled(Button)`
     ${props => props.active && css`
         border-bottom: 5px solid;
     `}
+`;
+
+export const ButtonIcon = styled(Icon)`
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+    margin: -40px 0 0 84px;
+    background: transparent;
+    box-shadow: unset;
+    font-size: 13px;
+    color: #F1F1F1;
+
+    &:hover {
+        background: transparent;
+        box-shadow: unset;
+    }
 `;

@@ -41,6 +41,7 @@ export const WrapperReactTable = styled.div`
         .rt-resizable-header {
             color: ${styles.colorFontLight};
             padding: 0.5rem;
+            min-width: 130px;
         };
         
         .rt-thead.-filters {
@@ -49,6 +50,11 @@ export const WrapperReactTable = styled.div`
             
             .rt-tr, .rt-th {
                 min-height: 42px;
+                min-width: 130px;
+            };
+
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last {
+                min-width: initial !important;
             };
             
             input {
@@ -67,6 +73,7 @@ export const WrapperReactTable = styled.div`
                 text-align: left;
                 border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
                 height: 42px;
+                min-width: 130px;
                 background-color: transparent;
                 
                 div {
@@ -100,6 +107,7 @@ export const WrapperReactTable = styled.div`
     
         .rt-tr > .rt-td:first-of-type {
             background: ${styles.colorBackgroundDarkSecondary};
+            min-width: initial !important;
             width: 35px;
             max-width: 35px;
         };
