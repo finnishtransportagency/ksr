@@ -81,6 +81,12 @@ const fi = {
         cancel: 'Peruuta',
         content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
     },
+    modalClearTableTab: {
+        submit: 'Tyhjennä',
+        cancel: 'Peruuta',
+        content: 'Haluatko tyhjentää valitsemasi tason taulukosta ja karttatasosta?',
+        info: 'Poista taso...',
+    },
     modalDownloadCsv: {
         all: 'Kaikki kohteet',
         selected: 'Valitut kohteet',
