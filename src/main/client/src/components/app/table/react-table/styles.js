@@ -17,11 +17,19 @@ export const WrapperReactTable = styled.div`
         .rt-thead.-header {
             background: ${styles.colorBackgroundDarkSecondary};
             padding-top: 4px;
+
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
+                min-width: 30px;
+            };
         };
         
         .rt-th {
             background: ${styles.colorBackgroundDarkSecondary};
             min-height: 35px;
+            min-width: 30px;
             border-bottom: none;
             border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
         };
@@ -50,11 +58,17 @@ export const WrapperReactTable = styled.div`
             
             .rt-tr, .rt-th {
                 min-height: 42px;
+            };
+
+            .rt-th {
                 min-width: 130px;
             };
 
-            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last {
-                min-width: initial !important;
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
+                min-width: 30px;
             };
             
             input {
@@ -95,6 +109,13 @@ export const WrapperReactTable = styled.div`
                 background: ${styles.colorBackgroundLight};
                 max-height: 42px;
             };
+
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
+                min-width: 30px;
+            };
         };
         
         div[class^="rt-th"]:focus {
@@ -107,7 +128,6 @@ export const WrapperReactTable = styled.div`
     
         .rt-tr > .rt-td:first-of-type {
             background: ${styles.colorBackgroundDarkSecondary};
-            min-width: initial !important;
             width: 35px;
             max-width: 35px;
         };
