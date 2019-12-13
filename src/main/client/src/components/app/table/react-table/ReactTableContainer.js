@@ -45,8 +45,8 @@ const mapDispatchToProps = dispatch => ({
     setContractListInfo: (layerId, objectId) => {
         dispatch(setContractListInfo(layerId, objectId));
     },
-    setRowFilter: (activeTable, visibleRows) => {
-        dispatch(setRowFilter(activeTable, visibleRows));
+    setRowFilter: (activeTable) => {
+        dispatch(setRowFilter(activeTable));
     },
 });
 
