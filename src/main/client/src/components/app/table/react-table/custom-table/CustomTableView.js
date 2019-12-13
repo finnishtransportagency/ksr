@@ -7,6 +7,10 @@ type Props = {
     className: string,
 };
 
+const customTableStyle = {
+    minWidth : 'fit-content'
+}
+
 const CustomTableView = ({ children, className, ...rest }: Props) => (
     <div className="rt-rtable" role="grid" {...rest}>
         <Scrollbars
@@ -18,9 +22,11 @@ const CustomTableView = ({ children, className, ...rest }: Props) => (
                 <div {...scrollProps} className="track-vertical" />
             )}
         >
-            {children[1]}
-            {children[2]}
-            {children[3]}
+            <div style={customTableStyle}>
+                {children[1]}
+                {children[2]}
+                {children[3]}
+            </div>
         </Scrollbars>
     </div>
 );
