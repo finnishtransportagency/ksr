@@ -49,10 +49,32 @@ class ModalFilter extends Component<Props, State> {
 
         const modalSubmit = [{
             text: strings.modalFilter.submit,
-            handleSubmit: () => { setColumns(columns); },
+            handleSubmit: () => {
+                setColumns(columns);
+            },
             disabled: false,
             toggleModal: true,
-        }];
+        },
+        {
+            text: columns.every(c => c.show === true)
+                ? strings.modalFilter.selectNone
+                : strings.modalFilter.selectAll,
+            handleSubmit: () => {
+                const cols = columns.every(c => c.show === true)
+                    ? columns.map(c => ({
+                        ...c,
+                        show: false,
+                    }))
+                    : columns.map(c => ({
+                        ...c,
+                        show: true,
+                    }));
+                this.setState({ columns: cols });
+            },
+            disabled: false,
+            toggleModal: false,
+        },
+        ];
 
         return (
             <ModalContainer
