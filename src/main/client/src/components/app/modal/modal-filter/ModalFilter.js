@@ -35,10 +35,12 @@ class ModalFilter extends Component<Props, State> {
     };
 
     handleOnChange = (name: string) => {
-        const columns = [...this.state.columns];
-        const column = columns.find((obj => obj.Header === name));
-        column.show = !column.show;
-        this.setState({ columns });
+        const { columns } = this.state;
+        const newColumns = columns.map(c => ({
+            ...c,
+            show: c.Header === name ? !c.show : c.show,
+        }));
+        this.setState({ columns: newColumns });
     };
 
     render() {
