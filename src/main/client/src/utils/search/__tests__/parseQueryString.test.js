@@ -112,7 +112,7 @@ describe('parseQueryString', () => {
             queryColumnsList,
         );
 
-        expect(queryString4).toBe("NOT LOWER(fieldName4) = LOWER('helsinki')");
+        expect(queryString4).toBe("NOT LOWER(fieldName4) = LOWER('helsinki') OR fieldName4 IS NULL");
 
         searchFieldValues = [
             {
@@ -129,7 +129,7 @@ describe('parseQueryString', () => {
             queryColumnsList,
         );
 
-        expect(queryString5).toBe("NOT LOWER(fieldName5) LIKE LOWER('%helsinki%')");
+        expect(queryString5).toBe("NOT LOWER(fieldName5) LIKE LOWER('%helsinki%') OR fieldName5 IS NULL");
     });
 });
 
@@ -206,5 +206,58 @@ describe('parseQueryString - filterExpressionsByType', () => {
         expect(filterExpressionsByType('esriFieldTypeString')).toEqual(stringExpressions);
         expect(filterExpressionsByType('esriFieldTypeDate')).toEqual(stringExpressions);
         expect(filterExpressionsByType('test123')).toEqual(stringExpressions);
+    });
+
+    it('should parse query string with empty field search', () => {
+        searchFieldValues = [
+            {
+                name: 'fieldName1',
+                queryExpression: '=',
+                queryText: '',
+            },
+        ];
+
+        const queryString = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString).toBe('fieldName1 IS NULL');
+
+        searchFieldValues = [
+            {
+                name: 'fieldName2',
+                queryExpression: 'NOT',
+                queryText: '',
+            },
+        ];
+
+        const queryString2 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString2).toBe('fieldName2 IS NOT NULL');
+
+        searchFieldValues = [
+            {
+                name: 'fieldName3',
+                queryExpression: '<',
+                queryText: '',
+            },
+        ];
+
+        const queryString3 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString3).toBe('');
     });
 });

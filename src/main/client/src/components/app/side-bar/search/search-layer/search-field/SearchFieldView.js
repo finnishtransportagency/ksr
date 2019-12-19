@@ -93,8 +93,6 @@ const SearchFieldView = ({
                                 type="text"
                                 value={field.queryText}
                                 index={index}
-                                required
-                                minLength={1}
                                 onBlur={handleFieldBlur}
                             />
                             <div
