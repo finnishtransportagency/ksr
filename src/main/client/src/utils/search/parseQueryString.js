@@ -85,7 +85,13 @@ export const parseQueryString = (
                 queryExpression, type, name, queryText,
             } = searchFieldValue;
 
-            if (searchFieldIsNumber(type)) {
+            if (queryText.trim().length === 0) {
+                if (queryExpression === 'NOT' || queryExpression === 'NOT LIKE') {
+                    queryString.push(`${name} is not null`);
+                } else if (queryExpression !== '<' && queryExpression !== '>') {
+                    queryString.push(`${name} is null`);
+                }
+            } else if (searchFieldIsNumber(type)) {
                 if (queryExpression === ('NOT')) {
                     queryString.push(`NOT ${name} = ${queryText}`);
                 } else {

@@ -207,4 +207,57 @@ describe('parseQueryString - filterExpressionsByType', () => {
         expect(filterExpressionsByType('esriFieldTypeDate')).toEqual(stringExpressions);
         expect(filterExpressionsByType('test123')).toEqual(stringExpressions);
     });
+
+    it('should parse query string with empty field search', () => {
+        searchFieldValues = [
+            {
+                name: 'fieldName1',
+                queryExpression: '=',
+                queryText: '',
+            },
+        ];
+
+        const queryString = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString).toBe('fieldName1 is null');
+
+        searchFieldValues = [
+            {
+                name: 'fieldName2',
+                queryExpression: 'NOT',
+                queryText: '',
+            },
+        ];
+
+        const queryString2 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString2).toBe('fieldName2 is not null');
+
+        searchFieldValues = [
+            {
+                name: 'fieldName3',
+                queryExpression: '<',
+                queryText: '',
+            },
+        ];
+
+        const queryString3 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString3).toBe('');
+    });
 });
