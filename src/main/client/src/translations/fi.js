@@ -73,6 +73,8 @@ const fi = {
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
+        selectAll: 'Valitse kaikki sarakkeet',
+        selectNone: 'Tyhjennä valitut sarakkeet',
         submit: 'Suodata',
         cancel: 'Peruuta',
     },
