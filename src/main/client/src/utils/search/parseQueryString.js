@@ -81,9 +81,9 @@ export const parseQueryString = (
 
     if (searchFieldValues.length > 0) {
         searchFieldValues.forEach((searchFieldValue) => {
-            const {
-                queryExpression, type, name, queryText,
-            } = searchFieldValue;
+            const { queryExpression, type, name } = searchFieldValue;
+            let { queryText } = searchFieldValue;
+            queryText = queryText.toString();
 
             if (queryText.trim().length === 0) {
                 if (queryExpression === 'NOT' || queryExpression === 'NOT LIKE') {
