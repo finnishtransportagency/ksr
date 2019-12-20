@@ -178,7 +178,6 @@ export const addDetailToContract = async (
                 nestedVal(layer, ['id']),
                 features,
                 objectIdFieldName,
-                undefined,
                 false,
                 false,
             );
@@ -202,7 +201,6 @@ export const addDetailToContract = async (
         nestedVal(layer, ['id']),
         features,
         objectIdFieldName,
-        undefined,
         false,
         false,
     );
@@ -221,7 +219,6 @@ export const addDetailToContract = async (
             contractLayer.id,
             features,
             objectIdFieldName,
-            contractObjectId,
             true,
         );
 
@@ -267,7 +264,6 @@ export const updateContractLink = async (
             layer.id,
             features,
             objectIdFieldName,
-            objectId,
             true,
         );
 
@@ -320,7 +316,6 @@ export const unlinkFeatureFromContract = async (
             targetLayer.id,
             features,
             objectIdFieldName,
-            objectId,
             true,
         );
 

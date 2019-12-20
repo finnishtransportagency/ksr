@@ -35,12 +35,12 @@ export const filterExpressionsByType = (searchType: string): Object[] => {
             types: ['string', 'number'],
         },
         {
-            value: '<=',
+            value: '<',
             label: strings.search.expression.lessThan,
             types: ['number'],
         },
         {
-            value: '>=',
+            value: '>',
             label: strings.search.expression.greaterThan,
             types: ['number'],
         },
@@ -81,27 +81,33 @@ export const parseQueryString = (
 
     if (searchFieldValues.length > 0) {
         searchFieldValues.forEach((searchFieldValue) => {
-            const {
-                queryExpression, type, name, queryText,
-            } = searchFieldValue;
+            const { queryExpression, type, name } = searchFieldValue;
+            let { queryText } = searchFieldValue;
+            queryText = queryText.toString();
 
-            if (searchFieldIsNumber(type)) {
+            if (queryText.trim().length === 0) {
+                if (queryExpression === 'NOT' || queryExpression === 'NOT LIKE') {
+                    queryString.push(`${name} IS NOT NULL`);
+                } else if (queryExpression !== '<' && queryExpression !== '>') {
+                    queryString.push(`${name} IS NULL`);
+                }
+            } else if (searchFieldIsNumber(type)) {
                 if (queryExpression === ('NOT')) {
-                    queryString.push(`NOT ${name} = ${queryText}`);
+                    queryString.push(`NOT ${name} = ${queryText.trim()} OR ${name} IS NULL`);
                 } else {
-                    queryString.push(`${name} ${queryExpression} ${queryText}`);
+                    queryString.push(`${name} ${queryExpression} ${queryText.trim()}`);
                 }
             } else {
                 const text = queryExpression === 'LIKE' || queryExpression === 'NOT LIKE'
-                    ? `'%${queryText.replace(/'/g, "''")}%'`
-                    : `'${queryText.replace(/'/g, "''")}'`;
+                    ? `'%${queryText.trim().replace(/'/g, "''")}%'`
+                    : `'${queryText.trim().replace(/'/g, "''")}'`;
 
                 switch (queryExpression) {
                     case ('NOT'):
-                        queryString.push(`NOT LOWER(${name}) = LOWER(${text})`);
+                        queryString.push(`NOT LOWER(${name}) = LOWER(${text}) OR ${name} IS NULL`);
                         break;
                     case ('NOT LIKE'):
-                        queryString.push(`NOT LOWER(${name}) LIKE LOWER(${text})`);
+                        queryString.push(`NOT LOWER(${name}) LIKE LOWER(${text}) OR ${name} IS NULL`);
                         break;
                     default:
                         queryString.push(`LOWER(${name}) ${queryExpression} LOWER(${text})`);

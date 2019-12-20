@@ -85,7 +85,7 @@ class ModalFilter extends Component<Props, State> {
                 );
                 const formatFeature = await formatPropertyInfoToSaveFormat(data);
                 if (formatFeature[0] && formatFeature[0].geometry !== null) {
-                    await save.saveData('add', view, originalLayerId, formatFeature, objectId.name, undefined, false, false);
+                    await save.saveData('add', view, originalLayerId, formatFeature, objectId.name, false, false);
                     // found newly added property so we can zoom to feature.
                     foundObject = await queryFeatures(
                         parseInt(originalLayerId, 10),
@@ -143,7 +143,7 @@ class ModalFilter extends Component<Props, State> {
         } else if (activeLayer.propertyIdField) {
             await this.handlePropertySubmit(combinedData);
         } else {
-            await save.saveData('add', view, originalLayerId, [feature], objectId.name, undefined, false, false);
+            await save.saveData('add', view, originalLayerId, [feature], objectId.name, false, false);
         }
 
         const { setTempGraphicsLayer, sketchViewModel } = this.props;
