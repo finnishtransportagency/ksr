@@ -1,4 +1,7 @@
-import { parseQueryString } from '../parseQueryString';
+import {
+    filterExpressionsByType, parseQueryString, searchFieldIsNumber,
+} from '../parseQueryString';
+import strings from '../../../translations';
 
 let searchFieldValues = [];
 const textSearch = 'helsinki';
@@ -64,7 +67,7 @@ describe('parseQueryString', () => {
         searchFieldValues = [
             {
                 name: 'fieldName2',
-                queryExpression: '%',
+                queryExpression: 'LIKE',
                 queryText: 'turku',
             },
         ];
@@ -80,7 +83,7 @@ describe('parseQueryString', () => {
         searchFieldValues = [
             {
                 name: 'fieldName3',
-                queryExpression: '<=',
+                queryExpression: '<',
                 queryText: '3',
                 type: 'esriFieldTypeSmallInteger',
             },
@@ -92,6 +95,169 @@ describe('parseQueryString', () => {
             queryColumnsList,
         );
 
-        expect(queryString3).toBe('fieldName3 <= 3');
+        expect(queryString3).toBe('fieldName3 < 3');
+
+        searchFieldValues = [
+            {
+                name: 'fieldName4',
+                queryExpression: 'NOT',
+                queryText: 'helsinki',
+                type: 'esriFieldTypeString',
+            },
+        ];
+        const queryString4 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString4).toBe("NOT LOWER(fieldName4) = LOWER('helsinki') OR fieldName4 IS NULL");
+
+        searchFieldValues = [
+            {
+                name: 'fieldName5',
+                queryExpression: 'NOT LIKE',
+                queryText: 'helsinki',
+                type: 'esriFieldTypeString',
+            },
+        ];
+        const queryString5 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString5).toBe("NOT LOWER(fieldName5) LIKE LOWER('%helsinki%') OR fieldName5 IS NULL");
+    });
+});
+
+describe('parseQueryString - searchFieldIsNumber', () => {
+    it('should return true', () => {
+        expect(searchFieldIsNumber('esriFieldTypeOID')).toBe(true);
+        expect(searchFieldIsNumber('esriFieldTypeSmallInteger')).toBe(true);
+        expect(searchFieldIsNumber('esriFieldTypeInteger')).toBe(true);
+        expect(searchFieldIsNumber('esriFieldTypeDouble')).toBe(true);
+    });
+
+    it('should return false', () => {
+        expect(searchFieldIsNumber('esriFieldTypeString')).toBe(false);
+        expect(searchFieldIsNumber('esriFieldTypeDate')).toBe(false);
+        expect(searchFieldIsNumber('test123')).toBe(false);
+    });
+});
+
+describe('parseQueryString - filterExpressionsByType', () => {
+    it('should return number types', () => {
+        const numberExpressions = [
+            {
+                value: '=',
+                label: strings.search.expression.exact,
+                types: ['string', 'number'],
+            },
+            {
+                value: '<',
+                label: strings.search.expression.lessThan,
+                types: ['number'],
+            },
+            {
+                value: '>',
+                label: strings.search.expression.greaterThan,
+                types: ['number'],
+            },
+            {
+                value: 'NOT',
+                label: strings.search.expression.not,
+                types: ['string', 'number'],
+            },
+        ];
+
+        expect(filterExpressionsByType('esriFieldTypeOID')).toEqual(numberExpressions);
+        expect(filterExpressionsByType('esriFieldTypeSmallInteger')).toEqual(numberExpressions);
+        expect(filterExpressionsByType('esriFieldTypeInteger')).toEqual(numberExpressions);
+        expect(filterExpressionsByType('esriFieldTypeDouble')).toEqual(numberExpressions);
+    });
+
+    it('should return string types', () => {
+        const stringExpressions = [
+            {
+                value: 'LIKE',
+                label: strings.search.expression.like,
+                types: ['string'],
+            },
+            {
+                value: '=',
+                label: strings.search.expression.exact,
+                types: ['string', 'number'],
+            },
+            {
+                value: 'NOT',
+                label: strings.search.expression.not,
+                types: ['string', 'number'],
+            },
+            {
+                value: 'NOT LIKE',
+                label: strings.search.expression.notLike,
+                types: ['string'],
+            },
+        ];
+
+        expect(filterExpressionsByType('esriFieldTypeString')).toEqual(stringExpressions);
+        expect(filterExpressionsByType('esriFieldTypeDate')).toEqual(stringExpressions);
+        expect(filterExpressionsByType('test123')).toEqual(stringExpressions);
+    });
+
+    it('should parse query string with empty field search', () => {
+        searchFieldValues = [
+            {
+                name: 'fieldName1',
+                queryExpression: '=',
+                queryText: '',
+            },
+        ];
+
+        const queryString = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString).toBe('fieldName1 IS NULL');
+
+        searchFieldValues = [
+            {
+                name: 'fieldName2',
+                queryExpression: 'NOT',
+                queryText: '',
+            },
+        ];
+
+        const queryString2 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString2).toBe('fieldName2 IS NOT NULL');
+
+        searchFieldValues = [
+            {
+                name: 'fieldName3',
+                queryExpression: '<',
+                queryText: '',
+            },
+        ];
+
+        const queryString3 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString3).toBe('');
     });
 });

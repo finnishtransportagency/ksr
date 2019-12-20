@@ -6,6 +6,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import { TextInput } from '../../../../../ui/elements';
 import SearchFieldWrapper from './styles';
+import { filterExpressionsByType } from '../../../../../../utils/search/parseQueryString';
 
 type Props = {
     field: Object,
@@ -16,7 +17,6 @@ type Props = {
     textSearch: string,
     handleChangeField: Function,
     handleFieldBlur: Function,
-    optionsExpression: Array<Object>,
     handleRemoveField: Function,
     fetching: boolean,
     suggestions: Array<string>,
@@ -32,7 +32,6 @@ const SearchFieldView = ({
     textSearch,
     handleChangeField,
     handleFieldBlur,
-    optionsExpression,
     handleRemoveField,
     fetching,
     suggestions,
@@ -56,10 +55,12 @@ const SearchFieldView = ({
                     disabled={fetching}
                     value={field.queryExpression}
                     onChange={evt => handleChangeField('expression', evt, index)}
-                    options={optionsExpression}
+                    options={filterExpressionsByType(field.type)}
                     simpleValue
                     clearable={false}
                     searchable={false}
+                    backspaceRemoves={false}
+                    deleteRemoves={false}
                 />
             </SearchFieldWrapper.Expression>
             <SearchFieldWrapper.Text>
@@ -92,8 +93,6 @@ const SearchFieldView = ({
                                 type="text"
                                 value={field.queryText}
                                 index={index}
-                                required
-                                minLength={1}
                                 onBlur={handleFieldBlur}
                             />
                             <div

@@ -1,9 +1,10 @@
 // @flow
 import React, { Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
+import strings from '../../../../translations';
 
 import ReactTableContainer from '../react-table/ReactTableContainer';
-import { WrapperTabbedTable, ButtonTabbedTableTab } from './styles';
+import { WrapperTabbedTable, ButtonTabbedTableTab, ButtonIcon } from './styles';
 import MapLayerTitle from '../../shared/MapLayerTitle';
 
 type Props = {
@@ -11,6 +12,13 @@ type Props = {
     activeTable: string,
     setActiveTable: Function,
     activeAdmin: string,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function
+    ) => void,
+    deactivateLayer: Function,
 };
 
 const TabbedTableView = ({
@@ -18,6 +26,8 @@ const TabbedTableView = ({
     activeTable,
     setActiveTable,
     activeAdmin,
+    showConfirmModal,
+    deactivateLayer,
 }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
@@ -44,6 +54,19 @@ const TabbedTableView = ({
                             }}
                         >
                             <MapLayerTitle layer={l} />
+                            <ButtonIcon
+                                title={strings.modalClearTableTab.info}
+                                onClick={() => {
+                                    showConfirmModal(
+                                        strings.modalClearTableTab.content,
+                                        strings.modalClearTableTab.submit,
+                                        strings.modalClearTableTab.cancel,
+                                        () => {
+                                            deactivateLayer(l.id);
+                                        },
+                                    );
+                                }}
+                            >X</ButtonIcon>
                         </ButtonTabbedTableTab>
                     ))
                 }

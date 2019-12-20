@@ -1,5 +1,66 @@
 // @flow
 
+import strings from '../../translations';
+
+/**
+ * Checks whether search fields' type is any of the esri field number -types.
+ *
+ * @param {string} type Type of the search field.
+ *
+ * @returns {boolean} Returns true if type is a number.
+ */
+export const searchFieldIsNumber = (type: string) => {
+    const fieldNumberTypes = ['esriFieldTypeOID', 'esriFieldTypeSmallInteger', 'esriFieldTypeInteger', 'esriFieldTypeDouble'];
+
+    return fieldNumberTypes.some(numberType => numberType === type);
+};
+
+/**
+ * Filters search expression options by type.
+ *
+ * @param {string} searchType Type of the search field.
+ *
+ * @returns {Object[]} List of search expressions, filtered by search field type.
+ */
+export const filterExpressionsByType = (searchType: string): Object[] => {
+    const searchExpressions = [
+        {
+            value: 'LIKE',
+            label: strings.search.expression.like,
+            types: ['string'],
+        },
+        {
+            value: '=',
+            label: strings.search.expression.exact,
+            types: ['string', 'number'],
+        },
+        {
+            value: '<',
+            label: strings.search.expression.lessThan,
+            types: ['number'],
+        },
+        {
+            value: '>',
+            label: strings.search.expression.greaterThan,
+            types: ['number'],
+        },
+        {
+            value: 'NOT',
+            label: strings.search.expression.not,
+            types: ['string', 'number'],
+        },
+        {
+            value: 'NOT LIKE',
+            label: strings.search.expression.notLike,
+            types: ['string'],
+        },
+    ];
+
+    return searchFieldIsNumber(searchType)
+        ? searchExpressions.filter(expression => expression.types.some(type => type === 'number'))
+        : searchExpressions.filter(expression => expression.types.some(type => type === 'string'));
+};
+
 /**
  * Creates queryString from searched values
  *
@@ -19,28 +80,44 @@ export const parseQueryString = (
     const queryString = [];
 
     if (searchFieldValues.length > 0) {
-        searchFieldValues.forEach((a) => {
-            const expression = a.queryExpression === '%'
-                ? 'LIKE'
-                : a.queryExpression;
+        searchFieldValues.forEach((searchFieldValue) => {
+            const { queryExpression, type, name } = searchFieldValue;
+            let { queryText } = searchFieldValue;
+            queryText = queryText.toString();
 
-            if (a.type === 'esriFieldTypeOID'
-                || a.type === 'esriFieldTypeSmallInteger'
-                || a.type === 'esriFieldTypeInteger'
-                || a.type === 'esriFieldTypeDouble') {
-                queryString.push(`${a.name} ${expression} ${a.queryText}`);
+            if (queryText.trim().length === 0) {
+                if (queryExpression === 'NOT' || queryExpression === 'NOT LIKE') {
+                    queryString.push(`${name} IS NOT NULL`);
+                } else if (queryExpression !== '<' && queryExpression !== '>') {
+                    queryString.push(`${name} IS NULL`);
+                }
+            } else if (searchFieldIsNumber(type)) {
+                if (queryExpression === ('NOT')) {
+                    queryString.push(`NOT ${name} = ${queryText.trim()} OR ${name} IS NULL`);
+                } else {
+                    queryString.push(`${name} ${queryExpression} ${queryText.trim()}`);
+                }
             } else {
-                const text = a.queryExpression === '%'
-                    ? `'%${a.queryText.replace(/'/g, "''")}%'`
-                    : `'${a.queryText.replace(/'/g, "''")}'`;
+                const text = queryExpression === 'LIKE' || queryExpression === 'NOT LIKE'
+                    ? `'%${queryText.trim().replace(/'/g, "''")}%'`
+                    : `'${queryText.trim().replace(/'/g, "''")}'`;
 
-                queryString.push(`LOWER(${a.name}) ${expression} LOWER(${text})`);
+                switch (queryExpression) {
+                    case ('NOT'):
+                        queryString.push(`NOT LOWER(${name}) = LOWER(${text}) OR ${name} IS NULL`);
+                        break;
+                    case ('NOT LIKE'):
+                        queryString.push(`NOT LOWER(${name}) LIKE LOWER(${text}) OR ${name} IS NULL`);
+                        break;
+                    default:
+                        queryString.push(`LOWER(${name}) ${queryExpression} LOWER(${text})`);
+                }
             }
         });
     } else {
         const text = `'%${textSearch.replace(/'/g, "''")}%'`;
 
-        queryColumnsList.forEach(a => queryString.push(`LOWER(${a}) LIKE LOWER(${text})`));
+        queryColumnsList.forEach(queryColumn => queryString.push(`LOWER(${queryColumn}) LIKE LOWER(${text})`));
     }
 
     return searchFieldValues.length > 0 ? queryString.join(' AND ') : queryString.join(' OR ');

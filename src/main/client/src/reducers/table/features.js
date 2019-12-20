@@ -1,7 +1,11 @@
 // @flow
 import {
+    APPLY_DELETED_FEATURES,
+    APPLY_EDITS,
+    CLEAR_SEARCH_DATA,
     CLEAR_TABLE_DATA,
     DE_SELECT_SELECTED_FEATURES,
+    DEACTIVATE_LAYER,
     SEARCH_FEATURES_FULFILLED,
     SELECT_FEATURES,
     SET_ACTIVE_ADMIN_TOOL,
@@ -9,24 +13,22 @@ import {
     SET_COLUMNS,
     SET_EDITED_LAYER,
     SET_LAYER_LIST,
+    SET_ROW_FILTER,
     SET_SINGLE_LAYER_GEOMETRY,
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
-    APPLY_EDITS,
-    APPLY_DELETED_FEATURES,
-    CLEAR_SEARCH_DATA,
-    DEACTIVATE_LAYER,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
     getActiveTable,
     mergeLayers,
+    setRowFilter,
     syncWithLayersList,
     toggleSelectAll,
     toggleSelection,
     updateLayerColumns,
 } from '../../utils/parseFeatureData';
-import { applyEdits, applyDeletedFeatures, applyEditedLayers } from '../../utils/table';
+import { applyDeletedFeatures, applyEditedLayers, applyEdits } from '../../utils/table';
 
 type State = {
     fetching: boolean,
@@ -41,6 +43,7 @@ type Action = {
     layers: any,
     columns: Array<Object>,
     activeTable: string,
+    rows: Array<Object>,
     layerList: Array<Object>,
     layerId: string,
     feature: Object,
@@ -116,6 +119,12 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layers: toggleSelectAll(state.layers, action.layerId),
                 editedLayers: toggleSelectAll(state.editedLayers, action.layerId),
+            };
+        case SET_ROW_FILTER:
+            return {
+                ...state,
+                layers: setRowFilter(state.layers, state.activeTable, action.rows),
+                editedLayers: setRowFilter(state.editedLayers, state.activeTable, action.rows),
             };
         case SET_ACTIVE_ADMIN_TOOL:
             return {

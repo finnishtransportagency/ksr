@@ -11,6 +11,7 @@ const columnClassName = (type) => {
         case 'double':
         case 'esriFieldTypeDouble':
             return 'decimal';
+        case 'date':
         case 'esriFieldTypeDate':
             return 'date';
         default:
@@ -90,6 +91,7 @@ export const parseData = (data, selected) => {
                 _id: f.attributes[l.objectIdFieldName],
                 _layerId: l.id,
                 _selected: f.selected !== undefined ? f.selected : selected,
+                _filtered: false,
                 _edited: [],
                 _key: `${l.id}/${f.attributes[l.objectIdFieldName]}`,
                 _source: l._source,
@@ -249,6 +251,29 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
     return { layers, editedLayers, activeTable };
 };
 
+/**
+ * Set filtered info for given features.
+ *
+ * @param {Object[]} currentLayers Array of layers (table-reducer).
+ * @param {string} activeTable Currently filtered table.
+ * @param {Object[]} features Object of selected features.
+ *
+ * @returns {Object[]} Layers updated with feature filtered information.
+ */
+export const setRowFilter = (currentLayers: Object[], activeTable: string, features: Object[]) => (
+    currentLayers.map((layer) => {
+        if (layer.id === activeTable) {
+            return {
+                ...layer,
+                data: layer.data.map(d => ({
+                    ...d,
+                    _filtered: !features.some(f => f.layerId === activeTable && d._id === f.id),
+                })),
+            };
+        }
+        return { ...layer };
+    })
+);
 
 /**
  * Toggles selected-state for given feature.
@@ -303,12 +328,15 @@ export const toggleSelectAll = (currentLayers, layerId) => (
  *
  * @param {Object} domain Field's domain containing coded value info.
  * @param {any} value Original value of the attribute.
+ * @param {boolean} toString Cast code to string.
  *
  * @returns {string} Coded value for attribute.
  */
-export const getCodedValue = (domain, value) => {
+export const getCodedValue = (domain, value, toString = false) => {
     if (domain && (domain.type === 'codedValue' || domain.type === 'coded-value')) {
-        const codedValue = domain.codedValues.find(cv => cv.code === value);
+        const codedValue = domain.codedValues.find(cv => (toString
+            ? String(cv.code) === value
+            : cv.code === value));
         if (codedValue) {
             return codedValue.name;
         }
@@ -316,3 +344,19 @@ export const getCodedValue = (domain, value) => {
     }
     return String(value);
 };
+
+/**
+ * Merge Selected Feature columns with Layer Group columns by a key.
+ *
+ * @param {Object[]} selectedFeatureColumns Array of columns.
+ * @param {Object[] }layerGroupColumns Array of columns.
+ *
+ * @returns {Object[]} Merged columns.
+ */
+export const mergeColumnsByHeaderAndLabel = (
+    selectedFeatureColumns,
+    layerGroupColumns,
+) => selectedFeatureColumns.map(sfc => ({
+    ...sfc,
+    ...layerGroupColumns.find(lgc => (lgc.label === sfc.Header)),
+}));

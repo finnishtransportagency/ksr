@@ -65,40 +65,42 @@ class SketchTool extends Component<Props, State> {
         this.toggleSelectTools = this.toggleSelectTools.bind(this);
     }
 
-    componentWillReceiveProps(newProps: any) {
-        const { sketchViewModel, activeAdminTool, setActiveTool } = this.props;
-
-        if (sketchViewModel !== newProps.sketchViewModel && newProps.sketchViewModel.initialized) {
+    componentDidUpdate(prevProps: Props) {
+        const {
+            sketchViewModel, activeAdminTool, draw, setActiveTool, geometryType,
+        } = this.props;
+        if (sketchViewModel !== prevProps.sketchViewModel
+            && sketchViewModel.initialized) {
             this.sketchTool();
         }
 
-        if (activeAdminTool !== newProps.activeAdminTool) {
-            switch (newProps.geometryType) {
+        if (prevProps.activeAdminTool !== activeAdminTool) {
+            switch (geometryType) {
                 case 'esriGeometryPolygon':
-                    this.setState({ editSketchIcon: 'polygon' });
+                    this.updateState('polygon');
                     break;
                 case 'esriGeometryMultipoint':
-                    this.setState({ editSketchIcon: 'handle-horizontal' });
+                    this.updateState('handle-horizontal');
                     break;
                 case 'esriGeometryPoint':
-                    this.setState({ editSketchIcon: 'blank-map-pin' });
+                    this.updateState('blank-map-pin');
                     break;
                 case 'esriGeometryPolyline':
-                    this.setState({ editSketchIcon: 'polyline' });
+                    this.updateState('polyline');
                     break;
                 case 'esriGeometryEnvelope':
-                    this.setState({ editSketchIcon: 'checkbox-unchecked' });
+                    this.updateState('checkbox-unchecked');
                     break;
                 case 'esriGeometryCircularArc':
-                    this.setState({ editSketchIcon: 'radio-unchecked' });
+                    this.updateState('radio-unchecked');
                     break;
                 default:
-                    this.setState({ editSketchIcon: 'polygon' });
+                    this.updateState('polygon');
             }
             // Remove temp sketch
-            if (newProps.draw.initialized) {
+            if (draw.initialized) {
                 this.removeSketch();
-                resetMapTools(newProps.draw, sketchViewModel, setActiveTool);
+                resetMapTools(draw, sketchViewModel, setActiveTool);
             }
         }
     }
@@ -295,6 +297,10 @@ class SketchTool extends Component<Props, State> {
                 sketchViewModel.on('create', selectFeaturesFromDraw);
                 sketchViewModel.on(['redo', 'undo', 'update'], onUpdate);
             });
+    };
+
+    updateState = (editSketchIcon: string) => {
+        this.setState({ editSketchIcon });
     };
 
     removeSelection = () => {

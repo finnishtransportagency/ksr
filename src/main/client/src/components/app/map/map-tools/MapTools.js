@@ -11,8 +11,9 @@ type Props = {
 };
 
 class MapTools extends Component<Props> {
-    componentWillReceiveProps(newProps: any) {
-        if (this.props.view !== newProps.view) {
+    componentDidUpdate(prevProps: any) {
+        const { view } = this.props;
+        if (view !== prevProps.view) {
             this.mapTools();
         }
     }
