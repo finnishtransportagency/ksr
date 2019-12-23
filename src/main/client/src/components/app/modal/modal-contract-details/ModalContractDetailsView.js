@@ -4,10 +4,12 @@ import strings from '../../../../translations';
 import Contract from '../../../ui/blocks/Contract';
 import LoadingIcon from '../../shared/LoadingIcon';
 import { nestedVal } from '../../../../utils/nestedValue';
+import { zoomToFeatures } from '../../../../utils/map';
 
 type Props = {
     contractLayerId: string,
     detailList: Object[],
+    layerGroups: Object[],
     fetchingDetailList: boolean,
     activeAdmin: boolean,
     handleFeatureDetailsClick: (
@@ -22,7 +24,13 @@ type Props = {
         featureId: number,
         objectId: number
     ) => void,
-    handleFeatureUnlinkClick: (layerId: string, featureObjectId: number) => void,
+    handleFeatureUnlinkClick: (
+        layerId: string,
+        featureObjectId: number
+    ) => void,
+    tableFeaturesLayers: Object[],
+    view: Object,
+    handleModalCancel: () => void,
 };
 
 const alfrescoTitle = strings.modalFeatureContracts.listView.alfrescoLink;
@@ -31,11 +39,15 @@ const caseManagementTitle = strings.modalFeatureContracts.listView.caseManagemen
 const ModalContractDetailsView = ({
     contractLayerId,
     detailList,
+    layerGroups,
     fetchingDetailList,
     activeAdmin,
     handleFeatureDetailsClick,
     handleFeatureEditClick,
     handleFeatureUnlinkClick,
+    tableFeaturesLayers,
+    view,
+    handleModalCancel,
 }: Props) => (
     <Fragment>
         {fetchingDetailList && <LoadingIcon loading={fetchingDetailList} />}
@@ -50,16 +62,35 @@ const ModalContractDetailsView = ({
                 {layer.features.map(feature => (
                     <Contract key={feature.id}>
                         <Contract.IconWrapper>
-                            <Contract.IconWrapper.Icon
-                                title={strings.modalContractDetails.listView.details}
-                                className="fas fa-list-ul"
-                                onClick={() => handleFeatureDetailsClick(
-                                    layer.name,
-                                    layer.id,
-                                    feature.id,
-                                    feature.objectId,
-                                )}
-                            />
+                            <Fragment>
+                                <Contract.IconWrapper.Icon
+                                    title={strings.modalContractDetails.listView.details}
+                                    className="fas fa-list-ul"
+                                    onClick={() => handleFeatureDetailsClick(
+                                        layer.name,
+                                        layer.id,
+                                        feature.id,
+                                        feature.objectId,
+                                    )}
+                                />
+                                {layerGroups.map(lg => {
+                                    const visibleTrue = lg.layers.some(l => l.name === layer.name && l.locateVisible === true);
+                                    if (visibleTrue) {
+                                        return <Contract.IconWrapper.Icon key={feature.id}
+                                            title={strings.modalContractDetails.listView.showLocation}
+                                            className="fas fa-search-location"
+                                            onClick={ async () => {
+                                                const geometryData: any = tableFeaturesLayers.find(l => l.id === layer.id);
+                                                await zoomToFeatures(view, geometryData.data);
+                                                handleModalCancel();
+                                            }}
+                                        />
+                                    }
+                                    else {
+                                        return null;
+                                    }
+                                })}
+                            </Fragment>
                         </Contract.IconWrapper>
                         <Contract.TextWrapper>
                             <Contract.TextWrapper.Text title={feature.id}>
