@@ -19,6 +19,7 @@ type Props = {
     contractObjectId: number,
     source: string,
     layerList: Object[],
+    layerGroups: Object[],
     setActiveModal: (activeModal: string) => void,
     updateLayerFields: (layerId: number, fields: Object[]) => void,
     activeAdmin: string,
@@ -28,6 +29,8 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
+    tableFeaturesLayers: Object[],
+    view: Object,
 };
 
 const ModalContractDetails = (props: Props) => {
@@ -36,12 +39,15 @@ const ModalContractDetails = (props: Props) => {
     const {
         source,
         layerList,
+        layerGroups,
         contractLayer,
         contractObjectId,
         updateLayerFields,
         setActiveModal,
         activeAdmin,
         showConfirmModal,
+        tableFeaturesLayers,
+        view,
     } = props;
 
     const [activeView, setActiveView] = useState('contractDetails');
@@ -256,11 +262,15 @@ const ModalContractDetails = (props: Props) => {
                     <ModalContractDetailsView
                         contractLayerId={contractLayer.id}
                         detailList={detailList}
+                        layerGroups={layerGroups}
                         fetchingDetailList={fetchingDetailList}
                         activeAdmin={detailList.some(layer => layer.id === activeAdmin)}
                         handleFeatureDetailsClick={handleFeatureDetailsClick}
                         handleFeatureEditClick={handleFeatureEditClick}
                         handleFeatureUnlinkClick={handleFeatureUnlinkClick}
+                        tableFeaturesLayers={tableFeaturesLayers}
+                        view={view}
+                        handleModalCancel={handleModalCancel}
                     />
                 )}
                 {activeView === 'singleFeatureDetails' && (
