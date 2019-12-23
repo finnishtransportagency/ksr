@@ -1,6 +1,6 @@
 FROM python:3.7-slim-buster
 ARG JENKINS_UID=1000
-COPY ci/confs/pip* /etc/
+COPY confs/pip* /etc/
 
 RUN apt-get update && apt-get -y install xvfb chromium chromium-driver
 
