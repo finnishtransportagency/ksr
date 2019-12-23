@@ -11,6 +11,6 @@ ENV DISPLAY=:99
 ENV ENTRYPOINT Xvfb :99
 RUN export DISPLAY=:99
 
-#RUN adduser -D -S -u ${JENKINS_UID} jenkins
-#RUN chown -R jenkins /home/jenkins
+RUN adduser -D -S -u ${JENKINS_UID} jenkins
+RUN chown -R jenkins /home/jenkins
 
