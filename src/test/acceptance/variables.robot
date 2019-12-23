@@ -1,4 +1,4 @@
-# Matti Telenius       Dimenteq Oy     2018
+# Matti Telenius       Sitowise Oy     2019
 # testit ajetaan scr hakemistossa vaikka komennolla:
 # pybot -L TRACE -d output -i smoke test
 # robot -L TRACE -v LiviUSER:Käyttäjätunnus -v LiviPWD:Salasana -i smoke test
@@ -6,13 +6,14 @@
 Library                     Selenium2Library    implicit_wait=1   timeout=40.0
 Library                     Dialogs
 Library                     selenium_extensions.py
+Library                     XvfbRobot
 
 #Resource                    c:\\tools\\oma\\ksr.robot
 
 *** Variables ***
-#${BROWSER}             Chrome
+${BROWSER}             Chrome
 #${BROWSER}             Firefox
-${BROWSER}             headlesschrome
+#${BROWSER}             headlesschrome
 ${DELAY}               0.5
 #${LOGIN URL}           http://localhost:3000/
 ${LOGIN URL}           https://devtest.vayla.fi/ksr/
@@ -40,14 +41,14 @@ Open MainPage
     Set Log Level                   ${temp}
 
 Open MainPage Headless
-    #Open Headless Chrome
+    Start Virtual Display    1920    1080
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    Call Method    ${options}    add_argument    --disable-gpu
-    Call Method    ${options}    add_argument    --headless
+    Call Method    ${options}    add_argument    --disable-dev-shm-usage
     Call Method    ${options}    add_argument    --no-sandbox
-    Create Webdriver    Chrome    options=${options}
-    set window size    1920   1200
-    Selenium2Library.go to        ${LOGIN URL}
+    Call Method    ${options}    add_argument    --ignore-gpu-blacklist
+    #Create Webdriver    Chrome    options=${options}
+    Open Browser   ${LOGIN URL}       ${BROWSER}          options=${options}
+    Set Window Size    1920    1080
     Set Selenium Speed  ${DELAY}
     Maximize Browser Window
     ${temp}=                        set variable        ${LOG LEVEL}

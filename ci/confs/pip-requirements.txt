@@ -4,3 +4,4 @@ robotframework-selenium2library
 robotframework-SikuliLibrary
 pyautogui
 python-xlib
+robotframework-xvfb

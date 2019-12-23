@@ -1,4 +1,4 @@
-# Matti Telenius       Dimenteq Oy     2018
+# Matti Telenius       Sitowise Oy     2019
 
 *** Settings ***
 Documentation     Regression testcases for ksr
@@ -67,7 +67,7 @@ Avaa ksr valitse karttataso
     click element        ${layers}
 
 Valitse kohde kartalta ja avaa taulukko nakyma
-    [Tags]            smoke
+    [Tags]            smoke1
     [Documentation]   Valitsee kunnan, tarkistaa sen taulukosta ja muokkaa sarakkeita
     Wait Until Element Is Enabled    ${workspace}     timeout=30
     wait until element is visible  css=[class='esri-view-root']
@@ -90,7 +90,7 @@ Valitse kohde kartalta ja avaa taulukko nakyma
     click element        css=[id='remove-selection']
 
 Aluevalinta kartalta suorakulmion avulla
-    [Tags]            smoke
+    [Tags]            smoke1
     [Documentation]   Valitse alue suorakulmio, lisää siihen puskurialue ja vertaa valittuja alueita
     run keyword and ignore error   click element        ${meas_rem}
     click element        ${select}
@@ -105,7 +105,7 @@ Aluevalinta kartalta suorakulmion avulla
     click element        ${select}
 
 Aluevalinta ympyra kanssa
-    [Tags]            smoke
+    [Tags]            smoke1
     [Documentation]   Valitse alue ympyra ja vertaa valittuja alueita, sekä tarkistaa taulusta tuloksen
     click element        ${select}
     click element        css=[id='draw-circle']
@@ -118,7 +118,7 @@ Aluevalinta ympyra kanssa
     click element        ${select}
 
 Haku ikkunan kaytto
-    [Tags]            smoke
+    [Tags]            smoke1
     [Documentation]   Hakee postinumeron perusteella ja tarkistaa taulusta että tulos on oikein
     click element        ${search}
     click element        xpath=.//label[contains(text(), 'Taso')]
@@ -142,7 +142,7 @@ Haku ikkunan kaytto
 
 
 Lisaa karttataso
-    [Tags]            smoke
+    [Tags]            smoke1
     [Documentation]   Lisää karttatason ja poistaa sen
     Click Element        ${layers}
     click element        xpath=.//div[button='Uusi taso']/button[1]
