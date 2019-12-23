@@ -52,7 +52,7 @@ class ModalFilter extends Component<Props, State> {
             handleSubmit: () => {
                 setColumns(columns);
             },
-            disabled: false,
+            disabled: columns.every(c => c.show === false),
             toggleModal: true,
         },
         {
