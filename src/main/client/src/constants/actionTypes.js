@@ -52,6 +52,7 @@ export const SET_ACTIVE_TABLE = 'SET_ACTIVE_TABLE';
 export const SET_COLUMNS = 'SET_COLUMNS';
 
 export const CLEAR_TABLE_DATA = 'CLEAR_TABLE_DATA';
+export const CLOSE_LAYER = 'CLOSE_LAYER';
 export const CLEAR_SEARCH_DATA = 'CLEAR_SEARCH_DATA';
 export const SET_EDITED_LAYER = 'SET_EDITED_LAYER';
 
