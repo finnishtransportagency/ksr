@@ -10,9 +10,21 @@ export const WrapperTabbedTable = styled.div`
     top: 0;
     white-space: nowrap;
     overflow: hidden;
+
+    & > div > div {
+        display: flex;
+    }
     
     @media only screen and (max-width: 768px) {
         width: 100%;
+    }
+`;
+
+export const ButtonWrapper = styled.div`
+    display: flex;
+
+    &:hover {
+        background: rgba(0,0,0,0.1);
     }
 `;
 
@@ -32,20 +44,26 @@ export const ButtonTabbedTableTab = styled(Button)`
     ${props => props.active && css`
         border-bottom: 5px solid;
     `}
+
+    &:hover {
+        background: unset;
+    }
 `;
 
 export const ButtonIcon = styled(Icon)`
     display: flex;
     justify-content: flex-end;
-    padding: 0;
-    margin: -40px 0 0 84px;
+    padding: 2px 4px 0 0;
+    height: 45px;
     background: transparent;
     box-shadow: unset;
-    font-size: 13px;
     color: #F1F1F1;
 
+    ${props => props.active && css`
+        border-bottom: 5px solid rgb(73,194,241);
+    `}
+
     &:hover {
-        background: transparent;
-        box-shadow: unset;
+        cursor: pointer;
     }
 `;
