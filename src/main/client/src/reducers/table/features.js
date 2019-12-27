@@ -17,6 +17,7 @@ import {
     SET_SINGLE_LAYER_GEOMETRY,
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
+    CLOSE_LAYER,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
@@ -178,6 +179,19 @@ export default (state: State = initialState, action: Action) => {
                     state.activeTable,
                 ),
             };
+        case CLOSE_LAYER:
+        return {
+            ...state,
+            layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
+            editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId)
+                .map(l => (l.id === `${action.layerId}.s`
+                    ? state.layers.find(a => a.id === `${action.layerId}.s`)
+                    : l)): Object[]),
+            activeTable: getActiveTable(
+                state.layers.filter(l => l.id !== action.layerId),
+                state.activeTable,
+            ),
+        };
         default:
             return state;
     }

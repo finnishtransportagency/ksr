@@ -254,6 +254,11 @@ export const clearTableData = () => ({
     type: types.CLEAR_TABLE_DATA,
 });
 
+export const closeTableTab = (layerId: string) => ({
+    type: types.CLOSE_LAYER,
+    layerId,
+});
+
 export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
     data,
