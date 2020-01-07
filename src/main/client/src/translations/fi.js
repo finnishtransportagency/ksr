@@ -119,6 +119,7 @@ const fi = {
     },
     modalExtractSelectedData: {
         title: 'Vie valitut kohteet toiseen paikkatietoformaattiin',
+        description: 'Toiminto kohdistuu vain aktiivisessa taulussa oleviin valittuihin kohteisiin.',
         submit: 'Vie',
         cancel: 'Peruuta',
         geodatabase: '.gdb',
