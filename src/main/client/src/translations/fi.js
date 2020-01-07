@@ -32,7 +32,7 @@ const fi = {
             lessThan: 'Pienempi kuin',
             not: 'Ei sisällä (täsmälleen)',
             notLike: 'Ei sisällä (osittain)',
-        }
+        },
     },
     reactTable: {
         previousText: 'Edellinen',
@@ -73,6 +73,7 @@ const fi = {
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
+        description: 'Suodatus kohdistuu vain aktiivisena olevaan tauluun.',
         selectAll: 'Valitse kaikki sarakkeet',
         selectNone: 'Tyhjennä valitut sarakkeet',
         submit: 'Suodata',
