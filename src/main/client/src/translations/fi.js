@@ -94,6 +94,7 @@ const fi = {
         all: 'Kaikki kohteet',
         selected: 'Valitut kohteet',
         title: 'CSV -tiedoston lataus',
+        description: 'CSV -tiedoston lataus kohdistuu vain aktiivisena olevaan tauluun.',
         cancel: 'Peruuta',
     },
     modalDeleteSelected: {
