@@ -216,7 +216,7 @@ class ReactTable extends Component<Props> {
                 onKeyPress={(evt) => {
                     if (contentEditable) preventKeyPress(evt, cellField);
                 }}
-                onBlur={(evt) => {
+                onInput={(evt) => {
                     if (contentEditable) {
                         const val = cellEditValidate(
                             evt.target.innerText,
