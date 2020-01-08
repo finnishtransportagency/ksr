@@ -25,22 +25,17 @@ const Checkbox = styled.label`
         cursor: pointer;
     }
     
-    ${props => props.layerAllView && css`
-        margin-bottom: 0;
-        
-        span {
-            top: ${props.subLayer ? '1px' : '1rem'};
-            left: 1rem;
-        }
-    `};
-    
+     ${props => props.layerAllView && css`
+         margin-bottom: 1rem;
+     `};
+
     input:checked ~ span {
         background-color: ${styles.colorMain};
-        
+
         ${props => props.layerAllView && css`
             background-color: ${styles.colorBackgroundLightSecondary};
         `};         
-    }
+     }
 `;
 
 Checkbox.Input = Input;
