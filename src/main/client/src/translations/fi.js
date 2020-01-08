@@ -86,7 +86,7 @@ const fi = {
     modalClearTableTab: {
         submit: 'Tyhjennä',
         cancel: 'Peruuta',
-        content: 'Haluatko tyhjentää valitsemasi tason taulukosta ja karttatasosta?',
+        content: 'Haluatko tyhjentää valitsemasi tason taulukosta?',
         info: 'Poista taso...',
     },
     modalDownloadCsv: {

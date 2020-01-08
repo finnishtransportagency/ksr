@@ -4,7 +4,12 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
 
 import ReactTableContainer from '../react-table/ReactTableContainer';
-import { WrapperTabbedTable, ButtonTabbedTableTab, ButtonIcon } from './styles';
+import {
+    WrapperTabbedTable,
+    ButtonWrapper,
+    ButtonTabbedTableTab,
+    ButtonIcon,
+} from './styles';
 import MapLayerTitle from '../../shared/MapLayerTitle';
 
 type Props = {
@@ -18,7 +23,7 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
-    deactivateLayer: Function,
+    closeTableTab: Function,
 };
 
 const TabbedTableView = ({
@@ -27,7 +32,7 @@ const TabbedTableView = ({
     setActiveTable,
     activeAdmin,
     showConfirmModal,
-    deactivateLayer,
+    closeTableTab,
 }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
@@ -39,35 +44,38 @@ const TabbedTableView = ({
             >
                 {
                     layers.map(l => (
-                        <ButtonTabbedTableTab
-                            admin={activeAdmin === l.id.replace('.s', '')}
-                            key={l.id}
-                            flat
-                            title={l.title}
-                            active={activeTable === l.id}
-                            onClick={() => {
-                                setActiveTable(l.id);
-                                if (document.getElementsByClassName('rtable-scroll-wrapper').length) {
-                                    document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
-                                    document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollLeft = 0;
-                                }
-                            }}
-                        >
-                            <MapLayerTitle layer={l} />
+                        <ButtonWrapper key={l.id}>
+                            <ButtonTabbedTableTab
+                                admin={activeAdmin === l.id.replace('.s', '')}
+                                flat
+                                title={l.title}
+                                active={activeTable === l.id}
+                                onClick={() => {
+                                    setActiveTable(l.id);
+                                    if (document.getElementsByClassName('rtable-scroll-wrapper').length) {
+                                        document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
+                                        document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollLeft = 0;
+                                    }
+                                }}
+                            >
+                                <MapLayerTitle layer={l} />
+                            </ButtonTabbedTableTab>
                             <ButtonIcon
                                 title={strings.modalClearTableTab.info}
+                                active={activeTable === l.id}
                                 onClick={() => {
                                     showConfirmModal(
                                         strings.modalClearTableTab.content,
                                         strings.modalClearTableTab.submit,
                                         strings.modalClearTableTab.cancel,
                                         () => {
-                                            deactivateLayer(l.id);
+                                            closeTableTab(l.id);
                                         },
                                     );
                                 }}
-                            >X</ButtonIcon>
-                        </ButtonTabbedTableTab>
+                                className="fas fa-times"
+                            />
+                        </ButtonWrapper>
                     ))
                 }
             </Scrollbars>
