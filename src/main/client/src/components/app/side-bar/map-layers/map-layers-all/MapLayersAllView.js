@@ -7,7 +7,7 @@ import SubLayerContainer from './sub-layer/SubLayerContainer';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import { nestedVal } from '../../../../../utils/nestedValue';
 import strings from '../../../../../translations';
-import { NoLayersFoundWrapper } from './styles';
+import { CheckboxWrapper, NoLayersFoundWrapper } from './styles';
 
 type Props = {
     layerGroups: Array<any>,
@@ -60,6 +60,7 @@ const MapLayersAllView = ({
                                             === ll))}
                                     />
                                 </LayerGroup.Loading>
+                                <CheckboxWrapper>
                                     <Checkbox htmlFor={lg.name} layerAllView>
                                         <Checkbox.Input
                                             hidden
@@ -103,6 +104,7 @@ const MapLayersAllView = ({
                                         />
                                         <Checkbox.Checkmark layerAllView />
                                     </Checkbox>
+                                </CheckboxWrapper>
                                 <div
                                     className="arrow-wrapper"
                                     role="checkbox"
