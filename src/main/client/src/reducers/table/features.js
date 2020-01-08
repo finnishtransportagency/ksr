@@ -180,18 +180,18 @@ export default (state: State = initialState, action: Action) => {
                 ),
             };
         case CLOSE_LAYER:
-        return {
-            ...state,
-            layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
-            editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId)
-                .map(l => (l.id === `${action.layerId}.s`
-                    ? state.layers.find(a => a.id === `${action.layerId}.s`)
-                    : l)): Object[]),
-            activeTable: getActiveTable(
-                state.layers.filter(l => l.id !== action.layerId),
-                state.activeTable,
-            ),
-        };
+            return {
+                ...state,
+                layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
+                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId)
+                    .map(l => (l.id === `${action.layerId}.s`
+                        ? state.layers.find(a => a.id === `${action.layerId}.s`)
+                        : l)): Object[]),
+                activeTable: getActiveTable(
+                    state.layers.filter(l => l.id !== action.layerId),
+                    state.activeTable,
+                ),
+            };
         default:
             return state;
     }

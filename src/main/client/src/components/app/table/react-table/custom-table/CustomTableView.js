@@ -8,8 +8,8 @@ type Props = {
 };
 
 const customTableStyle = {
-    minWidth : 'fit-content'
-}
+    minWidth: 'fit-content',
+};
 
 const CustomTableView = ({ children, className, ...rest }: Props) => (
     <div className="rt-rtable" role="grid" {...rest}>

@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import TabbedTableView from './TabbedTableView';
 
-import { closeTableTab, setActiveTable } from './../../../../reducers/table/actions';
+import { closeTableTab, setActiveTable } from '../../../../reducers/table/actions';
 import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
 
 const mapStateToProps = state => ({
@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
     },
     closeTableTab: (layerId) => {
         dispatch(closeTableTab(layerId));
-    }
+    },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabbedTableView);
