@@ -82,7 +82,7 @@ const fi = {
     modalClearTable: {
         submit: 'Tyhjennä',
         cancel: 'Peruuta',
-        content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
+        content: 'Haluatko tyhjentää kaikki taulut ja hakutulokset karttatasovalikosta?',
     },
     modalClearTableTab: {
         submit: 'Tyhjennä',
