@@ -13,7 +13,7 @@ Library                     XvfbRobot
 ${BROWSER}             Chrome
 #${BROWSER}             Firefox
 #${BROWSER}             headlesschrome
-${DELAY}               0.5
+${DELAY}               0.7
 #${LOGIN URL}           http://localhost:3000/
 ${LOGIN URL}           https://devtest.vayla.fi/ksr/
 ${username_input}      id=userNameInput
