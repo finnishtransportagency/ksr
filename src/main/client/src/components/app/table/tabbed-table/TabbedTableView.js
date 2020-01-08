@@ -4,7 +4,12 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
 
 import ReactTableContainer from '../react-table/ReactTableContainer';
-import { WrapperTabbedTable, ButtonWrapper, ButtonTabbedTableTab, ButtonIcon } from './styles';
+import {
+    WrapperTabbedTable,
+    ButtonWrapper,
+    ButtonTabbedTableTab,
+    ButtonIcon,
+} from './styles';
 import MapLayerTitle from '../../shared/MapLayerTitle';
 
 type Props = {
@@ -27,7 +32,7 @@ const TabbedTableView = ({
     setActiveTable,
     activeAdmin,
     showConfirmModal,
-    closeTableTab
+    closeTableTab,
 }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
@@ -55,7 +60,7 @@ const TabbedTableView = ({
                             >
                                 <MapLayerTitle layer={l} />
                             </ButtonTabbedTableTab>
-                             <ButtonIcon
+                            <ButtonIcon
                                 title={strings.modalClearTableTab.info}
                                 active={activeTable === l.id}
                                 onClick={() => {
