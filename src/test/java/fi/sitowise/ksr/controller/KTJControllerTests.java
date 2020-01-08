@@ -155,17 +155,23 @@ public class KTJControllerTests extends AuthControllerTestBase {
 
     @Test
     public void testGetPropertyPdfLinks() throws Exception {
-        String expectedJSON = "{\"registerunit\":[\"registeruniturl\"],\"map\":[\"mapurl\"],\"deed\":[\"deedurl\"],\"easement\":[\"easementurl\"]}";
-
+        // TODO: Disabled property PDF -query in KSR-448. 
+        //  Can be added back back after API -agreement has been finished.
         this.mockMvc.perform(
                 get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
                         .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
-        ).andExpect(status().isOk());
-
-        this.mockMvc.perform(
-                get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
-                        .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
-        ).andExpect(content().json(expectedJSON));
+        ).andExpect(status().isForbidden());
+        
+        //String expectedJSON = "{\"registerunit\":[\"registeruniturl\"],\"map\":[\"mapurl\"],\"deed\":[\"deedurl\"],\"easement\":[\"easementurl\"]}";
+        //this.mockMvc.perform(
+        //        get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
+        //                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
+        //).andExpect(status().isOk());
+        //
+        //this.mockMvc.perform(
+        //        get("/api/property/pdf/links?propertyIdentifier=123-45-67-89&language=fi")
+        //                .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
+        //).andExpect(content().json(expectedJSON));
     }
 
     @Test

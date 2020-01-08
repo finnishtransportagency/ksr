@@ -213,7 +213,6 @@ class ModalFeatureContracts extends Component<Props, State> {
                         nestedVal(contractLayer, ['id']),
                         [{ attributes: this.state.formOptions.editedFields }],
                         objectIdFieldName,
-                        undefined,
                         false,
                         false,
                     );

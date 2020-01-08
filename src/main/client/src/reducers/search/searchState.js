@@ -11,7 +11,6 @@ type State = {
     textSearch: string,
     searchFieldValues: Array<Object>,
     optionsField: Array<Object>,
-    optionsExpression: Array<Object>,
     fetching: boolean,
     suggestions: Array<string>,
     suggestionsActive: boolean,
@@ -33,28 +32,6 @@ const initialState = {
     textSearch: '',
     searchFieldValues: [],
     optionsField: [],
-    optionsExpression: [
-        {
-            value: '%',
-            label: '%',
-        },
-        {
-            value: '<=',
-            label: '<=',
-        },
-        {
-            value: '>=',
-            label: '>=',
-        },
-        {
-            value: '=',
-            label: '=',
-        },
-        {
-            value: '!=',
-            label: '!=',
-        },
-    ],
     fetching: false,
     suggestions: [],
     suggestionsActive: true,

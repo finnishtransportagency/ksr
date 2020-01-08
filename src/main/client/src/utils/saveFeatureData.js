@@ -207,7 +207,6 @@ const handlePopupUpdate = (
  * @param {string} layerId string id of the corresponding layer.
  * @param {Object[]} features Array of features.
  * @param {string} idFieldName Name of identifier field.
- * @param {number} [objectId] Id of feature.
  * @param {boolean} [hideToast] Show saving data toast or not.
  * @param {boolean} [selected] Is the feature selected on the table.
  */
@@ -217,7 +216,6 @@ const saveData = async (
     layerId: string,
     features: Object[],
     idFieldName: string,
-    objectId?: number,
     hideToast?: boolean,
     selected?: boolean,
 ) => {
@@ -233,11 +231,11 @@ const saveData = async (
                     res = await addFeatures(layerId, params.toString());
                     await handleSaveResponse(res, layer, hideToast);
                     if (nestedVal(tableLayer, ['type']) === 'agfl'
-                        && res && res.addResults && res.addResults.length > 0) {
+                        && nestedVal(res, ['addResults', 'length']) > 0) {
                         store.dispatch(addUpdateLayers(
                             layerId,
                             idFieldName,
-                            objectId || res.addResults[0].objectId,
+                            res.addResults[0].objectId,
                             selected,
                         ));
                     }
@@ -251,18 +249,18 @@ const saveData = async (
             case 'update': {
                 let layerToUpdated = null;
                 try {
-                    const featureInTable = tableLayer
-                        && tableLayer.data.some(f => f._id === objectId);
                     const res = await updateFeatures(layerId, params.toString());
                     layerToUpdated = await handleUpdateResponse(res, layerId, layer, hideToast);
                     await handlePopupUpdate(view, layerId, idFieldName, layerToUpdated.features);
-                    if (featureInTable && nestedVal(layerToUpdated, ['features', 'length']) && objectId) {
-                        store.dispatch(addUpdateLayers(
-                            layerId,
-                            idFieldName,
-                            objectId,
-                            selected,
-                        ));
+                    if (nestedVal(layerToUpdated, ['features', 'length'])) {
+                        layerToUpdated.features.forEach((objectId: number) => {
+                            store.dispatch(addUpdateLayers(
+                                layerId,
+                                idFieldName,
+                                objectId,
+                                selected,
+                            ));
+                        });
                     }
                 } catch (err) {
                     store.dispatch(handleFailedEdit('update', [layerId, params.toString()]));
@@ -385,23 +383,13 @@ const saveEditedFeatureData = (
 
             const layerId = ed.id.replace('.s', '');
             const idFieldNameWithoutLayerId = ed._idFieldName;
-            let objectId = 0;
-            if (nestedVal(view, ['popup', 'viewModel', 'features'])
-                && view.popup.viewModel.features.length > 0) {
-                const currentData = ed.data.find(d => (
-                    d._id === view.popup.viewModel.features[0].attributes[ed._idFieldName]
-                ));
-                if (currentData) {
-                    objectId = currentData._id;
-                }
-            }
 
             const promisesAddressField = features.map(feature => (
                 createAddressFields(feature, featureType, addressField)
             ));
 
             return Promise.all(promisesAddressField)
-                .then(r => save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId, objectId));
+                .then(r => save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId));
         });
         return Promise.all(promises);
     }

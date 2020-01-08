@@ -9,6 +9,7 @@ import { WrapperReactTableNoTable, TableSelect, TableInput } from './styles';
 import strings from '../../../../translations';
 import { toISODate, toDisplayDate } from '../../../../utils/date';
 import { getCodedValue } from '../../../../utils/parseFeatureData';
+import { TextInput } from '../../../ui/elements';
 
 type Props = {
     fetching: boolean,
@@ -17,6 +18,7 @@ type Props = {
         data: Array<Object>,
         columns: Array<Object>,
     },
+    setRowFilter: Function,
     toggleSelection: Function,
     selectAll: boolean,
     toggleSelectAll: Function,
@@ -32,6 +34,7 @@ class ReactTable extends Component<Props> {
     constructor(props: Props) {
         super(props);
 
+        this.renderFilter = this.renderFilter.bind(this);
         this.renderEditable = this.renderEditable.bind(this);
         this.toggleSelection = this.toggleSelection.bind(this);
     }
@@ -112,7 +115,8 @@ class ReactTable extends Component<Props> {
         return activeAdminTool === activeLayer.id
             && activeLayer._source !== 'shapefile'
             && activeLayer.layerPermission.updateLayer
-            && cellField.editable;
+            && cellField.editable
+            && activeLayer.updaterField !== cellField.name;
     };
 
     toggleSelection = (id: string, shiftKey: string, row: Object) => {
@@ -123,13 +127,12 @@ class ReactTable extends Component<Props> {
     renderSelect = (cellField: Object, content: any, cellInfo: Object) => {
         const { setEditedLayer, layerFeatures } = this.props;
         const { data } = layerFeatures;
-
-        const options = cellField.domain.codedValues.map(v => (
-            <option key={v.code} value={v.code}>{v.name}</option>
-        )).concat([
-            // Add empty option for empty and null values
-            <option key="-" value="">--</option>,
-        ]);
+        // Add empty option for empty and null values
+        const options = [<option key="-" value="" />].concat(
+            cellField.domain.codedValues.map(v => (
+                <option key={v.code} value={v.code}>{v.name}</option>
+            )),
+        );
         return (
             <TableSelect
                 value={content === null ? '' : content}
@@ -144,6 +147,23 @@ class ReactTable extends Component<Props> {
                         setEditedLayer(val);
                     }
                 }}
+            >
+                {options}
+            </TableSelect>
+        );
+    };
+
+    renderSelectInput = (cellField: Object, cellInfo: Object, filter: any, onChange: Function) => {
+        // Add empty option for empty and null values
+        const options = [<option key="-" value="" />].concat(
+            cellField.domain.codedValues.map(v => (
+                <option key={v.code} value={v.code}>{v.name}</option>
+            )),
+        );
+        return (
+            <TableSelect
+                value={filter ? filter.value : ''}
+                onChange={event => onChange(event.target.value)}
             >
                 {options}
             </TableSelect>
@@ -216,6 +236,14 @@ class ReactTable extends Component<Props> {
         );
     };
 
+    renderInput = (cellField: Object, onChange: Function) => (
+        <TextInput
+            style={{ minHeight: '1rem' }}
+            type="text"
+            onChange={evt => onChange(evt.target.value)}
+        />
+    );
+
     renderEditable = (cellInfo: Object) => {
         const { layerList, activeTable } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
@@ -255,6 +283,36 @@ class ReactTable extends Component<Props> {
         return null;
     };
 
+    renderFilter = (cellInfo: Object, filter: any, onChange: Function) => {
+        const { layerList, activeTable } = this.props;
+        const activeLayer = layerList.find(l => l.id === activeTable);
+        const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+
+        if (activeLayer && activeLayer.fields) {
+            let cellField = activeLayer.fields
+                .find(f => `${activeTable}/${f.name}` === cellInfo.id);
+
+            if (cellField) {
+                if (originalLayer && originalLayer.fields) {
+                    // Get editable values for search layer fields
+                    cellField = originalLayer.fields.find(f => f.name === cellField.name);
+                }
+
+                if (cellField.domain
+                    && (cellField.domain.type === 'codedValue'
+                        || cellField.domain.type === 'coded-value')) {
+                    return this.renderSelectInput(cellField, cellInfo, filter, onChange);
+                }
+
+                return this.renderInput(
+                    cellField,
+                    onChange,
+                );
+            }
+        }
+        return null;
+    };
+
     render() {
         const {
             fetching,
@@ -262,6 +320,7 @@ class ReactTable extends Component<Props> {
             selectAll,
             toggleSelectAll,
             layerList,
+            setRowFilter,
         } = this.props;
 
         if (!layerFeatures) {
@@ -293,10 +352,12 @@ class ReactTable extends Component<Props> {
                 <ReactTableView
                     data={data}
                     toggleSelection={this.toggleSelection}
+                    setRowFilter={setRowFilter}
                     columns={tableColumns}
                     selectAll={selectAll}
                     toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
                     renderEditable={this.renderEditable}
+                    renderFilter={this.renderFilter}
                 />
             );
         }

@@ -35,10 +35,12 @@ class ModalFilter extends Component<Props, State> {
     };
 
     handleOnChange = (name: string) => {
-        const columns = [...this.state.columns];
-        const column = columns.find((obj => obj.Header === name));
-        column.show = !column.show;
-        this.setState({ columns });
+        const { columns } = this.state;
+        const newColumns = columns.map(c => ({
+            ...c,
+            show: c.Header === name ? !c.show : c.show,
+        }));
+        this.setState({ columns: newColumns });
     };
 
     render() {
@@ -47,10 +49,32 @@ class ModalFilter extends Component<Props, State> {
 
         const modalSubmit = [{
             text: strings.modalFilter.submit,
-            handleSubmit: () => { setColumns(columns); },
+            handleSubmit: () => {
+                setColumns(columns);
+            },
             disabled: false,
             toggleModal: true,
-        }];
+        },
+        {
+            text: columns.every(c => c.show === true)
+                ? strings.modalFilter.selectNone
+                : strings.modalFilter.selectAll,
+            handleSubmit: () => {
+                const cols = columns.every(c => c.show === true)
+                    ? columns.map(c => ({
+                        ...c,
+                        show: false,
+                    }))
+                    : columns.map(c => ({
+                        ...c,
+                        show: true,
+                    }));
+                this.setState({ columns: cols });
+            },
+            disabled: false,
+            toggleModal: false,
+        },
+        ];
 
         return (
             <ModalContainer

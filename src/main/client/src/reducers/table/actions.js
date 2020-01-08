@@ -235,6 +235,11 @@ export const deSelectSelected = () => ({
     type: types.DE_SELECT_SELECTED_FEATURES,
 });
 
+export const setRowFilter = (rows: Object[]) => ({
+    type: types.SET_ROW_FILTER,
+    rows,
+});
+
 export const toggleSelection = (feature: Object) => ({
     type: types.TOGGLE_SELECTION,
     feature,
@@ -247,6 +252,11 @@ export const toggleSelectAll = (layerId: string) => ({
 
 export const clearTableData = () => ({
     type: types.CLEAR_TABLE_DATA,
+});
+
+export const closeTableTab = (layerId: string) => ({
+    type: types.CLOSE_LAYER,
+    layerId,
 });
 
 export const setEditedLayer = (data: Array<Object>) => ({
@@ -327,7 +337,6 @@ export const addNonSpatialContentToTable = (
                     });
                 });
             }
-
             const layers = parseData(results, false).map((l) => {
                 if (l.id === layer.id) {
                     return {

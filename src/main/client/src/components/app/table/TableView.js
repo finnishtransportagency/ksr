@@ -145,6 +145,18 @@ const TableView = ({
             >
                 <i className="fas fa-file-export" />
             </Table.Button>
+            <Table.Button
+                title={strings.reactTable.downloadCsv}
+                tableOpen={isOpen}
+                disabled={!originalLayers.length}
+                onClick={
+                    originalLayers.length ? () => {
+                        setActiveModal('downloadCSV');
+                    }
+                        : null}
+            >
+                <i className="fas fa-file-csv" />
+            </Table.Button>
             {
                 activeAdminTool
                 && (

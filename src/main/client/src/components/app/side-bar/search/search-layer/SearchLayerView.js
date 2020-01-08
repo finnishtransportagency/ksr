@@ -24,7 +24,6 @@ type Props = {
     searchFieldValues: Array<Object>,
     textSearch: string,
     optionsField: Array<Object>,
-    optionsExpression: Array<Object>,
     fetching: boolean,
     suggestions: Array<string>,
     suggestionsActive: boolean,
@@ -44,7 +43,6 @@ const SearchLayerView = ({
     searchFieldValues,
     textSearch,
     optionsField,
-    optionsExpression,
     fetching,
     suggestions,
     suggestionsActive,
@@ -113,7 +111,6 @@ const SearchLayerView = ({
                     textSearch={textSearch}
                     handleChangeField={handleChangeField}
                     handleFieldBlur={handleFieldBlur}
-                    optionsExpression={optionsExpression}
                     handleRemoveField={handleRemoveField}
                     fetching={fetching}
                     suggestions={suggestions}

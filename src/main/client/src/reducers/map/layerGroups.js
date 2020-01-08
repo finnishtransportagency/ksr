@@ -53,6 +53,7 @@ type Layer = {
     styles: string,
     transparent: boolean,
     type: string,
+    updaterField: string,
     url: string,
     visible: boolean,
     _source: string,

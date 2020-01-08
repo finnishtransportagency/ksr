@@ -5,53 +5,73 @@ import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
 import {
-    colorMainDark,
-    colorMain,
-    colorTableEdited,
-    colorTableEditedDarker,
+    colorMain, colorMainDark, colorTableEdited, colorTableEditedDarker,
 } from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
+import { toDisplayDate } from '../../../../utils/date';
 
 type Props = {
     data: Array<any>,
     columns: Array<any>,
+    setRowFilter: Function,
     toggleSelection: Function,
     toggleSelectAll: Function,
     selectAll: boolean,
     renderEditable: Function,
+    renderFilter: Function,
 };
 
 const ReactTableView = ({
     data,
     columns,
+    setRowFilter,
     toggleSelection,
     toggleSelectAll,
     selectAll,
     renderEditable,
+    renderFilter,
 }: Props) => (
-    <WrapperReactTable columns={columns}>
+    <WrapperReactTable
+        columns={columns}
+    >
         <SelectableTable
             className="-striped -highlight"
+            onFetchData={(state, instance) => {
+                const currentRecords = instance.getResolvedState().sortedData;
+                const array = [];
+                currentRecords.map(r => array.push({
+                    id: r._original._id,
+                    layerId: r._original._layerId,
+                }));
+                setRowFilter(array);
+            }}
             data={data}
             TableComponent={CustomTableView}
+            filterable
             columns={columns.map(c => ({
                 ...c,
                 Cell: renderEditable,
-            }))}
-            filterable
-            defaultFilterMethod={(filter, row) => {
-                const id = filter.pivotId || filter.id;
-                if (row._original[id] !== null && typeof row._original[id] === 'string') {
-                    return (row._original[id] !== undefined
-                        ? String(row._original[id].toLowerCase())
-                            .includes(filter.value.toLowerCase())
-                        : true);
-                }
+                filterMethod: (filter, row) => {
+                    const id = filter.pivotId || filter.id;
+                    if (row._original[id] !== null && typeof row._original[id] === 'string') {
+                        if (row._original[id] !== undefined) {
+                            return !!String(row._original[id].toLowerCase())
+                                .includes(filter.value.toLowerCase());
+                        }
+                        return true;
+                    }
 
-                return (row._original[id] !== undefined
-                    ? String(row._original[id]).includes(filter.value)
-                    : true);
-            }}
+                    if (row._original[id] !== null && c.className === 'date'
+                        && toDisplayDate(row._original[id]) !== null) {
+                        return toDisplayDate(row._original[id]).includes(filter.value);
+                    }
+                    if (row._original[id] !== undefined) {
+                        return !!String(row._original[id]).includes(filter.value);
+                    }
+                    return true;
+                },
+                Filter: ({ column, filter, onChange }) => renderFilter(column, filter, onChange),
+            }))}
             style={{
                 height: '100%',
                 textAlign: 'center',

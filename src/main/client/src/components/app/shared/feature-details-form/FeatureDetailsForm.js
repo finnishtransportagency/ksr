@@ -49,10 +49,12 @@ const FeatureDetailsForm = (props: Props) => {
                 ...field,
                 hidden: field.type === 'esriFieldTypeOID'
                     || !field.editable
+                    || field.name === layer.updaterField
                     || field.name === 'CONTRACT_UUID'
                     || (layer.contractIdField !== layer.relationColumnOut
                         && layer.relationColumnOut === field.name)
-                    || (formType === 'edit' && !field.nullable),
+                    || (formType === 'edit'
+                        && !field.nullable),
             }))
             .map((field) => {
                 if (field.type === 'esriFieldTypeDate') {

@@ -35,7 +35,6 @@ const setup = (prop) => {
                 queryText: 'Test 123',
             }],
             optionsField: [{}],
-            optionsExpression: [{}],
             fetching: false,
             suggestions: [],
         },

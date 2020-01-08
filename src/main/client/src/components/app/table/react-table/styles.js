@@ -17,11 +17,19 @@ export const WrapperReactTable = styled.div`
         .rt-thead.-header {
             background: ${styles.colorBackgroundDarkSecondary};
             padding-top: 4px;
+
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
+                min-width: 30px;
+            };
         };
         
         .rt-th {
             background: ${styles.colorBackgroundDarkSecondary};
             min-height: 35px;
+            min-width: 30px;
             border-bottom: none;
             border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
         };
@@ -41,6 +49,7 @@ export const WrapperReactTable = styled.div`
         .rt-resizable-header {
             color: ${styles.colorFontLight};
             padding: 0.5rem;
+            min-width: 130px;
         };
         
         .rt-thead.-filters {
@@ -49,6 +58,17 @@ export const WrapperReactTable = styled.div`
             
             .rt-tr, .rt-th {
                 min-height: 42px;
+            };
+
+            .rt-th {
+                min-width: 130px;
+            };
+
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
+                min-width: 30px;
             };
             
             input {
@@ -67,6 +87,7 @@ export const WrapperReactTable = styled.div`
                 text-align: left;
                 border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
                 height: 42px;
+                min-width: 130px;
                 background-color: transparent;
                 
                 div {
@@ -87,6 +108,13 @@ export const WrapperReactTable = styled.div`
                 border: none;
                 background: ${styles.colorBackgroundLight};
                 max-height: 42px;
+            };
+
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
+            .rt-th.rthfc-th-fixed.rthfc-th-fixed-left.rthfc-th-fixed-left-last,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
+            .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
+                min-width: 30px;
             };
         };
         

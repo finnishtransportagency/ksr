@@ -25,6 +25,14 @@ const fi = {
         allActiveLayers: 'Kaikki aktiiviset tasot',
         layer: 'Taso',
         property: 'Kiinteistö',
+        expression: {
+            exact: 'Täsmälleen',
+            like: 'Sisältää osittain',
+            greaterThan: 'Suurempi kuin',
+            lessThan: 'Pienempi kuin',
+            not: 'Ei sisällä (täsmälleen)',
+            notLike: 'Ei sisällä (osittain)',
+        }
     },
     reactTable: {
         previousText: 'Edellinen',
@@ -36,6 +44,7 @@ const fi = {
         rowsText: 'riviä',
         filter: 'Suodata sarakkeita',
         clearTableData: 'Valintojen ja hakujen tyhjennys',
+        downloadCsv: 'Lataa CSV',
         deleteSelected: 'Poista kohteita',
         saveEditedData: 'Tallenna muutokset',
         bufferSelectedData: 'Puskurialue valituille kohteille',
@@ -64,6 +73,8 @@ const fi = {
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
+        selectAll: 'Valitse kaikki sarakkeet',
+        selectNone: 'Tyhjennä valitut sarakkeet',
         submit: 'Suodata',
         cancel: 'Peruuta',
     },
@@ -71,6 +82,18 @@ const fi = {
         submit: 'Tyhjennä',
         cancel: 'Peruuta',
         content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
+    },
+    modalClearTableTab: {
+        submit: 'Tyhjennä',
+        cancel: 'Peruuta',
+        content: 'Haluatko tyhjentää valitsemasi tason taulukosta?',
+        info: 'Poista taso...',
+    },
+    modalDownloadCsv: {
+        all: 'Kaikki kohteet',
+        selected: 'Valitut kohteet',
+        title: 'CSV -tiedoston lataus',
+        cancel: 'Peruuta',
     },
     modalDeleteSelected: {
         title: 'Kohteiden poistaminen',
@@ -241,7 +264,7 @@ const fi = {
         drawPoint: 'Piirrä piste',
         drawText: 'Lisää tekstiä',
         drawErase: 'Poista yksittäinen piirros',
-        selectTool: 'Piirtotyökalut',
+        selectTool: 'Piirto- ja mittaustyökalut',
         removeDraw: 'Poista piirrokset',
         toggleMeasurements: 'Näytä/piilota mittaustulokset',
     },

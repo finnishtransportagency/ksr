@@ -1,7 +1,6 @@
 // @flow
-import { fetchPropertyInfo, fetchPropertyPdfLinks } from '../../api/search/searchProperty';
+import { fetchPropertyInfo } from '../../api/search/searchProperty';
 import * as types from '../../constants/actionTypes';
-import strings from '../../translations';
 import { abortFetch } from '../../utils/abortFetch';
 import { drawPropertyArea, removeGraphicsFromMap } from '../../utils/map';
 
@@ -75,49 +74,51 @@ export const setPropertyInfo = (
                     })),
                 });
 
-                const allowedUsers = [
-                    'KSR_ROLE_ADMIN',
-                    'KSR_ROLE_UPDATER',
-                    'KSR_ROLE_EXTERNAL_UPDATER',
-                    'KSR_ROLE_NAMED_USER',
-                ];
-                const hasPermission = allowedUsers.some(allowedUser => (
-                    authorities.find(auth => auth.authority === allowedUser)));
-
                 drawPropertyArea(view, result.features);
 
-                result.features.forEach((property) => {
-                    if (hasPermission) {
-                        dispatch({
-                            type: types.SET_PROPERTY_INFO_LINKS,
-                        });
-
-                        const { propertyIdentifier } = property.properties;
-                        fetchPropertyPdfLinks(propertyIdentifier, strings.getLanguage())
-                            .then((linksRes) => {
-                                if (linksRes) {
-                                    const linksResApiUrls = {
-                                        deed: linksRes.deed,
-                                        easement: linksRes.easement,
-                                        map: linksRes.map,
-                                        registerunit: linksRes.registerunit,
-                                    };
-
-                                    dispatch({
-                                        type: types.SET_PROPERTY_INFO_LINKS_FULFILLED,
-                                        links: linksResApiUrls,
-                                        propertyIdentifier,
-                                    });
-                                } else {
-                                    dispatch({
-                                        type: types.SET_PROPERTY_INFO_LINKS_REJECTED,
-                                        propertyIdentifier,
-                                    });
-                                }
-                            })
-                            .catch(error => console.log(error));
-                    }
-                });
+                // TODO: Disabled property PDF -query in KSR-448. 
+                //  Can be added back back after API -agreement has been finished.
+                // const allowedUsers = [
+                //     'KSR_ROLE_ADMIN',
+                //     'KSR_ROLE_UPDATER',
+                //     'KSR_ROLE_EXTERNAL_UPDATER',
+                //     'KSR_ROLE_NAMED_USER',
+                // ];
+                // const hasPermission = allowedUsers.some(allowedUser => (
+                //     authorities.find(auth => auth.authority === allowedUser)));
+                //
+                // result.features.forEach((property) => {
+                //     if (hasPermission) {
+                //         dispatch({
+                //             type: types.SET_PROPERTY_INFO_LINKS,
+                //         });
+                //
+                //         const { propertyIdentifier } = property.properties;
+                //         fetchPropertyPdfLinks(propertyIdentifier, strings.getLanguage())
+                //             .then((linksRes) => {
+                //                 if (linksRes) {
+                //                     const linksResApiUrls = {
+                //                         deed: linksRes.deed,
+                //                         easement: linksRes.easement,
+                //                         map: linksRes.map,
+                //                         registerunit: linksRes.registerunit,
+                //                     };
+                //
+                //                     dispatch({
+                //                         type: types.SET_PROPERTY_INFO_LINKS_FULFILLED,
+                //                         links: linksResApiUrls,
+                //                         propertyIdentifier,
+                //                     });
+                //                 } else {
+                //                     dispatch({
+                //                         type: types.SET_PROPERTY_INFO_LINKS_REJECTED,
+                //                         propertyIdentifier,
+                //                     });
+                //                 }
+                //             })
+                //             .catch(error => console.log(error));
+                //     }
+                // });
             } else {
                 dispatch({
                     type: types.SET_PROPERTY_INFO_REJECTED,

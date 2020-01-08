@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { parseQueryString } from '../../../../../utils/search/parseQueryString';
+import { searchFieldIsNumber, parseQueryString } from '../../../../../utils/search/parseQueryString';
 import SearchLayerView from './SearchLayerView';
 import { fetchSearchSuggestions } from '../../../../../api/search/searchQuery';
 
@@ -17,7 +17,6 @@ type Props = {
         textSearch: string,
         searchFieldValues: Array<Object>,
         optionsField: any,
-        optionsExpression: Array<Object>,
         fetching: boolean,
         suggestions: Array<string>,
         suggestionsActive: boolean,
@@ -100,7 +99,9 @@ class SearchLayer extends Component<Props, State> {
             id: searchFieldValues.length,
             name: field.name,
             label: field.label,
-            queryExpression: '%',
+            queryExpression: searchFieldIsNumber(field.type)
+                ? '='
+                : 'LIKE',
             queryText: '',
             type: field.type,
         };
@@ -253,7 +254,6 @@ class SearchLayer extends Component<Props, State> {
             searchFieldValues,
             textSearch,
             optionsField,
-            optionsExpression,
             fetching,
             suggestions,
             suggestionsActive,
@@ -274,7 +274,6 @@ class SearchLayer extends Component<Props, State> {
                 searchFieldValues={searchFieldValues}
                 textSearch={textSearch}
                 optionsField={optionsField}
-                optionsExpression={optionsExpression}
                 fetching={fetching}
                 suggestions={suggestions}
                 suggestionsActive={suggestionsActive}
