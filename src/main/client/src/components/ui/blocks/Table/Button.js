@@ -10,6 +10,8 @@ const Button = styled.div`
     font-size: 1.25em;
     left: 0;
     width: 60px;
+    box-sizing: border-box;
+    border-top: 3px solid transparent;
     
     &:hover {
         cursor: pointer;
@@ -34,6 +36,26 @@ const Button = styled.div`
             background: ${styles.colorBackgroundDark};
         };
     `};
+    
+    ${props => props.activeLayer && css`
+        border-top: 3px solid ${styles.colorMain};
+    `};
+    
+    ${props => props.admin && css`
+        border-top: 3px solid ${styles.colorTableEdited};
+    `};
+    
+    @media only screen and (max-width: 768px) {
+        border-top: 2px solid transparent;
+    
+        ${props => props.activeLayer && css`
+            border-top: 2px solid ${styles.colorMain};
+        `};
+        
+        ${props => props.admin && css`
+            border-top: 2px solid ${styles.colorTableEdited};
+        `};
+    }
 `;
 
 export default Button;
