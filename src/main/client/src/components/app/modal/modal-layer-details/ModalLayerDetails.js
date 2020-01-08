@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
-import esriLoader from 'esri-loader';
 import { createAddressFields } from '../../../../utils/geoconvert/createAddressFields';
 import strings from '../../../../translations';
 import save from '../../../../utils/saveFeatureData';
@@ -160,31 +159,21 @@ class ModalFilter extends Component<Props, State> {
     setFormOptions = (
         formOptions: Object,
     ) => {
-        esriLoader
-            .loadModules([
-                'esri/geometry/geometryEngine',
-            ])
-            .then(([
-                geometryEngine,
-            ]) => {
-                if (formOptions.submitDisabled) {
-                    const { sketchViewModel } = this.props;
-                    if (typeof sketchViewModel.updateGraphics.items[0].geometry !== 'undefined') {
-                        if (!geometryEngine.equals(
-                            sketchViewModel.updateGraphics.items[0].geometry,
-                            sketchViewModel.updateGraphics.items[0].initialGeometry,
-                        )) {
-                            formOptions.submitDisabled = false;
-                        }
-                    }
+        if (formOptions.submitDisabled) {
+            const { sketchViewModel } = this.props;
+            if (typeof sketchViewModel.updateGraphics.items[0].geometry !== 'undefined') {
+                if (JSON.stringify(sketchViewModel.updateGraphics.items[0].geometry)
+                !== JSON.stringify(sketchViewModel.updateGraphics.items[0].initialGeometry)) {
+                    formOptions.submitDisabled = false;
                 }
-                this.setState({
-                    formOptions: {
-                        editedFields: formOptions.editedFields,
-                        submitDisabled: formOptions.submitDisabled,
-                    },
-                });
-            });
+            }
+        }
+        this.setState({
+            formOptions: {
+                editedFields: formOptions.editedFields,
+                submitDisabled: formOptions.submitDisabled,
+            },
+        });
     };
 
     render() {
