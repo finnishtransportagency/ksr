@@ -112,11 +112,15 @@ const fi = {
         content: 'Haluatko tallentaa taulukkoon tekemät muutokset?',
     },
     modalBufferSelectedData: {
-        title: 'Määritä valittujen kohteiden puskurialue',
-        singleTitle: 'Määritä valitun kohteen puskurialue',
+        title: 'Määritä kohteiden puskurialue',
         submit: 'Laske',
         cancel: 'Peruuta',
-        bufferLabel: 'Anna puskurialueen koko metreinä',
+        bufferLabel: 'Puskurialueen koko metreinä',
+        tableLabel: 'Taulut',
+        featureLabel: 'Kohteet',
+        description: 'Määritä puskurialue halutuille kohteille. Puskurointi kohdistuu oletuksena kaikkiin taulussa oleviin kohteisiin.',
+        checkTable: 'Vain aktiivinen taulu',
+        checkFeature: 'Vain valitut kohteet',
     },
     modalExtractSelectedData: {
         title: 'Vie valitut kohteet toiseen paikkatietoformaattiin',

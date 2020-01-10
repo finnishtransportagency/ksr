@@ -1,5 +1,5 @@
 // @flow
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import TableButtonsView from './TableButtonsView';
 
 type Props = {
@@ -30,6 +30,7 @@ type Props = {
     activeAdminTool: string,
     currentTabAdmin: boolean,
     setButtonAmount: (buttonAmount: ?number) => void,
+    viewGraphics: Object[],
 };
 
 const TableButtons = ({
@@ -55,7 +56,11 @@ const TableButtons = ({
     activeAdminTool,
     currentTabAdmin,
     setButtonAmount,
+    viewGraphics,
 }: Props) => {
+    const [bufferExists, setBufferExists] = useState(false);
+
+    /** Update redux prop that keeps track of amount of visible buttons on table */
     useEffect(() => {
         const tableButtonWrapper = document.getElementById('table-button--wrapper');
         const tableButtonAmount = tableButtonWrapper !== null
@@ -64,6 +69,25 @@ const TableButtons = ({
 
         setButtonAmount(tableButtonAmount);
     }, [currentTabAdmin]);
+
+    /** Set buffer as existing, if buffer added to the view */
+    useEffect(() => {
+        setBufferExists(viewGraphics.some(graphic => graphic && graphic.id === 'buffer'));
+    }, [viewGraphics.length]);
+
+    /** Remove buffer, if no layers open on table */
+    useEffect(() => {
+        if (view && originalLayers && originalLayers.length === 0) {
+            view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+            setBufferExists(false);
+        }
+    }, [originalLayers]);
+
+    /** Remove buffer graphics from the view */
+    const handleClearBuffer = () => {
+        view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+        setBufferExists(false);
+    };
 
     return (
         <TableButtonsView
@@ -88,6 +112,8 @@ const TableButtons = ({
             view={view}
             activeAdminTool={activeAdminTool}
             currentTabAdmin={currentTabAdmin}
+            bufferExists={bufferExists}
+            handleClearBuffer={handleClearBuffer}
         />
     );
 };

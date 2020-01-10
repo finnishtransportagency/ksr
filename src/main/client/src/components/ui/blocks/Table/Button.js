@@ -45,6 +45,10 @@ const Button = styled.div`
         border-top: 3px solid ${styles.colorTableEdited};
     `};
     
+    ${props => props.active && css`
+        color: ${styles.colorMain};
+    `};
+    
     @media only screen and (max-width: 768px) {
         border-top: 2px solid transparent;
     

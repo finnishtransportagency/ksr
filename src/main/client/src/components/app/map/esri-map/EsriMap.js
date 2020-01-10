@@ -96,7 +96,7 @@ class EsriMap extends Component<Props> {
             }
 
             if (this.props.layers.length < 1) {
-                setBuffer(view, [], 0);
+                setBuffer(view, [], [], 0);
             }
         }
 

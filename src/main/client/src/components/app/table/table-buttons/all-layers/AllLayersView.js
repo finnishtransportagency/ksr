@@ -15,6 +15,8 @@ type Props = {
     ) => void,
     clearTableData: Function,
     view: Object,
+    bufferExists: boolean,
+    handleClearBuffer: Function,
 };
 
 /** Table actions that can target all open tables */
@@ -25,6 +27,8 @@ const AllLayersView = ({
     showConfirmModal,
     clearTableData,
     view,
+    bufferExists,
+    handleClearBuffer,
 }: Props) => (
     <Fragment>
         <Table.Button
@@ -49,11 +53,13 @@ const AllLayersView = ({
         <Table.Button
             title={strings.reactTable.bufferSelectedData}
             tableOpen={isOpen}
-            disabled={!geometryDataSelected}
+            disabled={!originalLayers.length}
+            active={bufferExists}
             onClick={
-                geometryDataSelected ? () => {
-                    setActiveModal('bufferSelectedData');
-                } : null}
+                bufferExists
+                    ? () => { if (originalLayers.length) handleClearBuffer(); }
+                    : () => { if (originalLayers.length) setActiveModal('bufferSelectedData'); }
+            }
         >
             <i className="far fa-dot-circle" />
         </Table.Button>
