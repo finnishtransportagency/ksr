@@ -11,15 +11,16 @@ import {
 import ModalSingleFeatureDetailsView from './modal-single-feature-details/ModalSingleFeatureDetailsView';
 import { fetchContractDetails } from '../../../../api/contract/contractDetails';
 import strings from '../../../../translations';
-import { getSingleLayerFields } from '../../../../utils/map';
+import { getSingleLayerFields, zoomToFeatures } from '../../../../utils/map';
 import { unlinkFeatureFromContract } from '../../../../utils/contracts/contracts';
+import { nestedVal } from '../../../../utils/nestedValue';
+import { queryFeatures } from '../../../../api/search/searchQuery';
 
 type Props = {
     contractLayer: Object,
     contractObjectId: number,
     source: string,
     layerList: Object[],
-    layerGroups: Object[],
     setActiveModal: (activeModal: string) => void,
     updateLayerFields: (layerId: number, fields: Object[]) => void,
     activeAdmin: string,
@@ -39,7 +40,6 @@ const ModalContractDetails = (props: Props) => {
     const {
         source,
         layerList,
-        layerGroups,
         contractLayer,
         contractObjectId,
         updateLayerFields,
@@ -126,6 +126,28 @@ const ModalContractDetails = (props: Props) => {
         setActiveFeature({
             layerName, layerId, featureId, objectId,
         });
+    };
+
+    /**
+     * Handle single feature's locate click.
+     *
+     * @param {string} layerId Layer's Id.
+     * @param {number} objectId Feature's object Id.
+     */
+    const handleFeatureLocateClick = async (layerId: string, objectId: number) => {
+        const objectIdFieldName = nestedVal(
+            contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+            ['name'],
+        );
+        const foundObject = await queryFeatures(
+            parseInt(layerId, 10),
+            `${objectIdFieldName} = '${objectId}'`,
+            null,
+        );
+        if (Array.isArray(foundObject.features) && foundObject.features.length > 0) {
+            await zoomToFeatures(view, foundObject.features);
+        }
+        handleModalCancel();
     };
 
     /**
@@ -262,15 +284,13 @@ const ModalContractDetails = (props: Props) => {
                     <ModalContractDetailsView
                         contractLayerId={contractLayer.id}
                         detailList={detailList}
-                        layerGroups={layerGroups}
                         fetchingDetailList={fetchingDetailList}
                         activeAdmin={detailList.some(layer => layer.id === activeAdmin)}
                         handleFeatureDetailsClick={handleFeatureDetailsClick}
                         handleFeatureEditClick={handleFeatureEditClick}
                         handleFeatureUnlinkClick={handleFeatureUnlinkClick}
                         tableFeaturesLayers={tableFeaturesLayers}
-                        view={view}
-                        handleModalCancel={handleModalCancel}
+                        handleFeatureLocateClick={handleFeatureLocateClick}
                     />
                 )}
                 {activeView === 'singleFeatureDetails' && (

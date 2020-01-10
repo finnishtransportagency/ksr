@@ -8,10 +8,10 @@ import Contract from '../../../../ui/blocks/Contract';
 const minProps = {
     contractLayerId: '123',
     detailList: [],
-    layerGroups: [],
     fetchingDetailList: true,
     editPermission: true,
     handleFeatureDetailsClick: jest.fn(),
+    handleFeatureLocateClick: jest.fn(),
     handleFeatureUnlinkClick: jest.fn(),
     handleFeatureEditClick: jest.fn(),
 };
@@ -34,7 +34,6 @@ describe('<ModalContractDetailsView />', () => {
         const props = {
             ...minProps,
             detailList: [],
-            layerGroups: [],
             handleFeatureDetailsClick: jest.fn(),
             fetchingDetailList: false,
         };
