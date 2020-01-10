@@ -74,6 +74,7 @@ const TabbedTableView = ({
                                     );
                                 }}
                                 className="fas fa-times"
+                                admin={activeAdmin === l.id.replace('.s', '')}
                             />
                         </ButtonWrapper>
                     ))
