@@ -161,7 +161,7 @@ class ModalFilter extends Component<Props, State> {
     ) => {
         if (formOptions.submitDisabled) {
             const { sketchViewModel } = this.props;
-            if (typeof sketchViewModel.updateGraphics.items[0].geometry !== 'undefined') {
+            if (sketchViewModel.updateGraphics.items.length > 0) {
                 if (JSON.stringify(sketchViewModel.updateGraphics.items[0].geometry)
                 !== JSON.stringify(sketchViewModel.updateGraphics.items[0].initialGeometry)) {
                     formOptions.submitDisabled = false;
