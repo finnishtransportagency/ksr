@@ -7,18 +7,17 @@ import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
 
 const mapStateToProps = (state) => {
     const { layerId, contractObjectId, source } = state.modal.activeModal.data;
-    const { layerList, layerGroups } = state.map.layerGroups;
+    const { layerList } = state.map.layerGroups;
     const { layerId: activeAdmin } = state.adminTool.active;
     const contractLayer = layerList.find(l => l.id === layerId);
     const tableFeaturesLayers = state.table.features.layers;
-    const view = state.map.mapView.view;
+    const { view } = state.map.mapView;
 
     return {
         contractLayer,
         contractObjectId,
         source,
         layerList,
-        layerGroups,
         activeAdmin,
         tableFeaturesLayers,
         view,
