@@ -2,7 +2,6 @@
 import React, { Fragment } from 'react';
 import Table from '../../../../ui/blocks/Table';
 import strings from '../../../../../translations';
-import { zoomToFeatures } from '../../../../../utils/map';
 
 type Props = {
     isOpen: boolean,
@@ -61,11 +60,11 @@ const AllLayersView = ({
         <Table.Button
             title={strings.reactTable.zoomToSelected}
             tableOpen={isOpen}
-            disabled={!geometryDataSelected}
+            disabled={!originalLayers.length}
             onClick={
-                geometryDataSelected ? async () => {
-                    await zoomToFeatures(view, geometryData);
-                } : null}
+                originalLayers.length
+                    ? async () => { setActiveModal('zoomToFeatures'); }
+                    : null}
         >
             <i className="fas fa-search-plus" />
         </Table.Button>

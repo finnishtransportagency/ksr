@@ -49,7 +49,7 @@ const fi = {
         saveEditedData: 'Tallenna muutokset',
         bufferSelectedData: 'Puskurialue valituille kohteille',
         extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
-        zoomToSelected: 'Kohdista valittuihin kohteisiin',
+        zoomToSelected: 'Kohdista haluamiin kohteisiin',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',
@@ -426,6 +426,16 @@ const fi = {
             invalidFormat: 'Kiinteistötunnus ei ole oikeassa muodossa.',
             geometryMissing: 'Kiinteistötunnuksella ei ole geometriaa.',
             propertyAlreadyExist: 'Kiinteistötunnus on olemassa jo järjestelmässä.',
+        },
+    },
+    modalZoomToFeatures: {
+        modalTitle: 'Kohdista taulukon kohteisiin',
+        modalCancel: 'Peruuta',
+        modalSubmit: 'Kohdista',
+        content: {
+            description: 'Kohdista kartta haluttuihin kohteisiin. Kohdistaa oletuksena kaikkiin taulussa oleviin kohteisiin.',
+            checkTable: 'Vain aktiivinen taulu',
+            checkFeature: 'Vain valitut kohteet',
         },
     },
 };
