@@ -16,6 +16,7 @@ import {
     UPDATE_LAYER,
     DEACTIVATE_LAYER,
     UPDATE_LAYER_FIELDS,
+    CLOSE_LAYER,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -85,6 +86,9 @@ const initialState = {
     fetching: true,
 };
 
+let foundLayer = null;
+let filteredLayerList = [];
+
 export default (state: State = initialState, action: Action) => {
     switch (action.type) {
         case GET_LAYER_GROUPS:
@@ -137,6 +141,22 @@ export default (state: State = initialState, action: Action) => {
                         }
                         return { ...l };
                     }): Object[]),
+            };
+        case CLOSE_LAYER:
+            foundLayer = state.layerList.find(layer => layer.id === action.layerId);
+            filteredLayerList = (state.layerList
+                .filter(layer => layer.id !== action.layerId): Object[]);
+            return {
+                ...state,
+                layerGroups: (state.layerGroups.map(lg => ({
+                    ...lg,
+                    layers: foundLayer && (foundLayer._source === 'search' || foundLayer.type === 'agfl')
+                        ? lg.layers.filter(layer => layer.id !== action.layerId)
+                        : lg.layers,
+                })): Array<LayerGroups>),
+                layerList: foundLayer && (foundLayer._source === 'search' || foundLayer.type === 'agfl')
+                    ? filteredLayerList
+                    : state.layerList,
             };
         case CLEAR_SEARCH_DATA:
             return {
