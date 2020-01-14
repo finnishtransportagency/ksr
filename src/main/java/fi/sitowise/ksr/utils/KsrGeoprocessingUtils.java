@@ -30,6 +30,7 @@ public class KsrGeoprocessingUtils {
             LayerService layerService) throws ParseException {
         List<NameValuePair> params = new ArrayList<>();
         JSONObject webMapAsJson = new JSONObject();
+        JSONObject printSelectedLayers = new JSONObject();
         JSONParser parser = new JSONParser();
         Map<String, String[]> queryParams = request.getParameterMap();
 
@@ -37,6 +38,8 @@ public class KsrGeoprocessingUtils {
             for (String value : entry.getValue()) {
                 if (entry.getKey().equals("Web_Map_as_JSON")) {
                     webMapAsJson.put("Web_Map_as_JSON", value);
+                } else if (entry.getKey().equals("printSelectedLayers")) {
+                    printSelectedLayers.put("printSelectedLayers", value);
                 } else {
                     params.add(new BasicNameValuePair(entry.getKey(), value));
                 }
@@ -45,6 +48,9 @@ public class KsrGeoprocessingUtils {
 
         webMapAsJson = (JSONObject) parser.parse(webMapAsJson.get("Web_Map_as_JSON").toString());
         JSONArray requestLayers = (JSONArray) (webMapAsJson != null ? webMapAsJson.get("operationalLayers") : null);
+        
+        printSelectedLayers = (JSONObject) parser.parse(printSelectedLayers.get("printSelectedLayers").toString());
+        JSONArray requestSelectedLayers = (JSONArray) (printSelectedLayers != null ? printSelectedLayers.get("layers") : null);
 
         if (requestLayers != null) {
             for (Object entry : requestLayers) {
@@ -53,6 +59,16 @@ public class KsrGeoprocessingUtils {
                     Layer layer = fetchLayer(layerId, layerService);
                     String url = layer.getUrl();
                     ((JSONObject) entry).replace("url", url);
+
+                    /* Custom highlighting for selected features on print 
+                    because current ArcgisJS API version (4.13) doesn't support this yet. */
+                    if (requestSelectedLayers != null) {
+                        for (Object selectedLayer : requestSelectedLayers) {
+                            if (((JSONObject) selectedLayer).get("layerId").equals(((JSONObject) entry).get("id"))) {
+                                ((JSONObject) entry).put("selectionObjectIds", ((JSONObject) selectedLayer).get("objectIds"));
+                            }
+                        }
+                    }
                 }
             }
         }
