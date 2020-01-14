@@ -75,7 +75,6 @@ public class Layer implements Serializable {
     private boolean background;
     private String parentLayer;
     private String propertyIdField;
-    private boolean locateVisible;
 
     /**
      * Construct a Layer.
@@ -122,7 +121,6 @@ public class Layer implements Serializable {
         this.setParentLayer(lr.getParentLayer());
         this.setQueryColumnsCustom(lr.getQueryColumns());
         this.setPropertyIdField(lr.getPropertyIdField());
-        this.setLocateVisible(lr.getLocateVisible());
 
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
@@ -909,23 +907,5 @@ public class Layer implements Serializable {
      */
     public void setPropertyIdField(String propertyIdField) {
         this.propertyIdField = propertyIdField;
-    }
-
-    /**
-     * Gets locate visible.
-     *
-     * @return the locate visible
-     */
-    public boolean getLocateVisible() {
-        return locateVisible;
-    }
-
-    /**
-     * Sets locate visible.
-     *
-     * @param locateVisible the locate visible
-     */
-    public void setLocateVisible(String locateVisible) {
-        this.locateVisible = "1".equals(locateVisible);
     }
 }
