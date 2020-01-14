@@ -52,4 +52,9 @@ export const GlobalStyle = createGlobalStyle`
     .Select-clear-zone {
         font-family: Arial, sans-serif;
     };
+
+    div#modal-root {
+        height: 100vh;
+        overflow: hidden;
+    };
 `;

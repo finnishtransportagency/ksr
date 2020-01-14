@@ -11,10 +11,9 @@ const Modal = styled.div`
     color: ${styles.colorFontDark};
     position: fixed;
     right: 0;
-    left: 0;
+    left: calc((100% - 700px) / 2);
     top: 2rem;
     visibility: visible;
-    margin: 0 auto;
     max-height: 90%;
     width: 700px;
     z-index: 1050;
@@ -22,7 +21,6 @@ const Modal = styled.div`
     -moz-box-shadow: ${styles.shadowDefault};
     box-shadow: ${styles.shadowDefault};
     border: none;
-    transition: 0.6s;
     background: #FFFFFF;
     overflow: hidden;
     -webkit-animation: ${fadeInModal} 0.3s;
@@ -47,6 +45,7 @@ const Modal = styled.div`
     
     @media only screen and (max-width: 768px) {
         width: 90%;
+        left: 5%;
     };
 `;
 
