@@ -4,9 +4,7 @@ import 'react-table/react-table.css';
 import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
-import {
-    colorMain, colorMainDark, colorTableEdited, colorTableEditedDarker,
-} from '../../../ui/defaultStyles';
+import { colorTableEdited, colorTableSelected } from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
 import { toDisplayDate } from '../../../../utils/date';
 
@@ -92,17 +90,14 @@ const ReactTableView = ({
             toggleSelection={toggleSelection}
             toggleAll={toggleSelectAll}
             getTdProps={(state, r, c) => {
-                const editColor = r && r.index % 2 === 0
-                    ? colorTableEditedDarker
-                    : colorTableEdited;
-                const selectedColor = r && r.index % 2 === 0 ? colorMainDark : colorMain;
                 const color = r && r.row && r.row._original._selected && c.id !== '_selector'
-                    ? selectedColor
+                    ? colorTableSelected
                     : null;
+
                 return {
                     style: {
                         background: r && r.original._edited && r.original._edited
-                            .find(t => t.title === c.id) ? editColor : color,
+                            .find(t => t.title === c.id) ? colorTableEdited : color,
                     },
                 };
             }}
