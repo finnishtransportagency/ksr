@@ -156,7 +156,17 @@ export const WrapperReactTable = styled.div`
         };
         
         .content-not-editable {
-            outline: none;
+            color: ${styles.colorBackgroundGrey};
+        }
+        
+        .content-editable {
+            background: #ffffff;
+            border: 1px solid ${styles.colorBackgroundGrey};
+            padding: 2px;
+            
+            &:focus {
+                border: 1px solid ${styles.colorMain};
+            }
         }
 
         .content-not-valid {
