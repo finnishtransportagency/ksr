@@ -92,7 +92,6 @@ export const WrapperReactTable = styled.div`
                 
                 div {
                     overflow: hidden;
-                    text-overflow: ellipsis;
                 };
                 
                 &.decimal {
