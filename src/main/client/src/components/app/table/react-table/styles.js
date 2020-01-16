@@ -100,7 +100,7 @@ export const WrapperReactTable = styled.div`
                 };
 
                 &.date {
-                    min-width: 140px;
+                    min-width: 130px;
                 }
             };
         
