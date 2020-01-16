@@ -57,7 +57,7 @@ export const WrapperReactTable = styled.div`
             border-bottom: 1px solid rgba(0,0,0,0.15);
             
             .rt-tr, .rt-th {
-                min-height: 42px;
+                min-height: 38px;
             };
 
             .rt-th {
@@ -83,15 +83,16 @@ export const WrapperReactTable = styled.div`
         
         .rt-tbody {
             .rt-td {
-                padding: 0.75rem 6px;
+                padding: 6px;
                 text-align: left;
                 border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
-                height: 42px;
+                height: 36px;
                 min-width: 130px;
                 background-color: transparent;
                 
                 div {
                     overflow: hidden;
+                    outline: none;
                 };
                 
                 &.decimal {
@@ -106,7 +107,7 @@ export const WrapperReactTable = styled.div`
             .rt-tr-group {
                 border: none;
                 background: ${styles.colorBackgroundLight};
-                max-height: 42px;
+                max-height: 36px;
             };
 
             .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
@@ -197,7 +198,7 @@ export const WrapperReactTable = styled.div`
         .track-horizontal {
             position: absolute;
             height: 8px !important;
-            left: 32px;
+            left: 36px;
             right: 2px;
             bottom: 2px;
             border-radius: 3px;
@@ -205,7 +206,7 @@ export const WrapperReactTable = styled.div`
     
         ${props => props.columns && props.columns.length && props.columns[0].fixed && css`
             .track-horizontal {
-                left: calc(32px + (${props.columns[0].columns.length} * 30px));
+                left: calc(36px + (${props.columns[0].columns.length} * 30px));
             };
         `};
     };
@@ -226,8 +227,10 @@ export const WrapperReactTableNoTable = styled.div`
 
 export const TableSelect = styled.select`
     width: 100%;
+    height: 100%;
 `;
 
 export const TableInput = styled.input`
     width: 100%;
+    height: 100%;
 `;
