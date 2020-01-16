@@ -135,8 +135,9 @@ const ModalContractDetails = (props: Props) => {
      * @param {number} objectId Feature's object Id.
      */
     const handleFeatureLocateClick = async (layerId: string, objectId: number) => {
+        const layer: Object = layerList.find(l => l.id === layerId);
         const objectIdFieldName = nestedVal(
-            contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+            layer.fields.find(field => field.type === 'esriFieldTypeOID'),
             ['name'],
         );
         const foundObject = await queryFeatures(
