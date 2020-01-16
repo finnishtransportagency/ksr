@@ -223,6 +223,7 @@ class ReactTable extends Component<Props> {
         const textContent = this.getDisplayContent(cellField, content);
         return (
             <div
+                title={textContent}
                 style={{ minHeight: '1rem' }}
                 role="textbox"
                 tabIndex={0}
