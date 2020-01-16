@@ -84,17 +84,21 @@ const ModalExtractSelectedView = ({
             <OutputWrapper>
                 <LoadingIcon loading={extracting} size={8} />
                 {
-                    outputLink &&
-                    <a href={outputLink} download={strings.modalExtractSelectedData.outputName}>
-                        <i className="esri-icon-download" />
-                        <span>
-                            {strings.modalExtractSelectedData.outputSuccess} ({downloadFormat})
-                        </span>
-                    </a>
+                    outputLink
+                    && (
+                        <a href={outputLink} download={strings.modalExtractSelectedData.outputName}>
+                            <i className="esri-icon-download" />
+                            <span>
+                                {strings.modalExtractSelectedData.outputSuccess}
+                                {' '}
+                                {downloadFormat}
+                            </span>
+                        </a>
+                    )
                 }
                 {
-                    !outputLink && !extracting &&
-                    <span>{strings.modalExtractSelectedData.outputEmpty}</span>
+                    !outputLink && !extracting
+                    && <span>{strings.modalExtractSelectedData.outputEmpty}</span>
                 }
             </OutputWrapper>
         </ModalExtractSelectedWrapper>
