@@ -11,6 +11,7 @@ const minProps = {
     fetchingDetailList: true,
     editPermission: true,
     handleFeatureDetailsClick: jest.fn(),
+    handleFeatureLocateClick: jest.fn(),
     handleFeatureUnlinkClick: jest.fn(),
     handleFeatureEditClick: jest.fn(),
 };
