@@ -156,7 +156,18 @@ class ModalFilter extends Component<Props, State> {
         setActiveFeatureMode('create');
     };
 
-    setFormOptions = (formOptions: Object) => {
+    setFormOptions = (
+        formOptions: Object,
+    ) => {
+        if (formOptions.submitDisabled) {
+            const { sketchViewModel } = this.props;
+            if (sketchViewModel.updateGraphics.items.length > 0) {
+                if (JSON.stringify(sketchViewModel.updateGraphics.items[0].geometry)
+                !== JSON.stringify(sketchViewModel.updateGraphics.items[0].initialGeometry)) {
+                    formOptions.submitDisabled = false;
+                }
+            }
+        }
         this.setState({
             formOptions: {
                 editedFields: formOptions.editedFields,
