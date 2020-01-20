@@ -68,10 +68,14 @@ class EsriMap extends Component<Props> {
     printWidget: ?Object = null;
 
     componentDidUpdate(prevProps: Props) {
-        const { initialLoading } = this.props;
+        const { initialLoading, printServiceUrl } = this.props;
 
         if (!initialLoading && initialLoading !== prevProps.initialLoading) {
             this.initMap();
+        }
+
+        if (printServiceUrl !== prevProps.printServiceUrl) {
+            if (this.printWidget) this.printWidget.printServiceUrl = printServiceUrl;
         }
     }
 
