@@ -74,6 +74,7 @@ const mapStateToProps = (state) => {
             .find(editedLayer => editedLayer.id.replace('.s', '') === state.adminTool.active.layerId)],
         currentTabAdmin,
         activeAdminTool: state.adminTool.active.layerId,
+        hasTableEdited: state.table.features.hasTableEdited,
     };
 };
 
