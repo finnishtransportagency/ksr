@@ -12,7 +12,6 @@ import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 import {
     colorBackgroundDark,
     colorFeatureHighlight,
-    colorMainDark,
 } from '../../ui/defaultStyles';
 import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
@@ -429,7 +428,6 @@ class EsriMap extends Component<Props> {
                             type: 'simple-marker',
                             style: 'circle',
                             size: 6,
-                            color: colorMainDark,
                             outline: {
                                 color: colorBackgroundDark,
                                 width: 1,
@@ -439,14 +437,12 @@ class EsriMap extends Component<Props> {
                     case 'polyline':
                         newFeature.symbol = {
                             type: 'simple-line',
-                            color: colorMainDark,
                             width: 2,
                         };
                         break;
                     default:
                         newFeature.symbol = {
                             type: 'simple-fill',
-                            color: colorMainDark,
                             outline: {
                                 color: colorBackgroundDark,
                                 width: 1,
