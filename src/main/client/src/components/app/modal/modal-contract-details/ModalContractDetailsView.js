@@ -16,17 +16,25 @@ type Props = {
         featureId: number,
         objectId: number
     ) => void,
+    handleFeatureLocateClick: (
+        layerId: string,
+        objectId: number,
+    ) => Promise<void>,
     handleFeatureEditClick: (
         layerName: string,
         layerId: string,
         featureId: number,
         objectId: number
     ) => void,
-    handleFeatureUnlinkClick: (layerId: string, featureObjectId: number) => void,
+    handleFeatureUnlinkClick: (
+        layerId: string,
+        featureObjectId: number
+    ) => void,
 };
 
 const alfrescoTitle = strings.modalFeatureContracts.listView.alfrescoLink;
 const caseManagementTitle = strings.modalFeatureContracts.listView.caseManagementLink;
+const { showLocation } = strings.modalContractDetails.listView.showLocation;
 
 const ModalContractDetailsView = ({
     contractLayerId,
@@ -36,6 +44,7 @@ const ModalContractDetailsView = ({
     handleFeatureDetailsClick,
     handleFeatureEditClick,
     handleFeatureUnlinkClick,
+    handleFeatureLocateClick,
 }: Props) => (
     <Fragment>
         {fetchingDetailList && <LoadingIcon loading={fetchingDetailList} />}
@@ -50,16 +59,29 @@ const ModalContractDetailsView = ({
                 {layer.features.map(feature => (
                     <Contract key={feature.id}>
                         <Contract.IconWrapper>
-                            <Contract.IconWrapper.Icon
-                                title={strings.modalContractDetails.listView.details}
-                                className="fas fa-list-ul"
-                                onClick={() => handleFeatureDetailsClick(
-                                    layer.name,
-                                    layer.id,
-                                    feature.id,
-                                    feature.objectId,
+                            <Fragment>
+                                <Contract.IconWrapper.Icon
+                                    title={strings.modalContractDetails.listView.details}
+                                    className="fas fa-list-ul"
+                                    onClick={() => handleFeatureDetailsClick(
+                                        layer.name,
+                                        layer.id,
+                                        feature.id,
+                                        feature.objectId,
+                                    )}
+                                />
+                                { layer.geometryData && (
+                                    <Contract.IconWrapper.Icon
+                                        key={feature.id}
+                                        title={showLocation}
+                                        className="fas fa-search-location"
+                                        onClick={() => handleFeatureLocateClick(
+                                            layer.id,
+                                            feature.objectId,
+                                        )}
+                                    />
                                 )}
-                            />
+                            </Fragment>
                         </Contract.IconWrapper>
                         <Contract.TextWrapper>
                             <Contract.TextWrapper.Text title={feature.id}>
