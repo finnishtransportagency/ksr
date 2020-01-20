@@ -375,3 +375,8 @@ export const setButtonAmount = (buttonAmount: ?number) => ({
     type: types.SET_BUTTON_AMOUNT,
     buttonAmount,
 });
+
+export const setTableEdited = (hasTableEdited: boolean) => ({
+    type: types.TABLE_EDITED,
+    hasTableEdited,
+});
