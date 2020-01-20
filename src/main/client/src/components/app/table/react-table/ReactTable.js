@@ -1,15 +1,16 @@
 // @flow
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
-import { cellEditValidate, preventKeyPress } from '../../../../utils/cellEditValidate';
+import { cellEditValidate, equals, preventKeyPress } from '../../../../utils/cellEditValidate';
 import { addContractColumn } from '../../../../utils/contracts/contractColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';
-import { WrapperReactTableNoTable, TableSelect, TableInput } from './styles';
+import { TableInput, TableSelect, WrapperReactTableNoTable } from './styles';
 import strings from '../../../../translations';
-import { toISODate, toDisplayDate } from '../../../../utils/date';
+import { toDisplayDate, toISODate } from '../../../../utils/date';
 import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { TextInput } from '../../../ui/elements';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     fetching: boolean,
@@ -28,12 +29,31 @@ type Props = {
     activeAdminTool: string,
     setActiveModal: (activeModal: string, modalData: any) => void,
     setContractListInfo: (layerId: string, objectId: number) => void,
+    setTableEdited: Function,
 };
 
-class ReactTable extends Component<Props> {
+type State = {
+    cellData: {
+        title: string,
+        originalData: string,
+        editedData: string,
+        rowIndex: number,
+    }
+};
+
+class ReactTable extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        this.state = {
+            cellData: {
+                title: '',
+                originalData: '',
+                editedData: '',
+                rowIndex: 0,
+            }
+            ,
+        };
         this.renderFilter = this.renderFilter.bind(this);
         this.renderEditable = this.renderEditable.bind(this);
         this.toggleSelection = this.toggleSelection.bind(this);
@@ -216,7 +236,8 @@ class ReactTable extends Component<Props> {
         cellInfo: Object,
         contentEditable: boolean,
     ) => {
-        const { setEditedLayer, layerFeatures } = this.props;
+        const { setEditedLayer, layerFeatures, setTableEdited } = this.props;
+        const { cellData } = this.state;
         const { data } = layerFeatures;
 
         const className = this.getCellClassName(contentEditable, cellField, content);
@@ -231,22 +252,90 @@ class ReactTable extends Component<Props> {
                 contentEditable={contentEditable}
                 suppressContentEditableWarning
                 onKeyPress={(evt) => {
-                    if (contentEditable) preventKeyPress(evt, cellField);
+                    if (contentEditable) {
+                        preventKeyPress(evt, cellField);
+                    }
+                }}
+                onInput={(evt) => {
+                    if (contentEditable) {
+                        const text = evt.target.innerText;
+                        if (equals(cellData.originalData, text)) {
+                            const editedRows = data.filter(d => d._edited.length > 0);
+                            const currentRow = editedRows.filter(e => e._key
+                                !== cellInfo.original._key);
+
+                            const update = editedRows.length > 1 || currentRow.length > 0
+                                ? true
+                                : editedRows.filter(e => e._edited.length > 1).length > 0;
+
+                            setTableEdited(update);
+                            this.setState(prevState => ({
+                                cellData: {
+                                    ...prevState.cellData,
+                                    editedData: text,
+                                },
+                            }));
+                        } else {
+                            setTableEdited(true);
+                            this.setState(prevState => ({
+                                cellData: {
+                                    ...prevState.cellData,
+                                    editedData: text,
+                                },
+                            }));
+                        }
+                    }
+                }}
+                onFocus={(evt) => {
+                    if (contentEditable) {
+                        const text = evt.target.innerText;
+
+                        this.setState(prevState => ({
+                            cellData: {
+                                ...prevState.cellData,
+                                title: cellInfo.column.id,
+                                originalData: data[cellInfo.index]._edited.length > 0
+                                && data[cellInfo.index]._edited.some(e => e.title
+                                    === cellInfo.column.id)
+                                    ? nestedVal(
+                                        data[cellInfo.index]._edited.find(e => e.title
+                                            === cellInfo.column.id),
+                                        ['originalData'], '',
+                                    )
+                                    : text,
+                                editedData: text,
+                                rowIndex: cellInfo.index,
+                            },
+                        }));
+                    }
                 }}
                 onBlur={(evt) => {
                     if (contentEditable) {
+                        const text = evt.target.innerText;
+
                         const val = cellEditValidate(
-                            evt.target.innerText,
+                            text,
                             data,
                             cellField,
                             cellInfo,
                         );
+
                         if (val) {
                             setEditedLayer(val);
+                            this.setState(prevState => ({
+                                cellData: {
+                                    ...prevState.cellData,
+                                    title: '',
+                                    originalData: '',
+                                    rowIndex: 0,
+                                    editedData: '',
+                                },
+                            }));
                         }
                     }
                 }}
-                dangerouslySetInnerHTML={{ // eslint-disable-line
+                /* eslint-disable-next-line react/no-danger */
+                dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(textContent),
                 }}
             />
@@ -350,15 +439,16 @@ class ReactTable extends Component<Props> {
 
         if (!fetching && layerList) {
             const { columns, data } = layerFeatures;
+            const { cellData } = this.state;
 
             const activeLayer: any = layerList.find(ll => ll.id === layerFeatures.id);
             const relationLayer = activeLayer
                 && layerList.find(ll => ll.id === String(activeLayer.relationLayerId));
             const tableColumns = (activeLayer
-            && activeLayer.hasRelations
-            && activeLayer.type !== 'agfl'
-            && relationLayer
-            && relationLayer.layerPermission.readLayer)
+                && activeLayer.hasRelations
+                && activeLayer.type !== 'agfl'
+                && relationLayer
+                && relationLayer.layerPermission.readLayer)
             || (activeLayer
                 && activeLayer.type === 'agfl'
                 && !activeLayer.relationColumnIn
@@ -375,6 +465,7 @@ class ReactTable extends Component<Props> {
                     toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
                     renderEditable={this.renderEditable}
                     renderFilter={this.renderFilter}
+                    cellData={cellData}
                 />
             );
         }
