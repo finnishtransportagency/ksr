@@ -16,6 +16,7 @@ import ModalOfflineSavedView from './modal-offline-saved/ModalOfflineSavedView';
 import ModalThemeLayerContainer from './modal-theme-layer/ModalThemeLayerContainer';
 import ModalContractDetailsContainer from './modal-contract-details/ModalContractDetailsContainer';
 import ModalDownloadCsvContainer from './modal-donwload-csv/ModalDownloadCsvContainer';
+import ModalZoomToFeaturesContainer from './modal-zoom-to-features/ModalZoomToFeaturesContainer';
 
 type Props = {
     activeModal: string,
@@ -38,6 +39,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'themeLayer' && <ModalThemeLayerContainer />}
         {activeModal === 'contractDetails' && <ModalContractDetailsContainer />}
         {activeModal === 'downloadCSV' && <ModalDownloadCsvContainer />}
+        {activeModal === 'zoomToFeatures' && <ModalZoomToFeaturesContainer />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );

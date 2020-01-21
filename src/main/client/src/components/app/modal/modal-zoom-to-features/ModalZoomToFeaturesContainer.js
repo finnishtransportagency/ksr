@@ -1,7 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import ModalBufferSelected from './ModalBufferSelected';
-import { setSingleLayerGeometry } from '../../../../reducers/table/actions';
+import ModalZoomToFeatures from './ModalZoomToFeatures';
 
 const mapStateToProps = (state) => {
     const selectedGeometryData = [];
@@ -37,14 +36,7 @@ const mapStateToProps = (state) => {
         activeLayerId: activeTableLayer && activeTableLayer.id,
     };
 };
-const mapDispatchToProps = dispatch => ({
-    setSingleLayerGeometry: (geometry) => {
-        dispatch(setSingleLayerGeometry(geometry));
-    },
-});
 
-const ModalBufferSelectedContainer = connect(
-    mapStateToProps, mapDispatchToProps,
-)(ModalBufferSelected);
+const ModalZoomToFeaturesContainer = connect(mapStateToProps)(ModalZoomToFeatures);
 
-export default ModalBufferSelectedContainer;
+export default ModalZoomToFeaturesContainer;

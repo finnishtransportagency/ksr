@@ -71,7 +71,9 @@ const ModalDownloadCsv = (props: Props) => {
             title={strings.modalDownloadCsv.title}
             modalSubmit={modalSubmit}
             cancelText={strings.modalDownloadCsv.cancel}
-        />
+        >
+            <p>{strings.modalDownloadCsv.description}</p>
+        </ModalContainer>
 
     );
 };

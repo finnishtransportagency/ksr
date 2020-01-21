@@ -10,6 +10,7 @@ type Props = {
     toggleLayer: (string) => void,
     activateLayers: (layers: Object[]) => void,
     loadingLayers: string[],
+    tableButtonAmount: number,
 };
 
 const BaseMapSwitchView = ({
@@ -20,12 +21,14 @@ const BaseMapSwitchView = ({
     toggleLayer,
     activateLayers,
     loadingLayers,
+    tableButtonAmount,
 }: Props) => (
     <BaseMapContainer
         hidden={layers.length === 0}
         tableOpen={tableOpen}
         sideBarOpen={sideBarOpen}
         adminToolActive={adminToolActive}
+        tableButtonAmount={tableButtonAmount}
     >
         {layers.map(layer => (
             <BaseMapButton

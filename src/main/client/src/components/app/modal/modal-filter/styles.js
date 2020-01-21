@@ -26,3 +26,8 @@ export const CheckboxWrapper = styled.div`
         width: 100%;
     }
 `;
+
+export const Description = styled.p`
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+`;
