@@ -69,14 +69,23 @@ class ReactTable extends Component<Props> {
     };
 
     getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
+        const { activeAdminTool, activeTable, layerList } = this.props;
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
         let className = '';
-        if (!contentEditable) {
-            className = 'content-not-editable';
-        } else if (
-            (content === null || (typeof content === 'string' && content.trim().length === 0))
-            && !cellField.nullable) {
-            className = 'content-not-valid';
+
+        if (activeLayer && activeAdminTool === activeLayer.id) {
+            if (contentEditable) {
+                className = 'content-editable';
+            } else {
+                className = 'content-not-editable';
+            }
         }
+
+        if ((content === null || (typeof content === 'string' && content.trim().length === 0))
+            && !cellField.nullable) {
+            className += ' content-not-valid';
+        }
+
         return className;
     };
 
@@ -110,13 +119,20 @@ class ReactTable extends Component<Props> {
         }
     };
 
-    isCellEditable = (activeLayer: Object, cellField: Object) => {
-        const { activeAdminTool } = this.props;
-        return activeAdminTool === activeLayer.id
-            && activeLayer._source !== 'shapefile'
-            && activeLayer.layerPermission.updateLayer
-            && cellField.editable
-            && activeLayer.updaterField !== cellField.name;
+    isCellEditable = (cellField: Object) => {
+        const { activeAdminTool, layerList, activeTable } = this.props;
+
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+
+        if (activeLayer) {
+            return activeAdminTool === activeLayer.id
+                && activeLayer._source !== 'shapefile'
+                && activeLayer.layerPermission.updateLayer
+                && cellField.editable
+                && activeLayer.updaterField !== cellField.name;
+        }
+
+        return false;
     };
 
     toggleSelection = (id: string, shiftKey: string, row: Object) => {
@@ -207,6 +223,7 @@ class ReactTable extends Component<Props> {
         const textContent = this.getDisplayContent(cellField, content);
         return (
             <div
+                title={textContent}
                 style={{ minHeight: '1rem' }}
                 role="textbox"
                 tabIndex={0}
@@ -258,7 +275,7 @@ class ReactTable extends Component<Props> {
                     // Get editable values for search layer fields
                     cellField = originalLayer.fields.find(f => f.name === cellField.name);
                 }
-                const contentEditable = this.isCellEditable(originalLayer, cellField);
+                const contentEditable = this.isCellEditable(cellField);
                 const content = this.getCellContent(cellField, cellInfo);
 
                 if (cellField.domain
