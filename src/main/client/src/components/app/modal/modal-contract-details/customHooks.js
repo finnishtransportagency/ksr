@@ -27,6 +27,7 @@ export const useDetailList = (
         setDetailList(contractDetails
             .map((layerDetail) => {
                 const layer = layerList.find(l => layerDetail.id === l.id);
+                const geometryData = layerList.some(() => layerDetail.type === 'agfs');
 
                 if (layer) {
                     const objectIdFieldName = nestedVal(
@@ -77,6 +78,7 @@ export const useDetailList = (
                         features,
                         createPermission,
                         editPermission,
+                        geometryData,
                     };
                 }
 

@@ -333,6 +333,7 @@ const fi = {
             details: 'Näytä lisätiedot',
             unlink: 'Poista kohteen linkitys sopimukselta',
             edit: 'Muokkaa kohdetta',
+            showLocation: 'Näytä kartalla',
         },
         newDetail: {
             title: 'Lisää uusi kohde sopimukselle',
