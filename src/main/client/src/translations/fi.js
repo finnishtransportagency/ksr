@@ -225,6 +225,8 @@ const fi = {
     },
     workspace: {
         title: 'Työtilat',
+        titlePublicWorkspace: 'Yhteiset työtilat',
+        titleUserWorkspace: 'Omat työtilat',
         newWorkspace: 'Luo uusi työtila',
         replaceWorkspace: 'Korvaa työtila',
         deleteWorkspace: 'Poista työtila',
@@ -259,7 +261,7 @@ const fi = {
         },
     },
     modalNewWorkspace: {
-        title: 'Luo uusi työtila',
+        title: 'Luo uusi käyttäjäkohtainen työtila',
         workspaceName: 'Työtilan nimi',
         submit: 'Tallenna',
         cancel: 'Peruuta',
