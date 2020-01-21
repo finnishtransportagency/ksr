@@ -23,19 +23,10 @@ const BaseMapContainer = styled.div`
         display: none;
     `}
 
-    ${props => props.tableOpen && !props.sideBarOpen && !props.adminToolActive && css`
+    ${props => props.tableOpen && !props.sideBarOpen && css`
         bottom: calc(50vh + 16px);
-        left: calc(60px * 7);
-        width: calc(100vw - 60px * 7);
-        @media only screen and (max-width: 768px) {
-            display: none;
-        };
-    `};
-
-    ${props => props.tableOpen && !props.sideBarOpen && props.adminToolActive && css`
-        bottom: calc(50vh + 16px);
-        left: calc(60px * 9);
-        width: calc(100vw - 60px * 9);
+        left: calc(60px + 60px * ${props.tableButtonAmount});
+        width: calc(100vw - (60px + 60px * ${props.tableButtonAmount}));
         @media only screen and (max-width: 768px) {
             display: none;
         };
@@ -49,19 +40,10 @@ const BaseMapContainer = styled.div`
         };
     `};
 
-    ${props => props.tableOpen && props.sideBarOpen && !props.adminToolActive && css`
+    ${props => props.tableOpen && props.sideBarOpen && css`
         bottom: calc(50vh + 16px);
-        left: calc(400px + 7 * 60px);
-        width: calc(100vw - 400px - 60px * 7);
-        @media only screen and (max-width: 768px) {
-            display: none;
-        };
-    `};
-
-    ${props => props.tableOpen && props.sideBarOpen && props.adminToolActive && css`
-        bottom: calc(50vh + 16px);
-        left: calc(400px + 9 * 60px);
-        width: calc(100vw - 400px - 60px * 9);
+        left: calc(460px + ${props.tableButtonAmount} * 60px);
+        width: calc(100vw - (460px + ${props.tableButtonAmount} * 60px));
         @media only screen and (max-width: 768px) {
             display: none;
         };
@@ -88,4 +70,3 @@ const BaseMapButton = styled(Button)`
 BaseMapButton.displayName = 'BaseMapButton';
 
 export { BaseMapButton, BaseMapContainer };
-

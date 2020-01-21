@@ -141,17 +141,10 @@ export const Wrapper = styled.div`
             };
         `};
 
-        ${props => props.tableOpen && !props.adminToolActive && css`
+        ${props => props.tableOpen && css`
             // Button width multiplied by number of buttons
             .esri-attribution {
-                margin-left: calc(60px * 7);
-            };
-        `};
-        
-        ${props => props.tableOpen && props.adminToolActive && css`
-            // Button width multiplied by number of buttons
-            .esri-attribution {
-                margin-left: calc(60px * 9);
+                margin-left: calc(60px * ${props.tableButtonAmount});
             };
         `};
 
