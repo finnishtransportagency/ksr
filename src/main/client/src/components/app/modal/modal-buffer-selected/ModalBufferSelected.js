@@ -6,19 +6,25 @@ import ModalBufferSelectedView from './ModalBufferSelectedView';
 import { setBuffer } from '../../../../utils/buffer';
 
 type Props = {
-    selectedGeometryData: Array<Object>,
+    tableGeometryData: Object[],
+    selectedGeometryData: Object[],
     view: Object,
     setSingleLayerGeometry: Function,
+    activeLayerId: string,
 };
 
 type State = {
     bufferSize: number,
     submitDisabled: boolean,
+    currentTableOnly: boolean,
+    selectedFeaturesOnly: boolean,
 };
 
 const initialState = {
     bufferSize: 0,
-    submitDisabled: false,
+    submitDisabled: true,
+    currentTableOnly: false,
+    selectedFeaturesOnly: false,
 };
 
 class ModalBufferSelected extends Component<Props, State> {
@@ -28,23 +34,50 @@ class ModalBufferSelected extends Component<Props, State> {
         this.state = { ...initialState };
 
         this.handleBufferChange = this.handleBufferChange.bind(this);
+        this.handleTableSelectionChange = this.handleTableSelectionChange.bind(this);
+        this.handleFeatureSelectionChange = this.handleFeatureSelectionChange.bind(this);
     }
 
     componentWillUnmount() {
-        this.props.setSingleLayerGeometry({});
+        const { setSingleLayerGeometry } = this.props;
+
+        setSingleLayerGeometry({});
     }
 
     handleBufferChange = (e: Object) => {
-        const submitDisabled = e.target.value < -100000 || e.target.value > 100000;
+        const submitDisabled = e.target.value === ''
+            || e.target.value < 1
+            || e.target.value > 100000;
+
         this.setState({
             bufferSize: e.target.value,
             submitDisabled,
         });
     };
 
+    handleTableSelectionChange = () => {
+        const { currentTableOnly } = this.state;
+
+        this.setState({ currentTableOnly: !currentTableOnly });
+    };
+
+    handleFeatureSelectionChange = () => {
+        const { selectedFeaturesOnly } = this.state;
+
+        this.setState({ selectedFeaturesOnly: !selectedFeaturesOnly });
+    };
+
     render() {
-        const { selectedGeometryData, view } = this.props;
-        const { bufferSize, submitDisabled } = this.state;
+        const {
+            selectedGeometryData, view, activeLayerId, tableGeometryData,
+        } = this.props;
+
+        const {
+            bufferSize,
+            submitDisabled,
+            currentTableOnly,
+            selectedFeaturesOnly,
+        } = this.state;
 
         const modalSubmit = [{
             text: strings.modalAddUserLayer.submit,
@@ -52,7 +85,11 @@ class ModalBufferSelected extends Component<Props, State> {
                 setBuffer(
                     view,
                     selectedGeometryData,
+                    tableGeometryData,
                     bufferSize,
+                    currentTableOnly,
+                    selectedFeaturesOnly,
+                    activeLayerId,
                 );
             },
             disabled: submitDisabled,
@@ -61,16 +98,16 @@ class ModalBufferSelected extends Component<Props, State> {
 
         return (
             <ModalContainer
-                title={
-                    selectedGeometryData.length <= 1 ?
-                        strings.modalBufferSelectedData.singleTitle :
-                        strings.modalBufferSelectedData.title
-                }
+                title={strings.modalBufferSelectedData.title}
                 modalSubmit={modalSubmit}
                 cancelText={strings.modalBufferSelectedData.cancel}
             >
                 <ModalBufferSelectedView
+                    currentTableOnly={currentTableOnly}
+                    selectedFeaturesOnly={selectedFeaturesOnly}
                     handleBufferChange={this.handleBufferChange}
+                    handleTableSelectionChange={this.handleTableSelectionChange}
+                    handleFeatureSelectionChange={this.handleFeatureSelectionChange}
                 />
             </ModalContainer>
         );

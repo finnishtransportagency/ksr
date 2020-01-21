@@ -32,7 +32,7 @@ const fi = {
             lessThan: 'Pienempi kuin',
             not: 'Ei sisällä (täsmälleen)',
             notLike: 'Ei sisällä (osittain)',
-        }
+        },
     },
     reactTable: {
         previousText: 'Edellinen',
@@ -49,7 +49,7 @@ const fi = {
         saveEditedData: 'Tallenna muutokset',
         bufferSelectedData: 'Puskurialue valituille kohteille',
         extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
-        zoomToSelected: 'Kohdista valittuihin kohteisiin',
+        zoomToSelected: 'Kohdista haluamiin kohteisiin',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',
@@ -73,6 +73,7 @@ const fi = {
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
+        description: 'Suodatus kohdistuu vain aktiivisena olevaan tauluun.',
         selectAll: 'Valitse kaikki sarakkeet',
         selectNone: 'Tyhjennä valitut sarakkeet',
         submit: 'Suodata',
@@ -81,7 +82,7 @@ const fi = {
     modalClearTable: {
         submit: 'Tyhjennä',
         cancel: 'Peruuta',
-        content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
+        content: 'Haluatko tyhjentää kaikki taulut ja hakutulokset karttatasovalikosta?',
     },
     modalClearTableTab: {
         submit: 'Tyhjennä',
@@ -93,6 +94,7 @@ const fi = {
         all: 'Kaikki kohteet',
         selected: 'Valitut kohteet',
         title: 'CSV -tiedoston lataus',
+        description: 'CSV -tiedoston lataus kohdistuu vain aktiivisena olevaan tauluun.',
         cancel: 'Peruuta',
     },
     modalDeleteSelected: {
@@ -110,14 +112,19 @@ const fi = {
         content: 'Haluatko tallentaa taulukkoon tekemät muutokset?',
     },
     modalBufferSelectedData: {
-        title: 'Määritä valittujen kohteiden puskurialue',
-        singleTitle: 'Määritä valitun kohteen puskurialue',
+        title: 'Määritä kohteiden puskurialue',
         submit: 'Laske',
         cancel: 'Peruuta',
-        bufferLabel: 'Anna puskurialueen koko metreinä',
+        bufferLabel: 'Puskurialueen koko metreinä',
+        tableLabel: 'Taulut',
+        featureLabel: 'Kohteet',
+        description: 'Määritä puskurialue halutuille kohteille. Puskurointi kohdistuu oletuksena kaikkiin taulussa oleviin kohteisiin.',
+        checkTable: 'Vain aktiivinen taulu',
+        checkFeature: 'Vain valitut kohteet',
     },
     modalExtractSelectedData: {
         title: 'Vie valitut kohteet toiseen paikkatietoformaattiin',
+        description: 'Toiminto kohdistuu vain aktiivisessa taulussa oleviin valittuihin kohteisiin.',
         submit: 'Vie',
         cancel: 'Peruuta',
         geodatabase: '.gdb',
@@ -424,6 +431,16 @@ const fi = {
             invalidFormat: 'Kiinteistötunnus ei ole oikeassa muodossa.',
             geometryMissing: 'Kiinteistötunnuksella ei ole geometriaa.',
             propertyAlreadyExist: 'Kiinteistötunnus on olemassa jo järjestelmässä.',
+        },
+    },
+    modalZoomToFeatures: {
+        modalTitle: 'Kohdista taulukon kohteisiin',
+        modalCancel: 'Peruuta',
+        modalSubmit: 'Kohdista',
+        content: {
+            description: 'Kohdista kartta haluttuihin kohteisiin. Kohdistaa oletuksena kaikkiin taulussa oleviin kohteisiin.',
+            checkTable: 'Vain aktiivinen taulu',
+            checkFeature: 'Vain valitut kohteet',
         },
     },
 };
