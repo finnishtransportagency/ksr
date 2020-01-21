@@ -143,7 +143,16 @@ export default (state: State = initialState, action: Action) => {
             /* eslint-disable */
             const foundLayer: Object = state.layerList.find(layer => layer.id === action.layerId);
             const filteredSearch = (state.layerList
-                .filter(layer => layer.id !== action.layerId): Object[]);
+                .filter(layer => layer.id !== action.layerId)
+                .map(layer => {
+                    if (layer.id === action.layerId.replace('.s', '')) {
+                        return {
+                            ...layer,
+                            visible: layer.active ? true : layer.visible,
+                        }
+                    }
+                    return { ...layer };
+                }): Object[]);
             const filteredAgfl = (state.layerList.map((layer) => {
                 if (foundLayer.type === 'agfl' && foundLayer.id === layer.id) {
                     return {
