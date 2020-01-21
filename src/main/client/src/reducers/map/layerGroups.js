@@ -16,6 +16,7 @@ import {
     UPDATE_LAYER,
     DEACTIVATE_LAYER,
     UPDATE_LAYER_FIELDS,
+    CLOSE_LAYER,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -138,6 +139,38 @@ export default (state: State = initialState, action: Action) => {
                         return { ...l };
                     }): Object[]),
             };
+        case CLOSE_LAYER:
+            /* eslint-disable */
+            const foundLayer: Object = state.layerList.find(layer => layer.id === action.layerId);
+            const filteredSearch = (state.layerList
+                .filter(layer => layer.id !== action.layerId): Object[]);
+            const filteredAgfl = (state.layerList.map((layer) => {
+                if (foundLayer.type === 'agfl' && foundLayer.id === layer.id) {
+                    return {
+                        ...layer,
+                        active: false,
+                    };
+                }
+                return { ...layer };
+            }): Object[]);
+            /* eslint-enable */
+
+            if (foundLayer && (foundLayer._source === 'search' || foundLayer.type === 'agfl')) {
+                return {
+                    ...state,
+                    layerGroups: (state.layerGroups.map(lg => ({
+                        ...lg,
+                        layers: foundLayer._source === 'search'
+                            ? lg.layers.filter(layer => layer.id !== action.layerId)
+                            : lg.layers,
+                    })): Array<LayerGroups>),
+                    layerList: foundLayer._source === 'search'
+                        ? filteredSearch
+                        : filteredAgfl,
+                };
+            }
+
+            return { ...state };
         case CLEAR_SEARCH_DATA:
             return {
                 ...state,
