@@ -70,4 +70,3 @@ const BaseMapButton = styled(Button)`
 BaseMapButton.displayName = 'BaseMapButton';
 
 export { BaseMapButton, BaseMapContainer };
-
