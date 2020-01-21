@@ -14,6 +14,7 @@ const mapStateToProps = state => ({
     })),
     activeTable: state.table.features.activeTable,
     activeAdmin: state.adminTool.active.layerId,
+    view: state.map.mapView.view,
 });
 
 const mapDispatchToProps = dispatch => ({
