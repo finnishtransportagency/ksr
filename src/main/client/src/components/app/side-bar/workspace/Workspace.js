@@ -76,7 +76,7 @@ class Workspace extends Component<Props, null> {
         });
     };
 
-    handleSelectWorkspace = (workspaceName: string) => {
+    handleSelectWorkspace = (workspaceName: string, isPublic: boolean) => {
         const {
             setWorkspace,
             setWorkspaceRejected,
@@ -112,7 +112,7 @@ class Workspace extends Component<Props, null> {
             setLayerList(newLayerList);
 
             // Fetches users selected workspace.
-            fetchWorkspace(workspaceName)
+            fetchWorkspace(workspaceName, isPublic)
                 .then(async (workspace) => {
                     if (workspace) {
                         await loadWorkspace(
