@@ -27,6 +27,7 @@ public class Workspace implements Serializable {
     private int centerLongitude;
     private int centerLatitude;
     private Timestamp updateTime;
+    private boolean isPublic;
     
     @ApiModelProperty(hidden = true)
     private List<WorkspaceLayer> layers;
@@ -52,6 +53,7 @@ public class Workspace implements Serializable {
         this.centerLatitude = wsr.getCenterLatitude();
         this.updateTime = wsr.getUpdated();
         this.uuid = UUID.fromString(wsr.getUuid());
+        this.setIsPublic(wsr.getIspublic());
 
         if (wslr != null) {
             this.layers = wslr.stream().map(WorkspaceLayer::new).collect(Collectors.toList());
@@ -181,4 +183,12 @@ public class Workspace implements Serializable {
      * @param uuid UUID of the workspace
      */
     public void setUuid(UUID uuid) { this.uuid = uuid; }
+
+    public boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(String isPublic) {
+        this.isPublic = "1".equals(isPublic);
+    }
 }
