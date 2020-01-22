@@ -59,6 +59,7 @@ type Props = {
     activateLayers: (layers: Object[], workspace?: Object) => void,
     deactivateLayer: (layerId: string) => void,
     setScale: number => void,
+    setActiveNav: (selectedNav: string) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -474,6 +475,7 @@ class EsriMap extends Component<Props> {
             setTempGraphicsLayer,
             activateLayers,
             deactivateLayer,
+            setActiveNav,
         } = this.props;
 
         // Set initial view and temp graphics layer to redux
@@ -490,7 +492,7 @@ class EsriMap extends Component<Props> {
                 deactivateLayer,
             );
         } else {
-            workspace = await fetchWorkspace(null);
+            workspace = await fetchWorkspace(null, false);
             if (workspace) {
                 await loadWorkspace(
                     workspace,
@@ -502,6 +504,7 @@ class EsriMap extends Component<Props> {
             } else {
                 activateLayers(layerList.filter(layer => layer.visible));
                 setWorkspaceRejected();
+                setActiveNav('workspace');
             }
         }
         window.history.pushState({}, document.title, window.location.pathname);

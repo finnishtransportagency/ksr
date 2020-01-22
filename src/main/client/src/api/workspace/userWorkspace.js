@@ -7,12 +7,13 @@ import strings from '../../translations';
  * Gets specific workspace or latest workspace if no name given.
  *
  * @param {?string} workspaceName User given workspace name.
+ * @param {boolean} isPublic Whether the workspace is public or not.
  *
  * @return {Promise<Object>} Contains single workspaces data.
  */
-export const fetchWorkspace = (workspaceName: ?string) => {
+export const fetchWorkspace = (workspaceName: ?string, isPublic: boolean) => {
     if (workspaceName) {
-        return fetch(`api/workspace/?workspaceName=${workspaceName}`, config())
+        return fetch(`api/workspace/?workspaceName=${workspaceName}&isPublic=${String(isPublic)}`, config())
             .then((r) => {
                 if (r.ok) {
                     return r.json();

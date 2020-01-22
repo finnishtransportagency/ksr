@@ -17,6 +17,7 @@ import InitMap from './InitMap';
 import { setContractListInfo } from '../../../reducers/contract/actions';
 import { showConfirmModal } from '../../../reducers/confirmModal/actions';
 import { removeLoading } from '../../../reducers/loading/actions';
+import { setActiveNav } from '../../../reducers/navigation/actions';
 
 const mapStateToProps = (state) => {
     const { layers } = state.table.features;
@@ -103,6 +104,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setScale: (scale: number) => {
         dispatch(setScale(scale));
+    },
+    setActiveNav: (selectedNav) => {
+        dispatch(setActiveNav(selectedNav));
     },
 });
 

@@ -167,27 +167,31 @@ public class WorkspaceRepository {
     public List<Workspace> fetchWorkspaceListForUser(String username) {
         return context
                 .selectFrom(WORKSPACE)
-                .where(WORKSPACE.USERNAME.equal(username))
+                .where(WORKSPACE.USERNAME.equal(username).or(WORKSPACE.ISPUBLIC.equal("1")))
                 .orderBy(WORKSPACE.UPDATED.desc())
                 .fetch(w -> new Workspace(w, null));
     }
 
     /**
      * Fetch details for given workspace. If workspace name is not given
-     * return latest workspace for the user.
+     * return latest user workspace for the user.
      *
      * @param workspaceName Name of the workspace to be fetched.
      * @param username Username of the user whose workspace is fetched.
+     * @param isPublic Whether the workspace is public or not.
      *
      * @return Workspace and layer details.
      */
     @Transactional
-    public Workspace fetchWorkspaceDetails(String workspaceName, String username) {
+    public Workspace fetchWorkspaceDetails(String workspaceName, String username, boolean isPublic) {
         WorkspaceRecord workspace = context
                 .selectFrom(WORKSPACE)
-                .where(WORKSPACE.USERNAME.equal(username))
-                    .and(workspaceName != null ?
-                            WORKSPACE.NAME.equal(workspaceName) : DSL.trueCondition())
+                .where(isPublic 
+                        ? WORKSPACE.ISPUBLIC.equal("1") 
+                        : WORKSPACE.USERNAME.equal(username))
+                    .and(workspaceName != null 
+                            ? WORKSPACE.NAME.equal(workspaceName) 
+                            : DSL.trueCondition())
                 .orderBy(WORKSPACE.UPDATED.desc())
                 .limit(1)
                 .fetchOne();
