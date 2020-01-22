@@ -76,6 +76,7 @@ const mapStateToProps = (state) => {
         viewGraphics: state.map.mapView.view
             ? state.map.mapView.view.graphics._items
             : [],
+        hasTableEdited: state.table.features.hasTableEdited,
     };
 };
 

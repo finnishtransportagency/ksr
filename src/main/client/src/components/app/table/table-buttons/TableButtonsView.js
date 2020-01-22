@@ -34,6 +34,7 @@ type Props = {
     currentTabAdmin: boolean,
     bufferExists: boolean,
     handleClearBuffer: Function,
+    hasTableEdited: boolean,
 };
 
 const TableButtonsView = ({
@@ -60,6 +61,7 @@ const TableButtonsView = ({
     currentTabAdmin,
     bufferExists,
     handleClearBuffer,
+    hasTableEdited,
 }: Props) => (
     <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
         <Table.Button
@@ -93,11 +95,8 @@ const TableButtonsView = ({
             <AdminLayerView
                 isOpen={isOpen}
                 setActiveModal={setActiveModal}
-                activeUpdate={activeUpdate}
                 activeDelete={activeDelete}
-                originalLayers={originalLayers}
                 editedLayers={editedLayers}
-                editedLayersNoUnderscore={editedLayersNoUnderscore}
                 selectedAdminData={selectedAdminData}
                 showConfirmModal={showConfirmModal}
                 saveEditedFeatures={saveEditedFeatures}
@@ -106,6 +105,7 @@ const TableButtonsView = ({
                 view={view}
                 activeAdminTool={activeAdminTool}
                 currentTabAdmin={currentTabAdmin}
+                hasTableEdited={hasTableEdited}
             />
         ) : null}
     </Table.ButtonWrapper>

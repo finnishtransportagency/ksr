@@ -31,6 +31,7 @@ type Props = {
     currentTabAdmin: boolean,
     setButtonAmount: (buttonAmount: ?number) => void,
     viewGraphics: Object[],
+    hasTableEdited: boolean,
 };
 
 const TableButtons = ({
@@ -57,6 +58,7 @@ const TableButtons = ({
     currentTabAdmin,
     setButtonAmount,
     viewGraphics,
+    hasTableEdited,
 }: Props) => {
     const [bufferExists, setBufferExists] = useState(false);
 
@@ -114,6 +116,7 @@ const TableButtons = ({
             currentTabAdmin={currentTabAdmin}
             bufferExists={bufferExists}
             handleClearBuffer={handleClearBuffer}
+            hasTableEdited={hasTableEdited}
         />
     );
 };
