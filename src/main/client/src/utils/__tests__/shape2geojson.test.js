@@ -70,9 +70,9 @@ describe('shape2geojson4', () => {
         const { symbol } = renderer;
 
         const expectedFields = [
-            { name: 'ObjectID', alias: 'ObjectID', type: 'esriFieldTypeOID' },
-            { name: 'id', alias: 'id', type: 'esriFieldTypeString' },
-            { name: 'text', alias: 'text', type: 'esriFieldTypeString' },
+            { name: 'ObjectID', alias: 'ObjectID', type: 'oid' },
+            { name: 'id', alias: 'id', type: 'string' },
+            { name: 'text', alias: 'text', type: 'string' },
         ];
 
         expect(fields).toMatchObject(expectedFields);
@@ -81,7 +81,7 @@ describe('shape2geojson4', () => {
 
     it('convertLayerListFormat - should convert to layerListFormat', () => {
         const layer = {
-            fields: [{ alias: 'f1', type: 'esriFieldTypeString', name: 'f1n' }],
+            fields: [{ alias: 'f1', type: 'string', name: 'f1n' }],
             id: 1,
             title: 'Test layer',
             legendSymbol: null,
@@ -91,7 +91,7 @@ describe('shape2geojson4', () => {
             active: true,
             attribution: '',
             authentication: '',
-            fields: [{ label: 'f1', type: 'esriFieldTypeString', name: 'f1n' }],
+            fields: [{ label: 'f1', type: 'string', name: 'f1n' }],
             id: 1,
             layerGroupName: strings.mapLayers.userLayerGroupName,
             layerOrder: 1,
