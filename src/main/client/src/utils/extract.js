@@ -35,7 +35,8 @@ export const extractSelected = (
                 Layers_to_Clip: layerId.replace('.s', ''),
                 Area_of_Interest: featureSet,
                 Feature_Format: format,
-            }).then(result => gp.getResultData(result.jobId, 'Output_Zip_File')
-                .then(res => res.value.url));
+            }).then(result => gp.waitForJobCompletion(result.jobId))
+                .then(r => gp.getResultData(r.jobId, 'Output_Zip_File'))
+                .then(res => res.value.url);
         })
 );
