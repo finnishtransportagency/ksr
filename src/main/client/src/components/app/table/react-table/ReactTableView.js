@@ -18,7 +18,7 @@ type Props = {
     selectAll: boolean,
     renderEditable: Function,
     renderFilter: Function,
-    cellData: Object,
+    currentCellData: Object,
 };
 
 const ReactTableView = ({
@@ -30,7 +30,7 @@ const ReactTableView = ({
     selectAll,
     renderEditable,
     renderFilter,
-    cellData,
+    currentCellData,
 }: Props) => (
     <WrapperReactTable
         columns={columns}
@@ -96,15 +96,15 @@ const ReactTableView = ({
                 const color = r && r.row && r.row._original._selected && c.id !== '_selector'
                     ? colorTableSelected
                     : null;
-                const cellRowInputChange = c.id === cellData.title && r
-                && r.index === cellData.rowIndex
-                    ? !equals(cellData.originalData, cellData.editedData)
+                const cellRowInputChange = c.id === currentCellData.title && r
+                && r.index === currentCellData.rowIndex
+                    ? !equals(currentCellData.originalData, currentCellData.editedData)
                     : r && r.original._edited && r.original._edited
                         .some(t => t.title === c.id);
                 return {
                     style: {
                         background: cellRowInputChange
-                            ? editColor
+                            ? colorTableEdited
                             : color,
                     },
                 };
