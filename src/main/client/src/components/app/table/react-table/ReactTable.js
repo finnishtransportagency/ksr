@@ -62,8 +62,8 @@ class ReactTable extends Component<Props> {
 
         if (cellField && cellField.type === 'esriFieldTypeDouble') {
             return data[cellInfo.index][cellInfo.column.id]
-                ? data[cellInfo.index][cellInfo.column.id].toFixed(3)
-                : '0.000';
+                ? data[cellInfo.index][cellInfo.column.id].toFixed(2)
+                : '0.00';
         }
         return data[cellInfo.index][cellInfo.column.id];
     };
