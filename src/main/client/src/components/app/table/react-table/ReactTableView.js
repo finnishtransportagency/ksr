@@ -7,6 +7,7 @@ import strings from '../../../../translations';
 import { colorTableEdited, colorTableSelected } from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
 import { toDisplayDate } from '../../../../utils/date';
+import { equals } from '../../../../utils/cellEditValidate';
 
 type Props = {
     data: Array<any>,
@@ -17,6 +18,7 @@ type Props = {
     selectAll: boolean,
     renderEditable: Function,
     renderFilter: Function,
+    currentCellData: Object,
 };
 
 const ReactTableView = ({
@@ -28,6 +30,7 @@ const ReactTableView = ({
     selectAll,
     renderEditable,
     renderFilter,
+    currentCellData,
 }: Props) => (
     <WrapperReactTable
         columns={columns}
@@ -93,11 +96,16 @@ const ReactTableView = ({
                 const color = r && r.row && r.row._original._selected && c.id !== '_selector'
                     ? colorTableSelected
                     : null;
-
+                const cellRowInputChange = c.id === currentCellData.title && r
+                && r.index === currentCellData.rowIndex
+                    ? !equals(currentCellData.originalData, currentCellData.editedData)
+                    : r && r.original._edited && r.original._edited
+                        .some(t => t.title === c.id);
                 return {
                     style: {
-                        background: r && r.original._edited && r.original._edited
-                            .find(t => t.title === c.id) ? colorTableEdited : color,
+                        background: cellRowInputChange
+                            ? colorTableEdited
+                            : color,
                     },
                 };
             }}

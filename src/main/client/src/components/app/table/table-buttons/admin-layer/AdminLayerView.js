@@ -1,17 +1,13 @@
 // @flow
 import React, { Fragment } from 'react';
-import equals from 'nano-equal';
 import Table from '../../../../ui/blocks/Table';
 import strings from '../../../../../translations';
 
 type Props = {
     isOpen: boolean,
     setActiveModal: (modal: string) => void,
-    activeUpdate: boolean,
     activeDelete: boolean,
-    originalLayers: Array<Object>,
     editedLayers: Array<Object>,
-    editedLayersNoUnderscore: Array<Object>,
     selectedAdminData: boolean,
     showConfirmModal: (
         body: string,
@@ -23,15 +19,14 @@ type Props = {
     featureType: string,
     addressField: string,
     view: Object,
+    hasTableEdited: boolean,
 };
 
 /** Table actions that are only visible for currently active admin table */
 const AdminLayerView = ({
     isOpen,
     setActiveModal,
-    activeUpdate,
     activeDelete,
-    originalLayers,
     editedLayers,
     selectedAdminData,
     showConfirmModal,
@@ -39,22 +34,15 @@ const AdminLayerView = ({
     featureType,
     addressField,
     view,
-    editedLayersNoUnderscore,
+    hasTableEdited,
 }: Props) => (
     <Fragment>
         <Table.Button
             title={strings.reactTable.saveEditedData}
             tableOpen={isOpen}
-            disabled={
-                !activeUpdate
-                || originalLayers.every(o => o._source === 'shapefile')
-                || !originalLayers.length
-                || equals(originalLayers, editedLayersNoUnderscore)
-            }
+            disabled={!hasTableEdited}
             onClick={
-                activeUpdate
-                && originalLayers.length
-                && !equals(originalLayers, editedLayersNoUnderscore)
+                hasTableEdited
                     ? () => {
                         showConfirmModal(
                             strings.modalSaveEditedData.content,

@@ -18,6 +18,7 @@ import {
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
     CLOSE_LAYER,
+    TABLE_EDITED,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
@@ -37,6 +38,7 @@ type State = {
     editedLayers: Array<Object>,
     activeTable: string,
     singleLayerGeometry: Object,
+    hasTableEdited: boolean,
 };
 
 type Action = {
@@ -53,6 +55,7 @@ type Action = {
     geometry: Object,
     edits: Array<Object>,
     objectIds: string,
+    hasTableEdited: boolean,
 };
 
 const initialState = {
@@ -61,6 +64,7 @@ const initialState = {
     activeTable: '',
     fetching: false,
     singleLayerGeometry: {},
+    hasTableEdited: false,
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -191,6 +195,11 @@ export default (state: State = initialState, action: Action) => {
                     state.layers.filter(l => l.id !== action.layerId),
                     state.activeTable,
                 ),
+            };
+        case TABLE_EDITED:
+            return {
+                ...state,
+                hasTableEdited: action.hasTableEdited,
             };
         default:
             return state;

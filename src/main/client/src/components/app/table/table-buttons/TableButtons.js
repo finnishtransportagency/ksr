@@ -10,7 +10,6 @@ type Props = {
     activeDelete: boolean,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
-    editedLayersNoUnderscore: Array<Object>,
     selectedAdminData: boolean,
     geometryDataSelected: boolean,
     geometryData: Object[],
@@ -31,6 +30,7 @@ type Props = {
     currentTabAdmin: boolean,
     setButtonAmount: (buttonAmount: ?number) => void,
     viewGraphics: Object[],
+    hasTableEdited: boolean,
 };
 
 const TableButtons = ({
@@ -52,11 +52,11 @@ const TableButtons = ({
     featureType,
     addressField,
     view,
-    editedLayersNoUnderscore,
     activeAdminTool,
     currentTabAdmin,
     setButtonAmount,
     viewGraphics,
+    hasTableEdited,
 }: Props) => {
     const [bufferExists, setBufferExists] = useState(false);
 
@@ -98,7 +98,6 @@ const TableButtons = ({
             activeDelete={activeDelete}
             originalLayers={originalLayers}
             editedLayers={editedLayers}
-            editedLayersNoUnderscore={editedLayersNoUnderscore}
             selectedAdminData={selectedAdminData}
             geometryDataSelected={geometryDataSelected}
             geometryData={geometryData}
@@ -114,6 +113,7 @@ const TableButtons = ({
             currentTabAdmin={currentTabAdmin}
             bufferExists={bufferExists}
             handleClearBuffer={handleClearBuffer}
+            hasTableEdited={hasTableEdited}
         />
     );
 };

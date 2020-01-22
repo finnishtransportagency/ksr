@@ -9,11 +9,9 @@ type Props = {
     toggleTable: Function,
     isOpen: boolean,
     setActiveModal: (modal: string) => void,
-    activeUpdate: boolean,
     activeDelete: boolean,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
-    editedLayersNoUnderscore: Array<Object>,
     selectedAdminData: boolean,
     geometryDataSelected: boolean,
     geometryData: Object[],
@@ -34,13 +32,13 @@ type Props = {
     currentTabAdmin: boolean,
     bufferExists: boolean,
     handleClearBuffer: Function,
+    hasTableEdited: boolean,
 };
 
 const TableButtonsView = ({
     toggleTable,
     isOpen,
     setActiveModal,
-    activeUpdate,
     activeDelete,
     originalLayers,
     editedLayers,
@@ -55,11 +53,11 @@ const TableButtonsView = ({
     featureType,
     addressField,
     view,
-    editedLayersNoUnderscore,
     activeAdminTool,
     currentTabAdmin,
     bufferExists,
     handleClearBuffer,
+    hasTableEdited,
 }: Props) => (
     <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
         <Table.Button
@@ -93,11 +91,8 @@ const TableButtonsView = ({
             <AdminLayerView
                 isOpen={isOpen}
                 setActiveModal={setActiveModal}
-                activeUpdate={activeUpdate}
                 activeDelete={activeDelete}
-                originalLayers={originalLayers}
                 editedLayers={editedLayers}
-                editedLayersNoUnderscore={editedLayersNoUnderscore}
                 selectedAdminData={selectedAdminData}
                 showConfirmModal={showConfirmModal}
                 saveEditedFeatures={saveEditedFeatures}
@@ -106,6 +101,7 @@ const TableButtonsView = ({
                 view={view}
                 activeAdminTool={activeAdminTool}
                 currentTabAdmin={currentTabAdmin}
+                hasTableEdited={hasTableEdited}
             />
         ) : null}
     </Table.ButtonWrapper>
