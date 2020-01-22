@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
-import { cellEditValidate, getValue, preventKeyPress, } from '../../../../utils/cellEditValidate';
+import { cellEditValidate, getValue, preventKeyPress } from '../../../../utils/cellEditValidate';
 import { addContractColumn } from '../../../../utils/contracts/contractColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';

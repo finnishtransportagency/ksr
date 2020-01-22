@@ -10,7 +10,6 @@ type Props = {
     activeDelete: boolean,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
-    editedLayersNoUnderscore: Array<Object>,
     selectedAdminData: boolean,
     geometryDataSelected: boolean,
     geometryData: Object[],
@@ -53,7 +52,6 @@ const TableButtons = ({
     featureType,
     addressField,
     view,
-    editedLayersNoUnderscore,
     activeAdminTool,
     currentTabAdmin,
     setButtonAmount,
@@ -100,7 +98,6 @@ const TableButtons = ({
             activeDelete={activeDelete}
             originalLayers={originalLayers}
             editedLayers={editedLayers}
-            editedLayersNoUnderscore={editedLayersNoUnderscore}
             selectedAdminData={selectedAdminData}
             geometryDataSelected={geometryDataSelected}
             geometryData={geometryData}

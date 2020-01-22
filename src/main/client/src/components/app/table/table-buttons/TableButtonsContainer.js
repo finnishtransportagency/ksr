@@ -29,8 +29,6 @@ const mapStateToProps = (state) => {
 
     const tableFeaturesLayers = state.table.features.layers;
 
-    const editedLayersNoUnderscore = state.table.features.editedLayers
-        .map(l => removeUnderscore(l));
     const originalLayers = tableFeaturesLayers.map(l => removeUnderscore(l));
     const selectedAdminData = tableFeaturesLayers
         .filter(layer => layer.id === state.adminTool.active.layerId)
@@ -57,10 +55,8 @@ const mapStateToProps = (state) => {
         isOpen: state.table.toggleTable,
         isOpenFilter: state.table.toggleFilter,
         activeModal: state.modal.activeModal.activeModal,
-        activeUpdate: layer && currentTabAdmin ? layer.layerPermission.updateLayer : false,
         activeDelete: layer && currentTabAdmin ? layer.layerPermission.deleteLayer : false,
         originalLayers,
-        editedLayersNoUnderscore,
         selectedAdminData: selectedAdminData.length > 0,
         geometryDataSelected: geometryDataSelected.length > 0,
         geometryData: geometryDataSelected,
