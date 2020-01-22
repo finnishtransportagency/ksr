@@ -12,24 +12,6 @@ import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
 
-export const getLayerGroups = () => async (dispatch: Function) => {
-    dispatch({ type: types.GET_LAYER_GROUPS });
-
-    const layerGroups = await fetchLayerGroups();
-    const layerList = layerGroups
-        .flatMap(lg => lg.layers.map(layer => ({ ...layer, layerGroupName: lg.name })))
-        .sort((a, b) => b.layerOrder - a.layerOrder);
-
-    return dispatch({
-        type: types.GET_LAYER_GROUPS_FULFILLED,
-        layerGroups: layerGroups.map(lg => ({
-            ...lg,
-            layers: lg.layers.map(layer => layer),
-        })),
-        layerList,
-    });
-};
-
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
     layerList,
@@ -45,6 +27,35 @@ export const updateLayerFields = (layerId: string, fields: Object[]) => ({
     layerId,
     fields,
 });
+
+export const getLayerGroups = () => async (dispatch: Function) => {
+    dispatch({ type: types.GET_LAYER_GROUPS });
+
+    const layerGroups = await fetchLayerGroups();
+    const layerList = layerGroups
+        .flatMap(lg => lg.layers.map(layer => ({ ...layer, layerGroupName: lg.name })))
+        .sort((a, b) => b.layerOrder - a.layerOrder);
+
+    // Update layers fields
+    layerList.forEach((layer) => {
+        if (!layer.fields) {
+            getSingleLayerFields(layer).then(
+                (fetchedLayer) => {
+                    updateLayerFields(fetchedLayer.id, fetchedLayer.fields);
+                },
+            ).catch(err => console.log(err));
+        }
+    });
+
+    return dispatch({
+        type: types.GET_LAYER_GROUPS_FULFILLED,
+        layerGroups: layerGroups.map(lg => ({
+            ...lg,
+            layers: lg.layers.map(layer => layer),
+        })),
+        layerList,
+    });
+};
 
 /**
  * Handles activating new layers. Works with single layer, layer group or workspace.
