@@ -61,10 +61,10 @@ const ModalExtractSelectedView = ({
                 <Radiobutton htmlFor="autocad-dwg">
                     {strings.modalExtractSelectedData.autocadDwg}
                     <Radiobutton.Input
-                        checked={activeFormat === 'Autodesk AutoCAD - DWG_R2007 - .dwg'}
+                        checked={activeFormat === 'Autodesk AutoCAD - DWG_R2013 - .dwg'}
                         type="radio"
                         id="autocad-dwg"
-                        value="Autodesk AutoCAD - DWG_R2007 - .dwg"
+                        value="Autodesk AutoCAD - DWG_R2013 - .dwg"
                         onChange={handleRadioChange}
                     />
                     <Radiobutton.Checkmark />
