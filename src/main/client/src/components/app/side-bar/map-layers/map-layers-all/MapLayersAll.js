@@ -48,9 +48,49 @@ class MapLayersActive extends Component<Props> {
 
     handleLayerClick = (id: number) => {
         const {
-            activateLayers, deactivateLayer, layerList, setSearchFeatures,
+            activateLayers, deactivateLayer, layerList, setSearchFeatures, subLayers,
         } = this.props;
+
         const foundLayer = layerList.find(l => l.id === id);
+        const layerElement: any = document.getElementById(id.toString());
+        let parentLayer: any = [];
+        let subGroups: any = [];
+        if (foundLayer.parentLayer === null) {
+            subGroups = subLayers.filter(sl => sl.parentLayer === foundLayer.id);
+            parentLayer = layerList.find(l => l.id === id);
+        } else {
+            subGroups = subLayers.filter(sl => foundLayer.parentLayer !== null
+            && sl.parentLayer === foundLayer.parentLayer);
+            parentLayer = layerList.find(l => l.id === foundLayer.parentLayer);
+        }
+
+        if (parentLayer) {
+            if (parentLayer.id !== layerElement.id && layerElement.checked) {
+                const filtered = subGroups.filter(sg => sg.id !== layerElement.id);
+                if (filtered.every(sg => sg.active)) {
+                    this.toggleCheckboxSubclass(parentLayer.id, false);
+                } else {
+                    this.toggleCheckboxSubclass(parentLayer.id, true);
+                }
+            } else if (foundLayer.parentLayer === null
+                && parentLayer.id === layerElement.id
+                && !layerElement.checked
+                && subGroups.some(sg => sg.active)) {
+                this.toggleCheckboxSubclass(parentLayer.id, true);
+            } else if (foundLayer.parentLayer === null && subGroups.every(sg => sg.active)) {
+                this.toggleCheckboxSubclass(parentLayer.id, false);
+            } else if (foundLayer.parentLayer !== null
+                && parentLayer.id !== layerElement.id
+                && !layerElement.checked) {
+                const filtered = subGroups.filter(sg => sg.id !== layerElement.id);
+                if (filtered.every(sg => !sg.active)) {
+                    this.toggleCheckboxSubclass(parentLayer.id, false);
+                } else if (filtered.some(sg => sg.active)) {
+                    this.toggleCheckboxSubclass(parentLayer.id, true);
+                }
+            }
+        }
+
         if (foundLayer && !foundLayer.active) {
             if (foundLayer.definitionExpression) {
                 setSearchFeatures([foundLayer]);
@@ -90,7 +130,20 @@ class MapLayersActive extends Component<Props> {
                     : true))]
             : [];
 
+        this.toggleCheckboxSubclass(id, false);
+
         this.updateLayerList(filteredSubLayers);
+    };
+
+    toggleCheckboxSubclass = (id: number, toggle: boolean) => {
+        const { layerList } = this.props;
+        const parentLayer = layerList.find(l => l.id === id);
+        const layerGroupElement: any = document.getElementById(parentLayer.name);
+        if (layerGroupElement && layerGroupElement.classList && !toggle) {
+            layerGroupElement.classList.remove('checkboxSquare');
+        } else if (layerGroupElement && layerGroupElement.classList && toggle) {
+            layerGroupElement.classList.add('checkboxSquare');
+        }
     };
 
     updateLayerList = (foundLayers: Object[]) => {

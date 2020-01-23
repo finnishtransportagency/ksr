@@ -40,8 +40,8 @@ const MapLayersAllView = ({
 }: Props) => (
     <Fragment>
         {
-            layerGroups.some(group => group.layers.length) ?
-                (
+            layerGroups.some(group => group.layers.length)
+                ? (
                     layerGroups.map(lg => lg.layers.length > 0 && (
                         <LayerGroup
                             key={lg.id}
@@ -56,8 +56,8 @@ const MapLayersAllView = ({
                                 <LayerGroup.Loading onClick={() => handleGroupClick(lg.id)}>
                                     <LoadingIcon
                                         size={8}
-                                        loading={loadingLayers.some(ll =>
-                                            lg.layers.some(l => l.id === ll))}
+                                        // eslint-disable-next-line max-len
+                                        loading={loadingLayers.some(ll => lg.layers.some(l => l.id === ll))}
                                     />
                                 </LayerGroup.Loading>
                                 <Checkbox htmlFor={lg.name} layerAllView>
@@ -67,8 +67,20 @@ const MapLayersAllView = ({
                                         name={lg.name}
                                         type="checkbox"
                                         checked={
-                                            layerList.filter(layer =>
-                                                layer.layerGroupName === lg.name
+                                            // eslint-disable-next-line max-len
+                                            layerList.filter(layer => layer.layerGroupName === lg.name
+                                                && !layer.parentLayer
+                                                && !layer.failOnLoad
+                                                && layer.relationType !== 'link'
+                                                && (layersToFind
+                                                    // eslint-disable-next-line max-len
+                                                    ? (layer.layerGroupName.toLowerCase().includes(layersToFind)
+                                                || layer.name.toLowerCase().includes(layersToFind)
+                                                || subLayers.some(l => l.parentLayer === layer.id
+                                                && l.name.toLowerCase().includes(layersToFind)))
+                                                    : true)).length > 0
+                                                // eslint-disable-next-line max-len
+                                                && layerList.filter(layer => layer.layerGroupName === lg.name
                                                 && !layer.parentLayer
                                                 && !layer.failOnLoad
                                                 && layer.relationType !== 'link'
@@ -77,27 +89,12 @@ const MapLayersAllView = ({
                                                         .includes(layersToFind)
                                                         || layer.name.toLowerCase()
                                                             .includes(layersToFind)
-                                                        || subLayers.some(l =>
-                                                            l.parentLayer === layer.id
-                                                            && l.name.toLowerCase()
-                                                                .includes(layersToFind)))
-                                                    : true)).length > 0 &&
-                                            layerList.filter(layer =>
-                                                layer.layerGroupName === lg.name
-                                                && !layer.parentLayer
-                                                && !layer.failOnLoad
-                                                && layer.relationType !== 'link'
-                                                && (layersToFind
-                                                    ? (layer.layerGroupName.toLowerCase()
-                                                        .includes(layersToFind)
-                                                        || layer.name.toLowerCase()
-                                                            .includes(layersToFind)
-                                                        || subLayers.some(l =>
-                                                            l.parentLayer === layer.id
+                                                            // eslint-disable-next-line max-len
+                                                        || subLayers.some(l => l.parentLayer === layer.id
                                                             && l.name.toLowerCase()
                                                                 .includes(layersToFind)))
                                                     : true))
-                                                .every(l => l.active)
+                                                    .every(l => l.active)
                                         }
                                         onChange={() => handleLayerGroupClick(lg.name)}
                                     />
@@ -130,23 +127,28 @@ const MapLayersAllView = ({
                                         layerList.find(layer => layer.id === l.id
                                             && !layer.parentLayer
                                             && !layerList.some(ll => ll.parentLayer === l.id))
-                                            ? <MapLayerContainer
-                                                inputDisabled={l._source === 'shapefile'}
-                                                key={l.id}
-                                                layer={l}
-                                                layerGroupName={lg.name}
-                                                handleLayerClick={handleLayerClick}
-                                                checked={nestedVal(layerList.find(layer => layer.id === l.id), ['active'], false)}
-                                            />
-                                            : <SubLayerContainer
-                                                key={l.id}
-                                                layer={l}
-                                                handleLayerClick={handleLayerClick}
-                                                activeSubGroups={activeSubGroups}
-                                                handleSubGroupClick={handleSubGroupClick}
-                                                handleSubLayerGroupClick={handleSubLayerGroupClick}
-                                                layersToFind={layersToFind}
-                                            />
+                                            ? (
+                                                <MapLayerContainer
+                                                    inputDisabled={l._source === 'shapefile'}
+                                                    key={l.id}
+                                                    layer={l}
+                                                    layerGroupName={lg.name}
+                                                    handleLayerClick={handleLayerClick}
+                                                    checked={nestedVal(layerList.find(layer => layer.id === l.id), ['active'], false)}
+                                                />
+                                            )
+                                            : (
+                                                <SubLayerContainer
+                                                    key={l.id}
+                                                    layer={l}
+                                                    handleLayerClick={handleLayerClick}
+                                                    activeSubGroups={activeSubGroups}
+                                                    handleSubGroupClick={handleSubGroupClick}
+                                                    // eslint-disable-next-line max-len
+                                                    handleSubLayerGroupClick={handleSubLayerGroupClick}
+                                                    layersToFind={layersToFind}
+                                                />
+                                            )
                                     ))
                                 }
                             </LayerGroup.Content>

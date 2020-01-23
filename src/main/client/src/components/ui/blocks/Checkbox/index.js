@@ -41,6 +41,15 @@ const Checkbox = styled.label`
             background-color: ${styles.colorBackgroundLightSecondary};
         `};         
     }
+
+    .checkboxSquare ~ span:before {
+        content: "\\25A0";
+        color: #4c4c4c;
+        position: absolute;
+        top: -7px;
+        left: 2px;
+        font-size: 20px;
+    }
 `;
 
 Checkbox.Input = Input;
