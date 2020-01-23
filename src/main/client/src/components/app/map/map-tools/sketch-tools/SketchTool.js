@@ -241,7 +241,7 @@ class SketchTool extends Component<Props, State> {
                             paths: polygon.rings,
                             spatialReference: view.spatialReference,
                         });
-                        const planarLength = geometryEngine.planarLength(line, 'meters');
+                        const planarLength = (geometryEngine.planarLength(line, 'meters')) / 2;
                         measure = `${parseFloat(planarLength.toFixed(2))} m`;
                     }
                     return measure;
@@ -342,6 +342,12 @@ class SketchTool extends Component<Props, State> {
                 };
 
                 const onUpdate = (event) => {
+                    // Remove existing label
+                    if (tempGraphicsLayer.graphics.items.length !== 0
+                        && tempGraphicsLayer.graphics.items[0].type === 'draw-measure-label') {
+                        const swapAreaLabel = tempGraphicsLayer.graphics.items[0];
+                        tempGraphicsLayer.remove(swapAreaLabel);
+                    }
                     if (event.graphics[0].geometry.isSelfIntersecting
                         || (!editModeActive
                             && event.graphics[0].geometry.rings
