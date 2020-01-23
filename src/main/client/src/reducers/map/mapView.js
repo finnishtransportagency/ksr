@@ -2,6 +2,7 @@
 import {
     CLEAR_SEARCH_DATA,
     CLEAR_TABLE_DATA,
+    CLOSE_LAYER,
     REMOVE_LAYER_FROM_VIEW,
     SET_GRAPH_LAYER,
     SET_MAP_VIEW,
@@ -49,8 +50,9 @@ export default (state: Object = initialState, action: Action) => {
                     .filter(l => l.id.endsWith('.s')));
             }
             return state;
+        case CLOSE_LAYER:
         case CLEAR_SEARCH_DATA:
-            if (state.view && state.view.map) {
+            if (state.view && state.view.map && action.layerId.endsWith('.s')) {
                 state.view.map.layers.removeMany(state.view.map.layers
                     .filter(l => l.id === action.layerId));
             }
