@@ -24,6 +24,7 @@ type Props = {
         accept: Function
     ) => void,
     closeTableTab: Function,
+    view: Object,
 };
 
 const TabbedTableView = ({
@@ -33,6 +34,7 @@ const TabbedTableView = ({
     activeAdmin,
     showConfirmModal,
     closeTableTab,
+    view,
 }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
@@ -70,6 +72,7 @@ const TabbedTableView = ({
                                         strings.modalClearTableTab.cancel,
                                         () => {
                                             closeTableTab(l.id);
+                                            view.popup.close();
                                         },
                                     );
                                 }}
