@@ -9,12 +9,10 @@ import Header from './Header';
 const Modal = styled.div`
     background: ${styles.colorBackgroundWhite};
     color: ${styles.colorFontDark};
-    position: fixed;
-    right: 0;
-    left: calc((100% - 700px) / 2);
-    top: 2rem;
+    margin-top: 2rem;
     visibility: visible;
     max-height: 90%;
+    height: fit-content;
     width: 700px;
     z-index: 1050;
     -webkit-box-shadow: ${styles.shadowDefault};
