@@ -7,6 +7,7 @@ const Blur = styled.div`
     height: 100%;
     display: flex;
     justify-content: center;
+    z-index: 999;
 `;
 
 export default Blur;

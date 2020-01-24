@@ -36,32 +36,36 @@ const ModalView = ({
     <Modal.Blur>
         <Draggable bounds="parent" handle="strong">
             <Modal fadeOut={fadeOut}>
-                <strong><Modal.Header>
-                    <H1 secondary>{title}</H1>
-                    <button onClick={handleModalCancel}>
-                        <i className="fas fa-times" />
-                    </button>
-                </Modal.Header></strong>
+                <strong>
+                    <Modal.Header>
+                        <H1 secondary>{title}</H1>
+                        <button type="button" onClick={handleModalCancel}>
+                            <i className="fas fa-times" />
+                        </button>
+                    </Modal.Header>
+                </strong>
                 <Scrollbars autoHeight autoHeightMax={500} className="modal-content-scroll-wrapper">
                     <Modal.Content>
                         {content}
                     </Modal.Content>
                 </Scrollbars>
-                {modalSubmit.length || cancelText ?
-                    <Modal.Footer>
-                        {modalSubmit.map((submit, i) => (
-                            <Button
-                                key={submit.text}
-                                disabled={submit.disabled}
-                                onClick={() => handleSubmit(i)}
-                            >
-                                {submit.text}
+                {modalSubmit.length || cancelText
+                    ? (
+                        <Modal.Footer>
+                            {modalSubmit.map((submit, i) => (
+                                <Button
+                                    key={submit.text}
+                                    disabled={submit.disabled}
+                                    onClick={() => handleSubmit(i)}
+                                >
+                                    {submit.text}
+                                </Button>
+                            ))}
+                            <Button flat onClick={handleGoBack || handleModalCancel}>
+                                {cancelText}
                             </Button>
-                        ))}
-                        <Button flat onClick={handleGoBack || handleModalCancel}>
-                            {cancelText}
-                        </Button>
-                    </Modal.Footer>
+                        </Modal.Footer>
+                    )
                     : null
                 }
             </Modal>
