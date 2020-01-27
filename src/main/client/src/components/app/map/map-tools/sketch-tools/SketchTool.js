@@ -227,10 +227,10 @@ class SketchTool extends Component<Props, State> {
                 });
 
                 const measurement = (polygon: Object) => {
-                    const planarArea = geometryEngine.planarArea(
+                    const planarArea = Math.abs(geometryEngine.planarArea(
                         polygon,
                         'square-meters',
-                    );
+                    ));
                     let measure = '0';
                     if (planarArea >= 10000) {
                         measure = `${parseFloat((planarArea / 10000).toFixed(2))} ha`;
