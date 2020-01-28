@@ -17,6 +17,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const EditsContainer = connect(mapStateToProps, mapDispatchToProps)(EditsView);
+const EditsContainer = (connect(mapStateToProps, mapDispatchToProps)(EditsView): any);
 
 export default EditsContainer;

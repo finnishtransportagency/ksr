@@ -110,6 +110,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const InitMapContainer = connect(mapStateToProps, mapDispatchToProps)(InitMap);
+const InitMapContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(InitMap): any);
 
 export default InitMapContainer;

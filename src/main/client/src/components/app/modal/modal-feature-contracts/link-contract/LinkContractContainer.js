@@ -16,6 +16,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const ContractListContainer = connect(mapStateToProps)(LinkContract);
+const ContractListContainer = (connect(mapStateToProps)(LinkContract): any);
 
 export default ContractListContainer;

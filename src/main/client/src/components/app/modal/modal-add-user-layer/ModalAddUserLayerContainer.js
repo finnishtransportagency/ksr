@@ -9,6 +9,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalAddUserLayerContainer = connect(null, mapDispatchToProps)(ModalAddUserLayer);
+const ModalAddUserLayerContainer = (connect(null, mapDispatchToProps)(ModalAddUserLayer): any);
 
 export default ModalAddUserLayerContainer;

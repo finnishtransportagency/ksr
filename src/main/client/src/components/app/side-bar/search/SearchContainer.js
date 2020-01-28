@@ -27,6 +27,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SearchContainer = connect(mapStateToProps, mapDispatchToProps)(Search);
+const SearchContainer = (connect(mapStateToProps, mapDispatchToProps)(Search): any);
 
 export default SearchContainer;

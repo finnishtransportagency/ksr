@@ -148,7 +148,7 @@ class ReactTable extends Component<Props, State> {
     getDisplayContent = (cellField: Object, content: any) => {
         const { domain } = cellField;
         if (content === null) {
-            return null;
+            return '';
         }
 
         return getCodedValue(domain, content);
@@ -345,7 +345,7 @@ class ReactTable extends Component<Props, State> {
                 }}
                 /* eslint-disable-next-line react/no-danger */
                 dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(textContent),
+                    __html: DOMPurify().sanitize(textContent),
                 }}
             />
         );

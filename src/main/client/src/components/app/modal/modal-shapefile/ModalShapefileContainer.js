@@ -18,6 +18,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalShapefileContainer = connect(mapStateToProps, mapDispatchToProps)(ModalShapefile);
+const ModalShapefileContainer = (connect(mapStateToProps, mapDispatchToProps)(ModalShapefile): any);
 
 export default ModalShapefileContainer;

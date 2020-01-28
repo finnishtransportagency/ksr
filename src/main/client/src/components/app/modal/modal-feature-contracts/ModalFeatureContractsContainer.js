@@ -40,9 +40,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalFeatureContractsContainer = connect(
+const ModalFeatureContractsContainer = (connect(
     mapStateToProps,
     mapDispatchToProps,
-)(ModalFeatureContracts);
+)(ModalFeatureContracts): any);
 
 export default ModalFeatureContractsContainer;

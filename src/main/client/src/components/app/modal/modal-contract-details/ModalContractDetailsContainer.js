@@ -36,9 +36,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalContractDetailsContainer = connect(
+const ModalContractDetailsContainer = (connect(
     mapStateToProps,
     mapDispatchToProps,
-)(ModalContractDetails);
+)(ModalContractDetails): any);
 
 export default ModalContractDetailsContainer;

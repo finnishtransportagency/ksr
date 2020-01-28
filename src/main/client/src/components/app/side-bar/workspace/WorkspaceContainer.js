@@ -52,6 +52,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const WorkspaceContainer = connect(mapStateToProps, mapDispatchToProps)(Workspace);
+const WorkspaceContainer = (connect(mapStateToProps, mapDispatchToProps)(Workspace): any);
 
 export default WorkspaceContainer;

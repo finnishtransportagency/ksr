@@ -42,9 +42,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalDeleteSelectedContainer = connect(
+const ModalDeleteSelectedContainer = (connect(
     mapStateToProps,
     mapDispatchToProps,
-)(ModalDeleteSelected);
+)(ModalDeleteSelected): any);
 
 export default ModalDeleteSelectedContainer;

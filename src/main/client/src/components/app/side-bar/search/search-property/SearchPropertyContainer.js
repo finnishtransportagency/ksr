@@ -19,6 +19,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SearchPropertyContainer = connect(mapStateToProps, mapDispatchToProps)(SearchProperty);
+const SearchPropertyContainer = (connect(mapStateToProps, mapDispatchToProps)(SearchProperty): any);
 
 export default SearchPropertyContainer;

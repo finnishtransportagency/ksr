@@ -7,6 +7,6 @@ const mapStateToProps = state => ({
     activeNav: state.navigation.activeNav,
 });
 
-const TableContainer = connect(mapStateToProps)(TableView);
+const TableContainer = (connect(mapStateToProps)(TableView): any);
 
 export default TableContainer;

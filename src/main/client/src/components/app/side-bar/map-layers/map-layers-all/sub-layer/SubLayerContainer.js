@@ -9,6 +9,6 @@ const mapStateToProps = (state, ownProps) => ({
     loadingLayers: state.loading.loadingLayers,
 });
 
-const SubLayerContainer = connect(mapStateToProps)(SubLayerView);
+const SubLayerContainer = (connect(mapStateToProps)(SubLayerView): any);
 
 export default SubLayerContainer;
