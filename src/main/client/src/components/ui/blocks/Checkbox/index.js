@@ -26,12 +26,7 @@ const Checkbox = styled.label`
     }
     
     ${props => props.layerAllView && css`
-        margin-bottom: 0;
-        
-        span {
-            top: ${props.subLayer ? '1px' : '1rem'};
-            left: 1rem;
-        }
+        margin-bottom: 1rem;
     `};
 
     input:checked ~ span {
