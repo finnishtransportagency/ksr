@@ -39,6 +39,7 @@ const setup = (prop) => {
         handleSubLayerGroupClick: jest.fn(),
         loadingLayers: [],
         layersToFind: '',
+        checkboxSquare: jest.fn(),
     };
 
     const props = prop || minProps;
