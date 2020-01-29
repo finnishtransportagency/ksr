@@ -58,8 +58,8 @@ const MapLayersAllView = ({
                                 <LayerGroup.Loading onClick={() => handleGroupClick(lg.id)}>
                                     <LoadingIcon
                                         size={8}
-                                        loading={loadingLayers.some(ll => lg.layers.some(l => l.id
-                                            === ll))}
+                                        loading={loadingLayers.some(ll =>
+                                            lg.layers.some(l => l.id === ll))}
                                     />
                                 </LayerGroup.Loading>
                                 <CheckboxWrapper>
@@ -70,8 +70,23 @@ const MapLayersAllView = ({
                                             name={lg.name}
                                             type="checkbox"
                                             checked={
-                                                layerList.filter(layer => layer.layerGroupName
-                                                === lg.name
+                                            layerList.filter(layer =>
+                                                layer.layerGroupName === lg.name
+                                                && !layer.parentLayer
+                                                && !layer.failOnLoad
+                                                && layer.relationType !== 'link'
+                                                && (layersToFind
+                                                    // eslint-disable-next-line max-len
+                                                    ? (layer.layerGroupName.toLowerCase().includes(layersToFind)
+                                                || layer.name.toLowerCase().includes(layersToFind)
+                                                || subLayers.some(l => l.parentLayer === layer.id
+                                                        || subLayers.some(l =>
+                                                            l.parentLayer === layer.id
+                                                // eslint-disable-next-line max-len
+                                                && layerList.filter(layer => layer.layerGroupName === lg.name
+                                                    : true)).length > 0 &&
+                                            layerList.filter(layer =>
+                                                layer.layerGroupName === lg.name
                                                 && !layer.parentLayer
                                                 && !layer.failOnLoad
                                                 && layer.relationType !== 'link'
@@ -80,27 +95,12 @@ const MapLayersAllView = ({
                                                         .includes(layersToFind)
                                                         || layer.name.toLowerCase()
                                                             .includes(layersToFind)
-                                                        || subLayers.some(l => l.parentLayer
-                                                            === layer.id
-                                                            && l.name.toLowerCase()
-                                                                .includes(layersToFind)))
-                                                    : true)).length > 0
-                                            && layerList.filter(layer => layer.layerGroupName
-                                                === lg.name
-                                                && !layer.parentLayer
-                                                && !layer.failOnLoad
-                                                && layer.relationType !== 'link'
-                                                && (layersToFind
-                                                    ? (layer.layerGroupName.toLowerCase()
-                                                        .includes(layersToFind)
-                                                        || layer.name.toLowerCase()
-                                                            .includes(layersToFind)
-                                                        || subLayers.some(l => l.parentLayer
-                                                            === layer.id
+                                                        || subLayers.some(l =>
+                                                            l.parentLayer === layer.id
                                                             && l.name.toLowerCase()
                                                                 .includes(layersToFind)))
                                                     : true))
-                                                .every(l => l.active)
+                                                    .every(l => l.active)
                                             }
                                             onChange={() => handleLayerGroupClick(lg.name)}
                                         />

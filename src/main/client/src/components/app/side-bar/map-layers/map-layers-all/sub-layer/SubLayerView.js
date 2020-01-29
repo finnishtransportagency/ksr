@@ -52,9 +52,13 @@ const SubLayerView = ({
                         name={layer.name}
                         type="checkbox"
                         className={checkboxSquare(layer)}
+                            layerList.find(l => l.id === layer.id)
+                            && subLayers.filter(sl => sl.parentLayer === layer.id)
+                                .some(sl => sl.active) ? 'checkboxSquare' : ''
+                        }
                         checked={
                             nestedVal(layerList.find(l => l.id === layer.id), ['active'], false)
-                        && subLayers.filter(sl => sl.parentLayer === layer.id
+                            && subLayers.filter(sl => sl.parentLayer === layer.id
                             && !sl.failOnLoad
                             && sl.relationType !== 'link'
                             && (layersToFind
@@ -62,7 +66,7 @@ const SubLayerView = ({
                                     || layer.name.toLowerCase().includes(layersToFind)
                                     || layer.layerGroupName.toLowerCase().includes(layersToFind))
                                 : true))
-                            .every(l => l.active)
+                                .every(sl => sl.active)
                         }
                         onChange={() => handleSubLayerGroupClick(layer.id)}
                     />
