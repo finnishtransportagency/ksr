@@ -7,7 +7,7 @@ import SubLayerContainer from './sub-layer/SubLayerContainer';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import { nestedVal } from '../../../../../utils/nestedValue';
 import strings from '../../../../../translations';
-import { CheckboxWrapper, NoLayersFoundWrapper } from './styles';
+import { NoLayersFoundWrapper } from './styles';
 
 type Props = {
     layerGroups: Array<any>,
@@ -58,20 +58,19 @@ const MapLayersAllView = ({
                                 <LayerGroup.Loading onClick={() => handleGroupClick(lg.id)}>
                                     <LoadingIcon
                                         size={8}
-                                        loading={loadingLayers.some(ll =>
-                                            lg.layers.some(l => l.id === ll))}
+                                        // eslint-disable-next-line max-len
+                                        loading={loadingLayers.some(ll => lg.layers.some(l => l.id === ll))}
                                     />
                                 </LayerGroup.Loading>
-                                <CheckboxWrapper>
-                                    <Checkbox htmlFor={lg.name} layerAllView>
-                                        <Checkbox.Input
-                                            hidden
-                                            id={lg.name}
-                                            name={lg.name}
-                                            type="checkbox"
-                                            checked={
-                                            layerList.filter(layer =>
-                                                layer.layerGroupName === lg.name
+                                <Checkbox htmlFor={lg.name} layerAllView>
+                                    <Checkbox.Input
+                                        hidden
+                                        id={lg.name}
+                                        name={lg.name}
+                                        type="checkbox"
+                                        checked={
+                                            // eslint-disable-next-line max-len
+                                            layerList.filter(layer => layer.layerGroupName === lg.name
                                                 && !layer.parentLayer
                                                 && !layer.failOnLoad
                                                 && layer.relationType !== 'link'
@@ -80,13 +79,10 @@ const MapLayersAllView = ({
                                                     ? (layer.layerGroupName.toLowerCase().includes(layersToFind)
                                                 || layer.name.toLowerCase().includes(layersToFind)
                                                 || subLayers.some(l => l.parentLayer === layer.id
-                                                        || subLayers.some(l =>
-                                                            l.parentLayer === layer.id
+                                                && l.name.toLowerCase().includes(layersToFind)))
+                                                    : true)).length > 0
                                                 // eslint-disable-next-line max-len
                                                 && layerList.filter(layer => layer.layerGroupName === lg.name
-                                                    : true)).length > 0 &&
-                                            layerList.filter(layer =>
-                                                layer.layerGroupName === lg.name
                                                 && !layer.parentLayer
                                                 && !layer.failOnLoad
                                                 && layer.relationType !== 'link'
@@ -95,18 +91,17 @@ const MapLayersAllView = ({
                                                         .includes(layersToFind)
                                                         || layer.name.toLowerCase()
                                                             .includes(layersToFind)
-                                                        || subLayers.some(l =>
-                                                            l.parentLayer === layer.id
+                                                            // eslint-disable-next-line max-len
+                                                        || subLayers.some(l => l.parentLayer === layer.id
                                                             && l.name.toLowerCase()
                                                                 .includes(layersToFind)))
                                                     : true))
                                                     .every(l => l.active)
-                                            }
-                                            onChange={() => handleLayerGroupClick(lg.name)}
-                                        />
-                                        <Checkbox.Checkmark layerAllView />
-                                    </Checkbox>
-                                </CheckboxWrapper>
+                                        }
+                                        onChange={() => handleLayerGroupClick(lg.name)}
+                                    />
+                                    <Checkbox.Checkmark layerAllView />
+                                </Checkbox>
                                 <div
                                     className="arrow-wrapper"
                                     role="checkbox"
@@ -151,7 +146,7 @@ const MapLayersAllView = ({
                                                     handleLayerClick={handleLayerClick}
                                                     activeSubGroups={activeSubGroups}
                                                     handleSubGroupClick={handleSubGroupClick}
-                                                    /* eslint-disable-next-line max-len */
+                                                    // eslint-disable-next-line max-len
                                                     handleSubLayerGroupClick={handleSubLayerGroupClick}
                                                     layersToFind={layersToFind}
                                                     checkboxSquare={checkboxSquare}
