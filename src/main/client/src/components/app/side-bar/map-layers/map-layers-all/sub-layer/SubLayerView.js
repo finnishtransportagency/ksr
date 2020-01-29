@@ -15,6 +15,7 @@ type Props = {
     handleSubLayerGroupClick: (number) => void,
     loadingLayers: string[],
     layersToFind: string,
+    checkboxSquare: (layer: Object) => string,
 };
 
 const SubLayerView = ({
@@ -27,6 +28,7 @@ const SubLayerView = ({
     handleSubLayerGroupClick,
     loadingLayers,
     layersToFind,
+    checkboxSquare,
 }: Props) => (
     <Fragment>
         {layer && !layer.parentLayer
@@ -49,6 +51,7 @@ const SubLayerView = ({
                         id={layer.name}
                         name={layer.name}
                         type="checkbox"
+                        className={checkboxSquare(layer)}
                         checked={
                             nestedVal(layerList.find(l => l.id === layer.id), ['active'], false)
                         && subLayers.filter(sl => sl.parentLayer === layer.id

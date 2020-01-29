@@ -22,6 +22,7 @@ type Props = {
     loadingLayers: string[],
     layersToFind: string,
     subLayers: Object[],
+    checkboxSquare: (layer: Object) => string,
 };
 
 const MapLayersAllView = ({
@@ -37,6 +38,7 @@ const MapLayersAllView = ({
     loadingLayers,
     layersToFind,
     subLayers,
+    checkboxSquare,
 }: Props) => (
     <Fragment>
         {
@@ -152,6 +154,7 @@ const MapLayersAllView = ({
                                                     /* eslint-disable-next-line max-len */
                                                     handleSubLayerGroupClick={handleSubLayerGroupClick}
                                                     layersToFind={layersToFind}
+                                                    checkboxSquare={checkboxSquare}
                                                 />
                                             )
                                     ))

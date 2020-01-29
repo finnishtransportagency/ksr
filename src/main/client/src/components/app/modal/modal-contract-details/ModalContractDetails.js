@@ -135,9 +135,8 @@ const ModalContractDetails = (props: Props) => {
      * @param {number} objectId Feature's object Id.
      */
     const handleFeatureLocateClick = async (layerId: string, objectId: number) => {
-        const layer: Object = layerList.find(l => l.id === layerId);
         const objectIdFieldName = nestedVal(
-            layer.fields.find(field => field.type === 'esriFieldTypeOID'),
+            contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
             ['name'],
         );
         const foundObject = await queryFeatures(
@@ -151,6 +150,7 @@ const ModalContractDetails = (props: Props) => {
         handleModalCancel();
     };
 
+    /**
     /**
      * Handle single feature's edit click.
      *
