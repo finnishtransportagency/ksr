@@ -27,9 +27,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
 });
 
-const MapLayerContainer = connect(
+const MapLayerContainer = (connect(
     mapStateToProps,
     mapDispatchToProps,
-)(MapLayerView);
+)(MapLayerView): any);
 
 export default MapLayerContainer;

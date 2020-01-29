@@ -17,6 +17,7 @@ type Props = {
     printWidget: any,
     legendWidget: ?Object,
     layerLegendActive: boolean,
+    tableButtonAmount: number,
 };
 
 class EsriMap extends Component<Props> {
@@ -27,13 +28,18 @@ class EsriMap extends Component<Props> {
             activeNav,
             loadingWorkspace,
             layerLegendActive,
+            printWidget,
+            legendWidget,
+            selectedFeatures,
+            activeAdminTool,
+            layers,
         } = this.props;
 
-        if ((prevProps.layerList &&
-            prevProps.layerList.length > 0 &&
-            prevProps.layerList !== layerList &&
-            view && view.map) ||
-            (!loadingWorkspace && loadingWorkspace !== prevProps.loadingWorkspace)
+        if ((prevProps.layerList
+            && prevProps.layerList.length > 0
+            && prevProps.layerList !== layerList
+            && view && view.map)
+            || (!loadingWorkspace && loadingWorkspace !== prevProps.loadingWorkspace)
         ) {
             const layerListReversed = [...layerList].reverse();
             const newLayers = [];
@@ -82,32 +88,32 @@ class EsriMap extends Component<Props> {
         }
 
         if (view && view.map) {
-            if (activeNav === 'fileExport' && this.props.printWidget) {
-                view.ui.add(this.props.printWidget, 'top-left');
+            if (activeNav === 'fileExport' && printWidget) {
+                view.ui.add(printWidget, 'top-left');
             } else {
-                view.ui.remove(this.props.printWidget);
+                view.ui.remove(printWidget);
             }
 
-            if (this.props.legendWidget && layerLegendActive) {
-                view.ui.add(this.props.legendWidget, 'bottom-right');
+            if (legendWidget && layerLegendActive) {
+                view.ui.add(legendWidget, 'bottom-right');
             } else {
-                view.ui.remove(this.props.legendWidget);
+                view.ui.remove(legendWidget);
             }
 
-            if (this.props.layers.length < 1) {
-                setBuffer(view, [], 0);
+            if (layers.length < 1) {
+                setBuffer(view, [], [], 0);
             }
         }
 
         if (!loadingWorkspace && loadingWorkspace !== prevProps.loadingWorkspace) {
-            highlight(view, this.props.selectedFeatures);
+            await highlight(view, selectedFeatures);
         }
 
-        if (!equals(prevProps.selectedFeatures, this.props.selectedFeatures)) {
-            highlight(view, this.props.selectedFeatures);
+        if (!equals(prevProps.selectedFeatures, selectedFeatures)) {
+            await highlight(view, selectedFeatures);
         }
 
-        if (!equals(prevProps.activeAdminTool, this.props.activeAdminTool)) {
+        if (!equals(prevProps.activeAdminTool, activeAdminTool)) {
             view.popup.close();
         }
     }
@@ -119,6 +125,7 @@ class EsriMap extends Component<Props> {
             view,
             activeAdminTool,
             layerLegendActive,
+            tableButtonAmount,
         } = this.props;
 
         return (
@@ -128,6 +135,7 @@ class EsriMap extends Component<Props> {
                 isOpenTable={isOpenTable}
                 view={view}
                 layerLegendActive={layerLegendActive}
+                tableButtonAmount={tableButtonAmount}
             />
         );
     }

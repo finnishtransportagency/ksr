@@ -36,6 +36,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalLayerDetailsContainer = connect(mapStateToProps, mapDispatchToProps)(ModalLayerDetails);
+const ModalLayerDetailsContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(ModalLayerDetails): any);
 
 export default ModalLayerDetailsContainer;

@@ -4,11 +4,10 @@ import 'react-table/react-table.css';
 import { WrapperReactTable } from './styles';
 import SelectableTable from '../selectable-table/SelectableTable';
 import strings from '../../../../translations';
-import {
-    colorMain, colorMainDark, colorTableEdited, colorTableEditedDarker,
-} from '../../../ui/defaultStyles';
+import { colorTableEdited, colorTableSelected } from '../../../ui/defaultStyles';
 import CustomTableView from './custom-table/CustomTableView';
 import { toDisplayDate } from '../../../../utils/date';
+import { equals } from '../../../../utils/cellEditValidate';
 
 type Props = {
     data: Array<any>,
@@ -19,6 +18,7 @@ type Props = {
     selectAll: boolean,
     renderEditable: Function,
     renderFilter: Function,
+    currentCellData: Object,
 };
 
 const ReactTableView = ({
@@ -30,6 +30,7 @@ const ReactTableView = ({
     selectAll,
     renderEditable,
     renderFilter,
+    currentCellData,
 }: Props) => (
     <WrapperReactTable
         columns={columns}
@@ -92,17 +93,19 @@ const ReactTableView = ({
             toggleSelection={toggleSelection}
             toggleAll={toggleSelectAll}
             getTdProps={(state, r, c) => {
-                const editColor = r && r.index % 2 === 0
-                    ? colorTableEditedDarker
-                    : colorTableEdited;
-                const selectedColor = r && r.index % 2 === 0 ? colorMainDark : colorMain;
                 const color = r && r.row && r.row._original._selected && c.id !== '_selector'
-                    ? selectedColor
+                    ? colorTableSelected
                     : null;
+                const cellRowInputChange = c.id === currentCellData.title && r
+                && r.index === currentCellData.rowIndex
+                    ? !equals(currentCellData.originalData, currentCellData.editedData)
+                    : r && r.original._edited && r.original._edited
+                        .some(t => t.title === c.id);
                 return {
                     style: {
-                        background: r && r.original._edited && r.original._edited
-                            .find(t => t.title === c.id) ? editColor : color,
+                        background: cellRowInputChange
+                            ? colorTableEdited
+                            : color,
                     },
                 };
             }}

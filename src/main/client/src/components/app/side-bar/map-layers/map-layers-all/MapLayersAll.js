@@ -28,6 +28,7 @@ class MapLayersActive extends Component<Props> {
         this.handleLayerClick = this.handleLayerClick.bind(this);
         this.handleLayerGroupClick = this.handleLayerGroupClick.bind(this);
         this.handleSubLayerGroupClick = this.handleSubLayerGroupClick.bind(this);
+        this.checkboxSquare = this.checkboxSquare.bind(this);
     }
 
     handleGroupClick = (id: number) => {
@@ -91,6 +92,20 @@ class MapLayersActive extends Component<Props> {
             : [];
 
         this.updateLayerList(filteredSubLayers);
+    };
+
+    checkboxSquare = (layer: Object) => {
+        const { layerList, subLayers } = this.props;
+        if (layerList.find(l => l.id === layer.id)) {
+            if ((subLayers.filter(sl => sl.parentLayer === layer.id).every(sl => sl.active)
+            && layer.active === true)
+            || (subLayers.filter(sl => sl.parentLayer === layer.id).every(sl => !sl.active))) {
+                return '';
+            }
+            return 'checkboxSquare';
+        }
+
+        return '';
     };
 
     updateLayerList = (foundLayers: Object[]) => {
@@ -164,6 +179,7 @@ class MapLayersActive extends Component<Props> {
                     subLayers={subLayers}
                     loadingLayers={loadingLayers}
                     layersToFind={layersToFindTrimmed}
+                    checkboxSquare={this.checkboxSquare}
                 />
             );
         }

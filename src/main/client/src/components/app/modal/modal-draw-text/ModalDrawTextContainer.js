@@ -12,6 +12,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalDrawTextContainer = connect(null, mapDispatchToProps)(ModalDrawText);
+const ModalDrawTextContainer = (connect(null, mapDispatchToProps)(ModalDrawText): any);
 
 export default ModalDrawTextContainer;

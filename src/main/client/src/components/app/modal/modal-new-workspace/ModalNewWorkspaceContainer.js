@@ -15,6 +15,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalNewWorkspaceContainer = connect(mapStateToProps, mapDispatchToProps)(ModalNewWorkspace);
+const ModalNewWorkspaceContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(ModalNewWorkspace): any);
 
 export default ModalNewWorkspaceContainer;

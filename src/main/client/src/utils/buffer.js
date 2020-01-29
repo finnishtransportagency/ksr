@@ -71,13 +71,21 @@ export const createGraphic = (
  * Set buffer for selected features (geometry).
  *
  * @param {Object} view Esri map view.
- * @param {Object[]} selectedGeometryData Array of geometry data.
+ * @param {Object[]} selectedGeometryData Array of selected geometry data.
+ * @param {Object[]} tableGeometryData Array of every geometry data in table.
  * @param {number} distance Buffer size in meters.
+ * @param {boolean} [currentTableOnly] Whether current table only is selected or not.
+ * @param {boolean} [selectedFeaturesOnly] Whether selected features only is selected or not.
+ * @param {string} [activeLayerId] Currently active layer on table.
  */
 export const setBuffer = (
     view: Object,
-    selectedGeometryData: Array<Object>,
+    selectedGeometryData: Object[],
+    tableGeometryData: Object[],
     distance: number,
+    currentTableOnly?: boolean,
+    selectedFeaturesOnly?: boolean,
+    activeLayerId?: string,
 ) => {
     esriLoader
         .loadModules([
@@ -88,12 +96,20 @@ export const setBuffer = (
             Graphic,
             geometryEngine,
         ]) => {
-            if (view) {
-                view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+            if (view && (tableGeometryData.length > 0 || selectedGeometryData.length > 0)) {
+                const featureData = selectedFeaturesOnly
+                    ? selectedGeometryData
+                    : tableGeometryData;
 
-                if (selectedGeometryData.length > 0) {
+                const geomToBuffer = currentTableOnly
+                    ? featureData
+                        .filter(a => a.layerId === activeLayerId)
+                        .map(a => a.geometry)
+                    : featureData.map(a => a.geometry);
+
+                if (geomToBuffer.length > 0) {
                     const featureBuffers = geometryEngine.buffer(
-                        selectedGeometryData, [
+                        geomToBuffer, [
                             distance,
                         ], 'meters',
                         true,
@@ -101,11 +117,10 @@ export const setBuffer = (
                     const featureBuffer = featureBuffers[0];
 
                     // add the buffer to the view as a graphic
-                    const bufferGraphic =
-                        createGraphic(
-                            featureBuffer,
-                            Graphic,
-                        );
+                    const bufferGraphic = createGraphic(
+                        featureBuffer,
+                        Graphic,
+                    );
 
                     view.graphics.add(bufferGraphic);
                 }

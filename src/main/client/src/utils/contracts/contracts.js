@@ -293,11 +293,14 @@ export const unlinkFeatureFromContract = async (
 ): Promise<boolean> => {
     /** Detail linked with a field in detail- or contract layer */
     if (String(detailLayer.relationLayerId) === contractLayer.id) {
-        const targetLayer = detailLayer.relationType === 'many' ? detailLayer : contractLayer;
-        const objectId = detailLayer.relationType === 'many' ? featureObjectId : contractObjectId;
-        const relationColumn = detailLayer.relationType === 'many'
-            ? detailLayer.relationColumnOut
-            : detailLayer.relationColumnIn;
+        const { relationColumnOut, relationColumnIn, relationType } = detailLayer;
+        const targetLayer = relationType === 'many' ? detailLayer : contractLayer;
+        const objectId = relationType === 'many' ? featureObjectId : contractObjectId;
+
+        const relationColumn: string = relationType === 'many'
+            ? relationColumnOut
+            : relationColumnIn;
+
         const objectIdFieldName = nestedVal(
             targetLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
             ['name'],

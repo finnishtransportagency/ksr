@@ -82,7 +82,7 @@ class ModalShapefile extends Component<Props, State> {
 
     readFile = (file: File): Promise<ArrayBuffer> => new Promise((resolve) => {
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = (event: any) => {
             resolve(event.target.result);
         };
         reader.readAsArrayBuffer(file);

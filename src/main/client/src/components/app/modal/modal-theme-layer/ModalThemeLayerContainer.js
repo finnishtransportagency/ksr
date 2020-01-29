@@ -19,6 +19,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalThemeLayerContainer = connect(mapStateToProps, mapDispatchToProps)(ModalThemeLayer);
+const ModalThemeLayerContainer = (connect(mapStateToProps, mapDispatchToProps)(ModalThemeLayer): any);
 
 export default ModalThemeLayerContainer;

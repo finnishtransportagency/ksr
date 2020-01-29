@@ -33,6 +33,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const MapLayersContainer = connect(mapStateToProps, mapDispatchToProps)(MapLayers);
+const MapLayersContainer = (connect(mapStateToProps, mapDispatchToProps)(MapLayers): any);
 
 export default MapLayersContainer;

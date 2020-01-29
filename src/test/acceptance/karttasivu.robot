@@ -40,7 +40,8 @@ Avaa ksr
     location should contain   ${LOGIN URL}
     Wait Until Element Is Enabled    ${workspace}     timeout=30
     click element                 ${workspace}
-    click element                 ${workspace}
+    ${t} =   get element count      xpath=.//button[contains(text(), 'Luo')]
+    run keyword if  ${t} >0      click element                 ${workspace}
     start sikuli process
     Add Image Path    ${image_dir}
     log    ${image_dir}

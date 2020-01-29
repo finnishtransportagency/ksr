@@ -11,8 +11,10 @@ import {
 import ModalSingleFeatureDetailsView from './modal-single-feature-details/ModalSingleFeatureDetailsView';
 import { fetchContractDetails } from '../../../../api/contract/contractDetails';
 import strings from '../../../../translations';
-import { getSingleLayerFields } from '../../../../utils/map';
+import { getSingleLayerFields, zoomToFeatures } from '../../../../utils/map';
 import { unlinkFeatureFromContract } from '../../../../utils/contracts/contracts';
+import { nestedVal } from '../../../../utils/nestedValue';
+import { queryFeatures } from '../../../../api/search/searchQuery';
 
 type Props = {
     contractLayer: Object,
@@ -28,6 +30,8 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
+    tableFeaturesLayers: Object[],
+    view: Object,
 };
 
 const ModalContractDetails = (props: Props) => {
@@ -42,6 +46,8 @@ const ModalContractDetails = (props: Props) => {
         setActiveModal,
         activeAdmin,
         showConfirmModal,
+        tableFeaturesLayers,
+        view,
     } = props;
 
     const [activeView, setActiveView] = useState('contractDetails');
@@ -122,6 +128,29 @@ const ModalContractDetails = (props: Props) => {
         });
     };
 
+    /**
+     * Handle single feature's locate click.
+     *
+     * @param {string} layerId Layer's Id.
+     * @param {number} objectId Feature's object Id.
+     */
+    const handleFeatureLocateClick = async (layerId: string, objectId: number) => {
+        const objectIdFieldName = nestedVal(
+            contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+            ['name'],
+        );
+        const foundObject = await queryFeatures(
+            parseInt(layerId, 10),
+            `${objectIdFieldName} = '${objectId}'`,
+            null,
+        );
+        if (Array.isArray(foundObject.features) && foundObject.features.length > 0) {
+            await zoomToFeatures(view, foundObject.features);
+        }
+        handleModalCancel();
+    };
+
+    /**
     /**
      * Handle single feature's edit click.
      *
@@ -261,6 +290,8 @@ const ModalContractDetails = (props: Props) => {
                         handleFeatureDetailsClick={handleFeatureDetailsClick}
                         handleFeatureEditClick={handleFeatureEditClick}
                         handleFeatureUnlinkClick={handleFeatureUnlinkClick}
+                        tableFeaturesLayers={tableFeaturesLayers}
+                        handleFeatureLocateClick={handleFeatureLocateClick}
                     />
                 )}
                 {activeView === 'singleFeatureDetails' && (

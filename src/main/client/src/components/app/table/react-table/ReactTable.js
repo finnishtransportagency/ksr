@@ -1,13 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
-import { cellEditValidate, preventKeyPress } from '../../../../utils/cellEditValidate';
+import { cellEditValidate, getValue, preventKeyPress } from '../../../../utils/cellEditValidate';
 import { addContractColumn } from '../../../../utils/contracts/contractColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';
-import { WrapperReactTableNoTable, TableSelect, TableInput } from './styles';
+import { TableInput, TableSelect, WrapperReactTableNoTable } from './styles';
 import strings from '../../../../translations';
-import { toISODate, toDisplayDate } from '../../../../utils/date';
+import { toDisplayDate, toISODate } from '../../../../utils/date';
 import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { TextInput } from '../../../ui/elements';
 
@@ -28,11 +28,34 @@ type Props = {
     activeAdminTool: string,
     setActiveModal: (activeModal: string, modalData: any) => void,
     setContractListInfo: (layerId: string, objectId: number) => void,
+    setTableEdited: Function,
 };
 
-class ReactTable extends Component<Props> {
+type State = {
+    currentCellData: {
+        title: ?string,
+        originalData: ?string | ?number,
+        editedData: ?string | ?number,
+        rowIndex: ?number,
+        key: ?string,
+    }
+};
+
+const defaultState = {
+    currentCellData: {
+        title: null,
+        originalData: null,
+        editedData: null,
+        rowIndex: null,
+        key: null,
+    },
+};
+
+class ReactTable extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
+
+        this.state = defaultState;
 
         this.renderFilter = this.renderFilter.bind(this);
         this.renderEditable = this.renderEditable.bind(this);
@@ -54,6 +77,39 @@ class ReactTable extends Component<Props> {
             const tbodyHeight = headerElement.clientHeight + filterElement.clientHeight + 2;
             bodyElement.style.height = `calc(100% - ${tbodyHeight}px)`;
         }
+
+        const { currentCellData } = this.state;
+        const { setTableEdited, layerFeatures } = this.props;
+
+        // Logic for handling whether table save button should be disabled or not
+        if (layerFeatures) {
+            const { data } = layerFeatures;
+
+            const editedRows = data.filter(d => d._edited.length > 0);
+
+            if (editedRows.length > 0) {
+                if (editedRows.length === 1
+                    && editedRows[0]._edited.length === 1
+                    && editedRows[0]._key === currentCellData.key
+                    && editedRows[0]._edited[0].title === currentCellData.title) {
+                    if (currentCellData.originalData !== currentCellData.editedData) {
+                        setTableEdited(true);
+                    } else {
+                        setTableEdited(false);
+                    }
+                } else {
+                    setTableEdited(true);
+                }
+            } else if (currentCellData.title !== null) {
+                if (currentCellData.originalData !== currentCellData.editedData) {
+                    setTableEdited(true);
+                } else {
+                    setTableEdited(false);
+                }
+            } else {
+                setTableEdited(false);
+            }
+        }
     }
 
     getCellContent = (cellField: Object, cellInfo: Object) => {
@@ -62,28 +118,37 @@ class ReactTable extends Component<Props> {
 
         if (cellField && cellField.type === 'esriFieldTypeDouble') {
             return data[cellInfo.index][cellInfo.column.id]
-                ? data[cellInfo.index][cellInfo.column.id].toFixed(3)
-                : '0.000';
+                ? data[cellInfo.index][cellInfo.column.id].toFixed(2)
+                : '0.00';
         }
         return data[cellInfo.index][cellInfo.column.id];
     };
 
     getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
+        const { activeAdminTool, activeTable, layerList } = this.props;
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
         let className = '';
-        if (!contentEditable) {
-            className = 'content-not-editable';
-        } else if (
-            (content === null || (typeof content === 'string' && content.trim().length === 0))
-            && !cellField.nullable) {
-            className = 'content-not-valid';
+
+        if (activeLayer && activeAdminTool === activeLayer.id) {
+            if (contentEditable) {
+                className = 'content-editable';
+            } else {
+                className = 'content-not-editable';
+            }
         }
+
+        if ((content === null || (typeof content === 'string' && content.trim().length === 0))
+            && !cellField.nullable) {
+            className += ' content-not-valid';
+        }
+
         return className;
     };
 
     getDisplayContent = (cellField: Object, content: any) => {
         const { domain } = cellField;
         if (content === null) {
-            return null;
+            return '';
         }
 
         return getCodedValue(domain, content);
@@ -110,13 +175,20 @@ class ReactTable extends Component<Props> {
         }
     };
 
-    isCellEditable = (activeLayer: Object, cellField: Object) => {
-        const { activeAdminTool } = this.props;
-        return activeAdminTool === activeLayer.id
-            && activeLayer._source !== 'shapefile'
-            && activeLayer.layerPermission.updateLayer
-            && cellField.editable
-            && activeLayer.updaterField !== cellField.name;
+    isCellEditable = (cellField: Object) => {
+        const { activeAdminTool, layerList, activeTable } = this.props;
+
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+
+        if (activeLayer) {
+            return activeAdminTool === activeLayer.id
+                && activeLayer._source !== 'shapefile'
+                && activeLayer.layerPermission.updateLayer
+                && cellField.editable
+                && activeLayer.updaterField !== cellField.name;
+        }
+
+        return false;
     };
 
     toggleSelection = (id: string, shiftKey: string, row: Object) => {
@@ -125,7 +197,7 @@ class ReactTable extends Component<Props> {
     };
 
     renderSelect = (cellField: Object, content: any, cellInfo: Object) => {
-        const { setEditedLayer, layerFeatures } = this.props;
+        const { setEditedLayer, layerFeatures, setTableEdited } = this.props;
         const { data } = layerFeatures;
         // Add empty option for empty and null values
         const options = [<option key="-" value="" />].concat(
@@ -145,6 +217,7 @@ class ReactTable extends Component<Props> {
                     );
                     if (val) {
                         setEditedLayer(val);
+                        setTableEdited(val._edited.length > 0);
                     }
                 }}
             >
@@ -171,7 +244,7 @@ class ReactTable extends Component<Props> {
     };
 
     renderDateInput = (cellField: Object, content: any, cellInfo: Object) => {
-        const { setEditedLayer, layerFeatures } = this.props;
+        const { setEditedLayer, layerFeatures, setTableEdited } = this.props;
         const { data } = layerFeatures;
 
         return (
@@ -188,6 +261,7 @@ class ReactTable extends Component<Props> {
                     );
                     if (val) {
                         setEditedLayer(val);
+                        setTableEdited(val._edited.length > 0);
                     }
                 }}
             />
@@ -207,6 +281,7 @@ class ReactTable extends Component<Props> {
         const textContent = this.getDisplayContent(cellField, content);
         return (
             <div
+                title={textContent}
                 style={{ minHeight: '1rem' }}
                 role="textbox"
                 tabIndex={0}
@@ -214,23 +289,63 @@ class ReactTable extends Component<Props> {
                 contentEditable={contentEditable}
                 suppressContentEditableWarning
                 onKeyPress={(evt) => {
-                    if (contentEditable) preventKeyPress(evt, cellField);
+                    if (contentEditable) {
+                        preventKeyPress(evt, cellField);
+                    }
+                }}
+                onInput={(evt) => {
+                    if (contentEditable) {
+                        const text = evt.target.innerText;
+
+                        this.setState(prevState => ({
+                            currentCellData: {
+                                ...prevState.currentCellData,
+                                editedData: getValue(cellField.type, text),
+                            },
+                        }));
+                    }
+                }}
+                onFocus={(evt) => {
+                    if (contentEditable) {
+                        const text = evt.target.innerText;
+                        const originalData = data[cellInfo.index]._edited.length > 0
+                        && data[cellInfo.index]._edited.some(e => e.title
+                            === cellInfo.column.id)
+                            ? data[cellInfo.index]._edited.find(e => e.title
+                                === cellInfo.column.id).originalData
+                            : getValue(cellField.type, text);
+
+                        this.setState({
+                            currentCellData: {
+                                title: cellInfo.column.id,
+                                originalData,
+                                editedData: getValue(cellField.type, text),
+                                rowIndex: cellInfo.index,
+                                key: cellInfo.original._key,
+                            },
+                        });
+                    }
                 }}
                 onBlur={(evt) => {
                     if (contentEditable) {
+                        const text = evt.target.innerText;
                         const val = cellEditValidate(
-                            evt.target.innerText,
+                            text,
                             data,
                             cellField,
                             cellInfo,
                         );
-                        if (val) {
-                            setEditedLayer(val);
-                        }
+
+                        if (val) setEditedLayer(val);
+
+                        this.setState({
+                            currentCellData: defaultState.currentCellData,
+                        });
                     }
                 }}
-                dangerouslySetInnerHTML={{ // eslint-disable-line
-                    __html: DOMPurify.sanitize(textContent),
+                /* eslint-disable-next-line react/no-danger */
+                dangerouslySetInnerHTML={{
+                    __html: DOMPurify().sanitize(textContent),
                 }}
             />
         );
@@ -258,7 +373,7 @@ class ReactTable extends Component<Props> {
                     // Get editable values for search layer fields
                     cellField = originalLayer.fields.find(f => f.name === cellField.name);
                 }
-                const contentEditable = this.isCellEditable(originalLayer, cellField);
+                const contentEditable = this.isCellEditable(cellField);
                 const content = this.getCellContent(cellField, cellInfo);
 
                 if (cellField.domain
@@ -333,15 +448,16 @@ class ReactTable extends Component<Props> {
 
         if (!fetching && layerList) {
             const { columns, data } = layerFeatures;
+            const { currentCellData } = this.state;
 
             const activeLayer: any = layerList.find(ll => ll.id === layerFeatures.id);
             const relationLayer = activeLayer
                 && layerList.find(ll => ll.id === String(activeLayer.relationLayerId));
             const tableColumns = (activeLayer
-            && activeLayer.hasRelations
-            && activeLayer.type !== 'agfl'
-            && relationLayer
-            && relationLayer.layerPermission.readLayer)
+                && activeLayer.hasRelations
+                && activeLayer.type !== 'agfl'
+                && relationLayer
+                && relationLayer.layerPermission.readLayer)
             || (activeLayer
                 && activeLayer.type === 'agfl'
                 && !activeLayer.relationColumnIn
@@ -358,6 +474,7 @@ class ReactTable extends Component<Props> {
                     toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
                     renderEditable={this.renderEditable}
                     renderFilter={this.renderFilter}
+                    currentCellData={currentCellData}
                 />
             );
         }

@@ -116,16 +116,17 @@ public class WorkspaceController {
 
     /**
      * Fetch details for single workspace. If no workspace name is given
-     * the latest workspace is returned for the current user.
+     * the latest user workspace is returned for the current user.
      *
      * @param workspaceName name of the workspace to be fetched
+     * @param isPublic Whether the workspace is public or not.
      * @return details of the workspace
      */
     @ApiOperation("Fetch details for single workspace.")
     @GetMapping(value = "")
-    public Workspace getWorkspaceDetails(@RequestParam (required = false) String workspaceName) {
+    public Workspace getWorkspaceDetails(@RequestParam (required = false) String workspaceName, boolean isPublic) {
         LOG.info(String.format("%s: Fetch details for single workspace.", getCurrentUsername()));
-        Workspace workspace = workspaceService.getWorkspaceDetails(workspaceName, getCurrentUsername());
+        Workspace workspace = workspaceService.getWorkspaceDetails(workspaceName, getCurrentUsername(), isPublic);
 
         if (workspace == null) {
             throw new KsrApiException.NotFoundErrorException("No workspace can be found.");

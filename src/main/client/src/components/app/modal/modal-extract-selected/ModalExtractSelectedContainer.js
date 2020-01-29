@@ -18,7 +18,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const ModalExtractSelectedContainer =
-    connect(mapStateToProps)(ModalExtractSelected);
+const ModalExtractSelectedContainer = (connect(mapStateToProps)(ModalExtractSelected): any);
 
 export default ModalExtractSelectedContainer;

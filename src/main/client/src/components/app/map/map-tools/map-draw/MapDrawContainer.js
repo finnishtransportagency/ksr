@@ -41,6 +41,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const MapDrawContainer = connect(mapStateToProps, mapDispatchToProps)(MapDraw);
+const MapDrawContainer = (connect(mapStateToProps, mapDispatchToProps)(MapDraw): any);
 
 export default MapDrawContainer;

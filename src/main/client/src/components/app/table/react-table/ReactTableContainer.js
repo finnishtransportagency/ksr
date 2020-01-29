@@ -5,7 +5,7 @@ import { setActiveModal } from '../../../../reducers/modal/actions';
 import ReactTable from './ReactTable';
 
 import {
-    toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter,
+    toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter, setTableEdited,
 } from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
@@ -48,8 +48,11 @@ const mapDispatchToProps = dispatch => ({
     setRowFilter: (activeTable) => {
         dispatch(setRowFilter(activeTable));
     },
+    setTableEdited: (hasEdited) => {
+        dispatch(setTableEdited(hasEdited));
+    },
 });
 
-const ReactTableContainer = connect(mapStateToProps, mapDispatchToProps)(ReactTable);
+const ReactTableContainer = (connect(mapStateToProps, mapDispatchToProps)(ReactTable): any);
 
 export default ReactTableContainer;

@@ -31,6 +31,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const MapLayersActiveContainer = connect(mapStateToProps, mapDispatchToProps)(MapLayersActive);
+const MapLayersActiveContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(MapLayersActive): any);
 
 export default MapLayersActiveContainer;

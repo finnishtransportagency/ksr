@@ -14,6 +14,7 @@ const mapStateToProps = state => ({
     })),
     activeTable: state.table.features.activeTable,
     activeAdmin: state.adminTool.active.layerId,
+    view: state.map.mapView.view,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -28,4 +29,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TabbedTableView);
+export default (connect(mapStateToProps, mapDispatchToProps)(TabbedTableView): any);

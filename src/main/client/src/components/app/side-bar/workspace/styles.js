@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const WorkspaceWrapper = styled.div`
     padding: 0 1em;
@@ -10,4 +10,12 @@ export const WorkspaceWrapper = styled.div`
     .Select-control {
         border-radius: 0;
     }
+`;
+
+export const WorkspaceTitle = styled.p`
+    font-weight: bold;
+    
+    ${props => props.extraPadding && css`
+        padding-top: 1rem;
+    `};
 `;

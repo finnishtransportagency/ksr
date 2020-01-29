@@ -10,6 +10,8 @@ const mapStateToProps = (state) => {
     const { layerList } = state.map.layerGroups;
     const { layerId: activeAdmin } = state.adminTool.active;
     const contractLayer = layerList.find(l => l.id === layerId);
+    const tableFeaturesLayers = state.table.features.layers;
+    const { view } = state.map.mapView;
 
     return {
         contractLayer,
@@ -17,6 +19,8 @@ const mapStateToProps = (state) => {
         source,
         layerList,
         activeAdmin,
+        tableFeaturesLayers,
+        view,
     };
 };
 
@@ -32,9 +36,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalContractDetailsContainer = connect(
+const ModalContractDetailsContainer = (connect(
     mapStateToProps,
     mapDispatchToProps,
-)(ModalContractDetails);
+)(ModalContractDetails): any);
 
 export default ModalContractDetailsContainer;

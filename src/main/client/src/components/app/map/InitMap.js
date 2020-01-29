@@ -12,7 +12,6 @@ import { getStreetViewLink } from '../../../utils/map-selection/streetView';
 import {
     colorBackgroundDark,
     colorFeatureHighlight,
-    colorMainDark,
 } from '../../ui/defaultStyles';
 import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
@@ -60,6 +59,7 @@ type Props = {
     activateLayers: (layers: Object[], workspace?: Object) => void,
     deactivateLayer: (layerId: string) => void,
     setScale: number => void,
+    setActiveNav: (selectedNav: string) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -68,10 +68,14 @@ class EsriMap extends Component<Props> {
     printWidget: ?Object = null;
 
     componentDidUpdate(prevProps: Props) {
-        const { initialLoading } = this.props;
+        const { initialLoading, printServiceUrl } = this.props;
 
         if (!initialLoading && initialLoading !== prevProps.initialLoading) {
             this.initMap();
+        }
+
+        if (printServiceUrl !== prevProps.printServiceUrl) {
+            if (this.printWidget) this.printWidget.printServiceUrl = printServiceUrl;
         }
     }
 
@@ -429,7 +433,6 @@ class EsriMap extends Component<Props> {
                             type: 'simple-marker',
                             style: 'circle',
                             size: 6,
-                            color: colorMainDark,
                             outline: {
                                 color: colorBackgroundDark,
                                 width: 1,
@@ -439,14 +442,12 @@ class EsriMap extends Component<Props> {
                     case 'polyline':
                         newFeature.symbol = {
                             type: 'simple-line',
-                            color: colorMainDark,
                             width: 2,
                         };
                         break;
                     default:
                         newFeature.symbol = {
                             type: 'simple-fill',
-                            color: colorMainDark,
                             outline: {
                                 color: colorBackgroundDark,
                                 width: 1,
@@ -474,6 +475,7 @@ class EsriMap extends Component<Props> {
             setTempGraphicsLayer,
             activateLayers,
             deactivateLayer,
+            setActiveNav,
         } = this.props;
 
         // Set initial view and temp graphics layer to redux
@@ -490,7 +492,7 @@ class EsriMap extends Component<Props> {
                 deactivateLayer,
             );
         } else {
-            workspace = await fetchWorkspace(null);
+            workspace = await fetchWorkspace(null, false);
             if (workspace) {
                 await loadWorkspace(
                     workspace,
@@ -502,6 +504,7 @@ class EsriMap extends Component<Props> {
             } else {
                 activateLayers(layerList.filter(layer => layer.visible));
                 setWorkspaceRejected();
+                setActiveNav('workspace');
             }
         }
         window.history.pushState({}, document.title, window.location.pathname);

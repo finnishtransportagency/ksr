@@ -37,6 +37,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ContractListContainer = connect(mapStateToProps, mapDispatchToProps)(ContractList);
+const ContractListContainer = (connect(mapStateToProps, mapDispatchToProps)(ContractList): any);
 
 export default ContractListContainer;

@@ -107,8 +107,13 @@ class SketchTool extends Component<Props, State> {
 
     sketchTool = () => {
         esriLoader
-            .loadModules(['esri/geometry/geometryEngine'])
-            .then(([geometryEngine]) => {
+            .loadModules([
+                'esri/geometry/geometryEngine',
+                'esri/geometry/Polygon',
+                'esri/geometry/Polyline',
+                'esri/Graphic',
+            ])
+            .then(([geometryEngine, Polygon, Polyline, Graphic]) => {
                 const {
                     view,
                     draw,
@@ -202,6 +207,51 @@ class SketchTool extends Component<Props, State> {
                     };
                 };
 
+                const createLabelGraphic = (geometry, value) => new Graphic({
+                    geometry: geometry.extent.center,
+                    symbol: {
+                        type: 'text',
+                        color: '#000000',
+                        text: value || '',
+                        xoffset: 3,
+                        yoffset: 3,
+                        font: {
+                            size: 16,
+                            family: 'sans-serif',
+                            weight: 'bold',
+                        },
+                    },
+                    type: 'draw-measure-label',
+                    id: 'area',
+                    visible: true,
+                });
+
+                const measurement = (polygon: Object) => {
+                    const planarArea = Math.abs(geometryEngine.planarArea(
+                        polygon,
+                        'square-meters',
+                    ));
+                    let measure = '0';
+                    if (planarArea >= 10000) {
+                        measure = `${parseFloat((planarArea / 10000).toFixed(2))} ha`;
+                    } else if (planarArea > 0 && planarArea < 10000) {
+                        measure = `${parseFloat(planarArea.toFixed(2))} m\xB2`;
+                    } else if (planarArea === 0) {
+                        const line = new Polyline({
+                            paths: polygon.rings,
+                            spatialReference: view.spatialReference,
+                        });
+                        const planarLength = (geometryEngine.planarLength(line, 'meters')) / 2;
+                        measure = `${parseFloat(planarLength.toFixed(2))} m`;
+                    }
+                    return measure;
+                };
+
+                const createPolygon = vertices => new Polygon({
+                    rings: vertices,
+                    spatialReference: view.spatialReference,
+                });
+
                 const addGraphic = (graphic) => {
                     if (graphic.geometry.type === 'polygon' && (graphic.geometry.isSelfIntersecting
                         || graphic.geometry.rings.length > 1)) {
@@ -228,6 +278,19 @@ class SketchTool extends Component<Props, State> {
                             this.setState({ validGeometry: false });
                         } else {
                             event.target._activeLineGraphic.symbol = createSketchLineGraphic(true);
+                            if (event.graphic !== null
+                                && event.graphic.geometry.rings[0].length > 2) {
+                                const { geometry } = event.graphic;
+                                const { rings } = geometry;
+                                const polygon = createPolygon(rings);
+                                const measure = measurement(polygon);
+                                const areaLabel = createLabelGraphic(geometry, measure);
+                                const removeLabel = tempGraphicsLayer.graphics.items[0];
+                                if (event.target.layer.graphics.length !== 0) {
+                                    tempGraphicsLayer.remove(removeLabel);
+                                }
+                                tempGraphicsLayer.add(areaLabel);
+                            }
                             this.setState({ validGeometry: true });
                         }
                     } else if (event.state === 'complete') {
@@ -239,6 +302,13 @@ class SketchTool extends Component<Props, State> {
                             setPropertyInfo,
                             authorities,
                         } = this.props;
+
+                        // Object to save is at index [0], area label moved to index [1]
+                        if (tempGraphicsLayer.graphics.items[0].type === 'draw-measure-label') {
+                            const swapAreaLabel = tempGraphicsLayer.graphics.items[0];
+                            tempGraphicsLayer.remove(swapAreaLabel);
+                            tempGraphicsLayer.add(swapAreaLabel);
+                        }
 
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
@@ -272,6 +342,12 @@ class SketchTool extends Component<Props, State> {
                 };
 
                 const onUpdate = (event) => {
+                    // Remove existing label
+                    if (tempGraphicsLayer.graphics.items.length !== 0
+                        && tempGraphicsLayer.graphics.items[0].type === 'draw-measure-label') {
+                        const swapAreaLabel = tempGraphicsLayer.graphics.items[0];
+                        tempGraphicsLayer.remove(swapAreaLabel);
+                    }
                     if (event.graphics[0].geometry.isSelfIntersecting
                         || (!editModeActive
                             && event.graphics[0].geometry.rings
@@ -289,7 +365,22 @@ class SketchTool extends Component<Props, State> {
                         const clonedSymbol = event.graphics[0].symbol.clone();
                         clonedSymbol.outline = createSketchOutlineGraphic(true, updateModeActive);
                         event.graphics[0].symbol = clonedSymbol;
-
+                        if (event.graphics !== null
+                            && event.graphics[0].geometry.type === 'polygon'
+                            && event.graphics[0].geometry.rings[0].length > 3
+                        ) {
+                            const { geometry } = event.graphics[0];
+                            const { rings } = geometry;
+                            const areaLabel = createLabelGraphic(geometry,
+                                measurement(createPolygon(rings)));
+                            if (event.state !== 'start') {
+                                const removeLabel = tempGraphicsLayer.graphics.items[1];
+                                tempGraphicsLayer.remove(removeLabel);
+                            }
+                            if (updateModeActive) {
+                                tempGraphicsLayer.add(areaLabel);
+                            }
+                        }
                         this.setState({ validGeometry: true });
                     }
                 };
