@@ -36,6 +36,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const BaseMapSwitchContainer = connect(mapStateToProps, mapDispatchToProps)(BaseMapSwitchView);
+const BaseMapSwitchContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(BaseMapSwitchView): any);
 
 export default BaseMapSwitchContainer;

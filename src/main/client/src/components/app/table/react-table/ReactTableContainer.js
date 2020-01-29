@@ -53,6 +53,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ReactTableContainer = connect(mapStateToProps, mapDispatchToProps)(ReactTable);
+const ReactTableContainer = (connect(mapStateToProps, mapDispatchToProps)(ReactTable): any);
 
 export default ReactTableContainer;

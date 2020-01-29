@@ -25,6 +25,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const ModalDownloadCsvContainer = connect(mapStateToProps, null)(ModalDownloadCsv);
+const ModalDownloadCsvContainer = (connect(mapStateToProps, null)(ModalDownloadCsv): any);
 
 export default ModalDownloadCsvContainer;

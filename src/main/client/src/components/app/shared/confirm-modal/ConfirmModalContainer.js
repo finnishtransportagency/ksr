@@ -1,3 +1,4 @@
+// @flow
 import { connect } from 'react-redux';
 import { hideConfirmModal } from '../../../../reducers/confirmModal/actions';
 import ConfirmModal from './ConfirmModal';
@@ -16,6 +17,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ConfirmModalContainer = connect(mapStateToProps, mapDispatchToProps)(ConfirmModal);
+const ConfirmModalContainer = (connect(mapStateToProps, mapDispatchToProps)(ConfirmModal): any);
 
 export default ConfirmModalContainer;

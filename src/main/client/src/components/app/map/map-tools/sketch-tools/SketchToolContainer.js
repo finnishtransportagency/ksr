@@ -56,6 +56,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SketchToolContainer = connect(mapStateToProps, mapDispatchToProps)(SketchTool);
+const SketchToolContainer = (connect(mapStateToProps, mapDispatchToProps)(SketchTool): any);
 
 export default SketchToolContainer;

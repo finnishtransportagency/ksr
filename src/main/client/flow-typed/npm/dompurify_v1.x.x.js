@@ -1,5 +1,5 @@
-// flow-typed signature: 46be0dd5986b3e56ce08863dc50d1d7b
-// flow-typed version: 45cf127840/dompurify_v1.x.x/flow_>=v0.69.x
+// flow-typed signature: f22444bdf46625f6b90ffda0de5b6f1d
+// flow-typed version: bd2ea1a14d/dompurify_v1.x.x/flow_>=v0.104.x
 
 type dompurify$htmlTags =
   | 'a'
@@ -574,6 +574,7 @@ type dompurify$configBase = {|
     svg: boolean,
     svgFilters: boolean,
     mathMl: boolean,
+    ...
   }>,
   /**
    * leave all as it is but forbid specified tags
@@ -586,11 +587,11 @@ type dompurify$configBase = {|
   /**
    * extend the existing array of allowed tags
    */
-  ADD_TAGS: Array<$Subtype<string>>,
+  ADD_TAGS: Array<string>,
   /**
    * extend the existing array of attributes
    */
-  ADD_ATTR: Array<$Subtype<string>>,
+  ADD_ATTR: Array<string>,
   /**
    * prohibit HTML5 data attributes (default is true)
    */
@@ -609,11 +610,11 @@ type dompurify$configBase = {|
   /**
    * return a DOM HTMLBodyElement instead of an HTML string (default is false)
    */
-  RETURN_DOM: $Subtype<boolean>,
+  RETURN_DOM: boolean,
   /**
    * return a DOM DocumentFragment instead of an HTML string (default is false)
    */
-  RETURN_DOM_FRAGMENT: $Subtype<boolean>,
+  RETURN_DOM_FRAGMENT: boolean,
   /**
    * Import DocumentFragment into the current document (default is false).
    * RETURN_DOM_IMPORT must be set if you would like to append the returned node to the current document
@@ -654,29 +655,51 @@ type dompurify$hookType =
   | 'afterSanitizeShadowDOM';
 
 type dompurify$hookEvent = {
-  +tagName: ?$Subtype<dompurify$tags>,
-  +allowedTags: ?{ [$Subtype<dompurify$tags>]: boolean },
-  +allowedAttributes: ?{ [$Subtype<dompurify$attr>]: boolean },
-  +attrName: ?$Subtype<dompurify$attr>,
+  +tagName: ?dompurify$tags,
+  +allowedTags: ?{ [dompurify$tags]: boolean, ... },
+  +allowedAttributes: ?{ [dompurify$attr]: boolean, ... },
+  +attrName: ?dompurify$attr,
   +attrValue: ?string,
-  +keepAttr: ?boolean,
+  // This is intended to be writable
+  keepAttr: ?boolean,
+  ...
 };
 
 declare type dompurify$config = $Shape<dompurify$configBase>;
 
-type dompurify$hook = (node: $Subtype<Node>, data: ?dompurify$hookEvent, config?: dompurify$config) => $Subtype<Node>;
+type dompurify$hook = (node: Node, data: ?dompurify$hookEvent, config?: dompurify$config) => void;
 
 interface dompurify$sanitizer {
-  (dirty: string, config: $Shape<$Diff<dompurify$configBase, { RETURN_DOM: boolean, RETURN_DOM_FRAGMENT: boolean }>>): string,
-  (dirty: string, config: dompurify$config & { RETURN_DOM: false, RETURN_DOM_FRAGMENT: false }): string,
-  (dirty: string, config: dompurify$config & { RETURN_DOM: true, RETURN_DOM_FRAGMENT?: void | false }): HTMLBodyElement,
-  (dirty: string, config: dompurify$config & { RETURN_DOM?: void | false, RETURN_DOM_FRAGMENT: true }): DocumentFragment,
+  (dirty: string, config: $Shape<$Diff<dompurify$configBase, {
+    RETURN_DOM: boolean,
+    RETURN_DOM_FRAGMENT: boolean,
+    ...
+  }>>): string,
+  (dirty: string, config: dompurify$config & {
+    RETURN_DOM: false,
+    RETURN_DOM_FRAGMENT: false,
+    ...
+  }): string,
+  (dirty: string, config: dompurify$config & {
+    RETURN_DOM: true,
+    RETURN_DOM_FRAGMENT?: void | false,
+    ...
+  }): HTMLBodyElement,
+  (dirty: string, config: dompurify$config & {
+    RETURN_DOM?: void | false,
+    RETURN_DOM_FRAGMENT: true,
+    ...
+  }): DocumentFragment,
   (dirty: string): string,
 }
 
 type dompurify$instance = {|
   +version: string,
-  +removed: Array<{ element: $Subtype<Node> } | { attribute: ?Attr, from: $Subtype<Node> }>,
+  +removed: Array<{ element: Node, ... } | {
+    attribute: ?Attr,
+    from: Node,
+    ...
+  }>,
   +isSupported: boolean,
   sanitize: dompurify$sanitizer,
   setConfig: (config: dompurify$config) => void,

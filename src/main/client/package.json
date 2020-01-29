@@ -63,7 +63,7 @@
     "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-react-hooks": "^1.0.1",
     "fake-indexeddb": "^2.0.5",
-    "flow-bin": "^0.93.0",
+    "flow-bin": "^0.116.1",
     "http-proxy-middleware": "^0.19.1",
     "identity-obj-proxy": "^3.0.0",
     "jest-fetch-mock": "^2.1.2",

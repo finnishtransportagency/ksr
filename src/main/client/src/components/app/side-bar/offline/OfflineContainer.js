@@ -7,6 +7,6 @@ const mapStateToProps = () => ({});
 
 const mapDispatchToProps = () => ({});
 
-const OfflineContainer = connect(mapStateToProps, mapDispatchToProps)(OfflineView);
+const OfflineContainer = (connect(mapStateToProps, mapDispatchToProps)(OfflineView): any);
 
 export default OfflineContainer;

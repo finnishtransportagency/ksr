@@ -14,6 +14,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const MapToolsContainer = connect(mapStateToProps, mapDispatchToProps)(MapTools);
+const MapToolsContainer = (connect(mapStateToProps, mapDispatchToProps)(MapTools): any);
 
 export default MapToolsContainer;

@@ -29,4 +29,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TabbedTableView);
+export default (connect(mapStateToProps, mapDispatchToProps)(TabbedTableView): any);

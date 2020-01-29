@@ -43,8 +43,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalBufferSelectedContainer = connect(
-    mapStateToProps, mapDispatchToProps,
-)(ModalBufferSelected);
+const ModalBufferSelectedContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(ModalBufferSelected): any);
 
 export default ModalBufferSelectedContainer;

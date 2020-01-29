@@ -30,6 +30,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const MapLayersAllContainer = connect(mapStateToProps, mapDispatchToProps)(MapLayersAll);
+const MapLayersAllContainer = (connect(mapStateToProps, mapDispatchToProps)(MapLayersAll): any);
 
 export default MapLayersAllContainer;
