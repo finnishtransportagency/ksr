@@ -57,7 +57,7 @@ const ModalContractDetailsView = ({
                 <p>{layer.name}</p>
                 {!layer.features.length && <p>-</p>}
                 {layer.features.map(feature => (
-                    <Contract key={feature.id}>
+                    <Contract key={feature.objectId}>
                         <Contract.IconWrapper>
                             <Fragment>
                                 <Contract.IconWrapper.Icon
@@ -72,7 +72,6 @@ const ModalContractDetailsView = ({
                                 />
                                 { layer.geometryData && (
                                     <Contract.IconWrapper.Icon
-                                        key={feature.id}
                                         title={showLocation}
                                         className="fas fa-search-location"
                                         onClick={() => handleFeatureLocateClick(
