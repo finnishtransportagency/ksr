@@ -27,3 +27,7 @@ export const Text = styled.div`
     -ms-text-overflow: ellipsis;
     text-overflow: ellipsis;
 `;
+
+export const Wrapper = styled.div`
+    
+`;
