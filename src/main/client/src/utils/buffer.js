@@ -127,3 +127,42 @@ export const setBuffer = (
             }
         });
 };
+
+/**
+ * Set buffer for a single feature selected from map.
+ *
+ * @param {Object} view Esri map view
+ * @param {Object[]} selectedGeometryData Array of containing selected feature from map.
+ * @param {number} distance Buffer size in meters.
+ */
+export const setSingleFeatureBuffer = (
+    view: Object,
+    selectedGeometryData: Object[],
+    distance: number,
+) => {
+    esriLoader
+        .loadModules([
+            'esri/Graphic',
+            'esri/geometry/geometryEngine',
+        ])
+        .then(([
+            Graphic,
+            geometryEngine,
+        ]) => {
+            if (view && selectedGeometryData.length > 0) {
+                const featureBuffers = geometryEngine.buffer(
+                    selectedGeometryData, [
+                        distance,
+                    ], 'meters',
+                    true,
+                );
+
+                const bufferGraphic = createGraphic(
+                    featureBuffers[0],
+                    Graphic,
+                );
+
+                view.graphics.add(bufferGraphic);
+            }
+        });
+};
