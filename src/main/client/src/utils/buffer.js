@@ -103,9 +103,9 @@ export const setBuffer = (
 
                 const geomToBuffer = currentTableOnly
                     ? featureData
-                        .filter(a => a.layerId === activeLayerId)
-                        .map(a => a.geometry)
-                    : featureData.map(a => a.geometry);
+                        .filter(data => data.layerId === activeLayerId)
+                        .map(data => data.geometry)
+                    : featureData.map(data => data.geometry);
 
                 if (geomToBuffer.length > 0) {
                     const featureBuffers = geometryEngine.buffer(
@@ -114,11 +114,9 @@ export const setBuffer = (
                         ], 'meters',
                         true,
                     );
-                    const featureBuffer = featureBuffers[0];
 
-                    // add the buffer to the view as a graphic
                     const bufferGraphic = createGraphic(
-                        featureBuffer,
+                        featureBuffers[0],
                         Graphic,
                     );
 
