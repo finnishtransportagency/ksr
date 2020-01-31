@@ -51,6 +51,7 @@ const ReactTableView = ({
             filterable
             columns={columns.map(c => ({
                 ...c,
+                Header: <span title={c.Header}>{c.Header}</span>,
                 Cell: renderEditable,
                 filterMethod: (filter, row) => {
                     const id = filter.pivotId || filter.id;
