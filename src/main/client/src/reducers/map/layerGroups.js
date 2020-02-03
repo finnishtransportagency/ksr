@@ -283,6 +283,14 @@ export default (state: State = initialState, action: Action) => {
                             failOnLoad: action.failOnLoad ? action.failOnLoad : false,
                         };
                     }
+
+                    if (action.layerId.endsWith('.s') && action.layerId.replace('.s', '') === l.id) {
+                        return {
+                            ...l,
+                            visible: true,
+                        };
+                    }
+
                     return { ...l };
                 }): Array<Layer>),
             };
