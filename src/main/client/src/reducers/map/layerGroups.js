@@ -131,13 +131,19 @@ export default (state: State = initialState, action: Action) => {
                             return { ...l };
                         }),
                 })): Array<LayerGroups>),
-                layerList: ((state.layerList.filter(l => l._source !== 'search'): Array<Layer>)
+                layerList: ((state.layerList
                     .map((l: Object) => {
                         if (l.type === 'agfl' && l.active) {
                             return { ...l, active: false };
                         }
+
+                        // Make removed search layer's source layer visible.
+                        if (state.layerList.filter(ll => ll._source === 'search')
+                            .some(ll => ll.id.replace('.s', '') === l.id)) {
+                            return { ...l, visible: true };
+                        }
                         return { ...l };
-                    }): Object[]),
+                    }).filter(l => l._source !== 'search'): Array<Layer>): Object[]),
             };
         case CLOSE_LAYER:
             /* eslint-disable */
