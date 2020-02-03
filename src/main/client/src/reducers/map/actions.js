@@ -326,3 +326,8 @@ export const setScale = (mapScale: number) => ({
     type: types.SET_SCALE,
     mapScale,
 });
+
+export const hideLayer = (layerIds: string[]) => ({
+    type: types.HIDE_LAYER,
+    layerIds,
+});
