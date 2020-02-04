@@ -124,13 +124,16 @@ export const updateLayerList = (workspace: Object, layerList: Object[]): Object[
                 },
             ];
         }
-        return acc.map(l => ({
-            ...l,
-            opacity: l.id === match.id ? wLayer.opacity : l.opacity,
-            layerOrder: l.id === match.id ? wLayer.layerOrder : l.layerOrder,
-            visible: false,
-            active: false,
-        }));
+        if (match !== undefined) {
+            return acc.map(l => ({
+                ...l,
+                opacity: l.id === match.id ? wLayer.opacity : l.opacity,
+                layerOrder: l.id === match.id ? wLayer.layerOrder : l.layerOrder,
+                visible: false,
+                active: false,
+            }));
+        }
+        return acc.map(l => l);
     }, layerList.filter(l => l._source !== 'shapefile' && !l.definitionExpression))
     .sort((a, b) => a.layerOrder - b.layerOrder);
 

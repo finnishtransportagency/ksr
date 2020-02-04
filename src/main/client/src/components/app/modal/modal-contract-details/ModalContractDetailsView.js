@@ -19,7 +19,7 @@ type Props = {
     handleFeatureLocateClick: (
         layerId: string,
         objectId: number,
-    ) => void,
+    ) => Promise<void>,
     handleFeatureEditClick: (
         layerName: string,
         layerId: string,
