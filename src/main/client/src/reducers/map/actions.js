@@ -100,7 +100,7 @@ export const activateLayers = (
                 });
             }
 
-            if (layer.type === 'agfl') {
+            if (layer.type === 'agfl' && layer._source !== 'search') {
                 if (workspace === undefined) dispatch(addNonSpatialContentToTable(layer));
             } else {
                 const layerToUpdate = await getSingleLayerFields({ ...layer, failOnLoad: false });
