@@ -4,8 +4,11 @@ import ModalBufferSelected from './ModalBufferSelected';
 import { setSingleLayerGeometry } from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
+    const singleFeature = state.table.features.singleLayerGeometry.type !== undefined;
     const selectedGeometryData = [];
-    if (state.table.features.singleLayerGeometry.type === undefined) {
+    if (singleFeature) {
+        selectedGeometryData.push(state.table.features.singleLayerGeometry);
+    } else {
         state.table.features.layers.forEach((l) => {
             l.data.forEach(d => d._selected && d.geometry
                 && selectedGeometryData.push({
@@ -13,8 +16,6 @@ const mapStateToProps = (state) => {
                     layerId: d._layerId,
                 }));
         });
-    } else {
-        selectedGeometryData.push(state.table.features.singleLayerGeometry);
     }
 
     const tableGeometryData = [];
@@ -35,6 +36,7 @@ const mapStateToProps = (state) => {
         selectedGeometryData,
         view: state.map.mapView.view,
         activeLayerId: activeTableLayer && activeTableLayer.id,
+        singleFeature,
     };
 };
 const mapDispatchToProps = dispatch => ({

@@ -113,6 +113,7 @@ const fi = {
     },
     modalBufferSelectedData: {
         title: 'Määritä kohteiden puskurialue',
+        titleSingleFeature: 'Määritä kohteen puskurialue',
         submit: 'Laske',
         cancel: 'Peruuta',
         bufferLabel: 'Puskurialueen koko metreinä',

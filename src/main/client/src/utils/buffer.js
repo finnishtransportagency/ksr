@@ -103,9 +103,9 @@ export const setBuffer = (
 
                 const geomToBuffer = currentTableOnly
                     ? featureData
-                        .filter(a => a.layerId === activeLayerId)
-                        .map(a => a.geometry)
-                    : featureData.map(a => a.geometry);
+                        .filter(data => data.layerId === activeLayerId)
+                        .map(data => data.geometry)
+                    : featureData.map(data => data.geometry);
 
                 if (geomToBuffer.length > 0) {
                     const featureBuffers = geometryEngine.buffer(
@@ -114,16 +114,53 @@ export const setBuffer = (
                         ], 'meters',
                         true,
                     );
-                    const featureBuffer = featureBuffers[0];
 
-                    // add the buffer to the view as a graphic
                     const bufferGraphic = createGraphic(
-                        featureBuffer,
+                        featureBuffers[0],
                         Graphic,
                     );
 
                     view.graphics.add(bufferGraphic);
                 }
+            }
+        });
+};
+
+/**
+ * Set buffer for a single feature selected from map.
+ *
+ * @param {Object} view Esri map view
+ * @param {Object[]} selectedGeometryData Array of containing selected feature from map.
+ * @param {number} distance Buffer size in meters.
+ */
+export const setSingleFeatureBuffer = (
+    view: Object,
+    selectedGeometryData: Object[],
+    distance: number,
+) => {
+    esriLoader
+        .loadModules([
+            'esri/Graphic',
+            'esri/geometry/geometryEngine',
+        ])
+        .then(([
+            Graphic,
+            geometryEngine,
+        ]) => {
+            if (view && selectedGeometryData.length > 0) {
+                const featureBuffers = geometryEngine.buffer(
+                    selectedGeometryData, [
+                        distance,
+                    ], 'meters',
+                    true,
+                );
+
+                const bufferGraphic = createGraphic(
+                    featureBuffers[0],
+                    Graphic,
+                );
+
+                view.graphics.add(bufferGraphic);
             }
         });
 };

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import strings from '../../../../translations';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import ModalBufferSelectedView from './ModalBufferSelectedView';
-import { setBuffer } from '../../../../utils/buffer';
+import { setBuffer, setSingleFeatureBuffer } from '../../../../utils/buffer';
 
 type Props = {
     tableGeometryData: Object[],
@@ -11,6 +11,7 @@ type Props = {
     view: Object,
     setSingleLayerGeometry: Function,
     activeLayerId: string,
+    singleFeature: boolean,
 };
 
 type State = {
@@ -69,7 +70,7 @@ class ModalBufferSelected extends Component<Props, State> {
 
     render() {
         const {
-            selectedGeometryData, view, activeLayerId, tableGeometryData,
+            selectedGeometryData, view, activeLayerId, tableGeometryData, singleFeature,
         } = this.props;
 
         const {
@@ -82,15 +83,24 @@ class ModalBufferSelected extends Component<Props, State> {
         const modalSubmit = [{
             text: strings.modalAddUserLayer.submit,
             handleSubmit: () => {
-                setBuffer(
-                    view,
-                    selectedGeometryData,
-                    tableGeometryData,
-                    bufferSize,
-                    currentTableOnly,
-                    selectedFeaturesOnly,
-                    activeLayerId,
-                );
+                if (singleFeature) {
+                    view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+                    setSingleFeatureBuffer(
+                        view,
+                        selectedGeometryData,
+                        bufferSize,
+                    );
+                } else {
+                    setBuffer(
+                        view,
+                        selectedGeometryData,
+                        tableGeometryData,
+                        bufferSize,
+                        currentTableOnly,
+                        selectedFeaturesOnly,
+                        activeLayerId,
+                    );
+                }
             },
             disabled: submitDisabled,
             toggleModal: true,
@@ -98,7 +108,10 @@ class ModalBufferSelected extends Component<Props, State> {
 
         return (
             <ModalContainer
-                title={strings.modalBufferSelectedData.title}
+                title={singleFeature
+                    ? strings.modalBufferSelectedData.titleSingleFeature
+                    : strings.modalBufferSelectedData.title
+                }
                 modalSubmit={modalSubmit}
                 cancelText={strings.modalBufferSelectedData.cancel}
             >
@@ -108,6 +121,7 @@ class ModalBufferSelected extends Component<Props, State> {
                     handleBufferChange={this.handleBufferChange}
                     handleTableSelectionChange={this.handleTableSelectionChange}
                     handleFeatureSelectionChange={this.handleFeatureSelectionChange}
+                    singleFeature={singleFeature}
                 />
             </ModalContainer>
         );

@@ -11,6 +11,7 @@ type Props = {
     handleBufferChange: Function,
     handleTableSelectionChange: Function,
     handleFeatureSelectionChange: Function,
+    singleFeature: boolean,
 };
 
 const ModalBufferSelectedView = ({
@@ -19,11 +20,14 @@ const ModalBufferSelectedView = ({
     handleBufferChange,
     handleTableSelectionChange,
     handleFeatureSelectionChange,
+    singleFeature,
 }: Props) => (
     <Fragment>
-        <DescriptionWrapper>
-            <p>{strings.modalBufferSelectedData.description}</p>
-        </DescriptionWrapper>
+        {!singleFeature && (
+            <DescriptionWrapper>
+                <p>{strings.modalBufferSelectedData.description}</p>
+            </DescriptionWrapper>
+        )}
         <label
             htmlFor="bufferSelectedView"
         >
@@ -37,34 +41,36 @@ const ModalBufferSelectedView = ({
                 onChange={handleBufferChange}
             />
         </label>
-        <CheckboxWrapper>
-            <Checkbox className="content-checkbox" htmlFor="currentTableOnly">
-                <p title={strings.modalBufferSelectedData.checkTable}>
-                    {strings.modalBufferSelectedData.checkTable}
-                </p>
-                <Checkbox.Input
-                    id="currentTableOnly"
-                    name="currentTableOnly"
-                    type="checkbox"
-                    checked={currentTableOnly}
-                    onChange={() => handleTableSelectionChange()}
-                />
-                <Checkbox.Checkmark />
-            </Checkbox>
-            <Checkbox className="content-checkbox" htmlFor="selectedFeaturesOnly">
-                <p title={strings.modalBufferSelectedData.checkFeature}>
-                    {strings.modalBufferSelectedData.checkFeature}
-                </p>
-                <Checkbox.Input
-                    id="selectedFeaturesOnly"
-                    name="selectedFeaturesOnly"
-                    type="checkbox"
-                    checked={selectedFeaturesOnly}
-                    onChange={() => handleFeatureSelectionChange()}
-                />
-                <Checkbox.Checkmark />
-            </Checkbox>
-        </CheckboxWrapper>
+        {!singleFeature && (
+            <CheckboxWrapper>
+                <Checkbox className="content-checkbox" htmlFor="currentTableOnly">
+                    <p title={strings.modalBufferSelectedData.checkTable}>
+                        {strings.modalBufferSelectedData.checkTable}
+                    </p>
+                    <Checkbox.Input
+                        id="currentTableOnly"
+                        name="currentTableOnly"
+                        type="checkbox"
+                        checked={currentTableOnly}
+                        onChange={() => handleTableSelectionChange()}
+                    />
+                    <Checkbox.Checkmark />
+                </Checkbox>
+                <Checkbox className="content-checkbox" htmlFor="selectedFeaturesOnly">
+                    <p title={strings.modalBufferSelectedData.checkFeature}>
+                        {strings.modalBufferSelectedData.checkFeature}
+                    </p>
+                    <Checkbox.Input
+                        id="selectedFeaturesOnly"
+                        name="selectedFeaturesOnly"
+                        type="checkbox"
+                        checked={selectedFeaturesOnly}
+                        onChange={() => handleFeatureSelectionChange()}
+                    />
+                    <Checkbox.Checkmark />
+                </Checkbox>
+            </CheckboxWrapper>
+        )}
     </Fragment>
 );
 
