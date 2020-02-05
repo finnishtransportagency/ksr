@@ -100,7 +100,7 @@ export const activateLayers = (
                 });
             }
 
-            if (layer.type === 'agfl') {
+            if (layer.type === 'agfl' && layer._source !== 'search') {
                 if (workspace === undefined) dispatch(addNonSpatialContentToTable(layer));
             } else {
                 const layerToUpdate = await getSingleLayerFields({ ...layer, failOnLoad: false });
@@ -325,4 +325,9 @@ export const toggleMeasurements = () => ({
 export const setScale = (mapScale: number) => ({
     type: types.SET_SCALE,
     mapScale,
+});
+
+export const hideLayer = (layerIds: string[]) => ({
+    type: types.HIDE_LAYER,
+    layerIds,
 });

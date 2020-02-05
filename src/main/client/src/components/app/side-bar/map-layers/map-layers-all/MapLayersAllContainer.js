@@ -1,6 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
-import { activateLayers, deactivateLayer } from '../../../../../reducers/map/actions';
+import { activateLayers, deactivateLayer, hideLayer } from '../../../../../reducers/map/actions';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
 import MapLayersAll from './MapLayersAll';
 import { setSearchFeatures } from '../../../../../reducers/table/actions';
@@ -27,6 +27,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setSearchFeatures: (layers) => {
         dispatch(setSearchFeatures(layers));
+    },
+    hideLayer: (layerIds: string[]) => {
+        dispatch(hideLayer(layerIds));
     },
 });
 

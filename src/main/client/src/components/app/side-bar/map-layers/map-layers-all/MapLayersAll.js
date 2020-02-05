@@ -17,6 +17,7 @@ type Props = {
     setActiveGroups: (activeGroups: number[]) => void,
     setActiveSubGroups: (activeSubGroups: number[]) => void,
     setSearchFeatures: (layers: Object[]) => void,
+    hideLayer: (layerIds: string[]) => void,
 };
 
 class MapLayersActive extends Component<Props> {
@@ -49,12 +50,15 @@ class MapLayersActive extends Component<Props> {
 
     handleLayerClick = (id: number) => {
         const {
-            activateLayers, deactivateLayer, layerList, setSearchFeatures,
+            activateLayers, deactivateLayer, layerList, setSearchFeatures, hideLayer,
         } = this.props;
+
         const foundLayer = layerList.find(l => l.id === id);
+
         if (foundLayer && !foundLayer.active) {
             if (foundLayer.definitionExpression) {
                 setSearchFeatures([foundLayer]);
+                hideLayer([foundLayer.id.replace('.s', '')]);
             }
             activateLayers([foundLayer]);
         } else {
@@ -63,7 +67,10 @@ class MapLayersActive extends Component<Props> {
     };
 
     handleLayerGroupClick = (layerGroupName: string) => {
-        const { layerList, layersToFind, subLayers } = this.props;
+        const {
+            layerList, layersToFind, subLayers, hideLayer,
+        } = this.props;
+
         const foundLayers = layerList.filter(l => (
             l.layerGroupName === layerGroupName
             && !l.parentLayer
@@ -75,6 +82,10 @@ class MapLayersActive extends Component<Props> {
                     || subLayers.some(layer => layer.parentLayer === l.id
                         && layer.name.toLowerCase().includes(layersToFind)))
                 : true)));
+
+        // Hide search layer's source layer.
+        foundLayers.filter(l => l._source === 'search')
+            .map(l => !l.active && hideLayer([l.id.replace('.s', '')]));
 
         this.updateLayerList(foundLayers);
     };
