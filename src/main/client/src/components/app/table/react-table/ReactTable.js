@@ -185,7 +185,8 @@ class ReactTable extends Component<Props, State> {
                 && activeLayer._source !== 'shapefile'
                 && activeLayer.layerPermission.updateLayer
                 && cellField.editable
-                && activeLayer.updaterField !== cellField.name;
+                && activeLayer.updaterField !== cellField.name
+                && !activeLayer.requiredUniqueFields.some(field => field === cellField.name);
         }
 
         return false;
