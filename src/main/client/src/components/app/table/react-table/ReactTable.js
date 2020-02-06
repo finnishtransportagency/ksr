@@ -351,10 +351,11 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
-    renderInput = (cellField: Object, onChange: Function) => (
+    renderInput = (cellField: Object, filter: any, onChange: Function) => (
         <TextInput
             style={{ minHeight: '1rem' }}
             type="text"
+            value={filter ? filter.value : ''}
             onChange={evt => onChange(evt.target.value)}
         />
     );
@@ -421,6 +422,7 @@ class ReactTable extends Component<Props, State> {
 
                 return this.renderInput(
                     cellField,
+                    filter,
                     onChange,
                 );
             }
