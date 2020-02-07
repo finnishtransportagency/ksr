@@ -179,7 +179,7 @@ describe('contracts', () => {
                 { attributes: { idField: 123, name2: 'Value 2', name3: 1000 } },
             ],
         }];
-        const activeFeature = { layerName: 'Layer 1', layerId: '123', featureId: 123 };
+        const activeFeature = { layerName: 'Layer 1', layerId: '123', objectId: 123 };
 
         const expectedValue = [['idField', 123], ['name2', 'Value 2'], ['name3', 1000]];
         expect(getFeatureAttributes(layer, contractDetails, activeFeature)).toEqual(expectedValue);
