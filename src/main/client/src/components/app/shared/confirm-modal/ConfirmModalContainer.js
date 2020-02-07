@@ -9,6 +9,7 @@ const mapStateToProps = state => ({
     acceptText: state.confirmModal.acceptText,
     cancelText: state.confirmModal.cancelText,
     accept: state.confirmModal.accept,
+    cancel: state.confirmModal.cancel,
 });
 
 const mapDispatchToProps = dispatch => ({

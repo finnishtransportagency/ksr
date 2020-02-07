@@ -5,10 +5,12 @@ import * as types from '../../constants/actionTypes';
 import strings from '../../translations';
 import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
+import store from '../../store';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
 import { activateLayers } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
+import { showConfirmModal } from '../confirmModal/actions';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -29,21 +31,24 @@ export const addUpdateLayers = (
     objectId: number,
     selected?: boolean,
 ) => (dispatch: Function) => {
-    queryFeatures(
-        parseInt(layerId, 10),
-        `${objectIdFieldName} = ${objectId}`,
-        null,
-    )
-        .then((result) => {
-            if (result && result.fields && result.features.length > 0) {
-                // Add layer Id to result
-                result.id = layerId;
-                dispatch({
-                    type: types.SELECT_FEATURES,
-                    layers: parseData({ layers: [result] }, selected),
-                });
-            }
-        });
+    const { layers } = store.getState().table.features;
+    if (layers.find(l => l.id === layerId)) {
+        queryFeatures(
+            parseInt(layerId, 10),
+            `${objectIdFieldName} = ${objectId}`,
+            null,
+        )
+            .then((result) => {
+                if (result && result.fields && result.features.length > 0) {
+                    // Add layer Id to result
+                    result.id = layerId;
+                    dispatch({
+                        type: types.SELECT_FEATURES,
+                        layers: parseData({ layers: [result] }, selected),
+                    });
+                }
+            });
+    }
 };
 
 export const setColumns = (columns: Array<Object>) => ({
@@ -254,10 +259,62 @@ export const clearTableData = () => ({
     type: types.CLEAR_TABLE_DATA,
 });
 
-export const closeTableTab = (layerId: string) => ({
-    type: types.CLOSE_LAYER,
-    layerId,
-});
+export const closeTableTab = (
+    layerId: string,
+    hasTableEdited: boolean,
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+) => (dispatch: Function) => {
+    if (hasTableEdited) {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                setTimeout(() => {
+                    dispatch(showConfirmModal(
+                        strings.modalSaveEditedData.content,
+                        strings.modalSaveEditedData.submit,
+                        strings.modalSaveEditedData.cancel,
+                        () => {
+                            save.saveEditedFeatureData(
+                                view,
+                                editedLayers,
+                                featureType,
+                                addressField,
+                            ).then(() => {
+                                dispatch({
+                                    type: types.CLOSE_LAYER,
+                                    layerId,
+                                });
+                            });
+                        },
+                        () => {
+                            dispatch({
+                                type: types.CLOSE_LAYER,
+                                layerId,
+                            });
+                        },
+                    ));
+                }, 500);
+            },
+        ));
+    } else {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                dispatch({
+                    type: types.CLOSE_LAYER,
+                    layerId,
+                });
+            },
+        ));
+    }
+};
 
 export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
