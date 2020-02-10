@@ -93,7 +93,7 @@ Kaanna karttaa
     click element        ${compass}
 
 Valitse kohde kartalta ja avaa taulukko nakyma
-    [Tags]            smoke
+    [Tags]            smoke1
     [Documentation]   Valitsee kunnan, tarkistaa sen taulukosta ja muokkaa sarakkeita
     Wait Until Element Is Enabled    ${workspace}     timeout=30
     sleep    5
