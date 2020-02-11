@@ -391,7 +391,7 @@ const saveEditedFeatureData = (
             return Promise.all(promisesAddressField)
                 .then((r) => {
                     if (r.length > 0) {
-                        save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId);
+                        save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId, false);
                     }
                 });
         });

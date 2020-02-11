@@ -184,6 +184,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                     attributes: this.state.formOptions.editedFields,
                 }],
                 objectIdFieldName,
+                false,
                 this.state.formOptions.editedFields[objectIdFieldName],
             );
 

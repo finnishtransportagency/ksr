@@ -276,6 +276,7 @@ export const useModalSubmit = (
                             activeDetailLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
                             ['name'],
                         );
+
                         const updateRes = await save.saveData(
                             'update',
                             store.getState().map.mapView.view,
@@ -284,6 +285,7 @@ export const useModalSubmit = (
                                 attributes: { ...formOptions.editedFields },
                             }],
                             objectIdFieldName,
+                            false,
                             activeFeature.objectId,
                         );
 

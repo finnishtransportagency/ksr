@@ -139,7 +139,7 @@ class ModalFilter extends Component<Props, State> {
             // Add object id field and value for the feature.
             featureId = copiedFeature.attributes[objectId.name];
             feature.attributes[objectId.name] = featureId;
-            await save.saveData('update', view, originalLayerId, [feature], objectId.name, featureId);
+            await save.saveData('update', view, originalLayerId, [feature], objectId.name, false, featureId);
         } else if (activeLayer.propertyIdField) {
             await this.handlePropertySubmit(combinedData);
         } else {
