@@ -60,6 +60,7 @@ export const mapSelectPopup = async (
             const actions = [selectIntersectAction, setBufferAction];
 
             const fieldInfos = [];
+            let textInfo = '';
 
             if (feature.layer) {
                 if (feature.layer.featureType === 'shapefile') {
@@ -87,6 +88,8 @@ export const mapSelectPopup = async (
                                 ),
                             });
                         });
+
+                        textInfo = matchingLayer.attribution;
 
                         const relationLayer = matchingLayer
                             && layerList.find(ll => (
@@ -138,6 +141,10 @@ export const mapSelectPopup = async (
                 feature.layer.popupTemplate = {
                     title: feature.layer.title,
                     content: [{
+                        type: 'text',
+                        text: textInfo,
+                    },
+                    {
                         type: 'fields',
                         fieldInfos,
                     }],
