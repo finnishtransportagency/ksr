@@ -26,7 +26,6 @@ type Props = {
     draw: Object,
     sketchViewModel: Object,
     selectFeatures: Function,
-    deSelectSelected: Function,
     active: string,
     setActiveTool: Function,
     tempGraphicsLayer: Object,
@@ -48,6 +47,11 @@ type Props = {
     authorities: Object[],
     editModeActive: boolean,
     setActiveFeatureMode: (activeFeatureMode: string) => void,
+    hasTableEdited: boolean,
+    editedLayers: Array<Object>,
+    featureType: string,
+    addressField: string,
+    closeTableTab: Function,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -395,9 +399,27 @@ class SketchTool extends Component<Props, State> {
     };
 
     removeSelection = () => {
-        const { deSelectSelected, view } = this.props;
+        const {
+            data,
+            view,
+            hasTableEdited,
+            editedLayers,
+            featureType,
+            addressField,
+            closeTableTab,
+        } = this.props;
 
-        deSelectSelected();
+        const layerId = data[0]._layerId;
+
+        closeTableTab(
+            layerId,
+            hasTableEdited,
+            view,
+            editedLayers,
+            featureType,
+            addressField,
+        );
+
         view.popup.close();
     };
 

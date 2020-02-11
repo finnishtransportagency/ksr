@@ -6,12 +6,14 @@ export const showConfirmModal = (
     acceptText: string,
     cancelText: string,
     accept: Function,
+    cancel?: Function,
 ) => ({
     type: types.SHOW_CONFIRM_MODAL,
     body,
     acceptText,
     cancelText,
     accept,
+    cancel,
 });
 
 export const hideConfirmModal = () => ({

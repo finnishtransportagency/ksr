@@ -22,7 +22,8 @@ const setup = () => {
         activeTable: '6',
         setActiveTable: jest.fn(),
         showConfirmModal: jest.fn(),
-        deactivateLayer: jest.fn(), 
+        deactivateLayer: jest.fn(),
+        closeTableTab: jest.fn(),
     };
 
     const wrapper = shallow(<TabbedTableView {...props} />);

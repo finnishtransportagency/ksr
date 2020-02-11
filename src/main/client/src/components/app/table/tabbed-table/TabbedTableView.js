@@ -17,14 +17,12 @@ type Props = {
     activeTable: string,
     setActiveTable: Function,
     activeAdmin: string,
-    showConfirmModal: (
-        body: string,
-        acceptText: string,
-        cancelText: string,
-        accept: Function
-    ) => void,
     closeTableTab: Function,
+    hasTableEdited: boolean,
     view: Object,
+    editedLayers: Array<Object>,
+    featureType: string,
+    addressField: string,
 };
 
 const TabbedTableView = ({
@@ -32,9 +30,12 @@ const TabbedTableView = ({
     activeTable,
     setActiveTable,
     activeAdmin,
-    showConfirmModal,
     closeTableTab,
+    hasTableEdited,
     view,
+    editedLayers,
+    featureType,
+    addressField,
 }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
@@ -66,14 +67,13 @@ const TabbedTableView = ({
                                 title={strings.modalClearTableTab.info}
                                 active={activeTable === l.id}
                                 onClick={() => {
-                                    showConfirmModal(
-                                        strings.modalClearTableTab.content,
-                                        strings.modalClearTableTab.submit,
-                                        strings.modalClearTableTab.cancel,
-                                        () => {
-                                            closeTableTab(l.id);
-                                            view.popup.close();
-                                        },
+                                    closeTableTab(
+                                        l.id,
+                                        hasTableEdited,
+                                        view,
+                                        editedLayers,
+                                        featureType,
+                                        addressField,
                                     );
                                 }}
                                 className="fas fa-times"

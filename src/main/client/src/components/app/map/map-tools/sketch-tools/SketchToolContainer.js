@@ -7,7 +7,7 @@ import {
     setActiveFeatureMode,
 } from '../../../../../reducers/map/actions';
 import { setPropertyInfo } from '../../../../../reducers/search/actions';
-import { selectFeatures, deSelectSelected } from '../../../../../reducers/table/actions';
+import { selectFeatures, closeTableTab } from '../../../../../reducers/table/actions';
 import SketchTool from './SketchTool';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 
@@ -27,14 +27,15 @@ const mapStateToProps = state => ({
     layerList: state.map.layerGroups.layerList,
     propertyAreaSearch: state.search.propertyInfo.propertyAreaSearch,
     authorities: state.user.userInfo.authorities,
+    hasTableEdited: state.table.features.hasTableEdited,
+    editedLayers: state.table.features.editedLayers,
+    featureType: state.map.layerGroups.layerList,
+    addressField: state.map.layerGroups.layerList,
 });
 
 const mapDispatchToProps = dispatch => ({
     selectFeatures: (features) => {
         dispatch(selectFeatures(features));
-    },
-    deSelectSelected: () => {
-        dispatch(deSelectSelected());
     },
     setActiveTool: (active) => {
         dispatch(setActiveTool(active));
@@ -53,6 +54,16 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveFeatureMode: (activeFeatureMode: string) => {
         dispatch(setActiveFeatureMode(activeFeatureMode));
+    },
+    closeTableTab: (layerId, hasTableEdited, view, editedLayers, featureType, addressField) => {
+        dispatch(closeTableTab(
+            layerId,
+            hasTableEdited,
+            view,
+            editedLayers,
+            featureType,
+            addressField,
+        ));
     },
 });
 

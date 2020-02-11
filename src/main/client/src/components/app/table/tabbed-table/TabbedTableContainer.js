@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import TabbedTableView from './TabbedTableView';
 
 import { closeTableTab, setActiveTable } from '../../../../reducers/table/actions';
-import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
 
 const mapStateToProps = state => ({
     layers: state.table.features.layers.map(l => ({
@@ -15,17 +14,25 @@ const mapStateToProps = state => ({
     activeTable: state.table.features.activeTable,
     activeAdmin: state.adminTool.active.layerId,
     view: state.map.mapView.view,
+    hasTableEdited: state.table.features.hasTableEdited,
+    editedLayers: state.table.features.editedLayers,
+    featureType: state.map.layerGroups.layerList,
+    addressField: state.map.layerGroups.layerList,
 });
 
 const mapDispatchToProps = dispatch => ({
     setActiveTable: (activeTable) => {
         dispatch(setActiveTable(activeTable));
     },
-    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
-        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
-    },
-    closeTableTab: (layerId) => {
-        dispatch(closeTableTab(layerId));
+    closeTableTab: (layerId, hasTableEdited, view, editedLayers, featureType, addressField) => {
+        dispatch(closeTableTab(
+            layerId,
+            hasTableEdited,
+            view,
+            editedLayers,
+            featureType,
+            addressField,
+        ));
     },
 });
 
