@@ -160,8 +160,7 @@ class ReactTable extends Component<Props, State> {
         } = this.props;
         const layerId = activeTable.replace('.s', '');
         const layer = layerList.find(l => l.id === layerId);
-
-        if (layer && layer.type === 'agfl') {
+        if (layer && layer.type === 'agfl' && layer.relationLayerId === null) {
             const modalData = {
                 contractObjectId: objectId,
                 layerId,
@@ -457,15 +456,13 @@ class ReactTable extends Component<Props, State> {
             const relationLayer = activeLayer
                 && layerList.find(ll => ll.id === String(activeLayer.relationLayerId));
             const tableColumns = (activeLayer
-                && activeLayer.hasRelations
-                && activeLayer.type !== 'agfl'
-                && relationLayer
-                && relationLayer.layerPermission.readLayer)
-            || (activeLayer
-                && activeLayer.type === 'agfl'
-                && !activeLayer.relationColumnIn
-                && !activeLayer.relationColumnOut)
-                ? addContractColumn(this.handleContractClick, columns, activeLayer.type)
+                && activeLayer.relationType !== null
+                && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer)))
+                ? addContractColumn(
+                    this.handleContractClick,
+                    columns,
+                    activeLayer.type === 'agfl' && activeLayer.relationLayerId === null,
+                )
                 : columns;
             return (
                 <ReactTableView

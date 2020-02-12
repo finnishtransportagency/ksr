@@ -72,7 +72,10 @@ public class ContractService {
      */
     private Response getRelationsMany(Layer layer, int objectId) {
         Response relationFeatures = getRelationsSimple(layer, objectId);
-        Layer targetLayer = getTargetLayer(layer);
+        Layer targetLayer = getTargetLayer(layer).getRelationType().equals("many") 
+                ? layer
+                : getTargetLayer(layer);
+
         List<Object> fkeys = relationFeatures.getAttributeValues(targetLayer.getRelationColumnOut());
         return getTargetFeatures(targetLayer, fkeys);
     }

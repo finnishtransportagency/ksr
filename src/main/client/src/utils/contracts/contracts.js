@@ -66,10 +66,18 @@ export const getContractLayers = (layerId: string, layerList: Object[]) => {
                     contractLayer: relationLayer,
                 };
             case 'many':
+                if (relationLayer.relationType === 'link') {
+                    return {
+                        currentLayer,
+                        contractLayer: layerList
+                            .find(layer => layer.id === relationLayer.relationLayerId.toString()),
+                    };
+                }
+
                 return {
                     currentLayer,
                     contractLayer: layerList
-                        .find(layer => layer.id === relationLayer.relationLayerId.toString()),
+                        .find(layer => layer.id === relationLayer.id.toString()),
                 };
             default:
                 return {

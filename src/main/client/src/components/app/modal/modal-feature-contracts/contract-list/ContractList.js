@@ -62,6 +62,7 @@ class ContractList extends Component<Props, State> {
             currentLayer.id,
             objectId,
         );
+
         contracts = await contractListTexts(
             contracts,
             contractIdField,
@@ -164,14 +165,16 @@ class ContractList extends Component<Props, State> {
 
         return fetchingContracts
             ? <LoadingIcon loading={fetchingContracts || !contractLayer.fields} />
-            : <ContractListView
-                contracts={contracts}
-                contractUnlinkable={contractUnlinkable}
-                handleUnlinkContract={this.handleUnlinkContract}
-                setActiveView={setActiveView}
-                editLayerPermission={editLayerPermission}
-                handleContractDetailsClick={this.handleContractDetailsClick}
-            />;
+            : (
+                <ContractListView
+                    contracts={contracts}
+                    contractUnlinkable={contractUnlinkable}
+                    handleUnlinkContract={this.handleUnlinkContract}
+                    setActiveView={setActiveView}
+                    editLayerPermission={editLayerPermission}
+                    handleContractDetailsClick={this.handleContractDetailsClick}
+                />
+            );
     }
 }
 

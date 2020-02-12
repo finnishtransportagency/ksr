@@ -8,14 +8,14 @@ import * as styles from '../../components/ui/defaultStyles';
  *
  * @param {Function} handleContractClick Opens contract modal and saves objectId to redux.
  * @param {Object[]} columns Currently active layer's table columns.
- * @param {string} type Currently active layer's type.
+ * @param {boolean} contract Whether the current layer is main contract layer.
  *
  * @returns {Object[]} Modified columns with layer details icon added as first column.
  */
 export const addContractColumn = (
     handleContractClick: Function,
     columns: Object[],
-    type: string,
+    contract: boolean,
 ) => ([
     {
         Header: '',
@@ -27,9 +27,9 @@ export const addContractColumn = (
             resizable: false,
             Cell: (row: Object) => (
                 <div
-                    title={type === 'agfs'
-                        ? strings.modalFeatureContracts.listView.title
-                        : strings.modalContractDetails.listView.title}
+                    title={contract
+                        ? strings.modalContractDetails.listView.title
+                        : strings.modalFeatureContracts.listView.title}
                     role="button"
                     tabIndex={0}
                     onClick={() => handleContractClick(row.original._id)}

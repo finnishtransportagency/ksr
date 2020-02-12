@@ -58,7 +58,9 @@ const ModalContractDetailsView = ({
                 {!layer.features.length && <p>-</p>}
                 {layer.features.map(feature => (
                     <Contract key={feature.objectId}>
-                        <Contract.IconWrapper>
+                        <Contract.IconWrapper
+                            wide={detailList.some(l => l.geometryData)}
+                        >
                             <Fragment>
                                 <Contract.IconWrapper.Icon
                                     title={strings.modalContractDetails.listView.details}

@@ -38,10 +38,15 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        const { createLayerPermission, editLayerPermission } = this.props;
+        const {
+            createLayerPermission, editLayerPermission, currentLayer, contractLayer,
+        } = this.props;
 
         const modalSubmit = [];
-        if (createLayerPermission) {
+        const containsLink = currentLayer.relationLayerId.toString()
+            !== contractLayer.id.toString();
+
+        if (createLayerPermission && containsLink) {
             modalSubmit.push({
                 text: strings.modalFeatureContracts.submitNewContract,
                 handleSubmit: this.handleSubmitAddContract,
@@ -50,7 +55,7 @@ class ModalFeatureContracts extends Component<Props, State> {
             });
         }
 
-        if (editLayerPermission) {
+        if (editLayerPermission && containsLink) {
             modalSubmit.push({
                 text: strings.modalFeatureContracts.submitLinkToContract,
                 handleSubmit: this.handleSubmitLinkToContract,
@@ -179,6 +184,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                     attributes: this.state.formOptions.editedFields,
                 }],
                 objectIdFieldName,
+                false,
                 this.state.formOptions.editedFields[objectIdFieldName],
             );
 
