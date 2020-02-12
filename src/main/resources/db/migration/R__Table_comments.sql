@@ -38,7 +38,8 @@ comment on column layer.alfresco_link_field is 'Name of columns which refers lay
 comment on column layer.case_management_link_field is 'Name of columns which refers layer contract number and/or register number for Asianhallinta.';
 comment on column layer.background is 'If the layer can be used as a background layer. Defaults to false ("0"). ';
 comment on column layer.parent_layer is 'Id of parent layer which sublayer belongs to.';
-comment on column layer.property_id_field IS 'Name of property id field';
+comment on column layer.property_id_field is 'Name of property id field';
+comment on column layer.required_unique_fields is 'Feature columns which should be not-null and unique. Will be used when adding new feature (unique check) or when editing existing feature (not editable).';
 
 comment on table layer_permission is 'Layer permissions.';
 comment on column layer_permission.layer_id is 'Identifier of the layer that the permissions belong to.';

@@ -24,6 +24,7 @@ const FeatureDetailsForm = (props: Props) => {
 
     const [fields, setFields] = useState([]);
     const [requiredFields, setRequiredFields] = useState([]);
+    const [requiredUniqueFields, setRequiredUniqueFields] = useState([]);
     const [validForm, setValidForm] = useState(false);
 
     /**
@@ -41,9 +42,14 @@ const FeatureDetailsForm = (props: Props) => {
         const foundFields = layer.fields
             .map(field => ({
                 ...field,
-                nullable: field.name === layer.contractIdField ? false : field.nullable,
+                nullable: layer.requiredUniqueFields
+                    .some(uniqueField => uniqueField === field.name)
+                || field.name === layer.contractIdField
+                    ? false
+                    : field.nullable,
                 data: nestedVal(existingAttributes, [field.name], ''),
                 edited: false,
+                unique: layer.requiredUniqueFields.some(uniqueField => uniqueField === field.name),
             }))
             .map(field => ({
                 ...field,
@@ -54,7 +60,7 @@ const FeatureDetailsForm = (props: Props) => {
                     || (layer.contractIdField !== layer.relationColumnOut
                         && layer.relationColumnOut === field.name)
                     || (formType === 'edit'
-                        && !field.nullable),
+                        && field.unique),
             }))
             .map((field) => {
                 if (field.type === 'esriFieldTypeDate') {
@@ -68,15 +74,24 @@ const FeatureDetailsForm = (props: Props) => {
 
         setFields(foundFields);
 
-        const foundRequiredFields = foundFields.filter(field => !field.nullable && !field.hidden)
+        const foundRequiredUniqueFields = foundFields.filter(field => field.unique)
             .map(field => ({
                 name: field.name,
                 fetching: false,
                 valid: false,
             }));
 
+        const foundRequiredFields = foundFields.filter(field => !field.nullable && !field.hidden)
+            .filter(field => !field.unique)
+            .map(field => ({
+                name: field.name,
+                valid: !!(field.data && field.data.length > 0),
+            }));
+
         setRequiredFields(foundRequiredFields);
-        if (!foundRequiredFields.length) setValidForm(true);
+        setRequiredUniqueFields(foundRequiredUniqueFields);
+
+        if (!foundRequiredFields.length && !foundRequiredUniqueFields.length) setValidForm(true);
 
         return () => setFormOptions({
             editedFields: {},
@@ -99,7 +114,7 @@ const FeatureDetailsForm = (props: Props) => {
                     ? { ...editedFields, [objectIdField.name]: objectIdField.data }
                     : { ...editedFields },
                 submitDisabled: formType === 'edit'
-                    ? !Object.entries(editedFields).length
+                    ? (!Object.entries(editedFields).length || !validForm)
                     : !validForm,
             });
         }
@@ -107,10 +122,24 @@ const FeatureDetailsForm = (props: Props) => {
 
     /** Update validForm when any of the required field's changes */
     useEffect(() => {
-        if (requiredFields.length) {
-            setValidForm(requiredFields.every(reqField => reqField.valid));
+        if (formType === 'edit') {
+            setValidForm(
+                requiredFields.every(reqField => reqField.valid),
+            );
+        } else if (requiredFields.length || requiredUniqueFields.length) {
+            const requiredUniqueContainsEmptyValue = requiredUniqueFields
+                .some((reqUniqField) => {
+                    const foundField = fields.find(field => field.name === reqUniqField.name);
+                    return foundField && foundField.data === '';
+                });
+
+            setValidForm(
+                (requiredFields.every(reqField => reqField.valid)
+                && requiredUniqueFields.every(reqField => reqField.valid))
+                && !requiredUniqueContainsEmptyValue,
+            );
         }
-    }, [requiredFields]);
+    }, [requiredFields, requiredUniqueFields]);
 
     /**
      * Handles input change. If field is not nullable, input will use validation that checks if the
@@ -129,13 +158,76 @@ const FeatureDetailsForm = (props: Props) => {
         })));
 
         if (!field.nullable) {
-            if (!value.trim().length) {
+            if (field.unique) {
+                if (value && value.trim().length) {
+                    setRequiredUniqueFields(requiredUniqueFields.map((reqUniqueField) => {
+                        if (reqUniqueField.name === field.name) {
+                            return {
+                                ...reqUniqueField,
+                                fetching: true,
+                                valid: false,
+                            };
+                        }
+
+                        return reqUniqueField;
+                    }));
+
+                    window.clearTimeout(existsQuery);
+                    ({ controller, signal } = abortFetch(controller));
+                    existsQuery = setTimeout(async () => {
+                        const res = await queryFeatures(
+                            layer.id,
+                            `${field.name} = '${value}'`,
+                            signal,
+                        );
+
+                        if (res) {
+                            if ((res.features && res.features.length) || res.error) {
+                                setRequiredUniqueFields(requiredUniqueFields.map((reqField) => {
+                                    if (reqField.name === field.name) {
+                                        return {
+                                            ...reqField,
+                                            fetching: false,
+                                            valid: false,
+                                        };
+                                    }
+
+                                    return reqField;
+                                }));
+                            } else {
+                                setRequiredUniqueFields(requiredUniqueFields.map((reqField) => {
+                                    if (reqField.name === field.name) {
+                                        return {
+                                            ...reqField,
+                                            fetching: false,
+                                            valid: true,
+                                        };
+                                    }
+
+                                    return reqField;
+                                }));
+                            }
+                        }
+                    }, 300);
+                } else {
+                    setRequiredUniqueFields(requiredUniqueFields.map((reqUniqueField) => {
+                        if (reqUniqueField.name === field.name) {
+                            return {
+                                ...reqUniqueField,
+                                fetching: false,
+                                valid: false,
+                            };
+                        }
+
+                        return reqUniqueField;
+                    }));
+                }
+            } else if (value && value.trim().length) {
                 setRequiredFields(requiredFields.map((reqField) => {
                     if (reqField.name === field.name) {
                         return {
                             ...reqField,
-                            fetching: false,
-                            valid: false,
+                            valid: true,
                         };
                     }
 
@@ -146,51 +238,12 @@ const FeatureDetailsForm = (props: Props) => {
                     if (reqField.name === field.name) {
                         return {
                             ...reqField,
-                            fetching: true,
                             valid: false,
                         };
                     }
 
                     return reqField;
                 }));
-
-                window.clearTimeout(existsQuery);
-                ({ controller, signal } = abortFetch(controller));
-                existsQuery = setTimeout(async () => {
-                    const res = await queryFeatures(
-                        layer.id,
-                        `${field.name} = '${value}'`,
-                        signal,
-                    );
-
-                    if (res) {
-                        if (res.features && res.features.length) {
-                            setRequiredFields(requiredFields.map((reqField) => {
-                                if (reqField.name === field.name) {
-                                    return {
-                                        ...reqField,
-                                        fetching: false,
-                                        valid: false,
-                                    };
-                                }
-
-                                return reqField;
-                            }));
-                        } else {
-                            setRequiredFields(requiredFields.map((reqField) => {
-                                if (reqField.name === field.name) {
-                                    return {
-                                        ...reqField,
-                                        fetching: false,
-                                        valid: true,
-                                    };
-                                }
-
-                                return reqField;
-                            }));
-                        }
-                    }
-                }, 300);
             }
         }
     };
@@ -199,7 +252,7 @@ const FeatureDetailsForm = (props: Props) => {
         <FeatureDetailsFormView
             fields={fields}
             handleOnChange={handleOnChange}
-            requiredFields={requiredFields}
+            requiredUniqueFields={requiredUniqueFields}
         />
     );
 };

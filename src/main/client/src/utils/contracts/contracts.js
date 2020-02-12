@@ -352,15 +352,19 @@ export const getFeatureAttributes = (
     contractDetails: Object[],
     activeFeature: Object,
 ): any[] => {
-    const idField: string = nestedVal(layer, ['contractIdField']);
     const features: Object[] = nestedVal(
         contractDetails.find(l => l.id === activeFeature.layerId),
         ['features'],
         [],
     );
 
+    const objectIdFieldName = nestedVal(
+        layer.fields && layer.fields.find(field => field.type === 'esriFieldTypeOID'),
+        ['name'],
+    );
+
     return Object.entries(nestedVal(
-        features.find(feature => feature.attributes[idField] === activeFeature.featureId),
+        features.find(feature => feature.attributes[objectIdFieldName] === activeFeature.objectId),
         ['attributes'],
         {},
     ));

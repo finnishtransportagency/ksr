@@ -22,7 +22,7 @@ const FormFieldView = ({
             htmlFor={index}
         >
             {field.label}
-            {(!field.nullable)
+            {(!field.nullable && field.unique)
             && (
                 <InputWithIcon>
                     <FieldInputView
@@ -46,6 +46,16 @@ const FormFieldView = ({
                     </InputInfo>
                 </InputWithIcon>
             )}
+            {(!field.nullable && !field.unique)
+            && (
+                <FieldInputView
+                    field={field}
+                    handleOnChange={handleOnChange}
+                    index={index}
+                    disabled={disabled}
+                />
+            )
+            }
             {field.nullable
             && (
                 <FieldInputView

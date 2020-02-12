@@ -12,10 +12,7 @@ import org.hibernate.validator.constraints.SafeHtml;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Objects;
+import java.util.*;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -75,6 +72,7 @@ public class Layer implements Serializable {
     private boolean background;
     private String parentLayer;
     private String propertyIdField;
+    private List<String> requiredUniqueFields;
 
     /**
      * Construct a Layer.
@@ -121,6 +119,7 @@ public class Layer implements Serializable {
         this.setParentLayer(lr.getParentLayer());
         this.setQueryColumnsCustom(lr.getQueryColumns());
         this.setPropertyIdField(lr.getPropertyIdField());
+        this.setRequiredUniqueFieldsCustom(lr.getRequiredUniqueFields());
 
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
@@ -907,5 +906,37 @@ public class Layer implements Serializable {
      */
     public void setPropertyIdField(String propertyIdField) {
         this.propertyIdField = propertyIdField;
+    }
+
+    /**
+     * Gets required unique fields for the layer.
+     * 
+     * @return List of required unique fields.
+     */
+    public List<String> getRequiredUniqueFields() {
+        return requiredUniqueFields;
+    }
+
+    /**
+     * Sets required unique fields for the layer.
+     * 
+     * @param requiredUniqueFields List of required unique fields.
+     */
+    public void setRequiredUniqueFields(List<String> requiredUniqueFields) {
+        this.requiredUniqueFields = requiredUniqueFields;
+    }
+
+    /**
+     * Set required unique fields for the layer.
+     *
+     * @param requiredUniqueFields List of required unique fields.
+     */
+    @JsonIgnore
+    public void setRequiredUniqueFieldsCustom(QueryColumnTypeRecord requiredUniqueFields) {
+        if (requiredUniqueFields == null) {
+            this.requiredUniqueFields = Collections.emptyList();
+        } else {
+            this.requiredUniqueFields = new ArrayList<>(requiredUniqueFields);
+        }
     }
 }

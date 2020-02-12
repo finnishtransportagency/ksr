@@ -6,11 +6,11 @@ import { nestedVal } from '../../../../utils/nestedValue';
 type Props = {
     fields: Array<Object>,
     handleOnChange: Function,
-    requiredFields: Object[],
+    requiredUniqueFields: Object[],
 };
 
 const FeatureDetailsFormView = ({
-    fields, handleOnChange, requiredFields,
+    fields, handleOnChange, requiredUniqueFields,
 }: Props) => (
     <form>
         {fields && fields.filter(field => !field.hidden && !field.nullable).map((field, i) => (
@@ -19,10 +19,13 @@ const FeatureDetailsFormView = ({
                 index={i}
                 field={field}
                 handleOnChange={handleOnChange}
-                fetching={nestedVal(requiredFields.find(reqField => reqField.name === field.name), ['fetching'])}
-                valid={nestedVal(requiredFields.find(reqField => reqField.name === field.name), ['valid'])}
-                disabled={requiredFields.filter(reqField => reqField.name !== field.name)
-                    .some(reqField => reqField.fetching)}
+                fetching={nestedVal(requiredUniqueFields
+                    .find(reqUniqueField => reqUniqueField.name === field.name), ['fetching'])}
+                valid={nestedVal(requiredUniqueFields
+                    .find(reqUniqueField => reqUniqueField.name === field.name), ['valid'])}
+                disabled={requiredUniqueFields
+                    .filter(reqUniqueField => reqUniqueField.name !== field.name)
+                    .some(reqUniqueField => reqUniqueField.fetching)}
             />
         ))}
         {fields && fields.filter(field => !field.hidden && field.nullable).map((field, i) => (
@@ -33,8 +36,9 @@ const FeatureDetailsFormView = ({
                 handleOnChange={handleOnChange}
                 fetching={false}
                 valid
-                disabled={requiredFields.filter(reqField => reqField.name !== field.name)
-                    .some(reqField => reqField.fetching)}
+                disabled={requiredUniqueFields
+                    .filter(reqUniqueField => reqUniqueField.name !== field.name)
+                    .some(reqUniqueField => reqUniqueField.fetching)}
             />
         ))}
     </form>
