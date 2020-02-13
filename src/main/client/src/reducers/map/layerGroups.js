@@ -195,7 +195,14 @@ export default (state: State = initialState, action: Action) => {
                     ...lg,
                     layers: lg.layers.filter(l => l.id !== action.layerId),
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<Layer>),
+                layerList: (state.layerList
+                    .filter(l => l.id !== action.layerId)
+                    .map(l => ({
+                        ...l,
+                        visible: l.id === action.layerId.replace('.s', '')
+                            ? true
+                            : l.visible,
+                    })): Array<Layer>),
             };
         case ADD_SHAPEFILE_LAYER:
             return {
