@@ -109,7 +109,9 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerList: (state.layerList.map(l => ({
                     ...l,
-                    visible: action.layerIds.find(id => id === l.id) ? false : l.visible,
+                    visible: action.layerIds.find(id => id === l.id && l.type !== 'agfl')
+                        ? false
+                        : l.visible,
                 })): Array<Object>),
             };
         case ADD_SEARCH_RESULTS_LAYER:
