@@ -138,6 +138,15 @@ export const mapSelectPopup = async (
                     actions.push(editFeatureAction);
                 }
 
+                if (feature.layer.geometryType === 'polygon') {
+                    const getAllPropertyInfo = {
+                        title: strings.esriMap.getAllPropertyInfo,
+                        id: 'get-all-property-info',
+                        className: 'fas fa-city',
+                    };
+                    actions.push(getAllPropertyInfo);
+                }
+
                 feature.layer.popupTemplate = {
                     title: feature.layer.title,
                     content: [{

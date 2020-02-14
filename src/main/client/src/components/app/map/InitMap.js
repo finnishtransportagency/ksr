@@ -1,6 +1,7 @@
 // @flow
 import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
 import clone from 'clone';
 import { isMobile } from 'react-device-detect';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
@@ -90,6 +91,7 @@ class EsriMap extends Component<Props> {
             ScaleBar,
             SpatialReference,
             Compass,
+            geometryEngine,
             Circle,
             Point,
             Print,
@@ -109,6 +111,7 @@ class EsriMap extends Component<Props> {
                 'esri/widgets/ScaleBar',
                 'esri/geometry/SpatialReference',
                 'esri/widgets/Compass',
+                'esri/geometry/geometryEngine',
                 'esri/geometry/Circle',
                 'esri/geometry/Point',
                 'esri/widgets/Print',
@@ -399,6 +402,18 @@ class EsriMap extends Component<Props> {
                 case 'get-property-info':
                     setPropertyInfo({ x, y }, view, 'propertyArea', authorities);
                     break;
+                case 'get-all-property-info': {
+                    const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
+                    const area = geometryEngine.planarArea(
+                        geometry,
+                        'square-kilometers',
+                    );
+                    if (area > 0.25) {
+                        toast.error(strings.searchProperty.errorToast.searchAreaLimit);
+                    } else {
+                        setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
+                    }
+                    break; }
                 case 'google-street-view':
                     getStreetViewLink(x, y);
                     break;

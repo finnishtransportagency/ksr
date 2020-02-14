@@ -57,6 +57,7 @@ const fi = {
         setBuffer: 'Puskurialue',
         noFeatures: 'Ei kohteita',
         getPropertyInfo: 'Kiinteistötiedot',
+        getAllPropertyInfo: 'Näytä kohteeseen liittyvät kiinteistöt',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
         copyFeature: 'Kopioi kohde',
         confirmReplace: {
