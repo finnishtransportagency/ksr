@@ -19,6 +19,7 @@ import {
     TOGGLE_SELECTION,
     CLOSE_LAYER,
     TABLE_EDITED,
+    ADD_FILTERED,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
@@ -30,7 +31,12 @@ import {
     toggleSelection,
     updateLayerColumns,
 } from '../../utils/parseFeatureData';
-import { applyDeletedFeatures, applyEditedLayers, applyEdits } from '../../utils/table';
+import {
+    applyDeletedFeatures,
+    applyEditedLayers,
+    applyEdits,
+    removeFilteredLayer,
+} from '../../utils/table';
 
 type State = {
     fetching: boolean,
@@ -39,6 +45,7 @@ type State = {
     activeTable: string,
     singleLayerGeometry: Object,
     hasTableEdited: boolean,
+    filtered: Array<Object>
 };
 
 type Action = {
@@ -56,6 +63,7 @@ type Action = {
     edits: Array<Object>,
     objectIds: string,
     hasTableEdited: boolean,
+    filtered: Array<Object>
 };
 
 const initialState = {
@@ -65,6 +73,7 @@ const initialState = {
     fetching: false,
     singleLayerGeometry: {},
     hasTableEdited: false,
+    filtered: [],
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -107,6 +116,7 @@ export default (state: State = initialState, action: Action) => {
                     state.layers.filter(l => l.id !== action.layerId),
                     state.activeTable,
                 ),
+                filtered: removeFilteredLayer(state.filtered, action.layerId),
             };
         case DE_SELECT_SELECTED_FEATURES:
             return {
@@ -195,11 +205,17 @@ export default (state: State = initialState, action: Action) => {
                     state.layers.filter(l => l.id !== action.layerId),
                     state.activeTable,
                 ),
+                filtered: removeFilteredLayer(state.filtered, action.layerId),
             };
         case TABLE_EDITED:
             return {
                 ...state,
                 hasTableEdited: action.hasTableEdited,
+            };
+        case ADD_FILTERED:
+            return {
+                ...state,
+                filtered: action.filtered,
             };
         default:
             return state;
