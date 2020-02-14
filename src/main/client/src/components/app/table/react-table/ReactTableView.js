@@ -19,6 +19,8 @@ type Props = {
     renderEditable: Function,
     renderFilter: Function,
     currentCellData: Object,
+    onFilteredChangeCustom: Function,
+    filteredValues: Array<Object>,
 };
 
 const ReactTableView = ({
@@ -31,6 +33,8 @@ const ReactTableView = ({
     renderEditable,
     renderFilter,
     currentCellData,
+    onFilteredChangeCustom,
+    filteredValues,
 }: Props) => (
     <WrapperReactTable
         columns={columns}
@@ -49,6 +53,10 @@ const ReactTableView = ({
             data={data}
             TableComponent={CustomTableView}
             filterable
+            filtered={filteredValues}
+            onFilteredChange={(filtered, column, value) => {
+                onFilteredChangeCustom(value, column.id || column.accessor);
+            }}
             columns={columns.map(c => ({
                 ...c,
                 Header: <span title={c.Header}>{c.Header}</span>,

@@ -5,7 +5,7 @@ import { setActiveModal } from '../../../../reducers/modal/actions';
 import ReactTable from './ReactTable';
 
 import {
-    toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter, setTableEdited,
+    toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter, setTableEdited, addFiltered,
 } from '../../../../reducers/table/actions';
 
 const mapStateToProps = (state) => {
@@ -26,6 +26,7 @@ const mapStateToProps = (state) => {
         selectAll,
         layerList: state.map.layerGroups.layerList,
         activeAdminTool: state.adminTool.active.layerId,
+        filtered: state.table.features.filtered,
     };
 };
 
@@ -50,6 +51,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setTableEdited: (hasEdited) => {
         dispatch(setTableEdited(hasEdited));
+    },
+    addFiltered: (filtered) => {
+        dispatch(addFiltered(filtered));
     },
 });
 
