@@ -437,3 +437,8 @@ export const setTableEdited = (hasTableEdited: boolean) => ({
     type: types.TABLE_EDITED,
     hasTableEdited,
 });
+
+export const addFiltered = (filtered: Array<Object>) => ({
+    type: types.ADD_FILTERED,
+    filtered,
+});
