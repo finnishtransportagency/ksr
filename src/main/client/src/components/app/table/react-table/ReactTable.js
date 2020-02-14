@@ -29,6 +29,8 @@ type Props = {
     setActiveModal: (activeModal: string, modalData: any) => void,
     setContractListInfo: (layerId: string, objectId: number) => void,
     setTableEdited: Function,
+    filtered: Array<Object>,
+    addFiltered: Function,
 };
 
 type State = {
@@ -38,7 +40,7 @@ type State = {
         editedData: ?string | ?number,
         rowIndex: ?number,
         key: ?string,
-    }
+    },
 };
 
 const defaultState = {
@@ -60,6 +62,7 @@ class ReactTable extends Component<Props, State> {
         this.renderFilter = this.renderFilter.bind(this);
         this.renderEditable = this.renderEditable.bind(this);
         this.toggleSelection = this.toggleSelection.bind(this);
+        this.onFilteredChangeCustom = this.onFilteredChangeCustom.bind(this);
     }
 
     componentDidUpdate() {
@@ -432,6 +435,25 @@ class ReactTable extends Component<Props, State> {
         return null;
     };
 
+    onFilteredChangeCustom = (value: any, accessor: any) => {
+        const { filtered, addFiltered } = this.props;
+        const localFiltered = [...filtered];
+
+        if (localFiltered.length) {
+            localFiltered.forEach((filter, i) => {
+                if (filter.id === accessor) {
+                    if (value === '' || !value.length) {
+                        localFiltered.splice(i, 1);
+                    } else {
+                        filter.value = value;
+                    }
+                }
+            });
+        }
+        localFiltered.push({ id: accessor, value });
+        addFiltered(localFiltered);
+    };
+
     render() {
         const {
             fetching,
@@ -440,6 +462,7 @@ class ReactTable extends Component<Props, State> {
             toggleSelectAll,
             layerList,
             setRowFilter,
+            filtered,
         } = this.props;
 
         if (!layerFeatures) {
@@ -477,6 +500,8 @@ class ReactTable extends Component<Props, State> {
                     renderEditable={this.renderEditable}
                     renderFilter={this.renderFilter}
                     currentCellData={currentCellData}
+                    onFilteredChangeCustom={this.onFilteredChangeCustom}
+                    filteredValues={filtered}
                 />
             );
         }
