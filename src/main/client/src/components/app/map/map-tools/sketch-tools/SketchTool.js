@@ -10,6 +10,7 @@ import SketchActiveAdminView from './sketch-active-admin/SketchActiveAdminView';
 import { queryFeatures } from '../../../../../utils/queryFeatures';
 import { convertEsriGeometryType } from '../../../../../utils/type';
 import { nestedVal } from '../../../../../utils/nestedValue';
+import save from '../../../../../utils/saveFeatureData';
 
 type State = {
     editSketchIcon: string,
@@ -47,11 +48,19 @@ type Props = {
     authorities: Object[],
     editModeActive: boolean,
     setActiveFeatureMode: (activeFeatureMode: string) => void,
-    hasTableEdited: boolean,
-    editedLayers: Array<Object>,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function,
+        cancel: Function,
+    ) => void,
+    closeTableTab: Function,
+    view: Object,
+    editedLayers: Object[],
     featureType: string,
     addressField: string,
-    closeTableTab: Function,
+    hasTableEdited: boolean,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -406,21 +415,53 @@ class SketchTool extends Component<Props, State> {
             editedLayers,
             featureType,
             addressField,
+            showConfirmModal,
             closeTableTab,
         } = this.props;
 
         const layerId = data[0]._layerId;
 
-        closeTableTab(
-            layerId,
-            hasTableEdited,
-            view,
-            editedLayers,
-            featureType,
-            addressField,
-        );
-
-        view.popup.close();
+        if (hasTableEdited) {
+            showConfirmModal(
+                strings.modalClearTable.content,
+                strings.modalClearTable.submit,
+                strings.modalClearTable.cancel,
+                () => {
+                    setTimeout(() => {
+                        showConfirmModal(
+                            strings.modalSaveEditedData.content,
+                            strings.modalSaveEditedData.submit,
+                            strings.modalSaveEditedData.cancel,
+                            () => {
+                                save.saveEditedFeatureData(
+                                    view,
+                                    editedLayers,
+                                    featureType,
+                                    addressField,
+                                ).then(() => {
+                                    closeTableTab(layerId);
+                                    view.popup.close();
+                                });
+                            },
+                            () => {
+                                closeTableTab(layerId);
+                                view.popup.close();
+                            },
+                        );
+                    }, 500);
+                },
+            );
+        } else {
+            showConfirmModal(
+                strings.modalClearTable.content,
+                strings.modalClearTable.submit,
+                strings.modalClearTable.cancel,
+                () => {
+                    closeTableTab(layerId);
+                    view.popup.close();
+                },
+            );
+        }
     };
 
     toggleSelectTools = () => {

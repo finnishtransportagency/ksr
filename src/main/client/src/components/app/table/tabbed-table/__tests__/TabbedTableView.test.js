@@ -24,6 +24,7 @@ const setup = () => {
         showConfirmModal: jest.fn(),
         deactivateLayer: jest.fn(),
         closeTableTab: jest.fn(),
+        closeTab: jest.fn(),
     };
 
     const wrapper = shallow(<TabbedTableView {...props} />);

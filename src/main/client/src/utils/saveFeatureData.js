@@ -252,7 +252,12 @@ const saveData = async (
                     const res = await updateFeatures(layerId, params.toString());
                     layerToUpdated = await handleUpdateResponse(res, layerId, layer, hideToast);
                     await handlePopupUpdate(view, layerId, idFieldName, layerToUpdated.features);
-                    if (nestedVal(layerToUpdated, ['features', 'length'])) {
+                    /**
+                     * Check that layer is still open in table and
+                     * not allready closed at tableTabClose & save
+                     */
+                    const layerIsOpen = layers.find(l => l.id === layerId);
+                    if (layerIsOpen && nestedVal(layerToUpdated, ['features', 'length'])) {
                         layerToUpdated.features.forEach((objectId: number) => {
                             store.dispatch(addUpdateLayers(
                                 layerId,
@@ -388,12 +393,11 @@ const saveEditedFeatureData = (
                 createAddressFields(feature, featureType, addressField)
             ));
 
-            return Promise.all(promisesAddressField)
-                .then((r) => {
-                    if (r.length > 0) {
-                        save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId);
-                    }
-                });
+            if (promisesAddressField.length > 0) {
+                return Promise.all(promisesAddressField)
+                    .then(r => save.saveData('update', view, layerId, r, idFieldNameWithoutLayerId));
+            }
+            return null;
         });
         return Promise.all(promises);
     }

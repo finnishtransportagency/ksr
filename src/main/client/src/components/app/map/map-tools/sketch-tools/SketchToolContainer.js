@@ -7,9 +7,10 @@ import {
     setActiveFeatureMode,
 } from '../../../../../reducers/map/actions';
 import { setPropertyInfo } from '../../../../../reducers/search/actions';
-import { selectFeatures, closeTableTab } from '../../../../../reducers/table/actions';
+import { closeTableTab, selectFeatures } from '../../../../../reducers/table/actions';
 import SketchTool from './SketchTool';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
+import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
 
 const mapStateToProps = state => ({
     view: state.map.mapView.view,
@@ -55,15 +56,17 @@ const mapDispatchToProps = dispatch => ({
     setActiveFeatureMode: (activeFeatureMode: string) => {
         dispatch(setActiveFeatureMode(activeFeatureMode));
     },
-    closeTableTab: (layerId, hasTableEdited, view, editedLayers, featureType, addressField) => {
-        dispatch(closeTableTab(
-            layerId,
-            hasTableEdited,
-            view,
-            editedLayers,
-            featureType,
-            addressField,
-        ));
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function,
+        cancel: Function,
+    ) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept, cancel));
+    },
+    closeTableTab: (layerId) => {
+        dispatch(closeTableTab(layerId));
     },
 });
 
