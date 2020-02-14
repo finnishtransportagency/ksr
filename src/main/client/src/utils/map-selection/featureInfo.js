@@ -71,6 +71,9 @@ const featureInfoToGraphic = (layer, content) => (
             popupTemplate: {
                 title: layer.name,
                 content: [{
+                    type: 'text',
+                    text: layer.attribution,
+                }, {
                     type: 'fields',
                     fieldInfos: properties.map(property => (
                         { fieldName: property.name, label: property.name, visible: true }
