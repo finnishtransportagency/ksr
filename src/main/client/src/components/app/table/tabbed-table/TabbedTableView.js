@@ -16,7 +16,17 @@ type Props = {
     activeTable: string,
     setActiveTable: Function,
     activeAdmin: string,
-    closeTab: (layerId: string) => void,
+    closeTableTab: (
+        layerId: string,
+        view: Object,
+        editedLayers: Object[],
+        featureType: string,
+        addressField: string
+    ) => void,
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
 };
 
 const TabbedTableView = ({
@@ -24,7 +34,11 @@ const TabbedTableView = ({
     activeTable,
     setActiveTable,
     activeAdmin,
-    closeTab,
+    closeTableTab,
+    view,
+    editedLayers,
+    featureType,
+    addressField,
 }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
@@ -55,7 +69,13 @@ const TabbedTableView = ({
                             <ButtonIcon
                                 title={strings.modalClearTableTab.info}
                                 active={activeTable === l.id}
-                                onClick={() => closeTab(l.id)}
+                                onClick={() => closeTableTab(
+                                    l.id,
+                                    view,
+                                    editedLayers,
+                                    featureType,
+                                    addressField,
+                                )}
                                 className="fas fa-times"
                                 admin={activeAdmin === l.id.replace('.s', '')}
                             />

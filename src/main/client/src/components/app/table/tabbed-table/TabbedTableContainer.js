@@ -1,9 +1,8 @@
 // @flow
 import { connect } from 'react-redux';
-import TabbedTable from './TabbedTable';
+import TabbedTableView from './TabbedTableView';
 
-import { closeTableTab, setActiveTable, saveEditedFeatures } from '../../../../reducers/table/actions';
-import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
+import { closeTableTab, setActiveTable } from '../../../../reducers/table/actions';
 
 const mapStateToProps = state => ({
     layers: state.table.features.layers.map(l => ({
@@ -25,21 +24,9 @@ const mapDispatchToProps = dispatch => ({
     setActiveTable: (activeTable) => {
         dispatch(setActiveTable(activeTable));
     },
-    showConfirmModal: (
-        body: string,
-        acceptText: string,
-        cancelText: string,
-        accept: Function,
-        cancel: Function,
-    ) => {
-        dispatch(showConfirmModal(body, acceptText, cancelText, accept, cancel));
-    },
-    saveEditedFeatures: (view, editedLayers, featureType, addressField) => {
-        dispatch(saveEditedFeatures(view, editedLayers, featureType, addressField));
-    },
-    closeTableTab: (layerId) => {
-        dispatch(closeTableTab(layerId));
+    closeTableTab: (layerId, view, editedLayers, featureType, addressField) => {
+        dispatch(closeTableTab(layerId, view, editedLayers, featureType, addressField));
     },
 });
 
-export default (connect(mapStateToProps, mapDispatchToProps)(TabbedTable): any);
+export default (connect(mapStateToProps, mapDispatchToProps)(TabbedTableView): any);

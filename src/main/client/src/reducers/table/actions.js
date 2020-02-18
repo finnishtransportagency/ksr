@@ -9,6 +9,7 @@ import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
 import { activateLayers } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
+import { showConfirmModal } from '../confirmModal/actions';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -254,10 +255,62 @@ export const clearTableData = () => ({
     type: types.CLEAR_TABLE_DATA,
 });
 
-export const closeTableTab = (layerId: string) => ({
-    type: types.CLOSE_LAYER,
-    layerId,
-});
+export const closeTableTab = (
+    layerId: string,
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+) => (dispatch: Function) => {
+    const editedLayer = editedLayers.find(e => e.id === layerId);
+    const containsEdit = editedLayer && editedLayer.data
+        .some(d => d._edited.length > 0);
+    if (containsEdit) {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                setTimeout(() => {
+                    dispatch(showConfirmModal(
+                        strings.modalSaveEditedData.content,
+                        strings.modalSaveEditedData.submit,
+                        strings.modalSaveEditedData.cancel,
+                        () => {
+                            // eslint-disable-next-line no-use-before-define
+                            dispatch(saveEditedFeatures(
+                                view,
+                                editedLayers,
+                                featureType,
+                                addressField,
+                            ));
+                        },
+                        () => {
+                            dispatch({
+                                type: types.CLOSE_LAYER,
+                                layerId,
+                            });
+                            view.popup.close();
+                        },
+                    ));
+                }, 500);
+            },
+        ));
+    } else {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                dispatch({
+                    type: types.CLOSE_LAYER,
+                    layerId,
+                });
+                view.popup.close();
+            },
+        ));
+    }
+};
 
 export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
@@ -276,7 +329,8 @@ export const saveEditedFeatures = (
     addressField: string,
 ) => (dispatch: Function, getState: Function) => {
     save.saveEditedFeatureData(view, editedLayers, featureType, addressField)
-        .then((edits) => {
+        .then((resEdits) => {
+            const edits = resEdits.filter(e => e !== null);
             dispatch({
                 type: types.APPLY_EDITS,
                 edits,
