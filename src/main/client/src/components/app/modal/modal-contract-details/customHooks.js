@@ -6,6 +6,7 @@ import { getAttribute, getFeatureAttributes, addDetailToContract } from '../../.
 import save from '../../../../utils/saveFeatureData';
 import store from '../../../../store';
 import { getContractDocumentUrl } from '../../../../utils/contracts/contractDocument';
+import { filterNotAllowedFields } from '../../../../utils/fields';
 
 /**
  * Updates state with new detail list to be shown for found layers and features.
@@ -128,7 +129,7 @@ export const useFeatureAttributes = (
         }
     }, [...effectListeners]);
 
-    return featureAttributes;
+    return filterNotAllowedFields(featureAttributes);
 };
 
 /**

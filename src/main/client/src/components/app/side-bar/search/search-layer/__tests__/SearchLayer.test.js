@@ -14,12 +14,36 @@ const setup = (prop) => {
             label: 'Layer 1',
             id: 0,
             queryColumnsList: [],
+            fields: [{
+                value: 0,
+                label: 'OBJECTID_1',
+                type: 'esriFieldTypeOID',
+                name: 'OBJECTID_1',
+            }, {
+                value: 1,
+                label: 'Number',
+                type: 'esriFieldTypeInteger',
+                name: 'NRO',
+            }],
         }],
         activeQueryableLayers: [{
             value: 0,
             label: 'Layer 1',
             id: 0,
             queryColumnsList: [],
+            fields: [{
+                value: 0,
+                label: 'OBJECTID_1',
+                type: 'esriFieldTypeOID',
+                name: 'OBJECTID_1',
+                editable: false,
+                nullable: false,
+            }, {
+                value: 1,
+                label: 'Number',
+                type: 'esriFieldTypeInteger',
+                name: 'NRO',
+            }],
         }],
         queryOptions: [{
             value: 0,
