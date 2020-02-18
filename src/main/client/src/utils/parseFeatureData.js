@@ -1,3 +1,4 @@
+// @flow
 import clone from 'clone';
 
 /**
@@ -6,7 +7,7 @@ import clone from 'clone';
  * @param {string} type Column type.
  * @returns {string} Custom className if needed otherwise an empty string.
  */
-const columnClassName = (type) => {
+const columnClassName = (type: string) => {
     switch (type) {
         case 'double':
         case 'esriFieldTypeDouble':
@@ -28,7 +29,7 @@ const columnClassName = (type) => {
  *
  * @returns {Object[]} Array React-table compatible Array
  */
-export const parseColumns = (id, data) => {
+export const parseColumns = (id: string, data: Object[]): Object[] => {
     if (!data) return [];
     return data.map(f => ({
         Header: f.alias,
@@ -59,7 +60,7 @@ export const parseColumns = (id, data) => {
  * @param {Object} attributes Feature attributes.
  * @return {Object} Attributes contains layer id on the attribute name.
  */
-export const parseAttributes = (id, attributes) => {
+export const parseAttributes = (id: string, attributes: Object) => {
     const a = Object.entries(attributes);
     const newObject = {};
     for (let i = 0; i < a.length; i += 1) {
@@ -76,7 +77,7 @@ export const parseAttributes = (id, attributes) => {
  *
  * @returns {Object[]} Array of layers holding respective features and columns.
  */
-export const parseData = (data, selected) => {
+export const parseData = (data: Object, selected?: boolean) => {
     if (data === undefined || data === null || data.layers === undefined) return [];
     return data.layers.filter(l => l)
         .map(l => ({
@@ -109,7 +110,7 @@ export const parseData = (data, selected) => {
  *
  * @returns {Object[] } Array of merged input arrays.
  */
-export const mergeData = (currentData, newData) => {
+export const mergeData = (currentData: Object[], newData: Object[]) => {
     const data = [...currentData];
     newData.forEach((newFeature) => {
         const matchingFeature = data.find(f => f._id === newFeature._id);
@@ -138,7 +139,7 @@ export const mergeData = (currentData, newData) => {
  *
  * @returns {string} Id of active table.
  */
-export const getActiveTable = (layers, currentActiveTable) => {
+export const getActiveTable = (layers: Object[], currentActiveTable: string) => {
     if (
         layers.find(l => l.id === currentActiveTable) === undefined
         || currentActiveTable === ''
@@ -160,7 +161,12 @@ export const getActiveTable = (layers, currentActiveTable) => {
  *
  * @returns {Object} Layer, editedLayers and activeTable.
  */
-export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear = false) => {
+export const mergeLayers = (
+    currentLayers: Object[],
+    newLayers: Object[],
+    currentActiveTable: string,
+    clear: boolean = false,
+): Object => {
     const layers = currentLayers.map(l => ({ ...l, data: [...l.data] }));
 
     newLayers.forEach((nl) => {
@@ -193,7 +199,11 @@ export const mergeLayers = (currentLayers, newLayers, currentActiveTable, clear 
  *
  * @returns {Object[]} Updated layers.
  */
-export const updateLayerColumns = (activeTable, columns, currentLayers) => (
+export const updateLayerColumns = (
+    activeTable: string,
+    columns: Object,
+    currentLayers: Object[],
+): Object[] => (
     currentLayers.map(l => (l.id === activeTable ? { ...l, columns } : { ...l }))
 );
 
@@ -208,7 +218,11 @@ export const updateLayerColumns = (activeTable, columns, currentLayers) => (
  *
  * @returns {Object} layers, editedLayers and activeTable.
  */
-export const syncWithLayersList = (currentLayers, layerList, currentActiveTable) => {
+export const syncWithLayersList = (
+    currentLayers: Object[],
+    layerList: Object[],
+    currentActiveTable: string,
+): Object => {
     const layers = currentLayers.filter(l => layerList.find(ll => (
         (ll.id === l.id && l.id.indexOf('.s') > 0)
         || (ll.id === l.id && ll.active === true))) !== undefined);
@@ -228,7 +242,7 @@ export const syncWithLayersList = (currentLayers, layerList, currentActiveTable)
  *
  * @returns {Object} layers, editedLayers, activeTable.
  */
-export const deSelectFeatures = (currentLayers, currentActiveTable) => {
+export const deSelectFeatures: Object = (currentLayers: Object[], currentActiveTable: string) => {
     const layers = currentLayers.reduce((filtered, layer) => {
         const data = layer.data.reduce((fd, d) => {
             if (d._source === 'search') {
@@ -260,7 +274,11 @@ export const deSelectFeatures = (currentLayers, currentActiveTable) => {
  *
  * @returns {Object[]} Layers updated with feature filtered information.
  */
-export const setRowFilter = (currentLayers: Object[], activeTable: string, features: Object[]) => (
+export const setRowFilter: any = (
+    currentLayers: Object[],
+    activeTable: string,
+    features: Object[],
+): Object[] => (
     currentLayers.map((layer) => {
         if (layer.id === activeTable) {
             return {
@@ -284,7 +302,7 @@ export const setRowFilter = (currentLayers: Object[], activeTable: string, featu
  *
  * @returns {Object[]} Layers updated with features selection.
  */
-export const toggleSelection = (currentLayers, feature) => (
+export const toggleSelection = (currentLayers: Object[], feature: Object): Object[] => (
     currentLayers.map((layer) => {
         if (layer.id === feature._layerId) {
             return {
@@ -307,7 +325,7 @@ export const toggleSelection = (currentLayers, feature) => (
  *
  * @returns {Object[]} Layers updates with features selected.
  */
-export const toggleSelectAll = (currentLayers, layerId) => (
+export const toggleSelectAll = (currentLayers: Object[], layerId: string): Object[] => (
     currentLayers.map((layer) => {
         if (layer.id === layerId) {
             const all = layer.data.find(d => !d._selected) === undefined;
@@ -361,9 +379,9 @@ export const getCodedValue = (
  * @returns {Object[]} Merged columns.
  */
 export const mergeColumnsByHeaderAndLabel = (
-    selectedFeatureColumns,
-    layerGroupColumns,
-) => selectedFeatureColumns.map(sfc => ({
+    selectedFeatureColumns: Object[],
+    layerGroupColumns: Object[],
+): Object[] => selectedFeatureColumns.map(sfc => ({
     ...sfc,
     ...layerGroupColumns.find(lgc => (lgc.label === sfc.Header)),
 }));
