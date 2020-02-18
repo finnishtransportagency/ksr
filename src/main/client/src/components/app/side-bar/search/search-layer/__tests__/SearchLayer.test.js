@@ -57,6 +57,7 @@ const setup = (prop) => {
             searchFieldValues: [{
                 queryExpression: '%',
                 queryText: 'Test 123',
+                queryDate: '',
             }],
             optionsField: [{}],
             fetching: false,
@@ -117,11 +118,13 @@ describe('<SearchLayer />', () => {
                     {
                         value: 1,
                         queryText: '',
+                        queryDate: '',
                         queryExpression: '',
                     },
                     {
                         value: 2,
                         queryText: '',
+                        queryDate: '',
                         queryExpression: '',
                     },
                 ],
@@ -145,11 +148,13 @@ describe('<SearchLayer />', () => {
                     {
                         value: 1,
                         queryText: '',
+                        queryDate: '',
                         queryExpression: '',
                     },
                     {
                         value: 2,
                         queryText: '',
+                        queryDate: '',
                         queryExpression: '',
                     },
                 ],
@@ -186,11 +191,13 @@ describe('<SearchLayer />', () => {
                     {
                         value: 1,
                         queryText: '',
+                        queryDate: '',
                         queryExpression: '',
                     },
                     {
                         value: 2,
                         queryText: '',
+                        queryDate: '',
                         queryExpression: '',
                     },
                 ],
