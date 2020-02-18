@@ -53,6 +53,7 @@ describe('parseQueryString', () => {
                 name: 'fieldName1',
                 queryExpression: '=',
                 queryText: 'helsinki',
+                queryDate: '',
             },
         ];
         const queryString = parseQueryString(
@@ -69,6 +70,7 @@ describe('parseQueryString', () => {
                 name: 'fieldName2',
                 queryExpression: 'LIKE',
                 queryText: 'turku',
+                queryDate: '',
             },
         ];
         const queryString2 = parseQueryString(
@@ -85,6 +87,7 @@ describe('parseQueryString', () => {
                 name: 'fieldName3',
                 queryExpression: '<',
                 queryText: '3',
+                queryDate: '',
                 type: 'esriFieldTypeSmallInteger',
             },
         ];
@@ -102,6 +105,7 @@ describe('parseQueryString', () => {
                 name: 'fieldName4',
                 queryExpression: 'NOT',
                 queryText: 'helsinki',
+                queryDate: '',
                 type: 'esriFieldTypeString',
             },
         ];
@@ -119,6 +123,7 @@ describe('parseQueryString', () => {
                 name: 'fieldName5',
                 queryExpression: 'NOT LIKE',
                 queryText: 'helsinki',
+                queryDate: '',
                 type: 'esriFieldTypeString',
             },
         ];
@@ -214,6 +219,7 @@ describe('parseQueryString - filterExpressionsByType', () => {
                 name: 'fieldName1',
                 queryExpression: '=',
                 queryText: '',
+                queryDate: '',
             },
         ];
 
@@ -231,6 +237,7 @@ describe('parseQueryString - filterExpressionsByType', () => {
                 name: 'fieldName2',
                 queryExpression: 'NOT',
                 queryText: '',
+                queryDate: '',
             },
         ];
 
@@ -248,6 +255,7 @@ describe('parseQueryString - filterExpressionsByType', () => {
                 name: 'fieldName3',
                 queryExpression: '<',
                 queryText: '',
+                queryDate: '',
             },
         ];
 
@@ -259,5 +267,49 @@ describe('parseQueryString - filterExpressionsByType', () => {
         );
 
         expect(queryString3).toBe('');
+    });
+
+    it('should parse query date with field search', () => {
+        searchFieldValues = [
+            {
+                name: 'fieldName1',
+                queryExpression: '=',
+                queryText: '',
+                queryDate: '2018-02-22',
+            },
+        ];
+
+        const queryString = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString).toBe("fieldName1 = DATE '2018-02-22'");
+
+        searchFieldValues = [
+            {
+                name: 'fieldName1',
+                queryExpression: '=',
+                queryText: '',
+                queryDate: '2018-02-22',
+            },
+            {
+                name: 'fieldName2',
+                queryExpression: '=',
+                queryText: 'helsinki',
+                queryDate: '',
+            },
+        ];
+
+        const queryString2 = parseQueryString(
+            searchFieldValues,
+            textSearch,
+            optionsField,
+            queryColumnsList,
+        );
+
+        expect(queryString2).toBe("fieldName1 = DATE '2018-02-22' AND LOWER(fieldName2) = LOWER('helsinki')");
     });
 });

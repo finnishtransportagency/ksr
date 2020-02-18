@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react';
-import { searchFieldIsNumber, parseQueryString } from '../../../../../utils/search/parseQueryString';
+import { parseQueryString, searchFieldIsNumber } from '../../../../../utils/search/parseQueryString';
 import SearchLayerView from './SearchLayerView';
 import { fetchSearchSuggestions } from '../../../../../api/search/searchQuery';
+import { filterNotAllowedFields } from '../../../../../utils/fields';
 
 type Props = {
     searchFeatures: Function,
@@ -103,7 +104,9 @@ class SearchLayer extends Component<Props, State> {
                 ? '='
                 : 'LIKE',
             queryText: '',
+            queryDate: '',
             type: field.type,
+            domain: field.domain,
         };
         const searchFields = [...searchFieldValues, newField]
             .map((f, index) => ({ ...f, id: index }));
@@ -177,6 +180,12 @@ class SearchLayer extends Component<Props, State> {
             }
             case 'expression':
                 searchFieldValues[index].queryExpression = evt;
+                break;
+            case 'codedValue':
+                searchFieldValues[index].queryText = evt;
+                break;
+            case 'date':
+                searchFieldValues[index].queryDate = evt.target.value;
                 break;
             default:
                 break;
