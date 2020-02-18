@@ -3,6 +3,8 @@ import { fetchPropertyInfo } from '../../api/search/searchProperty';
 import * as types from '../../constants/actionTypes';
 import { abortFetch } from '../../utils/abortFetch';
 import { drawPropertyArea, removeGraphicsFromMap } from '../../utils/map';
+import { nestedVal } from '../../utils/nestedValue';
+import { filterNotAllowedFields } from '../../utils/fields';
 
 export const setSearchState = (
     selectedLayer: number,
@@ -24,7 +26,8 @@ export const setSearchOptions = (
     layerList: any,
 ) => ({
     type: types.SET_SEARCH_OPTIONS,
-    optionsField: layerList.find(l => l.id === selectedLayer).fields,
+    optionsField: filterNotAllowedFields(nestedVal(layerList.find(l => l.id === selectedLayer),
+        ['fields'], [])),
 });
 
 export const clearProperties = (graphicId: string, view: Object) => {
