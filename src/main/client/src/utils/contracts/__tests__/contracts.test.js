@@ -143,7 +143,7 @@ describe('contracts', () => {
 
         const attribute1 = ['idField', 123456];
         const expectedValue1 = {
-            name: 'idField', label: 'idField', value: '123456', hidden: false,
+            name: 'idField', label: 'idField', value: 123456, hidden: false,
         };
         expect(getAttribute(layer, attribute1)).toEqual(expectedValue1);
 
