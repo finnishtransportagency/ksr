@@ -160,7 +160,9 @@ class ReactTable extends Component<Props, State> {
         } = this.props;
         const layerId = activeTable.replace('.s', '');
         const layer = layerList.find(l => l.id === layerId);
-        if (layer && layer.type === 'agfl' && layer.relationLayerId === null) {
+        if (layer && layer.type === 'agfl'
+            && ((layer.relationColumnIn === null && layer.relationColumnOut === null)
+            || layer.relationLayerId === null)) {
             const modalData = {
                 contractObjectId: objectId,
                 layerId,
