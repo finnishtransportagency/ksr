@@ -109,7 +109,9 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerList: (state.layerList.map(l => ({
                     ...l,
-                    visible: action.layerIds.find(id => id === l.id) ? false : l.visible,
+                    visible: action.layerIds.find(id => id === l.id && l.type !== 'agfl')
+                        ? false
+                        : l.visible,
                 })): Array<Object>),
             };
         case ADD_SEARCH_RESULTS_LAYER:
@@ -193,7 +195,14 @@ export default (state: State = initialState, action: Action) => {
                     ...lg,
                     layers: lg.layers.filter(l => l.id !== action.layerId),
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<Layer>),
+                layerList: (state.layerList
+                    .filter(l => l.id !== action.layerId)
+                    .map(l => ({
+                        ...l,
+                        visible: l.id === action.layerId.replace('.s', '')
+                            ? true
+                            : l.visible,
+                    })): Array<Layer>),
             };
         case ADD_SHAPEFILE_LAYER:
             return {
