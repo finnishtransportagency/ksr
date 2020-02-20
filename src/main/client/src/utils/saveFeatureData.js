@@ -252,10 +252,6 @@ const saveData = async (
                     const res = await updateFeatures(layerId, params.toString());
                     layerToUpdated = await handleUpdateResponse(res, layerId, layer, hideToast);
                     await handlePopupUpdate(view, layerId, idFieldName, layerToUpdated.features);
-                    /**
-                     * Check that layer is still open in table and
-                     * not allready closed at tableTabClose & save
-                     */
                     const layerIsOpen = layers.find(l => l.id === layerId);
                     if (layerIsOpen && nestedVal(layerToUpdated, ['features', 'length'])) {
                         layerToUpdated.features.forEach((objectId: number) => {
