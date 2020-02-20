@@ -255,63 +255,6 @@ export const clearTableData = () => ({
     type: types.CLEAR_TABLE_DATA,
 });
 
-export const closeTableTab = (
-    layerId: string,
-    view: Object,
-    editedLayers: Object[],
-    featureType: string,
-    addressField: string,
-) => (dispatch: Function) => {
-    const editedLayer = editedLayers.find(e => e.id === layerId);
-    const containsEdit = editedLayer && editedLayer.data
-        .some(d => d._edited.length > 0);
-    if (containsEdit) {
-        dispatch(showConfirmModal(
-            strings.modalClearTable.content,
-            strings.modalClearTable.submit,
-            strings.modalClearTable.cancel,
-            () => {
-                setTimeout(() => {
-                    dispatch(showConfirmModal(
-                        strings.modalSaveEditedData.content,
-                        strings.modalSaveEditedData.submit,
-                        strings.modalSaveEditedData.cancel,
-                        () => {
-                            // eslint-disable-next-line no-use-before-define
-                            dispatch(saveEditedFeatures(
-                                view,
-                                editedLayers,
-                                featureType,
-                                addressField,
-                            ));
-                        },
-                        () => {
-                            dispatch({
-                                type: types.CLOSE_LAYER,
-                                layerId,
-                            });
-                            view.popup.close();
-                        },
-                    ));
-                }, 500);
-            },
-        ));
-    } else {
-        dispatch(showConfirmModal(
-            strings.modalClearTable.content,
-            strings.modalClearTable.submit,
-            strings.modalClearTable.cancel,
-            () => {
-                dispatch({
-                    type: types.CLOSE_LAYER,
-                    layerId,
-                });
-                view.popup.close();
-            },
-        ));
-    }
-};
-
 export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
     data,
@@ -371,6 +314,62 @@ export const saveDeletedFeatures = (
                 layerId,
             });
         });
+};
+
+export const closeTableTab = (
+    layerId: string,
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+) => (dispatch: Function) => {
+    const editedLayer = editedLayers.find(e => e.id === layerId);
+    const containsEdit = editedLayer && editedLayer.data
+        .some(d => d._edited.length > 0);
+    if (containsEdit) {
+        dispatch(showConfirmModal(
+            strings.modalClearTableTab.content,
+            strings.modalClearTableTab.submit,
+            strings.modalClearTableTab.cancel,
+            () => {
+                setTimeout(() => {
+                    dispatch(showConfirmModal(
+                        strings.modalSaveEditedData.content,
+                        strings.modalSaveEditedData.submit,
+                        strings.modalSaveEditedData.cancel,
+                        () => {
+                            dispatch(saveEditedFeatures(
+                                view,
+                                [editedLayer],
+                                featureType,
+                                addressField,
+                            ));
+                        },
+                        () => {
+                            dispatch({
+                                type: types.CLOSE_LAYER,
+                                layerId,
+                            });
+                            view.popup.close();
+                        },
+                    ));
+                }, 500);
+            },
+        ));
+    } else {
+        dispatch(showConfirmModal(
+            strings.modalClearTableTab.content,
+            strings.modalClearTableTab.submit,
+            strings.modalClearTableTab.cancel,
+            () => {
+                dispatch({
+                    type: types.CLOSE_LAYER,
+                    layerId,
+                });
+                view.popup.close();
+            },
+        ));
+    }
 };
 
 export const addNonSpatialContentToTable = (
@@ -434,3 +433,31 @@ export const setTableEdited = (hasTableEdited: boolean) => ({
     type: types.TABLE_EDITED,
     hasTableEdited,
 });
+
+export const sketchSaveData = (
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+    hasTableEdited: boolean,
+) => (dispatch: Function) => {
+    if (hasTableEdited) {
+        dispatch(showConfirmModal(
+            strings.modalSaveEditedData.content,
+            strings.modalSaveEditedData.submit,
+            strings.modalSaveEditedData.cancel,
+            () => {
+                dispatch(saveEditedFeatures(
+                    view,
+                    editedLayers,
+                    featureType,
+                    addressField,
+                ));
+                dispatch(deSelectSelected());
+            },
+            () => {
+                dispatch(deSelectSelected());
+            },
+        ));
+    }
+};
