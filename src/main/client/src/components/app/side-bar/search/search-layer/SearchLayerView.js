@@ -58,7 +58,10 @@ const SearchLayerView = ({
         )}
     >
         <form onSubmit={handleSubmit}>
-            <label htmlFor="choose-layer">
+            <label
+                htmlFor="choose-layer"
+                onClick={e => e.preventDefault()}
+            >
                 <p id="choose-layer">{strings.search.chooseLayer}</p>
                 <Select
                     disabled={fetching}
