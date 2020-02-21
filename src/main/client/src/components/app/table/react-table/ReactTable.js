@@ -165,7 +165,7 @@ class ReactTable extends Component<Props, State> {
         const layer = layerList.find(l => l.id === layerId);
         if (layer && layer.type === 'agfl'
             && ((layer.relationColumnIn === null && layer.relationColumnOut === null)
-            || layer.relationLayerId === null)) {
+                || layer.relationLayerId === null)) {
             const modalData = {
                 contractObjectId: objectId,
                 layerId,
@@ -450,7 +450,9 @@ class ReactTable extends Component<Props, State> {
                 }
             });
         }
-        localFiltered.push({ id: accessor, value });
+        if ((!localFiltered.some(filter => filter.id === accessor))) {
+            localFiltered.push({ id: accessor, value });
+        }
         addFiltered(localFiltered);
     };
 
