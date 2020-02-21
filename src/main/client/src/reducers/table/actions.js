@@ -459,6 +459,7 @@ export const sketchSaveData = (
                 dispatch(deSelectSelected());
             },
         ));
+    } else {
+        dispatch(deSelectSelected());
     }
-    dispatch(deSelectSelected());
 };
