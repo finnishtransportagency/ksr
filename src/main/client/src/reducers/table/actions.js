@@ -5,7 +5,6 @@ import * as types from '../../constants/actionTypes';
 import strings from '../../translations';
 import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
-import store from '../../store';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
 import { activateLayers } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
@@ -31,24 +30,21 @@ export const addUpdateLayers = (
     objectId: number,
     selected?: boolean,
 ) => (dispatch: Function) => {
-    const { layers } = store.getState().table.features;
-    if (layers.find(l => l.id === layerId)) {
-        queryFeatures(
-            parseInt(layerId, 10),
-            `${objectIdFieldName} = ${objectId}`,
-            null,
-        )
-            .then((result) => {
-                if (result && result.fields && result.features.length > 0) {
-                    // Add layer Id to result
-                    result.id = layerId;
-                    dispatch({
-                        type: types.SELECT_FEATURES,
-                        layers: parseData({ layers: [result] }, selected),
-                    });
-                }
-            });
-    }
+    queryFeatures(
+        parseInt(layerId, 10),
+        `${objectIdFieldName} = ${objectId}`,
+        null,
+    )
+        .then((result) => {
+            if (result && result.fields && result.features.length > 0) {
+                // Add layer Id to result
+                result.id = layerId;
+                dispatch({
+                    type: types.SELECT_FEATURES,
+                    layers: parseData({ layers: [result] }, selected),
+                });
+            }
+        });
 };
 
 export const setColumns = (columns: Array<Object>) => ({
@@ -259,63 +255,6 @@ export const clearTableData = () => ({
     type: types.CLEAR_TABLE_DATA,
 });
 
-export const closeTableTab = (
-    layerId: string,
-    hasTableEdited: boolean,
-    view: Object,
-    editedLayers: Object[],
-    featureType: string,
-    addressField: string,
-) => (dispatch: Function) => {
-    if (hasTableEdited) {
-        dispatch(showConfirmModal(
-            strings.modalClearTable.content,
-            strings.modalClearTable.submit,
-            strings.modalClearTable.cancel,
-            () => {
-                setTimeout(() => {
-                    dispatch(showConfirmModal(
-                        strings.modalSaveEditedData.content,
-                        strings.modalSaveEditedData.submit,
-                        strings.modalSaveEditedData.cancel,
-                        () => {
-                            save.saveEditedFeatureData(
-                                view,
-                                editedLayers,
-                                featureType,
-                                addressField,
-                            ).then(() => {
-                                dispatch({
-                                    type: types.CLOSE_LAYER,
-                                    layerId,
-                                });
-                            });
-                        },
-                        () => {
-                            dispatch({
-                                type: types.CLOSE_LAYER,
-                                layerId,
-                            });
-                        },
-                    ));
-                }, 500);
-            },
-        ));
-    } else {
-        dispatch(showConfirmModal(
-            strings.modalClearTable.content,
-            strings.modalClearTable.submit,
-            strings.modalClearTable.cancel,
-            () => {
-                dispatch({
-                    type: types.CLOSE_LAYER,
-                    layerId,
-                });
-            },
-        ));
-    }
-};
-
 export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
     data,
@@ -333,7 +272,8 @@ export const saveEditedFeatures = (
     addressField: string,
 ) => (dispatch: Function, getState: Function) => {
     save.saveEditedFeatureData(view, editedLayers, featureType, addressField)
-        .then((edits) => {
+        .then((resEdits) => {
+            const edits = resEdits.filter(e => e !== null);
             dispatch({
                 type: types.APPLY_EDITS,
                 edits,
@@ -374,6 +314,62 @@ export const saveDeletedFeatures = (
                 layerId,
             });
         });
+};
+
+export const closeTableTab = (
+    layerId: string,
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+) => (dispatch: Function) => {
+    const editedLayer = editedLayers.find(e => e.id === layerId);
+    const containsEdit = editedLayer && editedLayer.data
+        .some(d => d._edited.length > 0);
+    if (containsEdit) {
+        dispatch(showConfirmModal(
+            strings.modalClearTableTab.content,
+            strings.modalClearTableTab.submit,
+            strings.modalClearTableTab.cancel,
+            () => {
+                setTimeout(() => {
+                    dispatch(showConfirmModal(
+                        strings.modalSaveEditedData.content,
+                        strings.modalSaveEditedData.submit,
+                        strings.modalSaveEditedData.cancel,
+                        () => {
+                            dispatch(saveEditedFeatures(
+                                view,
+                                [editedLayer],
+                                featureType,
+                                addressField,
+                            ));
+                        },
+                        () => {
+                            dispatch({
+                                type: types.CLOSE_LAYER,
+                                layerId,
+                            });
+                            view.popup.close();
+                        },
+                    ));
+                }, 500);
+            },
+        ));
+    } else {
+        dispatch(showConfirmModal(
+            strings.modalClearTableTab.content,
+            strings.modalClearTableTab.submit,
+            strings.modalClearTableTab.cancel,
+            () => {
+                dispatch({
+                    type: types.CLOSE_LAYER,
+                    layerId,
+                });
+                view.popup.close();
+            },
+        ));
+    }
 };
 
 export const addNonSpatialContentToTable = (
@@ -442,3 +438,33 @@ export const addFiltered = (filtered: Array<Object>) => ({
     type: types.ADD_FILTERED,
     filtered,
 });
+
+export const sketchSaveData = (
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+    hasTableEdited: boolean,
+) => (dispatch: Function) => {
+    if (hasTableEdited) {
+        dispatch(showConfirmModal(
+            strings.modalSaveEditedData.content,
+            strings.modalSaveEditedData.submit,
+            strings.modalSaveEditedData.cancel,
+            () => {
+                dispatch(saveEditedFeatures(
+                    view,
+                    editedLayers,
+                    featureType,
+                    addressField,
+                ));
+                dispatch(deSelectSelected());
+            },
+            () => {
+                dispatch(deSelectSelected());
+            },
+        ));
+    } else {
+        dispatch(deSelectSelected());
+    }
+};
