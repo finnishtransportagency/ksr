@@ -47,11 +47,12 @@ type Props = {
     authorities: Object[],
     editModeActive: boolean,
     setActiveFeatureMode: (activeFeatureMode: string) => void,
-    hasTableEdited: boolean,
-    editedLayers: Array<Object>,
+    view: Object,
+    editedLayers: Object[],
     featureType: string,
     addressField: string,
-    closeTableTab: Function,
+    hasTableEdited: boolean,
+    sketchSaveData: Function,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -400,26 +401,17 @@ class SketchTool extends Component<Props, State> {
 
     removeSelection = () => {
         const {
-            data,
+            sketchSaveData,
             view,
-            hasTableEdited,
+            data,
             editedLayers,
             featureType,
             addressField,
-            closeTableTab,
+            hasTableEdited,
         } = this.props;
 
-        const layerId = data[0]._layerId;
-
-        closeTableTab(
-            layerId,
-            hasTableEdited,
-            view,
-            editedLayers,
-            featureType,
-            addressField,
-        );
-
+        const layer = editedLayers.filter(l => l.id === data[0]._layerId);
+        sketchSaveData(view, layer, featureType, addressField, hasTableEdited);
         view.popup.close();
     };
 

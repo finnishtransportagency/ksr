@@ -442,3 +442,33 @@ export const addFiltered = (filtered: Array<Object>) => ({
     type: types.ADD_FILTERED,
     filtered,
 });
+
+export const sketchSaveData = (
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+    hasTableEdited: boolean,
+) => (dispatch: Function) => {
+    if (hasTableEdited) {
+        dispatch(showConfirmModal(
+            strings.modalSaveEditedData.content,
+            strings.modalSaveEditedData.submit,
+            strings.modalSaveEditedData.cancel,
+            () => {
+                dispatch(saveEditedFeatures(
+                    view,
+                    editedLayers,
+                    featureType,
+                    addressField,
+                ));
+                dispatch(deSelectSelected());
+            },
+            () => {
+                dispatch(deSelectSelected());
+            },
+        ));
+    } else {
+        dispatch(deSelectSelected());
+    }
+};

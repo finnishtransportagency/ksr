@@ -7,7 +7,7 @@ import {
     setActiveFeatureMode,
 } from '../../../../../reducers/map/actions';
 import { setPropertyInfo } from '../../../../../reducers/search/actions';
-import { selectFeatures, closeTableTab } from '../../../../../reducers/table/actions';
+import { selectFeatures, sketchSaveData } from '../../../../../reducers/table/actions';
 import SketchTool from './SketchTool';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 
@@ -55,15 +55,8 @@ const mapDispatchToProps = dispatch => ({
     setActiveFeatureMode: (activeFeatureMode: string) => {
         dispatch(setActiveFeatureMode(activeFeatureMode));
     },
-    closeTableTab: (layerId, hasTableEdited, view, editedLayers, featureType, addressField) => {
-        dispatch(closeTableTab(
-            layerId,
-            hasTableEdited,
-            view,
-            editedLayers,
-            featureType,
-            addressField,
-        ));
+    sketchSaveData: (view, editedLayers, featureType, addressField, hasTableEdited) => {
+        dispatch(sketchSaveData(view, editedLayers, featureType, addressField, hasTableEdited));
     },
 });
 
