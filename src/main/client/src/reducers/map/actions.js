@@ -331,3 +331,7 @@ export const hideLayer = (layerIds: string[]) => ({
     type: types.HIDE_LAYER,
     layerIds,
 });
+
+export const toggleIndexMap = () => ({
+    type: types.TOGGLE_INDEX_MAP,
+});
