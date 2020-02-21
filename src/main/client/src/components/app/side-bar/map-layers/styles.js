@@ -36,3 +36,15 @@ export const ButtonLayerAddWrapper = styled.div`
 export const LayerFilterWrapper = styled.div`
     padding: 0 1rem;
 `;
+
+export const ToggleButtonWrapper = styled.div`
+    text-align: right;
+`;
+
+export const ToggleButton = styled.div`
+    padding: 0 0 0.25em 0;
+    outline: none;
+    span {
+        margin-right: 0.5rem;
+    }
+`;
