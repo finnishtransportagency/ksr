@@ -179,3 +179,14 @@ export const applyEditedLayers = (editedLayers: Object[], editedData: Object): O
 export const removeFilteredLayer = (filtered: Object[], layerId: string): Object[] => (
     filtered.filter(f => f.id.substring(0, f.id.indexOf('/')) !== layerId)
 );
+
+/**
+ * Remove filters except from search layers.
+ *
+ * @param {Object[]} filtered Array of filter values.
+ *
+ * @returns {Object[]} Keeps array of filters from search layers.
+ */
+export const removeFilteredLayers = (filtered: Object[]): Object[] => (
+    filtered.filter(f => f.id.substring(0, f.id.indexOf('/')).indexOf('.s') >= 0)
+);
