@@ -2,7 +2,6 @@
 import React, { Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
-
 import ReactTableContainer from '../react-table/ReactTableContainer';
 import {
     WrapperTabbedTable,
@@ -17,10 +16,15 @@ type Props = {
     activeTable: string,
     setActiveTable: Function,
     activeAdmin: string,
-    closeTableTab: Function,
-    hasTableEdited: boolean,
+    closeTableTab: (
+        layerId: string,
+        view: Object,
+        editedLayers: Object[],
+        featureType: string,
+        addressField: string
+    ) => void,
     view: Object,
-    editedLayers: Array<Object>,
+    editedLayers: Object[],
     featureType: string,
     addressField: string,
 };
@@ -31,7 +35,6 @@ const TabbedTableView = ({
     setActiveTable,
     activeAdmin,
     closeTableTab,
-    hasTableEdited,
     view,
     editedLayers,
     featureType,
@@ -66,16 +69,13 @@ const TabbedTableView = ({
                             <ButtonIcon
                                 title={strings.modalClearTableTab.info}
                                 active={activeTable === l.id}
-                                onClick={() => {
-                                    closeTableTab(
-                                        l.id,
-                                        hasTableEdited,
-                                        view,
-                                        editedLayers,
-                                        featureType,
-                                        addressField,
-                                    );
-                                }}
+                                onClick={() => closeTableTab(
+                                    l.id,
+                                    view,
+                                    editedLayers,
+                                    featureType,
+                                    addressField,
+                                )}
                                 className="fas fa-times"
                                 admin={activeAdmin === l.id.replace('.s', '')}
                             />

@@ -48,17 +48,8 @@ const mapStateToProps = (state) => {
     const { addressField, featureType } = state.adminTool.active.layerId
     && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
 
-    let currentTabAdmin = '';
-    if (state.table.features.activeTable) {
-        currentTabAdmin = state.table.features.activeTable
-            .replace('.s', '') === state.adminTool.active.layerId;
-    }
-
-    let editedLayers = '';
-    if (state.table.features.editedLayers) {
-        editedLayers = [state.table.features.editedLayers
-            .find(editedLayer => editedLayer.id.replace('.s', '') === state.adminTool.active.layerId)];
-    }
+    const currentTabAdmin = state.table.features.activeTable
+        .replace('.s', '') === state.adminTool.active.layerId;
 
     return {
         isOpen: state.table.toggleTable,
@@ -74,7 +65,8 @@ const mapStateToProps = (state) => {
         featureType,
         addressField,
         view: state.map.mapView.view,
-        editedLayers,
+        editedLayers: [state.table.features.editedLayers
+            .find(editedLayer => editedLayer.id.replace('.s', '') === state.adminTool.active.layerId)],
         currentTabAdmin,
         activeAdminTool: state.adminTool.active.layerId,
         viewGraphics: state.map.mapView.view
