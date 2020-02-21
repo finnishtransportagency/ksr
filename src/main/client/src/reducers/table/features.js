@@ -36,6 +36,7 @@ import {
     applyEditedLayers,
     applyEdits,
     removeFilteredLayer,
+    removeFilteredLayers,
 } from '../../utils/table';
 
 type State = {
@@ -122,7 +123,7 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 ...deSelectFeatures(state.layers, state.activeTable),
-                filtered: [],
+                filtered: removeFilteredLayers(state.filtered),
             };
         case TOGGLE_SELECTION:
             return {
