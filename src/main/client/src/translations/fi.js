@@ -56,8 +56,8 @@ const fi = {
         selectIntersectFeatures: 'Aluevalinta',
         setBuffer: 'Puskurialue',
         noFeatures: 'Ei kohteita',
-        getPropertyInfo: 'Kiinteistötiedot',
-        getAllPropertyInfo: 'Näytä kohteeseen liittyvät kiinteistöt',
+        getPropertyInfo: 'Kiinteistötiedot (piste)',
+        getAllPropertyInfo: 'Kiinteistötiedot (leikkaavat)',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
         copyFeature: 'Kopioi kohde',
         confirmReplace: {
