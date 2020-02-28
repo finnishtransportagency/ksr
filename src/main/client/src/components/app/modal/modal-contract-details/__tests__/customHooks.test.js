@@ -120,7 +120,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
             id: '123',
             name: 'Layer 1',
             features: [
-                { attributes: { idField: 123, name2: 'Value 2', name3: 1000 } },
+                { attributes: { idField: '123', name2: 'Value 2', name3: 1000 } },
             ],
         }];
         const activeView = 'singleFeatureDetails';

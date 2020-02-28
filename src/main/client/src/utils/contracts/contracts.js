@@ -382,7 +382,7 @@ export const getFeatureAttributes = (
  * Get either the original or coded value based on whether feature is being edited or not.
  * Edited field wouldn't show correct value if it has been changed to coded value.
  *
- * @param {string} value Attribute's value.
+ * @param {string|number} value Attribute's value.
  * @param {Object} domain Field's domain containing coded value info.
  * @param {string} name Field's name.
  * @param {boolean} edit Whether feature is being edited or not.
@@ -390,15 +390,14 @@ export const getFeatureAttributes = (
  * @returns {string | null} Original or coded value.
  */
 export const attributeValue = (
-    value: string,
+    value: string | ?number,
     domain: Object,
     name: string,
     edit: boolean,
 ) => {
     if (value) {
-        if (name === 'CONTRACT_UUID') return null;
         if (getCodedValue(domain, value) && !edit) {
-            return getCodedValue(domain, value).trim();
+            return getCodedValue(domain, value);
         }
         return value;
     }
@@ -454,7 +453,9 @@ export const getAttribute = (layer: Object, attribute: any[], edit: boolean): Ob
             return {
                 name,
                 label,
-                value: Number.isNaN(parseInt(value, 10)) ? null : parseInt(value, 10),
+                value: attributeValue(Number.isNaN(parseInt(value, 10))
+                    ? null
+                    : parseInt(value, 10), domain, name, edit),
                 hidden: false,
             };
         case 'esriFieldTypeDouble':

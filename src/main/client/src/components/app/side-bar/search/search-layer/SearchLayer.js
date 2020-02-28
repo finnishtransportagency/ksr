@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react';
-import { searchFieldIsNumber, parseQueryString } from '../../../../../utils/search/parseQueryString';
+import { parseQueryString, searchFieldIsNumber } from '../../../../../utils/search/parseQueryString';
 import SearchLayerView from './SearchLayerView';
 import { fetchSearchSuggestions } from '../../../../../api/search/searchQuery';
+import { filterNotAllowedFields } from '../../../../../utils/fields';
 
 type Props = {
     searchFeatures: Function,
@@ -103,7 +104,9 @@ class SearchLayer extends Component<Props, State> {
                 ? '='
                 : 'LIKE',
             queryText: '',
+            queryDate: '',
             type: field.type,
+            domain: field.domain,
         };
         const searchFields = [...searchFieldValues, newField]
             .map((f, index) => ({ ...f, id: index }));
@@ -178,6 +181,12 @@ class SearchLayer extends Component<Props, State> {
             case 'expression':
                 searchFieldValues[index].queryExpression = evt;
                 break;
+            case 'codedValue':
+                searchFieldValues[index].queryText = evt;
+                break;
+            case 'date':
+                searchFieldValues[index].queryDate = evt.target.value;
+                break;
             default:
                 break;
         }
@@ -225,22 +234,12 @@ class SearchLayer extends Component<Props, State> {
 
         const buildQueryString = (layer: Object) => {
             let queryFields = layer.queryColumnsList;
+            const fieldsToQuery = filterNotAllowedFields(layer.fields).map(ff => ff.name);
 
             // if layer has fields defined then use them to build query
             // if not then use query column list
-            if (layer.fields) {
-                const notAllowedFieldsToQuery = ['objectid', 'object', 'id', 'fid', 'symbolidentifier',
-                    'objectid_1', 'contract_uuid', 'shape'];
-                const fieldsToQuery = [];
-                layer.fields.forEach((field) => {
-                    if (typeof field.name === 'string'
-                        && notAllowedFieldsToQuery.indexOf(field.name.toLowerCase()) === -1) {
-                        fieldsToQuery.push(field.name);
-                    }
-                });
-                if (fieldsToQuery.length > 0) {
-                    queryFields = fieldsToQuery;
-                }
+            if (fieldsToQuery.length > 0) {
+                queryFields = fieldsToQuery;
             }
 
             return parseQueryString(

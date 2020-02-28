@@ -798,7 +798,7 @@ describe('parseFeatureData', () => {
             }],
         };
         value = '1';
-        expectedValue = null;
+        expectedValue = '';
         expect(getCodedValue(domain, value)).toEqual(expectedValue);
     });
 });

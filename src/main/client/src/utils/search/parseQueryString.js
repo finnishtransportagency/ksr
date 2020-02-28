@@ -82,10 +82,11 @@ export const parseQueryString = (
     if (searchFieldValues.length > 0) {
         searchFieldValues.forEach((searchFieldValue) => {
             const { queryExpression, type, name } = searchFieldValue;
-            let { queryText } = searchFieldValue;
+            let { queryText, queryDate } = searchFieldValue;
             queryText = queryText.toString();
+            queryDate = queryDate.toString();
 
-            if (queryText.trim().length === 0) {
+            if (queryText.trim().length === 0 && queryDate.trim().length === 0) {
                 if (queryExpression === 'NOT' || queryExpression === 'NOT LIKE') {
                     queryString.push(`${name} IS NOT NULL`);
                 } else if (queryExpression !== '<' && queryExpression !== '>') {
@@ -97,6 +98,8 @@ export const parseQueryString = (
                 } else {
                     queryString.push(`${name} ${queryExpression} ${queryText.trim()}`);
                 }
+            } else if (queryDate.trim().length > 0) {
+                queryString.push(`${name} = DATE '${queryDate.trim()}'`);
             } else {
                 const text = queryExpression === 'LIKE' || queryExpression === 'NOT LIKE'
                     ? `'%${queryText.trim().replace(/'/g, "''")}%'`
@@ -116,9 +119,19 @@ export const parseQueryString = (
         });
     } else {
         const text = `'%${textSearch.replace(/'/g, "''")}%'`;
-
         queryColumnsList.forEach(queryColumn => queryString.push(`LOWER(${queryColumn}) LIKE LOWER(${text})`));
     }
 
     return searchFieldValues.length > 0 ? queryString.join(' AND ') : queryString.join(' OR ');
 };
+
+/**
+ * Return options for Select -component.
+ *
+ * @param {Object[]} cv List of codedValues.
+ * @returns {Array<{label: string, value: string|number}>} List of options.
+ */
+export const codedValueOptions: Function = (cv: Object[]) => cv.map(v => (({
+    value: v.code,
+    label: v.name,
+})));
