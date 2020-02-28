@@ -20,8 +20,10 @@ const FieldInputView = ({
         && (field.domain.type === 'codedValue' || field.domain.type === 'coded-value')
     ) {
         return (
-            <SelectWrapper invalid={!field.nullable
-            && !field.domain.codedValues.some(codedValue => codedValue.code === field.data)}
+            <SelectWrapper
+                invalid={!field.nullable
+                && !field.domain.codedValues.some(codedValue => codedValue.code === field.data)}
+                onClick={e => e.preventDefault()}
             >
                 <Select
                     onBlurResetsInput={false}

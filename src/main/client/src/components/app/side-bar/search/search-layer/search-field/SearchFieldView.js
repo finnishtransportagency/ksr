@@ -50,7 +50,9 @@ const SearchFieldView = ({
             </SearchFieldWrapper.Remove>
         </SearchFieldWrapper.Title>
         <SearchFieldWrapper.Inputs>
-            <SearchFieldWrapper.Expression>
+            <SearchFieldWrapper.Expression
+                onClick={e => e.preventDefault()}
+            >
                 <Select
                     disabled={fetching}
                     value={field.queryExpression}
