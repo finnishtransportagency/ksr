@@ -23,6 +23,7 @@ export const WrapperReactTable = styled.div`
             .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
             .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
                 min-width: 30px;
+                height: 50px;
             };
         };
         
@@ -50,6 +51,13 @@ export const WrapperReactTable = styled.div`
             color: ${styles.colorFontLight};
             padding: 0.5rem;
             min-width: 130px;
+        };
+        
+        .rt-resizable-header-content {
+            white-space: normal;
+            font-size: 0.9rem;
+            line-height: 1.25rem;
+            height: 2.5rem;
         };
         
         .rt-thead.-filters {
