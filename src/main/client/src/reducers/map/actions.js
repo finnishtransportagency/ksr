@@ -11,6 +11,7 @@ import { addNonSpatialContentToTable } from '../table/actions';
 import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
+import { nestedVal } from '../../utils/nestedValue';
 
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
@@ -126,6 +127,11 @@ export const activateLayers = (
                         : workspace.layers.find(wl => wl.layerId === layer.id
                             || wl.userLayerId === layer.id));
 
+                let visible = true;
+                if (layer.parentLayer && layers.some(l => l.id === layer.parentLayer)) {
+                    visible = layer.name.toLowerCase().includes('voimassaoleva');
+                }
+
                 dispatch({
                     type: types.UPDATE_LAYER,
                     layer: {
@@ -133,7 +139,7 @@ export const activateLayers = (
                         active: true,
                         visible: workspaceLayer
                             ? workspaceLayer.visible
-                            : true,
+                            : visible,
                         opacity: workspaceLayer
                             ? workspaceLayer.opacity
                             : layer.opacity,
@@ -151,11 +157,21 @@ export const activateLayers = (
                 }
             }
         } else {
+            const foundLayer = layerList.find(l => l.id === layer.id);
+
             dispatch({
                 type: types.DEACTIVATE_LAYER,
-                layerId: layer.id,
+                layerId: foundLayer.id,
                 failOnLoad: true,
             });
+
+            if (foundLayer.parentLayer) {
+                dispatch({
+                    type: types.DEACTIVATE_LAYER,
+                    layerId: foundLayer.parentLayer,
+                    failOnLoad: true,
+                });
+            }
         }
     }));
 
