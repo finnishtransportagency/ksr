@@ -7,6 +7,7 @@ import {
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import TableButtons from './TableButtons';
 import { togglePortal, updatePortal } from '../../../../reducers/portal/actions';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 const mapStateToProps = (state) => {
     const removeUnderscore = (layer) => {
@@ -29,28 +30,34 @@ const mapStateToProps = (state) => {
     };
 
     const tableFeaturesLayers = state.table.features.layers;
+    const { layerList } = state.map.layerGroups;
+    const { activeTable } = state.table.features;
+    const { layerId } = state.adminTool.active;
 
     const originalLayers = tableFeaturesLayers.map(l => removeUnderscore(l));
-    const selectedAdminData = tableFeaturesLayers
-        .filter(layer => layer.id === state.adminTool.active.layerId)
-        .flatMap(f => f.data.filter(d => d._selected));
     const geometryDataSelected = tableFeaturesLayers
         .flatMap(f => f.data.filter(d => d._selected && d.geometry));
     const activeTableFeatureLayer = tableFeaturesLayers
-        .find(l => l.id === state.table.features.activeTable);
+        .find(l => l.id === activeTable);
     const activeTableDataSelected = activeTableFeatureLayer
         ? activeTableFeatureLayer.data.some(d => d._selected)
         : false;
-    const layer = state.map.layerGroups.layerList
-        .find(l => l.id === state.adminTool.active.layerId);
-    const activeTableLayer = state.map.layerGroups.layerList
-        .find(l => l.id === state.table.features.activeTable && l.type === 'agfs' && l.layers);
+    const layer = layerList
+        .find(l => l.id === layerId);
+    const activeTableLayer = layerList
+        .find(l => l.id === activeTable && l.type === 'agfs' && l.layers);
 
-    const { addressField, featureType } = state.adminTool.active.layerId
-    && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
+    const { addressField, featureType } = layerId
+    && layerList.find(l => l.id === layerId);
 
-    const currentTabAdmin = state.table.features.activeTable
-        .replace('.s', '') === state.adminTool.active.layerId;
+    const parentLayer = nestedVal(layerList.find(l => l.id === activeTable.replace('.s', '')), ['parentLayer']);
+    const currentTabAdmin = parentLayer
+        ? parentLayer.replace('.s', '') === layerId.replace('.s', '')
+        : activeTable.replace('.s', '') === layerId.replace('.s', '');
+
+    const selectedAdminData = tableFeaturesLayers
+        .filter(l => l.id === activeTable)
+        .flatMap(f => f.data.filter(d => d._selected));
 
     return {
         isOpen: state.table.toggleTable,
@@ -67,9 +74,9 @@ const mapStateToProps = (state) => {
         addressField,
         view: state.map.mapView.view,
         editedLayers: [state.table.features.editedLayers
-            .find(editedLayer => editedLayer.id.replace('.s', '') === state.adminTool.active.layerId)],
+            .find(editedLayer => editedLayer.id.replace('.s', '') === activeTable.replace('.s', ''))],
         currentTabAdmin,
-        activeAdminTool: state.adminTool.active.layerId,
+        activeAdminTool: layerId,
         viewGraphics: state.map.mapView.view
             ? state.map.mapView.view.graphics._items
             : [],
