@@ -272,7 +272,8 @@ export const saveEditedFeatures = (
     featureType: string,
     addressField: string,
 ) => (dispatch: Function, getState: Function) => {
-    save.saveEditedFeatureData(view, editedLayers, featureType, addressField)
+    const { layerList } = dispatch(getState).map.layerGroups;
+    save.saveEditedFeatureData(view, editedLayers, featureType, addressField, layerList)
         .then((resEdits) => {
             const edits = resEdits.filter(e => e !== null);
             dispatch({
@@ -282,7 +283,6 @@ export const saveEditedFeatures = (
 
             const editedLayerId = nestedVal(edits, ['0', 'layerId']);
 
-            const { layerList } = dispatch(getState).map.layerGroups;
             const foundLayer = layerList.find(layer => layer.id === editedLayerId);
             const foundSearchLayer = layerList.find(layer => layer.id === `${editedLayerId}.s`);
 
@@ -292,6 +292,22 @@ export const saveEditedFeatures = (
                 ]);
 
                 dispatch(searchFeatures(queryMap));
+            }
+
+            // Refresh all childLayer search layers.
+            if (layerList.some(ll => ll.parentLayer === foundLayer.id)) {
+                layerList.filter(childLayer => childLayer.parentLayer === foundLayer.id)
+                    .forEach((childLayer) => {
+                        const foundChildSearchLayer = layerList.find(layer => layer.id === `${childLayer.id}.s`);
+
+                        if (foundChildSearchLayer) {
+                            const queryMap = new Map([
+                                [childLayer, foundChildSearchLayer.definitionExpression],
+                            ]);
+
+                            dispatch(searchFeatures(queryMap));
+                        }
+                    });
             }
         });
 
