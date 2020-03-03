@@ -82,6 +82,13 @@ export const mapSelectPopup = async (
             let textInfo = '';
 
             if (feature.layer) {
+                let matchingLayer: Object = layerList
+                    .find(ll => ll.id === feature.layer.id.replace('.s', ''));
+
+                matchingLayer = matchingLayer.parentLayer
+                    ? layerList.find(ll => ll.id === matchingLayer.parentLayer)
+                    : matchingLayer;
+
                 if (feature.layer.featureType === 'shapefile') {
                     const columns = feature.layer.fields.slice(0, 5);
                     columns.forEach((c) => {
@@ -90,51 +97,45 @@ export const mapSelectPopup = async (
                             label: c.name,
                         });
                     });
-                } else {
-                    const matchingLayer = layerList
-                        .find(ll => ll.id === feature.layer.id.replace('.s', ''));
-
-                    if (matchingLayer
+                } else if (matchingLayer
                         && matchingLayer.type === 'agfs'
                         && matchingLayer.queryColumnsList) {
-                        const fields = nestedVal(feature, ['layer', 'fields']);
-                        matchingLayer.queryColumnsList.forEach((column) => {
-                            fieldInfos.push({
-                                fieldName: column,
-                                label: nestedVal(
-                                    fields && fields.find(f => f.name === column),
-                                    ['alias'],
-                                ),
-                            });
+                    const fields = nestedVal(feature, ['layer', 'fields']);
+                    matchingLayer.queryColumnsList.forEach((column) => {
+                        fieldInfos.push({
+                            fieldName: column,
+                            label: nestedVal(
+                                fields && fields.find(f => f.name === column),
+                                ['alias'],
+                            ),
                         });
+                    });
 
-                        textInfo = matchingLayer.attribution;
+                    textInfo = matchingLayer.attribution;
 
-                        const relationLayer = matchingLayer
+                    const relationLayer = matchingLayer
                             && layerList.find(ll => (
                                 ll.id === String(nestedVal(matchingLayer.relations
                                     .find(r => r.layerId === matchingLayer.id), ['relationLayerId']))));
 
-                        if (matchingLayer.hasRelations
+                    if (matchingLayer.hasRelations
                             && relationLayer
                             && relationLayer.layerPermission.readLayer) {
-                            const contractLink = {
-                                title: strings.modalFeatureContracts.featureContracts,
-                                id: 'contract-link',
-                                className: 'fas fa-external-link-square-alt',
-                            };
-                            actions.push(contractLink);
-                        }
+                        const contractLink = {
+                            title: strings.modalFeatureContracts.featureContracts,
+                            id: 'contract-link',
+                            className: 'fas fa-external-link-square-alt',
+                        };
+                        actions.push(contractLink);
                     }
                 }
 
-                const activeAdminLayer = layerList.find(ll => ll.id === activeAdminTool);
-                const addCopyAction = activeAdminTool
-                    && activeAdminTool !== feature.layer.id
+                const addCopyAction = activeAdminTool && matchingLayer
+                    && activeAdminTool !== matchingLayer.id
                     && geometryType
-                    && convertEsriGeometryType(geometryType) === feature.layer.geometryType
-                    && activeAdminLayer
-                    && activeAdminLayer.layerPermission.createLayer;
+                    && convertEsriGeometryType(geometryType) === matchingLayer.geometryType
+                    && matchingLayer
+                    && matchingLayer.layerPermission.createLayer;
                 if (addCopyAction) {
                     const copyFeatureAction = {
                         title: strings.esriMap.copyFeature,
@@ -144,11 +145,11 @@ export const mapSelectPopup = async (
                     actions.push(copyFeatureAction);
                 }
 
-                const addEditAction = activeAdminTool
-                    && activeAdminTool === feature.layer.id
-                    && activeAdminLayer
-                    && activeAdminLayer.layerPermission.createLayer
-                    && activeAdminLayer.layerPermission.updateLayer;
+                const addEditAction = activeAdminTool && matchingLayer
+                    && activeAdminTool === matchingLayer.id
+                    && matchingLayer
+                    && matchingLayer.layerPermission.createLayer
+                    && matchingLayer.layerPermission.updateLayer;
                 if (addEditAction) {
                     const editFeatureAction = {
                         title: strings.esriMap.editFeature,
@@ -158,7 +159,7 @@ export const mapSelectPopup = async (
                     actions.push(editFeatureAction);
                 }
 
-                if (feature.layer.geometryType === 'polygon') {
+                if (matchingLayer && matchingLayer.geometryType === 'polygon') {
                     const getAllPropertyInfo = {
                         title: strings.esriMap.getAllPropertyInfo,
                         id: 'get-all-property-info',
