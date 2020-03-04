@@ -51,6 +51,7 @@ class SelectableTable extends CheckboxTableHOC {
 
         return (
             <FixedColumns
+                id="TabbedTable"
                 className="-striped -highlight"
                 columns={columns}
                 ref={(r) => { this.wrappedInstance = r; }}
