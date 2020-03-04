@@ -68,6 +68,10 @@ class ReactTable extends Component<Props, State> {
     componentDidUpdate() {
         const paginationBottom = document.getElementsByClassName('pagination-bottom')[0];
         if (paginationBottom) {
+            // Send update request to table window portal
+            // to re-render also when main screen table changes
+            const ev = new Event('windowPortalUpdate', {});
+            window.dispatchEvent(ev);
             // React Table heights need to be set programmatically for scrollbars to show correctly.
             const tableElement = document.getElementsByClassName('rt-rtable')[0];
             const tableHeight = paginationBottom.clientHeight;
