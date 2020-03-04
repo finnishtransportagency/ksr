@@ -37,6 +37,10 @@ const Table = styled.div`
             height: calc(100% - 60px);
             bottom: 60px;
         `};
+
+        #portalButton {
+            display: none !important;
+        }
     }
 `;
 
