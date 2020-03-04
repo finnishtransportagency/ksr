@@ -373,7 +373,7 @@ describe('utils/table', () => {
             },
         ];
 
-        expect(applyDeletedFeatures(layers, objectIds, layerId)).toMatchObject(expectedResult);
+        expect(applyDeletedFeatures(layers, objectIds, layerId, [])).toMatchObject(expectedResult);
     });
 
     it('applyDeletedFeatures - should only return layers with data', () => {
@@ -398,7 +398,7 @@ describe('utils/table', () => {
 
         const expectedResult = [];
 
-        expect(applyDeletedFeatures(layers, objectIds, layerId)).toMatchObject(expectedResult);
+        expect(applyDeletedFeatures(layers, objectIds, layerId, [])).toMatchObject(expectedResult);
     });
 
     it('columnsWithoutLayerId - should return correct values if key IS NOT _edited', () => {

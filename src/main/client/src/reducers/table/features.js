@@ -174,17 +174,20 @@ export default (state: State = initialState, action: Action) => {
                     state.layers,
                     action.objectIds,
                     action.layerId,
+                    action.layerList,
                 ),
                 editedLayers: applyDeletedFeatures(
                     state.editedLayers,
                     action.objectIds,
                     action.layerId,
+                    action.layerList,
                 ),
                 activeTable: getActiveTable(
                     applyDeletedFeatures(
                         state.layers,
                         action.objectIds,
                         action.layerId,
+                        action.layerList,
                     ),
                     state.activeTable,
                 ),

@@ -321,14 +321,16 @@ export const saveDeletedFeatures = (
     layerId: string,
     objectIds: string,
     deleteComment: string,
-) => (dispatch: Function) => {
+) => (dispatch: Function, getState: Function) => {
     view.popup.close();
+    const { layerList } = dispatch(getState).map.layerGroups;
     save.saveDeletedFeatureData(view, layerId, objectIds, deleteComment)
         .then(() => {
             dispatch({
                 type: types.APPLY_DELETED_FEATURES,
                 objectIds,
                 layerId,
+                layerList,
             });
         });
 };
