@@ -82,6 +82,7 @@ export const WrapperReactTable = styled.div`
         };
         
         .rt-tbody {
+            min-width: fit-content !important;
             .rt-td {
                 padding: 6px;
                 text-align: left;
