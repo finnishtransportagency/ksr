@@ -6,7 +6,7 @@ import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
 import { addLayers, getSingleLayerFields } from '../../utils/map';
-import { reorderLayers } from '../../utils/reorder';
+import { reorder, reorderChildLayers, reorderLayers } from '../../utils/reorder';
 import { addNonSpatialContentToTable } from '../table/actions';
 import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
@@ -33,9 +33,11 @@ export const getLayerGroups = () => async (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
 
     const layerGroups = await fetchLayerGroups();
-    const layerList = layerGroups
+    let layerList = layerGroups
         .flatMap(lg => lg.layers.map(layer => ({ ...layer, layerGroupName: lg.name })))
         .sort((a, b) => b.layerOrder - a.layerOrder);
+
+    layerList = reorderChildLayers(layerList);
 
     // Update layers fields
     layerList.forEach((layer) => {
