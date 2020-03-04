@@ -31,6 +31,7 @@ type Props = {
     setButtonAmount: (buttonAmount: ?number) => void,
     viewGraphics: Object[],
     hasTableEdited: boolean,
+    setActivePortal: (portal: string) => void,
 };
 
 const TableButtons = ({
@@ -57,6 +58,7 @@ const TableButtons = ({
     setButtonAmount,
     viewGraphics,
     hasTableEdited,
+    setActivePortal,
 }: Props) => {
     const [bufferExists, setBufferExists] = useState(false);
 
@@ -114,6 +116,7 @@ const TableButtons = ({
             bufferExists={bufferExists}
             handleClearBuffer={handleClearBuffer}
             hasTableEdited={hasTableEdited}
+            setActivePortal={setActivePortal}
         />
     );
 };

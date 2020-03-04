@@ -33,6 +33,7 @@ type Props = {
     bufferExists: boolean,
     handleClearBuffer: Function,
     hasTableEdited: boolean,
+    setActivePortal: (portal: string) => void,
 };
 
 const TableButtonsView = ({
@@ -58,6 +59,7 @@ const TableButtonsView = ({
     bufferExists,
     handleClearBuffer,
     hasTableEdited,
+    setActivePortal,
 }: Props) => (
     <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
         <Table.Button
@@ -78,6 +80,7 @@ const TableButtonsView = ({
             view={view}
             bufferExists={bufferExists}
             handleClearBuffer={handleClearBuffer}
+            setActivePortal={setActivePortal}
         />
         <ActiveLayerView
             isOpen={isOpen}

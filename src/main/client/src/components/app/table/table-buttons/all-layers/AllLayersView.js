@@ -17,6 +17,7 @@ type Props = {
     view: Object,
     bufferExists: boolean,
     handleClearBuffer: Function,
+    setActivePortal: (portal: string) => void,
 };
 
 /** Table actions that can target all open tables */
@@ -29,6 +30,7 @@ const AllLayersView = ({
     view,
     bufferExists,
     handleClearBuffer,
+    setActivePortal,
 }: Props) => (
     <Fragment>
         <Table.Button
@@ -73,6 +75,16 @@ const AllLayersView = ({
                     : null}
         >
             <i className="fas fa-search-plus" />
+        </Table.Button>
+        <Table.Button
+            title={strings.reactTable.windowPortal}
+            tableOpen={isOpen}
+            onClick={() => {
+                setActivePortal('windowPortal');
+            }}
+            id="portalButton"
+        >
+            <i className="fas fa-external-link-square-alt" />
         </Table.Button>
     </Fragment>
 );

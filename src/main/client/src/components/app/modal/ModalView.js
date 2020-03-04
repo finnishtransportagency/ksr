@@ -17,13 +17,15 @@ import ModalThemeLayerContainer from './modal-theme-layer/ModalThemeLayerContain
 import ModalContractDetailsContainer from './modal-contract-details/ModalContractDetailsContainer';
 import ModalDownloadCsvContainer from './modal-donwload-csv/ModalDownloadCsvContainer';
 import ModalZoomToFeaturesContainer from './modal-zoom-to-features/ModalZoomToFeaturesContainer';
+import ModalWindowPortalContainer from './modal-window-portal/ModalWindowPortalContainer';
 
 type Props = {
     activeModal: string,
     confirmModal: boolean,
+    activePortal: string,
 };
 
-const ModalView = ({ activeModal, confirmModal }: Props) => (
+const ModalView = ({ activeModal, confirmModal, activePortal }: Props) => (
     <Fragment>
         {activeModal === 'filter' && <ModalFilterContainer />}
         {activeModal === 'deleteSelected' && <ModalDeleteSelectedContainer />}
@@ -41,6 +43,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'downloadCSV' && <ModalDownloadCsvContainer />}
         {activeModal === 'zoomToFeatures' && <ModalZoomToFeaturesContainer />}
         {confirmModal && <ConfirmModalContainer />}
+        {activePortal === 'windowPortal' && <ModalWindowPortalContainer />}
     </Fragment>
 );
 
