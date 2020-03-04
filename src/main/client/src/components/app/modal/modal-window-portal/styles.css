@@ -1,0 +1,57 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css');
+
+body {
+	background: #4B4B4B;
+}
+
+.windowPortalClass > div {
+  left: unset;
+  height: 94.6%;
+  bottom: 0;
+  position: fixed;
+  width: 100%;
+}
+
+.windowPortalClass > div > #table-button--wrapper {
+    color: #F1F1F1;
+}
+
+.windowPortalClass > div > #TabbedTable {
+    min-width: 100vw;
+    width: 100vw;
+    max-width: 100vw;
+}
+
+.windowPortalClass > div > div:last-of-type {
+	min-width: 100vw;
+    width: 100vw;
+    max-width: 100vw;
+}
+
+.windowPortalClass > div > div:last-of-type > .ReactTable > .rt-rtable > div > .rtable-scroll-wrapper {
+    margin-right: unset !important;
+    margin-bottom: unset !important;
+    overflow: auto !important;
+}
+
+.windowPortalClass > div > div:last-of-type > .ReactTable > .rt-rtable > div > .track-horizontal,
+.windowPortalClass > div > div:last-of-type > .ReactTable > .rt-rtable > div > .track-vertical {
+    display: none;
+}
+
+.windowPortalClass > div> #table-button--wrapper > div {
+    display: flex;
+    background: #444444;
+}
+
+.rt-rtable {
+    height: 95%;
+}
+
+.fa-times:before {
+  	color: #F1F1F1;
+}
+
+i.fas.fa-table {
+  	padding-top: 5px;
+}
