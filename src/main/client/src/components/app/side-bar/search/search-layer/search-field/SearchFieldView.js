@@ -72,7 +72,11 @@ const SearchFieldView = ({
                 </SearchFieldWrapper.Expression>
             )}
             <SearchFieldWrapper.Text
-                onClick={e => e.preventDefault()}
+                onClick={(e) => {
+                    if (field.type !== 'esriFieldTypeDate') {
+                        e.preventDefault();
+                    }
+                }}
             >
                 {searchFieldValues
                 && searchFieldValues[index].domain
@@ -80,7 +84,7 @@ const SearchFieldView = ({
                 && (
                     <Select
                         disabled={fetching}
-                        value={field.queryText
+                        value={field.queryText.toString()
                         || searchFieldValues[index].domain.codedValues.find(cv => cv.name)}
                         onChange={evt => handleChangeField('codedValue', evt, index)}
                         options={codedValueOptions(searchFieldValues[index].domain.codedValues)}
@@ -153,6 +157,7 @@ const SearchFieldView = ({
                 {field.type === 'esriFieldTypeDate'
                 && (
                     <TextInput
+                        name={field.name}
                         type="date"
                         value={field.queryDate}
                         title={toDisplayDate(field.queryDate)}
