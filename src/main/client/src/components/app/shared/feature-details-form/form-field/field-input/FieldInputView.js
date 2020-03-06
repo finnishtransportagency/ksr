@@ -34,7 +34,7 @@ const FieldInputView = ({
                             value: cv.code,
                         }))
                     }
-                    value={field.data ? field.data : ''}
+                    value={field.data !== null ? field.data.toString() : ''}
                     simpleValue
                     name={field.name}
                     placeholder=""
@@ -53,7 +53,7 @@ const FieldInputView = ({
             type={parseColumnType(field.type)}
             onChange={evt => handleOnChange(evt, field)}
             name={field.name}
-            value={field.data ? field.data : ''}
+            value={field.data !== null ? field.data.toString() : ''}
             autoComplete="off"
             maxLength={field.length}
             required={!field.nullable}
