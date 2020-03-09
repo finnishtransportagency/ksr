@@ -26,15 +26,19 @@ export const reorder = (list: Object[], startIndex: number, endIndex: number): O
  */
 export const reorderChildLayers = (layerList: Object[]) => {
     let reorderedList = layerList;
-    const childLayers = layerList.filter(layer => layer.parentLayer && layer._source !== 'search');
+    const childLayers = layerList.filter(layer => layer.parentLayer && layer._source !== 'search')
+        .sort((a, b) => b.layerOrder - a.layerOrder);
 
     childLayers.forEach((childLayer) => {
-        const parentLayerIndex = reorderedList
-            .findIndex(layer => layer.id === childLayer.parentLayer);
         const childLayerIndex = reorderedList
             .findIndex(layer => layer.id === childLayer.id);
+        let parentLayerIndex = reorderedList
+            .findIndex(layer => layer.id === childLayer.parentLayer);
+        parentLayerIndex = childLayerIndex > parentLayerIndex
+            ? parentLayerIndex + 1
+            : parentLayerIndex;
 
-        reorderedList = reorder(reorderedList, childLayerIndex, parentLayerIndex)
+        reorderedList = reorder(reorderedList, childLayerIndex, parentLayerIndex);
     });
 
     return reorderedList;

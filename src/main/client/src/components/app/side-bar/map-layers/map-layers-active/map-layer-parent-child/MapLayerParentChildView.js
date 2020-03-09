@@ -67,7 +67,6 @@ const MapLayerParentChildView = ({
                             }
                         </LayerSettings.ContentTop>
                         {layerList.filter(l => l._source !== 'search' && l.parentLayer === layer.id)
-                            .sort((a, b) => b.layerOrder - a.layerOrder)
                             .map(l => (
                                 <MapLayerChildView
                                     key={l.id}
