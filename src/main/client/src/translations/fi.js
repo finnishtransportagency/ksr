@@ -448,6 +448,9 @@ const fi = {
             checkFeature: 'Vain valitut kohteet',
         },
     },
+    portalWindow: {
+        portalTitle: 'Taulu - Kiinteistö- ja sopimusrekisteri',
+    },
 };
 
 export default fi;
