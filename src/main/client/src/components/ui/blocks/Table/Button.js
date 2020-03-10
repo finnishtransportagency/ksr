@@ -27,6 +27,10 @@ const Button = styled.div`
     ${props => props.toggleButton && css`
         display: flex;
     `};
+
+    ${props => props.portalButton && css`
+        display: flex;
+    `};
     
     ${props => props.disabled && css`
         color: ${styles.colorFontDisabled};
