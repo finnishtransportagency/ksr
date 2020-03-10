@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import activePortal from './activePortal';
+import togglePortal from './togglePortal';
 
 export default combineReducers({
-    activePortal,
+    togglePortal,
 });
