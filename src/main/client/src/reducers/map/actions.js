@@ -6,7 +6,7 @@ import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
 import { addLayers, getSingleLayerFields } from '../../utils/map';
-import { reorder, reorderChildLayers, reorderLayers } from '../../utils/reorder';
+import { reorderChildLayers, reorderLayers } from '../../utils/reorder';
 import { addNonSpatialContentToTable } from '../table/actions';
 import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
