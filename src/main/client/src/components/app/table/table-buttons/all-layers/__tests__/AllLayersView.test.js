@@ -26,6 +26,6 @@ describe('<AllLayersView />', () => {
     it('should render self', () => {
         const { wrapper } = setup();
 
-        expect(wrapper.find(Table.Button).length).toBe(4);
+        expect(wrapper.find(Table.Button).length).toBe(3);
     });
 });
