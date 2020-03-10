@@ -4,6 +4,7 @@ import Table from '../../../ui/blocks/Table';
 import AllLayersView from './all-layers/AllLayersView';
 import ActiveLayerView from './active-layer/ActiveLayerView';
 import AdminLayerView from './admin-layer/AdminLayerView';
+import strings from '../../../../translations';
 
 type Props = {
     toggleTable: Function,
@@ -33,7 +34,9 @@ type Props = {
     bufferExists: boolean,
     handleClearBuffer: Function,
     hasTableEdited: boolean,
-    setActivePortal: (portal: string) => void,
+    portalIsOpen: boolean,
+    togglePortal: Function,
+    updatePortal: Function,
 };
 
 const TableButtonsView = ({
@@ -59,16 +62,30 @@ const TableButtonsView = ({
     bufferExists,
     handleClearBuffer,
     hasTableEdited,
-    setActivePortal,
+    portalIsOpen,
+    togglePortal,
+    updatePortal,
 }: Props) => (
     <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
         <Table.Button
             toggleButton
             onClick={() => {
                 toggleTable();
+                updatePortal();
             }}
         >
             <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
+        </Table.Button>
+        <Table.Button
+            portalButton
+            title={strings.reactTable.windowPortal}
+            onClick={!portalIsOpen ? () => {
+                togglePortal();
+            } : null}
+            id="portalButton"
+            disabled={portalIsOpen}
+        >
+            <i className="fas fa-external-link-square-alt" />
         </Table.Button>
         <AllLayersView
             isOpen={isOpen}
@@ -80,7 +97,6 @@ const TableButtonsView = ({
             view={view}
             bufferExists={bufferExists}
             handleClearBuffer={handleClearBuffer}
-            setActivePortal={setActivePortal}
         />
         <ActiveLayerView
             isOpen={isOpen}
