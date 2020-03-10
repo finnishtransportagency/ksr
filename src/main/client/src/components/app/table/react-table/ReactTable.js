@@ -31,6 +31,7 @@ type Props = {
     setTableEdited: Function,
     filtered: Array<Object>,
     addFiltered: Function,
+    updatePortal: Function,
 };
 
 type State = {
@@ -66,12 +67,12 @@ class ReactTable extends Component<Props, State> {
     }
 
     componentDidUpdate() {
+        const { updatePortal } = this.props;
         const paginationBottom = document.getElementsByClassName('pagination-bottom')[0];
         if (paginationBottom) {
             // Send update request to table window portal
             // to re-render also when main screen table changes
-            const ev = new Event('windowPortalUpdate', {});
-            window.dispatchEvent(ev);
+            updatePortal();
             // React Table heights need to be set programmatically for scrollbars to show correctly.
             const tableElement = document.getElementsByClassName('rt-rtable')[0];
             const tableHeight = paginationBottom.clientHeight;
