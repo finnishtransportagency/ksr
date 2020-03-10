@@ -13,6 +13,7 @@ const TableView = ({ isOpen, activeNav }: Props) => (
     <Table
         sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
         tableOpen={isOpen}
+        id="TableView"
     >
         <TableButtonsContainer />
         <TabbedTableContainer />
