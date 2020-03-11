@@ -429,6 +429,20 @@ class EsriMap extends Component<Props> {
                 case 'edit-feature':
                     await copySelectedFeature('edit');
                     break;
+                case 'get-road-property-info':
+                    if (x) {
+                        const data = {
+                            attributes: {},
+                            geometry: {
+                                x,
+                                y,
+                                type: 'point',
+                            },
+                            featureType: 'road',
+                        };
+                        setActiveModal('showAddress', data);
+                    }
+                    break;
                 default:
                     break;
             }
