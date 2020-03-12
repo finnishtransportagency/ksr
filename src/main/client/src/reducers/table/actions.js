@@ -45,6 +45,19 @@ export const addUpdateLayers = (
                     layers: parseData({ layers: [result] }, selected),
                 });
             }
+
+            const featureNotInLayer = !result.features.some(feature => nestedVal(
+                feature,
+                ['attributes', objectIdFieldName],
+            ) === objectId);
+            if (featureNotInLayer) {
+                dispatch({
+                    type: types.REMOVE_TABLE_FEATURE,
+                    layerId,
+                    objectId,
+                    objectIdFieldName,
+                });
+            }
         });
 };
 
