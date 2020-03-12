@@ -215,9 +215,9 @@ const handlePopupUpdate = (
                     });
 
                     const viewLayer = view.map.findLayerById(layerView.layer.id);
-                    if (viewLayer) {
+                    const copyLayer = nestedVal(viewLayer, ['popupTemplate', 'content']);
+                    if (copyLayer) {
                         // Need to make a change to trigger update.
-                        const copyLayer = viewLayer.popupTemplate.content;
                         viewLayer.popupTemplate.content = copyLayer;
                     }
                 }
