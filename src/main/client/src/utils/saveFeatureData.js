@@ -432,19 +432,24 @@ const saveEditedFeatureData = (
 ) => {
     if (view && Array.isArray(editedData)) {
         const promises = editedData.map((ed) => {
-            const idFieldName = getIdFieldAccessor(ed.columns, ed._idFieldName);
+            let layerId = ed.id.replace('.s', '');
+
+            const currentLayer: Object = layerList.find(l => l.id === layerId);
+            const parentLayer = currentLayer && layerList.find(l => currentLayer.parentLayer
+                && l.id === currentLayer.parentLayer);
+
+            layerId = parentLayer ? parentLayer.id : layerId;
+            const idFieldNameWithoutLayerId = parentLayer
+                ? nestedVal(
+                    parentLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+                    ['name'],
+                )
+                : ed._idFieldName;
+            const idFieldName = getIdFieldAccessor(ed.columns, idFieldNameWithoutLayerId);
             const features = ed.data
                 .filter(d => d._edited.length)
                 .map(d => keepOnlyEdited(d, idFieldName))
                 .map(formatToEsriCompliant);
-
-            let layerId = ed.id.replace('.s', '');
-            const idFieldNameWithoutLayerId = ed._idFieldName;
-            const currentLayer: Object = layerList.find(l => l.id === layerId);
-            const parentLayer = currentLayer && layerList.find(l => currentLayer.parentLayer
-                    && l.id === currentLayer.parentLayer);
-
-            layerId = parentLayer ? parentLayer.id : layerId;
 
             const promisesAddressField = features.map(feature => (
                 createAddressFields(feature, featureType, addressField)
