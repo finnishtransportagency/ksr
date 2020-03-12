@@ -493,9 +493,8 @@ class ReactTable extends Component<Props, State> {
                     cellField = originalLayer.fields.find(f => f.name === cellField.name);
                 }
 
-                if (cellField.domain
-                    && (cellField.domain.type === 'codedValue'
-                        || cellField.domain.type === 'coded-value')) {
+                const domainType = nestedVal(cellField, ['domain', 'type']);
+                if (domainType === 'codedValue' || domainType === 'coded-value') {
                     return this.renderSelectInput(cellField, cellInfo, filter, onChange);
                 }
 
