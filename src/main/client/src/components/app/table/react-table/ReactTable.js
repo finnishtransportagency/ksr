@@ -12,7 +12,7 @@ import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { TextInput } from '../../../ui/elements';
 import { nestedVal } from '../../../../utils/nestedValue';
 import { isContract } from '../../../../utils/layers';
-import { nestedVal } from '../../../../utils/nestedValue';
+import { childLayerDomainValues } from '../../../../utils/fields';
 
 type Props = {
     fetching: boolean,
@@ -437,6 +437,13 @@ class ReactTable extends Component<Props, State> {
                             && parentLayer.fields.find(f => f.name === cellField.name);
 
                         cellField = parentLayer && parentCell ? parentCell : originalCell;
+                        if (parentLayer) {
+                            cellField = childLayerDomainValues(cellField);
+                        }
+                    }
+                        const contentEditable = this.isCellEditable(cellField);
+                        const content = this.getCellContent(cellField, cellInfo);
+                        cellField = parentLayer && parentCell ? parentCell : originalCell;
                     }
                     const contentEditable = this.isCellEditable(cellField);
                     if (contentEditable) {
@@ -446,6 +453,14 @@ class ReactTable extends Component<Props, State> {
                             && contentEditable) {
                             return this.renderSelect(cellField, content, cellInfo);
                         }
+                    cellField = parentLayer && parentCell ? parentCell : originalCell;
+
+                    if (parentLayer) {
+                        cellField = childLayerDomainValues(cellField);
+                    }
+                }
+                const contentEditable = this.isCellEditable(cellField);
+                const content = this.getCellContent(cellField, cellInfo);
 
                         if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
                             return this.renderDateInput(cellField, content, cellInfo);
@@ -490,7 +505,13 @@ class ReactTable extends Component<Props, State> {
             if (cellField) {
                 if (originalLayer && originalLayer.fields) {
                     // Get editable values for search layer fields
-                    cellField = originalLayer.fields.find(f => f.name === cellField.name);
+                    cellField = originalLayer.fields.some(f => f.name === cellField.name)
+                        ? originalLayer.fields.find(f => f.name === cellField.name)
+                        : cellField;
+
+                    if (layerList.some(layer => layer.parentLayer === originalLayer.id)) {
+                        cellField = childLayerDomainValues(cellField);
+                    }
                 }
 
                 const domainType = nestedVal(cellField, ['domain', 'type']);
