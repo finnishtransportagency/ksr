@@ -9,6 +9,8 @@ type Props = {
     setActiveModal: (modal: string) => void,
     toggleLayerLegend: () => void,
     layerLegendActive: boolean,
+    toggleIndexMap: Function,
+    indexMapActive: boolean,
 };
 
 type State = {
@@ -70,6 +72,8 @@ class MapLayers extends Component<Props, State> {
             setActiveModal,
             layerLegendActive,
             toggleLayerLegend,
+            toggleIndexMap,
+            indexMapActive,
         } = this.props;
 
         return (
@@ -85,6 +89,8 @@ class MapLayers extends Component<Props, State> {
                 activeSubGroups={activeSubGroups}
                 setActiveGroups={this.setActiveGroups}
                 setActiveSubGroups={this.setActiveSubGroups}
+                toggleIndexMap={toggleIndexMap}
+                indexMapActive={indexMapActive}
             />
         );
     }

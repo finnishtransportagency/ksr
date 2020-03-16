@@ -7,6 +7,7 @@ const fi = {
         addNewLayer: 'Uusi taso',
         failedToLoadLayer: 'Tason lataus epäonnistui',
         toggleLayerLegend: 'Selite',
+        toggleIndexMap: 'Indeksikartta',
         filterAllLayers: 'Hae karttatasoja',
         noLayersFound: 'Ei hakua vastaavia karttatasoja',
         userLayerGroupName: 'Käyttäjätasot',

@@ -8,10 +8,12 @@ import { H1, TextInput } from '../../../ui/elements';
 import MapLayersActiveContainer from './map-layers-active/MapLayersActiveContainer';
 import MapLayersAllContainer from './map-layers-all/MapLayersAllContainer';
 import {
+    ButtonLayerAddWrapper,
     ButtonLayerNav,
     ButtonLayerNavWrapper,
-    ButtonLayerAddWrapper,
     LayerFilterWrapper,
+    ToggleButton,
+    ToggleButtonWrapper,
 } from './styles';
 
 type Props = {
@@ -26,6 +28,8 @@ type Props = {
     setActiveSubGroups: (activeSubGroups: number[]) => void,
     handleInputChange: (event: Object) => void,
     layersToFind: string,
+    toggleIndexMap: Function,
+    indexMapActive: boolean,
 };
 
 const MapLayersView = ({
@@ -40,26 +44,46 @@ const MapLayersView = ({
     setActiveSubGroups,
     handleInputChange,
     layersToFind,
+    toggleIndexMap,
+    indexMapActive,
 }: Props) => (
     <Fragment>
         <SideBar.Header>
             <H1>{strings.mapLayers.title}</H1>
-            <div
-                className="toggle-button"
-                tabIndex="0"
-                role="button"
-                onClick={toggleLayerLegend}
-                onKeyPress={toggleLayerLegend}
-            >
-                <span>{strings.mapLayers.toggleLayerLegend}</span>
-                <i
-                    className={
-                        layerLegendActive
-                            ? 'fas fa-toggle-on'
-                            : 'fas fa-toggle-off'
-                    }
-                />
-            </div>
+            <ToggleButtonWrapper>
+                <ToggleButton
+                    tabIndex="0"
+                    role="button"
+                    onClick={toggleIndexMap}
+                    onKeyPress={toggleIndexMap}
+                >
+
+                    <span>{strings.mapLayers.toggleIndexMap}</span>
+                    <i
+                        className={
+                            indexMapActive
+                                ? 'fas fa-toggle-on'
+                                : 'fas fa-toggle-off'
+                        }
+                    />
+                </ToggleButton>
+                <ToggleButton
+                    tabIndex="0"
+                    role="button"
+                    onClick={toggleLayerLegend}
+                    onKeyPress={toggleLayerLegend}
+                >
+                    <span>{strings.mapLayers.toggleLayerLegend}</span>
+                    <i
+                        className={
+                            layerLegendActive
+                                ? 'fas fa-toggle-on'
+                                : 'fas fa-toggle-off'
+                        }
+                    />
+                </ToggleButton>
+            </ToggleButtonWrapper>
+
         </SideBar.Header>
         <SideBar.Content layerSettings={activeTab === 'active'}>
             <ButtonLayerNavWrapper>
@@ -131,7 +155,9 @@ const MapLayersView = ({
                 <MediaQuery query="(min-width: 769px)">
                     <ButtonLayerNav
                         activeLayer={activeTab === 'shape'}
-                        onClick={() => { setActiveModal('shapefile'); }}
+                        onClick={() => {
+                            setActiveModal('shapefile');
+                        }}
                     >
                         {strings.mapLayers.shape}
                     </ButtonLayerNav>

@@ -17,6 +17,7 @@ const mapStateToProps = (state) => {
         loadingWorkspace: state.workspace.workspace.loadingWorkspace,
         layerLegendActive: state.map.layerLegend.layerLegendActive,
         tableButtonAmount: state.table.buttonAmount,
+        indexMapActive: state.map.indexMap.indexMapActive,
     });
 };
 
