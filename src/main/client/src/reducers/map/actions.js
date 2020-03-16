@@ -76,6 +76,7 @@ export const activateLayers = (
 ) => async (dispatch: Function, getState: Function) => {
     const { view } = dispatch(getState).map.mapView;
     const { activeAdminTool } = dispatch(getState).adminTool.active.layerId;
+    const { layerList } = dispatch(getState).map.layerGroups;
 
     view.popup.close();
 
@@ -84,14 +85,22 @@ export const activateLayers = (
         layerIds: layers.map(l => l.id),
     });
 
-    const { failedLayers } = await addLayers(
+    let { failedLayers } = await addLayers(
         layers,
         view,
         workspace !== undefined,
+        false,
+        layerList,
     );
 
+    failedLayers = failedLayers.map(fl => ({
+        id: fl,
+        parentLayer: nestedVal(layerList.find(ll => ll.id === fl), ['parentLayer']),
+    }));
+
     await Promise.all(layers.map(async (layer) => {
-        if (!failedLayers.some(layerId => layerId === layer.id)) {
+        if (!failedLayers.some(fl => fl.id === layer.id)
+            && !failedLayers.some(fl => fl.parentLayer === layer.id)) {
             if (layer.id === activeAdminTool) {
                 dispatch({
                     type: types.SET_ACTIVE_ADMIN_TOOL,

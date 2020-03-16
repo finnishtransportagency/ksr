@@ -182,7 +182,7 @@ class EsriMap extends Component<Props> {
             spatialReference: epsg3067,
         });
 
-        await addLayers([l], overview, false, true);
+        await addLayers([l], overview, false, true, layerList);
 
         // Remove the default widgets
         overview.ui.components = [];
