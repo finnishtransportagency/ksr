@@ -4,6 +4,7 @@ import { parseQueryString, searchFieldIsNumber } from '../../../../../utils/sear
 import SearchLayerView from './SearchLayerView';
 import { fetchSearchSuggestions } from '../../../../../api/search/searchQuery';
 import { filterNotAllowedFields } from '../../../../../utils/fields';
+import { nestedVal } from '../../../../../utils/nestedValue';
 
 type Props = {
     searchFeatures: Function,
@@ -67,7 +68,15 @@ class SearchLayer extends Component<Props, State> {
         const { suggestionsActive } = searchState;
         setSearchState(layerId, '', [], [], suggestionsActive);
         if (layerId && layerId !== 'queryAll' && layerId !== 'queryActive') {
-            setSearchOptions(layerId, layerList);
+            const isParentLayer = layerList.some(layer => layer && layer.parentLayer === layerId);
+            if (isParentLayer) {
+                setSearchOptions(
+                    nestedVal(layerList.find(layer => layer.parentLayer === layerId), ['id']),
+                    layerList,
+                );
+            } else {
+                setSearchOptions(layerId, layerList);
+            }
         }
     };
 
