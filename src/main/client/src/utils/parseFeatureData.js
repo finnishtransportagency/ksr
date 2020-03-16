@@ -1,5 +1,6 @@
 // @flow
 import clone from 'clone';
+import { notAllowedFields } from './fields';
 
 /**
  * Get custom className for column if needed.
@@ -35,10 +36,7 @@ export const parseColumns = (id: string, data: Object[]): Object[] => {
         Header: f.alias,
         accessor: `${id}/${f.name}`,
         show: f.type !== 'geometry'
-            && f.name.toLowerCase() !== 'objectid'
-            && f.name.toLowerCase() !== 'objectid_1'
-            && f.name.toLowerCase() !== 'symbolidentifier'
-            && f.name.toLowerCase() !== 'contract_uuid',
+            && !notAllowedFields.some(fieldName => fieldName === f.name.toLowerCase()),
         editable: f.editable,
         nullable: f.nullable,
         length: f.length,

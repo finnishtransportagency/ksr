@@ -1,6 +1,6 @@
 // @flow
-const notAllowedFields = ['objectid', 'object', 'id', 'fid', 'symbolidentifier',
-    'objectid_1', 'contract_uuid', 'shape'];
+export const notAllowedFields = ['objectid', 'object', 'id', 'fid', 'symbolidentifier',
+    'objectid_1', 'contract_uuid', 'shape', 'link_objectid'];
 
 /**
  * Filter not allowed fields from the list.
