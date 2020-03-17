@@ -74,4 +74,8 @@ export const PortalWrapper = styled.div`
     .fa-times:before {
         color: ${styles.colorFontLight};
     };
+
+    i.fas.fa-table {
+        padding-top: 5px;
+    }
 `;

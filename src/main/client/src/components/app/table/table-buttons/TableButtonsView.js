@@ -69,10 +69,11 @@ const TableButtonsView = ({
     <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
         <Table.Button
             toggleButton
-            onClick={() => {
+            onClick={!portalIsOpen ? () => {
                 toggleTable();
                 updatePortal();
-            }}
+            } : null}
+            disabled={portalIsOpen}
         >
             <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
         </Table.Button>
@@ -80,6 +81,9 @@ const TableButtonsView = ({
             portalButton
             title={strings.reactTable.windowPortal}
             onClick={!portalIsOpen ? () => {
+                if (isOpen) {
+                    toggleTable();
+                }
                 togglePortal();
             } : null}
             id="portalButton"

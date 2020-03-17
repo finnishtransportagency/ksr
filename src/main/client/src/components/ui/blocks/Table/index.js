@@ -21,6 +21,10 @@ const Table = styled.div`
         bottom: 0;
     `};
 
+    ${props => props.portalOpen && css`
+        display: none;
+    `};
+
     ${props => props.sideBar && css`
         left: 460px;
         width: calc(100% - 400px);
