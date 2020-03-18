@@ -501,6 +501,20 @@ class EsriMap extends Component<Props> {
                 case 'edit-feature':
                     await copySelectedFeature('edit');
                     break;
+                case 'get-street-property-info':
+                    if (x) {
+                        const data = {
+                            attributes: {},
+                            geometry: {
+                                x,
+                                y,
+                                type: 'point',
+                            },
+                            featureType: 'street',
+                        };
+                        setActiveModal('showAddress', data);
+                    }
+                    break;
                 default:
                     break;
             }

@@ -37,8 +37,13 @@ export const mapSelectPopup = async (
         id: 'google-street-view',
         className: 'fas fa-street-view',
     };
+    const getStreetInfo = {
+        title: strings.esriMap.getStreetInfo,
+        id: 'get-street-property-info',
+        className: 'fas fa-home',
+    };
 
-    view.popup.actions = [getPropertyInfo, googleStreetView];
+    view.popup.actions = [getPropertyInfo, googleStreetView, getStreetInfo];
 
     const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
     const newResults = [...results, ...wmsFeatures];
