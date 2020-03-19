@@ -7,6 +7,7 @@ import ReactTable from './ReactTable';
 import {
     toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter, setTableEdited, addFiltered,
 } from '../../../../reducers/table/actions';
+import { updatePortal } from '../../../../reducers/portal/actions';
 
 const mapStateToProps = (state) => {
     const { activeTable, editedLayers } = state.table.features;
@@ -54,6 +55,9 @@ const mapDispatchToProps = dispatch => ({
     },
     addFiltered: (filtered) => {
         dispatch(addFiltered(filtered));
+    },
+    updatePortal: () => {
+        dispatch(updatePortal());
     },
 });
 

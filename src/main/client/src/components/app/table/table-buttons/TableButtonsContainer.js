@@ -6,6 +6,7 @@ import {
 } from '../../../../reducers/table/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import TableButtons from './TableButtons';
+import { togglePortal, updatePortal } from '../../../../reducers/portal/actions';
 
 const mapStateToProps = (state) => {
     const removeUnderscore = (layer) => {
@@ -73,6 +74,7 @@ const mapStateToProps = (state) => {
             ? state.map.mapView.view.graphics._items
             : [],
         hasTableEdited: state.table.features.hasTableEdited,
+        portalIsOpen: state.portal.togglePortal,
     };
 };
 
@@ -97,6 +99,12 @@ const mapDispatchToProps = dispatch => ({
     },
     setButtonAmount: (buttonAmount: ?number) => {
         dispatch(setButtonAmount(buttonAmount));
+    },
+    togglePortal: () => {
+        dispatch(togglePortal());
+    },
+    updatePortal: () => {
+        dispatch(updatePortal());
     },
 });
 

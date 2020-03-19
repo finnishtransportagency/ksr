@@ -7,12 +7,15 @@ import TableButtonsContainer from './table-buttons/TableButtonsContainer';
 type Props = {
     isOpen: boolean,
     activeNav: string,
+    portalIsOpen: boolean,
 };
 
-const TableView = ({ isOpen, activeNav }: Props) => (
+const TableView = ({ isOpen, activeNav, portalIsOpen }: Props) => (
     <Table
         sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
         tableOpen={isOpen}
+        portalOpen={portalIsOpen}
+        id="TableView"
     >
         <TableButtonsContainer />
         <TabbedTableContainer />

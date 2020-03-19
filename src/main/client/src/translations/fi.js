@@ -51,6 +51,7 @@ const fi = {
         bufferSelectedData: 'Puskurialue valituille kohteille',
         extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
         zoomToSelected: 'Kohdista haluamiin kohteisiin',
+        windowPortal: 'Avaa taulu uuteen ikkunaan',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',
@@ -447,6 +448,9 @@ const fi = {
             checkTable: 'Vain aktiivinen taulu',
             checkFeature: 'Vain valitut kohteet',
         },
+    },
+    portalWindow: {
+        portalTitle: 'Taulu - Kiinteistö- ja sopimusrekisteri',
     },
 };
 
