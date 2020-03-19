@@ -94,7 +94,7 @@ export const createAddressFields = (
                     case 'street':
                         convertedAddress = r.map(address => (
                             address.osoite
-                                ? address.osoite
+                                ? `${address.osoite}, ${address.kunta}`
                                 : null
                         ));
                         break;
