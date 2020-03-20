@@ -66,8 +66,8 @@ const mapDispatchToProps = dispatch => ({
     setTempGraphicsLayer: (graphicsLayer) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
     },
-    setActiveModal: (activeModal) => {
-        dispatch(setActiveModal(activeModal));
+    setActiveModal: (activeModal, data?) => {
+        dispatch(setActiveModal(activeModal, data));
     },
     setSingleLayerGeometry: (geometry) => {
         dispatch(setSingleLayerGeometry(geometry));

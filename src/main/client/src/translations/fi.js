@@ -59,6 +59,7 @@ const fi = {
         setBuffer: 'Puskurialue',
         noFeatures: 'Ei kohteita',
         getPropertyInfo: 'Kiinteistötiedot (piste)',
+        getStreetInfo: 'Katuosoite',
         getAllPropertyInfo: 'Kiinteistötiedot (leikkaavat)',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
         copyFeature: 'Kopioi kohde',
@@ -287,6 +288,12 @@ const fi = {
         inputPlaceholder: 'Kartan teksti',
         submitText: 'Ok',
         cancelText: 'Peruuta',
+    },
+    modalShowAddress: {
+        title: 'Osoitetieto',
+        noAddressFound: 'Osoitetta ei löytynyt.',
+        cancelText: 'Peruuta',
+        backText: 'Takaisin',
     },
     modalFeatureContracts: {
         featureContracts: 'Kohteen sopimukset',

@@ -11,7 +11,7 @@ import { fetchGetGeoconvert } from '../../api/geoconvert/getGeoconvert';
  *
  * @param {Object} geometry Contains features geometry info.
  * @param {string} geometryType Type of esri geometry to be used in query.
- * @param {string} featureType Type of feature (road | water | railway).
+ * @param {string} featureType Type of feature (road | street | water | railway).
  *
  * @returns {Array} List that contains geoconvert string parameters.
  */
@@ -58,7 +58,7 @@ export const createGeoconvertParams = (
  * Adds address attribute to features data.
  *
  * @param {Object} data Feature layer data without address.
- * @param {string} featureType Type of feature (road | water | railway).
+ * @param {string} featureType Type of feature (road | street | water | railway).
  * @param {string} addressField Name of layers address field.
  *
  * @returns {Promise|Promise} Promise with feature data, including address field or
@@ -88,6 +88,13 @@ export const createAddressFields = (
                         convertedAddress = r.map(address => (
                             address.osoite
                                 ? address.osoite
+                                : null
+                        ));
+                        break;
+                    case 'street':
+                        convertedAddress = r.map(address => (
+                            address.osoite
+                                ? `${address.osoite}, ${address.kunta}`
                                 : null
                         ));
                         break;
