@@ -5,6 +5,7 @@ import {
 describe('contracts', () => {
     it('contractListTexts - should return array with correct values', () => {
         const contracts = {
+            layerId: 123,
             features: [
                 {
                     attributes: {
@@ -28,10 +29,12 @@ describe('contracts', () => {
         const contractDescriptionField = 'contractDescription';
         const alfrescoLinkField = 'alfrescoLinkField';
         const caseManagementLinkField = 'caseManagementLinkField';
+        const contractUnlinkable = false;
 
         const expectedResult = [
             {
                 id: 123,
+                layerId: 123,
                 description: 'Test description.',
                 alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
                 attributes: {
@@ -41,9 +44,11 @@ describe('contracts', () => {
                     contractId: 123,
                 },
                 caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=123',
+                contractUnlinkable: false,
             },
             {
                 id: 456,
+                layerId: 123,
                 description: 'Test description 2.',
                 alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=456',
                 attributes: {
@@ -53,6 +58,7 @@ describe('contracts', () => {
                     contractId: 456,
                 },
                 caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=456',
+                contractUnlinkable: false,
             },
         ];
 
@@ -62,6 +68,7 @@ describe('contracts', () => {
             contractDescriptionField,
             alfrescoLinkField,
             caseManagementLinkField,
+            contractUnlinkable,
         )).toEqual(expectedResult);
     });
 
@@ -73,6 +80,7 @@ describe('contracts', () => {
         const contractDescriptionField = 'contractDescription';
         const alfrescoLinkField = 'alfrescoLinkField';
         const caseManagementLinkField = 'caseManagementLinkField';
+        const contractUnlinkable = false;
 
         const contracts2 = null;
 
@@ -82,6 +90,7 @@ describe('contracts', () => {
             contractDescriptionField,
             alfrescoLinkField,
             caseManagementLinkField,
+            contractUnlinkable,
         )).toEqual([]);
         expect(contractListTexts(
             contracts2,
@@ -89,18 +98,19 @@ describe('contracts', () => {
             contractDescriptionField,
             alfrescoLinkField,
             caseManagementLinkField,
+            contractUnlinkable,
         )).toEqual([]);
     });
 
     it('getContractLayers - should work correctly with relation type one', () => {
         const layerList = [
-            { id: '1', relationLayerId: '10', relationType: 'one' },
-            { id: '10', relationType: 'one' },
+            { id: '1', relations: [{ relationLayerId: '10', relationType: 'one' }] },
+            { id: '10', relations: [{ relationType: 'one' }] },
         ];
 
         const expectedResult = {
-            currentLayer: { id: '1', relationLayerId: '10', relationType: 'one' },
-            contractLayer: { id: '10', relationType: 'one' },
+            currentLayer: { id: '1', relations: [{ relationLayerId: '10', relationType: 'one' }] },
+            contractLayers: [{ id: '10', relations: [{ relationType: 'one' }] }],
         };
 
         expect(getContractLayers('1', layerList)).toEqual(expectedResult);
@@ -108,14 +118,14 @@ describe('contracts', () => {
 
     it('getContractLayers - should work correctly with relation type many', () => {
         const layerList = [
-            { id: '1', relationLayerId: '10', relationType: 'many' },
-            { id: '10', relationLayerId: '11', relationType: 'link' },
-            { id: '11', relationType: 'many' },
+            { id: '1', relations: [{ relationLayerId: '10', relationType: 'many' }] },
+            { id: '10', relations: [{ relationLayerId: '11', relationType: 'link' }] },
+            { id: '11', relations: [{ relationType: 'many' }] },
         ];
 
         const expectedResult = {
-            currentLayer: { id: '1', relationLayerId: '10', relationType: 'many' },
-            contractLayer: { id: '11', relationType: 'many' },
+            currentLayer: { id: '1', relations: [{ relationLayerId: '10', relationType: 'many' }] },
+            contractLayers: [{ id: '11', relations: [{ relationType: 'many' }] }],
         };
 
         expect(getContractLayers('1', layerList)).toEqual(expectedResult);
