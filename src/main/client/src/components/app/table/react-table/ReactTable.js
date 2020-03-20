@@ -11,6 +11,7 @@ import { toDisplayDate, toISODate } from '../../../../utils/date';
 import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { TextInput } from '../../../ui/elements';
 import { nestedVal } from '../../../../utils/nestedValue';
+import { isContract } from '../../../../utils/layers';
 
 type Props = {
     fetching: boolean,
@@ -168,9 +169,7 @@ class ReactTable extends Component<Props, State> {
         } = this.props;
         const layerId = activeTable.replace('.s', '');
         const layer = layerList.find(l => l.id === layerId);
-        if (layer && layer.type === 'agfl'
-            && ((layer.relationColumnIn === null && layer.relationColumnOut === null)
-                || layer.relationLayerId === null)) {
+        if (isContract(layer)) {
             const modalData = {
                 contractObjectId: objectId,
                 layerId,
@@ -505,15 +504,19 @@ class ReactTable extends Component<Props, State> {
             const { currentCellData } = this.state;
 
             const activeLayer: any = layerList.find(ll => ll.id === layerFeatures.id);
-            const relationLayer = activeLayer
-                && layerList.find(ll => ll.id === String(activeLayer.relationLayerId));
+            const relationLayer = activeLayer && activeLayer.relations.length > 0
+                ? layerList.find(ll => ll.id === String(activeLayer.relations
+                    .find(r => r).relationLayerId))
+                : null;
+
             const tableColumns = (activeLayer
-                && activeLayer.relationType !== null
+                && activeLayer.relations.length > 0
+                && activeLayer.relations.find(r => r).relationType !== null
                 && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer)))
                 ? addContractColumn(
                     this.handleContractClick,
                     columns,
-                    activeLayer.type === 'agfl' && activeLayer.relationLayerId === null,
+                    isContract(activeLayer),
                 )
                 : columns;
             return (

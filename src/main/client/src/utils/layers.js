@@ -3,14 +3,14 @@
 import strings from '../translations';
 
 /**
-* Add or replace layers in layer list.
-* If there is already a layer with same id, then replace that with new one.
-*
-* @param {Object[]} layerList Array of layers.
-* @param {Object[]} layersToBeAdded Array of layers to be added.
-*
-* @returns {Object[]} layers Array of layers including the new layer.
-*/
+ * Add or replace layers in layer list.
+ * If there is already a layer with same id, then replace that with new one.
+ *
+ * @param {Object[]} layerList Array of layers.
+ * @param {Object[]} layersToBeAdded Array of layers to be added.
+ *
+ * @returns {Object[]} layers Array of layers including the new layer.
+ */
 export const addOrReplaceLayers = (layerList: Object[], layersToBeAdded: Object[]) => {
     let layers = [...layerList];
     layersToBeAdded.forEach((layer) => {
@@ -25,14 +25,14 @@ export const addOrReplaceLayers = (layerList: Object[], layersToBeAdded: Object[
 };
 
 /**
-* Add or replace layers in layer group for search-layers.
-* If layer group for search-features does not exist no action will be taken.
-*
-* @param {Object[]} layerGroups Array of layer groups.
-* @param {Object[]} layers Array of layers to be added.
-*
-* @returns {Object[]} layerGroups Updated layer groups.
-*/
+ * Add or replace layers in layer group for search-layers.
+ * If layer group for search-features does not exist no action will be taken.
+ *
+ * @param {Object[]} layerGroups Array of layer groups.
+ * @param {Object[]} layers Array of layers to be added.
+ *
+ * @returns {Object[]} layerGroups Updated layer groups.
+ */
 export const addOrReplaceLayersInSearchGroup = (
     layerGroups: Object[],
     layers: Object[],
@@ -75,4 +75,35 @@ export const addLayerToUserGroup = (
  */
 export const layerViewable = (layer: Object, mapScale: number) => (
     layer.maxScale < mapScale && (layer.minScale > mapScale || layer.minScale === 0)
+);
+
+/**
+ * Check if layer is contract layer.
+ * Checks only first relation by purpose.
+ *
+ * @param {Object} layer to determinate if it is contract layer.
+ * @returns {boolean} Is layer contract layer.
+ */
+export const isContract = (layer: Object) => {
+    if (layer && layer.name && layer.type && layer.relations) {
+        const relation = layer.relations.find(r => r);
+        if (relation && layer.type === 'agfl') {
+            return (relation.relationColumnIn === null
+                && relation.relationColumnOut === null)
+                || relation.relationLayerId === null
+                || layer.name.toLowerCase() === 'tlaite sopimushallinta';
+        }
+        return false;
+    }
+    return false;
+};
+
+/**
+ * Get first contract layer which is not "tlaite sopimushallinta".
+ *
+ * @param {Object[]} contractLayers List of contractLayers.
+ * @return {Object} contract layer.
+ */
+export const findFirstContractLayer = (contractLayers: Object[]) => (
+    contractLayers.find(c => c.name && c.name.toLowerCase() !== 'tlaite sopimushallinta')
 );
