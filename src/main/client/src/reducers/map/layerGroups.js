@@ -22,6 +22,14 @@ import {
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
 import { updateLayerList } from '../../utils/workspace/loadWorkspace';
 
+type Relation = {
+    layerId: string,
+    relationType: string,
+    relationLayerId: number,
+    relationColumnIn: string,
+    relationColumnOut: string,
+}
+
 type LayerGroups = {
     id: number,
     name: string,
@@ -36,6 +44,7 @@ type Layer = {
     authentication: any,
     alfrescoLinkField: string,
     caseManagementLinkField: string,
+    relations: Array<Relation>,
     geometryType: string,
     fields: Array<Object>,
     failOnLoad: boolean,
