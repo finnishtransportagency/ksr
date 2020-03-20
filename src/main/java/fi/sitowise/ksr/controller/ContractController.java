@@ -43,7 +43,7 @@ public class ContractController {
      */
     @ApiOperation("Gets contracts for given feature on given layer.")
     @GetMapping(value = "/{layerId}/{objectId}")
-    public Response getContracts(@PathVariable int layerId, @PathVariable int objectId) {
+    public List<Response> getContracts(@PathVariable int layerId, @PathVariable int objectId) {
         Layer layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);
         if (layer == null || !layer.isHasRelations()) {
             throw new KsrApiException.NotFoundErrorException("No Layer can be found.");
@@ -57,14 +57,14 @@ public class ContractController {
      * @param layerId Id of the layer.
      * @return Layer that the layer is relating to.
      */
-    @ApiOperation("Get the layer that given layer is relating to.")
+    @ApiOperation("Get the layers that given layer is relating to.")
     @GetMapping(value = "/{layerId}")
-    public Layer getRelatingLayer(@PathVariable int layerId) {
+    public List<Layer> getRelatingLayer(@PathVariable int layerId) {
         Layer layer = layerService.getLayer(layerId, true, LayerAction.READ_LAYER);
         if (layer == null || !layer.isHasRelations()) {
             throw new KsrApiException.NotFoundErrorException("No layer can be found");
         }
-        return this.contractService.getRelatingLayer(layer);
+        return this.contractService.getRelatingLayers(layer);
     }
 
     /**
