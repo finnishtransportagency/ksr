@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.domain.LayerPermission;
+import fi.sitowise.ksr.domain.Relation;
 import fi.sitowise.ksr.domain.contract.ContractLayer;
 import fi.sitowise.ksr.domain.esri.Response;
 import fi.sitowise.ksr.exceptions.KsrApiException;
@@ -24,7 +25,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -43,7 +46,12 @@ public class ContractServiceTests {
     @Test(expected = KsrApiException.InternalServerErrorException.class)
     public void testLayerWithInvalidContractRelationType() {
         Layer layer = new Layer();
-        layer.setRelationType("something else");
+
+        Relation relation = new Relation();
+        relation.setRelationType("something else");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
 
         contractService.getContracts(layer, 132);
     }
@@ -52,10 +60,17 @@ public class ContractServiceTests {
     public void testSimpleRelation() throws IOException {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationType("one");
-        layer.setRelationColumnOut("C_ID");
-        layer.setRelationColumnIn("ID_C");
-        layer.setRelationLayerId(2L);
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationColumnOut("C_ID");
+        relation.setRelationColumnIn("ID_C");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
+
         layer.setUrl("http://test/ksr/1");
         layer.setUseInternalProxy("0");
 
@@ -126,18 +141,26 @@ public class ContractServiceTests {
 
         ObjectMapper om = new ObjectMapper();
         Response expected = om.readValue(is3, Response.class);
-
-        Assert.assertEquals(expected, contractService.getContracts(layer, 100));
+        List<Response> expectedList = new ArrayList<>();
+        expectedList.add(expected);
+        Assert.assertEquals(expectedList, contractService.getContracts(layer, 100));
     }
 
     @Test
     public void testSimpleRelationStringAttributes() throws IOException {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationType("one");
-        layer.setRelationColumnOut("C_ID");
-        layer.setRelationColumnIn("ID_C");
-        layer.setRelationLayerId(2L);
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationColumnOut("C_ID");
+        relation.setRelationColumnIn("ID_C");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
+
         layer.setUrl("http://test/ksr/1");
         layer.setUseInternalProxy("0");
 
@@ -208,17 +231,26 @@ public class ContractServiceTests {
 
         ObjectMapper om = new ObjectMapper();
         Response expected = om.readValue(is3, Response.class);
+        List<Response> expectedList = new ArrayList<>();
+        expectedList.add(expected);
 
-        Assert.assertEquals(expected, contractService.getContracts(layer, 100));
+        Assert.assertEquals(expectedList, contractService.getContracts(layer, 100));
     }
 
     @Test(expected = KsrApiException.ForbiddenException.class)
     public void testSimpleRelationNoTargetLayer() {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationType("one");
-        layer.setRelationColumnOut("C_ID");
-        layer.setRelationLayerId(2L);
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationColumnOut("C_ID");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
+
         layer.setUrl("http://test/ksr/1");
         layer.setUseInternalProxy("0");
 
@@ -256,9 +288,16 @@ public class ContractServiceTests {
     public void testSimpleRelationMalformedUrl() {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationType("one");
-        layer.setRelationColumnOut("C_ID");
-        layer.setRelationLayerId(2L);
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationColumnOut("C_ID");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
+
         layer.setUrl("*~/&%.,.,,...,");
         layer.setUseInternalProxy("0");
 
@@ -269,9 +308,16 @@ public class ContractServiceTests {
     public void testSimpleRelationInvalidServerResponse() {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationType("one");
-        layer.setRelationColumnOut("C_ID");
-        layer.setRelationLayerId(2L);
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationColumnOut("C_ID");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
+
         layer.setUrl("http://test/ksr/1");
         layer.setUseInternalProxy("0");
 
@@ -297,19 +343,33 @@ public class ContractServiceTests {
     public void testManyRelation() throws IOException {
         Layer layer = new Layer();
         layer.setId(11L);
-        layer.setRelationType("many");
-        layer.setRelationColumnOut("C_ID");
-        layer.setRelationColumnIn("C");
-        layer.setRelationLayerId(12L);
+
+        Relation relation = new Relation();
+        relation.setLayerId(11L);
+        relation.setRelationType("many");
+        relation.setRelationColumnOut("C_ID");
+        relation.setRelationColumnIn("C");
+        relation.setRelationLayerId(12L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
+
         layer.setUrl("http://test/ksr/11");
         layer.setUseInternalProxy("0");
 
         Layer middleLayer = new Layer();
         middleLayer.setId(12L);
-        middleLayer.setRelationType("one");
-        middleLayer.setRelationColumnOut("CO");
-        middleLayer.setRelationColumnIn("CO");
-        middleLayer.setRelationLayerId(13L);
+
+        Relation relationMiddle = new Relation();
+        relationMiddle.setLayerId(12L);
+        relationMiddle.setRelationType("one");
+        relationMiddle.setRelationColumnOut("CO");
+        relationMiddle.setRelationColumnIn("CO");
+        relationMiddle.setRelationLayerId(13L);
+        List<Relation> relationListMiddle = new ArrayList<>();
+        relationListMiddle.add(relationMiddle);
+        middleLayer.setRelations(relationListMiddle);
+
         middleLayer.setUrl("http://test/ksr/12");
         middleLayer.setUseInternalProxy("0");
 
@@ -418,8 +478,10 @@ public class ContractServiceTests {
 
         ObjectMapper om = new ObjectMapper();
         Response expected = om.readValue(is4, Response.class);
+        List<Response> expectedList = new ArrayList<>();
+        expectedList.add(expected);
 
-        Assert.assertEquals(expected, contractService.getContracts(layer, 1000));
+        Assert.assertEquals(expectedList, contractService.getContracts(layer, 1000));
     }
 
     @Test
@@ -430,14 +492,30 @@ public class ContractServiceTests {
         layer1.setUrl("http://test/ksr/1");
         layer1.setUseInternalProxy("0");
 
+        Relation relation1 = new Relation();
+        relation1.setLayerId(1L);
+        relation1.setRelationLayerId(2L);
+        relation1.setRelationType("one");
+        List<Relation> relationList1 = new ArrayList<>();
+        relationList1.add(relation1);
+        layer1.setRelations(relationList1);
+
+
         Layer layer2 = new Layer();
         layer2.setType("agfs");
         layer2.setId(2L);
         layer2.setUrl("http://test/ksr/2");
-        layer2.setRelationColumnOut("RELATION_ID_1");
-        layer2.setRelationColumnIn("RELATION_ID");
-        layer2.setRelationType("one");
-        layer2.setRelationLayerId(1L);
+
+        Relation relation2 = new Relation();
+        relation2.setLayerId(2L);
+        relation2.setRelationType("one");
+        relation2.setRelationColumnOut("RELATION_ID_1");
+        relation2.setRelationColumnIn("RELATION_ID");
+        relation2.setRelationLayerId(1L);
+        List<Relation> relationList2 = new ArrayList<>();
+        relationList2.add(relation2);
+        layer2.setRelations(relationList2);
+
         layer2.setUseInternalProxy("0");
 
         InputStream is1 = new ByteArrayInputStream(("{\"feature\":{\"attributes\":{\"RELATION_ID\":90}}}").getBytes(StandardCharsets.UTF_8));
@@ -488,7 +566,7 @@ public class ContractServiceTests {
 
         Mockito.when(
                 layerService.getReferencingLayers(Mockito.eq("1"))
-        ).thenReturn(Arrays.asList(layer2));
+        ).thenReturn(Collections.singletonList(layer2));
 
         Mockito.when(
                 httpRequestService.getURLContents(
@@ -506,6 +584,11 @@ public class ContractServiceTests {
                 )
         ).thenReturn(is2);
 
+        layer2.setRelationValues(relation2);
+
+        Mockito.when(contractService.getTargetLayer(
+                layer2
+        )).thenReturn(layer1);
 
         ContractLayer cLayer1 = new ContractLayer(layer1, Response.fromInputStream(ise1, "1"));
         ContractLayer cLayer2 = new ContractLayer(layer2, Response.fromInputStream(ise2, "2"));
@@ -528,20 +611,34 @@ public class ContractServiceTests {
         layer2.setId(2L);
         layer2.setType("agfl");
         layer2.setUrl("http://test/ksr/2");
-        layer2.setRelationColumnOut("RELATION_ID_1");
-        layer2.setRelationColumnIn("RELATION_ID");
-        layer2.setRelationType("link");
-        layer2.setRelationLayerId(1L);
+
+        Relation relation2 = new Relation();
+        relation2.setLayerId(2L);
+        relation2.setRelationType("one");
+        relation2.setRelationColumnOut("RELATION_ID_1");
+        relation2.setRelationColumnIn("RELATION_ID");
+        relation2.setRelationLayerId(1L);
+        List<Relation> relationList2 = new ArrayList<>();
+        relationList2.add(relation2);
+        layer2.setRelations(relationList2);
+
         layer2.setUseInternalProxy("0");
 
         Layer layer3 = new Layer();
         layer3.setId(3L);
         layer2.setType("agfs");
         layer3.setUrl("http://test/ksr/3");
-        layer3.setRelationColumnOut("R_ID_2");
-        layer3.setRelationColumnIn("R_ID");
-        layer3.setRelationType("many");
-        layer3.setRelationLayerId(2L);
+
+        Relation relation3 = new Relation();
+        relation3.setLayerId(3L);
+        relation3.setRelationType("many");
+        relation3.setRelationColumnOut("R_ID_2");
+        relation3.setRelationColumnIn("R_ID");
+        relation3.setRelationLayerId(2L);
+        List<Relation> relationList3 = new ArrayList<>();
+        relationList3.add(relation3);
+        layer3.setRelations(relationList3);
+
         layer3.setUseInternalProxy("0");
 
         InputStream is1 = new ByteArrayInputStream(("{\"feature\":{\"attributes\":{\"RELATION_ID\":90}}}").getBytes(StandardCharsets.UTF_8));
@@ -591,12 +688,12 @@ public class ContractServiceTests {
                 "\"attributes\":{\"RELATION_ID\":90}}]}").getBytes(StandardCharsets.UTF_8));
 
         Mockito.when(
-            layerService.getReferencingLayers(Mockito.eq("1"))
-        ).thenReturn(Arrays.asList(layer2));
+                layerService.getReferencingLayers(Mockito.eq("1"))
+        ).thenReturn(Collections.singletonList(layer2));
 
         Mockito.when(
-            layerService.getReferencingLayers(Mockito.eq("2"))
-        ).thenReturn(Arrays.asList(layer3));
+                layerService.getReferencingLayers(Mockito.eq("2"))
+        ).thenReturn(Collections.singletonList(layer3));
 
         Mockito.when(
                 httpRequestService.getURLContents(
@@ -622,10 +719,14 @@ public class ContractServiceTests {
                 )
         ).thenReturn(is3);
 
-
         ContractLayer cLayer1 = new ContractLayer(layer1, Response.fromInputStream(ise1, "1"));
 
-        List<ContractLayer> expected = Arrays.asList(cLayer1);
+        layer2.setRelationValues(relation2);
+        Mockito.when(contractService.getTargetLayer(
+                layer2
+        )).thenReturn(layer1);
+
+        List<ContractLayer> expected = Collections.singletonList(cLayer1);
         List<ContractLayer> actual = contractService.getContractDetails(layer1, 100);
 
         Assert.assertEquals(expected, actual);
@@ -645,11 +746,23 @@ public class ContractServiceTests {
     public void testGetRelatingLayerRelationOne() {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationLayerId(2L);
-        layer.setRelationType("one");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
 
         Layer layer2 = new Layer();
         layer2.setId(2L);
+
+        Relation relation2 = new Relation();
+        relation2.setLayerId(2L);
+        List<Relation> relationList2 = new ArrayList<>();
+        relationList2.add(relation2);
+        layer2.setRelations(relationList2);
 
         Mockito.when(layerService.getLayer(
                 Mockito.eq(2),
@@ -657,23 +770,47 @@ public class ContractServiceTests {
                 Mockito.eq(LayerAction.READ_LAYER)
         )).thenReturn(layer2);
 
-        Assert.assertEquals(layer2, contractService.getRelatingLayer(layer));
+        layer.setRelationValues(relation);
+
+        Mockito.when(contractService.getTargetLayer(
+                layer
+        )).thenReturn(layer2);
+
+        Assert.assertEquals(Collections.singletonList(layer2), contractService.getRelatingLayers(layer));
     }
 
     @Test
     public void testGetRelatingLayerRelationLink() {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationLayerId(2L);
-        layer.setRelationType("link");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("link");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
 
         Layer layer2 = new Layer();
         layer2.setId(2L);
+
+        Relation relation2 = new Relation();
+        relation2.setLayerId(2L);
+        List<Relation> relationList2 = new ArrayList<>();
+        relationList2.add(relation2);
+        layer2.setRelations(relationList2);
 
         Mockito.when(layerService.getLayer(
                 Mockito.eq(2),
                 Mockito.eq(true),
                 Mockito.eq(LayerAction.READ_LAYER)
+        )).thenReturn(layer2);
+
+        layer.setRelationValues(relation);
+
+        Mockito.when(contractService.getTargetLayer(
+                layer
         )).thenReturn(layer2);
 
         Assert.assertEquals(layer2, contractService.getRelatingLayer(layer));
@@ -683,16 +820,35 @@ public class ContractServiceTests {
     public void testGetRelatingLayerRelationMany() {
         Layer layer = new Layer();
         layer.setId(1L);
-        layer.setRelationLayerId(2L);
-        layer.setRelationType("many");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("many");
+        relation.setRelationLayerId(2L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
 
         Layer middleLayer = new Layer();
         middleLayer.setId(2L);
-        middleLayer.setRelationLayerId(3L);
-        middleLayer.setRelationType("link");
+
+        Relation middleRelation = new Relation();
+        middleRelation.setLayerId(2L);
+        middleRelation.setRelationType("link");
+        middleRelation.setRelationLayerId(3L);
+        List<Relation> middleRelationList = new ArrayList<>();
+        middleRelationList.add(middleRelation);
+        middleLayer.setRelations(middleRelationList);
+
 
         Layer targetLayer = new Layer();
-        targetLayer.setRelationLayerId(3L);
+        targetLayer.setId(3L);
+
+        Relation targetRelation = new Relation();
+        targetRelation.setLayerId(3L);
+        List<Relation> targetRelationList = new ArrayList<>();
+        targetRelationList.add(targetRelation);
+        targetLayer.setRelations(targetRelationList);
 
         Mockito.when(layerService.getLayer(
                 Mockito.eq(2),
@@ -706,6 +862,18 @@ public class ContractServiceTests {
                 Mockito.eq(LayerAction.READ_LAYER)
         )).thenReturn(targetLayer);
 
+        layer.setRelationValues(relation);
+
+        Mockito.when(contractService.getTargetLayer(
+                layer
+        )).thenReturn(middleLayer);
+
+        middleLayer.setRelationValues(middleRelation);
+
+        Mockito.when(contractService.getTargetLayer(
+                middleLayer
+        )).thenReturn(targetLayer);
+
         Assert.assertEquals(targetLayer, contractService.getRelatingLayer(layer));
     }
 
@@ -715,10 +883,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("one");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("COLUMN_OUT");
-        fromLayer.setRelationColumnIn("COLUMN_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("COLUMN_OUT");
+        relation.setRelationColumnIn("COLUMN_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission permission = new LayerPermission();
         permission.setUpdateLayer("1");
@@ -763,10 +937,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("many");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("FROM_OUT");
-        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("many");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("FROM_OUT");
+        relation.setRelationColumnIn("MIDDLE_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission fromPermission = new LayerPermission();
         fromPermission.setUpdateLayer("1");
@@ -777,10 +957,16 @@ public class ContractServiceTests {
         middleLayer.setId(2L);
         middleLayer.setType("agfl");
         middleLayer.setUrl("http://middle.layer/2");
-        middleLayer.setRelationType("link");
-        middleLayer.setRelationLayerId(3L);
-        middleLayer.setRelationColumnOut("MIDDLE_OUT");
-        middleLayer.setRelationColumnIn("TO_IN");
+
+        Relation middleRelation = new Relation();
+        middleRelation.setLayerId(2L);
+        middleRelation.setRelationType("link");
+        middleRelation.setRelationLayerId(3L);
+        middleRelation.setRelationColumnOut("MIDDLE_OUT");
+        middleRelation.setRelationColumnIn("TO_IN");
+        List<Relation> middleRelationList = new ArrayList<>();
+        middleRelationList.add(middleRelation);
+        middleLayer.setRelations(middleRelationList);
 
         LayerPermission middlePermission = new LayerPermission();
         middlePermission.setUpdateLayer("1");
@@ -839,10 +1025,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("many");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("FROM_OUT");
-        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("many");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("FROM_OUT");
+        relation.setRelationColumnIn("MIDDLE_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission fromPermission = new LayerPermission();
         fromPermission.setUpdateLayer("1");
@@ -853,10 +1045,16 @@ public class ContractServiceTests {
         middleLayer.setId(2L);
         middleLayer.setType("agfl");
         middleLayer.setUrl("http://middle.layer/2");
-        middleLayer.setRelationType("link");
-        middleLayer.setRelationLayerId(3L);
-        middleLayer.setRelationColumnOut("MIDDLE_OUT");
-        middleLayer.setRelationColumnIn("TO_IN");
+
+        Relation middleRelation = new Relation();
+        middleRelation.setLayerId(2L);
+        middleRelation.setRelationType("link");
+        middleRelation.setRelationLayerId(3L);
+        middleRelation.setRelationColumnOut("MIDDLE_OUT");
+        middleRelation.setRelationColumnIn("TO_IN");
+        List<Relation> middleRelationList = new ArrayList<>();
+        middleRelationList.add(middleRelation);
+        middleLayer.setRelations(middleRelationList);
 
         LayerPermission middlePermission = new LayerPermission();
         middlePermission.setUpdateLayer("1");
@@ -916,10 +1114,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("many");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("FROM_OUT");
-        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("many");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("FROM_OUT");
+        relation.setRelationColumnIn("MIDDLE_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission fromPermission = new LayerPermission();
         fromPermission.setReadLayer("1");
@@ -929,10 +1133,16 @@ public class ContractServiceTests {
         middleLayer.setId(2L);
         middleLayer.setType("agfl");
         middleLayer.setUrl("http://middle.layer/2");
-        middleLayer.setRelationType("link");
-        middleLayer.setRelationLayerId(3L);
-        middleLayer.setRelationColumnOut("MIDDLE_OUT");
-        middleLayer.setRelationColumnIn("TO_IN");
+
+        Relation middleRelation = new Relation();
+        middleRelation.setLayerId(2L);
+        middleRelation.setRelationType("link");
+        middleRelation.setRelationLayerId(3L);
+        middleRelation.setRelationColumnOut("MIDDLE_OUT");
+        middleRelation.setRelationColumnIn("TO_IN");
+        List<Relation> middleRelationList = new ArrayList<>();
+        middleRelationList.add(middleRelation);
+        middleLayer.setRelations(middleRelationList);
 
         LayerPermission middlePermission = new LayerPermission();
         middlePermission.setReadLayer("1");
@@ -974,10 +1184,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("many");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("FROM_OUT");
-        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("many");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("FROM_OUT");
+        relation.setRelationColumnIn("MIDDLE_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission fromPermission = new LayerPermission();
         fromPermission.setUpdateLayer("1");
@@ -988,10 +1204,16 @@ public class ContractServiceTests {
         middleLayer.setId(2L);
         middleLayer.setType("agfl");
         middleLayer.setUrl("http://middle.layer/2");
-        middleLayer.setRelationType("link");
-        middleLayer.setRelationLayerId(3L);
-        middleLayer.setRelationColumnOut("MIDDLE_OUT");
-        middleLayer.setRelationColumnIn("TO_IN");
+
+        Relation middleRelation = new Relation();
+        middleRelation.setLayerId(2L);
+        middleRelation.setRelationType("link");
+        middleRelation.setRelationLayerId(3L);
+        middleRelation.setRelationColumnOut("MIDDLE_OUT");
+        middleRelation.setRelationColumnIn("TO_IN");
+        List<Relation> middleRelationList = new ArrayList<>();
+        middleRelationList.add(middleRelation);
+        middleLayer.setRelations(middleRelationList);
 
         LayerPermission middlePermission = new LayerPermission();
         middlePermission.setUpdateLayer("1");
@@ -1056,10 +1278,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("many");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("FROM_OUT");
-        fromLayer.setRelationColumnIn("MIDDLE_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("many");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("FROM_OUT");
+        relation.setRelationColumnIn("MIDDLE_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission fromPermission = new LayerPermission();
         fromPermission.setReadLayer("1");
@@ -1069,10 +1297,16 @@ public class ContractServiceTests {
         middleLayer.setId(2L);
         middleLayer.setType("agfl");
         middleLayer.setUrl("http://middle.layer/2");
-        middleLayer.setRelationType("link");
-        middleLayer.setRelationLayerId(3L);
-        middleLayer.setRelationColumnOut("MIDDLE_OUT");
-        middleLayer.setRelationColumnIn("TO_IN");
+
+        Relation middleRelation = new Relation();
+        middleRelation.setLayerId(2L);
+        middleRelation.setRelationType("link");
+        middleRelation.setRelationLayerId(3L);
+        middleRelation.setRelationColumnOut("MIDDLE_OUT");
+        middleRelation.setRelationColumnIn("TO_IN");
+        List<Relation> middleRelationList = new ArrayList<>();
+        middleRelationList.add(middleRelation);
+        middleLayer.setRelations(middleRelationList);
 
         LayerPermission middlePermission = new LayerPermission();
         middlePermission.setReadLayer("1");
@@ -1135,10 +1369,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("one");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("COLUMN_OUT");
-        fromLayer.setRelationColumnIn("COLUMN_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("COLUMN_OUT");
+        relation.setRelationColumnIn("COLUMN_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission permission = new LayerPermission();
         permission.setUpdateLayer("1");
@@ -1184,10 +1424,16 @@ public class ContractServiceTests {
         fromLayer.setId(1L);
         fromLayer.setType("agfs");
         fromLayer.setUrl("http://from.layer/1");
-        fromLayer.setRelationType("one");
-        fromLayer.setRelationLayerId(2L);
-        fromLayer.setRelationColumnOut("COLUMN_OUT");
-        fromLayer.setRelationColumnIn("COLUMN_IN");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        relation.setRelationType("one");
+        relation.setRelationLayerId(2L);
+        relation.setRelationColumnOut("COLUMN_OUT");
+        relation.setRelationColumnIn("COLUMN_IN");
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        fromLayer.setRelations(relationList);
 
         LayerPermission permission = new LayerPermission();
         permission.setReadLayer("1");

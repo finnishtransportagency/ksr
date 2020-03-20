@@ -3,6 +3,7 @@ package fi.sitowise.ksr.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
+import fi.sitowise.ksr.domain.Relation;
 import fi.sitowise.ksr.domain.contract.ContractLayer;
 import fi.sitowise.ksr.domain.esri.*;
 import fi.sitowise.ksr.exceptions.KsrApiException;
@@ -46,44 +47,60 @@ public class ContractService {
     /**
      * Gets contracts for feature on given layer and id.
      *
-     * @param layer Layer in which the feature belongs to.
+     * @param layer    Layer in which the feature belongs to.
      * @param objectId Id of the feature, whose contracts to look for.
      * @return Contracts for given feature.
      */
-    public Response getContracts(Layer layer, int objectId) {
-        switch (layer.getRelationType()) {
-            case "one":
-                return getRelationsSimple(layer, objectId);
-            case "many":
-                return getRelationsMany(layer, objectId);
-            default:
-                throw new KsrApiException.InternalServerErrorException(
-                        String.format("Invalid relation type on layer: [%s]", layer.getId())
-                );
+    public List<Response> getContracts(Layer layer, int objectId) {
+        List<Response> responses = new ArrayList<>();
+        if (layer.getRelations() != null) {
+            layer.getRelations().forEach(relation -> {
+                layer.setRelationValues(relation);
+
+                switch (layer.getRelationType()) {
+                    case "one":
+                        responses.add(getRelationsSimple(layer, objectId));
+                        break;
+                    case "many":
+                        responses.add(getRelationsMany(layer, objectId));
+                        break;
+                    default:
+                        throw new KsrApiException.InternalServerErrorException(
+                                String.format("Invalid relation type on layer: [%s]", layer.getId())
+                        );
+                }
+            });
         }
+        return responses;
     }
 
     /**
      * Get contracts for feature, if relation type is many-to-many.
      *
-     * @param layer Layer in which the feature belongs to.
+     * @param layer    Layer in which the feature belongs to.
      * @param objectId Id of the feature, whose contracts to look for.
      * @return Contracts for given feature.
      */
     private Response getRelationsMany(Layer layer, int objectId) {
         Response relationFeatures = getRelationsSimple(layer, objectId);
-        Layer targetLayer = getTargetLayer(layer).getRelationType().equals("many") 
-                ? layer
-                : getTargetLayer(layer);
+        Layer targetLayer = getTargetLayer(layer);
+        Relation relation = targetLayer.getRelationByRelationId(layer.getRelationLayerId());
 
-        List<Object> fkeys = relationFeatures.getAttributeValues(targetLayer.getRelationColumnOut());
-        return getTargetFeatures(targetLayer, fkeys);
+        if (relation.getRelationType().equals("many")) {
+            layer.setRelationValues(relation);
+            List<Object> fkeys = relationFeatures.getAttributeValues(layer.getRelationColumnOut());
+            return getTargetFeatures(layer, fkeys);
+        } else {
+            targetLayer.setRelationValues(relation);
+            List<Object> fkeys = relationFeatures.getAttributeValues(targetLayer.getRelationColumnOut());
+            return getTargetFeatures(targetLayer, fkeys);
+        }
     }
 
     /**
      * Get contracts for feature, if relation type is one-to-many.
      *
-     * @param layer Layer in which the feature belongs to.
+     * @param layer    Layer in which the feature belongs to.
      * @param objectId Id of the feature, whose contracts to look for.
      * @return Contracts for given feature.
      */
@@ -99,7 +116,7 @@ public class ContractService {
      * @param layer Layer whose target/contract -layer to get.
      * @return Target/contract -layer if found.
      */
-    private Layer getTargetLayer(Layer layer) {
+    Layer getTargetLayer(Layer layer) {
         return layerService.getLayer(
                 toIntExact(layer.getRelationLayerId()),
                 true,
@@ -123,7 +140,9 @@ public class ContractService {
 
         String url = createGetFeaturesUrl(targetLayer.getUrl(), layer.getRelationColumnIn(), fkeys);
         InputStream is = httpRequestService.getURLContents(url, layer.getUseInternalProxy(), null);
-        return Response.fromInputStream(is, targetLayer.getId());
+        Response result = Response.fromInputStream(is, targetLayer.getId());
+        result.setLayerId(targetLayer.getId());
+        return result;
     }
 
     /**
@@ -134,8 +153,7 @@ public class ContractService {
      * For layers with relation of type "link" first finds layers that reference to refLayer and then call this
      * method again (recursively).
      *
-     *
-     * @param layer Layer which to query.
+     * @param layer         Layer which to query.
      * @param expectedValue Value to use in search.
      * @return List of ContractLayers with matching features.
      */
@@ -153,8 +171,9 @@ public class ContractService {
                     List<Layer> refLayers = layerService.getReferencingLayers(layer.getId());
                     return refLayers.stream()
                             .map(refLayer -> {
+                                refLayer.setLayerRelationById(layer.getId());
                                 List<Object> newExpectedValues = res.getAttributeValues(refLayer.getRelationColumnIn());
-                                return getReferencingLayerFeatures(refLayer, newExpectedValues);
+                                return (getReferencingLayerFeatures(refLayer, newExpectedValues));
                             })
                             .flatMap(List::stream)
                             .collect(Collectors.toList());
@@ -175,8 +194,19 @@ public class ContractService {
         List<Layer> refLayers = layerService.getReferencingLayers(layer.getId());
         return refLayers.stream()
                 .map(refLayer -> {
-                    Object expectedValue = feature.getAttributeValue(refLayer.getRelationColumnIn());
-                    return getReferencingLayerFeatures(refLayer, expectedValue);
+                    List<ContractLayer> contractLayers = new ArrayList<>();
+                    refLayer.getRelations().forEach(relation -> {
+                        refLayer.setRelationLayerId(relation.getRelationLayerId());
+                        Layer targetLayer = getTargetLayer(refLayer);
+                        Relation r = targetLayer.getRelationByRelationId(relation.getRelationLayerId());
+                        // Hack to prevent link relations.
+                        if (r == null || r.getRelationType().equals("link")) return;
+                        refLayer.setRelationValues(relation);
+
+                        Object expectedValue = feature.getAttributeValue(refLayer.getRelationColumnIn());
+                        contractLayers.addAll(getReferencingLayerFeatures(refLayer, expectedValue));
+                    });
+                    return contractLayers;
                 })
                 .flatMap(List::stream)
                 .filter(Objects::nonNull)
@@ -186,7 +216,7 @@ public class ContractService {
     /**
      * Get relations for feature on given layer.
      *
-     * @param layer Layer in which the feature belongs to.
+     * @param layer    Layer in which the feature belongs to.
      * @param objectID Id of the feature, whose relations to look for.
      * @return Contract numbers for feature.
      */
@@ -200,31 +230,31 @@ public class ContractService {
     /**
      * A shorthand method to get a single record with objectId.
      *
-     * @param layer Layer to search contract from.
+     * @param layer    Layer to search contract from.
      * @param objectID OBJECTID of the contract.
      * @return Esri JSON response.
      */
     private QueryFeature getWithObjectId(Layer layer, int objectID) {
         return layer.getGetWithObjectIdUrl(objectID)
-            .map(url -> {
-                InputStream is = httpRequestService.getURLContents(
-                        url,
-                        layer.getUseInternalProxy(),
-                        layer.getAuthentication()
-                );
-                return QueryFeature.fromInputStream(is);
-            })
-            .orElseThrow(() -> new KsrApiException.InternalServerErrorException(
-                    String.format("Cannot query non agfs-layer: [%s].", layer.getId())
-            ));
+                .map(url -> {
+                    InputStream is = httpRequestService.getURLContents(
+                            url,
+                            layer.getUseInternalProxy(),
+                            layer.getAuthentication()
+                    );
+                    return QueryFeature.fromInputStream(is);
+                })
+                .orElseThrow(() -> new KsrApiException.InternalServerErrorException(
+                        String.format("Cannot query non agfs-layer: [%s].", layer.getId())
+                ));
     }
 
     /**
      * Creates an query-url with a WHERE IN -filter compliant with ArcGIS Feature Service.
      *
-     * @param layerUrl Layer url.
+     * @param layerUrl   Layer url.
      * @param columnName Name of the filter column.
-     * @param fkeys List of foreign keys.
+     * @param fkeys      List of foreign keys.
      * @return Query-url compliant with ArcGIS Feature Service.
      */
     private String createGetFeaturesUrl(String layerUrl, String columnName, List<Object> fkeys) {
@@ -240,7 +270,7 @@ public class ContractService {
     /**
      * Creates an query-url with a WHERE objectIds -filter compliant with ArcGIS Feature Service.
      *
-     * @param layer Layer to query.
+     * @param layer    Layer to query.
      * @param objectID ObjectID to use in filter.
      * @return Query-url compliant with ArcGIS Feature Service.
      */
@@ -254,7 +284,7 @@ public class ContractService {
      * Find all referencing layers for a layer, and for those layers query features that have
      * some relation to given object (objectId). Also returns the object from the given layer itself.
      *
-     * @param layer Layer whose references to find.
+     * @param layer    Layer whose references to find.
      * @param objectId Id of the object whose related records to find.
      * @return List of layers that conform method description.
      */
@@ -267,6 +297,44 @@ public class ContractService {
     }
 
     /**
+     * Find layers that the given layer has relation to.
+     *
+     * @param layer Layer that is relating to another layer.
+     * @return Found target layers.
+     */
+    public List<Layer> getRelatingLayers(Layer layer) {
+        if (layer == null) {
+            throw new KsrApiException.NotFoundErrorException("Layer is null.");
+        }
+        List<Layer> layers = new ArrayList<>();
+        if (layer.getRelations() != null) {
+            layer.getRelations().forEach(relation -> {
+                if (relation.getRelationType() == null) {
+                    throw new KsrApiException.NotFoundErrorException("RelationType is null.");
+                }
+                layer.setRelationValues(relation);
+                Layer targetLayer = getTargetLayer(layer);
+                targetLayer.setLayerRelationByRelationId(layer.getRelationLayerId());
+                ;
+                switch (layer.getRelationType()) {
+                    case "many":
+                        layers.add(getRelatingLayer(targetLayer));
+                        break;
+                    case "link":
+                    case "one":
+                        layers.add(targetLayer);
+                        break;
+                    default:
+                        throw new KsrApiException.NotFoundErrorException("Layer relationType is wrong: " + layer.getRelationType());
+                }
+            });
+            return layers;
+        }
+        throw new KsrApiException.NotFoundErrorException("Layer has no relations.");
+
+    }
+
+    /**
      * Find layer that the given layer has relation to.
      *
      * @param layer Layer that is relating to another layer.
@@ -276,12 +344,14 @@ public class ContractService {
         if (layer == null || layer.getRelationType() == null) {
             throw new KsrApiException.NotFoundErrorException("Layer has no target layers.");
         }
+        Layer targetLayer = getTargetLayer(layer);
+        targetLayer.setLayerRelationByRelationId(layer.getRelationLayerId());
         switch (layer.getRelationType()) {
             case "many":
-                return getRelatingLayer(getTargetLayer(layer));
+                return getRelatingLayer(targetLayer);
             case "link":
             case "one":
-                return getTargetLayer(layer);
+                return targetLayer;
             default:
                 throw new KsrApiException.NotFoundErrorException("Layer has no target layers.");
         }
@@ -318,9 +388,9 @@ public class ContractService {
     /**
      * Edits a feature with objectId on given layer using ArcGIS FeatureService REST API.
      *
-     * @param layer Layer to add feature.
+     * @param layer    Layer to add feature.
      * @param objectId ObjectId of the feature to edit.
-     * @param value Value for field of name taken from layer.getRelationColumnOut().
+     * @param value    Value for field of name taken from layer.getRelationColumnOut().
      * @return FeatureService REST API response.
      */
     private EditResponse handleUpdate(Layer layer, int objectId, Object value) {
@@ -335,7 +405,7 @@ public class ContractService {
             String url = layer.getApplyEditsUrl()
                     .orElseThrow(() -> new KsrApiException
                             .InternalServerErrorException(
-                                    String.format("Cannot create applyEdits-url for layer: [%s]", layer.getId())
+                            String.format("Cannot create applyEdits-url for layer: [%s]", layer.getId())
                     ));
             InputStream is = httpRequestService.postURLContents(
                     url,
@@ -353,9 +423,9 @@ public class ContractService {
     /**
      * Adds a feature constructed from arguments into layer using ArcGIS FeatureService REST API.
      *
-     * @param layer Layer to add feature.
-     * @param inField Field name for inValue.
-     * @param inValue Value for field inField.
+     * @param layer    Layer to add feature.
+     * @param inField  Field name for inValue.
+     * @param inValue  Value for field inField.
      * @param outValue Value for field of name taken from layer.getRelationColumnOut().
      * @return FeatureService REST API response.
      */
@@ -389,8 +459,8 @@ public class ContractService {
     /**
      * Deletes a feature from layer's target layer.
      *
-     * @param layer Layer which target layer to delete features from.
-     * @param inValue Value for column defined in layer.relationColumnIn().
+     * @param layer    Layer which target layer to delete features from.
+     * @param inValue  Value for column defined in layer.relationColumnIn().
      * @param outValue Value for column defined in target layers relationColumnOut().
      */
     private void handleDelete(Layer layer, Object inValue, Object outValue) {
@@ -405,7 +475,7 @@ public class ContractService {
         String baseUrl = linkLayer.getDeleteFeaturesUrl()
                 .orElseThrow(() -> new KsrApiException
                         .InternalServerErrorException(
-                                String.format("Cannot create deleteFeatures-url for layer: [%s]", layer.getId())
+                        String.format("Cannot create deleteFeatures-url for layer: [%s]", layer.getId())
                 ));
 
         List<NameValuePair> params = new ArrayList<>();
@@ -425,10 +495,10 @@ public class ContractService {
     /**
      * Link two objects connected with one to many relation.
      *
-     * @param fromLayer Id of the layer where fromObjectId is in.
+     * @param fromLayer    Id of the layer where fromObjectId is in.
      * @param fromObjectId ObjectId of the feature to link.
-     * @param toLayer Id of the layer where toObjectId is in.
-     * @param toObjectId ObjectId of the feature the link leads.
+     * @param toLayer      Id of the layer where toObjectId is in.
+     * @param toObjectId   ObjectId of the feature the link leads.
      * @return False. Indicates that nothing new was created, but existing feature was updated.
      */
     private boolean linkSimple(Layer fromLayer, int fromObjectId, Layer toLayer, int toObjectId) {
@@ -445,8 +515,8 @@ public class ContractService {
      *
      * Throws a BadRequestException if layer is not agfs or agfl -layer and thus not queryable.
      *
-     * @param layer Layer whose target to search.
-     * @param filterValue Value to use in filter.
+     * @param layer         Layer whose target to search.
+     * @param filterValue   Value to use in filter.
      * @param requiredValue Value to search from filtered features. If any matches, then feature exists.
      * @return Boolean indicating if feature already exists.BadRequestException
      */
@@ -459,20 +529,22 @@ public class ContractService {
     /**
      * Link or unlink two objects connected with many to many relation.
      *
-     * @param fromLayer Id of the layer where fromObjectId is in.
+     * @param fromLayer    Id of the layer where fromObjectId is in.
      * @param fromObjectId ObjectId of the feature to link or unlink.
-     * @param toLayer Id of the layer where toObjectId is in.
-     * @param toObjectId ObjectId of the feature the link leads.
-     * @param isUnlink Boolean indicating that unlink instead of linking.
+     * @param toLayer      Id of the layer where toObjectId is in.
+     * @param toObjectId   ObjectId of the feature the link leads.
+     * @param isUnlink     Boolean indicating that unlink instead of linking.
      * @return True if something was created, false if nothing was created because feature already exists.
      */
     private boolean linkMany(Layer fromLayer, int fromObjectId, Layer toLayer, int toObjectId, boolean isUnlink) {
         Layer linkLayer = getTargetLayer(fromLayer);
+        linkLayer.setLayerRelationById(toLayer.getId());
+
         if (
-            linkLayer.getRelationLayerId() != null
-            && linkLayer.getRelationLayerId().toString().equals(toLayer.getId())
-            && linkLayer.getLayerPermission().isUpdateLayer()
-            ) {
+                linkLayer.getRelationLayerId() != null
+                        && linkLayer.getRelationLayerId().toString().equals(toLayer.getId())
+                        && linkLayer.getLayerPermission().isUpdateLayer()
+        ) {
             // Ensures that there is only one link-layer between tables.
             QueryFeature fromRes = getWithObjectId(fromLayer, fromObjectId);
             Object fromValue = fromRes.getFeature().getAttributeValue(fromLayer.getRelationColumnOut());
@@ -528,7 +600,7 @@ public class ContractService {
      *
      * In this case, unlinking basically means that the value of relation column out is set to NULL.
      *
-     * @param fromLayer Layer to unlink.
+     * @param fromLayer    Layer to unlink.
      * @param fromObjectId Id of the object to unlink.
      */
     private void unlinkSimple(Layer fromLayer, int fromObjectId) {
@@ -541,25 +613,26 @@ public class ContractService {
     /**
      * Links two objects, if there is a connection.
      *
-     * @param fromLayer Id of the layer where fromObjectId is in.
+     * @param fromLayer    Id of the layer where fromObjectId is in.
      * @param fromObjectId ObjectId of the feature to link.
-     * @param toLayer Id of the layer where toObjectId is in.
-     * @param toObjectId ObjectId of the feature the link leads.
+     * @param toLayer      Id of the layer where toObjectId is in.
+     * @param toObjectId   ObjectId of the feature the link leads.
      * @return True if something was created, false if nothing was created because feature already exists.
      */
     public boolean linkObjects(Layer fromLayer, int fromObjectId, Layer toLayer, int toObjectId) {
+        setLayerRelation(fromLayer, toLayer);
         if (
                 fromLayer.getRelationLayerId() != null
-                && fromLayer.getRelationLayerId().toString().equals(toLayer.getId())
-                && "one".equals(fromLayer.getRelationType())
-            ) {
+                        && fromLayer.getRelationLayerId().toString().equals(toLayer.getId())
+                        && "one".equals(fromLayer.getRelationType())
+        ) {
             ensureUpdatePermission(fromLayer);
             return linkSimple(fromLayer, fromObjectId, toLayer, toObjectId);
 
         } else if (
                 fromLayer.getRelationLayerId() != null
-                && "many".equals(fromLayer.getRelationType())
-                ) {
+                        && "many".equals(fromLayer.getRelationType())
+        ) {
             return linkMany(fromLayer, fromObjectId, toLayer, toObjectId, false);
         } else {
             throw new KsrApiException.BadRequestException("Layers are not linkable.");
@@ -571,12 +644,13 @@ public class ContractService {
      *
      * Works for both simple- and many -relations.
      *
-     * @param fromLayer Id of the layer where fromObjectId is in.
+     * @param fromLayer    Id of the layer where fromObjectId is in.
      * @param fromObjectId ObjectId of the feature to unlink.
-     * @param toLayer Id of the layer where toObjectId is in.
-     * @param toObjectId ObjectId of the feature the link leads.
+     * @param toLayer      Id of the layer where toObjectId is in.
+     * @param toObjectId   ObjectId of the feature the link leads.
      */
     public void unlinkObjects(Layer fromLayer, int fromObjectId, Layer toLayer, int toObjectId) {
+        setLayerRelation(fromLayer, toLayer);
         if (
                 fromLayer.getRelationLayerId() != null
                         && fromLayer.getRelationLayerId().toString().equals(toLayer.getId())
@@ -591,6 +665,37 @@ public class ContractService {
             linkMany(fromLayer, fromObjectId, toLayer, toObjectId, true);
         } else {
             throw new KsrApiException.BadRequestException("Layers are not linkable.");
+        }
+    }
+
+    /**
+     * Set Layer relation.
+     *
+     * @param fromLayer    Layer where relation should be set.
+     * @param toLayer      Layer where relation should connect.
+     */
+    private void setLayerRelation(Layer fromLayer, Layer toLayer) {
+        Relation fromLayerRelation = fromLayer.getRelationById(toLayer.getId());
+
+        if (fromLayerRelation == null) {
+            fromLayer.getRelations().forEach(relation -> {
+                Layer helpLayer = new Layer();
+                helpLayer.setRelationLayerId(relation.getRelationLayerId());
+                Relation targetRelation = getTargetLayer(helpLayer).getRelations()
+                        .stream()
+                        .filter(r -> r.getRelationLayerId() != null && r.getRelationLayerId().equals(Long.valueOf(toLayer.getId())))
+                        .findAny()
+                        .orElse(null);
+
+                if (targetRelation != null) {
+                    fromLayer.setRelationLayerId(relation.getRelationLayerId());
+                    fromLayer.setRelationColumnOut(relation.getRelationColumnOut());
+                    fromLayer.setRelationColumnIn(relation.getRelationColumnIn());
+                    fromLayer.setRelationType(relation.getRelationType());
+                }
+            });
+        } else {
+            fromLayer.setRelationValues(fromLayerRelation);
         }
     }
 }

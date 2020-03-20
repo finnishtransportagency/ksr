@@ -3,6 +3,7 @@ package fi.sitowise.ksr.utils;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.repository.LayerRepository;
+import fi.sitowise.ksr.repository.RelationRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.service.LayerGroupService;
 import fi.sitowise.ksr.service.LayerService;
@@ -48,6 +49,12 @@ public class KsrGeoprocessingUtilsTests {
      */
     @MockBean
     LayerRepository layerRepository;
+
+    /**
+     * The Relation repository.
+     */
+    @MockBean
+    RelationRepository relationRepository;
 
     /**
      * The User Layer repository.
