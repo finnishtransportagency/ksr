@@ -98,7 +98,8 @@ export const mapSelectPopup = async (
 
                         const relationLayer = matchingLayer
                             && layerList.find(ll => (
-                                ll.id === String(matchingLayer.relationLayerId)));
+                                ll.id === String(nestedVal(matchingLayer.relations
+                                    .find(r => r.layerId === matchingLayer.id), ['relationLayerId']))));
 
                         if (matchingLayer.hasRelations
                             && relationLayer
