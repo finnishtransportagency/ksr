@@ -10,21 +10,21 @@ const mapStateToProps = (state) => {
     const { layerId } = state.contract.contractList;
 
     const {
-        currentLayer, contractLayer,
+        currentLayer, contractLayers,
     } = getContractLayers(layerId, state.map.layerGroups.layerList);
 
     const createLayerPermission = state.adminTool.active.layerId === layerId
         && nestedVal(currentLayer, ['layerPermission', 'updateLayer'])
-        && nestedVal(contractLayer, ['layerPermission', 'createLayer']);
+        && contractLayers.every(c => nestedVal(c, ['layerPermission', 'createLayer']));
 
     const editLayerPermission = state.adminTool.active.layerId === layerId
         && nestedVal(currentLayer, ['layerPermission', 'updateLayer'])
-        && nestedVal(contractLayer, ['layerPermission', 'updateLayer']);
+        && contractLayers.every(c => nestedVal(c, ['layerPermission', 'updateLayer']));
 
     return {
         objectId: state.contract.contractList.objectId,
         currentLayer,
-        contractLayer,
+        contractLayers,
         view: state.map.mapView.view,
         createLayerPermission,
         editLayerPermission,
