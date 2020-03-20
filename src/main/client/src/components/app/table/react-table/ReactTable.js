@@ -34,6 +34,17 @@ type Props = {
     setTableEdited: Function,
     updatePortal: Function,
     portalIsOpen: boolean,
+    featureType: string,
+    addressField: string,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function,
+        cancel: ?Function,
+    ) => void,
+    saveEditedFeatures: Function,
+    hasTableEdited: boolean,
 };
 
 type State = {
@@ -44,6 +55,7 @@ type State = {
         rowIndex: ?number,
         key: ?string,
     },
+    saveVal: Object,
 };
 
 const defaultState = {
@@ -54,6 +66,7 @@ const defaultState = {
         rowIndex: null,
         key: null,
     },
+    saveVal: null,
 };
 
 let cellEditTimer;
@@ -66,6 +79,11 @@ class ReactTable extends Component<Props, State> {
         this.renderFilter = this.renderFilter.bind(this);
         this.renderCustomCell = this.renderCustomCell.bind(this);
         this.toggleSelection = this.toggleSelection.bind(this);
+        this.saveCheck = this.saveCheck.bind(this);
+    }
+
+    componentDidMount() {
+        window.addEventListener('adminToggleSaveCheck', () => this.saveCheck());
     }
 
     componentDidUpdate() {
@@ -120,6 +138,10 @@ class ReactTable extends Component<Props, State> {
                 setTableEdited(false);
             }
         }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('adminToggleSaveCheck', this.saveCheck.bind(this));
     }
 
     getCellContent = (cellField: Object, cellInfo: Object) => {
@@ -401,11 +423,27 @@ class ReactTable extends Component<Props, State> {
                             cellInfo,
                         );
 
-                        if (val) setEditedLayer(val);
+                        if (val) {
+                            setEditedLayer(val);
+                            this.setState({ saveVal: defaultState.saveVal });
+                        }
 
                         this.setState({
                             currentCellData: defaultState.currentCellData,
                         });
+                    }
+                }}
+                onKeyUp={(evt) => {
+                    const text = evt.target.innerText;
+                    const val = cellEditValidate(
+                        text,
+                        data,
+                        cellField,
+                        cellInfo,
+                    );
+
+                    if (val) {
+                        this.setState({ saveVal: val });
                     }
                 }}
                 /* eslint-disable-next-line react/no-danger */
@@ -529,6 +567,59 @@ class ReactTable extends Component<Props, State> {
             }
         }
         return null;
+    };
+
+    saveCheck = () => {
+        const { saveVal } = this.state;
+        const {
+            view,
+            featureType,
+            addressField,
+            showConfirmModal,
+            saveEditedFeatures,
+            hasTableEdited,
+        } = this.props;
+        let modalAction = false;
+        const { editedLayers } = store.getState().table.features;
+        if (hasTableEdited) {
+            if (saveVal) {
+                editedLayers.filter(
+                    l => l.id === saveVal._layerId,
+                )[0].data[0]._edited = saveVal._edited;
+            }
+            showConfirmModal(
+                strings.modalSaveEditedData.content,
+                strings.modalSaveEditedData.submit,
+                strings.modalSaveEditedData.cancel,
+                () => {
+                    modalAction = true;
+                    saveEditedFeatures(
+                        view,
+                        editedLayers,
+                        featureType,
+                        addressField,
+                    );
+                    this.setState({
+                        saveVal: defaultState.saveVal,
+                    });
+                    this.setState({
+                        currentCellData: defaultState.currentCellData,
+                    });
+                },
+                () => {
+                    if (!modalAction) {
+                        modalAction = false;
+                        // No save - reset saveVal & cellData
+                        this.setState({
+                            saveVal: defaultState.saveVal,
+                        });
+                        this.setState({
+                            currentCellData: defaultState.currentCellData,
+                        });
+                    }
+                },
+            );
+        }
     };
 
     render() {

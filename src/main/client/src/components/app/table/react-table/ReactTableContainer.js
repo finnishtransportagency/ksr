@@ -2,10 +2,17 @@
 import { connect } from 'react-redux';
 import { setContractListInfo } from '../../../../reducers/contract/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
+import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
 import ReactTable from './ReactTable';
 
 import {
-    toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter, setTableEdited, addFiltered,
+    toggleSelection,
+    toggleSelectAll,
+    setEditedLayer,
+    setRowFilter,
+    setTableEdited,
+    addFiltered,
+    saveEditedFeatures,
 } from '../../../../reducers/table/actions';
 import { updatePortal } from '../../../../reducers/portal/actions';
 
@@ -20,14 +27,22 @@ const mapStateToProps = (state) => {
         ? layerFeatures.data.find(d => !d._selected) === undefined
         : false;
 
+    const { addressField, featureType } = state.adminTool.active.layerId
+        && state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId);
+
     return {
         activeTable,
+        editedLayers,
         fetching: state.table.features.fetching,
         layerFeatures,
         selectAll,
         layerList: state.map.layerGroups.layerList,
         activeAdminTool: state.adminTool.active.layerId,
         portalIsOpen: state.portal.togglePortal,
+        featureType,
+        addressField,
+        view: state.map.mapView.view,
+        hasTableEdited: state.table.features.hasTableEdited,
     };
 };
 
@@ -58,6 +73,18 @@ const mapDispatchToProps = dispatch => ({
     },
     updatePortal: () => {
         dispatch(updatePortal());
+    },
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function,
+        cancel: Function,
+    ) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept, cancel));
+    },
+    saveEditedFeatures: (view, editedLayers, featureType, addressField) => {
+        dispatch(saveEditedFeatures(view, editedLayers, featureType, addressField));
     },
 });
 
