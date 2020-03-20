@@ -3,6 +3,7 @@ package fi.sitowise.ksr.controller;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.helper.OAMHeaderHelper;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
+import fi.sitowise.ksr.repository.RelationRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import fi.sitowise.ksr.repository.WorkspaceRepository;
 import fi.sitowise.ksr.service.LayerService;
@@ -76,6 +77,12 @@ public class ProxyControllerTests {
      */
     @MockBean
     LayerGroupRepository layerGroupRepository;
+
+    /**
+     * The Relation repository.
+     */
+    @MockBean
+    RelationRepository relationRepository;
 
     /**
      * User Layer repository.
