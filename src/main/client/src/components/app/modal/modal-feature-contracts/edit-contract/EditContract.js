@@ -39,10 +39,10 @@ class EditContract extends Component<Props, State> {
         this.state = { ...initialState };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const { setFormOptions } = this.props;
         setFormOptions(initialState.formOptions);
-        this.loadExistingAttributes();
+        await this.loadExistingAttributes();
     }
 
     loadExistingAttributes = async () => {
@@ -55,8 +55,9 @@ class EditContract extends Component<Props, State> {
             objectId,
         );
 
-        const contract = contracts.features
-            .find(a => a.attributes[contractLayer.contractIdField] === contractNumber);
+        const contract = contracts
+            .reduce((arr, c) => arr.concat(c.features), [])
+            .find(f => f.attributes[contractLayer.contractIdField] === contractNumber);
 
         const attributes = fields
             .map(
@@ -64,7 +65,7 @@ class EditContract extends Component<Props, State> {
                     ...field,
                     data: contract
                         ? contract.attributes[field.name]
-                        : contracts[0].attributes[field.name],
+                        : contracts.find(c => c)[0].attributes[field.name],
                 }),
                 {},
             );
