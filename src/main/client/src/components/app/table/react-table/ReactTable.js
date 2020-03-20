@@ -13,6 +13,7 @@ import { TextInput } from '../../../ui/elements';
 import { nestedVal } from '../../../../utils/nestedValue';
 import { isContract } from '../../../../utils/layers';
 import { childLayerDomainValues } from '../../../../utils/fields';
+import store from '../../../../store';
 
 type Props = {
     fetching: boolean,
