@@ -3,6 +3,7 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.repository.LayerRepository;
+import fi.sitowise.ksr.repository.RelationRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,6 +35,12 @@ public class LayerServiceTests {
      */
     @MockBean
     UserLayerRepository userLayerRepository;
+
+    /**
+     * The Relation repository.
+     */
+    @MockBean
+    RelationRepository relationRepository;
 
     @Autowired
     LayerService layerService;

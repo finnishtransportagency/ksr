@@ -64,15 +64,20 @@ public class Layer implements Serializable {
     private String contractDescriptionField;
     private String alfrescoLinkField;
     private String caseManagementLinkField;
+    @JsonIgnore
     private String relationType;
+    @JsonIgnore
     private Long relationLayerId;
+    @JsonIgnore
     private String relationColumnIn;
+    @JsonIgnore
     private String relationColumnOut;
     private List<String> queryColumns;
     private boolean background;
     private String parentLayer;
     private String propertyIdField;
     private List<String> requiredUniqueFields;
+    private List<Relation> relations;
 
     /**
      * Construct a Layer.
@@ -107,10 +112,6 @@ public class Layer implements Serializable {
         this.setAddressField(lr.getAddressField());
         this.setFeatureType(lr.getFeatureType());
         this.setUpdaterField(lr.getUpdaterField());
-        this.setRelationColumnIn(lr.getRelationColumnIn());
-        this.setRelationColumnOut(lr.getRelationColumnOut());
-        this.setRelationLayerId(lr.getRelationLayerId());
-        this.setRelationType(lr.getRelationType());
         this.setContractIdField(lr.getContractIdField());
         this.setContractDescriptionField(lr.getContractDescriptionField());
         this.setAlfrescoLinkField(lr.getAlfrescoLinkField());
@@ -124,11 +125,6 @@ public class Layer implements Serializable {
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
         }
-
-        boolean hasRelations = lr.getRelationColumnOut() != null
-                && lr.getRelationLayerId() != null
-                && ("one".equals(lr.getRelationType()) || "many".equals(lr.getRelationType()));
-        this.setHasRelations(hasRelations);
     }
 
     /**
@@ -754,7 +750,7 @@ public class Layer implements Serializable {
     public QueryColumnTypeRecord getQueryColumnsCustom() {
         if (queryColumns != null) {
             QueryColumnTypeRecord qRecord = new QueryColumnTypeRecord();
-            queryColumns.forEach(qRecord::add);
+            qRecord.addAll(queryColumns);
             return qRecord;
         }
         return null;
@@ -770,7 +766,7 @@ public class Layer implements Serializable {
         if (queryColumns == null) {
             this.queryColumns = Collections.emptyList();
         } else {
-            this.queryColumns = queryColumns.stream().collect(Collectors.toList());
+            this.queryColumns = new ArrayList<>(queryColumns);
         }
     }
 
@@ -938,5 +934,107 @@ public class Layer implements Serializable {
         } else {
             this.requiredUniqueFields = new ArrayList<>(requiredUniqueFields);
         }
+    }
+
+    /**
+     * Get list of relations for the layer.
+     *
+     * @return List of relations.
+     */
+    public List<Relation> getRelations() {
+        return relations;
+    }
+
+    /**
+     * Set list of relations for the layer
+     *
+     * @param relations List of relations.
+     */
+    public void setRelations(List<Relation> relations) {
+        this.relations = relations;
+    }
+
+    /**
+     * Find relation by layer id and populate relation information for a given layer.
+     *
+     * @param Id    Layer id.
+     */
+    public void setLayerRelationById(String Id) {
+        Relation relation = relations
+                .stream()
+                .filter(r -> r.getRelationLayerId() != null && r.getRelationLayerId().equals(Long.valueOf(Id)))
+                .findAny()
+                .orElse(null);
+
+        if (relation != null) {
+            setRelationLayerId(relation.getRelationLayerId());
+            setRelationColumnOut(relation.getRelationColumnOut());
+            setRelationColumnIn(relation.getRelationColumnIn());
+            setRelationType(relation.getRelationType());
+        }
+    }
+
+    /**
+     * Find relation by relation id and populate relation information for a given layer.
+     *
+     * @param relationId Relation id.
+     */
+    public void setLayerRelationByRelationId(Long relationId) {
+        Relation relation = relations
+                .stream()
+                .filter(r -> relationId.equals(Long.valueOf(r.getLayerId())))
+                .findAny()
+                .orElse(null);
+
+        if (relation != null) {
+            setRelationLayerId(relation.getRelationLayerId());
+            setRelationColumnOut(relation.getRelationColumnOut());
+            setRelationColumnIn(relation.getRelationColumnIn());
+            setRelationType(relation.getRelationType());
+        }
+    }
+
+    /**
+     * Return layer with populated relation information.
+     *
+     * @param relation Relation for given layer.
+     */
+    public void setRelationValues(Relation relation) {
+        if (relation != null) {
+            setRelationLayerId(relation.getRelationLayerId());
+            setRelationColumnOut(relation.getRelationColumnOut());
+            setRelationColumnIn(relation.getRelationColumnIn());
+            setRelationType(relation.getRelationType());
+        }
+    }
+
+    /**
+     * Return relation for given layer id.
+     *
+     * @param Id    Id of layer.
+     * @return Relation for given layer id.
+     */
+    public Relation getRelationById(String Id) {
+        if (relations == null) return null;
+        return relations
+                .stream()
+                .filter(r -> r.getRelationLayerId() != null && r.getRelationLayerId().equals(Long.valueOf(Id)))
+                .findAny()
+                .orElse(null);
+    }
+
+    /**
+     * Return relation for given relation id.
+     *
+     * @param relationId Relation id.
+     * @return Relation for given relation id.
+     */
+    public Relation getRelationByRelationId(Long relationId) {
+        if (relations == null) return null;
+        return relations
+                .stream()
+                .filter(r -> relationId != null && relationId.equals(Long.valueOf(r.getLayerId())))
+                .findAny()
+                .orElse(null);
     }
 }
