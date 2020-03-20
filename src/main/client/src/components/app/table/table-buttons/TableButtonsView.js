@@ -101,6 +101,9 @@ const TableButtonsView = ({
             view={view}
             bufferExists={bufferExists}
             handleClearBuffer={handleClearBuffer}
+            editedLayers={editedLayers}
+            featureType={featureType}
+            addressField={addressField}
         />
         <ActiveLayerView
             isOpen={isOpen}

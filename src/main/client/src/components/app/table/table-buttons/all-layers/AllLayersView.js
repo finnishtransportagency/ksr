@@ -7,16 +7,13 @@ type Props = {
     isOpen: boolean,
     setActiveModal: (modal: string) => void,
     originalLayers: Array<Object>,
-    showConfirmModal: (
-        body: string,
-        acceptText: string,
-        cancelText: string,
-        accept: Function
-    ) => void,
     clearTableData: Function,
     view: Object,
     bufferExists: boolean,
     handleClearBuffer: Function,
+    editedLayers: Array<Object>,
+    featureType: string,
+    addressField: string,
 };
 
 /** Table actions that can target all open tables */
@@ -24,11 +21,13 @@ const AllLayersView = ({
     isOpen,
     setActiveModal,
     originalLayers,
-    showConfirmModal,
     clearTableData,
     view,
     bufferExists,
     handleClearBuffer,
+    editedLayers,
+    featureType,
+    addressField,
 }: Props) => (
     <Fragment>
         <Table.Button
@@ -37,15 +36,7 @@ const AllLayersView = ({
             disabled={!originalLayers.length}
             onClick={
                 originalLayers.length ? () => {
-                    showConfirmModal(
-                        strings.modalClearTable.content,
-                        strings.modalClearTable.submit,
-                        strings.modalClearTable.cancel,
-                        () => {
-                            clearTableData();
-                            view.popup.close();
-                        },
-                    );
+                    clearTableData(view, editedLayers, featureType, addressField);
                 } : null}
         >
             <i className="fas fa-trash" />

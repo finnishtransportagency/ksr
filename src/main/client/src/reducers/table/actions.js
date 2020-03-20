@@ -265,9 +265,64 @@ export const toggleSelectAll = (layerId: string) => ({
     layerId,
 });
 
-export const clearTableData = () => ({
-    type: types.CLEAR_TABLE_DATA,
-});
+export const clearTableData = (
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+) => (dispatch: Function) => {
+    const editedLayer = editedLayers[0];
+    const containsEdit = editedLayer && editedLayer.data
+        .some(d => d._edited.length > 0);
+    if (containsEdit) {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                setTimeout(() => {
+                    dispatch(showConfirmModal(
+                        strings.modalSaveEditedData.content,
+                        strings.modalSaveEditedData.submit,
+                        strings.modalSaveEditedData.cancel,
+                        () => {
+                            save.saveEditedFeatureData(
+                                view,
+                                [editedLayer],
+                                featureType,
+                                addressField,
+                            )
+                                .then(() => {
+                                    dispatch({
+                                        type: types.CLEAR_TABLE_DATA,
+                                    });
+                                    view.popup.close();
+                                });
+                        },
+                        () => {
+                            dispatch({
+                                type: types.CLEAR_TABLE_DATA,
+                            });
+                            view.popup.close();
+                        },
+                    ));
+                }, 500);
+            },
+        ));
+    } else {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                dispatch({
+                    type: types.CLEAR_TABLE_DATA,
+                });
+                view.popup.close();
+            },
+        ));
+    }
+};
 
 export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
