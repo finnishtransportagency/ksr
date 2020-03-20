@@ -14,24 +14,24 @@ const setup = (prop) => {
         handleLayerClick: jest.fn(),
         layerList: [
             {
-                id: 1, visible: true, name: 'Layer 1', active: true,
+                id: 1, visible: true, name: 'Layer 1', active: true, relations: [],
             },
             {
-                id: 2, visible: true, name: 'Layer 2', active: false,
+                id: 2, visible: true, name: 'Layer 2', active: false, relations: [],
             },
             {
-                id: 10, visible: true, name: 'Layer 10', active: false, parentLayer: 1,
+                id: 10, visible: true, name: 'Layer 10', active: false, parentLayer: 1, relations: [],
             },
             {
-                id: 20, visible: true, name: 'Layer 20', active: false, parentLayer: 1,
+                id: 20, visible: true, name: 'Layer 20', active: false, parentLayer: 1, relations: [],
             },
         ],
         subLayers: [
             {
-                id: 10, visible: true, name: 'Layer 10', active: false, parentLayer: 1,
+                id: 10, visible: true, name: 'Layer 10', active: false, parentLayer: 1, relations: [],
             },
             {
-                id: 20, visible: true, name: 'Layer 20', active: false, parentLayer: 1,
+                id: 20, visible: true, name: 'Layer 20', active: false, parentLayer: 1, relations: [],
             },
         ],
         activeSubGroups: [],

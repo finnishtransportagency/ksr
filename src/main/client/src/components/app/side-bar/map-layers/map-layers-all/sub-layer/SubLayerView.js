@@ -56,7 +56,7 @@ const SubLayerView = ({
                             nestedVal(layerList.find(l => l.id === layer.id), ['active'], false)
                         && subLayers.filter(sl => sl.parentLayer === layer.id
                             && !sl.failOnLoad
-                            && sl.relationType !== 'link'
+                            && nestedVal(sl.relations.find(r => r), ['relationType'], '') !== 'link'
                             && (layersToFind
                                 ? (sl.name.toLowerCase().includes(layersToFind)
                                     || layer.name.toLowerCase().includes(layersToFind)
