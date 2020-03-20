@@ -11,10 +11,10 @@ const setup = () => {
                 name: 'layer group 1',
                 layers: [
                     {
-                        id: 1, visible: true, name: 'layer 1', active: true,
+                        id: 1, visible: true, name: 'layer 1', active: true, relations: [],
                     },
                     {
-                        id: 2, visible: true, name: 'layer 2', active: true,
+                        id: 2, visible: true, name: 'layer 2', active: true, relations: [],
                     },
                 ],
             },

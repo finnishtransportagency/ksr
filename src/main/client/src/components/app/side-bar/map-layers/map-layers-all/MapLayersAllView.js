@@ -71,36 +71,36 @@ const MapLayersAllView = ({
                                             type="checkbox"
                                             checked={
                                                 layerList.filter(layer => layer.layerGroupName
-                                                === lg.name
-                                                && !layer.parentLayer
-                                                && !layer.failOnLoad
-                                                && layer.relationType !== 'link'
-                                                && (layersToFind
-                                                    ? (layer.layerGroupName.toLowerCase()
-                                                        .includes(layersToFind)
-                                                        || layer.name.toLowerCase()
+                                                    === lg.name
+                                                    && !layer.parentLayer
+                                                    && !layer.failOnLoad
+                                                    && nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link'
+                                                    && (layersToFind
+                                                        ? (layer.layerGroupName.toLowerCase()
                                                             .includes(layersToFind)
-                                                        || subLayers.some(l => l.parentLayer
-                                                            === layer.id
-                                                            && l.name.toLowerCase()
-                                                                .includes(layersToFind)))
-                                                    : true)).length > 0
-                                            && layerList.filter(layer => layer.layerGroupName
-                                                === lg.name
-                                                && !layer.parentLayer
-                                                && !layer.failOnLoad
-                                                && layer.relationType !== 'link'
-                                                && (layersToFind
-                                                    ? (layer.layerGroupName.toLowerCase()
-                                                        .includes(layersToFind)
-                                                        || layer.name.toLowerCase()
+                                                            || layer.name.toLowerCase()
+                                                                .includes(layersToFind)
+                                                            || subLayers.some(l => l.parentLayer
+                                                                === layer.id
+                                                                && l.name.toLowerCase()
+                                                                    .includes(layersToFind)))
+                                                        : true)).length > 0
+                                                && layerList.filter(layer => layer.layerGroupName
+                                                    === lg.name
+                                                    && !layer.parentLayer
+                                                    && !layer.failOnLoad
+                                                    && nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link'
+                                                    && (layersToFind
+                                                        ? (layer.layerGroupName.toLowerCase()
                                                             .includes(layersToFind)
-                                                        || subLayers.some(l => l.parentLayer
-                                                            === layer.id
-                                                            && l.name.toLowerCase()
-                                                                .includes(layersToFind)))
-                                                    : true))
-                                                .every(l => l.active)
+                                                            || layer.name.toLowerCase()
+                                                                .includes(layersToFind)
+                                                            || subLayers.some(l => l.parentLayer
+                                                                === layer.id
+                                                                && l.name.toLowerCase()
+                                                                    .includes(layersToFind)))
+                                                        : true))
+                                                    .every(l => l.active)
                                             }
                                             onChange={() => handleLayerGroupClick(lg.name)}
                                         />
@@ -128,7 +128,7 @@ const MapLayersAllView = ({
                             <LayerGroup.Content
                                 hidden={!activeGroups.some(group => group === lg.id)}
                             >
-                                {lg.layers.filter(layer => layer.relationType !== 'link')
+                                {lg.layers.filter(layer => (nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link'))
                                     .sort((a, b) => b.layerOrder - a.layerOrder)
                                     .map(l => (
                                         layerList.find(layer => layer.id === l.id
