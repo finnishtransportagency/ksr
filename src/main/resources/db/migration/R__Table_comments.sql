@@ -28,10 +28,6 @@ comment on column layer.use_internal_proxy is 'Proxy requests on dev/test/prod -
 comment on column layer.address_field is 'Name of layers address field.';
 comment on column layer.feature_type is 'Type of the feature. Either road, water, railway or null.';
 comment on column layer.updater_field is 'Field-name on the layer containing name of updater.';
-comment on column layer.relation_type is 'Relation type. Either "one", "many", "link" or NULL.';
-comment on column layer.relation_layer_id is 'Id of the related layer. Related-layer is another entry in Layer-table.';
-comment on column layer.relation_column_in is 'Column/field-name on the related layer that relation_column_out references to.';
-comment on column layer.relation_column_out is 'Column/field-name which references to other layers relation_column_id.';
 comment on column layer.contract_id_field is 'Name of contract-relation id field to be shown in contract list.';
 comment on column layer.contract_description_field is 'Name of contract-relation description field to be shown in contract list.';
 comment on column layer.alfresco_link_field is 'Name of columns which refers layer contract number and/or register number for Alfresco.';
@@ -88,3 +84,10 @@ comment on column workspace_layer.opacity is 'Opacity of the layer.';
 comment on column workspace_layer.layer_order is 'Order of the layers.';
 comment on column workspace_layer.definition_expression is 'Filter condition for the layer in case of a search layer.';
 comment on column workspace_layer.selected_features is 'Features selected from the layer and whether they are highlighted or not.';
+
+comment on column relation.id is 'Generated relation identifier. Primary key.';
+comment on column relation.layer_id is 'Layer id.';
+comment on column relation.relation_type is 'Relation type. Either "one", "many", "link" or NULL.';
+comment on column relation.relation_layer_id is 'Id of the related layer. Related-layer is another entry in Layer-table.';
+comment on column relation.relation_column_in is 'Column/field-name on the related layer that relation_column_out references to.';
+comment on column relation.relation_column_out is 'Column/field-name which references to other layers relation_column_id.';
