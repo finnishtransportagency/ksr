@@ -53,6 +53,7 @@ const defaultState = {
     },
 };
 
+let cellEditTimer;
 class ReactTable extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -302,15 +303,24 @@ class ReactTable extends Component<Props, State> {
                     }
                 }}
                 onInput={(evt) => {
-                    if (contentEditable) {
-                        const text = evt.target.innerText;
+                    const updateCellWithDelay = (text, key) => {
+                        cellEditTimer = setTimeout(() => {
+                            const { currentCellData } = this.state;
+                            if (currentCellData.key === key) {
+                                this.setState(prevState => ({
+                                    currentCellData: {
+                                        ...prevState.currentCellData,
+                                        editedData: getValue(cellField.type, text),
+                                    },
+                                }));
+                            }
+                        }, 500);
+                    };
 
-                        this.setState(prevState => ({
-                            currentCellData: {
-                                ...prevState.currentCellData,
-                                editedData: getValue(cellField.type, text),
-                            },
-                        }));
+                    const { currentCellData } = this.state;
+                    if (contentEditable) {
+                        clearTimeout(cellEditTimer);
+                        updateCellWithDelay(evt.target.innerText, currentCellData.key);
                     }
                 }}
                 onFocus={(evt) => {
