@@ -24,6 +24,10 @@ export const Wrapper = styled.div`
             flex-flow: column-reverse;
         };
         
+        .esri-ui {
+            z-index: 2;
+        }
+        
         .esri-legend--card {
             bottom: 10px;
         }
