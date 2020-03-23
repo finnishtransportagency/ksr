@@ -30,7 +30,9 @@ class PortalWindow extends Component<Props, State> {
     componentDidMount() {
         let { externalWindow, elementContainer } = this.state;
         externalWindow = window.open('', '', `width=${window.screen.availWidth},height=${window.screen.availHeight - 58}`);
-        externalWindow.document.write('<html><head><link href="public/css/all.min.css" rel="stylesheet" type="text/css"></head></html>');
+        // eslint-disable-next-line no-restricted-globals
+        externalWindow.document.write(`<base href="${location.origin}${location.pathname}">`);
+        externalWindow.document.write('<html><head><link [href]=sanitizer.bypassSecurityTrustResourceUrl("css/all.min.css)" rel="stylesheet" type="text/css"></head></html>');
         externalWindow.document.title = strings.portalWindow.portalTitle;
         elementContainer = document.createElement('div');
         externalWindow.document.body.appendChild(elementContainer);
