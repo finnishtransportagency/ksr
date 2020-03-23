@@ -29,9 +29,8 @@ type Props = {
     setActiveModal: (activeModal: string, modalData: any) => void,
     setContractListInfo: (layerId: string, objectId: number) => void,
     setTableEdited: Function,
-    filtered: Array<Object>,
-    addFiltered: Function,
     updatePortal: Function,
+    portalIsOpen: boolean,
 };
 
 type State = {
@@ -63,16 +62,15 @@ class ReactTable extends Component<Props, State> {
         this.renderFilter = this.renderFilter.bind(this);
         this.renderEditable = this.renderEditable.bind(this);
         this.toggleSelection = this.toggleSelection.bind(this);
-        this.onFilteredChangeCustom = this.onFilteredChangeCustom.bind(this);
     }
 
     componentDidUpdate() {
-        const { updatePortal } = this.props;
+        const { updatePortal, portalIsOpen } = this.props;
         const paginationBottom = document.getElementsByClassName('pagination-bottom')[0];
         if (paginationBottom) {
             // Send update request to table window portal
             // to re-render also when main screen table changes
-            updatePortal();
+            if (portalIsOpen) updatePortal();
             // React Table heights need to be set programmatically for scrollbars to show correctly.
             const tableElement = document.getElementsByClassName('rt-rtable')[0];
             const tableHeight = paginationBottom.clientHeight;
@@ -440,27 +438,6 @@ class ReactTable extends Component<Props, State> {
         return null;
     };
 
-    onFilteredChangeCustom = (value: any, accessor: any) => {
-        const { filtered, addFiltered } = this.props;
-        const localFiltered = [...filtered];
-
-        if (localFiltered.length) {
-            localFiltered.forEach((filter, i) => {
-                if (filter.id === accessor) {
-                    if (value === '' || !value.length) {
-                        localFiltered.splice(i, 1);
-                    } else {
-                        filter.value = value;
-                    }
-                }
-            });
-        }
-        if ((!localFiltered.some(filter => filter.id === accessor))) {
-            localFiltered.push({ id: accessor, value });
-        }
-        addFiltered(localFiltered);
-    };
-
     render() {
         const {
             fetching,
@@ -469,7 +446,6 @@ class ReactTable extends Component<Props, State> {
             toggleSelectAll,
             layerList,
             setRowFilter,
-            filtered,
         } = this.props;
 
         if (!layerFeatures) {
@@ -507,8 +483,6 @@ class ReactTable extends Component<Props, State> {
                     renderEditable={this.renderEditable}
                     renderFilter={this.renderFilter}
                     currentCellData={currentCellData}
-                    onFilteredChangeCustom={this.onFilteredChangeCustom}
-                    filteredValues={filtered}
                 />
             );
         }
