@@ -10,6 +10,7 @@ import strings from '../../../../translations';
 import { toDisplayDate, toISODate } from '../../../../utils/date';
 import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { TextInput } from '../../../ui/elements';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     fetching: boolean,
@@ -61,7 +62,7 @@ class ReactTable extends Component<Props, State> {
         this.state = defaultState;
 
         this.renderFilter = this.renderFilter.bind(this);
-        this.renderEditable = this.renderEditable.bind(this);
+        this.renderCustomCell = this.renderCustomCell.bind(this);
         this.toggleSelection = this.toggleSelection.bind(this);
     }
 
@@ -280,6 +281,23 @@ class ReactTable extends Component<Props, State> {
     renderDiv = (
         cellField: Object,
         content: any,
+    ) => {
+        const textContent = this.getDisplayContent(cellField, content);
+        return (
+            <div
+                title={textContent}
+                style={{ minHeight: '1rem' }}
+                /* eslint-disable-next-line react/no-danger */
+                dangerouslySetInnerHTML={{
+                    __html: DOMPurify().sanitize(textContent),
+                }}
+            />
+        );
+    };
+
+    renderEditableDiv = (
+        cellField: Object,
+        content: any,
         cellInfo: Object,
         contentEditable: boolean,
     ) => {
@@ -378,42 +396,56 @@ class ReactTable extends Component<Props, State> {
         />
     );
 
-    renderEditable = (cellInfo: Object) => {
-        const { layerList, activeTable } = this.props;
+    renderCustomCell = (cellInfo: Object) => {
+        const { layerList, activeTable, activeAdminTool } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
         const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
 
-        if (activeLayer && activeLayer.fields) {
-            let cellField = activeLayer.fields
-                .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
+        let cellField = activeLayer && activeLayer.fields
+            .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
+        const content = this.getCellContent(cellField, cellInfo);
 
-            if (cellField) {
-                if (originalLayer && originalLayer.fields) {
-                    // Get editable values for search layer fields
-                    cellField = originalLayer.fields.find(f => f.name === cellField.name);
+        if (cellField) {
+            if (activeAdminTool === activeTable.replace('.s', '')) {
+                if (activeLayer && activeLayer.fields) {
+                    if (originalLayer && originalLayer.fields) {
+                        // Get editable values for search layer fields
+                        cellField = originalLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
+                    }
+                    const contentEditable = this.isCellEditable(cellField);
+                    if (contentEditable) {
+                        if (cellField.domain
+                            && (cellField.domain.type === 'codedValue'
+                                || cellField.domain.type === 'coded-value')
+                            && contentEditable) {
+                            return this.renderSelect(cellField, content, cellInfo);
+                        }
+
+                        if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
+                            return this.renderDateInput(cellField, content, cellInfo);
+                        }
+
+                        return this.renderEditableDiv(
+                            cellField,
+                            cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
+                            cellInfo,
+                            contentEditable,
+                        );
+                    }
+
+                    return this.renderDiv(
+                        cellField,
+                        cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
+                    );
                 }
-                const contentEditable = this.isCellEditable(cellField);
-                const content = this.getCellContent(cellField, cellInfo);
-
-                if (cellField.domain
-                    && (cellField.domain.type === 'codedValue'
-                        || cellField.domain.type === 'coded-value')
-                    && contentEditable) {
-                    return this.renderSelect(cellField, content, cellInfo);
-                }
-
-                if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
-                    return this.renderDateInput(cellField, content, cellInfo);
-                }
-
+            } else {
                 return this.renderDiv(
                     cellField,
                     cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
-                    cellInfo,
-                    contentEditable,
                 );
             }
         }
+
         return null;
     };
 
@@ -456,6 +488,8 @@ class ReactTable extends Component<Props, State> {
             toggleSelectAll,
             layerList,
             setRowFilter,
+            activeAdminTool,
+            activeTable,
         } = this.props;
 
         if (!layerFeatures) {
@@ -490,9 +524,11 @@ class ReactTable extends Component<Props, State> {
                     columns={tableColumns}
                     selectAll={selectAll}
                     toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
-                    renderEditable={this.renderEditable}
+                    renderCustomCell={this.renderCustomCell}
                     renderFilter={this.renderFilter}
                     currentCellData={currentCellData}
+                    activeAdminTool={activeAdminTool}
+                    activeTable={activeTable}
                 />
             );
         }
