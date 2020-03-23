@@ -89,7 +89,7 @@ const setup = () => {
                 },
             },
         ],
-        setActiveAdminTool: jest.fn(),
+        handleAdminModeChange: jest.fn(),
         createThemeLayer: jest.fn(),
         onDragEnd: () => {},
         toggleLayer: jest.fn(),
@@ -113,11 +113,11 @@ describe('<MapLayersActiveView />', () => {
         expect(wrapper.find(LayerSettings).length).toBe(3);
     });
 
-    it('should set active admintool on click', () => {
-        const { setActiveAdminTool } = wrapper.props();
+    it('should call handleAdminModeChange on click', () => {
+        const { handleAdminModeChange } = wrapper.props();
         expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(7);
         wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(2).simulate('click');
-        expect(setActiveAdminTool).toHaveBeenCalled();
+        expect(handleAdminModeChange).toHaveBeenCalled();
     });
 
     it('should call toggleLayer on visibility click', () => {

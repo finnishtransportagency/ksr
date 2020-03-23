@@ -459,6 +459,13 @@ const fi = {
     portalWindow: {
         portalTitle: 'Taulu - Kiinteistö- ja sopimusrekisteri',
     },
+    modalConfirmAdminChange: {
+        contentChange: 'Haluatko varmasti vaihtaa ylläpitotilan toiselle tasolle? Menetät kaikki tallentamattomat muutokset.',
+        contentDisable: 'Haluatko varmasti poistua ylläpitotilasta? Menetät kaikki tallentamattomat muutokset.',
+        cancel: 'Peruuta',
+        submitChange: 'Vaihda',
+        submitDisable: 'Poistu',
+    },
 };
 
 export default fi;

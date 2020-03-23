@@ -4,18 +4,18 @@ import MapLayerSettings from '../map-layer-settings/MapLayerSettings';
 
 type Props = {
     dataLayerList: Object[],
-    setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
     mapScale: number,
+    handleAdminModeChange: (layerId: string) => void,
 };
 
 const DataLayersActiveView = ({
     dataLayerList,
-    setActiveAdminTool,
     activeAdminTool,
     createNonSpatialFeature,
     mapScale,
+    handleAdminModeChange,
 }: Props) => {
     if (dataLayerList.length === 0) return null;
     return (
@@ -27,7 +27,6 @@ const DataLayersActiveView = ({
                         key={l.id}
                         layer={l}
                         layerList={dataLayerList}
-                        setActiveAdminTool={setActiveAdminTool}
                         activeAdminTool={activeAdminTool}
                         createNonSpatialFeature={createNonSpatialFeature}
                         onOpacityChange={() => {}}
@@ -35,6 +34,7 @@ const DataLayersActiveView = ({
                         createThemeLayer={() => {}}
                         toggleLayer={() => {}}
                         mapScale={mapScale}
+                        handleAdminModeChange={handleAdminModeChange}
                     />
                 ))
             }

@@ -4,6 +4,7 @@ import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
 import { setLayerList, toggleLayer } from '../../../../../reducers/map/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
+import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
 
 const mapStateToProps = state => ({
     mapLayerList: state.map.layerGroups.layerList.filter(l => l.type !== 'agfl'),
@@ -28,6 +29,9 @@ const mapDispatchToProps = dispatch => ({
     },
     toggleLayer: (layerId: string) => {
         dispatch(toggleLayer(layerId));
+    },
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
 });
 

@@ -8,24 +8,24 @@ type Props = {
     mapLayerList: Object[],
     onDragEnd: (DropResult) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
-    setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
     createThemeLayer: (layerId: string) => void,
     toggleLayer: (layerId: string) => void,
     mapScale: number,
+    handleAdminModeChange: (layerId: string) => void,
 };
 
 const MapLayersView = ({
     mapLayerList,
     onDragEnd,
     onOpacityChange,
-    setActiveAdminTool,
     activeAdminTool,
     createNonSpatialFeature,
     createThemeLayer,
     toggleLayer,
     mapScale,
+    handleAdminModeChange,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -46,11 +46,11 @@ const MapLayersView = ({
                                                 layerList={mapLayerList}
                                                 onOpacityChange={onOpacityChange}
                                                 toggleLayer={toggleLayer}
-                                                setActiveAdminTool={setActiveAdminTool}
                                                 activeAdminTool={activeAdminTool}
                                                 createNonSpatialFeature={createNonSpatialFeature}
                                                 createThemeLayer={createThemeLayer}
                                                 mapScale={mapScale}
+                                                handleAdminModeChange={handleAdminModeChange}
                                             />
                                         )}
                                     </div>
