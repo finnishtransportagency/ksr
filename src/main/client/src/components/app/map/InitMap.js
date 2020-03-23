@@ -325,14 +325,8 @@ class EsriMap extends Component<Props> {
         overview.on('drag', ['Shift'], stopEvtPropagation);
         overview.on('drag', ['Shift', 'Control'], stopEvtPropagation);
 
-        // prevents zooming with the + and - keys
-        overview.on('key-down', (event) => {
-            const prohibitedKeys = ['+', '-', 'Shift', '_', '='];
-            const keyPressed = event.key;
-            if (prohibitedKeys.indexOf(keyPressed) !== -1) {
-                event.stopPropagation();
-            }
-        });
+        // disable keyboard keys.
+        overview.on('key-down', stopEvtPropagation);
 
         watchUtils.watch(view, 'scale', () => {
             setScale(view.scale);
