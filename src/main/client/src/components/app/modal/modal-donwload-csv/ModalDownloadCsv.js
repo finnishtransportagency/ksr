@@ -6,11 +6,13 @@ import { download, objectToCsv } from '../../../../utils/csvFile';
 
 type Props = {
     mergedLayerFeatures: Object,
+    filtered: Object[],
 };
 
 const ModalDownloadCsv = (props: Props) => {
     const {
         mergedLayerFeatures,
+        filtered,
     } = props;
 
     const onlyVisibleColumns = () => {
@@ -25,12 +27,9 @@ const ModalDownloadCsv = (props: Props) => {
     };
 
     const handleSelected = () => {
-        const data = mergedLayerFeatures.data.reduce((fd, d) => {
-            if (d._selected && !d._filtered) {
-                fd.push({ ...d });
-            }
-            return fd;
-        }, []);
+        const data = mergedLayerFeatures.data
+            .filter(a => a._selected && filtered
+                .some(b => a._layerId === b.layerId && a._id === b.id));
 
         const { columns } = onlyVisibleColumns();
 
@@ -39,12 +38,8 @@ const ModalDownloadCsv = (props: Props) => {
     };
 
     const handleAll = () => {
-        const data = mergedLayerFeatures.data.reduce((fd, d) => {
-            if (!d._filtered) {
-                fd.push({ ...d });
-            }
-            return fd;
-        }, []);
+        const data = mergedLayerFeatures.data
+            .filter(a => filtered.some(b => a._layerId === b.layerId && a._id === b.id));
         const { columns } = onlyVisibleColumns();
 
         const csvData = objectToCsv(data, columns);

@@ -5,7 +5,7 @@ import { mergeColumnsByHeaderAndLabel } from '../../../../utils/parseFeatureData
 import { nestedVal } from '../../../../utils/nestedValue';
 
 const mapStateToProps = (state) => {
-    const { activeTable, layers } = state.table.features;
+    const { activeTable, layers, filtered } = state.table.features;
     const { layerList } = state.map.layerGroups;
 
     const layerFeatures = activeTable && layers.length
@@ -22,6 +22,7 @@ const mapStateToProps = (state) => {
 
     return {
         mergedLayerFeatures,
+        filtered,
     };
 };
 
