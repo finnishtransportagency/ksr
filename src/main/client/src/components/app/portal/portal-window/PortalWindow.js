@@ -32,7 +32,7 @@ class PortalWindow extends Component<Props, State> {
         externalWindow = window.open('', '', `width=${window.screen.availWidth},height=${window.screen.availHeight - 58}`);
         // eslint-disable-next-line no-restricted-globals
         externalWindow.document.write(`<base href="${location.origin}${location.pathname}">`);
-        externalWindow.document.write('<html><head><link [href]=sanitizer.bypassSecurityTrustResourceUrl("css/all.min.css)" rel="stylesheet" type="text/css"></head></html>');
+        externalWindow.document.write('<html><head><link href="css/all.min.css" rel="stylesheet" type="text/css"></head></html>');
         externalWindow.document.title = strings.portalWindow.portalTitle;
         elementContainer = document.createElement('div');
         externalWindow.document.body.appendChild(elementContainer);
@@ -57,8 +57,27 @@ class PortalWindow extends Component<Props, State> {
 
     copyStyles = (sourceDoc: any, targetDoc: any) => {
         Array.from(sourceDoc.styleSheets).forEach((styleSheet) => {
-            targetDoc.head.appendChild(styleSheet.ownerNode.cloneNode(true));
+            try {
+                if (styleSheet.cssRules) {
+                    const newStyleEl = sourceDoc.createElement('style');
+
+                    Array.from(styleSheet.cssRules).forEach((cssRule) => {
+                        newStyleEl.appendChild(sourceDoc.createTextNode(cssRule.cssText));
+                    });
+
+                    targetDoc.head.appendChild(newStyleEl);
+                } else {
+                    const newLinkEl = sourceDoc.createElement('link');
+
+                    newLinkEl.rel = 'stylesheet';
+                    newLinkEl.href = styleSheet.href;
+                    targetDoc.head.appendChild(newLinkEl);
+                }
+            } catch (e) {
+                // console.log(e);
+            }
         });
+        Array.from(sourceDoc.fonts).forEach(font => targetDoc.fonts.add(font));
     }
 
     render() {
