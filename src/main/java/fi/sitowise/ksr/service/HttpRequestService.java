@@ -266,6 +266,7 @@ public class HttpRequestService {
             );
             setProxy(base, useProxy);
             setBaseHeaders(request, base);
+            log.info(String.format("request:[%s], base:[%s], target:[%s]", request, base, target));
             CloseableHttpResponse cRes = closeableHttpClient.execute(target, base);
 
             response.setStatus(cRes.getStatusLine().getStatusCode());
