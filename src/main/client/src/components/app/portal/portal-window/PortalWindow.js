@@ -33,8 +33,8 @@ class PortalWindow extends Component<Props, State> {
         externalWindow = window.open('', '', `width=${window.screen.availWidth},height=${window.screen.availHeight - 58}`);
         const base: any = document.createElement('base');
         // eslint-disable-next-line no-restricted-globals
-        base.href = `${location.origin}${location.pathname}`;
-        externalWindow.document.head.appendChild(base);
+        externalWindow.document.write(`<base href="${location.origin}${location.pathname}">`);
+        externalWindow.document.write('<html><head><link href="css/all.min.css" rel="stylesheet" type="text/css"></head></html>');
         externalWindow.document.title = strings.portalWindow.portalTitle;
         elementContainer = document.createElement('div');
         externalWindow.document.body.appendChild(elementContainer);
@@ -79,9 +79,10 @@ class PortalWindow extends Component<Props, State> {
                     targetDoc.head.appendChild(newLinkEl);
                 }
             } catch (e) {
-                // no need to do anything - ignore
+                // console.log(e);
             }
         });
+        Array.from(sourceDoc.fonts).forEach(font => targetDoc.fonts.add(font));
     }
 
     handleEmptyStyle = (externalWindow: any) => {
