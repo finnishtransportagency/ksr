@@ -81,7 +81,21 @@ class PortalWindow extends Component<Props, State> {
             } catch (e) {
                 // no need to do anything - ignore
             }
+                    });
+
+                    targetDoc.head.appendChild(newStyleEl);
+                } else {
+                    const newLinkEl = sourceDoc.createElement('link');
+
+                    newLinkEl.rel = 'stylesheet';
+                    newLinkEl.href = styleSheet.href;
+                    targetDoc.head.appendChild(newLinkEl);
+                }
+            } catch (e) {
+                // console.log(e);
+            }
         });
+        Array.from(sourceDoc.fonts).forEach(font => targetDoc.fonts.add(font));
     }
 
     handleEmptyStyle = (externalWindow: any) => {
