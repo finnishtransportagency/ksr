@@ -60,6 +60,7 @@ const fi = {
         noFeatures: 'Ei kohteita',
         getPropertyInfo: 'Kiinteistötiedot (piste)',
         getStreetInfo: 'Katuosoite',
+        getRoadInfo: 'Tieosoite',
         getAllPropertyInfo: 'Kiinteistötiedot (leikkaavat)',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
         copyFeature: 'Kopioi kohde',
@@ -294,6 +295,10 @@ const fi = {
         noAddressFound: 'Osoitetta ei löytynyt.',
         cancelText: 'Peruuta',
         backText: 'Takaisin',
+        road: 'tie',
+        part: 'osa',
+        lane: 'ajorata',
+        distance: 'etäisyys',
     },
     modalFeatureContracts: {
         featureContracts: 'Kohteen sopimukset',
