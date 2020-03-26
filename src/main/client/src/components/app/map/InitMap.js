@@ -173,7 +173,7 @@ class EsriMap extends Component<Props> {
         // Create the MapView for overview map
         const overview = new MapView({
             container: 'overView',
-            map: new Map({}),
+            map: new Map(),
             constraints: {
                 rotationEnabled: false,
                 maxScale: 0,
