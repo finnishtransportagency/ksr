@@ -37,7 +37,7 @@ export const Wrapper = styled.div`
         };
         
         .esri-attribution {
-            margin-left: 60px;
+            margin-left: 120px;
         };
         
         .esri-feature__text {
