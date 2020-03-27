@@ -1,6 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import { saveDeletedFeatures } from '../../../../reducers/table/actions';
+import { getCodedValue } from '../../../../utils/parseFeatureData';
 import ModalDeleteSelected from './ModalDeleteSelected';
 
 const mapStateToProps = (state) => {
@@ -12,12 +13,21 @@ const mapStateToProps = (state) => {
     const { queryColumnsList } = state.map.layerGroups.layerList
         .find(lg => lg.id === state.adminTool.active.layerId);
 
+    const layer = state.map.layerGroups.layerList
+        .find(l => l.id === state.adminTool.active.layerId);
+
     const filteredData = [];
     selectedData.map((d) => {
         const filtered = Object.keys(d)
             .filter(key => queryColumnsList.find(qc => qc === key || key === '_id' || key.includes('/')))
             .reduce((obj, key) => {
-                obj[key.split('/').pop()] = d[key];
+                const attributeName = key.split('/').pop();
+                const layerFieldInfo = layer.fields
+                    .filter(field => field.name === attributeName)[0];
+                const label = layerFieldInfo ? layerFieldInfo.label : attributeName;
+                const domain = layerFieldInfo && layerFieldInfo.domain ? layerFieldInfo.domain : {};
+                const value = getCodedValue(domain, d[key]);
+                obj[label] = value;
                 return obj;
             }, {});
 
