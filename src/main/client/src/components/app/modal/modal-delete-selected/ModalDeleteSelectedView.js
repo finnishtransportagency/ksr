@@ -22,7 +22,7 @@ const ModalDeleteSelectedView = ({
 
         {filteredData.length &&
                 <Scrollbars
-                    autoHide
+                    autoHide={(filteredData.length < 2)}
                     autoHeight
                     autoHeightMax={100}
                 >
