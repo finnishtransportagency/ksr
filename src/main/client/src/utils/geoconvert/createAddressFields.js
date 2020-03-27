@@ -1,5 +1,6 @@
 // @flow
 import querystring from 'querystring';
+import strings from '../../translations';
 import { fetchGetGeoconvert } from '../../api/geoconvert/getGeoconvert';
 
 /**
@@ -54,6 +55,13 @@ export const createGeoconvertParams = (
     }
 };
 
+const createRoadAddress = address => (
+    `${strings.modalShowAddress.road}=${address.tie}, 
+    ${strings.modalShowAddress.lane}=${address.ajorata}, 
+    ${strings.modalShowAddress.part}=${address.osa}, 
+    ${strings.modalShowAddress.distance}=${address.etaisyys}`
+);
+
 /**
  * Adds address attribute to features data.
  *
@@ -95,6 +103,13 @@ export const createAddressFields = (
                         convertedAddress = r.map(address => (
                             address.osoite
                                 ? `${address.osoite}, ${address.kunta}`
+                                : null
+                        ));
+                        break;
+                    case 'road2':
+                        convertedAddress = r.map(address => (
+                            address.tie
+                                ? createRoadAddress(address)
                                 : null
                         ));
                         break;

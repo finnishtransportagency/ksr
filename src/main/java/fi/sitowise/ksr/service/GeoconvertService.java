@@ -44,6 +44,9 @@ public class GeoconvertService {
             case "road":
                 urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/reversegeocode?y=%s&x=%s", geoConvertServiceUrl, y, x));
                 break;
+            case "road2":
+                urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/tieosoite?y=%s&x=%s", geoConvertServiceUrl, y, x));
+                break;
             case "street":
                 urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/reversegeocode?y=%s&x=%s", geoConvertServiceUrl, y, x));
                 break;
