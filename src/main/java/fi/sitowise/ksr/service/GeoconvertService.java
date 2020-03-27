@@ -53,6 +53,9 @@ public class GeoconvertService {
             case "railway":
                 urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/rataosoite?x=%s&y=%s", geoConvertServiceUrl, x, y));
                 break;
+            case "railway2":
+                urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/rataosoite?x=%s&y=%s", geoConvertServiceUrl, x, y));
+                break;
             default:
                 throw new KsrApiException.BadRequestException("Invalid query parameters given.");
         }

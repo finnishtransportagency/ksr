@@ -61,6 +61,7 @@ const fi = {
         getPropertyInfo: 'Kiinteistötiedot (piste)',
         getStreetInfo: 'Katuosoite',
         getRoadInfo: 'Tieosoite',
+        getRailwayInfo: 'Rataosoite',
         getAllPropertyInfo: 'Kiinteistötiedot (leikkaavat)',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
         copyFeature: 'Kopioi kohde',

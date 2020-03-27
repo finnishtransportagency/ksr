@@ -47,8 +47,17 @@ export const mapSelectPopup = async (
         id: 'get-road-property-info',
         className: 'fas fa-road',
     };
+    const getRailwayInfo = {
+        title: strings.esriMap.getRailwayInfo,
+        id: 'get-railway-property-info',
+        className: 'fas fa-train',
+    };
 
-    view.popup.actions = [getPropertyInfo, googleStreetView, getStreetInfo, getRoadInfo];
+    view.popup.actions = [getPropertyInfo,
+        googleStreetView,
+        getStreetInfo,
+        getRoadInfo,
+        getRailwayInfo];
 
     const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
     const newResults = [...results, ...wmsFeatures];
