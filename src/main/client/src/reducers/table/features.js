@@ -1,9 +1,11 @@
 // @flow
 import {
+    ADD_FILTERED,
     APPLY_DELETED_FEATURES,
     APPLY_EDITS,
     CLEAR_SEARCH_DATA,
     CLEAR_TABLE_DATA,
+    CLOSE_LAYER,
     DE_SELECT_SELECTED_FEATURES,
     DEACTIVATE_LAYER,
     SEARCH_FEATURES_FULFILLED,
@@ -15,11 +17,9 @@ import {
     SET_LAYER_LIST,
     SET_ROW_FILTER,
     SET_SINGLE_LAYER_GEOMETRY,
+    TABLE_EDITED,
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
-    CLOSE_LAYER,
-    TABLE_EDITED,
-    ADD_FILTERED,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
@@ -36,6 +36,7 @@ import {
     applyEditedLayers,
     applyEdits,
     removeFilteredLayer,
+    removeFilteredLayers,
 } from '../../utils/table';
 
 type State = {
@@ -122,6 +123,7 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 ...deSelectFeatures(state.layers, state.activeTable),
+                filtered: removeFilteredLayers(state.filtered),
             };
         case TOGGLE_SELECTION:
             return {

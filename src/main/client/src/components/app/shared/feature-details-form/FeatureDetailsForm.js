@@ -6,7 +6,6 @@ import { queryFeatures } from '../../../../api/search/searchQuery';
 import { abortFetch } from '../../../../utils/abortFetch';
 import { toISODate, toUnixTime } from '../../../../utils/date';
 import { fieldEdited } from '../../../../utils/contracts/contracts';
-import { filterNotAllowedFields } from '../../../../utils/fields';
 
 type Props = {
     layer: Object,
@@ -40,7 +39,7 @@ const FeatureDetailsForm = (props: Props) => {
      * like 'objectid' that will be used for updating existing feature.
      */
     useEffect(() => {
-        const foundFields = filterNotAllowedFields(layer.fields)
+        const foundFields = layer.fields
             .map(field => ({
                 ...field,
                 nullable: layer.requiredUniqueFields
@@ -57,6 +56,7 @@ const FeatureDetailsForm = (props: Props) => {
                 hidden: field.type === 'esriFieldTypeOID'
                     || !field.editable
                     || field.name === layer.updaterField
+                    || field.name === 'CONTRACT_UUID'
                     || (layer.contractIdField !== layer.relationColumnOut
                         && layer.relationColumnOut === field.name)
                     || (formType === 'edit'

@@ -2,7 +2,6 @@
 import React from 'react';
 import LoadingIcon from '../../shared/LoadingIcon';
 import MapToolsContainer from '../map-tools/MapToolsContainer';
-
 import { Wrapper } from './styles';
 import BaseMapSwitchContainer from '../base-map-switch/BaseMapSwitchContainer';
 
@@ -13,6 +12,7 @@ type Props = {
     adminToolActive: boolean,
     layerLegendActive: boolean,
     tableButtonAmount: number,
+    indexMapActive: boolean,
 };
 
 const EsriMapView = ({
@@ -22,6 +22,7 @@ const EsriMapView = ({
     adminToolActive,
     layerLegendActive,
     tableButtonAmount,
+    indexMapActive,
 }: Props) => (
     <Wrapper
         sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
@@ -30,10 +31,14 @@ const EsriMapView = ({
         loading={!view}
         layerLegendActive={layerLegendActive}
         tableButtonAmount={tableButtonAmount}
+        indexMapActive={indexMapActive}
     >
         <LoadingIcon size={0} loading={!view} />
         <div id="mapView">
             <MapToolsContainer view={view} />
+            <div id="overView">
+                <div id="extentDiv" />
+            </div>
         </div>
         <BaseMapSwitchContainer />
     </Wrapper>

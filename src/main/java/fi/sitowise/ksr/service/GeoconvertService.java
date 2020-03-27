@@ -33,7 +33,7 @@ public class GeoconvertService {
      *
      * @param request HTTP request interface.
      * @param response HTTP response where to write the fetch response.
-     * @param featureType Type of feature. Can be either road, water or railway.
+     * @param featureType Type of feature. Can be either road, street, water or railway.
      * @param y Points y coordinate.
      * @param x Points x coordinate.
      */
@@ -44,6 +44,9 @@ public class GeoconvertService {
             case "road":
                 urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/reversegeocode?y=%s&x=%s", geoConvertServiceUrl, y, x));
                 break;
+            case "street":
+                urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/reversegeocode?y=%s&x=%s", geoConvertServiceUrl, y, x));
+                break;
             case "railway":
                 urlToFetch = KsrStringUtils.replaceMultipleSlashes(String.format("%s/rataosoite?x=%s&y=%s", geoConvertServiceUrl, x, y));
                 break;
@@ -51,6 +54,6 @@ public class GeoconvertService {
                 throw new KsrApiException.BadRequestException("Invalid query parameters given.");
         }
 
-        this.httpRequestService.fetchToResponse(null, null, null, urlToFetch, request, response, false, null, null);
+        this.httpRequestService.fetchToResponse(null, null, null, urlToFetch, request, response, true, null, null);
     }
 }

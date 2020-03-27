@@ -33,6 +33,9 @@ export const ADD_USER_LAYER = 'ADD_USER_LAYER';
 
 export const TOGGLE_LAYER_LEGEND = 'TOGGLE_LAYER_LEGEND';
 
+// Map overview
+export const TOGGLE_INDEX_MAP = 'TOGGLE_INDEX_MAP';
+
 // Map config
 export const GET_MAP_CONFIG = 'GET_MAP_CONFIG';
 export const GET_MAP_CONFIG_FULFILLED = 'GET_MAP_CONFIG_FULFILLED';

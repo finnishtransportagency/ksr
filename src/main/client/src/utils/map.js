@@ -68,6 +68,7 @@ export const setCenterPoint = async (
  * @param {Array<Object>} layers Array of layers to be added
  * @param {Object} view Map view to which the layers are added
  * @param {boolean} isWorkspace Indicates if adding layers comes from loading workspace.
+ * @param {boolean} isOverviewMap Indicates if adding layers comes from adding overviewMap.
  *
  * @returns {Object} Object containing failed layers.
  */
@@ -75,6 +76,7 @@ export const addLayers = async (
     layers: Array<Object>,
     view: Object,
     isWorkspace: boolean,
+    isOverviewMap: boolean = false,
 ) => {
     const [esriConfig, WMSLayer, WMTSLayer, FeatureLayer] = await esriLoader.loadModules([
         'esri/config',
@@ -147,15 +149,17 @@ export const addLayers = async (
                     break;
             }
 
-            const addedLayer = view.map.layers.find(l => l.id === layer.id);
-            if (addedLayer && addedLayer.type !== 'agfl') {
-                await addedLayer
-                    .when()
-                    .catch(() => {
-                        view.map.remove(view.map.findLayerById(addedLayer.id));
-                        toast.error(`${strings.mapLayers.failedToLoadLayer} [${layer.name}]`);
-                        failedLayers.push(layer.id);
-                    });
+            if (!isOverviewMap) {
+                const addedLayer = view.map.layers.find(l => l.id === layer.id);
+                if (addedLayer && addedLayer.type !== 'agfl') {
+                    await addedLayer
+                        .when()
+                        .catch(() => {
+                            view.map.remove(view.map.findLayerById(addedLayer.id));
+                            toast.error(`${strings.mapLayers.failedToLoadLayer} [${layer.name}]`);
+                            failedLayers.push(layer.id);
+                        });
+                }
             }
         }
     }));

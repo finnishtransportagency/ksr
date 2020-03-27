@@ -24,6 +24,10 @@ export const Wrapper = styled.div`
             flex-flow: column-reverse;
         };
         
+        .esri-ui {
+            z-index: 2;
+        }
+        
         .esri-legend--card {
             bottom: 10px;
         }
@@ -176,8 +180,8 @@ export const Wrapper = styled.div`
             };
             
             .esri-legend--stacked {
-                margin-right: 60px;
-                margin-bottom: 120px;
+                margin-right: 0;
+                margin-bottom: 81px;
                 min-width: 200px;
             };
             
@@ -185,30 +189,63 @@ export const Wrapper = styled.div`
                 min-width: 200px;
             };
         };
-        
         ${props => props.layerLegendActive && props.tableOpen && css`
             .esri-coordinate-conversion, .esri-legend--stacked {
                 right: 60px;
             };
-        `};
+        `};   
 
-        @media only screen and (max-height: 900px) {
-            ${props => (props.layerLegendActive || props.tableOpen) && css`
-                .esri-coordinate-conversion, .esri-legend--stacked {
-                    right: 60px;
-                };
-            `};
-        };
-
-        @media only screen and (max-height: 468px) {
+        @media only screen and (max-height: 667px) {
             .esri-coordinate-conversion, .esri-legend--stacked {
-                right: 60px;
+                height: 200px;
             };
         };
     };
-    
-    .loading-icon {
-        visibility: hidden;
+        
+    #extentDiv {
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        z-index: 2;
+        visibility: visible;
+    }
+      
+    #overView {
+        position: absolute;
+        bottom: 7.7rem;
+        right: 16px;
+        width: 300px;
+        height: 200px;
+        border: 1px solid ${styles.colorFontDark};
+        z-index: 1;
+        overflow: hidden;
+        visibility: visible;
+        
+        ${props => !props.indexMapActive && css` 
+            visibility: hidden;
+        `};
+        
+        ${props => props.indexMapActive && props.tableOpen && css`
+            right: 100px;
+        `};
+        
+        @media only screen and (min-width: 736px) {   
+        ${props => props.indexMapActive && props.layerLegendActive && !props.tableOpen && css`
+            right: 20rem;
+        `};
+        }
+        
+        @media only screen and (max-width: 735px) {   
+        ${props => props.indexMapActive && css`
+            width: 200px;
+            height: 150px;
+            bottom: 7.5rem;
+        `};
+        }
+     
+        ${props => props.indexMapActive && props.layerLegendActive && props.tableOpen && css`
+            right: 23.7rem;
+        `};
+    }
         
         ${props => props.loading && css`
             visibility: visible;

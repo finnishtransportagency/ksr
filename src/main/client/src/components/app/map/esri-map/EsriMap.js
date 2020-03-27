@@ -18,6 +18,7 @@ type Props = {
     legendWidget: ?Object,
     layerLegendActive: boolean,
     tableButtonAmount: number,
+    indexMapActive: boolean,
 };
 
 class EsriMap extends Component<Props> {
@@ -126,6 +127,7 @@ class EsriMap extends Component<Props> {
             activeAdminTool,
             layerLegendActive,
             tableButtonAmount,
+            indexMapActive,
         } = this.props;
 
         return (
@@ -136,6 +138,7 @@ class EsriMap extends Component<Props> {
                 view={view}
                 layerLegendActive={layerLegendActive}
                 tableButtonAmount={tableButtonAmount}
+                indexMapActive={indexMapActive}
             />
         );
     }
