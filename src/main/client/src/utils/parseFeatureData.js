@@ -266,6 +266,41 @@ export const deSelectFeatures: Object = (currentLayers: Object[], currentActiveT
 };
 
 /**
+ * Remove single feature from layer in table.
+ *
+ * @param {Object[]} currentLayers Array of layers (table-reducer).
+ * @param {string} currentActiveTable Id of the currently active layer in table.
+ * @param {string} layerId Layer id to be targeted in table.
+ * @param {number} objectId Object to be removed from table features.
+ * @param {string} objectIdFieldName Name of layer's object id field.
+ *
+ * @returns {Object} layers, editedLayers, activeTable.
+ */
+export const removeFeatureFromTable = (
+    currentLayers: Object[],
+    currentActiveTable: string,
+    layerId: string,
+    objectId: number,
+    objectIdFieldName: string,
+) => {
+    const layers: Object[] = currentLayers.map((layer) => {
+        if (layer.id === layerId) {
+            const objectIdField = `${layerId}/${objectIdFieldName}`;
+            return {
+                ...layer,
+                data: layer.data.filter(d => d[objectIdField] !== objectId),
+            };
+        }
+        return layer;
+    }).filter(layer => layer.data.length > 0);
+
+    const editedLayers = clone(layers, true, 3);
+    const activeTable = getActiveTable(layers, currentActiveTable);
+
+    return { layers, editedLayers, activeTable };
+};
+
+/**
  * Set filtered info for given features.
  *
  * @param {Object[]} currentLayers Array of layers (table-reducer).

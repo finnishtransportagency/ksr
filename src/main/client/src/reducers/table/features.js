@@ -19,11 +19,13 @@ import {
     TABLE_EDITED,
     TOGGLE_SELECT_ALL,
     TOGGLE_SELECTION,
+    REMOVE_TABLE_FEATURE,
 } from '../../constants/actionTypes';
 import {
     deSelectFeatures,
     getActiveTable,
     mergeLayers,
+    removeFeatureFromTable,
     syncWithLayersList,
     toggleSelectAll,
     toggleSelection,
@@ -60,7 +62,9 @@ type Action = {
     edits: Array<Object>,
     objectIds: string,
     hasTableEdited: boolean,
-    filtered: Array<Object>
+    filtered: Array<Object>,
+    objectId: number,
+    objectIdFieldName: string,
 };
 
 const initialState = {
@@ -119,6 +123,17 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 ...deSelectFeatures(state.layers, state.activeTable),
+            };
+        case REMOVE_TABLE_FEATURE:
+            return {
+                ...state,
+                ...removeFeatureFromTable(
+                    state.layers,
+                    state.activeTable,
+                    action.layerId,
+                    action.objectId,
+                    action.objectIdFieldName,
+                ),
             };
         case TOGGLE_SELECTION:
             return {
