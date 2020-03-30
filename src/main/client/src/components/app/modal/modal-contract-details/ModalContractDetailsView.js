@@ -14,7 +14,7 @@ type Props = {
         layerName: string,
         layerId: string,
         featureId: number,
-        objectId: number
+        objectId: number,
     ) => void,
     handleFeatureLocateClick: (
         layerId: string,
@@ -24,11 +24,11 @@ type Props = {
         layerName: string,
         layerId: string,
         featureId: number,
-        objectId: number
+        objectId: number,
     ) => void,
     handleFeatureUnlinkClick: (
         layerId: string,
-        featureObjectId: number
+        featureObjectId: number,
     ) => void,
 };
 
@@ -52,7 +52,7 @@ const ModalContractDetailsView = ({
             <p>{strings.modalContractDetails.errorNoFeaturesFound}</p>
         )
         }
-        { !fetchingDetailList && detailList.map(layer => (
+        {!fetchingDetailList && detailList.map(layer => (
             <Fragment key={layer.name}>
                 <p>{layer.name}</p>
                 {!layer.features.length && <p>-</p>}
@@ -72,7 +72,7 @@ const ModalContractDetailsView = ({
                                         feature.objectId,
                                     )}
                                 />
-                                { layer.geometryData && (
+                                {layer.geometryData && (
                                     <Contract.IconWrapper.Icon
                                         title={showLocation}
                                         className="fas fa-search-location"
@@ -93,7 +93,7 @@ const ModalContractDetailsView = ({
                             </Contract.TextWrapper.Text>
                         </Contract.TextWrapper>
                         <Contract.IconWrapper>
-                            { activeAdmin && layer.editPermission && (
+                            {activeAdmin && layer.editPermission && (
                                 <Contract.IconWrapper.Icon
                                     onClick={() => handleFeatureEditClick(
                                         layer.name,
@@ -105,13 +105,13 @@ const ModalContractDetailsView = ({
                                     className="fas fa-edit"
                                 />
                             )}
-                            { layer.id !== contractLayerId
-                                && activeAdmin
-                                && layer.editPermission
-                                && nestedVal(
-                                    detailList.find(l => l.id === contractLayerId),
-                                    ['editPermission'],
-                                ) && (
+                            {layer.id !== contractLayerId
+                            && activeAdmin
+                            && layer.editPermission
+                            && nestedVal(
+                                detailList.find(l => l.id === contractLayerId),
+                                ['editPermission'],
+                            ) && (
                                 <Contract.IconWrapper.Icon
                                     unlink
                                     onClick={() => {
@@ -121,7 +121,7 @@ const ModalContractDetailsView = ({
                                     className="fas fa-unlink"
                                 />
                             )}
-                            { layer.id === contractLayerId && (
+                            {layer.id === contractLayerId && (
                                 <Fragment>
                                     <Contract.IconWrapper.Icon
                                         onClick={() => feature.alfrescoUrl

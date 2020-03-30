@@ -13,8 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static fi.sitowise.ksr.jooq.Tables.LAYER;
-import static fi.sitowise.ksr.jooq.Tables.LAYER_PERMISSION;
+import static fi.sitowise.ksr.jooq.Tables.*;
 
 /**
  * Layer repository.
@@ -46,7 +45,9 @@ public class LayerRepository {
                 .from(LAYER)
                 .join(LAYER_PERMISSION)
                     .on(LAYER_PERMISSION.LAYER_ID.equal(LAYER.ID))
-                .where(LAYER.RELATION_LAYER_ID.equal(Long.valueOf(id)))
+                .join(RELATION)
+                    .on(RELATION.LAYER_ID.equal(LAYER.ID))
+                .where(RELATION.RELATION_LAYER_ID.equal(Long.valueOf(id)))
                 .and(LAYER_PERMISSION.USER_GROUP.in(userGroups))
                 .and(LAYER_PERMISSION.READ_LAYER.equal("1"))
                 .fetchInto(LayerRecord.class)

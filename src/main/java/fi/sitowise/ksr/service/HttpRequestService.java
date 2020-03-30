@@ -8,11 +8,7 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.utils.KsrAuthenticationUtils;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpHost;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -142,11 +138,11 @@ public class HttpRequestService {
     /**
      * Makes an HTTP POST request and return responses content as a InputStream.
      *
-     * @param url Url
-     * @param body Raw body to POST.
+     * @param url            Url
+     * @param body           Raw body to POST.
      * @param authentication Base64 encoded username:password if needed. Otherwise null.
-     * @param contentType Content type of the body.
-     * @param useProxy Boolean indicating whether to proxy request.
+     * @param contentType    Content type of the body.
+     * @param useProxy       Boolean indicating whether to proxy request.
      * @return InputStream of the response body.
      */
     public InputStream postURLContents(
@@ -168,11 +164,11 @@ public class HttpRequestService {
     /**
      * Makes an HTTP POST request and return responses content as a InputStream.
      *
-     * @param url Url
-     * @param body Raw body to POST.
+     * @param url            Url
+     * @param body           Raw body to POST.
      * @param authentication Base64 encoded username:password if needed. Otherwise null.
-     * @param contentType Content type of the body.
-     * @param useProxy Boolean indicating whether to proxy request.
+     * @param contentType    Content type of the body.
+     * @param useProxy       Boolean indicating whether to proxy request.
      * @return InputStream of the response body.
      */
     public InputStream postURLContents(
@@ -201,8 +197,8 @@ public class HttpRequestService {
     /**
      * Gets (GET) content of url and returns an InputStream.
      *
-     * @param url Url to be fetched.
-     * @param useProxy Boolean indicating whether to use proxy or not.
+     * @param url            Url to be fetched.
+     * @param useProxy       Boolean indicating whether to use proxy or not.
      * @param authentication Base64 encoded Basic Authentication string if authentication is needed.
      * @return InputStream of contents.
      */
@@ -225,7 +221,7 @@ public class HttpRequestService {
     /**
      * Set proxy config for HttpRequestBase if proxy should be used.
      *
-     * @param base HttpRequestBase of request.
+     * @param base     HttpRequestBase of request.
      * @param useProxy Boolean indicating if proxy should be used.
      */
     private void setProxy(HttpRequestBase base, boolean useProxy) {
@@ -239,13 +235,13 @@ public class HttpRequestService {
     /**
      * Fetch endPointUrl:s content and write into HttpServletResponse.
      *
-     * @param layer Layer URL that is requested.
-     * @param baseUrl Baseurl for proxy-service for given layer.
-     * @param endPointUrl The url to be fetched.
-     * @param request HttpServletRequest interface.
-     * @param response HttpServletResponse where to write the proxy-response.
+     * @param layer        Layer URL that is requested.
+     * @param baseUrl      Baseurl for proxy-service for given layer.
+     * @param endPointUrl  The url to be fetched.
+     * @param request      HttpServletRequest interface.
+     * @param response     HttpServletResponse where to write the proxy-response.
      * @param editedParams List which contains edited Web_Map_as_JSON for printing.
-     * @param action Possible action-type.
+     * @param action       Possible action-type.
      */
     public void fetchToResponse(Layer layer, String authentication, String baseUrl, String endPointUrl,
                                 HttpServletRequest request, HttpServletResponse response, boolean useProxy,
@@ -292,11 +288,11 @@ public class HttpRequestService {
      * Sets specified headers from HttpServletRequest to HttpRequestBase
      *
      * @param request HttpServletRequest Request to read headers from
-     * @param base HttpRequestBase Target to write headers to
+     * @param base    HttpRequestBase Target to write headers to
      */
     void setBaseHeaders(HttpServletRequest request, HttpRequestBase base) {
-        String[] headerNames = { HttpHeaders.CONTENT_TYPE };
-        for (String headerName: headerNames) {
+        String[] headerNames = {HttpHeaders.CONTENT_TYPE};
+        for (String headerName : headerNames) {
             String headerValue = request.getHeader(headerName);
             if (headerValue != null) {
                 base.setHeader(headerName, headerValue);
@@ -340,15 +336,15 @@ public class HttpRequestService {
     /**
      * Returns a correct HttpRequestBase for given method, endpoint and config.
      *
-     * @param request interface for getting request method and POST request parameters.
+     * @param request        interface for getting request method and POST request parameters.
      * @param authentication authentication
-     * @param endPointUrl The url to be fetched.
-     * @param editedParams edited parameters / querystring from print request.
+     * @param endPointUrl    The url to be fetched.
+     * @param editedParams   edited parameters / querystring from print request.
      * @return Correct HttpRequestBase or GET if no matches found for method.
      */
     HttpRequestBase getRequestBase(HttpServletRequest request, String authentication,
-                                          String endPointUrl, List<NameValuePair> editedParams, LayerAction action,
-                                          Layer layer) {
+                                   String endPointUrl, List<NameValuePair> editedParams, LayerAction action,
+                                   Layer layer) {
         HttpRequestBase base;
         switch (request.getMethod()) {
             case "GET":
@@ -371,10 +367,10 @@ public class HttpRequestService {
      * Only specified headers are added if the exists. Other headers are omitted.
      *
      * @param response HttpServletResponse where the headers should be added.
-     * @param cRes CloseableHttpResponse from where to read the headers.
+     * @param cRes     CloseableHttpResponse from where to read the headers.
      */
     void setResponseHeaders(HttpServletResponse response, CloseableHttpResponse cRes) {
-        String[] headerNames = { HttpHeaders.CONTENT_TYPE, "Content-Length", "Cache-control", "Expires", "Last-Modified" };
+        String[] headerNames = {HttpHeaders.CONTENT_TYPE, "Content-Length", "Cache-control", "Expires", "Last-Modified"};
         for (String headerName : headerNames) {
             Header header = cRes.getFirstHeader(headerName);
             if (header != null) {
@@ -387,7 +383,7 @@ public class HttpRequestService {
      * Write content from CloseableHttpResponse into HttpServletResponse
      *
      * @param response HttpServletResponse whose OutputStream to write.
-     * @param cRes CloseableHttpResponse from where to read contents.
+     * @param cRes     CloseableHttpResponse from where to read contents.
      * @throws IOException
      */
     public void setResponseContent(HttpServletResponse response, CloseableHttpResponse cRes) throws IOException {
@@ -401,11 +397,11 @@ public class HttpRequestService {
     /**
      * Replace given attribute values with new ones for matching XML-elements.
      *
-     * @param doc XML Document where to replace attributes
-     * @param xPathExpr XPath expression to search corresponding nodes.
+     * @param doc           XML Document where to replace attributes
+     * @param xPathExpr     XPath expression to search corresponding nodes.
      * @param attributeName Name of the attribute.
-     * @param replaceValue Value/placeholder to be replaced.
-     * @param replaceWith The value that will replace the 'replaceValue'
+     * @param replaceValue  Value/placeholder to be replaced.
+     * @param replaceWith   The value that will replace the 'replaceValue'
      * @return The XML Document with replaced values;
      * @throws XPathExpressionException
      */
@@ -437,7 +433,7 @@ public class HttpRequestService {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         transformer.transform(new DOMSource(doc), new StreamResult(bos));
 
-        return  bos.toByteArray();
+        return bos.toByteArray();
     }
 
     /**
@@ -462,7 +458,7 @@ public class HttpRequestService {
      * Write byte[] into HttpServletResponses OutputStream. Also set's the correct Content-Size -header based on the
      * byte[] -arrays length.
      *
-     * @param bytes byte[] to be written.
+     * @param bytes    byte[] to be written.
      * @param response HttpServletResponse whose OutputStream the bytes should be written.
      * @throws IOException
      */
@@ -475,10 +471,10 @@ public class HttpRequestService {
     /**
      * Handle GetCapabilities Response so that it no longer contains links to external services but into our own proxy.
      *
-     * @param layerUrl The requested layer URL.
-     * @param baseUrl Baseurl for proxy-service for given layer.
-     * @param response HttpServletResponse, where to write the fetched content
-     * @param cRes CloseableHttpResponse from where to read contents.
+     * @param layerUrl   The requested layer URL.
+     * @param baseUrl    Baseurl for proxy-service for given layer.
+     * @param response   HttpServletResponse, where to write the fetched content
+     * @param cRes       CloseableHttpResponse from where to read contents.
      * @param requestUrl Url where the response is from
      */
     public void setGetCapabilitiesResponse(
@@ -506,7 +502,7 @@ public class HttpRequestService {
             writeBytesArrayToResponse(xmlBytes, response);
 
         } catch (SAXException | IOException | ParserConfigurationException |
-                XPathExpressionException | TransformerException e ) {
+                XPathExpressionException | TransformerException e) {
             String msg = String.format(
                     "Error handling response from remote-service. URL: [%s]", requestUrl);
             throw new KsrApiException.InternalServerErrorException(msg, e);
@@ -517,7 +513,7 @@ public class HttpRequestService {
      * Replace print output response body url to proxy url
      *
      * @param response HttpServletResponse, where to write the fetched content
-     * @param cRes CloseableHttpResponse from where to read contents.
+     * @param cRes     CloseableHttpResponse from where to read contents.
      */
     @SuppressWarnings("unchecked")
     private void setPrintOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
@@ -552,7 +548,7 @@ public class HttpRequestService {
      * Replace extract output response body url with proxy url.
      *
      * @param response Http servlet response interface where to write the fetched content.
-     * @param cRes Closeable Http response from where to read contents.
+     * @param cRes     Closeable Http response from where to read contents.
      */
     @SuppressWarnings("unchecked")
     private void setExtractOutputResponse(HttpServletResponse response, CloseableHttpResponse cRes) {
@@ -600,12 +596,11 @@ public class HttpRequestService {
     /**
      * Returns a correct HttpRequestBase from POST request.
      *
-     * @param request interface for getting request method and POST request parameters.
+     * @param request      interface for getting request method and POST request parameters.
      * @param editedParams edited parameters / querystring from print request.
-     * @param endPointUrl The url to be fetched.
-     * @param action The action type related to request (READ | CREATE | UPDATE | DELETE)
-     * @param layer The Layer related to request
-     *
+     * @param endPointUrl  The url to be fetched.
+     * @param action       The action type related to request (READ | CREATE | UPDATE | DELETE)
+     * @param layer        The Layer related to request
      * @return base
      */
     private HttpRequestBase requestBasePost(HttpServletRequest request,
@@ -616,12 +611,12 @@ public class HttpRequestService {
         if (!CollectionUtils.isEmpty(request.getParameterMap())) {
             if (editedParams != null) {
                 for (NameValuePair entry : editedParams) {
-                    params.add(filterParams(entry.getName(), entry.getValue(), layer, action));
+                    params.addAll(filterParamsList(entry.getName(), entry.getValue(), layer, action));
                 }
             } else {
                 for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
                     for (String value : entry.getValue()) {
-                        params.add(filterParams(entry.getKey(), value, layer, action));
+                        params.addAll(filterParamsList(entry.getKey(), value, layer, action));
                     }
                 }
             }
@@ -651,7 +646,7 @@ public class HttpRequestService {
                 && (action == LayerAction.UPDATE_LAYER || action == LayerAction.CREATE_LAYER)
                 && (layer.getUpdaterField() != null
                 || "many".equals(layer.getRelationType()))
-        ){
+        ) {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 Feature[] features = mapper.readValue(value, Feature[].class);
@@ -688,12 +683,37 @@ public class HttpRequestService {
     }
 
     /**
+     * Filter / check params for given Layer and LayerAction.
+     *
+     * If LayerAction is either UPDATE_LAYER OR CREATE_LAYER then it populates updater-field with information
+     * from current user if updater-field is defined for Layer.
+     *
+     * If Layer is a contract with type "many" then it populates contract uuid field
+     * with new randomly generated uuid value when new contract is added to the Layer.
+     *
+     * @param key    Key of the parameter.
+     * @param value  Value of the parameter.
+     * @param layer  Layer, where to find field names.
+     * @param action Type of the layer action.
+     * @return List of Name value pair for Layer and LayerAction.
+     */
+    private List<BasicNameValuePair> filterParamsList(String key, String value, Layer layer, LayerAction action) {
+        List<BasicNameValuePair> basicNameValuePairs = new ArrayList<>();
+        if (layer != null && layer.getRelations() != null) {
+            layer.getRelations().forEach(relation -> {
+                layer.setRelationValues(relation);
+                basicNameValuePairs.add(filterParams(key, value, layer, action));
+            });
+        }
+        return basicNameValuePairs;
+    }
+
+    /**
      * Returns a correct HttpRequestBase from GET request.
      * Print GET request gets changed to HttpPost
      *
      * @param editedParams edited parameters / querystring from print request.
-     * @param endPointUrl The url to be fetched.
-     *
+     * @param endPointUrl  The url to be fetched.
      * @return base
      */
     private HttpRequestBase requestBaseGet(List<NameValuePair> editedParams, String endPointUrl) {

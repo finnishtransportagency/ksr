@@ -57,8 +57,8 @@ const FeatureDetailsForm = (props: Props) => {
                     || !field.editable
                     || field.name === layer.updaterField
                     || field.name === 'CONTRACT_UUID'
-                    || (layer.contractIdField !== layer.relationColumnOut
-                        && layer.relationColumnOut === field.name)
+                    || (layer.contractIdField !== layer.relations.find(c => c).relationColumnOut
+                        && layer.relations.find(c => c).relationColumnOut === field.name)
                     || (formType === 'edit'
                         && field.unique),
             }))

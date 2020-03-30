@@ -3,6 +3,7 @@ package fi.sitowise.ksr.service;
 import fi.sitowise.ksr.authentication.User;
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerAction;
+import fi.sitowise.ksr.domain.Relation;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -40,6 +41,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = SpringRunner.class)
@@ -101,7 +104,14 @@ public class HttpRequestServiceTests {
         request.setParameter("features", "[{\"attributes\":{\"UPDATER\": \"ASD\", \"ID\": 12}}]");
 
         Layer layer = new Layer();
+        layer.setId(1L);
         layer.setUpdaterField("UPDATER");
+
+        Relation relation = new Relation();
+        relation.setLayerId(1L);
+        List<Relation> relationList = new ArrayList<>();
+        relationList.add(relation);
+        layer.setRelations(relationList);
 
         User user = new User(
                 "K12345",

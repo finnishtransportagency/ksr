@@ -4,6 +4,7 @@ import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
 import fi.sitowise.ksr.domain.LayerPermission;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
+import fi.sitowise.ksr.repository.RelationRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,6 +50,12 @@ public class LayerGroupServiceTests {
     @MockBean
     LayerGroupRepository layerGroupRepository;
     private boolean isMobile = false;
+
+    /**
+     * The Relation repository.
+     */
+    @MockBean
+    RelationRepository relationRepository;
 
     /**
      * The User Layer repository.

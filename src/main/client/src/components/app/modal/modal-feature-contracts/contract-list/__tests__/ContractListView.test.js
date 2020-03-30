@@ -33,36 +33,50 @@ describe('<ContractListView />', () => {
 
     it('should render contracts', () => {
         const props = {
-            contracts: [{
-                id: 1,
-                description: 'Test 1',
-            }, {
-                id: 2,
-                description: 'Test 2',
-            }, {
-                id: 3,
-                description: 'Test 3',
-            }],
+            contracts: [
+                {
+                    name: 'test',
+                    contract: [
+                        {
+                            id: 1,
+                            description: 'Test 1',
+                        }, {
+                            id: 2,
+                            description: 'Test 2',
+                        }, {
+                            id: 3,
+                            description: 'Test 3',
+                        },
+                    ],
+                },
+            ],
         };
 
         const { wrapper } = setup(props);
 
         expect(wrapper.find(Contract).length).toBe(3);
-        expect(wrapper.find('p').length).toBe(0);
+        expect(wrapper.find('p').length).toBe(1);
     });
 
     it('should contain correct text', () => {
         const props = {
-            contracts: [{
-                id: 1,
-                description: 'Test 1',
-            }, {
-                id: 2,
-                description: 'Test 2',
-            }, {
-                id: 3,
-                description: 'Test 3',
-            }],
+            contracts: [
+                {
+                    name: 'test',
+                    contract: [
+                        {
+                            id: 1,
+                            description: 'Test 1',
+                        }, {
+                            id: 2,
+                            description: 'Test 2',
+                        }, {
+                            id: 3,
+                            description: 'Test 3',
+                        },
+                    ],
+                },
+            ],
             editLayerPermission: true,
         };
 

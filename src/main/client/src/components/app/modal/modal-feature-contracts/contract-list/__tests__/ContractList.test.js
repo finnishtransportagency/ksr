@@ -7,21 +7,22 @@ import ContractList from '../ContractList';
 import ContractListView from '../ContractListView';
 
 const setup = (prop) => {
-    fetchMock.fetchContractRelation = jest.fn(() => Promise.resolve({ features: null }));
+    fetchMock.fetchContractRelation = jest.fn(() => Promise.resolve([]));
 
     const minProps = {
-        layerId: 123,
         objectId: 123456,
-        contractIdField: 'contractId',
-        contractDescriptionField: 'contractDescription',
-        alfrescoLinkField: 'alfrescoUrl',
-        caseManagementLinkField: 'caseManagementUrl',
         currentLayer: {
             id: 123,
         },
-        contractLayer: {
+        contractLayers: [{
             id: 123,
-        },
+            name: 'test',
+            contractIdField: 'contractId',
+            contractDescriptionField: 'contractDescription',
+            alfrescoLinkField: 'alfrescoUrl',
+            caseManagementLinkField: 'caseManagementUrl',
+            relations: [],
+        }],
     };
     const props = prop || minProps;
     const wrapper = shallow(<ContractList {...props} />);
@@ -44,10 +45,10 @@ describe('<ContractList />', () => {
     });
 
     it('componentDidMount - should fetch contract-relation data and change state with no results', async () => {
-        const features = null;
+        const contracts = [];
         const expectedResult = [];
 
-        fetchMock.fetchContractRelation = jest.fn(() => Promise.resolve({ features }));
+        fetchMock.fetchContractRelation = jest.fn(() => Promise.resolve(contracts));
 
         wrapper.instance().componentDidMount();
         wrapper.setState({ fetchingContracts: true });
@@ -60,7 +61,8 @@ describe('<ContractList />', () => {
     });
 
     it('componentDidMount - should fetch contract-relation data and change state with results', async () => {
-        const contracts = {
+        const contracts = [{
+            layerId: 123,
             features: [{
                 attributes: {
                     alfrescoUrl: '123',
@@ -76,30 +78,37 @@ describe('<ContractList />', () => {
                     contractDescription: 'Description field 2',
                 },
             }],
-        };
+        }];
 
         const expectedResult = [{
-            alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
-            caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=123',
-            attributes: {
-                alfrescoUrl: '123',
-                caseManagementUrl: '123',
-                contractDescription: 'Description field 1',
-                contractId: 123,
-            },
-            description: 'Description field 1',
-            id: 123,
-        }, {
-            alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=456',
-            caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=456',
-            attributes: {
-                alfrescoUrl: '456',
-                caseManagementUrl: '456',
-                contractDescription: 'Description field 2',
-                contractId: 456,
-            },
-            description: 'Description field 2',
-            id: 456,
+            contract: [{
+                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
+                caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=123',
+                attributes: {
+                    alfrescoUrl: '123',
+                    caseManagementUrl: '123',
+                    contractDescription: 'Description field 1',
+                    contractId: 123,
+                },
+                contractUnlinkable: false,
+                description: 'Description field 1',
+                id: 123,
+                layerId: 123,
+            }, {
+                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=456',
+                caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=456',
+                attributes: {
+                    alfrescoUrl: '456',
+                    caseManagementUrl: '456',
+                    contractDescription: 'Description field 2',
+                    contractId: 456,
+                },
+                contractUnlinkable: false,
+                description: 'Description field 2',
+                id: 456,
+                layerId: 123,
+            }],
+            name: 'test',
         }];
 
         fetchMock.fetchContractRelation = jest.fn(() => Promise.resolve(contracts));
@@ -114,4 +123,3 @@ describe('<ContractList />', () => {
         expect(wrapper.state('fetchingContracts')).toEqual(false);
     });
 });
-

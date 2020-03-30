@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersAllView from './MapLayersAllView';
+import { nestedVal } from '../../../../../utils/nestedValue';
 
 type Props = {
     layerGroups: Array<any>,
@@ -74,7 +75,7 @@ class MapLayersActive extends Component<Props> {
         const foundLayers = layerList.filter(l => (
             l.layerGroupName === layerGroupName
             && !l.parentLayer
-            && l.relationType !== 'link'
+            && nestedVal(l.relations.find(r => r), ['relationType'], '') !== 'link'
             && l._source !== 'shapefile'
             && (layersToFind
                 ? (l.layerGroupName.toLowerCase().includes(layersToFind)
@@ -166,7 +167,7 @@ class MapLayersActive extends Component<Props> {
                     ...group,
                     layers: group.name.toLowerCase().includes(layersToFindTrimmed)
                         ? group.layers
-                        : group.layers.filter(layer => layer.relationType !== 'link')
+                        : group.layers.filter(layer => nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link')
                             .filter(layer => layer.name.toLowerCase().includes(layersToFindTrimmed)
                             || subLayers.find(subLayer => subLayer.name
                                 .toLowerCase().includes(layersToFindTrimmed)

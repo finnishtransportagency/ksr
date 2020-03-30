@@ -9,11 +9,13 @@ const setup = (prop) => {
     const minProps = {
         removeContractListInfo: jest.fn(),
         currentLayer: {
-            relationLayerId: '123',
+            relations: [{
+                relationLayerId: '123',
+            }],
         },
-        contractLayer: {
+        contractLayers: [{
             id: '456',
-        },
+        }],
     };
     const props = prop || minProps;
     const wrapper = shallow(<ModalFeatureContracts {...props} />);

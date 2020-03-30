@@ -9,21 +9,16 @@ import { setActiveModal } from '../../../../../reducers/modal/actions';
 const mapStateToProps = (state) => {
     const { layerId, objectId } = state.contract.contractList;
     const { layerList } = state.map.layerGroups;
-    const { currentLayer, contractLayer } = getContractLayers(layerId, layerList);
+    const { currentLayer, contractLayers } = getContractLayers(layerId, layerList);
 
-    const editLayerPermission = state.adminTool.active.layerId === layerId &&
-        nestedVal(currentLayer, ['layerPermission', 'updateLayer']) &&
-        nestedVal(contractLayer, ['layerPermission', 'updateLayer']);
+    const editLayerPermission = state.adminTool.active.layerId === layerId
+        && nestedVal(currentLayer, ['layerPermission', 'updateLayer'])
+        && contractLayers.every(c => nestedVal(c, ['layerPermission', 'updateLayer']));
 
     return {
         objectId,
         currentLayer,
-        contractLayer,
-        contractIdField: nestedVal(contractLayer, ['contractIdField']),
-        contractDescriptionField: nestedVal(contractLayer, ['contractDescriptionField']),
-        contractUnlinkable: nestedVal(currentLayer, ['relationType']) === 'many',
-        alfrescoLinkField: nestedVal(contractLayer, ['alfrescoLinkField']),
-        caseManagementLinkField: nestedVal(contractLayer, ['caseManagementLinkField']),
+        contractLayers,
         editLayerPermission,
     };
 };

@@ -17,10 +17,30 @@ import java.util.stream.Collectors;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
+    private String layerId;
     private String objectIdFieldName;
     private String globalIdFieldName;
     private List<Map<String, Object>> fields;
     private List<Feature> features;
+
+
+    /**
+     * Get layer Id.
+     *
+     * @return Layer id.
+     */
+    public String getLayerId() {
+        return layerId;
+    }
+
+    /**
+     * Set Layer Id.
+     *
+     * @param layerId Id of layer.
+     */
+    public void setLayerId(String layerId) {
+        this.layerId = layerId;
+    }
 
     /**
      * Gets Esri-JSON fields-attribute.
