@@ -1,6 +1,5 @@
 // @flow
 import {
-    ADD_FILTERED,
     APPLY_DELETED_FEATURES,
     APPLY_EDITS,
     CLEAR_SEARCH_DATA,
@@ -25,7 +24,6 @@ import {
     deSelectFeatures,
     getActiveTable,
     mergeLayers,
-    setRowFilter,
     syncWithLayersList,
     toggleSelectAll,
     toggleSelection,
@@ -35,8 +33,6 @@ import {
     applyDeletedFeatures,
     applyEditedLayers,
     applyEdits,
-    removeFilteredLayer,
-    removeFilteredLayers,
 } from '../../utils/table';
 
 type State = {
@@ -105,6 +101,7 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 ...syncWithLayersList(state.layers, action.layerList, state.activeTable),
             };
+        case CLOSE_LAYER:
         case DEACTIVATE_LAYER:
             return {
                 ...state,
@@ -117,13 +114,11 @@ export default (state: State = initialState, action: Action) => {
                     state.layers.filter(l => l.id !== action.layerId),
                     state.activeTable,
                 ),
-                filtered: removeFilteredLayer(state.filtered, action.layerId),
             };
         case DE_SELECT_SELECTED_FEATURES:
             return {
                 ...state,
                 ...deSelectFeatures(state.layers, state.activeTable),
-                filtered: removeFilteredLayers(state.filtered),
             };
         case TOGGLE_SELECTION:
             return {
@@ -140,8 +135,7 @@ export default (state: State = initialState, action: Action) => {
         case SET_ROW_FILTER:
             return {
                 ...state,
-                layers: setRowFilter(state.layers, state.activeTable, action.rows),
-                editedLayers: setRowFilter(state.editedLayers, state.activeTable, action.rows),
+                filtered: action.rows,
             };
         case SET_ACTIVE_ADMIN_TOOL:
             return {
@@ -195,29 +189,10 @@ export default (state: State = initialState, action: Action) => {
                     state.activeTable,
                 ),
             };
-        case CLOSE_LAYER:
-            return {
-                ...state,
-                layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
-                editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId)
-                    .map(l => (l.id === `${action.layerId}.s`
-                        ? state.layers.find(a => a.id === `${action.layerId}.s`)
-                        : l)): Object[]),
-                activeTable: getActiveTable(
-                    state.layers.filter(l => l.id !== action.layerId),
-                    state.activeTable,
-                ),
-                filtered: removeFilteredLayer(state.filtered, action.layerId),
-            };
         case TABLE_EDITED:
             return {
                 ...state,
                 hasTableEdited: action.hasTableEdited,
-            };
-        case ADD_FILTERED:
-            return {
-                ...state,
-                filtered: action.filtered,
             };
         default:
             return state;

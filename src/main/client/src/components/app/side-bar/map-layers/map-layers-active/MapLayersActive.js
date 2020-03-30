@@ -5,6 +5,7 @@ import { reorder } from '../../../../../utils/reorder';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersActiveView from './MapLayersActiveView';
 import DataLayersActiveView from './data-layers-active/DataLayersActiveView';
+import strings from '../../../../../translations';
 
 type Props = {
     mapLayerList: any,
@@ -17,6 +18,12 @@ type Props = {
     createThemeLayer: (layerId: string) => void,
     toggleLayer: (layerId: string) => void,
     mapScale: number,
+    showConfirmModal: (
+        body: string,
+        acceptText: string,
+        cancelText: string,
+        accept: Function
+    ) => void,
 };
 
 type State = {
@@ -29,6 +36,7 @@ class MapLayersActive extends Component<Props, State> {
 
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onOpacityChange = this.onOpacityChange.bind(this);
+        this.handleAdminModeChange = this.handleAdminModeChange.bind(this);
     }
 
     onDragEnd = (result: DropResult) => {
@@ -55,11 +63,34 @@ class MapLayersActive extends Component<Props, State> {
         setLayerList(mapLayerList.concat(dataLayerList));
     };
 
+    handleAdminModeChange = (layerId: string) => {
+        const {
+            contentChange, contentDisable, submitChange, submitDisable, cancel,
+        } = strings.modalConfirmAdminChange;
+
+        const {
+            showConfirmModal, setActiveAdminTool, mapLayerList, activeAdminTool,
+        } = this.props;
+
+        if (activeAdminTool) {
+            const disable = activeAdminTool === layerId.replace('.s', '');
+            showConfirmModal(
+                disable ? contentDisable : contentChange,
+                disable ? submitDisable : submitChange,
+                cancel,
+                () => {
+                    setActiveAdminTool(layerId.replace('.s', ''), mapLayerList);
+                },
+            );
+        } else {
+            setActiveAdminTool(layerId.replace('.s', ''), mapLayerList);
+        }
+    };
+
     render() {
         const {
             mapLayerList,
             fetching,
-            setActiveAdminTool,
             activeAdminTool,
             createNonSpatialFeature,
             dataLayerList,
@@ -75,18 +106,18 @@ class MapLayersActive extends Component<Props, State> {
                         onDragEnd={this.onDragEnd}
                         toggleLayer={toggleLayer}
                         onOpacityChange={this.onOpacityChange}
-                        setActiveAdminTool={setActiveAdminTool}
                         activeAdminTool={activeAdminTool}
                         createNonSpatialFeature={createNonSpatialFeature}
                         createThemeLayer={createThemeLayer}
                         mapScale={mapScale}
+                        handleAdminModeChange={this.handleAdminModeChange}
                     />
                     <DataLayersActiveView
                         dataLayerList={dataLayerList.filter(l => l.active)}
-                        setActiveAdminTool={setActiveAdminTool}
                         activeAdminTool={activeAdminTool}
                         createNonSpatialFeature={createNonSpatialFeature}
                         mapScale={mapScale}
+                        handleAdminModeChange={this.handleAdminModeChange}
                     />
                 </Fragment>
             );

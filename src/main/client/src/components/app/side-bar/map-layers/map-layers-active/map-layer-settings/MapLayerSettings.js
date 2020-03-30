@@ -16,11 +16,11 @@ type Props = {
     layerList: Object[],
     toggleLayer: (layerId: string) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
-    setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
     createThemeLayer: (layerId: string) => void,
     mapScale: number,
+    handleAdminModeChange: (layerId: string) => void,
 };
 
 const MapLayerSettings = ({
@@ -28,11 +28,11 @@ const MapLayerSettings = ({
     layerList,
     onOpacityChange,
     toggleLayer,
-    setActiveAdminTool,
     activeAdminTool,
     createNonSpatialFeature,
     createThemeLayer,
     mapScale,
+    handleAdminModeChange,
 }: Props) => (
     <LayerSettings
         toggledHidden={
@@ -103,8 +103,8 @@ const MapLayerSettings = ({
                                 <LayerSettings.Icon
                                     role="button"
                                     tabIndex={0}
-                                    onKeyPress={() => setActiveAdminTool(layer.id.replace('.s', ''), layerList)}
-                                    onClick={() => setActiveAdminTool(layer.id.replace('.s', ''), layerList)}
+                                    onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                    onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
                                     className="fas fa-edit"
                                     title={strings.mapLayerSettings.toggleAdminTool}
                                 />

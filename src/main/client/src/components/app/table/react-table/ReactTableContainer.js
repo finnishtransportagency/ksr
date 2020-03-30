@@ -27,7 +27,7 @@ const mapStateToProps = (state) => {
         selectAll,
         layerList: state.map.layerGroups.layerList,
         activeAdminTool: state.adminTool.active.layerId,
-        filtered: state.table.features.filtered,
+        portalIsOpen: state.portal.togglePortal,
     };
 };
 

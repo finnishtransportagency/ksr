@@ -10,6 +10,7 @@ import strings from '../../../../translations';
 import { toDisplayDate, toISODate } from '../../../../utils/date';
 import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { TextInput } from '../../../ui/elements';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     fetching: boolean,
@@ -29,9 +30,8 @@ type Props = {
     setActiveModal: (activeModal: string, modalData: any) => void,
     setContractListInfo: (layerId: string, objectId: number) => void,
     setTableEdited: Function,
-    filtered: Array<Object>,
-    addFiltered: Function,
     updatePortal: Function,
+    portalIsOpen: boolean,
 };
 
 type State = {
@@ -54,6 +54,7 @@ const defaultState = {
     },
 };
 
+let cellEditTimer;
 class ReactTable extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -61,18 +62,17 @@ class ReactTable extends Component<Props, State> {
         this.state = defaultState;
 
         this.renderFilter = this.renderFilter.bind(this);
-        this.renderEditable = this.renderEditable.bind(this);
+        this.renderCustomCell = this.renderCustomCell.bind(this);
         this.toggleSelection = this.toggleSelection.bind(this);
-        this.onFilteredChangeCustom = this.onFilteredChangeCustom.bind(this);
     }
 
     componentDidUpdate() {
-        const { updatePortal } = this.props;
+        const { updatePortal, portalIsOpen } = this.props;
         const paginationBottom = document.getElementsByClassName('pagination-bottom')[0];
         if (paginationBottom) {
             // Send update request to table window portal
             // to re-render also when main screen table changes
-            updatePortal();
+            if (portalIsOpen) updatePortal();
             // React Table heights need to be set programmatically for scrollbars to show correctly.
             const tableElement = document.getElementsByClassName('rt-rtable')[0];
             const tableHeight = paginationBottom.clientHeight;
@@ -281,6 +281,23 @@ class ReactTable extends Component<Props, State> {
     renderDiv = (
         cellField: Object,
         content: any,
+    ) => {
+        const textContent = this.getDisplayContent(cellField, content);
+        return (
+            <div
+                title={textContent}
+                style={{ minHeight: '1rem' }}
+                /* eslint-disable-next-line react/no-danger */
+                dangerouslySetInnerHTML={{
+                    __html: DOMPurify().sanitize(textContent),
+                }}
+            />
+        );
+    };
+
+    renderEditableDiv = (
+        cellField: Object,
+        content: any,
         cellInfo: Object,
         contentEditable: boolean,
     ) => {
@@ -304,15 +321,24 @@ class ReactTable extends Component<Props, State> {
                     }
                 }}
                 onInput={(evt) => {
-                    if (contentEditable) {
-                        const text = evt.target.innerText;
+                    const updateCellWithDelay = (text, key) => {
+                        cellEditTimer = setTimeout(() => {
+                            const { currentCellData } = this.state;
+                            if (currentCellData.key === key) {
+                                this.setState(prevState => ({
+                                    currentCellData: {
+                                        ...prevState.currentCellData,
+                                        editedData: getValue(cellField.type, text),
+                                    },
+                                }));
+                            }
+                        }, 500);
+                    };
 
-                        this.setState(prevState => ({
-                            currentCellData: {
-                                ...prevState.currentCellData,
-                                editedData: getValue(cellField.type, text),
-                            },
-                        }));
+                    const { currentCellData } = this.state;
+                    if (contentEditable) {
+                        clearTimeout(cellEditTimer);
+                        updateCellWithDelay(evt.target.innerText, currentCellData.key);
                     }
                 }}
                 onFocus={(evt) => {
@@ -370,42 +396,56 @@ class ReactTable extends Component<Props, State> {
         />
     );
 
-    renderEditable = (cellInfo: Object) => {
-        const { layerList, activeTable } = this.props;
+    renderCustomCell = (cellInfo: Object) => {
+        const { layerList, activeTable, activeAdminTool } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
         const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
 
-        if (activeLayer && activeLayer.fields) {
-            let cellField = activeLayer.fields
-                .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
+        let cellField = activeLayer && activeLayer.fields
+            .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
+        const content = this.getCellContent(cellField, cellInfo);
 
-            if (cellField) {
-                if (originalLayer && originalLayer.fields) {
-                    // Get editable values for search layer fields
-                    cellField = originalLayer.fields.find(f => f.name === cellField.name);
+        if (cellField) {
+            if (activeAdminTool === activeTable.replace('.s', '')) {
+                if (activeLayer && activeLayer.fields) {
+                    if (originalLayer && originalLayer.fields) {
+                        // Get editable values for search layer fields
+                        cellField = originalLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
+                    }
+                    const contentEditable = this.isCellEditable(cellField);
+                    if (contentEditable) {
+                        if (cellField.domain
+                            && (cellField.domain.type === 'codedValue'
+                                || cellField.domain.type === 'coded-value')
+                            && contentEditable) {
+                            return this.renderSelect(cellField, content, cellInfo);
+                        }
+
+                        if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
+                            return this.renderDateInput(cellField, content, cellInfo);
+                        }
+
+                        return this.renderEditableDiv(
+                            cellField,
+                            cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
+                            cellInfo,
+                            contentEditable,
+                        );
+                    }
+
+                    return this.renderDiv(
+                        cellField,
+                        cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
+                    );
                 }
-                const contentEditable = this.isCellEditable(cellField);
-                const content = this.getCellContent(cellField, cellInfo);
-
-                if (cellField.domain
-                    && (cellField.domain.type === 'codedValue'
-                        || cellField.domain.type === 'coded-value')
-                    && contentEditable) {
-                    return this.renderSelect(cellField, content, cellInfo);
-                }
-
-                if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
-                    return this.renderDateInput(cellField, content, cellInfo);
-                }
-
+            } else {
                 return this.renderDiv(
                     cellField,
                     cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
-                    cellInfo,
-                    contentEditable,
                 );
             }
         }
+
         return null;
     };
 
@@ -440,27 +480,6 @@ class ReactTable extends Component<Props, State> {
         return null;
     };
 
-    onFilteredChangeCustom = (value: any, accessor: any) => {
-        const { filtered, addFiltered } = this.props;
-        const localFiltered = [...filtered];
-
-        if (localFiltered.length) {
-            localFiltered.forEach((filter, i) => {
-                if (filter.id === accessor) {
-                    if (value === '' || !value.length) {
-                        localFiltered.splice(i, 1);
-                    } else {
-                        filter.value = value;
-                    }
-                }
-            });
-        }
-        if ((!localFiltered.some(filter => filter.id === accessor))) {
-            localFiltered.push({ id: accessor, value });
-        }
-        addFiltered(localFiltered);
-    };
-
     render() {
         const {
             fetching,
@@ -469,7 +488,8 @@ class ReactTable extends Component<Props, State> {
             toggleSelectAll,
             layerList,
             setRowFilter,
-            filtered,
+            activeAdminTool,
+            activeTable,
         } = this.props;
 
         if (!layerFeatures) {
@@ -504,11 +524,11 @@ class ReactTable extends Component<Props, State> {
                     columns={tableColumns}
                     selectAll={selectAll}
                     toggleSelectAll={() => toggleSelectAll(layerFeatures.id)}
-                    renderEditable={this.renderEditable}
+                    renderCustomCell={this.renderCustomCell}
                     renderFilter={this.renderFilter}
                     currentCellData={currentCellData}
-                    onFilteredChangeCustom={this.onFilteredChangeCustom}
-                    filteredValues={filtered}
+                    activeAdminTool={activeAdminTool}
+                    activeTable={activeTable}
                 />
             );
         }
