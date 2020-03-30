@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const ContentMain = styled.div`
     display: flex;
@@ -8,6 +8,10 @@ const ContentMain = styled.div`
     width: 100%;
     padding: 1rem;
     overflow: hidden;
+    
+    ${props => props.childLayer && css`
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
+    `}
 `;
 
 export default ContentMain;

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as styles from '../../defaultStyles';
 
 const Content = styled.div`
@@ -15,6 +15,14 @@ const Content = styled.div`
     margin: 0.5rem 0;
     overflow: hidden;
     white-space: nowrap;
+    
+    ${props => props.childLayer && css`
+        margin: 0;
+        border-left: 0;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    `}
 `;
 
 export default Content;

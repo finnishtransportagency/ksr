@@ -48,6 +48,7 @@ const MapLayerSettings = ({
                         layer={layer}
                         mapScale={mapScale}
                         toggleLayer={toggleLayer}
+                        childLayer={false}
                     />
                 )
             }
@@ -86,30 +87,34 @@ const MapLayerSettings = ({
                         )
                     }
                     {
-                        !layer.userLayer
+                        ((!layer.userLayer
                         && layer._source !== 'shapefile'
                         && nestedVal(
                             layerList.find(l => l.id === layer.id.replace('.s', '')),
                             ['active'],
                         )
+                        && !nestedVal(
+                            layerList.find(l => l.id === layer.id.replace('.s', '')),
+                            ['parentLayer'],
+                        )
                         && (layer.type === 'agfs' || layer.type === 'agfl')
                         && (layer.layerPermission.createLayer
                             || layer.layerPermission.updateLayer
-                            || layer.layerPermission.deleteLayer)
-                        && (
-                            <LayerSettings.Icons
-                                activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
-                            >
-                                <LayerSettings.Icon
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
-                                    onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
-                                    className="fas fa-edit"
-                                    title={strings.mapLayerSettings.toggleAdminTool}
-                                />
-                            </LayerSettings.Icons>
-                        )
+                            || layer.layerPermission.deleteLayer)))
+                         && (
+                             <LayerSettings.Icons
+                                 activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
+                             >
+                                 <LayerSettings.Icon
+                                     role="button"
+                                     tabIndex={0}
+                                     onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                     onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                     className="fas fa-edit"
+                                     title={strings.mapLayerSettings.toggleAdminTool}
+                                 />
+                             </LayerSettings.Icons>
+                         )
                     }
                 </LayerSettings.ContentTop>
                 {
