@@ -21,6 +21,7 @@ type Props = {
     currentCellData: Object,
     activeAdminTool: string,
     activeTable: string,
+    layerList: Object[],
 };
 
 type State = {
@@ -31,7 +32,7 @@ class ReactTableView extends Component<Props, State> {
     // Custom view update handling to reduce redundant re-renders for improved performance
     shouldComponentUpdate(nextProps: Props) {
         const {
-            data, currentCellData, activeAdminTool, activeTable, columns,
+            data, currentCellData, activeAdminTool, activeTable, columns, layerList,
         } = this.props;
 
         const dataChanged = JSON.stringify(data) !== JSON.stringify(nextProps.data);
@@ -39,6 +40,7 @@ class ReactTableView extends Component<Props, State> {
             && nextProps.currentCellData.title !== null;
         const adminChanged = nextProps.activeAdminTool !== activeAdminTool;
         const tableChanged = nextProps.activeTable !== activeTable;
+        const layerListChanged = JSON.stringify(nextProps.layerList) !== JSON.stringify(layerList);
         const filteredColumnsChanged = nextProps.columns.length
             !== columns.length;
 
@@ -46,7 +48,8 @@ class ReactTableView extends Component<Props, State> {
             || adminChanged
             || dataChanged
             || currentCellChanged
-            || filteredColumnsChanged;
+            || filteredColumnsChanged
+            || layerListChanged;
     }
 
     render() {
