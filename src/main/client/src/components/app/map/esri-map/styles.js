@@ -157,6 +157,12 @@ export const Wrapper = styled.div`
             };
         `};
 
+        ${props => props.layerLegendActive && props.tableOpen && css`
+            .esri-coordinate-conversion, .esri-legend--stacked {
+                right: 45px;
+            };
+        `};
+
         @media only screen and (max-width: 768px) {
             left: 0;
             width: 100%;
@@ -180,7 +186,7 @@ export const Wrapper = styled.div`
             };
             
             .esri-legend--stacked {
-                margin-right: 0;
+                margin-right: 45px;
                 margin-bottom: 81px;
                 min-width: 200px;
             };
@@ -189,16 +195,18 @@ export const Wrapper = styled.div`
                 min-width: 200px;
             };
         };
-        ${props => props.layerLegendActive && props.tableOpen && css`
+        
+        @media only screen and (max-height: 735px) {
             .esri-coordinate-conversion, .esri-legend--stacked {
-                right: 60px;
-            };
-        `};   
-
-        @media only screen and (max-height: 667px) {
-            .esri-coordinate-conversion, .esri-legend--stacked {
-                height: 200px;
-            };
+                right: 0; 
+             }
+            ${props => (props.indexMapActive || props.layerLegendActive) && css`
+                @media only screen and (min-height: 486px) and (min-width: 486px) {
+                    .esri-coordinate-conversion, .esri-legend--stacked {
+                        right: 45px;
+                    }
+                }
+            `};
         };
     };
         
@@ -225,28 +233,41 @@ export const Wrapper = styled.div`
         `};
         
         ${props => props.indexMapActive && props.tableOpen && css`
-            right: 100px;
+            right: 60px;
         `};
-        
-        @media only screen and (min-width: 736px) {   
-        ${props => props.indexMapActive && props.layerLegendActive && !props.tableOpen && css`
+   
+        ${props => props.indexMapActive && props.layerLegendActive && css`
             right: 20rem;
         `};
-        }
-        
-        @media only screen and (max-width: 735px) {   
+
+        @media only screen and (max-width: 735px) {
         ${props => props.indexMapActive && css`
             width: 200px;
             height: 150px;
-            bottom: 7.5rem;
+            bottom: 7.7rem;
+            right: 60px;
+        `};
+
+        ${props => props.indexMapActive && props.layerLegendActive && css`
+            bottom: 25.5rem;
         `};
         }
-     
-        ${props => props.indexMapActive && props.layerLegendActive && props.tableOpen && css`
-            right: 23.7rem;
+
+        @media only screen and (max-height: 735px) {
+            right: 60px;
+        ${props => props.indexMapActive && props.layerLegendActive && css`
+            @media only screen and (min-height: 486px) and (min-width: 486px) {
+                right: 23rem;
+                bottom: 7.7rem;
+            }
+            @media only screen and (max-height: 485px) and (min-width: 486px) {
+                right: 16.5rem;
+                bottom: 7.7rem;
+            }
         `};
+        };
     }
-        
+
         ${props => props.loading && css`
             visibility: visible;
             background: ${styles.colorBackgroundLight};
