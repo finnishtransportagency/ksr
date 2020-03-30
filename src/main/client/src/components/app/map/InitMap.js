@@ -523,6 +523,20 @@ class EsriMap extends Component<Props> {
                         setActiveModal('showAddress', data);
                     }
                     break;
+                case 'get-railway-property-info':
+                    if (x) {
+                        const data = {
+                            attributes: {},
+                            geometry: {
+                                x,
+                                y,
+                                type: 'point',
+                            },
+                            featureType: 'railway2',
+                        };
+                        setActiveModal('showAddress', data);
+                    }
+                    break;
                 default:
                     break;
             }

@@ -55,6 +55,12 @@ export const createGeoconvertParams = (
     }
 };
 
+const createRailwayAddress = address => (
+    `${(address.etaisyys - (address.etaisyys % 10000)) / 10000}+
+    ${address.etaisyys % 10000}, 
+    ${address.kunta_nimi}`
+);
+
 const createRoadAddress = address => (
     `${strings.modalShowAddress.road}=${address.tie}, 
     ${strings.modalShowAddress.lane}=${address.ajorata}, 
@@ -117,6 +123,13 @@ export const createAddressFields = (
                         convertedAddress = r.map(address => (
                             address.kunta_nimi
                                 ? `${address.kunta_nimi} - ${address.urakka_nimi}`
+                                : null
+                        ));
+                        break;
+                    case 'railway2':
+                        convertedAddress = r.map(address => (
+                            address.kunta_nimi
+                                ? createRailwayAddress(address)
                                 : null
                         ));
                         break;
