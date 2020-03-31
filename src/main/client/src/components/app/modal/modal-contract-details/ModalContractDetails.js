@@ -135,17 +135,20 @@ const ModalContractDetails = (props: Props) => {
      * @param {number} objectId Feature's object Id.
      */
     const handleFeatureLocateClick = async (layerId: string, objectId: number) => {
-        const objectIdFieldName = nestedVal(
-            contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
-            ['name'],
-        );
-        const foundObject = await queryFeatures(
-            parseInt(layerId, 10),
-            `${objectIdFieldName} = '${objectId}'`,
-            null,
-        );
-        if (Array.isArray(foundObject.features) && foundObject.features.length > 0) {
-            await zoomToFeatures(view, foundObject.features);
+        const layer = layerList.find(l => l.id === layerId);
+        if (layer) {
+            const objectIdFieldName = nestedVal(
+                layer.fields.find(field => field.type === 'esriFieldTypeOID'),
+                ['name'],
+            );
+            const foundObject = await queryFeatures(
+                parseInt(layerId, 10),
+                `${objectIdFieldName} = '${objectId}'`,
+                null,
+            );
+            if (Array.isArray(foundObject.features) && foundObject.features.length > 0) {
+                await zoomToFeatures(view, foundObject.features);
+            }
         }
         handleModalCancel();
     };

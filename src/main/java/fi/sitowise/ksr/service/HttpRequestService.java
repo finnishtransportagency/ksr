@@ -699,11 +699,13 @@ public class HttpRequestService {
      */
     private List<BasicNameValuePair> filterParamsList(String key, String value, Layer layer, LayerAction action) {
         List<BasicNameValuePair> basicNameValuePairs = new ArrayList<>();
-        if (layer != null && layer.getRelations() != null) {
+        if (layer != null && layer.getRelations() != null && layer.getRelations().size() > 0) {
             layer.getRelations().forEach(relation -> {
                 layer.setRelationValues(relation);
                 basicNameValuePairs.add(filterParams(key, value, layer, action));
             });
+        } else {
+            basicNameValuePairs.add(filterParams(key, value, layer, action));
         }
         return basicNameValuePairs;
     }
