@@ -30,7 +30,7 @@ public class KsrGeoprocessingUtils {
             LayerService layerService) throws ParseException {
         List<NameValuePair> params = new ArrayList<>();
         JSONObject webMapAsJson = new JSONObject();
-        JSONObject printSelectedLayers = new JSONObject();
+        JSONObject customPrintParameters = new JSONObject();
         JSONParser parser = new JSONParser();
         Map<String, String[]> queryParams = request.getParameterMap();
 
@@ -38,8 +38,8 @@ public class KsrGeoprocessingUtils {
             for (String value : entry.getValue()) {
                 if (entry.getKey().equals("Web_Map_as_JSON")) {
                     webMapAsJson.put("Web_Map_as_JSON", value);
-                } else if (entry.getKey().equals("printSelectedLayers")) {
-                    printSelectedLayers.put("printSelectedLayers", value);
+                } else if (entry.getKey().equals("customPrintParameters")) {
+                    customPrintParameters.put("customPrintParameters", value);
                 } else {
                     params.add(new BasicNameValuePair(entry.getKey(), value));
                 }
@@ -48,9 +48,22 @@ public class KsrGeoprocessingUtils {
 
         webMapAsJson = (JSONObject) parser.parse(webMapAsJson.get("Web_Map_as_JSON").toString());
         JSONArray requestLayers = (JSONArray) (webMapAsJson != null ? webMapAsJson.get("operationalLayers") : null);
-        
-        printSelectedLayers = (JSONObject) parser.parse(printSelectedLayers.get("printSelectedLayers").toString());
-        JSONArray requestSelectedLayers = (JSONArray) (printSelectedLayers != null ? printSelectedLayers.get("layers") : null);
+        JSONObject layoutOptions =  (webMapAsJson != null ? (JSONObject) webMapAsJson.get("layoutOptions") : null);
+
+        customPrintParameters = (JSONObject) parser.parse(customPrintParameters.get("customPrintParameters").toString());
+        JSONArray requestSelectedLayers = (JSONArray) (customPrintParameters != null ? customPrintParameters.get("layers") : null);
+
+        if (layoutOptions != null && customPrintParameters != null) {
+            Object attributionsObject = customPrintParameters.get("attributions");
+
+            JSONObject attributions = new JSONObject();
+            attributions.put("AttributionsElement", attributionsObject);
+
+            JSONArray customTextElements = new JSONArray();
+            customTextElements.add(attributions);
+
+            layoutOptions.put("customTextElements", customTextElements);
+        }
 
         if (requestLayers != null) {
             for (Object entry : requestLayers) {
