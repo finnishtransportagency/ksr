@@ -414,7 +414,7 @@ class EsriMap extends Component<Props> {
             const layer = layerList.find(ll => nestedVal(
                 selectedFeature,
                 ['layer', 'id'],
-            ) === ll.id);
+            ).replace('.s', '') === ll.id);
 
             const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
             const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
