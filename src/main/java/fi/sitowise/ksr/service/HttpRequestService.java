@@ -318,7 +318,7 @@ public class HttpRequestService {
      * @return boolean whether URL should be treated as a Print Output Request.
      */
     private boolean isPrintOutputRequest(String endPointUrl) {
-        return endPointUrl.contains("Export%20Web%20Map%20Task/execute");
+        return endPointUrl.contains("Export%20Web%20Map/execute");
     }
 
     /**
