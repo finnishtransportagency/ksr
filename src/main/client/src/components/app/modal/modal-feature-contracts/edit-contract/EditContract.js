@@ -57,7 +57,8 @@ class EditContract extends Component<Props, State> {
 
         const contract = contracts
             .reduce((arr, c) => arr.concat(c.features), [])
-            .find(f => f.attributes[contractLayer.contractIdField] === contractNumber);
+            .find(f => f && f.attributes
+                && f.attributes[contractLayer.contractIdField] === contractNumber);
 
         const attributes = fields
             .map(

@@ -191,8 +191,13 @@ const handlePopupUpdate = (
                 const viewLayer = view.map.findLayerById(layerId);
                 if (viewLayer) {
                     // Need to make a change to trigger update.
-                    const copyLayer = viewLayer.popupTemplate.content;
-                    viewLayer.popupTemplate.content = copyLayer;
+                    if (viewLayer.popupTemplate != null) {
+                        const copyLayer = viewLayer.popupTemplate.content;
+                        viewLayer.popupTemplate.content = copyLayer;
+                    } else {
+                        const copyLayer = viewLayer.defaultPopupTemplate.content;
+                        viewLayer.defaultPopupTemplate.content = copyLayer;
+                    }
                 }
             }
         });
