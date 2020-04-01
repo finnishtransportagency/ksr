@@ -21,27 +21,31 @@ import { setActiveNav } from '../../../reducers/navigation/actions';
 
 const mapStateToProps = (state) => {
     const { layers } = state.table.features;
+    const { layerList } = state.map.layerGroups;
     const geometryDataSelected = layers
         .flatMap(f => f.data.filter(d => d._selected && d.geometry));
 
     let selectedLayerIds = geometryDataSelected.map(layer => layer._layerId);
     selectedLayerIds = [...new Set(selectedLayerIds)];
 
-    const printSelectedLayers = {
+    const activeLayers = layerList.filter(l => l.active);
+    let attributions = activeLayers.map(al => al.attribution);
+    attributions = [...new Set(attributions)].toString();
+
+    const customPrintParameters = {
         layers: selectedLayerIds.map(layerId => ({
             layerId,
             objectIds: geometryDataSelected
                 .filter(layer => layer._layerId === layerId)
                 .map(feature => feature._id),
         })),
+        attributions,
     };
 
-    const printServiceUrl = printSelectedLayers.layers.length > 0
-        ? `${state.map.mapConfig.printServiceUrl}?printSelectedLayers=${JSON.stringify(printSelectedLayers)}`
-        : `${state.map.mapConfig.printServiceUrl}?printSelectedLayers=${JSON.stringify({})}`;
+    const printServiceUrl = `${state.map.mapConfig.printServiceUrl}?customPrintParameters=${JSON.stringify(customPrintParameters)}`;
 
     return {
-        layerList: state.map.layerGroups.layerList,
+        layerList,
         mapCenter: state.map.mapConfig.mapCenter,
         mapScale: state.map.mapConfig.mapScale,
         printServiceUrl,

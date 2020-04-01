@@ -28,7 +28,7 @@ public class GeoprocessingController {
     private Pattern printProxyUrlPattern;
     private Pattern extractProxyUrlPattern;
     private final GeoprocessingService geoprocessingService;
-    static final String PRINT_CONTROLLER_URL = "/api/GPServer/Export Web Map Task";
+    static final String PRINT_CONTROLLER_URL = "/api/GPServer/Export Web Map";
     static final String EXTRACT_CONTROLLER_URL = "/api/GPServer/Extract/Extract Data Task";
     static final String GEOPROCESSING_URL = "/api/GPServer";
 
@@ -42,7 +42,7 @@ public class GeoprocessingController {
 
     @PostConstruct
     public void setUpGeoprocessingProxyUrlMatchers() {
-        String printPatternToMatch = "/api/GPServer/Export%20Web%20Map%20Task/(.*?)$";
+        String printPatternToMatch = "/api/GPServer/Export%20Web%20Map/(.*?)$";
         printProxyUrlPattern = Pattern.compile(KsrStringUtils.replaceMultipleSlashes(printPatternToMatch));
 
         String extractPatternToMatch = "/api/GPServer/Extract/Extract%20Data%20Task/(.*?)$";
