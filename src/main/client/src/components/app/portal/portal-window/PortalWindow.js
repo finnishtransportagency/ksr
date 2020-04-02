@@ -4,10 +4,10 @@ import { createPortal } from 'react-dom';
 import { PortalWrapper } from './styles';
 import TableContainer from '../../table/TableContainer';
 import strings from '../../../../translations';
-import store from '../../../../store';
 
 type Props = {
     togglePortal: Function,
+    activeTable: string,
 };
 
 type State = {
@@ -48,14 +48,8 @@ class PortalWindow extends Component<Props, State> {
         externalWindow.moveTo(0, 0);
         externalWindow.resizeTo(window.screen.width, window.screen.height);
         window.addEventListener('windowPortalUpdate', () => {
-            if (!store.getState().table.features.activeTable) {
-                this.handleEmptyStyle(externalWindow);
-            } else {
-                this.copyStyles(document, externalWindow.document);
-            }
             this.render();
         });
-        this.handleEmptyStyle(externalWindow);
     }
 
     handleClose = () => {
@@ -90,20 +84,25 @@ class PortalWindow extends Component<Props, State> {
         });
     }
 
-    handleEmptyStyle = (externalWindow) => {
-        if (!store.getState().table.features.activeTable) {
-            const font: any = document.createElement('link');
-            font.href = 'https://fonts.googleapis.com/css?family=Exo+2:400,500';
-            font.rel = 'stylesheet';
-            externalWindow.document.head.appendChild(font);
-            externalWindow.document.body.style = 'margin: 0; background: #444444;';
-        }
+    handleEmptyStyle = (externalWindow: any) => {
+        const font: any = document.createElement('link');
+        font.href = 'https://fonts.googleapis.com/css?family=Exo+2:400,500';
+        font.rel = 'stylesheet';
+        externalWindow.document.head.appendChild(font);
+        externalWindow.document.body.style = 'margin: 0; background: #444444;';
     }
 
     render() {
-        const { elementContainer } = this.state;
+        const { externalWindow, elementContainer } = this.state;
+        const { activeTable } = this.props;
 
-        if (elementContainer && store.getState().table.features.activeTable) {
+        if (!activeTable && externalWindow) {
+            this.handleEmptyStyle(externalWindow);
+        } else if (externalWindow && elementContainer) {
+            this.copyStyles(document, externalWindow.document);
+        }
+
+        if (elementContainer && activeTable) {
             return createPortal(
                 <PortalWrapper>
                     <TableContainer />
@@ -112,7 +111,7 @@ class PortalWindow extends Component<Props, State> {
             );
         }
 
-        if (elementContainer && !store.getState().table.features.activeTable) {
+        if (elementContainer && !activeTable) {
             return createPortal(
                 <div style={{
                     textAlign: 'center',
