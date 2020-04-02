@@ -8,6 +8,7 @@ import { colorTableEdited, colorTableSelected } from '../../../ui/defaultStyles'
 import CustomTableView from './custom-table/CustomTableView';
 import { toDisplayDate } from '../../../../utils/date';
 import { equals } from '../../../../utils/cellEditValidate';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     data: Array<any>,
@@ -34,10 +35,18 @@ class ReactTableView extends Component<Props, State> {
         const {
             data, currentCellData, activeAdminTool, activeTable, columns, layerList,
         } = this.props;
+        const isChildLayer = nestedVal(
+            layerList.find(ll => ll.id === activeTable),
+            ['parentLayer'],
+        ) !== null;
 
         const dataChanged = JSON.stringify(data) !== JSON.stringify(nextProps.data);
         const currentCellChanged = currentCellData.title !== null
             && nextProps.currentCellData.title !== null;
+        const delayedChildLayerUpdate = currentCellData.title === null
+            && nextProps.currentCellData.title === null
+            && JSON.stringify(data) === JSON.stringify(nextProps.data)
+            && isChildLayer;
         const adminChanged = nextProps.activeAdminTool !== activeAdminTool;
         const tableChanged = nextProps.activeTable !== activeTable;
         const layerListChanged = JSON.stringify(nextProps.layerList) !== JSON.stringify(layerList);
@@ -49,7 +58,8 @@ class ReactTableView extends Component<Props, State> {
             || dataChanged
             || currentCellChanged
             || filteredColumnsChanged
-            || layerListChanged;
+            || layerListChanged
+            || delayedChildLayerUpdate;
     }
 
     render() {
