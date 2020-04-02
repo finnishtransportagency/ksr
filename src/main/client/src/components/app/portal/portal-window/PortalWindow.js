@@ -7,6 +7,7 @@ import strings from '../../../../translations';
 
 type Props = {
     togglePortal: Function,
+    activeTable: string,
 };
 
 type State = {
@@ -30,19 +31,18 @@ class PortalWindow extends Component<Props, State> {
     componentDidMount() {
         let { externalWindow, elementContainer } = this.state;
         externalWindow = window.open('', '', `width=${window.screen.availWidth},height=${window.screen.availHeight - 58}`);
+        const base: any = document.createElement('base');
         // eslint-disable-next-line no-restricted-globals
-        externalWindow.document.write(`<base href="${location.origin}${location.pathname}">`);
-        externalWindow.document.write('<html><head><link [href]=sanitizer.bypassSecurityTrustResourceUrl("css/all.min.css)" rel="stylesheet" type="text/css"></head></html>');
+        base.href = `${location.origin}${location.pathname}`;
+        externalWindow.document.head.appendChild(base);
         externalWindow.document.title = strings.portalWindow.portalTitle;
         elementContainer = document.createElement('div');
         externalWindow.document.body.appendChild(elementContainer);
         this.setState({ externalWindow, elementContainer });
-        this.copyStyles(document, externalWindow.document);
         externalWindow.onbeforeunload = this.handleClose;
         externalWindow.moveTo(0, 0);
         externalWindow.resizeTo(window.screen.width, window.screen.height);
         window.addEventListener('windowPortalUpdate', () => {
-            this.copyStyles(document, externalWindow.document);
             this.render();
         });
     }
@@ -57,18 +57,67 @@ class PortalWindow extends Component<Props, State> {
 
     copyStyles = (sourceDoc: any, targetDoc: any) => {
         Array.from(sourceDoc.styleSheets).forEach((styleSheet) => {
-            targetDoc.head.appendChild(styleSheet.ownerNode.cloneNode(true));
+            try {
+                if (styleSheet.cssRules) {
+                    const newStyleEl = sourceDoc.createElement('style');
+
+                    Array.from(styleSheet.cssRules).forEach((cssRule) => {
+                        newStyleEl.appendChild(sourceDoc.createTextNode(cssRule.cssText));
+                    });
+
+                    targetDoc.head.appendChild(newStyleEl);
+                } else {
+                    const newLinkEl = sourceDoc.createElement('link');
+
+                    newLinkEl.rel = 'stylesheet';
+                    newLinkEl.href = styleSheet.href;
+                    targetDoc.head.appendChild(newLinkEl);
+                }
+            } catch (e) {
+                // no need to do anything - ignore
+            }
         });
     }
 
-    render() {
-        const { elementContainer } = this.state;
+    handleEmptyStyle = (externalWindow: any) => {
+        const font: any = document.createElement('link');
+        font.href = 'https://fonts.googleapis.com/css?family=Exo+2:400,500';
+        font.rel = 'stylesheet';
+        externalWindow.document.head.appendChild(font);
+        externalWindow.document.body.style = 'margin: 0; background: #444444;';
+    }
 
-        if (elementContainer) {
+    render() {
+        const { externalWindow, elementContainer } = this.state;
+        const { activeTable } = this.props;
+
+        if (!activeTable && externalWindow) {
+            this.handleEmptyStyle(externalWindow);
+        } else if (externalWindow && elementContainer) {
+            this.copyStyles(document, externalWindow.document);
+        }
+
+        if (elementContainer && activeTable) {
             return createPortal(
                 <PortalWrapper>
                     <TableContainer />
                 </PortalWrapper>,
+                elementContainer,
+            );
+        }
+
+        if (elementContainer && !activeTable) {
+            return createPortal(
+                <div style={{
+                    textAlign: 'center',
+                    color: '#F1F1F1',
+                    paddingTop: '80px',
+                    fontFamily: '"Exo 2", Arial, sans-serif',
+                    fontWeight: 400,
+                }}
+                >
+                    {strings.table.noTableText}
+                </div>,
                 elementContainer,
             );
         }

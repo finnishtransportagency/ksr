@@ -5,6 +5,7 @@ import { togglePortal } from '../../../../reducers/portal/actions';
 
 const mapStateToProps = state => ({
     portalIsOpen: state.portal.togglePortal,
+    activeTable: state.table.features.activeTable,
 });
 
 const mapDispatchToProps = dispatch => ({

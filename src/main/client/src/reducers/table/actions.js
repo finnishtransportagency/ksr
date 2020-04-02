@@ -10,6 +10,7 @@ import { activateLayers } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
+import { updatePortal } from '../portal/actions';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -351,6 +352,7 @@ export const closeTableTab = (
                                 layerId,
                             });
                             view.popup.close();
+                            dispatch(updatePortal());
                         },
                     ));
                 }, 500);
@@ -367,6 +369,7 @@ export const closeTableTab = (
                     layerId,
                 });
                 view.popup.close();
+                dispatch(updatePortal());
             },
         ));
     }
