@@ -270,7 +270,9 @@ export const clearTableData = (
     editedLayers: Object[],
     featureType: string,
     addressField: string,
+    activeAdminTool: string,
 ) => (dispatch: Function) => {
+    console.log(activeAdminTool);
     const editedLayer = editedLayers[0];
     const containsEdit = editedLayer && editedLayer.data
         .some(d => d._edited.length > 0);
@@ -296,7 +298,6 @@ export const clearTableData = (
                                     dispatch({
                                         type: types.CLEAR_TABLE_DATA,
                                     });
-                                    view.popup.close();
                                 });
                         },
                         () => {
@@ -304,6 +305,11 @@ export const clearTableData = (
                                 type: types.CLEAR_TABLE_DATA,
                             });
                             view.popup.close();
+                            dispatch({
+                                type: types.SET_ACTIVE_ADMIN_TOOL,
+                                layerId: editedLayer.id,
+                                layerList: editedLayers,
+                            });
                         },
                     ));
                 }, 500);
@@ -319,6 +325,13 @@ export const clearTableData = (
                     type: types.CLEAR_TABLE_DATA,
                 });
                 view.popup.close();
+                if (activeAdminTool) {
+                    dispatch({
+                        type: types.SET_ACTIVE_ADMIN_TOOL,
+                        layerId: activeAdminTool,
+                        layerList: editedLayers,
+                    });
+                }
             },
         ));
     }

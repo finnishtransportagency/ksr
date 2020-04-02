@@ -14,6 +14,7 @@ type Props = {
     editedLayers: Array<Object>,
     featureType: string,
     addressField: string,
+    activeAdminTool: string,
 };
 
 /** Table actions that can target all open tables */
@@ -28,6 +29,7 @@ const AllLayersView = ({
     editedLayers,
     featureType,
     addressField,
+    activeAdminTool,
 }: Props) => (
     <Fragment>
         <Table.Button
@@ -36,7 +38,7 @@ const AllLayersView = ({
             disabled={!originalLayers.length}
             onClick={
                 originalLayers.length ? () => {
-                    clearTableData(view, editedLayers, featureType, addressField);
+                    clearTableData(view, editedLayers, featureType, addressField, activeAdminTool);
                 } : null}
         >
             <i className="fas fa-trash" />

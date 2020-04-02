@@ -98,8 +98,8 @@ const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    clearTableData: (view, editedLayers, featureType, addressField) => {
-        dispatch(clearTableData(view, editedLayers, featureType, addressField));
+    clearTableData: (view, editedLayers, featureType, addressField, activeAdminTool) => {
+        dispatch(clearTableData(view, editedLayers, featureType, addressField, activeAdminTool));
     },
     saveEditedFeatures: (view, editedLayers, featureType, addressField) => {
         dispatch(saveEditedFeatures(view, editedLayers, featureType, addressField));

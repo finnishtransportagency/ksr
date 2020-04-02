@@ -104,6 +104,7 @@ const TableButtonsView = ({
             editedLayers={editedLayers}
             featureType={featureType}
             addressField={addressField}
+            activeAdminTool={activeAdminTool}
         />
         <ActiveLayerView
             isOpen={isOpen}
