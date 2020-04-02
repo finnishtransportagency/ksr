@@ -12,7 +12,7 @@ export const notAllowedFields = ['objectid', 'object', 'id', 'fid', 'symbolident
  *
  * @returns {Object[]} Filtered list of fields or field names.
  */
-export const filterNotAllowedFields = (fields: Object[]): Object[] => (
+export const filterNotAllowedFields = (fields: Object[] = []): Object[] => (
     fields.filter(f => !notAllowedFields.includes(f.name.toString().toLowerCase()))
 );
 

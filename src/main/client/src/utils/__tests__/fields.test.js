@@ -33,4 +33,8 @@ describe('fields tests', () => {
     it('should return only allowed fields', () => {
         expect(filterNotAllowedFields(fields)).toEqual(expected);
     });
+
+    it('should return empty list if layer has no fields', () => {
+        expect(filterNotAllowedFields(undefined)).toEqual([]);
+    });
 });
