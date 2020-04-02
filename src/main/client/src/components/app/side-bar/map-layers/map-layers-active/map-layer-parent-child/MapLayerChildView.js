@@ -9,6 +9,7 @@ import LayerSettings from '../../../../../ui/blocks/LayerSettings';
 import MapLayerTitle from '../../../../shared/MapLayerTitle';
 import { layerViewable } from '../../../../../../utils/layers';
 import MapLayerToggle from '../map-layer-settings/MapLayerToggle';
+import { themeLayerFields } from '../../../../../../utils/fields';
 
 type Props = {
     layer: Object,
@@ -45,14 +46,16 @@ const MapLayerChildView = ({
                         <MapLayerTitle layer={layer} childLayer />
                     </LayerSettings.Title>
                     <LayerSettings.Icons>
-                        <LayerSettings.Icon
-                            role="button"
-                            tabIndex={0}
-                            onKeyPress={() => createThemeLayer(layer.id)}
-                            onClick={() => createThemeLayer(layer.id)}
-                            className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
-                            title={strings.mapLayerSettings.createThemeLayer}
-                        />
+                        {themeLayerFields(layer).length > 0 && (
+                            <LayerSettings.Icon
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={() => createThemeLayer(layer.id)}
+                                onClick={() => createThemeLayer(layer.id)}
+                                className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
+                                title={strings.mapLayerSettings.createThemeLayer}
+                            />
+                        )}
                     </LayerSettings.Icons>
                 </LayerSettings.ContentTop>
                 <LayerSettings.Slider>

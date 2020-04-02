@@ -39,3 +39,25 @@ export const childLayerDomainValues = (childField: Object) => {
         ),
     };
 };
+
+/**
+ * Finds fields that can be used for theme layer creation.
+ *
+ * @param {Object} layer Layer containing fields.
+ *
+ * @returns {Object[]} Filtered fields that can be used by theme layer creation.
+ */
+export const themeLayerFields = (layer: Object) => {
+    if (layer && layer.fields) {
+        return layer.fields.filter(field => (field.type === 'esriFieldTypeDouble'
+            || field.type === 'esriFieldTypeInteger'
+            || field.type === 'esriFieldTypeSmallInteger')
+            && !notAllowedFields.some(f => f === field.name.toLowerCase()))
+            .map(field => ({
+                value: field.name,
+                label: field.label ? field.label : field.alias,
+            }));
+    }
+
+    return [];
+};

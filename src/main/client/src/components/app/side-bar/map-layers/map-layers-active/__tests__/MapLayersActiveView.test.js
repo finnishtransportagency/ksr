@@ -13,6 +13,10 @@ const setup = () => {
                 name: 'Layer 1',
                 type: 'agfs',
                 _source: 'search',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -26,6 +30,10 @@ const setup = () => {
                 name: 'Layer 2',
                 type: 'agfs',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -39,6 +47,10 @@ const setup = () => {
                 name: 'Layer 3',
                 type: 'wms',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -52,6 +64,10 @@ const setup = () => {
                 name: 'Layer 4',
                 type: 'wmts',
                 _source: 'search',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
             },
             {
                 id: '5',
@@ -59,6 +75,10 @@ const setup = () => {
                 name: 'Layer 5',
                 type: 'agfs',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -74,6 +94,10 @@ const setup = () => {
                 name: 'Layer 6',
                 type: 'agfl',
                 _source: 'search',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
             },
             {
                 id: '7',
@@ -81,6 +105,10 @@ const setup = () => {
                 name: 'Layer 7',
                 type: 'agfl',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,

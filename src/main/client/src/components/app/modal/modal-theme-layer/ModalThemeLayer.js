@@ -4,6 +4,7 @@ import strings from '../../../../translations/fi';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import ModalThemeLayerView from './ModalThemeLayerView';
 import { createThemeLayer, resetLayerTheme } from '../../../../utils/theme-layer/createThemeLayer';
+import { themeLayerFields } from '../../../../utils/fields';
 
 type Props = {
     view: Object,
@@ -140,14 +141,7 @@ class ModalThemeLayer extends Component<Props, State> {
             },
         ];
 
-        const fields = layer && layer.fields
-            ? layer.fields.filter(field =>
-                field.type === 'esriFieldTypeDouble'
-                || field.type === 'esriFieldTypeInteger'
-                || field.type === 'esriFieldTypeSmallInteger')
-                .map(field =>
-                    ({ value: field.name, label: field.label ? field.label : field.alias }))
-            : [];
+        const fields = themeLayerFields(layer);
 
         return (
             <ModalContainer
