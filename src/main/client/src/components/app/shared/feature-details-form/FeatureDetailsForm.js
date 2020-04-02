@@ -1,5 +1,5 @@
 // @flow
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { nestedVal } from '../../../../utils/nestedValue';
 import FeatureDetailsFormView from './FeatureDetailsFormView';
 import { queryFeatures } from '../../../../api/search/searchQuery';
@@ -39,6 +39,7 @@ const FeatureDetailsForm = (props: Props) => {
      * like 'objectid' that will be used for updating existing feature.
      */
     useEffect(() => {
+        const relationColumnOut = nestedVal(layer.relations.find(c => c), ['relationColumnOut'], '');
         const foundFields = layer.fields
             .map(field => ({
                 ...field,
@@ -57,8 +58,8 @@ const FeatureDetailsForm = (props: Props) => {
                     || !field.editable
                     || field.name === layer.updaterField
                     || field.name === 'CONTRACT_UUID'
-                    || (layer.contractIdField !== layer.relations.find(c => c).relationColumnOut
-                        && layer.relations.find(c => c).relationColumnOut === field.name)
+                    || (layer.contractIdField !== relationColumnOut
+                        && relationColumnOut === field.name)
                     || (formType === 'edit'
                         && field.unique),
             }))
@@ -135,7 +136,7 @@ const FeatureDetailsForm = (props: Props) => {
 
             setValidForm(
                 (requiredFields.every(reqField => reqField.valid)
-                && requiredUniqueFields.every(reqField => reqField.valid))
+                    && requiredUniqueFields.every(reqField => reqField.valid))
                 && !requiredUniqueContainsEmptyValue,
             );
         }
