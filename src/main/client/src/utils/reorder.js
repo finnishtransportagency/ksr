@@ -27,7 +27,7 @@ export const reorder = (list: Object[], startIndex: number, endIndex: number): O
 export const reorderChildLayers = (layerList: Object[]) => {
     let reorderedList = layerList;
     const childLayers = layerList.filter(layer => layer.parentLayer && layer._source !== 'search')
-        .sort((a, b) => b.layerOrder - a.layerOrder);
+        .sort((a, b) => a.originalLayerOrder - b.originalLayerOrder);
 
     childLayers.forEach((childLayer) => {
         const childLayerIndex = reorderedList

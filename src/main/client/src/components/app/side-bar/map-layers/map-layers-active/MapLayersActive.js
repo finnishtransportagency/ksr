@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import type { DropResult } from 'react-beautiful-dnd';
-import { reorder, reorderChildLayers } from '../../../../../utils/reorder';
+import { reorder } from '../../../../../utils/reorder';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersActiveView from './MapLayersActiveView';
 import DataLayersActiveView from './data-layers-active/DataLayersActiveView';
@@ -52,7 +52,7 @@ class MapLayersActive extends Component<Props, State> {
             result.destination.index,
         );
 
-        setLayerList(reorderChildLayers(layerListReorder.concat(dataLayerList)));
+        setLayerList(layerListReorder.concat(dataLayerList));
     };
 
     onOpacityChange = (evt: Number, id: Number) => {

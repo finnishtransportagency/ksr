@@ -15,7 +15,7 @@ import { nestedVal } from '../../utils/nestedValue';
 
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
-    layerList,
+    layerList: reorderChildLayers(layerList),
 });
 
 export const updateLayer = (layer: Object) => ({
@@ -33,11 +33,13 @@ export const getLayerGroups = () => async (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
 
     const layerGroups = await fetchLayerGroups();
-    let layerList = layerGroups
-        .flatMap(lg => lg.layers.map(layer => ({ ...layer, layerGroupName: lg.name })))
+    const layerList = layerGroups
+        .flatMap(lg => lg.layers.map(layer => ({
+            ...layer,
+            layerGroupName: lg.name,
+            originalLayerOrder: layer.layerOrder,
+        })))
         .sort((a, b) => b.layerOrder - a.layerOrder);
-
-    layerList = reorderChildLayers(layerList);
 
     // Update layers fields
     layerList.forEach((layer) => {
