@@ -85,13 +85,19 @@ export const activateLayers = (
 
     view.popup.close();
 
+    // Add related child/parent -layers if either is included in layers to be activated.
+    let layersToBeActivated = layers.concat(layerList
+        .filter(ll => layers.some(l => ll.id === l.parentLayer)));
+    layersToBeActivated = layersToBeActivated.concat(layerList
+        .filter(ll => layersToBeActivated.some(l => ll.parentLayer === l.id)));
+
     dispatch({
         type: types.SET_LOADING_LAYERS,
-        layerIds: layers.map(l => l.id),
+        layerIds: layersToBeActivated.map(l => l.id),
     });
 
     let { failedLayers } = await addLayers(
-        layers,
+        layersToBeActivated,
         view,
         workspace !== undefined,
         false,
@@ -103,7 +109,7 @@ export const activateLayers = (
         parentLayer: nestedVal(layerList.find(ll => ll.id === fl), ['parentLayer']),
     }));
 
-    await Promise.all(layers.map(async (layer) => {
+    await Promise.all(layersToBeActivated.map(async (layer) => {
         if (!failedLayers.some(fl => fl.id === layer.id)
             && !failedLayers.some(fl => fl.parentLayer === layer.id)) {
             if (layer.id === activeAdminTool) {
@@ -132,7 +138,8 @@ export const activateLayers = (
                             || wl.userLayerId === layer.id));
 
                 let visible = true;
-                if (layer.parentLayer && layers.some(l => l.id === layer.parentLayer)) {
+                if (layer.parentLayer && layersToBeActivated
+                    .some(l => l.id === layer.parentLayer)) {
                     visible = layer.name.toLowerCase().includes('voimassaoleva');
                 }
 
@@ -179,10 +186,12 @@ export const activateLayers = (
         }
     }));
 
-    if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layers));
+    if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layersToBeActivated));
 };
 
-export const deactivateLayer = (layerId: string) => (dispatch: Function) => {
+export const deactivateLayer = (layerId: string) => (dispatch: Function, getState: Function) => {
+    const { layerList } = dispatch(getState).map.layerGroups;
+
     dispatch({
         type: types.DEACTIVATE_LAYER,
         layerId,
@@ -192,6 +201,21 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function) => {
         type: types.REMOVE_LAYER_FROM_VIEW,
         layerIds: [layerId],
     });
+
+    const childLayers = layerList.filter(ll => ll.parentLayer === layerId);
+    if (childLayers.length) {
+        childLayers.forEach((childLayer) => {
+            dispatch({
+                type: types.DEACTIVATE_LAYER,
+                layerId: childLayer.id,
+            });
+        });
+
+        dispatch({
+            type: types.REMOVE_LAYER_FROM_VIEW,
+            layerIds: childLayers.map(childLayer => childLayer.id),
+        });
+    }
 };
 
 export const getActiveLayerTab = () => ({

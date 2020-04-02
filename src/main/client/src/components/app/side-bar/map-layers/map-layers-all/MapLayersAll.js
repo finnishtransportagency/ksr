@@ -58,18 +58,7 @@ class MapLayersActive extends Component<Props> {
                 setSearchFeatures([foundLayer]);
                 hideLayer([foundLayer.id.replace('.s', '')]);
             }
-            if (layerList.some(l => l.parentLayer === foundLayer.id)) {
-                activateLayers(layerList.filter(l => l.parentLayer === foundLayer.id)
-                    .concat(foundLayer));
-            } else {
-                activateLayers([foundLayer]);
-            }
-        } else if (layerList.some(l => l.parentLayer === foundLayer.id)) {
-            layerList.filter(l => l.parentLayer === foundLayer.id).forEach(layer => (
-                deactivateLayer(layer.id)
-            ));
-
-            deactivateLayer(foundLayer.id);
+            activateLayers([foundLayer]);
         } else {
             deactivateLayer(foundLayer.id);
         }
