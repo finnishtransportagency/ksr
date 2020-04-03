@@ -61,6 +61,7 @@ class SketchTool extends Component<Props, State> {
         this.state = { ...initialState };
 
         this.drawNewFeatureButton = createRef();
+        this.drawNewAreaButton = createRef();
         this.drawRectangleButton = createRef();
         this.drawPolygonButton = createRef();
         this.drawCircleButton = createRef();
@@ -117,8 +118,9 @@ class SketchTool extends Component<Props, State> {
                 'esri/geometry/Polygon',
                 'esri/geometry/Polyline',
                 'esri/Graphic',
+                'esri/geometry/Point',
             ])
-            .then(([geometryEngine, Polygon, Polyline, Graphic]) => {
+            .then(([geometryEngine, Polygon, Polyline, Graphic, Point]) => {
                 const {
                     view,
                     draw,
@@ -126,11 +128,11 @@ class SketchTool extends Component<Props, State> {
                     setActiveTool,
                     tempGraphicsLayer,
                     setActiveToolMenu,
-                    editModeActive,
                     setTempGraphicsLayer,
                 } = this.props;
 
                 const drawNewFeatureButton = this.drawNewFeatureButton.current;
+                const drawNewAreaButton = this.drawNewAreaButton.current;
                 const drawRectangleButton = this.drawRectangleButton.current;
                 const drawPolygonButton = this.drawPolygonButton.current;
                 const drawCircleButton = this.drawCircleButton.current;
@@ -156,6 +158,14 @@ class SketchTool extends Component<Props, State> {
                     }
                 });
 
+                drawNewAreaButton.addEventListener('click', () => {
+                    const { geometryType } = this.props;
+                    setActiveTool('sketchActiveAdmin');
+                    const convertedGeometryType = convertEsriGeometryType(geometryType);
+                    sketchViewModel.create(convertedGeometryType);
+                    drawNewAreaButton.style.backgroundColor = styles.colorMainDark;
+                });
+
                 drawRectangleButton.addEventListener('click', () => {
                     const { active } = this.props;
                     if (active === 'sketchRectangle') {
@@ -177,7 +187,6 @@ class SketchTool extends Component<Props, State> {
                         setActiveTool('sketchPolygon');
                         sketchViewModel.create('polygon');
                         drawPolygonButton.style.backgroundColor = styles.colorMainDark;
-                        this.setState({ validGeometry: true });
                     }
                 });
 
@@ -212,8 +221,8 @@ class SketchTool extends Component<Props, State> {
                     };
                 };
 
-                const createLabelGraphic = (geometry, value) => new Graphic({
-                    geometry: geometry.extent.center,
+                const createLabelGraphic = (geometry, value, geomIndex?) => new Graphic({
+                    geometry,
                     symbol: {
                         type: 'text',
                         color: '#000000',
@@ -229,6 +238,7 @@ class SketchTool extends Component<Props, State> {
                     type: 'draw-measure-label',
                     id: 'area',
                     visible: true,
+                    geomIndex,
                 });
 
                 const measurement = (polygon: Object) => {
@@ -263,8 +273,6 @@ class SketchTool extends Component<Props, State> {
                         const clonedSymbol = graphic.symbol.clone();
                         clonedSymbol.outline = createSketchOutlineGraphic(false);
                         graphic.symbol = clonedSymbol;
-
-                        this.setState({ validGeometry: false });
                     }
                     graphic.type = 'sketch-graphic';
                     setTempGraphicsLayer(tempGraphicsLayer);
@@ -287,16 +295,20 @@ class SketchTool extends Component<Props, State> {
                                 && event.graphic.geometry.rings[0].length > 2) {
                                 const { geometry } = event.graphic;
                                 const { rings } = geometry;
+                                const geomIndex = tempGraphicsLayer.graphics.items.filter(a => a.type === 'sketch-graphic').length;
                                 const polygon = createPolygon(rings);
                                 const measure = measurement(polygon);
-                                const areaLabel = createLabelGraphic(geometry, measure);
-                                const removeLabel = tempGraphicsLayer.graphics.items[0];
+                                const areaLabel = createLabelGraphic(geometry, measure, geomIndex);
                                 if (event.target.layer.graphics.length !== 0) {
-                                    tempGraphicsLayer.remove(removeLabel);
+                                    const tempLabel = tempGraphicsLayer.graphics.items
+                                        .find(item => item.type === 'draw-measure-label'
+                                            && item.geomIndex === geomIndex);
+                                    if (tempLabel) {
+                                        tempGraphicsLayer.remove(tempLabel);
+                                    }
                                 }
                                 tempGraphicsLayer.add(areaLabel);
                             }
-                            this.setState({ validGeometry: true });
                         }
                     } else if (event.state === 'complete') {
                         const { graphic } = event;
@@ -307,13 +319,6 @@ class SketchTool extends Component<Props, State> {
                             setPropertyInfo,
                             authorities,
                         } = this.props;
-
-                        // Object to save is at index [0], area label moved to index [1]
-                        if (tempGraphicsLayer.graphics.items[0].type === 'draw-measure-label') {
-                            const swapAreaLabel = tempGraphicsLayer.graphics.items[0];
-                            tempGraphicsLayer.remove(swapAreaLabel);
-                            tempGraphicsLayer.add(swapAreaLabel);
-                        }
 
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
@@ -353,15 +358,11 @@ class SketchTool extends Component<Props, State> {
                         const swapAreaLabel = tempGraphicsLayer.graphics.items[0];
                         tempGraphicsLayer.remove(swapAreaLabel);
                     }
-                    if (event.graphics[0].geometry.isSelfIntersecting
-                        || (!editModeActive
-                            && event.graphics[0].geometry.rings
-                            && event.graphics[0].geometry.rings.length > 1)) {
+
+                    if (event.graphics[0].geometry.isSelfIntersecting) {
                         const clonedSymbol = event.graphics[0].symbol.clone();
                         clonedSymbol.outline = createSketchOutlineGraphic(false);
                         event.graphics[0].symbol = clonedSymbol;
-
-                        this.setState({ validGeometry: false });
                     } else {
                         const updateModeActive = event.type === 'redo'
                             || event.type === 'undo'
@@ -376,19 +377,35 @@ class SketchTool extends Component<Props, State> {
                         ) {
                             const { geometry } = event.graphics[0];
                             const { rings } = geometry;
-                            const areaLabel = createLabelGraphic(geometry,
-                                measurement(createPolygon(rings)));
+                            const areaLabels = rings.map((ring) => {
+                                const labelPoint = new Point({
+                                    x: ring.map(r => r[0])
+                                        .reduce((a, c) => a + c, 0) / ring.length,
+                                    y: ring.map(r => r[1])
+                                        .reduce((a, c) => a + c, 0) / ring.length,
+                                    spatialReference: geometry.extent.center.spatialReference,
+                                });
+                                return createLabelGraphic(
+                                    labelPoint,
+                                    measurement(createPolygon(ring)),
+                                );
+                            });
                             if (event.state !== 'start') {
-                                const removeLabel = tempGraphicsLayer.graphics.items[1];
-                                tempGraphicsLayer.remove(removeLabel);
+                                const labelGraphics = tempGraphicsLayer.graphics.items
+                                    .filter(graphic => graphic.type === 'draw-measure-label');
+                                labelGraphics.forEach(label => tempGraphicsLayer.remove(label));
                             }
                             if (updateModeActive) {
-                                tempGraphicsLayer.add(areaLabel);
+                                areaLabels.forEach((areaLabel) => {
+                                    tempGraphicsLayer.add(areaLabel);
+                                });
                             }
                         }
-                        this.setState({ validGeometry: true });
                     }
+
+                    this.setState({ validGeometry: this.validGeometry() });
                 };
+
 
                 sketchViewModel.on('create', selectFeaturesFromDraw);
                 sketchViewModel.on(['redo', 'undo', 'update'], onUpdate);
@@ -449,8 +466,23 @@ class SketchTool extends Component<Props, State> {
         return layer ? layer.type !== 'agfl' && !nestedVal(layer, ['propertyIdField']) && layer.layerPermission.createLayer : false;
     };
 
+    validGeometry = () => {
+        const { tempGraphicsLayer } = this.props;
+
+        if (tempGraphicsLayer) {
+            const currentGeomItems = tempGraphicsLayer.graphics.items
+                .filter(item => item.type === 'sketch-graphic');
+
+            return !currentGeomItems.some(item => item.geometry.isSelfIntersecting);
+        }
+
+        return false;
+    };
+
     // Assign constructor ref flowtypes
     drawNewFeatureButton: any;
+
+    drawNewAreaButton: any;
 
     drawRectangleButton: any;
 
@@ -471,6 +503,8 @@ class SketchTool extends Component<Props, State> {
             && tempGraphicsLayer.graphics
             && tempGraphicsLayer.graphics.filter(g => g.type === 'sketch-graphic').length > 0;
 
+        const showNewAreaButton = hasAdminGraphics && editSketchIcon === 'polygon';
+
         return (
             <Fragment>
                 <SketchToolView
@@ -490,11 +524,13 @@ class SketchTool extends Component<Props, State> {
                     removeSketch={this.removeSketch}
                     showAdminView={this.showAdminView()}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
+                    drawNewAreaButtonRef={this.drawNewAreaButton}
                     hasAdminGraphics={hasAdminGraphics}
                     setActiveModal={setActiveModal}
                     editModeActive={editModeActive}
                     validGeometry={validGeometry}
                     activeTool={active}
+                    showNewAreaButton={showNewAreaButton}
                 />
             </Fragment>
         );

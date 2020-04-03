@@ -10,6 +10,7 @@ import { formatPropertyInfoToSaveFormat, propertyIdFormat, validatePropertyId } 
 import { queryFeatures } from '../../../../api/search/searchQuery';
 import { zoomToFeatures } from '../../../../utils/map';
 import { fetchPropertyInfo } from '../../../../api/search/searchProperty';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     layer: Object,
@@ -26,13 +27,13 @@ type Props = {
 };
 
 type State = {
-    copiedFeature: ?Object,
+    copiedFeatures: Object[],
     existingAttributes: Object,
     formOptions: Object,
 };
 
 const initialState = {
-    copiedFeature: null,
+    copiedFeatures: null,
     existingAttributes: {},
     formOptions: {
         editedFields: [],
@@ -43,17 +44,19 @@ const initialState = {
 class ModalFilter extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        const copiedFeature = props.layer.graphics.items.length
-            ? props.layer.graphics.items[0]
-            : null;
+        const copiedFeatures = props.layer.graphics.items.length
+            ? props.layer.graphics.items.filter(graphic => graphic.type === 'sketch-graphic')
+            : [];
 
-        const existingAttributes = copiedFeature && copiedFeature.attributes
-            ? copiedFeature.attributes
+        const existingAttributes = copiedFeatures
+        && copiedFeatures.length
+        && copiedFeatures[0].attributes
+            ? copiedFeatures[0].attributes
             : {};
 
         this.state = {
             ...initialState,
-            copiedFeature,
+            copiedFeatures,
             existingAttributes,
         };
     }
@@ -117,27 +120,31 @@ class ModalFilter extends Component<Props, State> {
             activeLayer,
         } = this.props;
 
-        const { copiedFeature, formOptions } = this.state;
+        const { copiedFeatures, formOptions } = this.state;
         const combinedData = {
             attributes: formOptions.editedFields,
-            geometry: copiedFeature ? copiedFeature.geometry : null,
+            geometry: copiedFeatures[0]
+                ? copiedFeatures[0].geometry
+                : {},
         };
+
+        combinedData.geometry.rings = copiedFeatures
+            .flatMap(data => nestedVal(data, ['geometry', 'rings']));
+
         const feature = await createAddressFields(combinedData, featureType, addressField);
         let featureId = 0;
-        if (editModeActive && copiedFeature) {
+        if (editModeActive && copiedFeatures.length) {
             // Filter unchanged attributes.
             feature.attributes = Object.entries(feature.attributes).reduce((acc, cur) => {
-                if (cur[1] !== copiedFeature.attributes[cur[0]]
-                    && !(!cur[1] && !copiedFeature.attributes[cur[0]])) {
+                if (cur[1] !== copiedFeatures[0].attributes[cur[0]]
+                    && !(!cur[1] && !copiedFeatures[0].attributes[cur[0]])) {
                     return { ...acc, [cur[0]]: cur[1] };
                 }
                 return { ...acc };
             }, {});
 
-            if (feature.geometry === copiedFeature.initialGeometry) delete feature.geometry;
-
             // Add object id field and value for the feature.
-            featureId = copiedFeature.attributes[objectId.name];
+            featureId = copiedFeatures[0].attributes[objectId.name];
             feature.attributes[objectId.name] = featureId;
             await save.saveData('update', view, originalLayerId, [feature], objectId.name, false, featureId);
         } else if (activeLayer.propertyIdField) {
