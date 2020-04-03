@@ -7,11 +7,13 @@ type Props = {
     showAdminView: boolean,
     removeSketch: () => void,
     drawNewFeatureButtonRef: () => void,
+    drawNewAreaButtonRef: () => void,
     hasAdminGraphics: boolean,
     setActiveModal: (editModeActive: boolean) => void,
     editModeActive: boolean,
     validGeometry: boolean,
     activeTool: string,
+    showNewAreaButton: boolean,
 };
 
 const SketchActiveAdminView = ({
@@ -19,11 +21,13 @@ const SketchActiveAdminView = ({
     showAdminView,
     removeSketch,
     drawNewFeatureButtonRef,
+    drawNewAreaButtonRef,
     hasAdminGraphics,
     setActiveModal,
     editModeActive,
     validGeometry,
     activeTool,
+    showNewAreaButton,
 }: Props) => (
     <Fragment>
         <div id="create-new-feature-wrapper">
@@ -56,6 +60,15 @@ const SketchActiveAdminView = ({
                     } : null}
             >
                 <span className="esri-icon-check-mark" />
+            </div>
+            <div
+                style={{ display: showNewAreaButton ? 'flex' : 'none' }}
+                id="draw-create-new-feature"
+                className={`esri-component esri-widget--button esri-widget esri-interactive ${validGeometry ? '' : 'disabled'}`}
+                title={strings.sketchTool.newArea}
+                ref={drawNewAreaButtonRef}
+            >
+                <span className="esri-icon-plus" />
             </div>
             <div
                 style={{ visibility: showAdminView ? 'visible' : 'hidden' }}
