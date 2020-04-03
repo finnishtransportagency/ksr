@@ -3,7 +3,7 @@
 ## Kehitysympäristön pystyttäminen
 1. Kloonataan ksr-repository koneelle. `git clone https://github.com/finnishtransportagency/ksr.git`
 2. Ks. kohta Kääntäminen, kohdat 1 ja 2. Käynnistää sovelluksen paikalliseen porttiin `8080`.
-3. Käyttöliittymän kehitys paikallisesti. `cd src/client && npm install && npm start`. Käynnistää käyttöliittymän paikalliseen porttiin `3000`.
+3. Käyttöliittymän kehitys paikallisesti. `cd src/main/client && npm install && npm start`. Käynnistää käyttöliittymän paikalliseen porttiin `3000`.
 
 ## Kääntäminen
 1. Luo ympäristökohtainen properties-tiedosto kansioon: `src/main/resources/`. Esimerkiksi, jos tarkoituksena ajaa/kääntää sovellus kehitysympäristöön (dev), niin luodaan `src/main/resources/application-dev.properties` tiedosto. Esimerkkiasetukset voidaan kopioida tiedostosta: `src/main/resources/application-example.properties` vaihtamalla arvot oikeiksi.
