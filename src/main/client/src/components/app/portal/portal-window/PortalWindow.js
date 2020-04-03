@@ -35,6 +35,10 @@ class PortalWindow extends Component<Props, State> {
         // eslint-disable-next-line no-restricted-globals
         base.href = `${location.origin}${location.pathname}`;
         externalWindow.document.head.appendChild(base);
+        const font: any = document.createElement('link');
+        font.href = 'https://fonts.googleapis.com/css?family=Exo+2:400,500';
+        font.rel = 'stylesheet';
+        externalWindow.document.head.appendChild(font);
         externalWindow.document.title = strings.portalWindow.portalTitle;
         elementContainer = document.createElement('div');
         externalWindow.document.body.appendChild(elementContainer);
@@ -80,10 +84,6 @@ class PortalWindow extends Component<Props, State> {
     }
 
     handleEmptyStyle = (externalWindow: any) => {
-        const font: any = document.createElement('link');
-        font.href = 'https://fonts.googleapis.com/css?family=Exo+2:400,500';
-        font.rel = 'stylesheet';
-        externalWindow.document.head.appendChild(font);
         externalWindow.document.body.style = 'margin: 0; background: #444444;';
     }
 
