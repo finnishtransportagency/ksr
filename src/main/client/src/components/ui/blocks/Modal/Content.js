@@ -21,7 +21,7 @@ const Content = styled.div`
     };
     
     @media only screen and (max-width: 768px) {
-        max-height: 200px;
+        max-height: 400px;
     };
 `;
 
