@@ -1,4 +1,4 @@
-import { filterNotAllowedFields } from '../fields';
+import { filterNotAllowedFields, themeLayerFields } from '../fields';
 
 describe('fields tests', () => {
     const fields = [{
@@ -36,5 +36,41 @@ describe('fields tests', () => {
 
     it('should return empty list if layer has no fields', () => {
         expect(filterNotAllowedFields(undefined)).toEqual([]);
+    });
+
+    it('themeLayerFields - should return allowed fields only', () => {
+        const layer = {
+            fields: [
+                { name: 'textField', label: 'Text Field', type: 'esriFieldTypeString' },
+                { name: 'dateField', label: 'Date Field', type: 'esriFieldTypeDate' },
+                { name: 'doubleField', label: 'Double Field', type: 'esriFieldTypeDouble' },
+                { name: 'integerField', label: 'Integer Field', type: 'esriFieldTypeInteger' },
+                { name: 'intField', label: 'Int Field', type: 'esriFieldTypeSmallInteger' },
+                { name: 'objectid', label: 'Label Field', type: 'esriFieldTypeInteger' },
+                { name: 'id', label: 'Id Field', type: 'esriFieldTypeInteger' },
+            ],
+        };
+
+        const expectedThemeFields = [
+            { label: 'Double Field', value: 'doubleField' },
+            { label: 'Integer Field', value: 'integerField' },
+            { label: 'Int Field', value: 'intField' },
+        ];
+
+        expect(themeLayerFields(layer)).toEqual(expectedThemeFields);
+    });
+
+    it('themeLayerFields - should return empty list', () => {
+        const layer1 = {
+            fields: [
+                { name: 'textField', label: 'Text Field', type: 'esriFieldTypeString' },
+                { name: 'objectid', label: 'Label Field', type: 'esriFieldTypeInteger' },
+            ],
+        };
+
+        const layer2 = {};
+
+        expect(themeLayerFields(layer1)).toEqual([]);
+        expect(themeLayerFields(layer2)).toEqual([]);
     });
 });
