@@ -39,6 +39,10 @@ class PortalWindow extends Component<Props, State> {
         font.href = 'https://fonts.googleapis.com/css?family=Exo+2:400,500';
         font.rel = 'stylesheet';
         externalWindow.document.head.appendChild(font);
+        const allCss: any = document.createElement('link');
+        allCss.href = '/css/all.min.css';
+        allCss.rel = 'stylesheet';
+        externalWindow.document.head.appendChild(allCss);
         externalWindow.document.title = strings.portalWindow.portalTitle;
         elementContainer = document.createElement('div');
         externalWindow.document.body.appendChild(elementContainer);
@@ -80,7 +84,9 @@ class PortalWindow extends Component<Props, State> {
             } catch (e) {
                 // no need to do anything - ignore
             }
+            targetDoc.head.appendChild(styleSheet.ownerNode.cloneNode(true));
         });
+        Array.from(sourceDoc.fonts).forEach(font => targetDoc.fonts.add(font));
     }
 
     handleEmptyStyle = (externalWindow: any) => {
