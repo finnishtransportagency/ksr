@@ -433,60 +433,56 @@ class ReactTable extends Component<Props, State> {
         let cellField = activeLayer && activeLayer.fields
             .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
 
-        if (cellField) {
-            if (activeLayer && activeLayer.fields) {
-                const parentLayer = activeLayer.parentLayer
-                    && layerList.find(l => l.id === activeLayer.parentLayer);
+        if (cellField && activeLayer && activeLayer.fields) {
+            const parentLayer = layerList.find(l => l.id === activeLayer.parentLayer);
+            const originalCell = originalLayer && originalLayer.fields
+                .find(f => f.name === nestedVal(cellField, ['name']));
+            const parentCell = parentLayer
+                    && parentLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
+            cellField = parentLayer && parentCell ? parentCell : originalCell;
+            if (parentLayer) cellField = childLayerDomainValues(cellField, parentLayer);
+            const currentAdminActive = activeAdminTool === activeTable.replace('.s', '')
+                || (parentLayer && activeAdminTool === parentLayer.id);
 
-                if (activeAdminTool === activeTable.replace('.s', '')
-                    || (parentLayer && activeAdminTool === parentLayer.id)) {
-                    if (originalLayer && originalLayer.fields) {
-                        const originalCell = originalLayer.fields
-                            .find(f => f.name === nestedVal(cellField, ['name']));
+            if (currentAdminActive) {
+                const contentEditable = this.isCellEditable(cellField);
+                const content = this.getCellContent(cellField, cellInfo);
 
-                        const parentCell = parentLayer
-                            && parentLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
-
-                        cellField = parentLayer && parentCell ? parentCell : originalCell;
-                        if (parentLayer) {
-                            cellField = childLayerDomainValues(cellField);
-                        }
-                    }
-                    const contentEditable = this.isCellEditable(cellField);
-                    const content = this.getCellContent(cellField, cellInfo);
-
-                    if (contentEditable) {
-                        if (cellField.domain
-                            && (cellField.domain.type === 'codedValue'
-                                || cellField.domain.type === 'coded-value')
-                            && contentEditable) {
-                            return this.renderSelect(cellField, content, cellInfo);
-                        }
-
-                        if (cellField.type === 'esriFieldTypeDate' && contentEditable) {
-                            return this.renderDateInput(cellField, content, cellInfo);
-                        }
-
-                        return this.renderEditableDiv(
-                            cellField,
-                            cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
-                            cellInfo,
-                            contentEditable,
-                        );
+                if (contentEditable) {
+                    if (nestedVal(cellField, ['domain', 'type']) === 'codedValue'
+                                || nestedVal(cellField, ['domain', 'type']) === 'coded-value') {
+                        return this.renderSelect(cellField, content, cellInfo);
                     }
 
-                    return this.renderDiv(
+                    if (cellField && cellField.type === 'esriFieldTypeDate' && contentEditable) {
+                        return this.renderDateInput(cellField, content, cellInfo);
+                    }
+
+                    return this.renderEditableDiv(
                         cellField,
-                        cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
+                        cellField && cellField.type === 'esriFieldTypeDate'
+                            ? toDisplayDate(content)
+                            : content,
+                        cellInfo,
+                        contentEditable,
                     );
                 }
 
-                const content = this.getCellContent(cellField, cellInfo);
                 return this.renderDiv(
                     cellField,
-                    cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
+                    cellField && cellField.type === 'esriFieldTypeDate'
+                        ? toDisplayDate(content)
+                        : content,
                 );
             }
+
+            const content = this.getCellContent(cellField, cellInfo);
+            return this.renderDiv(
+                cellField,
+                cellField && cellField.type === 'esriFieldTypeDate'
+                    ? toDisplayDate(content)
+                    : content,
+            );
         }
 
         return null;
@@ -506,7 +502,6 @@ class ReactTable extends Component<Props, State> {
 
             if (cellField) {
                 if (originalLayer && originalLayer.fields) {
-                    // Get editable values for search layer fields
                     cellField = originalLayer.fields.some(f => f.name === cellField.name)
                         ? originalLayer.fields.find(f => f.name === cellField.name)
                         : cellField;
