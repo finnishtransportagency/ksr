@@ -70,7 +70,7 @@ class MapLayersActive extends Component<Props> {
         const foundLayers = layerList.filter(l => (
             l.layerGroupName === layerGroupName
             && !l.parentLayer
-            && nestedVal(l.relations.find(r => r), ['relationType'], '') !== 'link'
+            && nestedVal(l.relations && l.relations.find(r => r), ['relationType'], '') !== 'link'
             && l._source !== 'shapefile'
             && (layersToFind
                 ? (l.layerGroupName.toLowerCase().includes(layersToFind)
@@ -130,7 +130,10 @@ class MapLayersActive extends Component<Props> {
                     ...group,
                     layers: group.name.toLowerCase().includes(layersToFindTrimmed)
                         ? group.layers
-                        : group.layers.filter(layer => nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link')
+                        : group.layers.filter(layer => nestedVal(
+                            layer.relations && layer.relations.find(r => r),
+                            ['relationType'], '',
+                        ) !== 'link')
                             .filter(layer => layer.name
                                 .toLowerCase().includes(layersToFindTrimmed)),
                 }

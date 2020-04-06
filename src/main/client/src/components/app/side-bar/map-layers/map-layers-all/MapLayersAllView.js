@@ -71,7 +71,11 @@ const MapLayersAllView = ({
                                                 === lg.name
                                                 && !layer.parentLayer
                                                 && !layer.failOnLoad
-                                                && nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link'
+                                                && nestedVal(
+                                                    layer.relations
+                                                    && layer.relations.find(r => r),
+                                                    ['relationType'], '',
+                                                ) !== 'link'
                                                 && (layersToFind
                                                     ? (layer.layerGroupName.toLowerCase()
                                                         .includes(layersToFind)
@@ -91,7 +95,11 @@ const MapLayersAllView = ({
                                                     === lg.name
                                                     && !layer.parentLayer
                                                     && !layer.failOnLoad
-                                                    && nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link'
+                                                    && nestedVal(
+                                                        layer.relations
+                                                        && layer.relations.find(r => r),
+                                                        ['relationType'], '',
+                                                    ) !== 'link'
                                                     && (layersToFind
                                                         ? (layer.layerGroupName.toLowerCase()
                                                             .includes(layersToFind)
@@ -102,7 +110,11 @@ const MapLayersAllView = ({
                                                     === lg.name
                                                     && !layer.parentLayer
                                                     && !layer.failOnLoad
-                                                    && nestedVal(layer.relations.find(r => r), ['relationType'], '') !== 'link'
+                                                    && nestedVal(
+                                                        layer.relations
+                                                        && layer.relations.find(r => r),
+                                                        ['relationType'], '',
+                                                    ) !== 'link'
                                                     && (layersToFind
                                                         ? (layer.layerGroupName.toLowerCase()
                                                             .includes(layersToFind)
@@ -137,7 +149,10 @@ const MapLayersAllView = ({
                             <LayerGroup.Content
                                 hidden={!activeGroups.some(group => group === lg.id)}
                             >
-                                {lg.layers.filter(layer => (nestedVal(layer.relations && layer.relations.find(r => r), ['relationType'], '') !== 'link'))
+                                {lg.layers.filter(layer => (nestedVal(
+                                    layer.relations && layer.relations.find(r => r),
+                                    ['relationType'], '',
+                                ) !== 'link'))
                                     .sort((a, b) => b.layerOrder - a.layerOrder)
                                     .map(l => (layerList.find(layer => layer.id === l.id
                                             && !layer.parentLayer)
@@ -148,7 +163,10 @@ const MapLayersAllView = ({
                                                 layer={l}
                                                 layerGroupName={lg.name}
                                                 handleLayerClick={handleLayerClick}
-                                                checked={nestedVal(layerList.find(layer => layer.id === l.id), ['active'], false)}
+                                                checked={nestedVal(
+                                                    layerList.find(layer => layer.id === l.id),
+                                                    ['active'], false,
+                                                )}
                                             />
                                         )
                                     ))
