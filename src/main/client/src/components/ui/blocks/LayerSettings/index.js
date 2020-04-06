@@ -14,6 +14,10 @@ const LayerSettings = styled.div`
     ${props => props.toggledHidden && css`
         opacity: 0.5;
     `}
+    
+    ${props => props.childLayer && css`
+        margin: 0;
+    `}
 `;
 
 const Icons = styled.div`
@@ -73,6 +77,10 @@ const Toggle = styled.div`
 
     ${props => props.viewable && css`
         cursor: pointer;
+    `}
+    
+    ${props => props.childLayer && css`
+        padding: 0;
     `}
 `;
 

@@ -6,9 +6,10 @@ import { colorBackgroundGrey } from '../../ui/defaultStyles';
 type Props = {
     layer: Object,
     showLayerGroup?: boolean,
+    childLayer?: boolean,
 };
 
-const MapLayerTitle = ({ layer, showLayerGroup }: Props) => {
+const MapLayerTitle = ({ layer, showLayerGroup, childLayer }: Props) => {
     let iconClass = '';
     switch (layer._source) {
         case 'search': {
@@ -33,29 +34,35 @@ const MapLayerTitle = ({ layer, showLayerGroup }: Props) => {
         <Fragment>
             <MapLayerTitleWrapper>
                 {
-                    iconClass &&
-                    <Icon>
-                        <i className={iconClass} />
-                    </Icon>
+                    iconClass
+                    && (
+                        <Icon>
+                            <i className={iconClass} />
+                        </Icon>
+                    )
                 }
                 <Text>
                     <span>{layer.name ? layer.name : layer.title}</span>
                 </Text>
             </MapLayerTitleWrapper>
             {
-                showLayerGroup &&
-                <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup>
-                    <Text>
-                        <span>{layer.layerGroupName}</span>
-                    </Text>
-                </MapLayerTitleWrapper>
+                showLayerGroup
+                && (
+                    <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup childLayer>
+                        <Text>
+                            <span>{layer.layerGroupName}</span>
+                        </Text>
+                    </MapLayerTitleWrapper>
+                )
             }
+            {childLayer && <div style={{ height: '8px' }} />}
         </Fragment>
     );
 };
 
 MapLayerTitle.defaultProps = {
     showLayerGroup: false,
+    childLayer: false,
 };
 
 export default MapLayerTitle;

@@ -10,6 +10,7 @@ import MapLayerTitle from '../../../../shared/MapLayerTitle';
 import MapLayerToggle from './MapLayerToggle';
 import { layerViewable } from '../../../../../../utils/layers';
 import { nestedVal } from '../../../../../../utils/nestedValue';
+import { themeLayerFields } from '../../../../../../utils/fields';
 
 type Props = {
     layer: Object,
@@ -48,6 +49,7 @@ const MapLayerSettings = ({
                         layer={layer}
                         mapScale={mapScale}
                         toggleLayer={toggleLayer}
+                        childLayer={false}
                     />
                 )
             }
@@ -72,6 +74,7 @@ const MapLayerSettings = ({
                     {
                         layer.type === 'agfs'
                         && layer._source !== 'shapefile'
+                        && themeLayerFields(layer).length > 0
                         && (
                             <LayerSettings.Icons>
                                 <LayerSettings.Icon
@@ -86,30 +89,34 @@ const MapLayerSettings = ({
                         )
                     }
                     {
-                        !layer.userLayer
+                        ((!layer.userLayer
                         && layer._source !== 'shapefile'
                         && nestedVal(
                             layerList.find(l => l.id === layer.id.replace('.s', '')),
                             ['active'],
                         )
+                        && !nestedVal(
+                            layerList.find(l => l.id === layer.id.replace('.s', '')),
+                            ['parentLayer'],
+                        )
                         && (layer.type === 'agfs' || layer.type === 'agfl')
                         && (layer.layerPermission.createLayer
                             || layer.layerPermission.updateLayer
-                            || layer.layerPermission.deleteLayer)
-                        && (
-                            <LayerSettings.Icons
-                                activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
-                            >
-                                <LayerSettings.Icon
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
-                                    onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
-                                    className="fas fa-edit"
-                                    title={strings.mapLayerSettings.toggleAdminTool}
-                                />
-                            </LayerSettings.Icons>
-                        )
+                            || layer.layerPermission.deleteLayer)))
+                         && (
+                             <LayerSettings.Icons
+                                 activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
+                             >
+                                 <LayerSettings.Icon
+                                     role="button"
+                                     tabIndex={0}
+                                     onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                     onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                     className="fas fa-edit"
+                                     title={strings.mapLayerSettings.toggleAdminTool}
+                                 />
+                             </LayerSettings.Icons>
+                         )
                     }
                 </LayerSettings.ContentTop>
                 {

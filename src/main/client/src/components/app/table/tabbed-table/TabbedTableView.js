@@ -52,7 +52,8 @@ const TabbedTableView = ({
                     layers.map(l => (
                         <ButtonWrapper key={l.id}>
                             <ButtonTabbedTableTab
-                                admin={activeAdmin === l.id.replace('.s', '')}
+                                admin={activeAdmin === l.id.replace('.s', '')
+                                || (l.parentLayer && activeAdmin === l.parentLayer.replace('.s', ''))}
                                 flat
                                 title={l.title}
                                 active={activeTable === l.id}
@@ -77,7 +78,8 @@ const TabbedTableView = ({
                                     addressField,
                                 )}
                                 className="fas fa-times"
-                                admin={activeAdmin === l.id.replace('.s', '')}
+                                admin={activeAdmin === l.id.replace('.s', '')
+                                || (l.parentLayer && activeAdmin === l.parentLayer.replace('.s', ''))}
                             />
                         </ButtonWrapper>
                     ))

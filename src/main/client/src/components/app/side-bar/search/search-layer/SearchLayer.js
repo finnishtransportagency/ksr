@@ -4,6 +4,7 @@ import { parseQueryString, searchFieldIsNumber } from '../../../../../utils/sear
 import SearchLayerView from './SearchLayerView';
 import { fetchSearchSuggestions } from '../../../../../api/search/searchQuery';
 import { filterNotAllowedFields } from '../../../../../utils/fields';
+import { nestedVal } from '../../../../../utils/nestedValue';
 
 type Props = {
     searchFeatures: Function,
@@ -67,7 +68,15 @@ class SearchLayer extends Component<Props, State> {
         const { suggestionsActive } = searchState;
         setSearchState(layerId, '', [], [], suggestionsActive);
         if (layerId && layerId !== 'queryAll' && layerId !== 'queryActive') {
-            setSearchOptions(layerId, layerList);
+            const isParentLayer = layerList.some(layer => layer && layer.parentLayer === layerId);
+            if (isParentLayer) {
+                setSearchOptions(
+                    nestedVal(layerList.find(layer => layer.parentLayer === layerId), ['id']),
+                    layerList,
+                );
+            } else {
+                setSearchOptions(layerId, layerList);
+            }
         }
     };
 
@@ -223,7 +232,7 @@ class SearchLayer extends Component<Props, State> {
     handleSubmit = (evt: Object) => {
         evt.preventDefault();
         const {
-            searchFeatures, allQueryableLayers, activeQueryableLayers, searchState,
+            searchFeatures, allQueryableLayers, activeQueryableLayers, searchState, layerList,
         } = this.props;
         const {
             selectedLayer,
@@ -252,16 +261,26 @@ class SearchLayer extends Component<Props, State> {
 
         const queryMap = new Map();
         if (selectedLayer === 'queryAll') {
-            allQueryableLayers.forEach((layer) => {
-                queryMap.set(layer, buildQueryString(layer));
-            });
+            allQueryableLayers
+                .filter(layer => !layerList.some(ll => ll.parentLayer === layer.id))
+                .forEach((layer) => {
+                    queryMap.set(layer, buildQueryString(layer));
+                });
         } else if (selectedLayer === 'queryActive') {
-            activeQueryableLayers.forEach((layer) => {
-                queryMap.set(layer, buildQueryString(layer));
-            });
+            activeQueryableLayers
+                .filter(layer => !layerList.some(ll => ll.parentLayer === layer.id))
+                .forEach((layer) => {
+                    queryMap.set(layer, buildQueryString(layer));
+                });
         } else {
             const layer = activeQueryableLayers.find(ql => ql.value === selectedLayer);
-            queryMap.set(layer, buildQueryString(layer));
+            if (layerList.some(ll => ll.parentLayer === layer.id)) {
+                layerList.filter(ll => ll.parentLayer === layer.id).forEach((qLayer) => {
+                    queryMap.set(qLayer, buildQueryString(qLayer));
+                });
+            } else {
+                queryMap.set(layer, buildQueryString(layer));
+            }
         }
 
         searchFeatures(queryMap);

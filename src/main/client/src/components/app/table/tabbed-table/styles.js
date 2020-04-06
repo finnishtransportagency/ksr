@@ -36,9 +36,13 @@ export const ButtonTabbedTableTab = styled(Button)`
     border-bottom: 5px solid transparent;
     height: 52px;
     color: ${({ admin }) => admin && styles.colorTableEdited};
+    white-space: normal;
+    padding: 0.25rem;
+    font-size: 0.75rem;
     
     ${MapLayerTitleWrapper} {
         justify-content: center;
+        align-items: center;
     }
 
     ${props => props.active && css`

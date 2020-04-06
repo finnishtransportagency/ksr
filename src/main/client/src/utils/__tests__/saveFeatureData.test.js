@@ -14,31 +14,33 @@ describe('saveFeatureData', () => {
         expect(JSON.parse(form.get('features'))).toMatchObject(inputFeatures);
     });
 
-    it('findMatchingLayer - should return null - invalid input', () => {
-        expect(save.findMatchingLayer({ allLayerViews: [] }, null)).toBe(null);
-        expect(save.findMatchingLayer({ allLayerViews: [] }, undefined)).toBe(null);
-        expect(save.findMatchingLayer(null, '1')).toBe(null);
-        expect(save.findMatchingLayer(undefined, '2')).toBe(null);
-        expect(save.findMatchingLayer({ a: 1 }, '1')).toBe(null);
+    it('findMatchingLayer - should return empty array - invalid input', () => {
+        expect(save.findMatchingLayers({ allLayerViews: [] }, null)).toEqual([]);
+        expect(save.findMatchingLayers({ allLayerViews: [] }, undefined)).toEqual([]);
+        expect(save.findMatchingLayers(null, '1')).toEqual([]);
+        expect(save.findMatchingLayers(undefined, '2')).toEqual([]);
+        expect(save.findMatchingLayers({ a: 1 }, '1')).toEqual([]);
     });
 
     it('findMatchingLayer - should not find a matching layer', () => {
         const view = { allLayerViews: [{ layer: { id: '1' } }, { layer: { id: '2' } }] };
 
-        expect(save.findMatchingLayer(view, '3')).toBe(undefined);
-        expect(save.findMatchingLayer(view, '0')).toBe(undefined);
+        expect(save.findMatchingLayers(view, '3')).toEqual([]);
+        expect(save.findMatchingLayers(view, '0')).toEqual([]);
     });
 
     it('findMatchingLayer - should return corresponding layer', () => {
         const view = { allLayerViews: [{ layer: { id: '1' } }, { layer: { id: '2' } }] };
 
-        expect(save.findMatchingLayer(view, '2')).toMatchObject({ layer: { id: '2' } });
+        expect(save.findMatchingLayers(view, '2')).toMatchObject([{ layer: { id: '2' } }]);
     });
 
     it('handleSaveResponse - invalid response - should not refresh layer', () => {
-        const layer = { refresh: jest.fn() };
-        save.handleSaveResponse({ addResults: 1 }, layer);
-        expect(layer.refresh.mock.calls.length).toBe(0);
+        const layersToRefresh = [{ refresh: jest.fn() }];
+        save.handleSaveResponse({ addResults: 1 }, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(0);
+        });
     });
 
     const expectedResult = { addResults: 1 };
@@ -48,13 +50,15 @@ describe('saveFeatureData', () => {
     });
 
     it('handleSaveResponse - invalid parameters - should not refresh layer', () => {
-        const layer1 = { refresh: jest.fn() };
+        const layersToRefresh = [{ refresh: jest.fn() }];
         save.handleSaveResponse(null, null);
-        expect(layer1.refresh.mock.calls.length).toBe(0);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(0);
+        });
     });
 
     it('handleSaveResponse - one successful - should refresh layer', () => {
-        const layer = { refresh: jest.fn() };
+        const layersToRefresh = [{ refresh: jest.fn() }];
         const response = {
             addResults: [
                 { success: false },
@@ -62,12 +66,14 @@ describe('saveFeatureData', () => {
                 { success: false },
             ],
         };
-        save.handleSaveResponse(response, layer);
-        expect(layer.refresh.mock.calls.length).toBe(1);
+        save.handleSaveResponse(response, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(1);
+        });
     });
 
     it('handleSaveResponse - not success - should not refresh layer', () => {
-        const layer = { refresh: jest.fn() };
+        const layersToRefresh = [{ refresh: jest.fn() }];
         const response = {
             addResults: [
                 { success: false },
@@ -75,12 +81,14 @@ describe('saveFeatureData', () => {
                 { success: false },
             ],
         };
-        save.handleSaveResponse(response, layer);
-        expect(layer.refresh.mock.calls.length).toBe(0);
+        save.handleSaveResponse(response, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(0);
+        });
     });
 
     it('handleSaveResponse - all success - should refresh layer', () => {
-        const layer = { refresh: jest.fn() };
+        const layersToRefresh = [{ refresh: jest.fn() }];
         const response = {
             addResults: [
                 { success: true },
@@ -88,14 +96,18 @@ describe('saveFeatureData', () => {
                 { success: true },
             ],
         };
-        save.handleSaveResponse(response, layer);
-        expect(layer.refresh.mock.calls.length).toBe(1);
+        save.handleSaveResponse(response, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(1);
+        });
     });
 
     it('handleDeleteResponse - invalid response - should not refresh layer', () => {
-        const layer = { refresh: jest.fn() };
-        save.handleDeleteResponse({ deleteResults: 1 }, layer);
-        expect(layer.refresh.mock.calls.length).toBe(0);
+        const layersToRefresh = [{ refresh: jest.fn() }];
+        save.handleDeleteResponse({ deleteResults: 1 }, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(0);
+        });
     });
 
     it('handleDeleteResponse - invalid layer-parameter - should not refresh layer', () => {
@@ -103,13 +115,15 @@ describe('saveFeatureData', () => {
     });
 
     it('handleDeleteResponse - invalid parameters - should not refresh layer', () => {
-        const layer1 = { refresh: jest.fn() };
-        save.handleDeleteResponse(null, null);
-        expect(layer1.refresh.mock.calls.length).toBe(0);
+        const layersToRefresh = [{ refresh: jest.fn() }];
+        save.handleDeleteResponse(null, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(0);
+        });
     });
 
     it('handleDeleteResponse - one successful - should refresh layer', () => {
-        const layer = { refresh: jest.fn() };
+        const layersToRefresh = [{ refresh: jest.fn() }];
         const response = {
             deleteResults: [
                 { success: false },
@@ -117,12 +131,14 @@ describe('saveFeatureData', () => {
                 { success: false },
             ],
         };
-        save.handleDeleteResponse(response, layer);
-        expect(layer.refresh.mock.calls.length).toBe(1);
+        save.handleDeleteResponse(response, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(1);
+        });
     });
 
     it('handleDeleteResponse - not success - should not refresh layer', () => {
-        const layer = { refresh: jest.fn() };
+        const layersToRefresh = [{ refresh: jest.fn() }];
         const response = {
             deleteResults: [
                 { success: false },
@@ -130,12 +146,14 @@ describe('saveFeatureData', () => {
                 { success: false },
             ],
         };
-        save.handleDeleteResponse(response, layer);
-        expect(layer.refresh.mock.calls.length).toBe(0);
+        save.handleDeleteResponse(response, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(0);
+        });
     });
 
     it('handleDeleteResponse - all success - should refresh layer', () => {
-        const layer = { refresh: jest.fn() };
+        const layersToRefresh = [{ refresh: jest.fn() }, { refresh: jest.fn() }];
         const response = {
             deleteResults: [
                 { success: true },
@@ -143,8 +161,10 @@ describe('saveFeatureData', () => {
                 { success: true },
             ],
         };
-        save.handleDeleteResponse(response, layer);
-        expect(layer.refresh.mock.calls.length).toBe(1);
+        save.handleDeleteResponse(response, layersToRefresh);
+        layersToRefresh.forEach((layer) => {
+            expect(layer.refresh.mock.calls.length).toBe(1);
+        });
     });
 
     it('formatToEsriCompliant - should return undefined', () => {
@@ -183,7 +203,9 @@ describe('saveFeatureData', () => {
             },
         ];
 
-        return save.saveEditedFeatureData({}, editedData, 'road', 'test_address_field')
+        const layerList = [{ id: '1', parentLayer: null }];
+
+        return save.saveEditedFeatureData({}, editedData, 'road', 'test_address_field', layerList)
             .then(() => {
                 expect(geoconvert.createAddressFields.mock.calls.length).toBe(1);
 

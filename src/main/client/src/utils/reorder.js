@@ -18,6 +18,33 @@ export const reorder = (list: Object[], startIndex: number, endIndex: number): O
 };
 
 /**
+ * Reorders child layers in layer list to be next to parent layers.
+ *
+ * @param {Object[]} layerList List to be reordered.
+ *
+ * @returns {Object[]} Reordered list.
+ */
+export const reorderChildLayers = (layerList: Object[]) => {
+    let reorderedList = layerList;
+    const childLayers = layerList.filter(layer => layer.parentLayer && layer._source !== 'search')
+        .sort((a, b) => a.originalLayerOrder - b.originalLayerOrder);
+
+    childLayers.forEach((childLayer) => {
+        const childLayerIndex = reorderedList
+            .findIndex(layer => layer.id === childLayer.id);
+        let parentLayerIndex = reorderedList
+            .findIndex(layer => layer.id === childLayer.parentLayer);
+        parentLayerIndex = childLayerIndex > parentLayerIndex
+            ? parentLayerIndex + 1
+            : parentLayerIndex;
+
+        reorderedList = reorder(reorderedList, childLayerIndex, parentLayerIndex);
+    });
+
+    return reorderedList;
+};
+
+/**
  * Finds the original layer order for the activated layer and places it on top of the
  * first layer in current layer list that has lower original layer order.
  *

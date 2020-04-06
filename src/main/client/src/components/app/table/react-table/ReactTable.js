@@ -12,6 +12,7 @@ import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { TextInput } from '../../../ui/elements';
 import { nestedVal } from '../../../../utils/nestedValue';
 import { isContract } from '../../../../utils/layers';
+import { childLayerDomainValues } from '../../../../utils/fields';
 
 type Props = {
     fetching: boolean,
@@ -135,10 +136,14 @@ class ReactTable extends Component<Props, State> {
 
     getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
         const { activeAdminTool, activeTable, layerList } = this.props;
-        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+
+        const activeLayer: Object = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const parentLayer = activeLayer.parentLayer
+            && layerList.find(l => l.id === activeLayer.parentLayer);
         let className = '';
 
-        if (activeLayer && activeAdminTool === activeLayer.id) {
+        if ((activeLayer && activeAdminTool === activeLayer.id)
+            || (parentLayer && activeAdminTool === parentLayer.id)) {
             if (contentEditable) {
                 className = 'content-editable';
             } else {
@@ -163,23 +168,36 @@ class ReactTable extends Component<Props, State> {
         return getCodedValue(domain, content);
     };
 
-    handleContractClick = (objectId: number) => {
+    handleContractClick = (row: Object) => {
         const {
             setActiveModal, setContractListInfo, activeTable, layerList,
         } = this.props;
+
         const layerId = activeTable.replace('.s', '');
-        const layer = layerList.find(l => l.id === layerId);
+        const parentLayerId = nestedVal(layerList.find(l => l.id === layerId), ['parentLayer']);
+        const layer: Object = parentLayerId
+            ? layerList.find(l => l.id === parentLayerId.replace('.s', ''))
+            : layerList.find(l => l.id === layerId);
+
+        const idFieldName = nestedVal(
+            layer.fields.find(field => field.type === 'esriFieldTypeOID'),
+            ['name'],
+        );
+
+        const idField = `${activeTable}/${idFieldName}`;
+        const objectId = row.original[idField];
+
         if (isContract(layer)) {
             const modalData = {
                 contractObjectId: objectId,
-                layerId,
+                layerId: layer.id,
                 source: 'table',
             };
 
             setActiveModal('contractDetails', modalData);
         } else {
             setActiveModal('featureContracts');
-            setContractListInfo(layerId, objectId);
+            setContractListInfo(layer.id, objectId);
         }
     };
 
@@ -187,6 +205,18 @@ class ReactTable extends Component<Props, State> {
         const { activeAdminTool, layerList, activeTable } = this.props;
 
         const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const parentLayer = activeLayer && activeLayer.parentLayer
+            && layerList.find(l => l.id === activeLayer.parentLayer);
+
+        if (activeLayer && parentLayer) {
+            return (activeAdminTool === activeLayer.id || activeAdminTool === parentLayer.id)
+                && activeLayer._source !== 'shapefile'
+                && parentLayer.layerPermission.updateLayer
+                && cellField.editable
+                && activeLayer.updaterField !== cellField.name
+                && parentLayer.updaterField !== cellField.name
+                && !parentLayer.requiredUniqueFields.some(field => field === cellField.name);
+        }
 
         if (activeLayer) {
             return activeAdminTool === activeLayer.id
@@ -397,21 +427,34 @@ class ReactTable extends Component<Props, State> {
 
     renderCustomCell = (cellInfo: Object) => {
         const { layerList, activeTable, activeAdminTool } = this.props;
-        const activeLayer = layerList.find(l => l.id === activeTable);
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
         const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
 
         let cellField = activeLayer && activeLayer.fields
             .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
-        const content = this.getCellContent(cellField, cellInfo);
 
         if (cellField) {
-            if (activeAdminTool === activeTable.replace('.s', '')) {
-                if (activeLayer && activeLayer.fields) {
+            if (activeLayer && activeLayer.fields) {
+                const parentLayer = activeLayer.parentLayer
+                    && layerList.find(l => l.id === activeLayer.parentLayer);
+
+                if (activeAdminTool === activeTable.replace('.s', '')
+                    || (parentLayer && activeAdminTool === parentLayer.id)) {
                     if (originalLayer && originalLayer.fields) {
-                        // Get editable values for search layer fields
-                        cellField = originalLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
+                        const originalCell = originalLayer.fields
+                            .find(f => f.name === nestedVal(cellField, ['name']));
+
+                        const parentCell = parentLayer
+                            && parentLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
+
+                        cellField = parentLayer && parentCell ? parentCell : originalCell;
+                        if (parentLayer) {
+                            cellField = childLayerDomainValues(cellField);
+                        }
                     }
                     const contentEditable = this.isCellEditable(cellField);
+                    const content = this.getCellContent(cellField, cellInfo);
+
                     if (contentEditable) {
                         if (cellField.domain
                             && (cellField.domain.type === 'codedValue'
@@ -437,7 +480,8 @@ class ReactTable extends Component<Props, State> {
                         cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
                     );
                 }
-            } else {
+
+                const content = this.getCellContent(cellField, cellInfo);
                 return this.renderDiv(
                     cellField,
                     cellField.type === 'esriFieldTypeDate' ? toDisplayDate(content) : content,
@@ -451,7 +495,10 @@ class ReactTable extends Component<Props, State> {
     renderFilter = (cellInfo: Object, filter: any, onChange: Function) => {
         const { layerList, activeTable } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
-        const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        let originalLayer: Object = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        originalLayer = originalLayer.parentLayer
+            ? layerList.find(l => l.id === originalLayer.parentLayer)
+            : originalLayer;
 
         if (activeLayer && activeLayer.fields) {
             let cellField = activeLayer.fields
@@ -460,12 +507,17 @@ class ReactTable extends Component<Props, State> {
             if (cellField) {
                 if (originalLayer && originalLayer.fields) {
                     // Get editable values for search layer fields
-                    cellField = originalLayer.fields.find(f => f.name === cellField.name);
+                    cellField = originalLayer.fields.some(f => f.name === cellField.name)
+                        ? originalLayer.fields.find(f => f.name === cellField.name)
+                        : cellField;
+
+                    if (layerList.some(layer => layer.parentLayer === originalLayer.id)) {
+                        cellField = childLayerDomainValues(cellField);
+                    }
                 }
 
-                if (cellField.domain
-                    && (cellField.domain.type === 'codedValue'
-                        || cellField.domain.type === 'coded-value')) {
+                const domainType = nestedVal(cellField, ['domain', 'type']);
+                if (domainType === 'codedValue' || domainType === 'coded-value') {
                     return this.renderSelectInput(cellField, cellInfo, filter, onChange);
                 }
 
@@ -503,7 +555,11 @@ class ReactTable extends Component<Props, State> {
             const { columns, data } = layerFeatures;
             const { currentCellData } = this.state;
 
-            const activeLayer: any = layerList.find(ll => ll.id === layerFeatures.id);
+            const parentLayer = nestedVal(layerList
+                .find(ll => ll.id === layerFeatures.id.replace('.s', '')),
+            ['parentLayer']);
+            const activeLayer: any = layerList.find(ll => ll.id === parentLayer)
+                || layerList.find(ll => ll.id === layerFeatures.id);
             const relationLayer = activeLayer && activeLayer.relations.length > 0
                 ? layerList.find(ll => ll.id === String(activeLayer.relations
                     .find(r => r).relationLayerId))
@@ -532,6 +588,7 @@ class ReactTable extends Component<Props, State> {
                     currentCellData={currentCellData}
                     activeAdminTool={activeAdminTool}
                     activeTable={activeTable}
+                    layerList={layerList}
                 />
             );
         }

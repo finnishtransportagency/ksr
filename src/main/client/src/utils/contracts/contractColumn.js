@@ -32,8 +32,8 @@ export const addContractColumn = (
                         : strings.modalFeatureContracts.listView.title}
                     role="button"
                     tabIndex={0}
-                    onClick={() => handleContractClick(row.original._id)}
-                    onKeyPress={() => handleContractClick(row.original._id)}
+                    onClick={() => handleContractClick(row)}
+                    onKeyPress={() => handleContractClick(row)}
                     className="contract-icon"
                 >
                     <i className="fas fa-external-link-square-alt" />

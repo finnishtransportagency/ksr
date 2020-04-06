@@ -182,7 +182,7 @@ class EsriMap extends Component<Props> {
             spatialReference: epsg3067,
         });
 
-        await addLayers([l], overview, false, true);
+        await addLayers([l], overview, false, true, layerList);
 
         // Remove the default widgets
         overview.ui.components = [];
@@ -485,8 +485,13 @@ class EsriMap extends Component<Props> {
                     break;
                 case 'contract-link':
                     if (layer) {
-                        setContractListInfo(layer.id, objectId);
-                        setActiveModal('featureContracts');
+                        if (layer.parentLayer) {
+                            setContractListInfo(layer.parentLayer, objectId);
+                            setActiveModal('featureContracts');
+                        } else {
+                            setContractListInfo(layer.id, objectId);
+                            setActiveModal('featureContracts');
+                        }
                     }
                     break;
                 case 'copy-feature':

@@ -8,14 +8,19 @@ export const MapLayerTitleWrapper = styled.div`
         padding: 0 0 0.2em 0;
     `};  
     
+    ${props => props.childLayer && css`
+        min-height: 6px;
+    `};
+    
     ${props => props.color && css`
-            color: ${props.color};
+        color: ${props.color};
     `};
 `;
 
 export const Icon = styled.div`
     min-width: 1rem;
     max-width: 1rem;
+    margin-right: 0.5rem;
     
     i {
       font-size: 0.8rem;

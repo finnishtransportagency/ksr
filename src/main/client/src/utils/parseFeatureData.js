@@ -1,5 +1,6 @@
 // @flow
 import clone from 'clone';
+import { notAllowedFields } from './fields';
 
 /**
  * Get custom className for column if needed.
@@ -35,10 +36,7 @@ export const parseColumns = (id: string, data: Object[]): Object[] => {
         Header: f.alias,
         accessor: `${id}/${f.name}`,
         show: f.type !== 'geometry'
-            && f.name.toLowerCase() !== 'objectid'
-            && f.name.toLowerCase() !== 'objectid_1'
-            && f.name.toLowerCase() !== 'symbolidentifier'
-            && f.name.toLowerCase() !== 'contract_uuid',
+            && !notAllowedFields.some(fieldName => fieldName === f.name.toLowerCase()),
         editable: f.editable,
         nullable: f.nullable,
         length: f.length,
@@ -258,6 +256,41 @@ export const deSelectFeatures: Object = (currentLayers: Object[], currentActiveT
         }
         return filtered;
     }, []);
+
+    const editedLayers = clone(layers, true, 3);
+    const activeTable = getActiveTable(layers, currentActiveTable);
+
+    return { layers, editedLayers, activeTable };
+};
+
+/**
+ * Remove single feature from layer in table.
+ *
+ * @param {Object[]} currentLayers Array of layers (table-reducer).
+ * @param {string} currentActiveTable Id of the currently active layer in table.
+ * @param {string} layerId Layer id to be targeted in table.
+ * @param {number} objectId Object to be removed from table features.
+ * @param {string} objectIdFieldName Name of layer's object id field.
+ *
+ * @returns {Object} layers, editedLayers, activeTable.
+ */
+export const removeFeatureFromTable = (
+    currentLayers: Object[],
+    currentActiveTable: string,
+    layerId: string,
+    objectId: number,
+    objectIdFieldName: string,
+) => {
+    const layers: Object[] = currentLayers.map((layer) => {
+        if (layer.id === layerId) {
+            const objectIdField = `${layerId}/${objectIdFieldName}`;
+            return {
+                ...layer,
+                data: layer.data.filter(d => d[objectIdField] !== objectId),
+            };
+        }
+        return layer;
+    }).filter(layer => layer.data.length > 0);
 
     const editedLayers = clone(layers, true, 3);
     const activeTable = getActiveTable(layers, currentActiveTable);

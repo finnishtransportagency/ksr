@@ -5,13 +5,18 @@ import { getCodedValue } from '../../../../utils/parseFeatureData';
 import ModalDeleteSelected from './ModalDeleteSelected';
 
 const mapStateToProps = (state) => {
-    const selectedData = state.table.features.layers
-        .filter(layer => layer.id === state.adminTool.active.layerId)
+    const { layerList } = state.map.layerGroups;
+    const { layerId } = state.adminTool.active;
+    const { layers } = state.table.features;
+    const { activeTable } = state.table.features;
+
+    const selectedData = layers
+        .filter(layer => activeTable.replace('.s', '') === layer.id.replace('.s', ''))
         .flatMap(layer => layer.data)
         .filter(data => data._selected);
 
-    const { queryColumnsList } = state.map.layerGroups.layerList
-        .find(lg => lg.id === state.adminTool.active.layerId);
+    const { queryColumnsList } = layerList
+        .find(lg => lg.id === layerId);
 
     const layer = state.map.layerGroups.layerList
         .find(l => l.id === state.adminTool.active.layerId);
@@ -40,7 +45,7 @@ const mapStateToProps = (state) => {
     return {
         filteredData,
         view: state.map.mapView.view,
-        layerId: state.adminTool.active.layerId,
+        layerId,
     };
 };
 

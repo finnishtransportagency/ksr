@@ -55,37 +55,53 @@ const featureDataToParams = (features: Object[]) => {
 };
 
 /**
-* Return mathing layer for give MapView if exists.
-* Otherwise returns null
+* Return mathing layers for give MapView if exists.
+* Otherwise returns null.
 *
 * @param view MapView Esri ArcGIS JS MapView
 * @param layerId string id of the layer to find
 *
-* @return layer Layer Matching layer or null if not found
+* @return Object[] List of layers to be refreshed.
 */
-const findMatchingLayer = (view: Object, layerId: string) => {
+const findMatchingLayers = (view: Object, layerId: string): Object[] => {
+    const { layerList } = store.getState().map.layerGroups;
     if (layerId === null || layerId === undefined) {
         console.error(`Invalid layerId: ${layerId} supplied.`);
-        return null;
+        return [];
     }
+
+    const foundLayer: Object = layerList.find(l => l.id === layerId);
+    const parentLayer: boolean = layerList.some(l => l.parentLayer === foundLayer.id);
+
     if (view && view.allLayerViews) {
-        return view.allLayerViews.find(lv => lv.layer && lv.layer.id === layerId);
+        if (parentLayer) {
+            const layerIds = layerList
+                .filter(l => l.id === layerId || l.parentLayer === foundLayer.id)
+                .map(cl => cl.id);
+
+            return view.allLayerViews.filter(lv => lv.layer
+                && layerIds.some(cl => cl === lv.layer.id));
+        }
+        return view.allLayerViews.filter(lv => lv.layer && lv.layer.id === layerId);
     }
-    return null;
+
+    return [];
 };
 
 /**
  * Handles response from Esri ArcGIS Servers FeatureService addFeatures -request.
- * If saving any of features was succesfull, then refresh layer.
+ * If saving any of features was succesful, then refresh layer.
+ *
+ * If save targets any parentLayers, all child layers will be refreshed.
  *
  * @param {Object} res Body of the response from ArcGIS Server.
- * @param {?Object} layer FeatureLayer esri/layers/FeatureLayer.
+ * @param {Object[]} layersToRefresh List of featurelayers to be refreshed on map.
  * @param {boolean} [hideToast] Show saving data toast or not.
  */
-const handleSaveResponse = (res: Object, layer: ?Object, hideToast?: boolean) => {
+const handleSaveResponse = (res: Object, layersToRefresh: Object[], hideToast?: boolean) => {
     if (res && Array.isArray(res.addResults) && res.addResults.some(e => e.success)) {
-        if (layer) {
-            layer.refresh();
+        if (layersToRefresh && layersToRefresh.length > 0) {
+            layersToRefresh.forEach(l => l.refresh());
         }
         const ids = res.addResults.filter(e => e.success).map(e => e.objectId);
         if (!hideToast) {
@@ -103,7 +119,7 @@ const handleSaveResponse = (res: Object, layer: ?Object, hideToast?: boolean) =>
  *
  * @param {Object} res Body of the response from ArcGIS Server.
  * @param {string} layerId Id of the corresponding layer.
- * @param {?Object} layerToRefresh Layer from view.
+ * @param {Object[]} layersToRefresh List of layers to be refreshed.
  * @param {boolean} [hideToast] Show saving data toast or not.
  *
  * @returns {Object} Object containing layer id and feature ids of the updated features.
@@ -111,11 +127,11 @@ const handleSaveResponse = (res: Object, layer: ?Object, hideToast?: boolean) =>
 const handleUpdateResponse = (
     res: Object,
     layerId: string,
-    layerToRefresh: ?Object,
+    layersToRefresh: Object[],
     hideToast?: boolean,
 ): Object => {
-    if (layerToRefresh) {
-        layerToRefresh.refresh();
+    if (layersToRefresh && layersToRefresh.length > 0) {
+        layersToRefresh.forEach(l => l.refresh());
     }
     const layer = {
         layerId,
@@ -139,12 +155,14 @@ const handleUpdateResponse = (
  * Handles response from Esri ArcGIS Servers FeatureService deleteFeatures -request.
  *
  * @param {Object} res Body of the response from ArcGIS Server.
- * @param {?Object} layer Deleted features layer.
+ * @param {Object[]} layersToRefresh List of layers to be refreshed on map.
  */
-const handleDeleteResponse = (res: Object, layer: ?Object) => {
+const handleDeleteResponse = (res: Object, layersToRefresh: Object[]) => {
     if (res && Array.isArray(res.deleteResults) && res.deleteResults.some(e => e.success)) {
         const deletedIds = res.deleteResults.filter(e => e.success).map(e => e.objectId);
-        if (layer) layer.refresh();
+        if (layersToRefresh && layersToRefresh.length > 0) {
+            layersToRefresh.forEach(l => l.refresh());
+        }
         toast.success(`${strings.saveFeatureData.featureDeleteSuccess} [${deletedIds.join(', ')}]`);
     } else {
         toast.error(strings.saveFeatureData.featureDeleteNoFeaturesError);
@@ -154,52 +172,56 @@ const handleDeleteResponse = (res: Object, layer: ?Object) => {
  * Handle popup update if it is open.
  *
  * @param {Object} view MapView Esri ArcGIS JS MapView.
- * @param {string} layerId string id of the corresponding layer.
+ * @param {Object[]} layersToRefresh List of layers to be refreshed.
  * @param {string} idFieldName Name of identifier field.
  * @param {number[]} objectIds List of feature ids.
  */
 const handlePopupUpdate = (
     view: Object,
-    layerId: string,
+    layersToRefresh: Object[],
     idFieldName: string,
     objectIds: number[],
 ) => {
-    if (idFieldName && objectIds && objectIds.length) {
-        queryFeatures(
-            parseInt(layerId, 10),
-            `${idFieldName} IN (${objectIds.join()})`,
-            null,
-        ).then((queryResult) => {
-            const resultFeatureInPopup = nestedVal(view, ['popup', 'viewModel', 'features'], [])
-                .some(feature => queryResult.features.some(resultFeature => (
-                    resultFeature.attributes[idFieldName] === feature.attributes[idFieldName])));
+    if (layersToRefresh && layersToRefresh.length > 0
+        && idFieldName && objectIds && objectIds.length) {
+        layersToRefresh.forEach((layerView) => {
+            queryFeatures(
+                parseInt(layerView.layer.id, 10),
+                `${idFieldName} IN (${objectIds.join()})`,
+                null,
+            ).then((queryResult) => {
+                const resultFeatureInPopup = nestedVal(
+                    view,
+                    ['popup', 'viewModel', 'features'],
+                    [],
+                )
+                    .some(feature => queryResult.features.some(resultFeature => (
+                        resultFeature.attributes[idFieldName] === feature
+                            .attributes[idFieldName])));
 
-            if (nestedVal(queryResult, ['fields'])
-                && nestedVal(queryResult, ['features'])
-                && queryResult.features.length > 0
-                && idFieldName
-                && resultFeatureInPopup
-            ) {
-                queryResult.features.forEach((resultFeature) => {
-                    const featureIndex = view.popup.features.findIndex(feature => (
-                        feature.attributes[idFieldName] === resultFeature.attributes[idFieldName]));
-                    if (featureIndex >= 0) {
-                        view.popup.features[featureIndex].attributes = resultFeature.attributes;
-                    }
-                });
+                if (nestedVal(queryResult, ['fields'])
+                    && nestedVal(queryResult, ['features'])
+                    && queryResult.features.length > 0
+                    && idFieldName
+                    && resultFeatureInPopup
+                ) {
+                    queryResult.features.forEach((resultFeature) => {
+                        const featureIndex = view.popup.features.findIndex(feature => (
+                            feature.attributes[idFieldName] === resultFeature
+                                .attributes[idFieldName]));
+                        if (featureIndex >= 0) {
+                            view.popup.features[featureIndex].attributes = resultFeature.attributes;
+                        }
+                    });
 
-                const viewLayer = view.map.findLayerById(layerId);
-                if (viewLayer) {
-                    // Need to make a change to trigger update.
-                    if (viewLayer.popupTemplate != null) {
-                        const copyLayer = viewLayer.popupTemplate.content;
+                    const viewLayer = view.map.findLayerById(layerView.layer.id);
+                    const copyLayer = nestedVal(viewLayer, ['popupTemplate', 'content']);
+                    if (copyLayer) {
+                        // Need to make a change to trigger update.
                         viewLayer.popupTemplate.content = copyLayer;
-                    } else {
-                        const copyLayer = viewLayer.defaultPopupTemplate.content;
-                        viewLayer.defaultPopupTemplate.content = copyLayer;
                     }
                 }
-            }
+            });
         });
     }
 };
@@ -225,8 +247,9 @@ const saveData = async (
     selected?: boolean,
 ) => {
     const params = featureDataToParams(features);
-    const layer = findMatchingLayer(view, layerId);
+    const layersToRefresh = findMatchingLayers(view, layerId);
     const { layers } = store.getState().table.features;
+    const { layerList } = store.getState().map.layerGroups;
     const tableLayer = layers.find(l => l.id === layerId);
     if (params) {
         switch (action) {
@@ -234,7 +257,7 @@ const saveData = async (
                 let res = null;
                 try {
                     res = await addFeatures(layerId, params.toString());
-                    await handleSaveResponse(res, layer, hideToast);
+                    await handleSaveResponse(res, layersToRefresh, hideToast);
                     if (nestedVal(tableLayer, ['type']) === 'agfl'
                         && nestedVal(res, ['addResults', 'length']) > 0) {
                         store.dispatch(addUpdateLayers(
@@ -255,18 +278,44 @@ const saveData = async (
                 let layerToUpdated = null;
                 try {
                     const res = await updateFeatures(layerId, params.toString());
-                    layerToUpdated = await handleUpdateResponse(res, layerId, layer, hideToast);
-                    await handlePopupUpdate(view, layerId, idFieldName, layerToUpdated.features);
+                    layerToUpdated = await handleUpdateResponse(
+                        res,
+                        layerId,
+                        layersToRefresh,
+                        hideToast,
+                    );
+                    await handlePopupUpdate(
+                        view,
+                        layersToRefresh,
+                        idFieldName,
+                        layerToUpdated.features,
+                    );
                     const layerIsOpen = layers.find(l => l.id === layerId);
-                    if (layerIsOpen && nestedVal(layerToUpdated, ['features', 'length'])) {
-                        layerToUpdated.features.forEach((objectId: number) => {
-                            store.dispatch(addUpdateLayers(
-                                layerId,
-                                idFieldName,
-                                objectId,
-                                selected,
-                            ));
-                        });
+                    const childLayers = layerList.filter(a => a.parentLayer === layerId);
+                    if (nestedVal(layerToUpdated, ['features', 'length'])) {
+                        if (layerIsOpen && childLayers.length === 0) {
+                            layerToUpdated.features.forEach((objectId: number) => {
+                                store.dispatch(addUpdateLayers(
+                                    layerId,
+                                    idFieldName,
+                                    objectId,
+                                    selected,
+                                ));
+                            });
+                        } else if (childLayers.length > 0) {
+                            childLayers.forEach((cLayer) => {
+                                if (layerToUpdated && layers.some(l => l.id === cLayer.id.replace('.s', ''))) {
+                                    layerToUpdated.features.forEach((objectId: number) => {
+                                        store.dispatch(addUpdateLayers(
+                                            cLayer.id,
+                                            idFieldName,
+                                            objectId,
+                                            selected,
+                                        ));
+                                    });
+                                }
+                            });
+                        }
                     }
                 } catch (err) {
                     store.dispatch(handleFailedEdit('update', [layerId, params.toString()]));
@@ -302,14 +351,14 @@ const saveDeletedFeatureData = (
     objectIds: string,
     deleteComment: string,
 ) => {
-    const layer = findMatchingLayer(view, layerId);
+    const layersToRefresh = findMatchingLayers(view, layerId);
     const params = querystring.stringify({
         f: 'json',
         objectIds,
         deleteComment,
     });
     return deleteFeatures(layerId, params)
-        .then(r => r && handleDeleteResponse(r, layer))
+        .then(r => r && handleDeleteResponse(r, layersToRefresh))
         .catch((err) => {
             console.error(err);
             store.dispatch(handleFailedEdit('delete', [layerId, params]));
@@ -370,6 +419,7 @@ const getIdFieldAccessor = (columns: Object[], idFieldName: string) => {
  * @param {Object[]} editedData Array of customised Esri ArcGIS JS Layer-objects.
  * @param {string} featureType Type of feature (road | water | railway)
  * @param {string} addressField Name of layers address field.
+ * @param {Object[]} layerList List of layer data.
  *
  * @returns {Promise} Promise of edited data.
  */
@@ -378,17 +428,28 @@ const saveEditedFeatureData = (
     editedData: Object[],
     featureType: string,
     addressField: string,
+    layerList: Object[],
 ) => {
     if (view && Array.isArray(editedData)) {
         const promises = editedData.map((ed) => {
-            const idFieldName = getIdFieldAccessor(ed.columns, ed._idFieldName);
+            let layerId = ed.id.replace('.s', '');
+
+            const currentLayer: Object = layerList.find(l => l.id === layerId);
+            const parentLayer = currentLayer && layerList.find(l => currentLayer.parentLayer
+                && l.id === currentLayer.parentLayer);
+
+            layerId = parentLayer ? parentLayer.id : layerId;
+            const idFieldNameWithoutLayerId = parentLayer
+                ? nestedVal(
+                    parentLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+                    ['name'],
+                )
+                : ed._idFieldName;
+            const idFieldName = getIdFieldAccessor(ed.columns, idFieldNameWithoutLayerId);
             const features = ed.data
                 .filter(d => d._edited.length)
                 .map(d => keepOnlyEdited(d, idFieldName))
                 .map(formatToEsriCompliant);
-
-            const layerId = ed.id.replace('.s', '');
-            const idFieldNameWithoutLayerId = ed._idFieldName;
 
             const promisesAddressField = features.map(feature => (
                 createAddressFields(feature, featureType, addressField)
@@ -410,7 +471,7 @@ const save = {
     saveData,
     saveDeletedFeatureData,
     featureDataToParams,
-    findMatchingLayer,
+    findMatchingLayers,
     handleSaveResponse,
     handleDeleteResponse,
     formatToEsriCompliant,

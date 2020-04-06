@@ -62,6 +62,7 @@ export const applyEdits = (
  * @param {Object[]} layers List of map layers.
  * @param {string} objectIds String of feature IDs to be deleted, separated by commas.
  * @param {string} layerId ID of layer that the features will be deleted from.
+ * @param {Object[]} layerList List of layergroup layers.
  *
  * @returns {Object[]} List of map layers with deleted features removed.
  */
@@ -69,8 +70,10 @@ export const applyDeletedFeatures = (
     layers: Object[],
     objectIds: string,
     layerId: string,
+    layerList: Object[],
 ): Object[] => layers.map((layer: Object) => {
-    if (layerId === layer.id) {
+    const childLayer: Object = layerList.find(ll => ll.id === layer.id && ll.parentLayer);
+    if (layerId === layer.id || (childLayer && childLayer.parentLayer === layerId)) {
         return {
             ...layer,
             data: layer.data.filter(d => !objectIds.includes(d._id)),
