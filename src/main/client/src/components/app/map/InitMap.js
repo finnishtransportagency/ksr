@@ -411,10 +411,11 @@ class EsriMap extends Component<Props> {
             );
 
             const geometry = nestedVal(selectedFeature, ['geometry']);
-            const layer = layerList.find(ll => nestedVal(
+            const layerId = nestedVal(
                 selectedFeature,
                 ['layer', 'id'],
-            ).replace('.s', '') === ll.id);
+            );
+            const layer = layerList.find(ll => layerId && layerId.replace('.s', '') === ll.id);
 
             const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
             const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
