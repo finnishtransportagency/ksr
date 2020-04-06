@@ -15,6 +15,7 @@ import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
 import { copyFeature } from '../../../utils/map-selection/copyFeature';
 import { addLayers, removeGraphicsFromMap } from '../../../utils/map';
+import { convert } from '../../../utils/geojson';
 import { DigitransitLocatorBuilder } from '../../../utils/geocode';
 
 type Props = {
@@ -503,11 +504,16 @@ class EsriMap extends Component<Props> {
                     break;
                 case 'get-street-property-info':
                     if (x) {
+                        const geom = {
+                            type: 'Point',
+                            coordinates: [x, y],
+                        };
+                        const point = await convert(geom, 3067, 4326);
                         const data = {
                             attributes: {},
                             geometry: {
-                                x,
-                                y,
+                                x: point.x,
+                                y: point.y,
                                 type: 'point',
                             },
                             featureType: 'street',
