@@ -512,7 +512,7 @@ class ReactTable extends Component<Props, State> {
                         : cellField;
 
                     if (layerList.some(layer => layer.parentLayer === originalLayer.id)) {
-                        cellField = childLayerDomainValues(cellField);
+                        cellField = childLayerDomainValues(cellField, originalLayer);
                     }
                 }
 

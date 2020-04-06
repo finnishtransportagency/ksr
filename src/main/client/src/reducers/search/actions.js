@@ -29,7 +29,12 @@ export const setSearchOptions = (
         ['fields'], []);
 
     if (nestedVal(layerList.find(layer => layer.id === selectedLayer), ['parentLayer'])) {
-        layerFields = layerFields.map(field => childLayerDomainValues(field));
+        const parentLayerId = nestedVal(
+            layerList.find(layer => layer.id === selectedLayer),
+            ['parentLayer'],
+        );
+        const parentLayer = layerList.find(layer => layer.id === parentLayerId);
+        layerFields = layerFields.map(field => childLayerDomainValues(field, parentLayer));
     }
 
     return {

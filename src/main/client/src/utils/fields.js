@@ -19,17 +19,31 @@ export const filterNotAllowedFields = (fields: Object[] = []): Object[] => (
 /**
  * Finds domain field values for child layers that are created from multiple different layers.
  *
+ * Custom search for 'Maanvuokrasopimukset', because it contains data from multiple layers.
+ *
  * @param {Object} childField Field that domain values are searched for.
+ * @param {Object} parentLayer Parent layer related to the child layer.
  *
  * @returns {Object} Field with found domain values or field's domain as null.
  */
-export const childLayerDomainValues = (childField: Object) => {
-    if (childField.domain !== null) return childField;
-
+export const childLayerDomainValues = (childField: Object, parentLayer: Object) => {
+    if (childField.domain) return childField;
     const { layerList } = store.getState().map.layerGroups;
-    const domainFields = layerList.filter(layer => layer.fields)
-        .flatMap(layer => layer.fields)
-        .filter(field => field.domain);
+    let domainFields;
+
+    if (parentLayer.name.toLowerCase() === 'maanvuokrasopimukset') {
+        const relatedLayers = ['maanvuokrasopimukset', 'sopimukset', 'tilat'];
+        domainFields = layerList
+            .filter(layer => relatedLayers.some(rl => rl === layer.name.toLowerCase()))
+            .filter(layer => layer.fields)
+            .flatMap(layer => layer.fields)
+            .filter(field => field.domain);
+    } else {
+        domainFields = layerList.filter(layer => layer.id === parentLayer.id)
+            .filter(layer => layer.fields)
+            .flatMap(layer => layer.fields)
+            .filter(field => field.domain);
+    }
 
     return {
         ...childField,
