@@ -68,6 +68,13 @@ const createRoadAddress = address => (
     ${strings.modalShowAddress.distance}=${address.etaisyys}`
 );
 
+const createStreetAddress = (properties) => {
+    const address = properties.postalcode
+        ? `${properties.name}, ${properties.postalcode}, ${properties.localadmin}`
+        : `${properties.name}, ${properties.localadmin}`;
+    return address;
+};
+
 /**
  * Adds address attribute to features data.
  *
@@ -108,7 +115,7 @@ export const createAddressFields = (
                     case 'street':
                         convertedAddress = r.map(address => (
                             address.features.length > 0
-                                ? `${address.features[0].properties.name}, ${address.features[0].properties.postalcode}, ${address.features[0].properties.localadmin}`
+                                ? createStreetAddress(address.features[0].properties)
                                 : null
                         ));
                         break;
