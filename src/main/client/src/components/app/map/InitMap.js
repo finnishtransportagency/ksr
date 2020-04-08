@@ -418,8 +418,6 @@ class EsriMap extends Component<Props> {
             );
             const layer = layerList.find(ll => layerId && layerId.replace('.s', '') === ll.id);
 
-            const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
-            const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
 
             const copySelectedFeature = async (activeFeatureMode: string) => {
                 const copiedFeature = view.popup.viewModel.selectedFeature;
@@ -488,9 +486,16 @@ class EsriMap extends Component<Props> {
                 case 'contract-link':
                     if (layer) {
                         if (layer.parentLayer) {
+                            const parentLayer: Object = layerList
+                                .find(ll => ll.id === layer.parentLayer);
+                            const objectIdField: Object = parentLayer.fields
+                                .find(a => a.type === 'esriFieldTypeOID');
+                            const objectId = nestedVal(selectedFeature, ['attributes', objectIdField.name]);
                             setContractListInfo(layer.parentLayer, objectId);
                             setActiveModal('featureContracts');
                         } else {
+                            const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
+                            const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
                             setContractListInfo(layer.id, objectId);
                             setActiveModal('featureContracts');
                         }
