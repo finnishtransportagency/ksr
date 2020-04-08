@@ -85,10 +85,6 @@ export const mapSelectPopup = async (
                 let matchingLayer: Object = layerList
                     .find(ll => ll.id === feature.layer.id.replace('.s', ''));
 
-                matchingLayer = matchingLayer.parentLayer
-                    ? layerList.find(ll => ll.id === matchingLayer.parentLayer)
-                    : matchingLayer;
-
                 if (feature.layer.featureType === 'shapefile') {
                     const columns = feature.layer.fields.slice(0, 5);
                     columns.forEach((c) => {
@@ -113,14 +109,19 @@ export const mapSelectPopup = async (
 
                     textInfo = matchingLayer.attribution;
 
+                    matchingLayer = matchingLayer.parentLayer
+                        ? layerList.find(ll => ll.id === matchingLayer.parentLayer)
+                        : matchingLayer;
+
                     const relationLayer = matchingLayer
                             && layerList.find(ll => (
                                 ll.id === String(nestedVal(matchingLayer.relations
                                     .find(r => r.layerId === matchingLayer.id), ['relationLayerId']))));
 
-                    if (matchingLayer.hasRelations
-                            && relationLayer
-                            && relationLayer.layerPermission.readLayer) {
+                    if (matchingLayer
+                        && relationLayer
+                        && matchingLayer.hasRelations
+                        && relationLayer.layerPermission.readLayer) {
                         const contractLink = {
                             title: strings.modalFeatureContracts.featureContracts,
                             id: 'contract-link',
