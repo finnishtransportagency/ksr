@@ -131,12 +131,16 @@ export const mapSelectPopup = async (
                     }
                 }
 
-                const addCopyAction = activeAdminTool && matchingLayer
-                    && activeAdminTool !== matchingLayer.id
+                const addCopyAction = activeAdminTool
+                    && matchingLayer
                     && geometryType
-                    && convertEsriGeometryType(geometryType) === matchingLayer.geometryType
+                    && convertEsriGeometryType(geometryType) === 'polygon'
+                    && convertEsriGeometryType(geometryType) === convertEsriGeometryType(
+                        matchingLayer.geometryType,
+                    )
                     && matchingLayer
                     && matchingLayer.layerPermission.createLayer;
+
                 if (addCopyAction) {
                     const copyFeatureAction = {
                         title: strings.esriMap.copyFeature,
