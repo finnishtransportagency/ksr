@@ -128,9 +128,6 @@ class ModalFilter extends Component<Props, State> {
                 : {},
         };
 
-        combinedData.geometry.rings = copiedFeatures
-            .flatMap(data => nestedVal(data, ['geometry', 'rings']));
-
         const feature = await createAddressFields(combinedData, featureType, addressField);
         let featureId = 0;
         if (editModeActive && copiedFeatures.length) {
