@@ -27,6 +27,10 @@ const Icons = styled.div`
     ${props => props.activeAdminTool && css`
         color: ${styles.colorDanger};
     `}
+
+    ${props => props.openInTable && css`
+        color: ${styles.colorInfo};
+    `}
     
     i:hover {
         cursor: pointer;
