@@ -8,6 +8,8 @@ type Props = {
     activeAdminTool: string,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
+    addNonSpatialContentToTable: (layer: Object) => void,
+    tableLayers: Object[],
 };
 
 const DataLayersActiveView = ({
@@ -16,6 +18,8 @@ const DataLayersActiveView = ({
     createNonSpatialFeature,
     mapScale,
     handleAdminModeChange,
+    addNonSpatialContentToTable,
+    tableLayers,
 }: Props) => {
     if (dataLayerList.length === 0) return null;
     return (
@@ -35,6 +39,8 @@ const DataLayersActiveView = ({
                         toggleLayer={() => {}}
                         mapScale={mapScale}
                         handleAdminModeChange={handleAdminModeChange}
+                        addNonSpatialContentToTable={addNonSpatialContentToTable}
+                        tableLayers={tableLayers}
                     />
                 ))
             }
