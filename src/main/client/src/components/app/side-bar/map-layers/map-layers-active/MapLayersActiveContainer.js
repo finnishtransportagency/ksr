@@ -5,6 +5,7 @@ import { setLayerList, toggleLayer } from '../../../../../reducers/map/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
 import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
+import { addNonSpatialContentToTable } from '../../../../../reducers/table/actions';
 
 const mapStateToProps = state => ({
     mapLayerList: state.map.layerGroups.layerList.filter(l => l.type !== 'agfl'),
@@ -12,6 +13,7 @@ const mapStateToProps = state => ({
     fetching: state.map.layerGroups.fetching,
     activeAdminTool: state.adminTool.active.layerId,
     mapScale: state.map.mapConfig.mapScale,
+    tableLayers: state.table.features.layers,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -32,6 +34,9 @@ const mapDispatchToProps = dispatch => ({
     },
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+    addNonSpatialContentToTable: (layer) => {
+        dispatch(addNonSpatialContentToTable(layer));
     },
 });
 

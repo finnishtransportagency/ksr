@@ -24,6 +24,8 @@ type Props = {
         cancelText: string,
         accept: Function
     ) => void,
+    addNonSpatialContentToTable: (layer: Object) => void,
+    tableLayers: Object[],
 };
 
 type State = {
@@ -37,6 +39,7 @@ class MapLayersActive extends Component<Props, State> {
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onOpacityChange = this.onOpacityChange.bind(this);
         this.handleAdminModeChange = this.handleAdminModeChange.bind(this);
+        this.toggleChildLayer = this.toggleChildLayer.bind(this);
     }
 
     onDragEnd = (result: DropResult) => {
@@ -87,6 +90,17 @@ class MapLayersActive extends Component<Props, State> {
         }
     };
 
+    toggleChildLayer = (id: string) => {
+        const { mapLayerList, toggleLayer } = this.props;
+        const childLayers = mapLayerList.filter(l => l._source !== 'search' && l.parentLayer === id);
+        childLayers.map((cl) => {
+            if (!cl.visible) {
+                toggleLayer(cl.id);
+            }
+            return null;
+        });
+    };
+
     render() {
         const {
             mapLayerList,
@@ -97,6 +111,8 @@ class MapLayersActive extends Component<Props, State> {
             createThemeLayer,
             toggleLayer,
             mapScale,
+            addNonSpatialContentToTable,
+            tableLayers,
         } = this.props;
         if (!fetching) {
             return (
@@ -111,6 +127,9 @@ class MapLayersActive extends Component<Props, State> {
                         createThemeLayer={createThemeLayer}
                         mapScale={mapScale}
                         handleAdminModeChange={this.handleAdminModeChange}
+                        addNonSpatialContentToTable={addNonSpatialContentToTable}
+                        tableLayers={tableLayers}
+                        toggleChildLayer={this.toggleChildLayer}
                     />
                     <DataLayersActiveView
                         dataLayerList={dataLayerList.filter(l => l.active)}
@@ -118,6 +137,8 @@ class MapLayersActive extends Component<Props, State> {
                         createNonSpatialFeature={createNonSpatialFeature}
                         mapScale={mapScale}
                         handleAdminModeChange={this.handleAdminModeChange}
+                        addNonSpatialContentToTable={addNonSpatialContentToTable}
+                        tableLayers={tableLayers}
                     />
                 </Fragment>
             );
