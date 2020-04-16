@@ -221,7 +221,7 @@ class SketchTool extends Component<Props, State> {
                     };
                 };
 
-                const createLabelGraphic = (geometry, value, geomIndex?) => new Graphic({
+                const createLabelGraphic = (geometry, value) => new Graphic({
                     geometry,
                     symbol: {
                         type: 'text',
@@ -238,7 +238,6 @@ class SketchTool extends Component<Props, State> {
                     type: 'draw-measure-label',
                     id: 'area',
                     visible: true,
-                    geomIndex,
                 });
 
                 const measurement = (polygon: Object) => {
@@ -278,6 +277,39 @@ class SketchTool extends Component<Props, State> {
                     setTempGraphicsLayer(tempGraphicsLayer);
                 };
 
+                const updatePolygonLabels = () => {
+                    // Remove existing labels
+                    const labelGraphics = tempGraphicsLayer.graphics.items
+                        .filter(graphic => graphic.type === 'draw-measure-label');
+                    labelGraphics.forEach(label => tempGraphicsLayer.remove(label));
+
+                    const sketchGraphic = tempGraphicsLayer.graphics.items.find(a => a.type === 'sketch-graphic');
+                    if (sketchGraphic && sketchGraphic.geometry) {
+                        const { rings, spatialReference, type } = sketchGraphic.geometry;
+
+                        if (type === 'polygon') {
+                            const areaLabels = rings.map((ring) => {
+                                const labelPoint = new Point({
+                                    x: ring.map(r => r[0])
+                                        .reduce((a, c) => c + a, 0) / ring.length,
+                                    y: ring.map(r => r[1])
+                                        .reduce((a, c) => c + a, 0) / ring.length,
+                                    spatialReference,
+                                });
+
+                                return createLabelGraphic(
+                                    labelPoint,
+                                    measurement(createPolygon(ring)),
+                                );
+                            });
+
+                            areaLabels.forEach((areaLabel) => {
+                                tempGraphicsLayer.add(areaLabel);
+                            });
+                        }
+                    }
+                };
+
                 const selectFeaturesFromDraw = async (event) => {
                     const { active } = this.props;
                     if (
@@ -295,18 +327,11 @@ class SketchTool extends Component<Props, State> {
                                 && event.graphic.geometry.rings[0].length > 2) {
                                 const { geometry } = event.graphic;
                                 const { rings } = geometry;
-                                const geomIndex = tempGraphicsLayer.graphics.items.filter(a => a.type === 'sketch-graphic').length;
                                 const polygon = createPolygon(rings);
                                 const measure = measurement(polygon);
-                                const areaLabel = createLabelGraphic(geometry, measure, geomIndex);
-                                if (event.target.layer.graphics.length !== 0) {
-                                    const tempLabel = tempGraphicsLayer.graphics.items
-                                        .find(item => item.type === 'draw-measure-label'
-                                            && item.geomIndex === geomIndex);
-                                    if (tempLabel) {
-                                        tempGraphicsLayer.remove(tempLabel);
-                                    }
-                                }
+                                const areaLabel = createLabelGraphic(geometry, measure);
+
+                                updatePolygonLabels();
                                 tempGraphicsLayer.add(areaLabel);
                             }
                         }
@@ -323,6 +348,26 @@ class SketchTool extends Component<Props, State> {
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
                             addGraphic(graphic);
+
+                            // Combine multiple polygons into multipolygon
+                            if (event.tool === 'polygon') {
+                                const sketchGraphicItems = tempGraphicsLayer.graphics.items
+                                    .filter(item => item.type === 'sketch-graphic');
+                                const combinedRings = sketchGraphicItems
+                                    .filter(item => item.type === 'sketch-graphic').flatMap(item => item.geometry.rings);
+                                const firstSketchGraphic = tempGraphicsLayer.graphics.items
+                                    .find(item => item.type === 'sketch-graphic');
+                                firstSketchGraphic.geometry.rings = combinedRings;
+
+                                // Remove excessive polygons that were used for combined rings
+                                sketchGraphicItems.forEach((sketchItem) => {
+                                    if (sketchItem.uid !== firstSketchGraphic.uid) {
+                                        tempGraphicsLayer.remove(sketchItem);
+                                    }
+                                });
+
+                                sketchViewModel.update(firstSketchGraphic);
+                            }
                         } else {
                             if (propertyAreaSearch) {
                                 const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
@@ -352,12 +397,7 @@ class SketchTool extends Component<Props, State> {
                 };
 
                 const onUpdate = (event) => {
-                    // Remove existing label
-                    if (tempGraphicsLayer.graphics.items.length !== 0
-                        && tempGraphicsLayer.graphics.items[0].type === 'draw-measure-label') {
-                        const swapAreaLabel = tempGraphicsLayer.graphics.items[0];
-                        tempGraphicsLayer.remove(swapAreaLabel);
-                    }
+                    updatePolygonLabels();
 
                     if (event.graphics[0].geometry.isSelfIntersecting) {
                         const clonedSymbol = event.graphics[0].symbol.clone();
@@ -371,41 +411,10 @@ class SketchTool extends Component<Props, State> {
                         const clonedSymbol = event.graphics[0].symbol.clone();
                         clonedSymbol.outline = createSketchOutlineGraphic(true, updateModeActive);
                         event.graphics[0].symbol = clonedSymbol;
-                        if (event.graphics !== null
-                            && event.graphics[0].geometry.type === 'polygon'
-                            && event.graphics[0].geometry.rings[0].length > 3
-                        ) {
-                            const { geometry } = event.graphics[0];
-                            const { rings } = geometry;
-                            const areaLabels = rings.map((ring) => {
-                                const labelPoint = new Point({
-                                    x: ring.map(r => r[0])
-                                        .reduce((a, c) => a + c, 0) / ring.length,
-                                    y: ring.map(r => r[1])
-                                        .reduce((a, c) => a + c, 0) / ring.length,
-                                    spatialReference: geometry.extent.center.spatialReference,
-                                });
-                                return createLabelGraphic(
-                                    labelPoint,
-                                    measurement(createPolygon(ring)),
-                                );
-                            });
-                            if (event.state !== 'start') {
-                                const labelGraphics = tempGraphicsLayer.graphics.items
-                                    .filter(graphic => graphic.type === 'draw-measure-label');
-                                labelGraphics.forEach(label => tempGraphicsLayer.remove(label));
-                            }
-                            if (updateModeActive) {
-                                areaLabels.forEach((areaLabel) => {
-                                    tempGraphicsLayer.add(areaLabel);
-                                });
-                            }
-                        }
                     }
 
                     this.setState({ validGeometry: this.validGeometry() });
                 };
-
 
                 sketchViewModel.on('create', selectFeaturesFromDraw);
                 sketchViewModel.on(['redo', 'undo', 'update'], onUpdate);
