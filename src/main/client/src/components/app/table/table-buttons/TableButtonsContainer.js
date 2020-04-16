@@ -82,6 +82,7 @@ const mapStateToProps = (state) => {
             : [],
         hasTableEdited: state.table.features.hasTableEdited,
         portalIsOpen: state.portal.togglePortal,
+        layerList,
     };
 };
 
@@ -98,8 +99,8 @@ const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    clearTableData: () => {
-        dispatch(clearTableData());
+    clearTableData: (view, editedLayers, featureType, addressField, layerList) => {
+        dispatch(clearTableData(view, editedLayers, featureType, addressField, layerList));
     },
     saveEditedFeatures: (view, editedLayers, featureType, addressField) => {
         dispatch(saveEditedFeatures(view, editedLayers, featureType, addressField));
