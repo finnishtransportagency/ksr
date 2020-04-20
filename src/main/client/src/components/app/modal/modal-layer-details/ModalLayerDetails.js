@@ -10,7 +10,6 @@ import { formatPropertyInfoToSaveFormat, propertyIdFormat, validatePropertyId } 
 import { queryFeatures } from '../../../../api/search/searchQuery';
 import { zoomToFeatures } from '../../../../utils/map';
 import { fetchPropertyInfo } from '../../../../api/search/searchProperty';
-import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
     layer: Object,
