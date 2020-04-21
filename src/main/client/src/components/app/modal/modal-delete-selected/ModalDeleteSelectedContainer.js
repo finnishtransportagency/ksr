@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { saveDeletedFeatures } from '../../../../reducers/table/actions';
 import { getCodedValue } from '../../../../utils/parseFeatureData';
 import ModalDeleteSelected from './ModalDeleteSelected';
+import { nestedVal } from '../../../../utils/nestedValue';
 
 const mapStateToProps = (state) => {
     const { layerList } = state.map.layerGroups;
@@ -24,23 +25,23 @@ const mapStateToProps = (state) => {
     const columns = (queryColumnsList.length > 0) ? queryColumnsList : Object.keys(selectedData[0])
         .filter((key, index) => key.includes('/') && index < 5);
 
-    const filteredData = [];
-    selectedData.map((d) => {
-        const filtered = Object.keys(d)
-            .filter(key => columns.find(qc => key.includes(qc) || key === '_id'))
-            .reduce((obj, key) => {
+    const oidField = nestedVal(layer.fields.find(a => a.type === 'esriFieldTypeOID'), ['name']);
+    const filteredData = selectedData.map(d => Object.keys(d)
+        .filter(key => columns.find(qc => key.includes(qc)
+            || key.split('/').pop() === oidField))
+        .reduce((obj, key) => {
+            if (key.split('/').pop() === oidField) {
+                obj._id = d[key];
+            } else {
                 const attributeName = key.split('/').pop();
-                const layerFieldInfo = layer.fields
-                    .filter(field => field.name === attributeName)[0];
+                const layerFieldInfo = layer.fields.find(field => field.name === attributeName);
 
                 const label = layerFieldInfo ? layerFieldInfo.label : attributeName;
                 const domain = layerFieldInfo && layerFieldInfo.domain ? layerFieldInfo.domain : {};
-                const value = getCodedValue(domain, d[key]);
-                obj[label] = value;
-                return obj;
-            }, {});
-        return filteredData.push(filtered);
-    });
+                obj[label] = getCodedValue(domain, d[key]);
+            }
+            return obj;
+        }, {}));
 
     return {
         filteredData,
