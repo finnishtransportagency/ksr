@@ -384,6 +384,7 @@ const fi = {
         featureDeleteNoFeaturesError: 'Kohde tai kohteet on jo poistettu. Päivitä näkymä ja yritä uudelleen.',
     },
     mapLayerSettings: {
+        showAllFeatures: 'Näytä kaikki kohteet',
         addNewFeature: 'Luo uusi kohde',
         createThemeLayer: 'Luo teemataso',
         toggleAdminTool: 'Muokkaus päälle/pois',

@@ -16,12 +16,28 @@ describe('<MapLayerParentChildView />', () => {
                 { id: '3', parentLayer: '1' },
                 { id: '4', parentLayer: '1' },
             ],
+            tableLayers: [
+                {
+                    id: '1', name: 'Layer 1', active: true, visible: true,
+                },
+                {
+                    id: '2', name: 'Layer 2', active: false, visible: false,
+                },
+                {
+                    id: '3', name: 'Layer 3', active: true, visible: false,
+                },
+                {
+                    id: '4', name: 'Layer 4', active: true, visible: true,
+                },
+            ],
             toggleLayer: jest.fn(),
             onOpacityChange: jest.fn(),
             activeAdminTool: '',
             createThemeLayer: jest.fn(),
             mapScale: 30000,
             handleAdminModeChange: jest.fn(),
+            addNonSpatialContentToTable: jest.fn(),
+            toggleChildLayer: jest.fn(),
         };
         return {
             wrapper: shallow(<MapLayerParentChildView {...props} />),

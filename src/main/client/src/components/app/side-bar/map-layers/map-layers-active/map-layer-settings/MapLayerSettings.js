@@ -22,6 +22,8 @@ type Props = {
     createThemeLayer: (layerId: string) => void,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
+    addNonSpatialContentToTable: (layer: Object) => void,
+    tableLayers: Object[],
 };
 
 const MapLayerSettings = ({
@@ -34,6 +36,8 @@ const MapLayerSettings = ({
     createThemeLayer,
     mapScale,
     handleAdminModeChange,
+    addNonSpatialContentToTable,
+    tableLayers,
 }: Props) => (
     <LayerSettings
         toggledHidden={
@@ -71,6 +75,20 @@ const MapLayerSettings = ({
                             />
                         </LayerSettings.Icons>
                     }
+                    <LayerSettings.Icons
+                        openInTable={tableLayers.some(tl => tl.id === layer.id)}
+                    >
+                        <LayerSettings.Icon
+                            role="button"
+                            tabIndex={0}
+                            onKeyPress={() => addNonSpatialContentToTable(layer)}
+                            onClick={() => {
+                                addNonSpatialContentToTable(layer);
+                            }}
+                            className="fas fa-align-justify"
+                            title={strings.mapLayerSettings.showAllFeatures}
+                        />
+                    </LayerSettings.Icons>
                     {
                         layer.type === 'agfs'
                         && layer._source !== 'shapefile'

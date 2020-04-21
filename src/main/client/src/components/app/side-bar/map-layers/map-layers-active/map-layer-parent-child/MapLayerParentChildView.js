@@ -19,6 +19,9 @@ type Props = {
     createThemeLayer: (layerId: string) => void,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
+    addNonSpatialContentToTable: (layer: Object) => void,
+    tableLayers: Object[],
+    toggleChildLayer: (layerId: string) => void,
 };
 
 const MapLayerParentChildView = ({
@@ -30,6 +33,9 @@ const MapLayerParentChildView = ({
     createThemeLayer,
     mapScale,
     handleAdminModeChange,
+    addNonSpatialContentToTable,
+    tableLayers,
+    toggleChildLayer,
 }: Props) => (
     <div>
         {!layer.parentLayer && (
@@ -42,6 +48,21 @@ const MapLayerParentChildView = ({
                             <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
                                 <MapLayerTitle layer={layer} showLayerGroup />
                             </LayerSettings.Title>
+                            <LayerSettings.Icons
+                                openInTable={tableLayers.some(tl => tl.id === layer.id.replace('.s', ''))}
+                            >
+                                <LayerSettings.Icon
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => addNonSpatialContentToTable(layer)}
+                                    onClick={() => {
+                                        addNonSpatialContentToTable(layer);
+                                        toggleChildLayer(layer.id);
+                                    }}
+                                    className="fas fa-align-justify"
+                                    title={strings.mapLayerSettings.showAllFeatures}
+                                />
+                            </LayerSettings.Icons>
                             {
                                 ((nestedVal(
                                     layerList.find(l => l.id === layer.id.replace('.s', '')),
@@ -75,6 +96,10 @@ const MapLayerParentChildView = ({
                                     onOpacityChange={onOpacityChange}
                                     createThemeLayer={createThemeLayer}
                                     mapScale={mapScale}
+                                    addNonSpatialContentToTable={
+                                        addNonSpatialContentToTable
+                                    }
+                                    tableLayers={tableLayers}
                                 />
                             ))}
                     </LayerSettings.ContentMain>

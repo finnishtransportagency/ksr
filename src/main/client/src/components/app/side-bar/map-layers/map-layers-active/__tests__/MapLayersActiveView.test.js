@@ -117,6 +117,20 @@ const setup = () => {
                 },
             },
         ],
+        tableLayers: [
+            {
+                id: '1', name: 'Layer 1', active: true, visible: true,
+            },
+            {
+                id: '2', name: 'Layer 2', active: false, visible: false,
+            },
+            {
+                id: '3', name: 'Layer 3', active: true, visible: false,
+            },
+            {
+                id: '4', name: 'Layer 4', active: true, visible: true,
+            },
+        ],
         handleAdminModeChange: jest.fn(),
         createThemeLayer: jest.fn(),
         onDragEnd: () => {},
@@ -143,8 +157,8 @@ describe('<MapLayersActiveView />', () => {
 
     it('should call handleAdminModeChange on click', () => {
         const { handleAdminModeChange } = wrapper.props();
-        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(7);
-        wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(2).simulate('click');
+        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(10);
+        wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(3).simulate('click');
         expect(handleAdminModeChange).toHaveBeenCalled();
     });
 

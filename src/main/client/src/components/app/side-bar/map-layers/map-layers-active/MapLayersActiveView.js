@@ -15,6 +15,9 @@ type Props = {
     toggleLayer: (layerId: string) => void,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
+    addNonSpatialContentToTable: (layer: Object) => void,
+    tableLayers: Object[],
+    toggleChildLayer: (layerId: string) => void,
 };
 
 const MapLayersView = ({
@@ -27,6 +30,9 @@ const MapLayersView = ({
     toggleLayer,
     mapScale,
     handleAdminModeChange,
+    addNonSpatialContentToTable,
+    tableLayers,
+    toggleChildLayer,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -54,6 +60,10 @@ const MapLayersView = ({
                                                     createThemeLayer={createThemeLayer}
                                                     mapScale={mapScale}
                                                     handleAdminModeChange={handleAdminModeChange}
+                                                    // eslint-disable-next-line max-len
+                                                    addNonSpatialContentToTable={addNonSpatialContentToTable}
+                                                    tableLayers={tableLayers}
+                                                    toggleChildLayer={toggleChildLayer}
                                                 />
                                             )}
                                             {l.active
@@ -72,6 +82,9 @@ const MapLayersView = ({
                                                     createThemeLayer={createThemeLayer}
                                                     mapScale={mapScale}
                                                     handleAdminModeChange={handleAdminModeChange}
+                                                    // eslint-disable-next-line max-len
+                                                    addNonSpatialContentToTable={addNonSpatialContentToTable}
+                                                    tableLayers={tableLayers}
                                                 />
                                             )}
                                         </div>

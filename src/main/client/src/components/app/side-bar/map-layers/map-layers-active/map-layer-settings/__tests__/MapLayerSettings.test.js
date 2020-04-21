@@ -21,7 +21,22 @@ describe('<MapLayerSettings />', () => {
             activeAdminTool: jest.fn(),
             createNonSpatialFeature: jest.fn(),
             createThemeLayer: jest.fn(),
+            addNonSpatialContentToTable: jest.fn(),
             mapScale: 30000,
+            tableLayers: [
+                {
+                    id: '1', name: 'Layer 1', active: true, visible: true,
+                },
+                {
+                    id: '2', name: 'Layer 2', active: false, visible: false,
+                },
+                {
+                    id: '3', name: 'Layer 3', active: true, visible: false,
+                },
+                {
+                    id: '4', name: 'Layer 4', active: true, visible: true,
+                },
+            ],
         };
         return {
             wrapper: shallow(<MapLayerSettings {...props} />),
