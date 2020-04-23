@@ -104,6 +104,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             objectIdFieldName: fetchedLayer.objectIdFieldName,
                             renderer: null,
                             parentLayer: null,
+                            minScale: 18489297,
                         };
 
                         layersToBeAdded.layers.push(newLayer);
@@ -192,6 +193,7 @@ export const searchWorkspaceFeatures = (
                                 objectIdFieldName: fetchedLayer.objectIdFieldName,
                                 renderer: null,
                                 parentLayer: null,
+                                minScale: 18489297,
                             };
 
                             layersToBeAdded.layers.push(newLayer);
