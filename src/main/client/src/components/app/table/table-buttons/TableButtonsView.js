@@ -37,6 +37,10 @@ type Props = {
     portalIsOpen: boolean,
     togglePortal: Function,
     updatePortal: Function,
+    editedLayers: Array<Object>,
+    featureType: string,
+    addressField: string,
+    layerList: Object[],
 };
 
 const TableButtonsView = ({
@@ -65,6 +69,7 @@ const TableButtonsView = ({
     portalIsOpen,
     togglePortal,
     updatePortal,
+    layerList,
 }: Props) => (
     <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
         <Table.Button
@@ -96,11 +101,14 @@ const TableButtonsView = ({
             setActiveModal={setActiveModal}
             originalLayers={originalLayers}
             geometryData={geometryData}
-            showConfirmModal={showConfirmModal}
             clearTableData={clearTableData}
             view={view}
             bufferExists={bufferExists}
             handleClearBuffer={handleClearBuffer}
+            editedLayers={editedLayers}
+            featureType={featureType}
+            addressField={addressField}
+            layerList={layerList}
         />
         <ActiveLayerView
             isOpen={isOpen}

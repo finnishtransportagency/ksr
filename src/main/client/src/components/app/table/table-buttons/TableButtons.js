@@ -34,6 +34,7 @@ type Props = {
     togglePortal: Function,
     portalIsOpen: boolean,
     updatePortal: Function,
+    layerList: Object[],
 };
 
 const TableButtons = ({
@@ -63,6 +64,7 @@ const TableButtons = ({
     togglePortal,
     portalIsOpen,
     updatePortal,
+    layerList,
 }: Props) => {
     const [bufferExists, setBufferExists] = useState(false);
 
@@ -123,6 +125,7 @@ const TableButtons = ({
             togglePortal={togglePortal}
             portalIsOpen={portalIsOpen}
             updatePortal={updatePortal}
+            layerList={layerList}
         />
     );
 };
