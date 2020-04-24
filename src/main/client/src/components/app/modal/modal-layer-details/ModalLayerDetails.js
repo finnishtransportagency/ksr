@@ -162,19 +162,29 @@ class ModalFilter extends Component<Props, State> {
     setFormOptions = (
         formOptions: Object,
     ) => {
+        let geometryChanged = false;
+
         if (formOptions.submitDisabled) {
-            const { sketchViewModel } = this.props;
-            if (sketchViewModel.updateGraphics.items.length > 0) {
-                if (JSON.stringify(sketchViewModel.updateGraphics.items[0].geometry)
-                !== JSON.stringify(sketchViewModel.updateGraphics.items[0].initialGeometry)) {
-                    formOptions.submitDisabled = false;
+            const { sketchViewModel, editModeActive } = this.props;
+            const sketchItems = sketchViewModel.updateGraphics.items;
+
+            if (sketchItems) {
+                if (sketchItems.length) {
+                    const { geometry, initialGeometry } = sketchItems[0];
+                    if (JSON.stringify(geometry) !== JSON.stringify(initialGeometry)) {
+                        geometryChanged = true;
+                    }
                 }
+
+                // New polygon added to existing geometry
+                if (!sketchItems.length && editModeActive) geometryChanged = true;
             }
         }
+
         this.setState({
             formOptions: {
                 editedFields: formOptions.editedFields,
-                submitDisabled: formOptions.submitDisabled,
+                submitDisabled: formOptions.submitDisabled && !geometryChanged,
             },
         });
     };
