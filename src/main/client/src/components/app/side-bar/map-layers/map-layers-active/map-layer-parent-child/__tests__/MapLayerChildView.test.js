@@ -10,9 +10,11 @@ describe('<MapLayerChildView />', () => {
                 name: 'Test layer',
                 fields,
             },
+            loadingLayers: [],
             toggleLayer: jest.fn(),
             onOpacityChange: jest.fn(),
             createThemeLayer: jest.fn(),
+            populateTable: jest.fn(),
             mapScale: 30000,
         };
         return {
@@ -33,7 +35,7 @@ describe('<MapLayerChildView />', () => {
         const fields = [{ name: 'numberField', type: 'esriFieldTypeInteger' }];
         const { wrapper } = setup(fields);
 
-        expect(wrapper.find(LayerSettings.Icons).length).toBe(1);
+        expect(wrapper.find(LayerSettings.Icons).length).toBe(2);
         expect(wrapper.find(LayerSettings.Icon).length).toBe(1);
     });
 
@@ -41,7 +43,7 @@ describe('<MapLayerChildView />', () => {
         const fields = [{ name: 'textField', type: 'esriFieldTypeString' }];
         const { wrapper } = setup(fields);
 
-        expect(wrapper.find(LayerSettings.Icons).length).toBe(1);
+        expect(wrapper.find(LayerSettings.Icons).length).toBe(2);
         expect(wrapper.find(LayerSettings.Icon).length).toBe(0);
     });
 });

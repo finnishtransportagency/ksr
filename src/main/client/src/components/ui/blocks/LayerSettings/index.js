@@ -5,6 +5,7 @@ import Content from './Content';
 import ContentTop from './ContentTop';
 import ContentMain from './ContentMain';
 import Slider from './Slider';
+import Loading from './Loading';
 
 const LayerSettings = styled.div`
     display: flex;
@@ -26,10 +27,6 @@ const Icons = styled.div`
     
     ${props => props.activeAdminTool && css`
         color: ${styles.colorDanger};
-    `}
-
-    ${props => props.openInTable && css`
-        color: ${styles.colorInfo};
     `}
     
     i:hover {
@@ -97,5 +94,6 @@ LayerSettings.Title = Title;
 LayerSettings.Toggle = Toggle;
 LayerSettings.ContentTop = ContentTop;
 LayerSettings.ContentMain = ContentMain;
+LayerSettings.Loading = Loading;
 
 export default LayerSettings;

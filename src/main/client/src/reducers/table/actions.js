@@ -104,6 +104,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             objectIdFieldName: fetchedLayer.objectIdFieldName,
                             renderer: null,
                             parentLayer: null,
+                            minScale: 18489297,
                         };
 
                         layersToBeAdded.layers.push(newLayer);
@@ -192,6 +193,7 @@ export const searchWorkspaceFeatures = (
                                 objectIdFieldName: fetchedLayer.objectIdFieldName,
                                 renderer: null,
                                 parentLayer: null,
+                                minScale: 18489297,
                             };
 
                             layersToBeAdded.layers.push(newLayer);
@@ -265,9 +267,83 @@ export const toggleSelectAll = (layerId: string) => ({
     layerId,
 });
 
-export const clearTableData = () => ({
-    type: types.CLEAR_TABLE_DATA,
-});
+export const clearTableData = (
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
+    layerList: Object[],
+) => (dispatch: Function) => {
+    let layerId = '';
+    const editedLayer = editedLayers[0];
+    const containsEdit = editedLayer && editedLayer.data
+        .some(d => d._edited.length > 0);
+    const layer: any = layerList.find(ll => ll.id === editedLayer.id);
+    if (layer.parentLayer) {
+        layerId = layer.parentLayer;
+    } else {
+        layerId = layer.id;
+    }
+    if (containsEdit) {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                setTimeout(() => {
+                    dispatch(showConfirmModal(
+                        strings.modalSaveEditedData.content,
+                        strings.modalSaveEditedData.submit,
+                        strings.modalSaveEditedData.cancel,
+                        () => {
+                            save.saveEditedFeatureData(
+                                view,
+                                [editedLayer],
+                                featureType,
+                                addressField,
+                                layerList,
+                            )
+                                .then(() => {
+                                    dispatch({
+                                        type: types.CLEAR_TABLE_DATA,
+                                    });
+                                    view.popup.close();
+                                });
+                        },
+                        () => {
+                            dispatch({
+                                type: types.CLEAR_TABLE_DATA,
+                            });
+                            view.popup.close();
+                        },
+                    ));
+                    dispatch({
+                        type: types.SET_ACTIVE_ADMIN_TOOL,
+                        layerId,
+                        layerList,
+                    });
+                }, 500);
+            },
+        ));
+    } else {
+        dispatch(showConfirmModal(
+            strings.modalClearTable.content,
+            strings.modalClearTable.submit,
+            strings.modalClearTable.cancel,
+            () => {
+                dispatch({
+                    type: types.CLEAR_TABLE_DATA,
+                });
+                dispatch({
+                    type: types.SET_ACTIVE_ADMIN_TOOL,
+                    layerId,
+                    layerList,
+                });
+                view.popup.close();
+            },
+        ));
+    }
+};
 
 export const setEditedLayer = (data: Array<Object>) => ({
     type: types.SET_EDITED_LAYER,
@@ -410,7 +486,10 @@ export const addNonSpatialContentToTable = (
     layer: Object,
     workspaceFeatures?: Object[],
 ) => (dispatch: Function) => {
-    dispatch({ type: types.SET_LOADING });
+    dispatch({
+        type: types.SET_LOADING_LAYERS,
+        layerIds: [layer.id],
+    });
     fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
         .then(async (results) => {
             if (workspaceFeatures) {
@@ -450,7 +529,10 @@ export const addNonSpatialContentToTable = (
                 type: types.SELECT_FEATURES,
                 layers,
             });
-            dispatch({ type: types.REMOVE_LOADING });
+            dispatch({
+                type: types.REMOVE_LOADING_LAYERS,
+                layerIds: [layer.id],
+            });
         })
         .catch(err => console.error(err));
 };
