@@ -7,6 +7,7 @@ import strings from '../../../../../../translations';
 
 import LayerSettings from '../../../../../ui/blocks/LayerSettings';
 import MapLayerTitle from '../../../../shared/MapLayerTitle';
+import LoadingIcon from '../../../../shared/LoadingIcon';
 import { layerViewable } from '../../../../../../utils/layers';
 import MapLayerToggle from '../map-layer-settings/MapLayerToggle';
 import { themeLayerFields } from '../../../../../../utils/fields';
@@ -17,6 +18,8 @@ type Props = {
     onOpacityChange: (evt: Number, id: Number) => void,
     createThemeLayer: (layerId: string) => void,
     mapScale: number,
+    populateTable: (layer: Object) => void,
+    loadingLayers: string[],
 };
 
 const MapLayerChildView = ({
@@ -25,6 +28,8 @@ const MapLayerChildView = ({
     onOpacityChange,
     createThemeLayer,
     mapScale,
+    populateTable,
+    loadingLayers,
 }: Props) => (
     <LayerSettings
         childLayer
@@ -45,6 +50,31 @@ const MapLayerChildView = ({
                     <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
                         <MapLayerTitle layer={layer} childLayer />
                     </LayerSettings.Title>
+                    {
+                        <LayerSettings.Icons>
+                            <LayerSettings.Loading>
+                                {
+                                    loadingLayers && loadingLayers.some(ll => ll === layer.id)
+                                    && <LoadingIcon size={6} loading />
+                                }
+                            </LayerSettings.Loading>
+                        </LayerSettings.Icons>
+                    }
+                    {
+                        layer.type === 'agfs'
+                        && (
+                            <LayerSettings.Icons>
+                                <LayerSettings.Icon
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => populateTable(layer)}
+                                    onClick={() => populateTable(layer)}
+                                    className="fas fa-align-justify"
+                                    title={strings.mapLayerSettings.showAllFeatures}
+                                />
+                            </LayerSettings.Icons>
+                        )
+                    }
                     <LayerSettings.Icons>
                         {themeLayerFields(layer).length > 0 && (
                             <LayerSettings.Icon

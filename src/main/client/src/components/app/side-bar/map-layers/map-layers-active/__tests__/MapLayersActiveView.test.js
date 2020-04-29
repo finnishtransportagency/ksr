@@ -131,10 +131,12 @@ const setup = () => {
                 id: '4', name: 'Layer 4', active: true, visible: true,
             },
         ],
+        loadingLayers: [],
         handleAdminModeChange: jest.fn(),
         createThemeLayer: jest.fn(),
         onDragEnd: () => {},
         toggleLayer: jest.fn(),
+        populateTable: jest.fn(),
         mapScale: 50000,
     };
     const wrapper = mount(<MapLayersActiveView {...props} />);
@@ -157,7 +159,7 @@ describe('<MapLayersActiveView />', () => {
 
     it('should call handleAdminModeChange on click', () => {
         const { handleAdminModeChange } = wrapper.props();
-        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(10);
+        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(9);
         wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(3).simulate('click');
         expect(handleAdminModeChange).toHaveBeenCalled();
     });

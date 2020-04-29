@@ -26,6 +26,7 @@ type Props = {
     ) => void,
     addNonSpatialContentToTable: (layer: Object) => void,
     tableLayers: Object[],
+    loadingLayers: string[],
 };
 
 type State = {
@@ -39,7 +40,7 @@ class MapLayersActive extends Component<Props, State> {
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onOpacityChange = this.onOpacityChange.bind(this);
         this.handleAdminModeChange = this.handleAdminModeChange.bind(this);
-        this.toggleChildLayer = this.toggleChildLayer.bind(this);
+        this.populateTable = this.populateTable.bind(this);
     }
 
     onDragEnd = (result: DropResult) => {
@@ -90,15 +91,21 @@ class MapLayersActive extends Component<Props, State> {
         }
     };
 
-    toggleChildLayer = (id: string) => {
-        const { mapLayerList, toggleLayer } = this.props;
-        const childLayers = mapLayerList.filter(l => l._source !== 'search' && l.parentLayer === id);
-        childLayers.map((cl) => {
-            if (!cl.visible) {
-                toggleLayer(cl.id);
-            }
-            return null;
-        });
+    populateTable = (layer: Object) => {
+        const { tableLayers, showConfirmModal, addNonSpatialContentToTable } = this.props;
+        const active = tableLayers.some(tl => tl.id === layer.id);
+        if (active) {
+            showConfirmModal(
+                strings.modalPopulateTable.content,
+                strings.modalPopulateTable.submit,
+                strings.modalPopulateTable.cancel,
+                () => {
+                    addNonSpatialContentToTable(layer);
+                },
+            );
+        } else {
+            addNonSpatialContentToTable(layer);
+        }
     };
 
     render() {
@@ -111,8 +118,7 @@ class MapLayersActive extends Component<Props, State> {
             createThemeLayer,
             toggleLayer,
             mapScale,
-            addNonSpatialContentToTable,
-            tableLayers,
+            loadingLayers,
         } = this.props;
         if (!fetching) {
             return (
@@ -127,9 +133,8 @@ class MapLayersActive extends Component<Props, State> {
                         createThemeLayer={createThemeLayer}
                         mapScale={mapScale}
                         handleAdminModeChange={this.handleAdminModeChange}
-                        addNonSpatialContentToTable={addNonSpatialContentToTable}
-                        tableLayers={tableLayers}
-                        toggleChildLayer={this.toggleChildLayer}
+                        populateTable={this.populateTable}
+                        loadingLayers={loadingLayers}
                     />
                     <DataLayersActiveView
                         dataLayerList={dataLayerList.filter(l => l.active)}
@@ -137,8 +142,7 @@ class MapLayersActive extends Component<Props, State> {
                         createNonSpatialFeature={createNonSpatialFeature}
                         mapScale={mapScale}
                         handleAdminModeChange={this.handleAdminModeChange}
-                        addNonSpatialContentToTable={addNonSpatialContentToTable}
-                        tableLayers={tableLayers}
+                        populateTable={this.populateTable}
                     />
                 </Fragment>
             );

@@ -96,6 +96,11 @@ const fi = {
         content: 'Haluatko tyhjentää valitsemasi tason taulukosta?',
         info: 'Poista taso...',
     },
+    modalPopulateTable: {
+        submit: 'Kyllä',
+        cancel: 'Peruuta',
+        content: 'Haluatko avata taulun kaikki kohteet? Taulun nykyiset tiedot korvataan uusilla tiedoilla.',
+    },
     modalDownloadCsv: {
         all: 'Kaikki kohteet',
         selected: 'Valitut kohteet',

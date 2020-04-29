@@ -486,7 +486,10 @@ export const addNonSpatialContentToTable = (
     layer: Object,
     workspaceFeatures?: Object[],
 ) => (dispatch: Function) => {
-    dispatch({ type: types.SET_LOADING });
+    dispatch({
+        type: types.SET_LOADING_LAYERS,
+        layerIds: [layer.id],
+    });
     fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
         .then(async (results) => {
             if (workspaceFeatures) {
@@ -526,7 +529,10 @@ export const addNonSpatialContentToTable = (
                 type: types.SELECT_FEATURES,
                 layers,
             });
-            dispatch({ type: types.REMOVE_LOADING });
+            dispatch({
+                type: types.REMOVE_LOADING_LAYERS,
+                layerIds: [layer.id],
+            });
         })
         .catch(err => console.error(err));
 };

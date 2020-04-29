@@ -7,6 +7,7 @@ import strings from '../../../../../../translations';
 
 import LayerSettings from '../../../../../ui/blocks/LayerSettings';
 import MapLayerTitle from '../../../../shared/MapLayerTitle';
+import LoadingIcon from '../../../../shared/LoadingIcon';
 import MapLayerToggle from './MapLayerToggle';
 import { layerViewable } from '../../../../../../utils/layers';
 import { nestedVal } from '../../../../../../utils/nestedValue';
@@ -22,8 +23,8 @@ type Props = {
     createThemeLayer: (layerId: string) => void,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
-    addNonSpatialContentToTable: (layer: Object) => void,
-    tableLayers: Object[],
+    populateTable: (layer: Object) => void,
+    loadingLayers: string[],
 };
 
 const MapLayerSettings = ({
@@ -36,8 +37,8 @@ const MapLayerSettings = ({
     createThemeLayer,
     mapScale,
     handleAdminModeChange,
-    addNonSpatialContentToTable,
-    tableLayers,
+    populateTable,
+    loadingLayers,
 }: Props) => (
     <LayerSettings
         toggledHidden={
@@ -64,6 +65,16 @@ const MapLayerSettings = ({
                     </LayerSettings.Title>
                     {
                         <LayerSettings.Icons>
+                            <LayerSettings.Loading>
+                                {
+                                    loadingLayers && loadingLayers.some(ll => ll === layer.id)
+                                    && <LoadingIcon size={6} loading />
+                                }
+                            </LayerSettings.Loading>
+                        </LayerSettings.Icons>
+                    }
+                    {
+                        <LayerSettings.Icons>
                             <LayerSettings.Icon
                                 hidden={activeAdminTool !== layer.id || (layer.type !== 'agfl' && !nestedVal(layer, ['propertyIdField'])) || !layer.layerPermission.createLayer}
                                 className="fas fa-plus"
@@ -75,20 +86,21 @@ const MapLayerSettings = ({
                             />
                         </LayerSettings.Icons>
                     }
-                    <LayerSettings.Icons
-                        openInTable={tableLayers.some(tl => tl.id === layer.id)}
-                    >
-                        <LayerSettings.Icon
-                            role="button"
-                            tabIndex={0}
-                            onKeyPress={() => addNonSpatialContentToTable(layer)}
-                            onClick={() => {
-                                addNonSpatialContentToTable(layer);
-                            }}
-                            className="fas fa-align-justify"
-                            title={strings.mapLayerSettings.showAllFeatures}
-                        />
-                    </LayerSettings.Icons>
+                    {
+                        layer.type === 'agfs'
+                        && (
+                            <LayerSettings.Icons>
+                                <LayerSettings.Icon
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => populateTable(layer)}
+                                    onClick={() => populateTable(layer)}
+                                    className="fas fa-align-justify"
+                                    title={strings.mapLayerSettings.showAllFeatures}
+                                />
+                            </LayerSettings.Icons>
+                        )
+                    }
                     {
                         layer.type === 'agfs'
                         && layer._source !== 'shapefile'

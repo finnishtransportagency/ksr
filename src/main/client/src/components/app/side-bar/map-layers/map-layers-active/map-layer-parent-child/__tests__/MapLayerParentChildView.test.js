@@ -36,8 +36,6 @@ describe('<MapLayerParentChildView />', () => {
             createThemeLayer: jest.fn(),
             mapScale: 30000,
             handleAdminModeChange: jest.fn(),
-            addNonSpatialContentToTable: jest.fn(),
-            toggleChildLayer: jest.fn(),
         };
         return {
             wrapper: shallow(<MapLayerParentChildView {...props} />),

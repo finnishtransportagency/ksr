@@ -15,9 +15,8 @@ type Props = {
     toggleLayer: (layerId: string) => void,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
-    addNonSpatialContentToTable: (layer: Object) => void,
-    tableLayers: Object[],
-    toggleChildLayer: (layerId: string) => void,
+    populateTable: (layer: Object) => void,
+    loadingLayers: string[],
 };
 
 const MapLayersView = ({
@@ -30,9 +29,8 @@ const MapLayersView = ({
     toggleLayer,
     mapScale,
     handleAdminModeChange,
-    addNonSpatialContentToTable,
-    tableLayers,
-    toggleChildLayer,
+    populateTable,
+    loadingLayers,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -60,10 +58,8 @@ const MapLayersView = ({
                                                     createThemeLayer={createThemeLayer}
                                                     mapScale={mapScale}
                                                     handleAdminModeChange={handleAdminModeChange}
-                                                    // eslint-disable-next-line max-len
-                                                    addNonSpatialContentToTable={addNonSpatialContentToTable}
-                                                    tableLayers={tableLayers}
-                                                    toggleChildLayer={toggleChildLayer}
+                                                    populateTable={populateTable}
+                                                    loadingLayers={loadingLayers}
                                                 />
                                             )}
                                             {l.active
@@ -82,9 +78,8 @@ const MapLayersView = ({
                                                     createThemeLayer={createThemeLayer}
                                                     mapScale={mapScale}
                                                     handleAdminModeChange={handleAdminModeChange}
-                                                    // eslint-disable-next-line max-len
-                                                    addNonSpatialContentToTable={addNonSpatialContentToTable}
-                                                    tableLayers={tableLayers}
+                                                    populateTable={populateTable}
+                                                    loadingLayers={loadingLayers}
                                                 />
                                             )}
                                         </div>

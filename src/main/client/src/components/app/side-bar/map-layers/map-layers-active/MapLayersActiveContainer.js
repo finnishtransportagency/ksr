@@ -14,6 +14,7 @@ const mapStateToProps = state => ({
     activeAdminTool: state.adminTool.active.layerId,
     mapScale: state.map.mapConfig.mapScale,
     tableLayers: state.table.features.layers,
+    loadingLayers: state.loading.loadingLayers,
 });
 
 const mapDispatchToProps = dispatch => ({
