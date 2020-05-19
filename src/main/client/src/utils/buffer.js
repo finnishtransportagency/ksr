@@ -68,6 +68,36 @@ export const createGraphic = (
 };
 
 /**
+ * Change polygon (rings) or point (x, y) data into proper esri geometry to work with buffer.
+ *
+ * @param view Esri map view.
+ * @param geomToBuffer List of geometry data, that isn't properly initialized as esri geometry.
+ *
+ * @returns {Promise<Array<*>>} List of Point or Polygon geometry.
+ */
+const initializeToGeometry = async (view: Object, geomToBuffer: Object[]) => {
+    const [Point, Polygon] = await esriLoader.loadModules([
+        'esri/geometry/Point',
+        'esri/geometry/Polygon',
+    ]);
+
+    const createPoint = geom => new Point({
+        x: geom.x,
+        y: geom.y,
+        spatialReference: view.spatialReference,
+    });
+
+    const createPolygon = geom => new Polygon({
+        ...geom,
+        spatialReference: view.spatialReference,
+    });
+
+    return geomToBuffer[0].rings
+        ? geomToBuffer.map(geom => createPolygon(geom))
+        : geomToBuffer.map(geom => createPoint(geom));
+};
+
+/**
  * Set buffer for selected features (geometry).
  *
  * @param {Object} view Esri map view.
@@ -78,7 +108,7 @@ export const createGraphic = (
  * @param {boolean} [selectedFeaturesOnly] Whether selected features only is selected or not.
  * @param {string} [activeLayerId] Currently active layer on table.
  */
-export const setBuffer = (
+export const setBuffer = async (
     view: Object,
     selectedGeometryData: Object[],
     tableGeometryData: Object[],
@@ -87,43 +117,42 @@ export const setBuffer = (
     selectedFeaturesOnly?: boolean,
     activeLayerId?: string,
 ) => {
-    esriLoader
-        .loadModules([
-            'esri/Graphic',
-            'esri/geometry/geometryEngine',
-        ])
-        .then(([
-            Graphic,
-            geometryEngine,
-        ]) => {
-            if (view && (tableGeometryData.length > 0 || selectedGeometryData.length > 0)) {
-                const featureData = selectedFeaturesOnly
-                    ? selectedGeometryData
-                    : tableGeometryData;
+    const [Graphic, geometryEngine] = await esriLoader.loadModules([
+        'esri/Graphic',
+        'esri/geometry/geometryEngine',
+    ]);
 
-                const geomToBuffer = currentTableOnly
-                    ? featureData
-                        .filter(data => data.layerId === activeLayerId)
-                        .map(data => data.geometry)
-                    : featureData.map(data => data.geometry);
+    if (view && (tableGeometryData.length > 0 || selectedGeometryData.length > 0)) {
+        const featureData = selectedFeaturesOnly
+            ? selectedGeometryData
+            : tableGeometryData;
 
-                if (geomToBuffer.length > 0) {
-                    const featureBuffers = geometryEngine.buffer(
-                        geomToBuffer, [
-                            distance,
-                        ], 'meters',
-                        true,
-                    );
+        let geomToBuffer = currentTableOnly
+            ? featureData
+                .filter(data => data.layerId === activeLayerId)
+                .map(data => data.geometry)
+            : featureData.map(data => data.geometry);
 
-                    const bufferGraphic = createGraphic(
-                        featureBuffers[0],
-                        Graphic,
-                    );
+        // Geometry not properly initialized for buffering
+        if (geomToBuffer.some(geom => !geom.initialized)) {
+            geomToBuffer = await initializeToGeometry(view, geomToBuffer);
+        }
 
-                    view.graphics.add(bufferGraphic);
-                }
-            }
-        });
+        if (geomToBuffer.length > 0) {
+            const featureBuffers = geometryEngine.buffer(
+                geomToBuffer, [
+                    distance,
+                ], 'meters',
+                true,
+            );
+
+            const bufferGraphic = createGraphic(
+                featureBuffers[0],
+                Graphic,
+            );
+            view.graphics.add(bufferGraphic);
+        }
+    }
 };
 
 /**
