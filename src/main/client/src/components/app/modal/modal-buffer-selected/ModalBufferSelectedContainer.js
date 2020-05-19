@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
     const activeTableLayer = state.map.layerGroups.layerList
         .find(l => l.id === state.table.features.activeTable
             && l.type === 'agfs'
-            && (l.layers || l.parentLayer));
+            && (l.layers || l.parentLayer || l._source === 'search'));
 
     return {
         tableGeometryData,
