@@ -11,6 +11,7 @@ import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
 import { updatePortal } from '../portal/actions';
+import store from '../../store';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -104,6 +105,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             objectIdFieldName: fetchedLayer.objectIdFieldName,
                             renderer: null,
                             parentLayer: null,
+                            minScale: 18489297,
                         };
 
                         layersToBeAdded.layers.push(newLayer);
@@ -192,6 +194,7 @@ export const searchWorkspaceFeatures = (
                                 objectIdFieldName: fetchedLayer.objectIdFieldName,
                                 renderer: null,
                                 parentLayer: null,
+                                minScale: 18489297,
                             };
 
                             layersToBeAdded.layers.push(newLayer);
@@ -272,6 +275,7 @@ export const clearTableData = (
     addressField: string,
     layerList: Object[],
 ) => (dispatch: Function) => {
+    const activeAdminTool = store.getState().adminTool.active.layerId;
     let layerId = '';
     const editedLayer = editedLayers[0];
     const containsEdit = editedLayer && editedLayer.data
@@ -315,11 +319,13 @@ export const clearTableData = (
                             view.popup.close();
                         },
                     ));
-                    dispatch({
-                        type: types.SET_ACTIVE_ADMIN_TOOL,
-                        layerId,
-                        layerList,
-                    });
+                    if (activeAdminTool && activeAdminTool === layerId) {
+                        dispatch({
+                            type: types.SET_ACTIVE_ADMIN_TOOL,
+                            layerId,
+                            layerList,
+                        });
+                    }
                 }, 500);
             },
         ));
@@ -484,6 +490,10 @@ export const addNonSpatialContentToTable = (
     layer: Object,
     workspaceFeatures?: Object[],
 ) => (dispatch: Function) => {
+    dispatch({
+        type: types.SET_LOADING_LAYERS,
+        layerIds: [layer.id],
+    });
     fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
         .then(async (results) => {
             if (workspaceFeatures) {
@@ -522,6 +532,10 @@ export const addNonSpatialContentToTable = (
             dispatch({
                 type: types.SELECT_FEATURES,
                 layers,
+            });
+            dispatch({
+                type: types.REMOVE_LOADING_LAYERS,
+                layerIds: [layer.id],
             });
         })
         .catch(err => console.error(err));
