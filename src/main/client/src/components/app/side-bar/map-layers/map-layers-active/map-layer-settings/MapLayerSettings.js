@@ -88,6 +88,7 @@ const MapLayerSettings = ({
                     }
                     {
                         layer.type === 'agfs'
+                        && layer._source !== 'search'
                         && (
                             <LayerSettings.Icons>
                                 <LayerSettings.Icon
