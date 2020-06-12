@@ -11,7 +11,6 @@ import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
 import { updatePortal } from '../portal/actions';
-import store from '../../store';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -275,18 +274,14 @@ export const clearTableData = (
     addressField: string,
     layerList: Object[],
 ) => (dispatch: Function) => {
-    const activeAdminTool = store.getState().adminTool.active.layerId;
-    let layerId = '';
-    const editedLayer = editedLayers[0];
-    const containsEdit = editedLayer && editedLayer.data
-        .some(d => d._edited.length > 0);
-    const layer: any = layerList.find(ll => ll.id === editedLayer.id);
-    if (layer.parentLayer) {
-        layerId = layer.parentLayer;
-    } else {
-        layerId = layer.id;
-    }
-    if (containsEdit) {
+    let editedLayer: any = null;
+    editedLayers.map(layer => layer.id === layer.id.replace('.s', '') && layer.data.some((d) => {
+        if (d._edited && d._edited.length > 0) {
+            editedLayer = layer;
+        }
+        return editedLayer;
+    }));
+    if (editedLayer && editedLayer.length !== 0) {
         dispatch(showConfirmModal(
             strings.modalClearTable.content,
             strings.modalClearTable.submit,
@@ -319,13 +314,6 @@ export const clearTableData = (
                             view.popup.close();
                         },
                     ));
-                    if (activeAdminTool && activeAdminTool === layerId) {
-                        dispatch({
-                            type: types.SET_ACTIVE_ADMIN_TOOL,
-                            layerId,
-                            layerList,
-                        });
-                    }
                 }, 500);
             },
         ));
@@ -337,11 +325,6 @@ export const clearTableData = (
             () => {
                 dispatch({
                     type: types.CLEAR_TABLE_DATA,
-                });
-                dispatch({
-                    type: types.SET_ACTIVE_ADMIN_TOOL,
-                    layerId,
-                    layerList,
                 });
                 view.popup.close();
             },
