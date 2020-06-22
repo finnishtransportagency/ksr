@@ -73,8 +73,7 @@ const mapStateToProps = (state) => {
         featureType,
         addressField,
         view: state.map.mapView.view,
-        editedLayers: [state.table.features.editedLayers
-            .find(editedLayer => editedLayer.id.replace('.s', '') === activeTable.replace('.s', ''))],
+        editedLayers: state.table.features.editedLayers,
         currentTabAdmin,
         activeAdminTool: layerId,
         viewGraphics: state.map.mapView.view
