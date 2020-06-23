@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import MapLayersAllView from './MapLayersAllView';
+import { nestedVal } from '../../../../../utils/nestedValue';
 
 type Props = {
     layerGroups: Array<any>,
     layerList: any,
-    subLayers: Object[],
     fetching: boolean,
     loadingLayers: string[],
     activateLayers: (layers: Object[]) => void,
@@ -17,6 +17,7 @@ type Props = {
     setActiveGroups: (activeGroups: number[]) => void,
     setActiveSubGroups: (activeSubGroups: number[]) => void,
     setSearchFeatures: (layers: Object[]) => void,
+    hideLayer: (layerIds: string[]) => void,
 };
 
 class MapLayersActive extends Component<Props> {
@@ -27,7 +28,6 @@ class MapLayersActive extends Component<Props> {
         this.handleSubGroupClick = this.handleSubGroupClick.bind(this);
         this.handleLayerClick = this.handleLayerClick.bind(this);
         this.handleLayerGroupClick = this.handleLayerGroupClick.bind(this);
-        this.handleSubLayerGroupClick = this.handleSubLayerGroupClick.bind(this);
     }
 
     handleGroupClick = (id: number) => {
@@ -48,12 +48,15 @@ class MapLayersActive extends Component<Props> {
 
     handleLayerClick = (id: number) => {
         const {
-            activateLayers, deactivateLayer, layerList, setSearchFeatures,
+            activateLayers, deactivateLayer, layerList, setSearchFeatures, hideLayer,
         } = this.props;
+
         const foundLayer = layerList.find(l => l.id === id);
+
         if (foundLayer && !foundLayer.active) {
             if (foundLayer.definitionExpression) {
                 setSearchFeatures([foundLayer]);
+                hideLayer([foundLayer.id.replace('.s', '')]);
             }
             activateLayers([foundLayer]);
         } else {
@@ -62,35 +65,23 @@ class MapLayersActive extends Component<Props> {
     };
 
     handleLayerGroupClick = (layerGroupName: string) => {
-        const { layerList, layersToFind, subLayers } = this.props;
+        const { layerList, layersToFind, hideLayer } = this.props;
+
         const foundLayers = layerList.filter(l => (
             l.layerGroupName === layerGroupName
             && !l.parentLayer
-            && l.relationType !== 'link'
+            && nestedVal(l.relations && l.relations.find(r => r), ['relationType'], '') !== 'link'
             && l._source !== 'shapefile'
             && (layersToFind
                 ? (l.layerGroupName.toLowerCase().includes(layersToFind)
-                    || l.name.toLowerCase().includes(layersToFind)
-                    || subLayers.some(layer => layer.parentLayer === l.id
-                        && layer.name.toLowerCase().includes(layersToFind)))
+                    || l.name.toLowerCase().includes(layersToFind))
                 : true)));
 
+        // Hide search layer's source layer.
+        foundLayers.filter(l => l._source === 'search')
+            .map(l => !l.active && hideLayer([l.id.replace('.s', '')]));
+
         this.updateLayerList(foundLayers);
-    };
-
-    handleSubLayerGroupClick = (id: number) => {
-        const { subLayers, layerList, layersToFind } = this.props;
-        const parentLayer = layerList.find(l => l.id === id);
-        const filteredSubLayers = parentLayer
-            ? [parentLayer, ...subLayers.filter(l => l.parentLayer === id
-                && (layersToFind
-                    ? (l.name.toLowerCase().includes(layersToFind)
-                        || parentLayer.name.toLowerCase().includes(layersToFind)
-                        || parentLayer.layerGroupName.toLowerCase().includes(layersToFind))
-                    : true))]
-            : [];
-
-        this.updateLayerList(filteredSubLayers);
     };
 
     updateLayerList = (foundLayers: Object[]) => {
@@ -124,7 +115,6 @@ class MapLayersActive extends Component<Props> {
             layerGroups,
             fetching,
             layerList,
-            subLayers,
             loadingLayers,
             layersToFind,
             activeGroups,
@@ -140,11 +130,12 @@ class MapLayersActive extends Component<Props> {
                     ...group,
                     layers: group.name.toLowerCase().includes(layersToFindTrimmed)
                         ? group.layers
-                        : group.layers.filter(layer => layer.relationType !== 'link')
-                            .filter(layer => layer.name.toLowerCase().includes(layersToFindTrimmed)
-                            || subLayers.find(subLayer => subLayer.name
-                                .toLowerCase().includes(layersToFindTrimmed)
-                                && subLayer.parentLayer === layer.id)),
+                        : group.layers.filter(layer => nestedVal(
+                            layer.relations && layer.relations.find(r => r),
+                            ['relationType'], '',
+                        ) !== 'link')
+                            .filter(layer => layer.name
+                                .toLowerCase().includes(layersToFindTrimmed)),
                 }
             ));
         }
@@ -160,8 +151,6 @@ class MapLayersActive extends Component<Props> {
                     activeGroups={activeGroups}
                     activeSubGroups={activeSubGroups}
                     handleLayerGroupClick={this.handleLayerGroupClick}
-                    handleSubLayerGroupClick={this.handleSubLayerGroupClick}
-                    subLayers={subLayers}
                     loadingLayers={loadingLayers}
                     layersToFind={layersToFindTrimmed}
                 />

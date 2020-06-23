@@ -5,7 +5,7 @@ import CustomTableView from '../CustomTableView';
 const setup = () => {
     const props = {
         children: [{}],
-        className: '',
+        style: undefined,
     };
 
     const wrapper = shallow(<CustomTableView {...props} />);

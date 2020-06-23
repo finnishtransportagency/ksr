@@ -1,6 +1,7 @@
 robotframework
 robotframework-requests
-robotframework-selenium2library
+robotframework-seleniumlibrary
 robotframework-SikuliLibrary
 pyautogui
 python-xlib
+robotframework-xvfb

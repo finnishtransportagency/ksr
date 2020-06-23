@@ -20,15 +20,17 @@ import { getCodedValue } from '../parseFeatureData';
  * @param {string} [alfrescoLinkField] Name of alfresco link field.
  * @param {string} [caseManagementLinkField] Name of case management link field.
  *
+ * @param {string} [contractUnlinkable] Contract is unlinkable.
  * @returns {Array} Array containing contract ID, description fields, alfresco link,
  * case management link and attributes.
  */
 export const contractListTexts = (
-    contracts: { features: Object[] },
+    contracts: { layerId: number, features: Object[] },
     contractIdField?: string,
     contractDescriptionField?: string,
     alfrescoLinkField?: string,
     caseManagementLinkField?: string,
+    contractUnlinkable?: boolean,
 ): Object[] => {
     if (contracts && contracts.features) {
         return contracts.features.map(feature => ({
@@ -37,6 +39,8 @@ export const contractListTexts = (
             alfrescoUrl: alfrescoLinkField ? getContractDocumentUrl('alfresco', alfrescoLinkField, feature.attributes) : '',
             caseManagementUrl: caseManagementLinkField ? getContractDocumentUrl('caseManagement', caseManagementLinkField, feature.attributes) : '',
             attributes: feature.attributes,
+            layerId: contracts.layerId,
+            contractUnlinkable,
         }));
     }
     return [];
@@ -51,35 +55,40 @@ export const contractListTexts = (
  * @returns {Object} Current-, and contract layers.
  */
 export const getContractLayers = (layerId: string, layerList: Object[]) => {
-    if (!layerId) return { currentLayer: null, contractLayer: null };
+    if (!layerId) return { currentLayer: null, contractLayers: [] };
 
     const currentLayer = layerList.find(layer => layer.id === layerId
         .replace('.s', ''));
-    const relationLayer = currentLayer && layerList
-        .find(layer => layer.id === currentLayer.relationLayerId.toString());
-
-    if (currentLayer && relationLayer) {
-        switch (currentLayer.relationType) {
-            case 'one':
-                return {
-                    currentLayer,
-                    contractLayer: relationLayer,
-                };
-            case 'many':
-                return {
-                    currentLayer,
-                    contractLayer: layerList
-                        .find(layer => layer.id === relationLayer.relationLayerId.toString()),
-                };
-            default:
-                return {
-                    currentLayer,
-                    contractLayer: null,
-                };
-        }
+    const relationLayers = nestedVal(currentLayer, ['relations']);
+    if (relationLayers === null) {
+        return { currentLayer, contractLayers: [] };
     }
+    const contractLayers = [];
 
-    return { currentLayer: null, contractLayer: null };
+    relationLayers.forEach((r) => {
+        if (currentLayer) {
+            const relationLayer: Object = layerList
+                .find(layer => layer.id === r.relationLayerId.toString());
+
+            const relation: Object = relationLayer && relationLayer.relations.find(f => f);
+
+            switch (relation.relationType) {
+                case 'one':
+                    return contractLayers.push(relationLayer);
+                case 'many':
+                    return contractLayers.push(layerList
+                        .find(layer => layer.id === relationLayer.id.toString()));
+                case 'link':
+                    return contractLayers.push(layerList
+                        .find(layer => layer.id
+                            === relation.relationLayerId.toString()));
+                default:
+                    break;
+            }
+        }
+        return { currentLayer: null, contractLayers: [] };
+    });
+    return { currentLayer, contractLayers };
 };
 
 /**
@@ -157,18 +166,17 @@ export const addDetailToContract = async (
         `${objectIdFieldName} = '${contractObjectId}'`,
         null,
     );
-
     const contractRelationColumn = nestedVal(
         contractData,
-        ['features', '0', 'attributes', layer.relationColumnIn],
+        ['features', '0', 'attributes', nestedVal(layer.relations.find(r => r), ['relationColumnIn'])],
     );
 
-    if (layer.relationType === 'many') {
+    if (nestedVal(layer.relations.find(r => r), ['relationType'], '') === 'many') {
         if (contractRelationColumn) {
             const features = [{
                 attributes: {
                     ...editedFields,
-                    [layer.relationColumnOut]: contractRelationColumn,
+                    [nestedVal(layer.relations.find(r => r), ['relationColumnOut'])]: contractRelationColumn,
                 },
             }];
 
@@ -209,7 +217,8 @@ export const addDetailToContract = async (
         features = [{
             attributes: {
                 [objectIdFieldName]: contractObjectId,
-                [layer.relationColumnOut]: editedFields[layer.relationColumnOut],
+                [nestedVal(layer.relations.find(r => r), ['relationColumnOut'])]:
+                    editedFields[nestedVal(layer.relations.find(r => r), ['relationColumnOut'])],
             },
         }];
 
@@ -250,11 +259,11 @@ export const updateContractLink = async (
         ['name'],
     );
 
-    if (objectIdFieldName && layer.relationColumnOut) {
+    if (objectIdFieldName && nestedVal(layer.relations.find(r => r), ['relationColumnOut'])) {
         const features = [{
             attributes: {
                 [objectIdFieldName]: objectId,
-                [layer.relationColumnOut]: contractNumber,
+                [nestedVal(layer.relations.find(r => r), ['relationColumnOut'])]: contractNumber,
             },
         }];
 
@@ -292,12 +301,19 @@ export const unlinkFeatureFromContract = async (
     featureObjectId: number,
 ): Promise<boolean> => {
     /** Detail linked with a field in detail- or contract layer */
-    if (String(detailLayer.relationLayerId) === contractLayer.id) {
-        const targetLayer = detailLayer.relationType === 'many' ? detailLayer : contractLayer;
-        const objectId = detailLayer.relationType === 'many' ? featureObjectId : contractObjectId;
-        const relationColumn = detailLayer.relationType === 'many'
-            ? detailLayer.relationColumnOut
-            : detailLayer.relationColumnIn;
+    if (String(nestedVal(detailLayer.relations.find(r => r), ['relationLayerId'])) === contractLayer.id) {
+        const {
+            relationColumnOut,
+            relationColumnIn,
+            relationType,
+        } = detailLayer.relations.find(r => r);
+        const targetLayer = relationType === 'many' ? detailLayer : contractLayer;
+        const objectId = relationType === 'many' ? featureObjectId : contractObjectId;
+
+        const relationColumn: string = relationType === 'many'
+            ? relationColumnOut
+            : relationColumnIn;
+
         const objectIdFieldName = nestedVal(
             targetLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
             ['name'],
@@ -323,7 +339,7 @@ export const unlinkFeatureFromContract = async (
     }
 
     /** Detail linked with separate link layer */
-    if (String(detailLayer.relationLayerId) !== contractLayer.id) {
+    if (String(nestedVal(detailLayer.relations.find(r => r), ['relationLayerId'])) !== contractLayer.id) {
         return unlinkContract(
             detailLayer.id,
             featureObjectId,
@@ -349,15 +365,19 @@ export const getFeatureAttributes = (
     contractDetails: Object[],
     activeFeature: Object,
 ): any[] => {
-    const idField: string = nestedVal(layer, ['contractIdField']);
     const features: Object[] = nestedVal(
         contractDetails.find(l => l.id === activeFeature.layerId),
         ['features'],
         [],
     );
 
+    const objectIdFieldName = nestedVal(
+        layer.fields && layer.fields.find(field => field.type === 'esriFieldTypeOID'),
+        ['name'],
+    );
+
     return Object.entries(nestedVal(
-        features.find(feature => feature.attributes[idField] === activeFeature.featureId),
+        features.find(feature => feature.attributes[objectIdFieldName] === activeFeature.objectId),
         ['attributes'],
         {},
     ));
@@ -367,7 +387,7 @@ export const getFeatureAttributes = (
  * Get either the original or coded value based on whether feature is being edited or not.
  * Edited field wouldn't show correct value if it has been changed to coded value.
  *
- * @param {string} value Attribute's value.
+ * @param {string|number} value Attribute's value.
  * @param {Object} domain Field's domain containing coded value info.
  * @param {string} name Field's name.
  * @param {boolean} edit Whether feature is being edited or not.
@@ -375,15 +395,14 @@ export const getFeatureAttributes = (
  * @returns {string | null} Original or coded value.
  */
 export const attributeValue = (
-    value: string,
+    value: string | ?number,
     domain: Object,
     name: string,
     edit: boolean,
 ) => {
     if (value) {
-        if (name === 'CONTRACT_UUID') return null;
         if (getCodedValue(domain, value) && !edit) {
-            return getCodedValue(domain, value).trim();
+            return getCodedValue(domain, value);
         }
         return value;
     }
@@ -439,7 +458,9 @@ export const getAttribute = (layer: Object, attribute: any[], edit: boolean): Ob
             return {
                 name,
                 label,
-                value: Number.isNaN(parseInt(value, 10)) ? null : parseInt(value, 10),
+                value: attributeValue(Number.isNaN(parseInt(value, 10))
+                    ? null
+                    : parseInt(value, 10), domain, name, edit),
                 hidden: false,
             };
         case 'esriFieldTypeDouble':

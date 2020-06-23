@@ -13,6 +13,10 @@ const setup = () => {
                 name: 'Layer 1',
                 type: 'agfs',
                 _source: 'search',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -26,6 +30,10 @@ const setup = () => {
                 name: 'Layer 2',
                 type: 'agfs',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -39,6 +47,10 @@ const setup = () => {
                 name: 'Layer 3',
                 type: 'wms',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -52,6 +64,10 @@ const setup = () => {
                 name: 'Layer 4',
                 type: 'wmts',
                 _source: 'search',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
             },
             {
                 id: '5',
@@ -59,6 +75,10 @@ const setup = () => {
                 name: 'Layer 5',
                 type: 'agfs',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -74,6 +94,10 @@ const setup = () => {
                 name: 'Layer 6',
                 type: 'agfl',
                 _source: 'search',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
             },
             {
                 id: '7',
@@ -81,6 +105,10 @@ const setup = () => {
                 name: 'Layer 7',
                 type: 'agfl',
                 _source: 'select',
+                fields: [{
+                    name: 'testField',
+                    type: 'esriFieldTypeInteger',
+                }],
                 layerPermission: {
                     createLayer: true,
                     readLayer: true,
@@ -89,10 +117,26 @@ const setup = () => {
                 },
             },
         ],
-        setActiveAdminTool: jest.fn(),
+        tableLayers: [
+            {
+                id: '1', name: 'Layer 1', active: true, visible: true,
+            },
+            {
+                id: '2', name: 'Layer 2', active: false, visible: false,
+            },
+            {
+                id: '3', name: 'Layer 3', active: true, visible: false,
+            },
+            {
+                id: '4', name: 'Layer 4', active: true, visible: true,
+            },
+        ],
+        loadingLayers: [],
+        handleAdminModeChange: jest.fn(),
         createThemeLayer: jest.fn(),
         onDragEnd: () => {},
         toggleLayer: jest.fn(),
+        populateTable: jest.fn(),
         mapScale: 50000,
     };
     const wrapper = mount(<MapLayersActiveView {...props} />);
@@ -113,11 +157,11 @@ describe('<MapLayersActiveView />', () => {
         expect(wrapper.find(LayerSettings).length).toBe(3);
     });
 
-    it('should set active admintool on click', () => {
-        const { setActiveAdminTool } = wrapper.props();
-        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(7);
-        wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(2).simulate('click');
-        expect(setActiveAdminTool).toHaveBeenCalled();
+    it('should call handleAdminModeChange on click', () => {
+        const { handleAdminModeChange } = wrapper.props();
+        expect(wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon)).toHaveLength(9);
+        wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(3).simulate('click');
+        expect(handleAdminModeChange).toHaveBeenCalled();
     });
 
     it('should call toggleLayer on visibility click', () => {

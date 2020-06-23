@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import TableView from '../TableView';
 import TabbedTableContainer from '../tabbed-table/TabbedTableContainer';
+import TableButtonsContainer from '../table-buttons/TableButtonsContainer';
 import Table from '../../../ui/blocks/Table';
 
 const setup = (prop) => {
@@ -28,25 +29,7 @@ describe('<TableView />', () => {
         const { wrapper } = setup();
 
         expect(wrapper.find(Table).length).toBe(1);
-        expect(wrapper.find(Table.Button).length).toBe(7);
         expect(wrapper.find(TabbedTableContainer).length).toBe(1);
-    });
-
-    it('should render view with more Buttons available', () => {
-        const props = {
-            toggleTable: false,
-            isOpen: false,
-            activeNav: '',
-            setActiveModal: jest.fn(),
-            activeUpdate: true,
-            activeDelete: true,
-            originalLayers: [],
-            editedLayers: [],
-            selectedData: false,
-            activeAdminTool: '1',
-        };
-
-        const { wrapper } = setup(props);
-        expect(wrapper.find(Table.Button).length).toBe(9);
+        expect(wrapper.find(TableButtonsContainer).length).toBe(1);
     });
 });

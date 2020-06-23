@@ -22,7 +22,7 @@ const FormFieldView = ({
             htmlFor={index}
         >
             {field.label}
-            {(!field.nullable)
+            {(!field.nullable && field.unique)
             && (
                 <InputWithIcon>
                     <FieldInputView
@@ -42,10 +42,20 @@ const FormFieldView = ({
                     >
                         {(!fetching && valid) && field.data.trim().length > 0 && <i className="fas fa-check" />}
                         {((!fetching && !valid) || (field.data.trim().length === 0)) && <i className="fas fa-exclamation-triangle" />}
-                        <LoadingIcon size={7} loading={fetching} />
+                        {fetching && <LoadingIcon size={7} loading={fetching} />}
                     </InputInfo>
                 </InputWithIcon>
             )}
+            {(!field.nullable && !field.unique)
+            && (
+                <FieldInputView
+                    field={field}
+                    handleOnChange={handleOnChange}
+                    index={index}
+                    disabled={disabled}
+                />
+            )
+            }
             {field.nullable
             && (
                 <FieldInputView

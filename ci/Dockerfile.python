@@ -1,12 +1,15 @@
-FROM python:alpine3.8
+FROM python:3.7-slim-buster
 ARG JENKINS_UID=1000
 COPY confs/pip* /etc/
 
-RUN apk add build-base jpeg-dev zlib-dev chromium chromium-chromedriver
+RUN apt-get update && apt-get -y install xvfb chromium chromium-driver
+
 RUN pip install --upgrade pip
-RUN apk --no-cache add chromium chromium-chromedriver
 RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install -r /etc/pip-requirements.txt"
 
-RUN adduser -D -S -u ${JENKINS_UID} jenkins
-RUN chown -R jenkins /home/jenkins
+ENV DISPLAY=:99
+ENV ENTRYPOINT Xvfb :99
+RUN export DISPLAY=:99
 
+RUN adduser --system -u ${JENKINS_UID} jenkins
+RUN chown -R jenkins /home/jenkins

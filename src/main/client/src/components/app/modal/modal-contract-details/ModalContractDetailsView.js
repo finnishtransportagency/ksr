@@ -14,19 +14,27 @@ type Props = {
         layerName: string,
         layerId: string,
         featureId: number,
-        objectId: number
+        objectId: number,
     ) => void,
+    handleFeatureLocateClick: (
+        layerId: string,
+        objectId: number,
+    ) => Promise<void>,
     handleFeatureEditClick: (
         layerName: string,
         layerId: string,
         featureId: number,
-        objectId: number
+        objectId: number,
     ) => void,
-    handleFeatureUnlinkClick: (layerId: string, featureObjectId: number) => void,
+    handleFeatureUnlinkClick: (
+        layerId: string,
+        featureObjectId: number,
+    ) => void,
 };
 
 const alfrescoTitle = strings.modalFeatureContracts.listView.alfrescoLink;
 const caseManagementTitle = strings.modalFeatureContracts.listView.caseManagementLink;
+const { showLocation } = strings.modalContractDetails.listView.showLocation;
 
 const ModalContractDetailsView = ({
     contractLayerId,
@@ -36,6 +44,7 @@ const ModalContractDetailsView = ({
     handleFeatureDetailsClick,
     handleFeatureEditClick,
     handleFeatureUnlinkClick,
+    handleFeatureLocateClick,
 }: Props) => (
     <Fragment>
         {fetchingDetailList && <LoadingIcon loading={fetchingDetailList} />}
@@ -43,23 +52,37 @@ const ModalContractDetailsView = ({
             <p>{strings.modalContractDetails.errorNoFeaturesFound}</p>
         )
         }
-        { !fetchingDetailList && detailList.map(layer => (
+        {!fetchingDetailList && detailList.map(layer => (
             <Fragment key={layer.name}>
                 <p>{layer.name}</p>
                 {!layer.features.length && <p>-</p>}
                 {layer.features.map(feature => (
-                    <Contract key={feature.id}>
-                        <Contract.IconWrapper>
-                            <Contract.IconWrapper.Icon
-                                title={strings.modalContractDetails.listView.details}
-                                className="fas fa-list-ul"
-                                onClick={() => handleFeatureDetailsClick(
-                                    layer.name,
-                                    layer.id,
-                                    feature.id,
-                                    feature.objectId,
+                    <Contract key={feature.objectId}>
+                        <Contract.IconWrapper
+                            wide={detailList.some(l => l.geometryData)}
+                        >
+                            <Fragment>
+                                <Contract.IconWrapper.Icon
+                                    title={strings.modalContractDetails.listView.details}
+                                    className="fas fa-list-ul"
+                                    onClick={() => handleFeatureDetailsClick(
+                                        layer.name,
+                                        layer.id,
+                                        feature.id,
+                                        feature.objectId,
+                                    )}
+                                />
+                                {layer.geometryData && (
+                                    <Contract.IconWrapper.Icon
+                                        title={showLocation}
+                                        className="fas fa-search-location"
+                                        onClick={() => handleFeatureLocateClick(
+                                            layer.id,
+                                            feature.objectId,
+                                        )}
+                                    />
                                 )}
-                            />
+                            </Fragment>
                         </Contract.IconWrapper>
                         <Contract.TextWrapper>
                             <Contract.TextWrapper.Text title={feature.id}>
@@ -70,7 +93,7 @@ const ModalContractDetailsView = ({
                             </Contract.TextWrapper.Text>
                         </Contract.TextWrapper>
                         <Contract.IconWrapper>
-                            { activeAdmin && layer.editPermission && (
+                            {activeAdmin && layer.editPermission && (
                                 <Contract.IconWrapper.Icon
                                     onClick={() => handleFeatureEditClick(
                                         layer.name,
@@ -82,13 +105,13 @@ const ModalContractDetailsView = ({
                                     className="fas fa-edit"
                                 />
                             )}
-                            { layer.id !== contractLayerId
-                                && activeAdmin
-                                && layer.editPermission
-                                && nestedVal(
-                                    detailList.find(l => l.id === contractLayerId),
-                                    ['editPermission'],
-                                ) && (
+                            {layer.id !== contractLayerId
+                            && activeAdmin
+                            && layer.editPermission
+                            && nestedVal(
+                                detailList.find(l => l.id === contractLayerId),
+                                ['editPermission'],
+                            ) && (
                                 <Contract.IconWrapper.Icon
                                     unlink
                                     onClick={() => {
@@ -98,7 +121,7 @@ const ModalContractDetailsView = ({
                                     className="fas fa-unlink"
                                 />
                             )}
-                            { layer.id === contractLayerId && (
+                            {layer.id === contractLayerId && (
                                 <Fragment>
                                     <Contract.IconWrapper.Icon
                                         onClick={() => feature.alfrescoUrl

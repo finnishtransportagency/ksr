@@ -5,9 +5,9 @@ const Text = styled.span`
     overflow: hidden;
     
     :first-of-type {
-        width: 70px;
-        min-width: 70px;
-        text-overflow: clip;
+        width: 120px;
+        min-width: 120px;
+        text-overflow: ellipsis;
     }
     
     :last-of-type {

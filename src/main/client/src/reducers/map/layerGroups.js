@@ -16,10 +16,19 @@ import {
     UPDATE_LAYER,
     DEACTIVATE_LAYER,
     UPDATE_LAYER_FIELDS,
+    CLOSE_LAYER,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
 import { updateLayerList } from '../../utils/workspace/loadWorkspace';
+
+type Relation = {
+    layerId: string,
+    relationType: string,
+    relationLayerId: number,
+    relationColumnIn: string,
+    relationColumnOut: string,
+}
 
 type LayerGroups = {
     id: number,
@@ -35,6 +44,7 @@ type Layer = {
     authentication: any,
     alfrescoLinkField: string,
     caseManagementLinkField: string,
+    relations: Array<Relation>,
     geometryType: string,
     fields: Array<Object>,
     failOnLoad: boolean,
@@ -108,7 +118,9 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layerList: (state.layerList.map(l => ({
                     ...l,
-                    visible: action.layerIds.find(id => id === l.id) ? false : l.visible,
+                    visible: action.layerIds.find(id => id === l.id && l.type !== 'agfl')
+                        ? false
+                        : l.visible,
                 })): Array<Object>),
             };
         case ADD_SEARCH_RESULTS_LAYER:
@@ -130,14 +142,61 @@ export default (state: State = initialState, action: Action) => {
                             return { ...l };
                         }),
                 })): Array<LayerGroups>),
-                layerList: ((state.layerList.filter(l => l._source !== 'search'): Array<Layer>)
+                layerList: ((state.layerList
                     .map((l: Object) => {
                         if (l.type === 'agfl' && l.active) {
                             return { ...l, active: false };
                         }
+
+                        // Make removed search layer's source layer visible.
+                        if (state.layerList.filter(ll => ll._source === 'search')
+                            .some(ll => ll.id.replace('.s', '') === l.id)) {
+                            return { ...l, visible: true };
+                        }
                         return { ...l };
-                    }): Object[]),
+                    }).filter(l => l._source !== 'search'): Array<Layer>): Object[]),
             };
+        case CLOSE_LAYER:
+            /* eslint-disable */
+            const foundLayer: Object = state.layerList.find(layer => layer.id === action.layerId);
+            const filteredSearch = (state.layerList
+                .filter(layer => layer.id !== action.layerId)
+                .map(layer => {
+                    if (layer.id === action.layerId.replace('.s', '')) {
+                        return {
+                            ...layer,
+                            visible: layer.active ? true : layer.visible,
+                        }
+                    }
+                    return { ...layer };
+                }): Object[]);
+            const filteredAgfl = (state.layerList.map((layer) => {
+                if (foundLayer.type === 'agfl' && foundLayer.id === layer.id) {
+                    return {
+                        ...layer,
+                        active: false,
+                    };
+                }
+                return { ...layer };
+            }): Object[]);
+            /* eslint-enable */
+
+            if (foundLayer && (foundLayer._source === 'search' || foundLayer.type === 'agfl')) {
+                return {
+                    ...state,
+                    layerGroups: (state.layerGroups.map(lg => ({
+                        ...lg,
+                        layers: foundLayer._source === 'search'
+                            ? lg.layers.filter(layer => layer.id !== action.layerId)
+                            : lg.layers,
+                    })): Array<LayerGroups>),
+                    layerList: foundLayer._source === 'search'
+                        ? filteredSearch
+                        : filteredAgfl,
+                };
+            }
+
+            return { ...state };
         case CLEAR_SEARCH_DATA:
             return {
                 ...state,
@@ -145,7 +204,14 @@ export default (state: State = initialState, action: Action) => {
                     ...lg,
                     layers: lg.layers.filter(l => l.id !== action.layerId),
                 })): Array<LayerGroups>),
-                layerList: (state.layerList.filter(l => l.id !== action.layerId): Array<Layer>),
+                layerList: (state.layerList
+                    .filter(l => l.id !== action.layerId)
+                    .map(l => ({
+                        ...l,
+                        visible: l.id === action.layerId.replace('.s', '')
+                            ? true
+                            : l.visible,
+                    })): Array<Layer>),
             };
         case ADD_SHAPEFILE_LAYER:
             return {
@@ -235,6 +301,14 @@ export default (state: State = initialState, action: Action) => {
                             failOnLoad: action.failOnLoad ? action.failOnLoad : false,
                         };
                     }
+
+                    if (action.layerId.endsWith('.s') && action.layerId.replace('.s', '') === l.id) {
+                        return {
+                            ...l,
+                            visible: true,
+                        };
+                    }
+
                     return { ...l };
                 }): Array<Layer>),
             };

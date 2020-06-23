@@ -6,11 +6,8 @@ import { activateLayers, toggleLayer } from '../../../../reducers/map/actions';
 const sortNames = (a, b) => {
     const aLower = a.name.toLowerCase();
     const bLower = b.name.toLowerCase();
-    if (aLower < bLower) {
-        return -1;
-    } else if (aLower > bLower) {
-        return 1;
-    }
+    if (aLower < bLower) return -1;
+    if (aLower > bLower) return 1;
     return 0;
 };
 
@@ -27,6 +24,7 @@ const mapStateToProps = state => ({
     ),
     adminToolActive: state.adminTool.active.layerId !== '',
     loadingLayers: state.loading.loadingLayers,
+    tableButtonAmount: state.table.buttonAmount,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -38,6 +36,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const BaseMapSwitchContainer = connect(mapStateToProps, mapDispatchToProps)(BaseMapSwitchView);
+const BaseMapSwitchContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(BaseMapSwitchView): any);
 
 export default BaseMapSwitchContainer;

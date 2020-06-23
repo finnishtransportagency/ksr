@@ -3,7 +3,7 @@ import React from 'react';
 import Select from 'react-select';
 import strings from '../../../../translations';
 import { TextInput } from '../../../ui/elements';
-import { InputWithIcon, InputInfo } from '../../../ui/elements/TextInput';
+import { InputInfo, InputWithIcon } from '../../../ui/elements/TextInput';
 import { ModalThemeLayerWrapper } from './styles';
 import { RadioWrapper } from '../../side-bar/search/styles';
 import Radiobutton from '../../../ui/blocks/Radiobutton';
@@ -28,8 +28,11 @@ const ModalThemeLayerView = ({
     layerFields,
 }: Props) => (
     <ModalThemeLayerWrapper>
-        <span>{strings.modalThemeLayer.column}</span>
-        <label htmlFor="selectField">
+        <label
+            htmlFor="selectField"
+            onClick={e => e.preventDefault()}
+        >
+            <span id="selectField">{strings.modalThemeLayer.column}</span>
             <Select
                 onBlurResetsInput={false}
                 onSelectResetsInput={false}

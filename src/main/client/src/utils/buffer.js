@@ -68,15 +68,103 @@ export const createGraphic = (
 };
 
 /**
+ * Change polygon (rings) or point (x, y) data into proper esri geometry to work with buffer.
+ *
+ * @param view Esri map view.
+ * @param geomToBuffer List of geometry data, that isn't properly initialized as esri geometry.
+ *
+ * @returns {Promise<Array<*>>} List of Point or Polygon geometry.
+ */
+const initializeToGeometry = async (view: Object, geomToBuffer: Object[]) => {
+    const [Point, Polygon] = await esriLoader.loadModules([
+        'esri/geometry/Point',
+        'esri/geometry/Polygon',
+    ]);
+
+    const createPoint = geom => new Point({
+        x: geom.x,
+        y: geom.y,
+        spatialReference: view.spatialReference,
+    });
+
+    const createPolygon = geom => new Polygon({
+        ...geom,
+        spatialReference: view.spatialReference,
+    });
+
+    return geomToBuffer[0].rings
+        ? geomToBuffer.map(geom => createPolygon(geom))
+        : geomToBuffer.map(geom => createPoint(geom));
+};
+
+/**
  * Set buffer for selected features (geometry).
  *
  * @param {Object} view Esri map view.
- * @param {Object[]} selectedGeometryData Array of geometry data.
+ * @param {Object[]} selectedGeometryData Array of selected geometry data.
+ * @param {Object[]} tableGeometryData Array of every geometry data in table.
+ * @param {number} distance Buffer size in meters.
+ * @param {boolean} [currentTableOnly] Whether current table only is selected or not.
+ * @param {boolean} [selectedFeaturesOnly] Whether selected features only is selected or not.
+ * @param {string} [activeLayerId] Currently active layer on table.
+ */
+export const setBuffer = async (
+    view: Object,
+    selectedGeometryData: Object[],
+    tableGeometryData: Object[],
+    distance: number,
+    currentTableOnly?: boolean,
+    selectedFeaturesOnly?: boolean,
+    activeLayerId?: string,
+) => {
+    const [Graphic, geometryEngine] = await esriLoader.loadModules([
+        'esri/Graphic',
+        'esri/geometry/geometryEngine',
+    ]);
+
+    if (view && (tableGeometryData.length > 0 || selectedGeometryData.length > 0)) {
+        const featureData = selectedFeaturesOnly
+            ? selectedGeometryData
+            : tableGeometryData;
+
+        let geomToBuffer = currentTableOnly
+            ? featureData
+                .filter(data => data.layerId === activeLayerId)
+                .map(data => data.geometry)
+            : featureData.map(data => data.geometry);
+
+        // Geometry not properly initialized for buffering
+        if (geomToBuffer.some(geom => !geom.initialized)) {
+            geomToBuffer = await initializeToGeometry(view, geomToBuffer);
+        }
+
+        if (geomToBuffer.length > 0) {
+            const featureBuffers = geometryEngine.buffer(
+                geomToBuffer, [
+                    distance,
+                ], 'meters',
+                true,
+            );
+
+            const bufferGraphic = createGraphic(
+                featureBuffers[0],
+                Graphic,
+            );
+            view.graphics.add(bufferGraphic);
+        }
+    }
+};
+
+/**
+ * Set buffer for a single feature selected from map.
+ *
+ * @param {Object} view Esri map view
+ * @param {Object[]} selectedGeometryData Array of containing selected feature from map.
  * @param {number} distance Buffer size in meters.
  */
-export const setBuffer = (
+export const setSingleFeatureBuffer = (
     view: Object,
-    selectedGeometryData: Array<Object>,
+    selectedGeometryData: Object[],
     distance: number,
 ) => {
     esriLoader
@@ -88,27 +176,20 @@ export const setBuffer = (
             Graphic,
             geometryEngine,
         ]) => {
-            if (view) {
-                view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+            if (view && selectedGeometryData.length > 0) {
+                const featureBuffers = geometryEngine.buffer(
+                    selectedGeometryData, [
+                        distance,
+                    ], 'meters',
+                    true,
+                );
 
-                if (selectedGeometryData.length > 0) {
-                    const featureBuffers = geometryEngine.buffer(
-                        selectedGeometryData, [
-                            distance,
-                        ], 'meters',
-                        true,
-                    );
-                    const featureBuffer = featureBuffers[0];
+                const bufferGraphic = createGraphic(
+                    featureBuffers[0],
+                    Graphic,
+                );
 
-                    // add the buffer to the view as a graphic
-                    const bufferGraphic =
-                        createGraphic(
-                            featureBuffer,
-                            Graphic,
-                        );
-
-                    view.graphics.add(bufferGraphic);
-                }
+                view.graphics.add(bufferGraphic);
             }
         });
 };

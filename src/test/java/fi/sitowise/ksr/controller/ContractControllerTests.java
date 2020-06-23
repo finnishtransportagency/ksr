@@ -14,7 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -68,24 +70,26 @@ public class ContractControllerTests extends AuthControllerTestBase {
         Response eqr = new Response();
         eqr.setObjectIdFieldName("OBJECTID");
         eqr.setGlobalIdFieldName("UUID");
+        List<Response> leqr = new ArrayList<>();
+        leqr.add(eqr);
 
         Mockito.when(layerService.getLayer(Mockito.eq(457), Mockito.anyBoolean(), Mockito.any(LayerAction.class)))
                 .thenReturn(layer);
 
         Mockito.when(contractService.getContracts(Mockito.any(), Mockito.eq(123)))
-                .thenReturn(eqr);
+                .thenReturn(leqr);
 
         this.mockMvc.perform(get("/api/contract/457/123")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=utf-8"))
                 .andExpect(content().json(
-                        "{" +
+                        "[{" +
                                 "\"objectIdFieldName\": \"OBJECTID\"" +
                                 ",\"globalIdFieldName\": \"UUID\""+
                                 ",\"fields\": null"+
                                 ",\"features\": null"+
-                                "}"));
+                                "}]"));
     }
 
     @Test

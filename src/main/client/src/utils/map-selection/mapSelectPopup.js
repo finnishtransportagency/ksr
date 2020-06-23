@@ -37,8 +37,27 @@ export const mapSelectPopup = async (
         id: 'google-street-view',
         className: 'fas fa-street-view',
     };
+    const getStreetInfo = {
+        title: strings.esriMap.getStreetInfo,
+        id: 'get-street-property-info',
+        className: 'fas fa-home',
+    };
+    const getRoadInfo = {
+        title: strings.esriMap.getRoadInfo,
+        id: 'get-road-property-info',
+        className: 'fas fa-road',
+    };
+    const getRailwayInfo = {
+        title: strings.esriMap.getRailwayInfo,
+        id: 'get-railway-property-info',
+        className: 'fas fa-train',
+    };
 
-    view.popup.actions = [getPropertyInfo, googleStreetView];
+    view.popup.actions = [getPropertyInfo,
+        googleStreetView,
+        getStreetInfo,
+        getRoadInfo,
+        getRailwayInfo];
 
     const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
     const newResults = [...results, ...wmsFeatures];
@@ -60,8 +79,12 @@ export const mapSelectPopup = async (
             const actions = [selectIntersectAction, setBufferAction];
 
             const fieldInfos = [];
+            let textInfo = '';
 
             if (feature.layer) {
+                let matchingLayer: Object = layerList
+                    .find(ll => ll.id === feature.layer.id.replace('.s', ''));
+
                 if (feature.layer.featureType === 'shapefile') {
                     const columns = feature.layer.fields.slice(0, 5);
                     columns.forEach((c) => {
@@ -70,48 +93,54 @@ export const mapSelectPopup = async (
                             label: c.name,
                         });
                     });
-                } else {
-                    const matchingLayer = layerList
-                        .find(ll => ll.id === feature.layer.id.replace('.s', ''));
-
-                    if (matchingLayer
+                } else if (matchingLayer
                         && matchingLayer.type === 'agfs'
                         && matchingLayer.queryColumnsList) {
-                        const fields = nestedVal(feature, ['layer', 'fields']);
-                        matchingLayer.queryColumnsList.forEach((column) => {
-                            fieldInfos.push({
-                                fieldName: column,
-                                label: nestedVal(
-                                    fields && fields.find(f => f.name === column),
-                                    ['alias'],
-                                ),
-                            });
+                    const fields = nestedVal(feature, ['layer', 'fields']);
+                    matchingLayer.queryColumnsList.forEach((column) => {
+                        fieldInfos.push({
+                            fieldName: column,
+                            label: nestedVal(
+                                fields && fields.find(f => f.name === column),
+                                ['alias'],
+                            ),
                         });
+                    });
 
-                        const relationLayer = matchingLayer
+                    textInfo = matchingLayer.attribution;
+
+                    matchingLayer = matchingLayer.parentLayer
+                        ? layerList.find(ll => ll.id === matchingLayer.parentLayer)
+                        : matchingLayer;
+
+                    const relationLayer = matchingLayer
                             && layerList.find(ll => (
-                                ll.id === String(matchingLayer.relationLayerId)));
+                                ll.id === String(nestedVal(matchingLayer.relations
+                                    .find(r => r.layerId === matchingLayer.id), ['relationLayerId']))));
 
-                        if (matchingLayer.hasRelations
-                            && relationLayer
-                            && relationLayer.layerPermission.readLayer) {
-                            const contractLink = {
-                                title: strings.modalFeatureContracts.featureContracts,
-                                id: 'contract-link',
-                                className: 'fas fa-external-link-square-alt',
-                            };
-                            actions.push(contractLink);
-                        }
+                    if (matchingLayer
+                        && relationLayer
+                        && matchingLayer.hasRelations
+                        && relationLayer.layerPermission.readLayer) {
+                        const contractLink = {
+                            title: strings.modalFeatureContracts.featureContracts,
+                            id: 'contract-link',
+                            className: 'fas fa-external-link-square-alt',
+                        };
+                        actions.push(contractLink);
                     }
                 }
 
-                const activeAdminLayer = layerList.find(ll => ll.id === activeAdminTool);
                 const addCopyAction = activeAdminTool
-                    && activeAdminTool !== feature.layer.id
+                    && matchingLayer
                     && geometryType
-                    && convertEsriGeometryType(geometryType) === feature.layer.geometryType
-                    && activeAdminLayer
-                    && activeAdminLayer.layerPermission.createLayer;
+                    && convertEsriGeometryType(geometryType) === 'polygon'
+                    && convertEsriGeometryType(geometryType) === convertEsriGeometryType(
+                        matchingLayer.geometryType,
+                    )
+                    && matchingLayer
+                    && matchingLayer.layerPermission.createLayer;
+
                 if (addCopyAction) {
                     const copyFeatureAction = {
                         title: strings.esriMap.copyFeature,
@@ -121,11 +150,11 @@ export const mapSelectPopup = async (
                     actions.push(copyFeatureAction);
                 }
 
-                const addEditAction = activeAdminTool
-                    && activeAdminTool === feature.layer.id
-                    && activeAdminLayer
-                    && activeAdminLayer.layerPermission.createLayer
-                    && activeAdminLayer.layerPermission.updateLayer;
+                const addEditAction = activeAdminTool && matchingLayer
+                    && activeAdminTool === matchingLayer.id
+                    && matchingLayer
+                    && matchingLayer.layerPermission.createLayer
+                    && matchingLayer.layerPermission.updateLayer;
                 if (addEditAction) {
                     const editFeatureAction = {
                         title: strings.esriMap.editFeature,
@@ -135,9 +164,22 @@ export const mapSelectPopup = async (
                     actions.push(editFeatureAction);
                 }
 
+                if (matchingLayer && matchingLayer.geometryType === 'polygon') {
+                    const getAllPropertyInfo = {
+                        title: strings.esriMap.getAllPropertyInfo,
+                        id: 'get-all-property-info',
+                        className: 'fas fa-city',
+                    };
+                    actions.push(getAllPropertyInfo);
+                }
+
                 feature.layer.popupTemplate = {
                     title: feature.layer.title,
                     content: [{
+                        type: 'text',
+                        text: textInfo,
+                    },
+                    {
                         type: 'fields',
                         fieldInfos,
                     }],

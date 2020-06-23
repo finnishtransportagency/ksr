@@ -10,12 +10,13 @@ import EditContractContainer from './edit-contract/EditContractContainer';
 import { nestedVal } from '../../../../utils/nestedValue';
 import { getSingleLayerFields } from '../../../../utils/map';
 import AddContract from './add-contract/AddContract';
+import { findFirstContractLayer } from '../../../../utils/layers';
 
 type Props = {
     removeContractListInfo: Function,
     objectId: number,
     currentLayer: Object,
-    contractLayer: Object,
+    contractLayers: Object[],
     view: Object,
     createLayerPermission: boolean,
     editLayerPermission: boolean,
@@ -29,6 +30,7 @@ type State = {
     contractNumber: string,
     contractUuid: string,
     formOptions: Object,
+    layerId: string,
 };
 
 class ModalFeatureContracts extends Component<Props, State> {
@@ -38,10 +40,18 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        const { createLayerPermission, editLayerPermission } = this.props;
+        const {
+            createLayerPermission, editLayerPermission, currentLayer, contractLayers,
+        } = this.props;
 
         const modalSubmit = [];
-        if (createLayerPermission) {
+        const relationsCurrentLayer = nestedVal(currentLayer, ['relations']);
+
+        const containsLink = relationsCurrentLayer
+            .some(r => contractLayers
+                .some(c => r.relationLayerId.toString() !== c.id.toString()));
+
+        if (createLayerPermission && containsLink) {
             modalSubmit.push({
                 text: strings.modalFeatureContracts.submitNewContract,
                 handleSubmit: this.handleSubmitAddContract,
@@ -50,7 +60,7 @@ class ModalFeatureContracts extends Component<Props, State> {
             });
         }
 
-        if (editLayerPermission) {
+        if (editLayerPermission && containsLink) {
             modalSubmit.push({
                 text: strings.modalFeatureContracts.submitLinkToContract,
                 handleSubmit: this.handleSubmitLinkToContract,
@@ -70,6 +80,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                 editedFields: [],
                 submitDisabled: true,
             },
+            layerId: '',
         };
 
         this.initialState = this.state;
@@ -85,21 +96,24 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     async componentDidMount() {
         const { modalSubmit } = this.state;
-        const { updateLayerFields, contractLayer } = this.props;
+        const { updateLayerFields, contractLayers } = this.props;
+        const contractLayer = findFirstContractLayer(contractLayers);
 
         // Keep link- and add buttons disabled until contract layer fields queried.
-        if (contractLayer && !contractLayer.fields) {
+        if (contractLayer && !nestedVal(contractLayer, ['fields'])) {
             // eslint-disable-next-line
             this.setState({
                 modalSubmit: modalSubmit.map(ms => ({
                     ...ms,
-                    disabled: !contractLayer.fields,
+                    disabled: !nestedVal(contractLayer, ['fields']),
                 })),
             });
 
-            if (!contractLayer.fields) {
-                const { id, fields } = await getSingleLayerFields(contractLayer);
-                updateLayerFields(id, fields);
+            if (!nestedVal(contractLayers.find(c => c), ['fields'])) {
+                contractLayers.map(async (l: Object) => {
+                    const { id, fields } = await getSingleLayerFields(l);
+                    updateLayerFields(id, fields);
+                });
             }
 
             // eslint-disable-next-line
@@ -118,8 +132,9 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     handleSubmitLinkToContract = () => {
         const {
-            objectId, currentLayer, contractLayer, view,
+            objectId, currentLayer, contractLayers, view,
         } = this.props;
+        const contractLayer: Object = findFirstContractLayer(contractLayers);
         this.setState({
             activeView: 'linkContract',
             title: strings.modalFeatureContracts.linkContract.title,
@@ -136,7 +151,7 @@ class ModalFeatureContracts extends Component<Props, State> {
 
                     const { contractNumber } = this.state;
 
-                    if (currentLayer.relationType === 'many') {
+                    if (nestedVal(contractLayer.relations.find(r => r), ['relationType']) === 'many') {
                         await linkToContract(
                             contractNumber,
                             currentLayer,
@@ -156,9 +171,11 @@ class ModalFeatureContracts extends Component<Props, State> {
     };
 
     handleSubmitEditContract = async () => {
-        const { view, contractLayer } = this.props;
+        const { view, contractLayers } = this.props;
+        const { layerId } = this.state;
+        const contractLayer = contractLayers.find(c => c.id === layerId);
 
-        const objectIdField = contractLayer.fields
+        const objectIdField = nestedVal(contractLayer, ['fields'], {})
             .find(field => field.type === 'esriFieldTypeOID');
         if (objectIdField) {
             this.setState({
@@ -179,6 +196,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                     attributes: this.state.formOptions.editedFields,
                 }],
                 objectIdFieldName,
+                false,
                 this.state.formOptions.editedFields[objectIdFieldName],
             );
 
@@ -188,8 +206,9 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     handleSubmitAddContract = () => {
         const {
-            objectId, currentLayer, contractLayer, view,
+            objectId, currentLayer, contractLayers, view,
         } = this.props;
+        const contractLayer: Object = findFirstContractLayer(contractLayers);
         this.setState({
             activeView: 'addContract',
             title: strings.modalFeatureContracts.titleNewContract,
@@ -220,7 +239,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                     if (res && res.addResults) {
                         const { contractNumber } = this.state;
 
-                        if (currentLayer.relationType === 'many') {
+                        if (nestedVal(currentLayer.relations.find(c => c), ['relationType']) === 'many') {
                             await linkToContract(
                                 this.state.formOptions.editedFields[contractLayer.contractIdField],
                                 currentLayer,
@@ -269,7 +288,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         }
     };
 
-    setActiveView = (activeView: string, contractNumber: string) => {
+    setActiveView = (activeView: string, contractNumber: string, layerId: string) => {
         this.setState({
             ...this.state,
             activeView,
@@ -281,6 +300,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                 toggleModal: false,
             }],
             contractNumber,
+            layerId,
         });
     };
 
@@ -299,9 +319,9 @@ class ModalFeatureContracts extends Component<Props, State> {
     };
 
     render() {
-        const { contractLayer } = this.props;
+        const { contractLayers, currentLayer } = this.props;
         const {
-            activeView, title, modalSubmit, contractNumber,
+            activeView, title, modalSubmit, contractNumber, layerId,
         } = this.state;
 
         return (
@@ -314,7 +334,9 @@ class ModalFeatureContracts extends Component<Props, State> {
                     : strings.modalFeatureContracts.cancelText
                 }
                 handleGoBack={activeView !== 'contractList'
-                    ? () => { this.handleGoBack(); }
+                    ? () => {
+                        this.handleGoBack();
+                    }
                     : null
                 }
             >
@@ -333,16 +355,18 @@ class ModalFeatureContracts extends Component<Props, State> {
                     {activeView === 'addContract'
                     && (
                         <AddContract
-                            contractLayer={contractLayer}
+                            contractLayer={findFirstContractLayer(contractLayers)}
                             setFormOptions={this.setFormOptions}
                         />
                     )}
                     {activeView === 'editContract'
                     && (
                         <EditContractContainer
-                            contractLayer={contractLayer}
+                            contractLayer={contractLayers.find(c => c.id === layerId)}
+                            currentLayer={currentLayer}
                             setFormOptions={this.setFormOptions}
                             contractNumber={contractNumber}
+                            fields={nestedVal(contractLayers.find(c => c.id === layerId), ['fields'])}
                         />
                     )}
                 </Fragment>

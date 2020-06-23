@@ -2,7 +2,6 @@
 import React, { Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import strings from '../../../../translations';
-
 import ReactTableContainer from '../react-table/ReactTableContainer';
 import {
     WrapperTabbedTable,
@@ -17,13 +16,17 @@ type Props = {
     activeTable: string,
     setActiveTable: Function,
     activeAdmin: string,
-    showConfirmModal: (
-        body: string,
-        acceptText: string,
-        cancelText: string,
-        accept: Function
+    closeTableTab: (
+        layerId: string,
+        view: Object,
+        editedLayers: Object[],
+        featureType: string,
+        addressField: string
     ) => void,
-    closeTableTab: Function,
+    view: Object,
+    editedLayers: Object[],
+    featureType: string,
+    addressField: string,
 };
 
 const TabbedTableView = ({
@@ -31,8 +34,11 @@ const TabbedTableView = ({
     activeTable,
     setActiveTable,
     activeAdmin,
-    showConfirmModal,
     closeTableTab,
+    view,
+    editedLayers,
+    featureType,
+    addressField,
 }: Props) => (
     <Fragment>
         <WrapperTabbedTable>
@@ -46,7 +52,8 @@ const TabbedTableView = ({
                     layers.map(l => (
                         <ButtonWrapper key={l.id}>
                             <ButtonTabbedTableTab
-                                admin={activeAdmin === l.id.replace('.s', '')}
+                                admin={activeAdmin === l.id.replace('.s', '')
+                                || (l.parentLayer && activeAdmin === l.parentLayer.replace('.s', ''))}
                                 flat
                                 title={l.title}
                                 active={activeTable === l.id}
@@ -63,17 +70,16 @@ const TabbedTableView = ({
                             <ButtonIcon
                                 title={strings.modalClearTableTab.info}
                                 active={activeTable === l.id}
-                                onClick={() => {
-                                    showConfirmModal(
-                                        strings.modalClearTableTab.content,
-                                        strings.modalClearTableTab.submit,
-                                        strings.modalClearTableTab.cancel,
-                                        () => {
-                                            closeTableTab(l.id);
-                                        },
-                                    );
-                                }}
+                                onClick={() => closeTableTab(
+                                    l.id,
+                                    view,
+                                    editedLayers,
+                                    featureType,
+                                    addressField,
+                                )}
                                 className="fas fa-times"
+                                admin={activeAdmin === l.id.replace('.s', '')
+                                || (l.parentLayer && activeAdmin === l.parentLayer.replace('.s', ''))}
                             />
                         </ButtonWrapper>
                     ))

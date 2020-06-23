@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Button } from '../../../ui/elements';
-import { MapLayerTitleWrapper, Icon } from '../../shared/styles';
+import { MapLayerTitleWrapper } from '../../shared/styles';
 import * as styles from '../../../ui/defaultStyles';
 
 export const WrapperTabbedTable = styled.div`
@@ -36,9 +36,13 @@ export const ButtonTabbedTableTab = styled(Button)`
     border-bottom: 5px solid transparent;
     height: 52px;
     color: ${({ admin }) => admin && styles.colorTableEdited};
+    white-space: normal;
+    padding: 0.25rem;
+    font-size: 0.75rem;
     
     ${MapLayerTitleWrapper} {
         justify-content: center;
+        align-items: center;
     }
 
     ${props => props.active && css`
@@ -50,17 +54,18 @@ export const ButtonTabbedTableTab = styled(Button)`
     }
 `;
 
-export const ButtonIcon = styled(Icon)`
-    display: flex;
-    justify-content: flex-end;
+export const ButtonIcon = styled.div`
     padding: 2px 4px 0 0;
     height: 45px;
-    background: transparent;
-    box-shadow: unset;
-    color: #F1F1F1;
+    transition: 0.3s;
+    border-bottom: 5px solid transparent;
 
-    ${props => props.active && css`
-        border-bottom: 5px solid rgb(73,194,241);
+    ${props => props.active && !props.admin && css`
+        border-bottom: 5px solid ${styles.colorMainLight};
+    `}
+    
+    ${props => props.active && props.admin && css`
+        border-bottom: 5px solid ${styles.colorTableEdited};
     `}
 
     &:hover {

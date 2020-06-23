@@ -4,15 +4,11 @@ import { Scrollbars } from 'react-custom-scrollbars';
 
 type Props = {
     children: Object[],
-    className: string,
+    style: any,
 };
 
-const customTableStyle = {
-    minWidth: 'fit-content',
-};
-
-const CustomTableView = ({ children, className, ...rest }: Props) => (
-    <div className="rt-rtable" role="grid" {...rest}>
+const CustomTableView = ({ children, style }: Props) => (
+    <div className="rt-rtable" role="grid" {...style}>
         <Scrollbars
             renderView={scrollProps => <div {...scrollProps} className="rtable-scroll-wrapper" />}
             renderTrackHorizontal={scrollProps => (
@@ -22,7 +18,7 @@ const CustomTableView = ({ children, className, ...rest }: Props) => (
                 <div {...scrollProps} className="track-vertical" />
             )}
         >
-            <div style={customTableStyle}>
+            <div>
                 {children[1]}
                 {children[2]}
                 {children[3]}

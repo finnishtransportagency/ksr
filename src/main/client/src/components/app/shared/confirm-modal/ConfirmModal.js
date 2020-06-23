@@ -12,6 +12,7 @@ type Props = {
     cancelText: string,
     accept: Function,
     hideConfirmModal: Function,
+    cancel?: Function,
 };
 
 type State = {
@@ -23,6 +24,8 @@ const initialState = {
 };
 
 class ConfirmModal extends Component<Props, State> {
+    static defaultProps = { cancel: () => {} };
+
     constructor(props: any) {
         super(props);
 
@@ -40,6 +43,15 @@ class ConfirmModal extends Component<Props, State> {
     };
 
     handleCancel = () => {
+        const { cancel } = this.props;
+
+        if (cancel) {
+            cancel();
+        }
+        this.hideModal();
+    };
+
+    hideModal = () => {
         const { hideConfirmModal } = this.props;
 
         this.setState({ fadeOut: true });

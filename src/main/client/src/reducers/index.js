@@ -12,6 +12,7 @@ import contract from './contract';
 import user from './user';
 import offline from './offline';
 import loading from './loading';
+import portal from './portal';
 
 export default combineReducers({
     navigation,
@@ -26,4 +27,5 @@ export default combineReducers({
     user,
     offline,
     loading,
+    portal,
 });

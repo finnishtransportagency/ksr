@@ -1,6 +1,7 @@
 // @flow
 import esriLoader from 'esri-loader';
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
 import clone from 'clone';
 import { isMobile } from 'react-device-detect';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
@@ -9,15 +10,12 @@ import { queryFeatures } from '../../../utils/queryFeatures';
 import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loadWorkspace';
 import EsriMapContainer from './esri-map/EsriMapContainer';
 import { getStreetViewLink } from '../../../utils/map-selection/streetView';
-import {
-    colorBackgroundDark,
-    colorFeatureHighlight,
-    colorMainDark,
-} from '../../ui/defaultStyles';
+import { colorBackgroundDark, colorFeatureHighlight, extentGraphic } from '../../ui/defaultStyles';
 import { nestedVal } from '../../../utils/nestedValue';
 import strings from '../../../translations';
 import { copyFeature } from '../../../utils/map-selection/copyFeature';
-import { removeGraphicsFromMap } from '../../../utils/map';
+import { addLayers, removeGraphicsFromMap } from '../../../utils/map';
+import { convert } from '../../../utils/geojson';
 import { DigitransitLocatorBuilder } from '../../../utils/geocode';
 
 type Props = {
@@ -52,7 +50,7 @@ type Props = {
         body: string,
         acceptText: string,
         cancelText: string,
-        accept: Function
+        accept: Function,
     ) => void,
     setActiveFeatureMode: (activeMode: string) => void,
     editModeActive: boolean,
@@ -60,6 +58,7 @@ type Props = {
     activateLayers: (layers: Object[], workspace?: Object) => void,
     deactivateLayer: (layerId: string) => void,
     setScale: number => void,
+    setActiveNav: (selectedNav: string) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -68,10 +67,14 @@ class EsriMap extends Component<Props> {
     printWidget: ?Object = null;
 
     componentDidUpdate(prevProps: Props) {
-        const { initialLoading } = this.props;
+        const { initialLoading, printServiceUrl } = this.props;
 
         if (!initialLoading && initialLoading !== prevProps.initialLoading) {
             this.initMap();
+        }
+
+        if (printServiceUrl !== prevProps.printServiceUrl) {
+            if (this.printWidget) this.printWidget.printServiceUrl = printServiceUrl;
         }
     }
 
@@ -86,6 +89,7 @@ class EsriMap extends Component<Props> {
             ScaleBar,
             SpatialReference,
             Compass,
+            geometryEngine,
             Circle,
             Point,
             Print,
@@ -105,6 +109,7 @@ class EsriMap extends Component<Props> {
                 'esri/widgets/ScaleBar',
                 'esri/geometry/SpatialReference',
                 'esri/widgets/Compass',
+                'esri/geometry/geometryEngine',
                 'esri/geometry/Circle',
                 'esri/geometry/Point',
                 'esri/widgets/Print',
@@ -123,6 +128,7 @@ class EsriMap extends Component<Props> {
             selectFeatures,
             printServiceUrl,
             setScale,
+            layerList,
         } = this.props;
 
         // GraphicsLayer to hold graphics created via sketch view model
@@ -163,6 +169,24 @@ class EsriMap extends Component<Props> {
                 fillOpacity: 0,
             },
         });
+
+        const l = layerList.find(ll => ll.name.toLowerCase() === 'taustakartta');
+        // Create the MapView for overview map
+        const overview = new MapView({
+            container: 'overView',
+            map: new Map(),
+            constraints: {
+                rotationEnabled: false,
+                maxScale: 0,
+                minScale: 18489297,
+            },
+            spatialReference: epsg3067,
+        });
+
+        await addLayers([l], overview, false, true, layerList);
+
+        // Remove the default widgets
+        overview.ui.components = [];
 
         const compass = new Compass({
             view,
@@ -248,12 +272,62 @@ class EsriMap extends Component<Props> {
             }
         }
 
-        // Change compass widgets default dial icon to compass icon.
-        view.when(() => {
-            const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
-            compassIcon.classList.remove('esri-icon-dial');
-            compassIcon.classList.add('esri-icon-compass');
+        overview.when(() => {
+            view.when(() => {
+                // Change compass widgets default dial icon to compass icon.
+                const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
+                compassIcon.classList.remove('esri-icon-dial');
+                compassIcon.classList.add('esri-icon-compass');
+
+                const extentgraphic = new Graphic({
+                    geometry: null,
+                    symbol: {
+                        type: 'simple-fill',
+                        color: extentGraphic,
+                        outline: null,
+                    },
+                });
+                overview.graphics.add(extentgraphic);
+
+                // Get the new extent of the view only when view is stationary.
+                watchUtils.whenTrue(view, 'stationary', () => {
+                    if (view.extent) {
+                        overview.goTo({
+                            center: view.center,
+                            scale:
+                                view.scale
+                                * 100,
+                        });
+
+                        extentgraphic.geometry = view.extent;
+                    }
+                });
+            });
         });
+
+        const stopEvtPropagation = (event) => {
+            event.stopPropagation();
+        };
+
+        // disable mouse wheel scroll zooming on the view
+        overview.on('mouse-wheel', stopEvtPropagation);
+
+        // disable zooming via double-click on the view
+        overview.on('double-click', stopEvtPropagation);
+
+        // disable zooming out via double-click + Control on the view
+        overview.on('double-click', ['Control'], stopEvtPropagation);
+
+        // disables pinch-zoom and panning on the view
+        overview.on('drag', stopEvtPropagation);
+
+        // disable the view's zoom box to prevent the Shift + drag
+        // and Shift + Control + drag zoom gestures.
+        overview.on('drag', ['Shift'], stopEvtPropagation);
+        overview.on('drag', ['Shift', 'Control'], stopEvtPropagation);
+
+        // disable keyboard keys.
+        overview.on('key-down', stopEvtPropagation);
 
         watchUtils.watch(view, 'scale', () => {
             setScale(view.scale);
@@ -291,7 +365,7 @@ class EsriMap extends Component<Props> {
                         selectFeatures,
                     );
                     const features = layers ? layers.flatMap(layer => layer.features) : [];
-                    const { activeAdminTool, geometryType, layerList } = this.props;
+                    const { activeAdminTool, geometryType } = this.props;
                     view.popup.open({
                         location: event.mapPoint,
                         promises: [mapSelectPopup(
@@ -319,7 +393,6 @@ class EsriMap extends Component<Props> {
 
         view.popup.on('trigger-action', async (evt) => {
             const {
-                layerList,
                 setActiveModal,
                 setSingleLayerGeometry,
                 setPropertyInfo,
@@ -339,13 +412,12 @@ class EsriMap extends Component<Props> {
             );
 
             const geometry = nestedVal(selectedFeature, ['geometry']);
-            const layer = layerList.find(ll => nestedVal(
+            const layerId = nestedVal(
                 selectedFeature,
                 ['layer', 'id'],
-            ) === ll.id);
+            );
+            const layer = layerList.find(ll => layerId && layerId.replace('.s', '') === ll.id);
 
-            const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
-            const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
 
             const copySelectedFeature = async (activeFeatureMode: string) => {
                 const copiedFeature = view.popup.viewModel.selectedFeature;
@@ -395,13 +467,38 @@ class EsriMap extends Component<Props> {
                 case 'get-property-info':
                     setPropertyInfo({ x, y }, view, 'propertyArea', authorities);
                     break;
+                case 'get-all-property-info': {
+                    const polygon = geometry.rings[0].map(point => `${point[0]} ${point[1]}`).join(' ');
+                    const area = geometryEngine.planarArea(
+                        geometry,
+                        'square-kilometers',
+                    );
+                    if (area > 0.25) {
+                        toast.error(strings.searchProperty.errorToast.searchAreaLimit);
+                    } else {
+                        setPropertyInfo({ polygon }, view, 'propertyArea', authorities);
+                    }
+                    break;
+                }
                 case 'google-street-view':
                     getStreetViewLink(x, y);
                     break;
                 case 'contract-link':
                     if (layer) {
-                        setContractListInfo(layer.id, objectId);
-                        setActiveModal('featureContracts');
+                        if (layer.parentLayer) {
+                            const parentLayer: Object = layerList
+                                .find(ll => ll.id === layer.parentLayer);
+                            const objectIdField: Object = parentLayer.fields
+                                .find(a => a.type === 'esriFieldTypeOID');
+                            const objectId = nestedVal(selectedFeature, ['attributes', objectIdField.name]);
+                            setContractListInfo(layer.parentLayer, objectId);
+                            setActiveModal('featureContracts');
+                        } else {
+                            const objectIdField = nestedVal(selectedFeature, ['layer', 'objectIdField']);
+                            const objectId = nestedVal(selectedFeature, ['attributes', objectIdField]);
+                            setContractListInfo(layer.id, objectId);
+                            setActiveModal('featureContracts');
+                        }
                     }
                     break;
                 case 'copy-feature':
@@ -409,6 +506,53 @@ class EsriMap extends Component<Props> {
                     break;
                 case 'edit-feature':
                     await copySelectedFeature('edit');
+                    break;
+                case 'get-street-property-info':
+                    if (x) {
+                        const geom = {
+                            type: 'Point',
+                            coordinates: [x, y],
+                        };
+                        const point = await convert(geom, 3067, 4326);
+                        const data = {
+                            attributes: {},
+                            geometry: {
+                                x: point.x,
+                                y: point.y,
+                                type: 'point',
+                            },
+                            featureType: 'street',
+                        };
+                        setActiveModal('showAddress', data);
+                    }
+                    break;
+                case 'get-road-property-info':
+                    if (x) {
+                        const data = {
+                            attributes: {},
+                            geometry: {
+                                x,
+                                y,
+                                type: 'point',
+                            },
+                            featureType: 'road2',
+                        };
+                        setActiveModal('showAddress', data);
+                    }
+                    break;
+                case 'get-railway-property-info':
+                    if (x) {
+                        const data = {
+                            attributes: {},
+                            geometry: {
+                                x,
+                                y,
+                                type: 'point',
+                            },
+                            featureType: 'railway2',
+                        };
+                        setActiveModal('showAddress', data);
+                    }
                     break;
                 default:
                     break;
@@ -429,7 +573,6 @@ class EsriMap extends Component<Props> {
                             type: 'simple-marker',
                             style: 'circle',
                             size: 6,
-                            color: colorMainDark,
                             outline: {
                                 color: colorBackgroundDark,
                                 width: 1,
@@ -439,14 +582,12 @@ class EsriMap extends Component<Props> {
                     case 'polyline':
                         newFeature.symbol = {
                             type: 'simple-line',
-                            color: colorMainDark,
                             width: 2,
                         };
                         break;
                     default:
                         newFeature.symbol = {
                             type: 'simple-fill',
-                            color: colorMainDark,
                             outline: {
                                 color: colorBackgroundDark,
                                 width: 1,
@@ -469,11 +610,11 @@ class EsriMap extends Component<Props> {
 
         const {
             setWorkspaceRejected,
-            layerList,
             setMapView,
             setTempGraphicsLayer,
             activateLayers,
             deactivateLayer,
+            setActiveNav,
         } = this.props;
 
         // Set initial view and temp graphics layer to redux
@@ -490,7 +631,7 @@ class EsriMap extends Component<Props> {
                 deactivateLayer,
             );
         } else {
-            workspace = await fetchWorkspace(null);
+            workspace = await fetchWorkspace(null, false);
             if (workspace) {
                 await loadWorkspace(
                     workspace,
@@ -502,6 +643,7 @@ class EsriMap extends Component<Props> {
             } else {
                 activateLayers(layerList.filter(layer => layer.visible));
                 setWorkspaceRejected();
+                setActiveNav('workspace');
             }
         }
         window.history.pushState({}, document.title, window.location.pathname);

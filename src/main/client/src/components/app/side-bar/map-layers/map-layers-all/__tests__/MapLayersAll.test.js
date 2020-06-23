@@ -26,6 +26,14 @@ const setup = (prop) => {
                 active: true,
             },
         ],
+        subLayers: [
+            {
+                id: 10, visible: true, name: 'Layer 10', active: false, parentLayer: 1,
+            },
+            {
+                id: 20, visible: true, name: 'Layer 20', active: false, parentLayer: 1,
+            },
+        ],
         fetching: true,
         view: {
             popup: { close: jest.fn() },

@@ -15,12 +15,14 @@ describe('<MapLayerSettings />', () => {
                 layerPermission: {},
             },
             layerList: [],
+            loadingLayers: [],
             onOpacityChange: jest.fn(),
             toggleLayer: jest.fn(),
             setActiveAdminTool: jest.fn(),
             activeAdminTool: jest.fn(),
             createNonSpatialFeature: jest.fn(),
             createThemeLayer: jest.fn(),
+            populateTable: jest.fn(),
             mapScale: 30000,
         };
         return {

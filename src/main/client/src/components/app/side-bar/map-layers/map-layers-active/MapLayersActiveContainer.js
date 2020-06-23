@@ -4,6 +4,8 @@ import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
 import { setLayerList, toggleLayer } from '../../../../../reducers/map/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
+import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
+import { addNonSpatialContentToTable } from '../../../../../reducers/table/actions';
 
 const mapStateToProps = state => ({
     mapLayerList: state.map.layerGroups.layerList.filter(l => l.type !== 'agfl'),
@@ -11,6 +13,8 @@ const mapStateToProps = state => ({
     fetching: state.map.layerGroups.fetching,
     activeAdminTool: state.adminTool.active.layerId,
     mapScale: state.map.mapConfig.mapScale,
+    tableLayers: state.table.features.layers,
+    loadingLayers: state.loading.loadingLayers,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -29,8 +33,17 @@ const mapDispatchToProps = dispatch => ({
     toggleLayer: (layerId: string) => {
         dispatch(toggleLayer(layerId));
     },
+    showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
+        dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+    addNonSpatialContentToTable: (layer) => {
+        dispatch(addNonSpatialContentToTable(layer));
+    },
 });
 
-const MapLayersActiveContainer = connect(mapStateToProps, mapDispatchToProps)(MapLayersActive);
+const MapLayersActiveContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(MapLayersActive): any);
 
 export default MapLayersActiveContainer;

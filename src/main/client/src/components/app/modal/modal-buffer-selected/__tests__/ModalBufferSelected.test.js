@@ -7,6 +7,7 @@ import ModalBufferSelectedView from '../ModalBufferSelectedView';
 const setup = (prop) => {
     const minProps = {
         selectedGeometryData: [{}],
+        tableGeometryData: [{}],
         view: {},
         setSingleLayerGeometry: jest.fn(),
     };

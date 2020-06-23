@@ -1,3 +1,4 @@
+// @flow
 import { connect } from 'react-redux';
 import ModalFilter from './ModalFilter';
 import { setColumns } from '../../../../reducers/table/actions';
@@ -29,6 +30,9 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const ModalFilterContainer = connect(mapStateToProps, mapDispatchToProps)(ModalFilter);
+const ModalFilterContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(ModalFilter): any);
 
 export default ModalFilterContainer;

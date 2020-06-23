@@ -3,22 +3,29 @@ import React, { Component } from 'react';
 import strings from '../../../../translations';
 import ModalContainer from '../../shared/Modal/ModalContainer';
 import ModalBufferSelectedView from './ModalBufferSelectedView';
-import { setBuffer } from '../../../../utils/buffer';
+import { setBuffer, setSingleFeatureBuffer } from '../../../../utils/buffer';
 
 type Props = {
-    selectedGeometryData: Array<Object>,
+    tableGeometryData: Object[],
+    selectedGeometryData: Object[],
     view: Object,
     setSingleLayerGeometry: Function,
+    activeLayerId: string,
+    singleFeature: boolean,
 };
 
 type State = {
     bufferSize: number,
     submitDisabled: boolean,
+    currentTableOnly: boolean,
+    selectedFeaturesOnly: boolean,
 };
 
 const initialState = {
     bufferSize: 0,
-    submitDisabled: false,
+    submitDisabled: true,
+    currentTableOnly: false,
+    selectedFeaturesOnly: false,
 };
 
 class ModalBufferSelected extends Component<Props, State> {
@@ -28,50 +35,108 @@ class ModalBufferSelected extends Component<Props, State> {
         this.state = { ...initialState };
 
         this.handleBufferChange = this.handleBufferChange.bind(this);
+        this.handleTableSelectionChange = this.handleTableSelectionChange.bind(this);
+        this.handleFeatureSelectionChange = this.handleFeatureSelectionChange.bind(this);
     }
 
     componentWillUnmount() {
-        this.props.setSingleLayerGeometry({});
+        const { setSingleLayerGeometry } = this.props;
+
+        setSingleLayerGeometry({});
     }
 
     handleBufferChange = (e: Object) => {
-        const submitDisabled = e.target.value < -100000 || e.target.value > 100000;
+        const submitDisabled = e.target.value === ''
+            || e.target.value < 1
+            || e.target.value > 100000;
+
         this.setState({
             bufferSize: e.target.value,
             submitDisabled,
         });
     };
 
+    handleTableSelectionChange = () => {
+        const { currentTableOnly } = this.state;
+
+        this.setState({ currentTableOnly: !currentTableOnly });
+    };
+
+    handleFeatureSelectionChange = () => {
+        const { selectedFeaturesOnly } = this.state;
+
+        this.setState({ selectedFeaturesOnly: !selectedFeaturesOnly });
+    };
+
     render() {
-        const { selectedGeometryData, view } = this.props;
-        const { bufferSize, submitDisabled } = this.state;
+        const {
+            selectedGeometryData, view, activeLayerId, tableGeometryData, singleFeature,
+        } = this.props;
+
+        const {
+            bufferSize,
+            submitDisabled,
+            currentTableOnly,
+            selectedFeaturesOnly,
+        } = this.state;
+
+        const targetedFeatures = selectedFeaturesOnly
+            ? selectedGeometryData
+            : tableGeometryData;
+
+        const selectedAmount = currentTableOnly
+            ? targetedFeatures
+                .filter(data => data.layerId === activeLayerId)
+                .map(data => data.geometry).length
+            : targetedFeatures.length;
 
         const modalSubmit = [{
             text: strings.modalAddUserLayer.submit,
-            handleSubmit: () => {
-                setBuffer(
-                    view,
-                    selectedGeometryData,
-                    bufferSize,
-                );
+            handleSubmit: async () => {
+                if (singleFeature) {
+                    view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+                    setSingleFeatureBuffer(
+                        view,
+                        selectedGeometryData,
+                        bufferSize,
+                    );
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    await setBuffer(
+                        view,
+                        selectedGeometryData,
+                        tableGeometryData,
+                        bufferSize,
+                        currentTableOnly,
+                        selectedFeaturesOnly,
+                        activeLayerId,
+                    );
+                }
             },
-            disabled: submitDisabled,
+            disabled: submitDisabled || selectedAmount > 1000,
             toggleModal: true,
         }];
 
         return (
             <ModalContainer
-                title={
-                    selectedGeometryData.length <= 1 ?
-                        strings.modalBufferSelectedData.singleTitle :
-                        strings.modalBufferSelectedData.title
+                title={singleFeature
+                    ? strings.modalBufferSelectedData.titleSingleFeature
+                    : strings.modalBufferSelectedData.title
                 }
                 modalSubmit={modalSubmit}
                 cancelText={strings.modalBufferSelectedData.cancel}
             >
                 <ModalBufferSelectedView
+                    currentTableOnly={currentTableOnly}
+                    selectedFeaturesOnly={selectedFeaturesOnly}
                     handleBufferChange={this.handleBufferChange}
+                    handleTableSelectionChange={this.handleTableSelectionChange}
+                    handleFeatureSelectionChange={this.handleFeatureSelectionChange}
+                    singleFeature={singleFeature}
                 />
+                {selectedAmount > 1000 && (
+                    <p>{`${strings.modalBufferSelectedData.targetedFeaturesTotal} ${selectedAmount}. ${strings.modalBufferSelectedData.targetedFeaturesLimit}`}</p>
+                )}
             </ModalContainer>
         );
     }

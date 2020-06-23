@@ -36,6 +36,7 @@ describe('featureInfo', () => {
         const graphics = await getFeatureInfo(
             [{
                 name: 'Municiaplities',
+                attribution: 'source',
                 url: 'https://test.example.com',
                 layers: 'municipality',
                 type: 'wms',
@@ -59,63 +60,78 @@ describe('featureInfo', () => {
                 attributes: { name: 'Helsinki', natcode: '091' },
                 popupTemplate: {
                     title: 'Municiaplities',
-                    content: [{
-                        type: 'fields',
-                        fieldInfos: [
-                            {
-                                fieldName: 'name',
-                                label: 'name',
-                                visible: true,
-                            },
-                            {
-                                fieldName: 'natcode',
-                                label: 'natcode',
-                                visible: true,
-                            },
-                        ],
-                    }],
+                    content: [
+                        {
+                            type: 'text',
+                            text: 'source',
+                        },
+                        {
+                            type: 'fields',
+                            fieldInfos: [
+                                {
+                                    fieldName: 'name',
+                                    label: 'name',
+                                    visible: true,
+                                },
+                                {
+                                    fieldName: 'natcode',
+                                    label: 'natcode',
+                                    visible: true,
+                                },
+                            ],
+                        }],
                 },
             },
             {
                 attributes: { name: 'Espoo', natcode: '049' },
                 popupTemplate: {
                     title: 'Municiaplities',
-                    content: [{
-                        type: 'fields',
-                        fieldInfos: [
-                            {
-                                fieldName: 'name',
-                                label: 'name',
-                                visible: true,
-                            },
-                            {
-                                fieldName: 'natcode',
-                                label: 'natcode',
-                                visible: true,
-                            },
-                        ],
-                    }],
+                    content: [
+                        {
+                            type: 'text',
+                            text: 'source',
+                        },
+                        {
+                            type: 'fields',
+                            fieldInfos: [
+                                {
+                                    fieldName: 'name',
+                                    label: 'name',
+                                    visible: true,
+                                },
+                                {
+                                    fieldName: 'natcode',
+                                    label: 'natcode',
+                                    visible: true,
+                                },
+                            ],
+                        }],
                 },
             },
             {
                 attributes: { name: 'Kauniainen', natcode: '235' },
                 popupTemplate: {
                     title: 'Municiaplities',
-                    content: [{
-                        type: 'fields',
-                        fieldInfos: [
-                            {
-                                fieldName: 'name',
-                                label: 'name',
-                                visible: true,
-                            },
-                            {
-                                fieldName: 'natcode',
-                                label: 'natcode',
-                                visible: true,
-                            },
-                        ],
-                    }],
+                    content: [
+                        {
+                            type: 'text',
+                            text: 'source',
+                        },
+                        {
+                            type: 'fields',
+                            fieldInfos: [
+                                {
+                                    fieldName: 'name',
+                                    label: 'name',
+                                    visible: true,
+                                },
+                                {
+                                    fieldName: 'natcode',
+                                    label: 'natcode',
+                                    visible: true,
+                                },
+                            ],
+                        }],
                 },
             },
         ];

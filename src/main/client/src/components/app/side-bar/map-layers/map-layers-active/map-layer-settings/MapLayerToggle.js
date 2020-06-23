@@ -40,13 +40,17 @@ type Props = {
     layer: Object,
     mapScale: number,
     toggleLayer: (string) => void,
+    childLayer: boolean,
 };
 
-const MapLayerToggle = ({ layer, mapScale, toggleLayer }: Props) => (
+const MapLayerToggle = ({
+    layer, mapScale, toggleLayer, childLayer,
+}: Props) => (
     <LayerSettings.Toggle
         title={getTitle(layer, mapScale)}
         onClick={() => toggleLayer(layer.id)}
         viewable={layerViewable(layer, mapScale)}
+        childLayer={childLayer}
     >
         { getContent(layer, mapScale) }
     </LayerSettings.Toggle>

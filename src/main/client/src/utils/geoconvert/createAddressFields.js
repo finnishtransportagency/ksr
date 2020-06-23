@@ -1,5 +1,6 @@
 // @flow
 import querystring from 'querystring';
+import strings from '../../translations';
 import { fetchGetGeoconvert } from '../../api/geoconvert/getGeoconvert';
 
 /**
@@ -11,7 +12,7 @@ import { fetchGetGeoconvert } from '../../api/geoconvert/getGeoconvert';
  *
  * @param {Object} geometry Contains features geometry info.
  * @param {string} geometryType Type of esri geometry to be used in query.
- * @param {string} featureType Type of feature (road | water | railway).
+ * @param {string} featureType Type of feature (road | street | water | railway).
  *
  * @returns {Array} List that contains geoconvert string parameters.
  */
@@ -54,11 +55,31 @@ export const createGeoconvertParams = (
     }
 };
 
+const createRailwayAddress = address => (
+    `${(address.etaisyys - (address.etaisyys % 10000)) / 10000}+
+    ${address.etaisyys % 10000}, 
+    ${address.kunta_nimi}`
+);
+
+const createRoadAddress = address => (
+    `${strings.modalShowAddress.road}=${address.tie}, 
+    ${strings.modalShowAddress.lane}=${address.ajorata}, 
+    ${strings.modalShowAddress.part}=${address.osa}, 
+    ${strings.modalShowAddress.distance}=${address.etaisyys}`
+);
+
+const createStreetAddress = (properties) => {
+    const address = properties.postalcode
+        ? `${properties.name}, ${properties.postalcode}, ${properties.localadmin}`
+        : `${properties.name}, ${properties.localadmin}`;
+    return address;
+};
+
 /**
  * Adds address attribute to features data.
  *
  * @param {Object} data Feature layer data without address.
- * @param {string} featureType Type of feature (road | water | railway).
+ * @param {string} featureType Type of feature (road | street | water | railway).
  * @param {string} addressField Name of layers address field.
  *
  * @returns {Promise|Promise} Promise with feature data, including address field or
@@ -91,10 +112,31 @@ export const createAddressFields = (
                                 : null
                         ));
                         break;
+                    case 'street':
+                        convertedAddress = r.map(address => (
+                            address.features.length > 0
+                                ? createStreetAddress(address.features[0].properties)
+                                : null
+                        ));
+                        break;
+                    case 'road2':
+                        convertedAddress = r.map(address => (
+                            address.tie
+                                ? createRoadAddress(address)
+                                : null
+                        ));
+                        break;
                     case 'railway':
                         convertedAddress = r.map(address => (
                             address.kunta_nimi
                                 ? `${address.kunta_nimi} - ${address.urakka_nimi}`
+                                : null
+                        ));
+                        break;
+                    case 'railway2':
+                        convertedAddress = r.map(address => (
+                            address.kunta_nimi
+                                ? createRailwayAddress(address)
                                 : null
                         ));
                         break;

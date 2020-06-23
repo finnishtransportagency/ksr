@@ -13,6 +13,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SideBarContainer = connect(mapStateToProps, mapDispatchToProps)(SideBarView);
+const SideBarContainer = (connect(mapStateToProps, mapDispatchToProps)(SideBarView): any);
 
 export default SideBarContainer;

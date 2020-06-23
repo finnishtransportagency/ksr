@@ -13,6 +13,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SideNavContainer = connect(mapStateToProps, mapDispatchToProps)(SideNavView);
+const SideNavContainer = (connect(mapStateToProps, mapDispatchToProps)(SideNavView): any);
 
 export default SideNavContainer;

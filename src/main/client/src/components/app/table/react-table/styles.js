@@ -23,6 +23,7 @@ export const WrapperReactTable = styled.div`
             .rt-td.rthfc-td-fixed.rthfc-td-fixed-left,
             .rt-td.rthfc-td-fixed.rthfc-td-fixed-left.rthfc-td-fixed-left-last {
                 min-width: 30px;
+                height: 50px;
             };
         };
         
@@ -52,12 +53,19 @@ export const WrapperReactTable = styled.div`
             min-width: 130px;
         };
         
+        .rt-resizable-header-content {
+            white-space: normal;
+            font-size: 0.9rem;
+            line-height: 1.25rem;
+            height: 2.5rem;
+        };
+        
         .rt-thead.-filters {
             background: ${styles.colorBackgroundDarkSecondary};
             border-bottom: 1px solid rgba(0,0,0,0.15);
             
             .rt-tr, .rt-th {
-                min-height: 42px;
+                min-height: 38px;
             };
 
             .rt-th {
@@ -82,17 +90,18 @@ export const WrapperReactTable = styled.div`
         };
         
         .rt-tbody {
+            min-width: fit-content !important;
             .rt-td {
-                padding: 0.75rem 6px;
+                padding: 6px;
                 text-align: left;
                 border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
-                height: 42px;
+                height: 36px;
                 min-width: 130px;
                 background-color: transparent;
                 
                 div {
                     overflow: hidden;
-                    text-overflow: ellipsis;
+                    outline: none;
                 };
                 
                 &.decimal {
@@ -100,14 +109,14 @@ export const WrapperReactTable = styled.div`
                 };
 
                 &.date {
-                    min-width: 140px;
+                    min-width: 130px;
                 }
             };
         
             .rt-tr-group {
                 border: none;
                 background: ${styles.colorBackgroundLight};
-                max-height: 42px;
+                max-height: 36px;
             };
 
             .rt-th.rthfc-th-fixed.rthfc-th-fixed-left,
@@ -157,7 +166,17 @@ export const WrapperReactTable = styled.div`
         };
         
         .content-not-editable {
-            outline: none;
+            color: ${styles.colorBackgroundGrey};
+        }
+        
+        .content-editable {
+            background: #ffffff;
+            border: 1px solid ${styles.colorBackgroundGrey};
+            padding: 2px;
+            
+            &:focus {
+                border: 1px solid ${styles.colorMain};
+            }
         }
 
         .content-not-valid {
@@ -188,7 +207,7 @@ export const WrapperReactTable = styled.div`
         .track-horizontal {
             position: absolute;
             height: 8px !important;
-            left: 32px;
+            left: 36px;
             right: 2px;
             bottom: 2px;
             border-radius: 3px;
@@ -196,7 +215,7 @@ export const WrapperReactTable = styled.div`
     
         ${props => props.columns && props.columns.length && props.columns[0].fixed && css`
             .track-horizontal {
-                left: calc(32px + (${props.columns[0].columns.length} * 30px));
+                left: calc(36px + (${props.columns[0].columns.length} * 30px));
             };
         `};
     };
@@ -217,8 +236,10 @@ export const WrapperReactTableNoTable = styled.div`
 
 export const TableSelect = styled.select`
     width: 100%;
+    height: 100%;
 `;
 
 export const TableInput = styled.input`
     width: 100%;
+    height: 100%;
 `;

@@ -17,20 +17,48 @@ import InitMap from './InitMap';
 import { setContractListInfo } from '../../../reducers/contract/actions';
 import { showConfirmModal } from '../../../reducers/confirmModal/actions';
 import { removeLoading } from '../../../reducers/loading/actions';
+import { setActiveNav } from '../../../reducers/navigation/actions';
 
-const mapStateToProps = state => ({
-    layerList: state.map.layerGroups.layerList,
-    mapCenter: state.map.mapConfig.mapCenter,
-    mapScale: state.map.mapConfig.mapScale,
-    printServiceUrl: state.map.mapConfig.printServiceUrl,
-    activeAdminTool: state.adminTool.active.layerId,
-    sketchViewModel: state.map.mapTools.sketchViewModel,
-    geometryType: state.adminTool.active.geometryType,
-    activeTool: state.map.mapTools.active,
-    initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
-    authorities: state.user.userInfo.authorities,
-    editModeActive: state.map.mapTools.activeFeatureMode === 'edit',
-});
+const mapStateToProps = (state) => {
+    const { layers } = state.table.features;
+    const { layerList } = state.map.layerGroups;
+    const geometryDataSelected = layers
+        .flatMap(f => f.data.filter(d => d._selected && d.geometry));
+
+    let selectedLayerIds = geometryDataSelected.map(layer => layer._layerId);
+    selectedLayerIds = [...new Set(selectedLayerIds)];
+
+    const activeLayers = layerList.filter(l => l.active);
+    let attributions = activeLayers.map(al => al.attribution);
+    attributions = [...new Set(attributions)].toString();
+
+    const customPrintParameters = {
+        layers: selectedLayerIds.map(layerId => ({
+            layerId,
+            objectIds: geometryDataSelected
+                .filter(layer => layer._layerId === layerId)
+                .map(feature => feature._id),
+        })),
+        attributions,
+    };
+
+    const printServiceUrl = `${state.map.mapConfig.printServiceUrl}?customPrintParameters=${JSON.stringify(customPrintParameters)}`;
+
+    return {
+        layerList,
+        mapCenter: state.map.mapConfig.mapCenter,
+        mapScale: state.map.mapConfig.mapScale,
+        printServiceUrl,
+        activeAdminTool: state.adminTool.active.layerId,
+        sketchViewModel: state.map.mapTools.sketchViewModel,
+        geometryType: state.adminTool.active.geometryType,
+        activeTool: state.map.mapTools.active,
+        initialLoading: state.map.mapConfig.fetching || state.map.layerGroups.fetching,
+        authorities: state.user.userInfo.authorities,
+        editModeActive: state.map.mapTools.activeFeatureMode === 'edit',
+    };
+};
+
 
 const mapDispatchToProps = dispatch => ({
     selectFeatures: (features) => {
@@ -42,8 +70,8 @@ const mapDispatchToProps = dispatch => ({
     setTempGraphicsLayer: (graphicsLayer) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
     },
-    setActiveModal: (activeModal) => {
-        dispatch(setActiveModal(activeModal));
+    setActiveModal: (activeModal, data?) => {
+        dispatch(setActiveModal(activeModal, data));
     },
     setSingleLayerGeometry: (geometry) => {
         dispatch(setSingleLayerGeometry(geometry));
@@ -81,8 +109,14 @@ const mapDispatchToProps = dispatch => ({
     setScale: (scale: number) => {
         dispatch(setScale(scale));
     },
+    setActiveNav: (selectedNav) => {
+        dispatch(setActiveNav(selectedNav));
+    },
 });
 
-const InitMapContainer = connect(mapStateToProps, mapDispatchToProps)(InitMap);
+const InitMapContainer = (connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(InitMap): any);
 
 export default InitMapContainer;

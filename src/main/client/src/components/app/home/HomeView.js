@@ -9,6 +9,7 @@ import LoadingIcon from '../shared/LoadingIcon';
 import SideBarContainer from '../side-bar/SideBarContainer';
 import SideNavContainer from '../side-nav/SideNavContainer';
 import TableContainer from '../table/TableContainer';
+import PortalContainer from '../portal/PortalContainer';
 import { LoadingWrapper } from './styles';
 
 type Props = {
@@ -31,16 +32,17 @@ const toastProps = {
 
 const HomeView = ({ loading }: Props) => (
     <Fragment>
-        { loading &&
+        { loading && (
             <LoadingWrapper>
                 <LoadingIcon size={20} loading={loading} />
             </LoadingWrapper>
-        }
+        )}
         <SideNavContainer />
         <SideBarContainer />
         <InitMapContainer />
         <TableContainer />
         <ModalContainer />
+        <PortalContainer />
         <Toast>
             <ToastContainer {...toastProps} />
         </Toast>

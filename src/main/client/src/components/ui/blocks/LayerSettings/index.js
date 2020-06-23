@@ -5,6 +5,7 @@ import Content from './Content';
 import ContentTop from './ContentTop';
 import ContentMain from './ContentMain';
 import Slider from './Slider';
+import Loading from './Loading';
 
 const LayerSettings = styled.div`
     display: flex;
@@ -13,6 +14,10 @@ const LayerSettings = styled.div`
     
     ${props => props.toggledHidden && css`
         opacity: 0.5;
+    `}
+    
+    ${props => props.childLayer && css`
+        margin: 0;
     `}
 `;
 
@@ -74,6 +79,10 @@ const Toggle = styled.div`
     ${props => props.viewable && css`
         cursor: pointer;
     `}
+    
+    ${props => props.childLayer && css`
+        padding: 0;
+    `}
 `;
 
 LayerSettings.Content = Content;
@@ -85,5 +94,6 @@ LayerSettings.Title = Title;
 LayerSettings.Toggle = Toggle;
 LayerSettings.ContentTop = ContentTop;
 LayerSettings.ContentMain = ContentMain;
+LayerSettings.Loading = Loading;
 
 export default LayerSettings;

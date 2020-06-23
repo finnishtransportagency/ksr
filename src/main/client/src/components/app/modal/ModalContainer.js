@@ -7,6 +7,6 @@ const mapStateToProps = state => ({
     confirmModal: state.confirmModal.show,
 });
 
-const ModalContainer = connect(mapStateToProps)(ModalView);
+const ModalContainer = (connect(mapStateToProps)(ModalView): any);
 
 export default ModalContainer;

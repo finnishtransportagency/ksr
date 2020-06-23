@@ -74,14 +74,15 @@ public class WorkspaceService {
 
     /**
      * Fetch details for single workspace. If no workspace name is given
-     * the latest workspace is returned for the user.
+     * the latest user workspace is returned for the user.
      *
      * @param workspaceName name of the workspace to be fetched
      * @param username username of the user whose workspace is being fetched
+     * @param isPublic Whether the workspace is public or not.
      * @return workspace details
      */
-    public Workspace getWorkspaceDetails(String workspaceName, String username) {
-        return workspaceRepository.fetchWorkspaceDetails(workspaceName, username);
+    public Workspace getWorkspaceDetails(String workspaceName, String username, boolean isPublic) {
+        return workspaceRepository.fetchWorkspaceDetails(workspaceName, username, isPublic);
     }
 
     /**

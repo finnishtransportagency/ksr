@@ -18,7 +18,7 @@ type Props = {
     cancelText: string,
     children: any,
     handleModalCancel?: Function,
-    handleGoBack: any,
+    handleGoBack?: any,
     activeModal: string,
     setActiveModal: (modal: string) => void,
 };

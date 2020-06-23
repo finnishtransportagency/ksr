@@ -25,8 +25,12 @@ const initialState = {
 };
 
 class LinkContract extends Component<Props, State> {
-    abortController: ?Object = null; // eslint-disable-line react/sort-comp
-    existsQuery: ?number = 0; // eslint-disable-line react/sort-comp
+    abortController: ?Object = null;
+
+    // eslint-disable-line react/sort-comp
+    existsQuery: ?number = 0;
+
+    // eslint-disable-line react/sort-comp
     _isMounted: boolean = true;
 
     constructor(props: Props) {
@@ -35,6 +39,10 @@ class LinkContract extends Component<Props, State> {
         this.state = { ...initialState };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     handleInputChange = (evt: Object) => {
@@ -92,10 +100,6 @@ class LinkContract extends Component<Props, State> {
             });
         }
     };
-
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
 
     render() {
         const {

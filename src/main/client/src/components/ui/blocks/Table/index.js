@@ -21,6 +21,10 @@ const Table = styled.div`
         bottom: 0;
     `};
 
+    ${props => props.portalOpen && css`
+        display: none;
+    `};
+
     ${props => props.sideBar && css`
         left: 460px;
         width: calc(100% - 400px);
@@ -37,6 +41,10 @@ const Table = styled.div`
             height: calc(100% - 60px);
             bottom: 60px;
         `};
+
+        #portalButton {
+            display: none !important;
+        }
     }
 `;
 

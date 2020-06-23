@@ -7,20 +7,24 @@ import strings from '../../../../../../translations';
 
 import LayerSettings from '../../../../../ui/blocks/LayerSettings';
 import MapLayerTitle from '../../../../shared/MapLayerTitle';
+import LoadingIcon from '../../../../shared/LoadingIcon';
 import MapLayerToggle from './MapLayerToggle';
 import { layerViewable } from '../../../../../../utils/layers';
 import { nestedVal } from '../../../../../../utils/nestedValue';
+import { themeLayerFields } from '../../../../../../utils/fields';
 
 type Props = {
     layer: Object,
     layerList: Object[],
     toggleLayer: (layerId: string) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
-    setActiveAdminTool: (layerId: string, layerList: Array<any>) => void,
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
     createThemeLayer: (layerId: string) => void,
     mapScale: number,
+    handleAdminModeChange: (layerId: string) => void,
+    populateTable: (layer: Object) => void,
+    loadingLayers: string[],
 };
 
 const MapLayerSettings = ({
@@ -28,11 +32,13 @@ const MapLayerSettings = ({
     layerList,
     onOpacityChange,
     toggleLayer,
-    setActiveAdminTool,
     activeAdminTool,
     createNonSpatialFeature,
     createThemeLayer,
     mapScale,
+    handleAdminModeChange,
+    populateTable,
+    loadingLayers,
 }: Props) => (
     <LayerSettings
         toggledHidden={
@@ -48,6 +54,7 @@ const MapLayerSettings = ({
                         layer={layer}
                         mapScale={mapScale}
                         toggleLayer={toggleLayer}
+                        childLayer={false}
                     />
                 )
             }
@@ -56,6 +63,16 @@ const MapLayerSettings = ({
                     <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
                         <MapLayerTitle layer={layer} showLayerGroup />
                     </LayerSettings.Title>
+                    {
+                        <LayerSettings.Icons>
+                            <LayerSettings.Loading>
+                                {
+                                    loadingLayers && loadingLayers.some(ll => ll === layer.id)
+                                    && <LoadingIcon size={6} loading />
+                                }
+                            </LayerSettings.Loading>
+                        </LayerSettings.Icons>
+                    }
                     {
                         <LayerSettings.Icons>
                             <LayerSettings.Icon
@@ -71,7 +88,24 @@ const MapLayerSettings = ({
                     }
                     {
                         layer.type === 'agfs'
+                        && layer._source !== 'search'
+                        && (
+                            <LayerSettings.Icons>
+                                <LayerSettings.Icon
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => populateTable(layer)}
+                                    onClick={() => populateTable(layer)}
+                                    className="fas fa-align-justify"
+                                    title={strings.mapLayerSettings.showAllFeatures}
+                                />
+                            </LayerSettings.Icons>
+                        )
+                    }
+                    {
+                        layer.type === 'agfs'
                         && layer._source !== 'shapefile'
+                        && themeLayerFields(layer).length > 0
                         && (
                             <LayerSettings.Icons>
                                 <LayerSettings.Icon
@@ -86,30 +120,34 @@ const MapLayerSettings = ({
                         )
                     }
                     {
-                        !layer.userLayer
+                        ((!layer.userLayer
                         && layer._source !== 'shapefile'
                         && nestedVal(
                             layerList.find(l => l.id === layer.id.replace('.s', '')),
                             ['active'],
                         )
+                        && !nestedVal(
+                            layerList.find(l => l.id === layer.id.replace('.s', '')),
+                            ['parentLayer'],
+                        )
                         && (layer.type === 'agfs' || layer.type === 'agfl')
                         && (layer.layerPermission.createLayer
                             || layer.layerPermission.updateLayer
-                            || layer.layerPermission.deleteLayer)
-                        && (
-                            <LayerSettings.Icons
-                                activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
-                            >
-                                <LayerSettings.Icon
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyPress={() => setActiveAdminTool(layer.id.replace('.s', ''), layerList)}
-                                    onClick={() => setActiveAdminTool(layer.id.replace('.s', ''), layerList)}
-                                    className="fas fa-edit"
-                                    title={strings.mapLayerSettings.toggleAdminTool}
-                                />
-                            </LayerSettings.Icons>
-                        )
+                            || layer.layerPermission.deleteLayer)))
+                         && (
+                             <LayerSettings.Icons
+                                 activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
+                             >
+                                 <LayerSettings.Icon
+                                     role="button"
+                                     tabIndex={0}
+                                     onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                     onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                     className="fas fa-edit"
+                                     title={strings.mapLayerSettings.toggleAdminTool}
+                                 />
+                             </LayerSettings.Icons>
+                         )
                     }
                 </LayerSettings.ContentTop>
                 {

@@ -19,11 +19,13 @@ export const colorBackgroundDarkSecondary = '#4B4B4B';
 export const colorFeatureHighlight = '#00DDFF';
 
 export const colorTableEdited = '#F79421';
-export const colorTableEditedDarker = '#EC8921';
+export const colorTableSelected = 'rgba(1, 176, 245, 0.25)';
 
 export const colorDanger = '#CC3300';
 export const colorSuccess = '#8DCB6D';
 export const colorInfo = '#00b0CC';
+
+export const extentGraphic = 'rgba(255, 0, 0, 0.50)';
 
 // Shadows
 export const shadowDefault = '0 2px 4px 0 hsla(0, 0%, 0%, 0.4)';

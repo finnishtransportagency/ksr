@@ -3,6 +3,8 @@ import { fetchPropertyInfo } from '../../api/search/searchProperty';
 import * as types from '../../constants/actionTypes';
 import { abortFetch } from '../../utils/abortFetch';
 import { drawPropertyArea, removeGraphicsFromMap } from '../../utils/map';
+import { nestedVal } from '../../utils/nestedValue';
+import { childLayerDomainValues, filterNotAllowedFields } from '../../utils/fields';
 
 export const setSearchState = (
     selectedLayer: number,
@@ -22,10 +24,24 @@ export const setSearchState = (
 export const setSearchOptions = (
     selectedLayer: number,
     layerList: any,
-) => ({
-    type: types.SET_SEARCH_OPTIONS,
-    optionsField: layerList.find(l => l.id === selectedLayer).fields,
-});
+) => {
+    let layerFields = nestedVal(layerList.find(l => l.id === selectedLayer),
+        ['fields'], []);
+
+    if (nestedVal(layerList.find(layer => layer.id === selectedLayer), ['parentLayer'])) {
+        const parentLayerId = nestedVal(
+            layerList.find(layer => layer.id === selectedLayer),
+            ['parentLayer'],
+        );
+        const parentLayer = layerList.find(layer => layer.id === parentLayerId);
+        layerFields = layerFields.map(field => childLayerDomainValues(field, parentLayer));
+    }
+
+    return {
+        type: types.SET_SEARCH_OPTIONS,
+        optionsField: filterNotAllowedFields(layerFields),
+    };
+};
 
 export const clearProperties = (graphicId: string, view: Object) => {
     removeGraphicsFromMap(view, graphicId);
@@ -76,7 +92,7 @@ export const setPropertyInfo = (
 
                 drawPropertyArea(view, result.features);
 
-                // TODO: Disabled property PDF -query in KSR-448. 
+                // TODO: Disabled property PDF -query in KSR-448.
                 //  Can be added back back after API -agreement has been finished.
                 // const allowedUsers = [
                 //     'KSR_ROLE_ADMIN',

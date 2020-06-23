@@ -24,6 +24,10 @@ export const Wrapper = styled.div`
             flex-flow: column-reverse;
         };
         
+        .esri-ui {
+            z-index: 2;
+        }
+        
         .esri-legend--card {
             bottom: 10px;
         }
@@ -37,8 +41,13 @@ export const Wrapper = styled.div`
         };
         
         .esri-attribution {
-            margin-left: 60px;
+            margin-left: 120px;
         };
+        
+        .esri-feature__text {
+            color: ${styles.colorBackgroundGrey};
+            padding: 0 7px 1rem 0;
+        }
         
         .esri-view-surface:focus, .esri-view-surface--inset-outline:focus::after,
         .esri-popup__button, .esri-popup__header-container, .esri-attribution__sources,
@@ -141,17 +150,16 @@ export const Wrapper = styled.div`
             };
         `};
 
-        ${props => props.tableOpen && !props.adminToolActive && css`
+        ${props => props.tableOpen && css`
             // Button width multiplied by number of buttons
             .esri-attribution {
-                margin-left: calc(60px * 7);
+                margin-left: calc(60px * ${props.tableButtonAmount});
             };
         `};
-        
-        ${props => props.tableOpen && props.adminToolActive && css`
-            // Button width multiplied by number of buttons
-            .esri-attribution {
-                margin-left: calc(60px * 9);
+
+        ${props => props.layerLegendActive && props.tableOpen && css`
+            .esri-coordinate-conversion, .esri-legend--stacked {
+                right: 45px;
             };
         `};
 
@@ -178,8 +186,8 @@ export const Wrapper = styled.div`
             };
             
             .esri-legend--stacked {
-                margin-right: 60px;
-                margin-bottom: 120px;
+                margin-right: 45px;
+                margin-bottom: 81px;
                 min-width: 200px;
             };
             
@@ -188,30 +196,78 @@ export const Wrapper = styled.div`
             };
         };
         
-        ${props => props.layerLegendActive && props.tableOpen && css`
+        @media only screen and (max-height: 735px) {
             .esri-coordinate-conversion, .esri-legend--stacked {
-                right: 60px;
-            };
-        `};
-
-        @media only screen and (max-height: 900px) {
-            ${props => (props.layerLegendActive || props.tableOpen) && css`
-                .esri-coordinate-conversion, .esri-legend--stacked {
-                    right: 60px;
-                };
+                right: 0; 
+             }
+            ${props => (props.indexMapActive || props.layerLegendActive) && css`
+                @media only screen and (min-height: 486px) and (min-width: 486px) {
+                    .esri-coordinate-conversion, .esri-legend--stacked {
+                        right: 45px;
+                    }
+                }
             `};
         };
-
-        @media only screen and (max-height: 468px) {
-            .esri-coordinate-conversion, .esri-legend--stacked {
-                right: 60px;
-            };
-        };
     };
-    
-    .loading-icon {
-        visibility: hidden;
         
+    #extentDiv {
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        z-index: 2;
+        visibility: visible;
+    }
+      
+    #overView {
+        position: absolute;
+        bottom: 7.7rem;
+        right: 16px;
+        width: 300px;
+        height: 200px;
+        border: 1px solid ${styles.colorFontDark};
+        z-index: 1;
+        overflow: hidden;
+        visibility: visible;
+        
+        ${props => !props.indexMapActive && css` 
+            visibility: hidden;
+        `};
+        
+        ${props => props.indexMapActive && props.tableOpen && css`
+            right: 60px;
+        `};
+   
+        ${props => props.indexMapActive && props.layerLegendActive && css`
+            right: 20rem;
+        `};
+
+        @media only screen and (max-width: 735px) {
+        ${props => props.indexMapActive && css`
+            width: 200px;
+            height: 150px;
+            bottom: 7.7rem;
+            right: 60px;
+        `};
+
+        ${props => props.indexMapActive && props.layerLegendActive && css`
+            bottom: 25.5rem;
+        `};
+        }
+
+        @media only screen and (max-height: 735px) {
+            right: 60px;
+        ${props => props.indexMapActive && props.layerLegendActive && css`
+            @media only screen and (min-height: 486px) and (min-width: 486px) {
+                right: 23rem;
+                bottom: 7.7rem;
+            }
+            @media only screen and (max-height: 485px) and (min-width: 486px) {
+                right: 16.5rem;
+                bottom: 7.7rem;
+            }
+        `};
+        };
+    }
+
         ${props => props.loading && css`
             visibility: visible;
             background: ${styles.colorBackgroundLight};

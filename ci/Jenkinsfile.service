@@ -50,6 +50,7 @@ pipeline {
         EXTRACT_SERVICE_URL = credentials("extract_service_url_${get_environment()}")
         EXTRACT_OUTPUT_URL = credentials("extract_output_url_${get_environment()}")
         GEOCONVERT_SERVICE = credentials("geoconvert_service_${get_environment()}")
+		DIGITRANSIT_SERVICE = credentials("digitransit_service_${get_environment()}")
         KTJ_ENDPOINT = credentials("ktj_endpoint")
         KTJ_DEED_ENDPOINT = credentials("ktj_deed_endpoint")
         KTJ_EASEMENT_ENDPOINT = credentials("ktj_easement_endpoint")
@@ -141,6 +142,7 @@ pipeline {
                         "sed -i 's,EXTRACT_SERVICE_URL,${EXTRACT_SERVICE_URL},g' ${properties}",
                         "sed -i 's,EXTRACT_OUTPUT_URL,${EXTRACT_OUTPUT_URL},g' ${properties}",
                         "sed -i 's,GEOCONVERT_SERVICE,${GEOCONVERT_SERVICE},g' ${properties}",
+						"sed -i 's,DIGITRANSIT_SERVICE,${DIGITRANSIT_SERVICE},g' ${properties}",
                         "sed -i 's,KTJ_ENDPOINT,${KTJ_ENDPOINT},g' ${properties}",
                         "sed -i 's,KTJ_DEED_ENDPOINT,${KTJ_DEED_ENDPOINT},g' ${properties}",
                         "sed -i 's,KTJ_EASEMENT_ENDPOINT,${KTJ_EASEMENT_ENDPOINT},g' ${properties}",

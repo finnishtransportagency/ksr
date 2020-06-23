@@ -2,7 +2,9 @@ package fi.sitowise.ksr.service;
 
 import fi.sitowise.ksr.domain.Layer;
 import fi.sitowise.ksr.domain.LayerGroup;
+import fi.sitowise.ksr.domain.Relation;
 import fi.sitowise.ksr.repository.LayerGroupRepository;
+import fi.sitowise.ksr.repository.RelationRepository;
 import fi.sitowise.ksr.repository.UserLayerRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,18 +26,22 @@ public class LayerGroupService {
 
     private final LayerGroupRepository layerGroupRepository;
     private final UserLayerRepository userLayerRepository;
+    private final RelationRepository relationRepository;
 
     private static final Logger LOG = LogManager.getLogger(LayerGroupService.class);
 
     /**
      * Instantiates a new Layer group service.
      *
-     * @param layerGroupRepository the layer group repository
-     * @param userLayerRepository the user layer repository
+     * @param layerGroupRepository the layer group repository.
+     * @param userLayerRepository the user layer repository.
+     * @param relationRepository the relation repository.
      */
-    public LayerGroupService(LayerGroupRepository layerGroupRepository, UserLayerRepository userLayerRepository) {
+    public LayerGroupService(LayerGroupRepository layerGroupRepository, UserLayerRepository userLayerRepository,
+                             RelationRepository relationRepository) {
         this.layerGroupRepository = layerGroupRepository;
         this.userLayerRepository = userLayerRepository;
+        this.relationRepository = relationRepository;
     }
 
     /**
@@ -59,6 +65,9 @@ public class LayerGroupService {
         for (LayerGroup lg : combinedLayerGroups) {
             if (lg.getLayers() != null) {
                 for (Layer l : lg.getLayers()) {
+                    List<Relation> relations = relationRepository.getRelations(l.getId());
+                    l.setRelations(relations);
+                    l.setHasRelations(!relations.isEmpty());
                     l.setVisible(isMobile ? l.getMobileVisible() : l.getDesktopVisible());
                     l.setUrl(formatLayerUrl(l.getType(), l.getId()));
                 }

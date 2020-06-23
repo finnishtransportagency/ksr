@@ -112,9 +112,9 @@ const createFields = (attributes: Object) => {
         fieldObj.name = key;
         fieldObj.alias = key;
         if (key === 'ObjectID') {
-            fieldObj.type = 'esriFieldTypeOID';
+            fieldObj.type = 'oid';
         } else {
-            fieldObj.type = 'esriFieldTypeString';
+            fieldObj.type = 'string';
         }
         fields.push(fieldObj);
     });

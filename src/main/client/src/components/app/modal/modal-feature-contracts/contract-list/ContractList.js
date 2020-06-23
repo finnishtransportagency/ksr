@@ -7,23 +7,19 @@ import { contractListTexts } from '../../../../../utils/contracts/contracts';
 import LoadingIcon from '../../../shared/LoadingIcon';
 import ContractListView from './ContractListView';
 import { nestedVal } from '../../../../../utils/nestedValue';
+import { findFirstContractLayer } from '../../../../../utils/layers';
 
 type Props = {
     objectId: number,
-    contractIdField: string,
-    contractDescriptionField: string,
-    contractUnlinkable: boolean,
     currentLayer: Object,
-    contractLayer: Object,
-    alfrescoLinkField: string,
-    caseManagementLinkField: string,
+    contractLayers: Object[],
     setActiveView: Function,
     editLayerPermission: boolean,
     showConfirmModal: (
         body: string,
         acceptText: string,
         cancelText: string,
-        accept: Function
+        accept: Function,
     ) => void,
     setActiveModal: (activeModal: string, data: any) => void,
 };
@@ -52,38 +48,53 @@ class ContractList extends Component<Props, State> {
         const {
             currentLayer,
             objectId,
-            contractIdField,
-            contractDescriptionField,
-            alfrescoLinkField,
-            caseManagementLinkField,
+            contractLayers,
         } = this.props;
 
-        let contracts = await fetchContractRelation(
+        const contracts = await fetchContractRelation(
             currentLayer.id,
             objectId,
         );
-        contracts = await contractListTexts(
-            contracts,
-            contractIdField,
-            contractDescriptionField,
-            alfrescoLinkField,
-            caseManagementLinkField,
-        );
+
+        const contractList = [];
+        if (contracts) {
+            await contracts.map(async (c) => {
+                const contractLayer = contractLayers.find(l => l.id === c.layerId);
+
+                if (!contractLayer || c.features === null) return;
+                const contract = await contractListTexts(
+                    c,
+                    contractLayer ? contractLayer.contractIdField : '',
+                    contractLayer ? contractLayer.contractDescriptionField : '',
+                    contractLayer ? contractLayer.alfrescoLinkField : '',
+                    contractLayer ? contractLayer.caseManagementLinkField : '',
+                    nestedVal(contractLayer && contractLayer.relations.find(r => r), ['relationType'], false) === 'many',
+                );
+                if (contract.length > 0) {
+                    contractList.push({
+                        contract,
+                        name: nestedVal(contractLayer, ['name'], ''),
+                    });
+                }
+            });
+        }
 
         // eslint-disable-next-line
         this.setState({
-            contracts,
+            contracts: contractList,
             fetchingContracts: false,
         });
     }
 
-    handleUnlinkContract = (contractNumber: string) => {
+    handleUnlinkContract = (contractNumber: string, layerId: string) => {
         const {
             currentLayer,
-            contractLayer,
+            contractLayers,
             objectId,
             showConfirmModal,
         } = this.props;
+
+        const contractLayer: Object = contractLayers.find(c => c.id === layerId);
 
         const objectIdField = nestedVal(
             contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
@@ -102,10 +113,17 @@ class ContractList extends Component<Props, State> {
 
                 const { contracts } = this.state;
 
+                const contractObject = contracts
+                    .find(c => c.contract && c.contract
+                        .some(a => a.id === contractNumber));
+
+                const object = nestedVal(contractObject, ['contract'], {})
+                    .find(a => a.id === contractNumber);
                 const contractObjectId = nestedVal(
-                    contracts.find(a => a.id === contractNumber),
+                    object,
                     ['attributes', objectIdField],
                 );
+
                 const unlinkSuccess = await unlinkContract(
                     currentLayer.id,
                     objectId,
@@ -118,8 +136,22 @@ class ContractList extends Component<Props, State> {
                 } = strings.modalFeatureContracts.linkContract;
                 if (unlinkSuccess) {
                     toast.success(contractUnlinked);
+
+                    const contractsReduced = contracts
+                        .reduce((a, b) => {
+                            const contractList = b.contract
+                                .filter(c => c.id !== contractNumber);
+                            if (contractList.length > 0) {
+                                a.push({
+                                    contract: contractList,
+                                    name: b.name,
+                                });
+                            }
+                            return a;
+                        }, []);
+
                     this.setState({
-                        contracts: contracts.filter(contract => contract.id !== contractNumber),
+                        contracts: contractsReduced,
                         fetchingContracts: false,
                     });
                 } else {
@@ -130,23 +162,31 @@ class ContractList extends Component<Props, State> {
         );
     };
 
-    handleContractDetailsClick = async (contractNumber: number) => {
-        const { contractLayer, setActiveModal } = this.props;
+    handleContractDetailsClick = async (contractNumber: number, layerId: string) => {
+        const { contractLayers, setActiveModal } = this.props;
         const { contracts } = this.state;
 
-        const objectIdField = nestedVal(
-            contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
-            ['label'],
-        );
+        const contractLayer = contractLayers.find(c => c.id === layerId);
+
+        const objectIdField = nestedVal(contractLayer
+            && contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
+        ['label']);
+
+        const contractObject = contracts
+            .find(c => c.contract && c.contract
+                .some(a => a.id === contractNumber));
+
+        const object = nestedVal(contractObject, ['contract'], {})
+            .find(a => a.id === contractNumber);
 
         const contractObjectId = nestedVal(
-            contracts.find(a => a.id === contractNumber),
+            object,
             ['attributes', objectIdField],
         );
 
         const modalData = {
             contractObjectId,
-            layerId: contractLayer.id,
+            layerId: nestedVal(contractLayers.find(c => c.id === layerId), ['id']),
             source: 'contractModal',
         };
 
@@ -156,22 +196,28 @@ class ContractList extends Component<Props, State> {
     render() {
         const { contracts, fetchingContracts } = this.state;
         const {
-            contractUnlinkable,
             setActiveView,
             editLayerPermission,
-            contractLayer,
+            contractLayers,
         } = this.props;
 
+        const contractLayer: Object = findFirstContractLayer(contractLayers);
+
         return fetchingContracts
-            ? <LoadingIcon loading={fetchingContracts || !contractLayer.fields} />
-            : <ContractListView
-                contracts={contracts}
-                contractUnlinkable={contractUnlinkable}
-                handleUnlinkContract={this.handleUnlinkContract}
-                setActiveView={setActiveView}
-                editLayerPermission={editLayerPermission}
-                handleContractDetailsClick={this.handleContractDetailsClick}
-            />;
+            ? (
+                <LoadingIcon loading={fetchingContracts
+                || (!contractLayer.fields)}
+                />
+            )
+            : (
+                <ContractListView
+                    contracts={contracts}
+                    handleUnlinkContract={this.handleUnlinkContract}
+                    setActiveView={setActiveView}
+                    editLayerPermission={editLayerPermission}
+                    handleContractDetailsClick={this.handleContractDetailsClick}
+                />
+            );
     }
 }
 

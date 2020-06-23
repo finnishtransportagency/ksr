@@ -16,9 +16,11 @@ const mapStateToProps = (state) => {
         layers: state.table.features.layers,
         loadingWorkspace: state.workspace.workspace.loadingWorkspace,
         layerLegendActive: state.map.layerLegend.layerLegendActive,
+        tableButtonAmount: state.table.buttonAmount,
+        indexMapActive: state.map.indexMap.indexMapActive,
     });
 };
 
-const EsriMapContainer = connect(mapStateToProps)(EsriMap);
+const EsriMapContainer = (connect(mapStateToProps)(EsriMap): any);
 
 export default EsriMapContainer;

@@ -26,21 +26,27 @@ const Checkbox = styled.label`
     }
     
     ${props => props.layerAllView && css`
-        margin-bottom: 0;
-        
-        span {
-            top: ${props.subLayer ? '1px' : '1rem'};
-            left: 1rem;
-        }
+        margin-bottom: 1rem;
     `};
-    
+
     input:checked ~ span {
         background-color: ${styles.colorMain};
-        
+
         ${props => props.layerAllView && css`
             background-color: ${styles.colorBackgroundLightSecondary};
         `};         
     }
+    
+    ${props => props.checkedSome && css`
+        span:before {
+            content: "\\25A0";
+            color: rgba(110, 110, 110, 0.7);
+            position: absolute;
+            top: -7px;
+            left: 2px;
+            font-size: 20px;
+        }
+    `};
 `;
 
 Checkbox.Input = Input;

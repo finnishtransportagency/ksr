@@ -6,33 +6,16 @@ import { fetchAddUserLayer } from '../../api/user-layer/addUserLayer';
 import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
 import { addLayers, getSingleLayerFields } from '../../utils/map';
-import { reorderLayers } from '../../utils/reorder';
+import { reorderChildLayers, reorderLayers } from '../../utils/reorder';
 import { addNonSpatialContentToTable } from '../table/actions';
 import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
-
-export const getLayerGroups = () => async (dispatch: Function) => {
-    dispatch({ type: types.GET_LAYER_GROUPS });
-
-    const layerGroups = await fetchLayerGroups();
-    const layerList = layerGroups
-        .flatMap(lg => lg.layers.map(layer => ({ ...layer, layerGroupName: lg.name })))
-        .sort((a, b) => b.layerOrder - a.layerOrder);
-
-    return dispatch({
-        type: types.GET_LAYER_GROUPS_FULFILLED,
-        layerGroups: layerGroups.map(lg => ({
-            ...lg,
-            layers: lg.layers.map(layer => layer),
-        })),
-        layerList,
-    });
-};
+import { nestedVal } from '../../utils/nestedValue';
 
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
-    layerList,
+    layerList: reorderChildLayers(layerList),
 });
 
 export const updateLayer = (layer: Object) => ({
@@ -45,6 +28,39 @@ export const updateLayerFields = (layerId: string, fields: Object[]) => ({
     layerId,
     fields,
 });
+
+export const getLayerGroups = () => async (dispatch: Function) => {
+    dispatch({ type: types.GET_LAYER_GROUPS });
+
+    const layerGroups = await fetchLayerGroups();
+    const layerList = layerGroups
+        .flatMap(lg => lg.layers.map(layer => ({
+            ...layer,
+            layerGroupName: lg.name,
+            originalLayerOrder: layer.layerOrder,
+        })))
+        .sort((a, b) => b.layerOrder - a.layerOrder);
+
+    // Update layers fields
+    layerList.forEach((layer) => {
+        if (!layer.fields) {
+            getSingleLayerFields(layer).then(
+                (fetchedLayer) => {
+                    updateLayerFields(fetchedLayer.id, fetchedLayer.fields);
+                },
+            ).catch(err => console.log(err));
+        }
+    });
+
+    return dispatch({
+        type: types.GET_LAYER_GROUPS_FULFILLED,
+        layerGroups: layerGroups.map(lg => ({
+            ...lg,
+            layers: lg.layers.map(layer => layer),
+        })),
+        layerList,
+    });
+};
 
 /**
  * Handles activating new layers. Works with single layer, layer group or workspace.
@@ -65,22 +81,37 @@ export const activateLayers = (
 ) => async (dispatch: Function, getState: Function) => {
     const { view } = dispatch(getState).map.mapView;
     const { activeAdminTool } = dispatch(getState).adminTool.active.layerId;
+    const { layerList } = dispatch(getState).map.layerGroups;
 
     view.popup.close();
 
+    // Add related child/parent -layers if either is included in layers to be activated.
+    let layersToBeActivated = layers.concat(layerList
+        .filter(ll => layers.some(l => ll.id === l.parentLayer)));
+    layersToBeActivated = layersToBeActivated.concat(layerList
+        .filter(ll => layersToBeActivated.some(l => ll.parentLayer === l.id)));
+
     dispatch({
         type: types.SET_LOADING_LAYERS,
-        layerIds: layers.map(l => l.id),
+        layerIds: layersToBeActivated.map(l => l.id),
     });
 
-    const { failedLayers } = await addLayers(
-        layers,
+    let { failedLayers } = await addLayers(
+        layersToBeActivated,
         view,
         workspace !== undefined,
+        false,
+        layerList,
     );
 
-    await Promise.all(layers.map(async (layer) => {
-        if (!failedLayers.some(layerId => layerId === layer.id)) {
+    failedLayers = failedLayers.map(fl => ({
+        id: fl,
+        parentLayer: nestedVal(layerList.find(ll => ll.id === fl), ['parentLayer']),
+    }));
+
+    await Promise.all(layersToBeActivated.map(async (layer) => {
+        if (!failedLayers.some(fl => fl.id === layer.id)
+            && !failedLayers.some(fl => fl.parentLayer === layer.id)) {
             if (layer.id === activeAdminTool) {
                 dispatch({
                     type: types.SET_ACTIVE_ADMIN_TOOL,
@@ -89,7 +120,7 @@ export const activateLayers = (
                 });
             }
 
-            if (layer.type === 'agfl') {
+            if (layer.type === 'agfl' && layer._source !== 'search') {
                 if (workspace === undefined) dispatch(addNonSpatialContentToTable(layer));
             } else {
                 const layerToUpdate = await getSingleLayerFields({ ...layer, failOnLoad: false });
@@ -106,6 +137,12 @@ export const activateLayers = (
                         : workspace.layers.find(wl => wl.layerId === layer.id
                             || wl.userLayerId === layer.id));
 
+                let visible = true;
+                if (layer.parentLayer && layersToBeActivated
+                    .some(l => l.id === layer.parentLayer)) {
+                    visible = layer.name.toLowerCase().includes('voimassaoleva');
+                }
+
                 dispatch({
                     type: types.UPDATE_LAYER,
                     layer: {
@@ -113,7 +150,7 @@ export const activateLayers = (
                         active: true,
                         visible: workspaceLayer
                             ? workspaceLayer.visible
-                            : true,
+                            : visible,
                         opacity: workspaceLayer
                             ? workspaceLayer.opacity
                             : layer.opacity,
@@ -131,18 +168,30 @@ export const activateLayers = (
                 }
             }
         } else {
+            const foundLayer = layerList.find(l => l.id === layer.id);
+
             dispatch({
                 type: types.DEACTIVATE_LAYER,
-                layerId: layer.id,
+                layerId: foundLayer.id,
                 failOnLoad: true,
             });
+
+            if (foundLayer.parentLayer) {
+                dispatch({
+                    type: types.DEACTIVATE_LAYER,
+                    layerId: foundLayer.parentLayer,
+                    failOnLoad: true,
+                });
+            }
         }
     }));
 
-    if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layers));
+    if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layersToBeActivated));
 };
 
-export const deactivateLayer = (layerId: string) => (dispatch: Function) => {
+export const deactivateLayer = (layerId: string) => (dispatch: Function, getState: Function) => {
+    const { layerList } = dispatch(getState).map.layerGroups;
+
     dispatch({
         type: types.DEACTIVATE_LAYER,
         layerId,
@@ -152,6 +201,21 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function) => {
         type: types.REMOVE_LAYER_FROM_VIEW,
         layerIds: [layerId],
     });
+
+    const childLayers = layerList.filter(ll => ll.parentLayer === layerId);
+    if (childLayers.length) {
+        childLayers.forEach((childLayer) => {
+            dispatch({
+                type: types.DEACTIVATE_LAYER,
+                layerId: childLayer.id,
+            });
+        });
+
+        dispatch({
+            type: types.REMOVE_LAYER_FROM_VIEW,
+            layerIds: childLayers.map(childLayer => childLayer.id),
+        });
+    }
 };
 
 export const getActiveLayerTab = () => ({
@@ -314,4 +378,13 @@ export const toggleMeasurements = () => ({
 export const setScale = (mapScale: number) => ({
     type: types.SET_SCALE,
     mapScale,
+});
+
+export const hideLayer = (layerIds: string[]) => ({
+    type: types.HIDE_LAYER,
+    layerIds,
+});
+
+export const toggleIndexMap = () => ({
+    type: types.TOGGLE_INDEX_MAP,
 });

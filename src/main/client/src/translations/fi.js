@@ -7,6 +7,7 @@ const fi = {
         addNewLayer: 'Uusi taso',
         failedToLoadLayer: 'Tason lataus epäonnistui',
         toggleLayerLegend: 'Selite',
+        toggleIndexMap: 'Indeksikartta',
         filterAllLayers: 'Hae karttatasoja',
         noLayersFound: 'Ei hakua vastaavia karttatasoja',
         userLayerGroupName: 'Käyttäjätasot',
@@ -18,7 +19,7 @@ const fi = {
         buttonClear: 'Tyhjennä',
         chooseLayer: 'Valitse taso',
         searchAllFields: 'Hae kaikista kentistä',
-        searchAllFieldsInfo: 'Haku kohdistuu vain yleisimpiin kenttiin. Mikäli tarvetta tarkemmalle haulle, on mahdollista hakea yksittäiseltä aktiiviselta tasolta kerrallaan haluamillaan kentillä.',
+        searchAllFieldsInfo: 'Haku kohdistuu kaikkiin kenttiin. Mikäli tarvetta tarkemmalle haulle, on mahdollista hakea yksittäiseltä aktiiviselta tasolta kerrallaan haluamillaan kentillä.',
         addField: 'Lisää hakukenttä',
         searchLayerGroupName: 'Hakutulokset',
         allQueryableLayers: 'Kaikki tasot',
@@ -32,7 +33,7 @@ const fi = {
             lessThan: 'Pienempi kuin',
             not: 'Ei sisällä (täsmälleen)',
             notLike: 'Ei sisällä (osittain)',
-        }
+        },
     },
     reactTable: {
         previousText: 'Edellinen',
@@ -49,14 +50,19 @@ const fi = {
         saveEditedData: 'Tallenna muutokset',
         bufferSelectedData: 'Puskurialue valituille kohteille',
         extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
-        zoomToSelected: 'Kohdista valittuihin kohteisiin',
+        zoomToSelected: 'Kohdista haluamiin kohteisiin',
+        windowPortal: 'Avaa taulu uuteen ikkunaan',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',
         selectIntersectFeatures: 'Aluevalinta',
         setBuffer: 'Puskurialue',
         noFeatures: 'Ei kohteita',
-        getPropertyInfo: 'Kiinteistötiedot',
+        getPropertyInfo: 'Kiinteistötiedot (piste)',
+        getStreetInfo: 'Katuosoite',
+        getRoadInfo: 'Tieosoite',
+        getRailwayInfo: 'Rataosoite',
+        getAllPropertyInfo: 'Kiinteistötiedot (leikkaavat)',
         featureInfoError: 'Ominaisuustietojen haku WMS-tasolle epäonnistui',
         copyFeature: 'Kopioi kohde',
         confirmReplace: {
@@ -73,6 +79,7 @@ const fi = {
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
+        description: 'Suodatus kohdistuu vain aktiivisena olevaan tauluun.',
         selectAll: 'Valitse kaikki sarakkeet',
         selectNone: 'Tyhjennä valitut sarakkeet',
         submit: 'Suodata',
@@ -81,7 +88,7 @@ const fi = {
     modalClearTable: {
         submit: 'Tyhjennä',
         cancel: 'Peruuta',
-        content: 'Haluatko tyhjentää taulukon kaikki kentät ja haetut tasot karttatasovalikosta?',
+        content: 'Haluatko tyhjentää kaikki taulut ja hakutulokset karttatasovalikosta?',
     },
     modalClearTableTab: {
         submit: 'Tyhjennä',
@@ -89,10 +96,16 @@ const fi = {
         content: 'Haluatko tyhjentää valitsemasi tason taulukosta?',
         info: 'Poista taso...',
     },
+    modalPopulateTable: {
+        submit: 'Kyllä',
+        cancel: 'Peruuta',
+        content: 'Haluatko avata taulun kaikki kohteet? Taulun nykyiset tiedot korvataan uusilla tiedoilla.',
+    },
     modalDownloadCsv: {
         all: 'Kaikki kohteet',
         selected: 'Valitut kohteet',
         title: 'CSV -tiedoston lataus',
+        description: 'CSV -tiedoston lataus kohdistuu vain aktiivisena olevaan tauluun.',
         cancel: 'Peruuta',
     },
     modalDeleteSelected: {
@@ -110,14 +123,22 @@ const fi = {
         content: 'Haluatko tallentaa taulukkoon tekemät muutokset?',
     },
     modalBufferSelectedData: {
-        title: 'Määritä valittujen kohteiden puskurialue',
-        singleTitle: 'Määritä valitun kohteen puskurialue',
+        title: 'Määritä kohteiden puskurialue',
+        titleSingleFeature: 'Määritä kohteen puskurialue',
         submit: 'Laske',
         cancel: 'Peruuta',
-        bufferLabel: 'Anna puskurialueen koko metreinä',
+        bufferLabel: 'Puskurialueen koko metreinä',
+        tableLabel: 'Taulut',
+        featureLabel: 'Kohteet',
+        description: 'Määritä puskurialue halutuille kohteille. Puskurointi kohdistuu oletuksena kaikkiin taulussa oleviin kohteisiin.',
+        checkTable: 'Vain aktiivinen taulu',
+        checkFeature: 'Vain valitut kohteet',
+        targetedFeaturesTotal: 'Puskurointiin kohdistettuja kohteita yhteensä',
+        targetedFeaturesLimit: 'Puskurointi estetty yli 1000 kohteelle kerrallaan.',
     },
     modalExtractSelectedData: {
         title: 'Vie valitut kohteet toiseen paikkatietoformaattiin',
+        description: 'Toiminto kohdistuu vain aktiivisessa taulussa oleviin valittuihin kohteisiin.',
         submit: 'Vie',
         cancel: 'Peruuta',
         geodatabase: '.gdb',
@@ -207,6 +228,7 @@ const fi = {
         rejectSelection: 'Hylkää geometria',
         acceptSelection: 'Hyväksy geometria',
         activeAdmin: 'Luontityökalu',
+        newArea: 'Luo kohteelle uusi alue',
     },
     mapLayerView: {
         removeTooltip: 'Poista karttataso',
@@ -218,6 +240,8 @@ const fi = {
     },
     workspace: {
         title: 'Työtilat',
+        titlePublicWorkspace: 'Yhteiset työtilat',
+        titleUserWorkspace: 'Omat työtilat',
         newWorkspace: 'Luo uusi työtila',
         replaceWorkspace: 'Korvaa työtila',
         deleteWorkspace: 'Poista työtila',
@@ -252,7 +276,7 @@ const fi = {
         },
     },
     modalNewWorkspace: {
-        title: 'Luo uusi työtila',
+        title: 'Luo uusi käyttäjäkohtainen työtila',
         workspaceName: 'Työtilan nimi',
         submit: 'Tallenna',
         cancel: 'Peruuta',
@@ -274,6 +298,16 @@ const fi = {
         inputPlaceholder: 'Kartan teksti',
         submitText: 'Ok',
         cancelText: 'Peruuta',
+    },
+    modalShowAddress: {
+        title: 'Osoitetieto',
+        noAddressFound: 'Osoitetta ei löytynyt.',
+        cancelText: 'Peruuta',
+        backText: 'Takaisin',
+        road: 'tie',
+        part: 'osa',
+        lane: 'ajorata',
+        distance: 'etäisyys',
     },
     modalFeatureContracts: {
         featureContracts: 'Kohteen sopimukset',
@@ -326,6 +360,7 @@ const fi = {
             details: 'Näytä lisätiedot',
             unlink: 'Poista kohteen linkitys sopimukselta',
             edit: 'Muokkaa kohdetta',
+            showLocation: 'Näytä kartalla',
         },
         newDetail: {
             title: 'Lisää uusi kohde sopimukselle',
@@ -356,6 +391,7 @@ const fi = {
         featureDeleteNoFeaturesError: 'Kohde tai kohteet on jo poistettu. Päivitä näkymä ja yritä uudelleen.',
     },
     mapLayerSettings: {
+        showAllFeatures: 'Näytä kaikki kohteet',
         addNewFeature: 'Luo uusi kohde',
         createThemeLayer: 'Luo teemataso',
         toggleAdminTool: 'Muokkaus päälle/pois',
@@ -424,6 +460,26 @@ const fi = {
             geometryMissing: 'Kiinteistötunnuksella ei ole geometriaa.',
             propertyAlreadyExist: 'Kiinteistötunnus on olemassa jo järjestelmässä.',
         },
+    },
+    modalZoomToFeatures: {
+        modalTitle: 'Kohdista taulukon kohteisiin',
+        modalCancel: 'Peruuta',
+        modalSubmit: 'Kohdista',
+        content: {
+            description: 'Kohdista kartta haluttuihin kohteisiin. Kohdistaa oletuksena kaikkiin taulussa oleviin kohteisiin.',
+            checkTable: 'Vain aktiivinen taulu',
+            checkFeature: 'Vain valitut kohteet',
+        },
+    },
+    portalWindow: {
+        portalTitle: 'Taulu - Kiinteistö- ja sopimusrekisteri',
+    },
+    modalConfirmAdminChange: {
+        contentChange: 'Haluatko varmasti vaihtaa ylläpitotilan toiselle tasolle? Menetät kaikki tallentamattomat muutokset.',
+        contentDisable: 'Haluatko varmasti poistua ylläpitotilasta? Menetät kaikki tallentamattomat muutokset.',
+        cancel: 'Peruuta',
+        submitChange: 'Vaihda',
+        submitDisable: 'Poistu',
     },
 };
 

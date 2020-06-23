@@ -7,6 +7,7 @@ const initialState = {
     acceptText: '',
     cancelText: '',
     accept: () => {},
+    cancel: () => {},
 };
 
 type Action = {
@@ -16,6 +17,7 @@ type Action = {
     acceptText: string,
     cancelText: string,
     accept: Function,
+    cancel?: Function,
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -27,6 +29,7 @@ export default (state: Object = initialState, action: Action) => {
                 acceptText: action.acceptText,
                 cancelText: action.cancelText,
                 accept: action.accept,
+                cancel: action.cancel,
             };
         case HIDE_CONFIRM_MODAL:
             return initialState;

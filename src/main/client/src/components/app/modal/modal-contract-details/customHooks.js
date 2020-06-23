@@ -27,6 +27,7 @@ export const useDetailList = (
         setDetailList(contractDetails
             .map((layerDetail) => {
                 const layer = layerList.find(l => layerDetail.id === l.id);
+                const geometryData = layerList.some(() => layerDetail.type === 'agfs');
 
                 if (layer) {
                     const objectIdFieldName = nestedVal(
@@ -77,6 +78,7 @@ export const useDetailList = (
                         features,
                         createPermission,
                         editPermission,
+                        geometryData,
                     };
                 }
 
@@ -274,6 +276,7 @@ export const useModalSubmit = (
                             activeDetailLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
                             ['name'],
                         );
+
                         const updateRes = await save.saveData(
                             'update',
                             store.getState().map.mapView.view,
@@ -282,6 +285,7 @@ export const useModalSubmit = (
                                 attributes: { ...formOptions.editedFields },
                             }],
                             objectIdFieldName,
+                            false,
                             activeFeature.objectId,
                         );
 

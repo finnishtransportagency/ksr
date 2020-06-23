@@ -8,6 +8,14 @@ import ModalFeatureContracts from '../ModalFeatureContracts';
 const setup = (prop) => {
     const minProps = {
         removeContractListInfo: jest.fn(),
+        currentLayer: {
+            relations: [{
+                relationLayerId: '123',
+            }],
+        },
+        contractLayers: [{
+            id: '456',
+        }],
     };
     const props = prop || minProps;
     const wrapper = shallow(<ModalFeatureContracts {...props} />);

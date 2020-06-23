@@ -68,6 +68,8 @@ export const setCenterPoint = async (
  * @param {Array<Object>} layers Array of layers to be added
  * @param {Object} view Map view to which the layers are added
  * @param {boolean} isWorkspace Indicates if adding layers comes from loading workspace.
+ * @param {boolean} isOverviewMap Indicates if adding layers comes from adding overviewMap.
+ * @param {Object[]} layerList List of every layer.
  *
  * @returns {Object} Object containing failed layers.
  */
@@ -75,6 +77,8 @@ export const addLayers = async (
     layers: Array<Object>,
     view: Object,
     isWorkspace: boolean,
+    isOverviewMap: boolean = false,
+    layerList: Object[],
 ) => {
     const [esriConfig, WMSLayer, WMTSLayer, FeatureLayer] = await esriLoader.loadModules([
         'esri/config',
@@ -120,42 +124,47 @@ export const addLayers = async (
                     }), layer.index);
                     break;
                 case 'agfs': {
-                    const fl = new FeatureLayer({
-                        id: layer.id,
-                        url: layer.url,
-                        layerId: layer.id,
-                        copyright: layer.attribution,
-                        maxScale: layer.maxScale,
-                        minScale: layer.minScale,
-                        opacity: layer.opacity,
-                        visible: layer.visible,
-                        title: layer.name,
-                        outFields: ['*'],
-                        definitionExpression: layer.definitionExpression,
-                        refreshInterval: 5,
-                        legendEnabled: false,
-                    });
+                    // Exclude parent layers being added to the map.
+                    if (!layerList.some(l => l.parentLayer === layer.id)) {
+                        const fl = new FeatureLayer({
+                            id: layer.id,
+                            url: layer.url,
+                            layerId: layer.id,
+                            copyright: layer.attribution,
+                            maxScale: layer.maxScale,
+                            minScale: layer.minScale,
+                            opacity: layer.opacity,
+                            visible: layer.visible,
+                            title: layer.name,
+                            outFields: ['*'],
+                            definitionExpression: layer.definitionExpression,
+                            refreshInterval: 5,
+                            legendEnabled: false,
+                        });
 
-                    if (layer._source === 'search') {
-                        searchLayers.push(fl);
+                        if (layer._source === 'search') {
+                            searchLayers.push(fl);
+                        }
+
+                        view.map.add(fl, layer.index);
                     }
-
-                    view.map.add(fl, layer.index);
                     break;
                 }
                 default:
                     break;
             }
 
-            const addedLayer = view.map.layers.find(l => l.id === layer.id);
-            if (addedLayer && addedLayer.type !== 'agfl') {
-                await addedLayer
-                    .when()
-                    .catch(() => {
-                        view.map.remove(view.map.findLayerById(addedLayer.id));
-                        toast.error(`${strings.mapLayers.failedToLoadLayer} [${layer.name}]`);
-                        failedLayers.push(layer.id);
-                    });
+            if (!isOverviewMap) {
+                const addedLayer = view.map.layers.find(l => l.id === layer.id);
+                if (addedLayer && addedLayer.type !== 'agfl') {
+                    await addedLayer
+                        .when()
+                        .catch(() => {
+                            view.map.remove(view.map.findLayerById(addedLayer.id));
+                            toast.error(`${strings.mapLayers.failedToLoadLayer} [${layer.name}]`);
+                            failedLayers.push(layer.id);
+                        });
+                }
             }
         }
     }));

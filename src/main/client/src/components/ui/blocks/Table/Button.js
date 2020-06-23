@@ -10,6 +10,8 @@ const Button = styled.div`
     font-size: 1.25em;
     left: 0;
     width: 60px;
+    box-sizing: border-box;
+    border-top: 3px solid transparent;
     
     &:hover {
         cursor: pointer;
@@ -25,6 +27,10 @@ const Button = styled.div`
     ${props => props.toggleButton && css`
         display: flex;
     `};
+
+    ${props => props.portalButton && css`
+        display: flex;
+    `};
     
     ${props => props.disabled && css`
         color: ${styles.colorFontDisabled};
@@ -34,6 +40,30 @@ const Button = styled.div`
             background: ${styles.colorBackgroundDark};
         };
     `};
+    
+    ${props => props.activeLayer && css`
+        border-top: 3px solid ${styles.colorMain};
+    `};
+    
+    ${props => props.admin && css`
+        border-top: 3px solid ${styles.colorTableEdited};
+    `};
+    
+    ${props => props.active && css`
+        color: ${styles.colorMain};
+    `};
+    
+    @media only screen and (max-width: 768px) {
+        border-top: 2px solid transparent;
+    
+        ${props => props.activeLayer && css`
+            border-top: 2px solid ${styles.colorMain};
+        `};
+        
+        ${props => props.admin && css`
+            border-top: 2px solid ${styles.colorTableEdited};
+        `};
+    }
 `;
 
 export default Button;
