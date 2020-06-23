@@ -80,9 +80,19 @@ class ModalBufferSelected extends Component<Props, State> {
             selectedFeaturesOnly,
         } = this.state;
 
+        const targetedFeatures = selectedFeaturesOnly
+            ? selectedGeometryData
+            : tableGeometryData;
+
+        const selectedAmount = currentTableOnly
+            ? targetedFeatures
+                .filter(data => data.layerId === activeLayerId)
+                .map(data => data.geometry).length
+            : targetedFeatures.length;
+
         const modalSubmit = [{
             text: strings.modalAddUserLayer.submit,
-            handleSubmit: () => {
+            handleSubmit: async () => {
                 if (singleFeature) {
                     view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
                     setSingleFeatureBuffer(
@@ -91,7 +101,8 @@ class ModalBufferSelected extends Component<Props, State> {
                         bufferSize,
                     );
                 } else {
-                    setBuffer(
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    await setBuffer(
                         view,
                         selectedGeometryData,
                         tableGeometryData,
@@ -102,7 +113,7 @@ class ModalBufferSelected extends Component<Props, State> {
                     );
                 }
             },
-            disabled: submitDisabled,
+            disabled: submitDisabled || selectedAmount > 1000,
             toggleModal: true,
         }];
 
@@ -123,6 +134,9 @@ class ModalBufferSelected extends Component<Props, State> {
                     handleFeatureSelectionChange={this.handleFeatureSelectionChange}
                     singleFeature={singleFeature}
                 />
+                {selectedAmount > 1000 && (
+                    <p>{`${strings.modalBufferSelectedData.targetedFeaturesTotal} ${selectedAmount}. ${strings.modalBufferSelectedData.targetedFeaturesLimit}`}</p>
+                )}
             </ModalContainer>
         );
     }

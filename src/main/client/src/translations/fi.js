@@ -133,6 +133,8 @@ const fi = {
         description: 'Määritä puskurialue halutuille kohteille. Puskurointi kohdistuu oletuksena kaikkiin taulussa oleviin kohteisiin.',
         checkTable: 'Vain aktiivinen taulu',
         checkFeature: 'Vain valitut kohteet',
+        targetedFeaturesTotal: 'Puskurointiin kohdistettuja kohteita yhteensä',
+        targetedFeaturesLimit: 'Puskurointi estetty yli 1000 kohteelle kerrallaan.',
     },
     modalExtractSelectedData: {
         title: 'Vie valitut kohteet toiseen paikkatietoformaattiin',

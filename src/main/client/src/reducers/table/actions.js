@@ -274,17 +274,14 @@ export const clearTableData = (
     addressField: string,
     layerList: Object[],
 ) => (dispatch: Function) => {
-    let layerId = '';
-    const editedLayer = editedLayers[0];
-    const containsEdit = editedLayer && editedLayer.data
-        .some(d => d._edited.length > 0);
-    const layer: any = layerList.find(ll => ll.id === editedLayer.id);
-    if (layer.parentLayer) {
-        layerId = layer.parentLayer;
-    } else {
-        layerId = layer.id;
-    }
-    if (containsEdit) {
+    let editedLayer: any = null;
+    editedLayers.map(layer => layer.id === layer.id.replace('.s', '') && layer.data.some((d) => {
+        if (d._edited && d._edited.length > 0) {
+            editedLayer = layer;
+        }
+        return editedLayer;
+    }));
+    if (editedLayer && editedLayer.length !== 0) {
         dispatch(showConfirmModal(
             strings.modalClearTable.content,
             strings.modalClearTable.submit,
@@ -317,11 +314,6 @@ export const clearTableData = (
                             view.popup.close();
                         },
                     ));
-                    dispatch({
-                        type: types.SET_ACTIVE_ADMIN_TOOL,
-                        layerId,
-                        layerList,
-                    });
                 }, 500);
             },
         ));
@@ -333,11 +325,6 @@ export const clearTableData = (
             () => {
                 dispatch({
                     type: types.CLEAR_TABLE_DATA,
-                });
-                dispatch({
-                    type: types.SET_ACTIVE_ADMIN_TOOL,
-                    layerId,
-                    layerList,
                 });
                 view.popup.close();
             },
