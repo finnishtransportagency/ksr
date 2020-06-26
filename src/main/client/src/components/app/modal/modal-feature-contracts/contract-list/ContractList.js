@@ -62,6 +62,17 @@ class ContractList extends Component<Props, State> {
                 const contractLayer = contractLayers.find(l => l.id === c.layerId);
 
                 if (!contractLayer || c.features === null) return;
+                const field = (contractLayer.fields !== undefined)
+                    ? contractLayer.fields.find(
+                        f => f.name === contractLayer.contractDescriptionField,
+                    )
+                    : undefined;
+                const domain = (field !== undefined && field.domain !== null) ? {
+                    type: field.domain.type,
+                    name: field.domain.name,
+                    description: field.domain.description,
+                    codedValues: field.domain.codedValues,
+                } : null;
                 const contract = await contractListTexts(
                     c,
                     contractLayer ? contractLayer.contractIdField : '',
@@ -69,6 +80,7 @@ class ContractList extends Component<Props, State> {
                     contractLayer ? contractLayer.alfrescoLinkField : '',
                     contractLayer ? contractLayer.caseManagementLinkField : '',
                     nestedVal(contractLayer && contractLayer.relations.find(r => r), ['relationType'], false) === 'many',
+                    domain,
                 );
                 if (contract.length > 0) {
                     contractList.push({
