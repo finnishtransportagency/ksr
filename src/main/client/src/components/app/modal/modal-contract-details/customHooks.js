@@ -5,6 +5,7 @@ import strings from '../../../../translations';
 import { getAttribute, getFeatureAttributes, addDetailToContract } from '../../../../utils/contracts/contracts';
 import save from '../../../../utils/saveFeatureData';
 import store from '../../../../store';
+import { getCodedValue } from '../../../../utils/parseFeatureData';
 import { getContractDocumentUrl } from '../../../../utils/contracts/contractDocument';
 
 /**
@@ -44,13 +45,26 @@ export const useDetailList = (
                         ['layerPermission', 'updateLayer'],
                         false,
                     );
+                    const field = (layer.fields !== undefined)
+                        ? layer.fields.find(f => f.name === layer.contractDescriptionField)
+                        : undefined;
+                    const domain = (field !== undefined && field.domain !== null) ? {
+                        type: field.domain.type,
+                        name: field.domain.name,
+                        description: field.domain.description,
+                        codedValues: field.domain.codedValues,
+                    } : null;
 
                     const features = layerDetail.features
                         ? layerDetail.features
                             .map(feature => ({
                                 id: nestedVal(feature, ['attributes', layer.contractIdField], ''),
                                 objectId: nestedVal(feature, ['attributes', objectIdFieldName], ''),
-                                description: nestedVal(
+                                description: domain ? getCodedValue(domain, nestedVal(
+                                    feature,
+                                    ['attributes', layer.contractDescriptionField],
+                                    '',
+                                )) : nestedVal(
                                     feature,
                                     ['attributes', layer.contractDescriptionField],
                                     '',

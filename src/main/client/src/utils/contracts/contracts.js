@@ -31,11 +31,14 @@ export const contractListTexts = (
     alfrescoLinkField?: string,
     caseManagementLinkField?: string,
     contractUnlinkable?: boolean,
+    domain?: Object,
 ): Object[] => {
     if (contracts && contracts.features) {
         return contracts.features.map(feature => ({
             id: feature.attributes[contractIdField],
-            description: feature.attributes[contractDescriptionField],
+            description: domain
+                ? getCodedValue(domain, feature.attributes[contractDescriptionField])
+                : feature.attributes[contractDescriptionField],
             alfrescoUrl: alfrescoLinkField ? getContractDocumentUrl('alfresco', alfrescoLinkField, feature.attributes) : '',
             caseManagementUrl: caseManagementLinkField ? getContractDocumentUrl('caseManagement', caseManagementLinkField, feature.attributes) : '',
             attributes: feature.attributes,
