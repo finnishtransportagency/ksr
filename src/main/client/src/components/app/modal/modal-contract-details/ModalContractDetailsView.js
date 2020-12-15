@@ -32,7 +32,7 @@ type Props = {
     ) => void,
 };
 
-const alfrescoTitle = strings.modalFeatureContracts.listView.alfrescoLink;
+const alfrescoTitle = strings.modalFeatureContracts.listView.tiimeriLink;
 const caseManagementTitle = strings.modalFeatureContracts.listView.caseManagementLink;
 const { showLocation } = strings.modalContractDetails.listView.showLocation;
 

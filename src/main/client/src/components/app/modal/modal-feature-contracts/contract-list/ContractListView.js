@@ -57,7 +57,7 @@ const ContractListView = ({
                             }
                             <Contract.IconWrapper.Icon
                                 onClick={() => contract.alfrescoUrl && window.open(contract.alfrescoUrl, '_blank')}
-                                title={strings.modalFeatureContracts.listView.alfrescoLink}
+                                title={strings.modalFeatureContracts.listView.tiimeriLink}
                                 className="fas fa-archive"
                                 disabled={!contract.alfrescoUrl}
                             />
