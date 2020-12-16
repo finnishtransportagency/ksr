@@ -17,18 +17,18 @@ import { getCodedValue } from '../parseFeatureData';
  * @param {string} [contractIdField] Name of ID field to be shown in contract list.
  * @param {string} [contractDescriptionField] Name of description field to be
  * shown in contract list.
- * @param {string} [alfrescoLinkField] Name of alfresco link field.
+ * @param {string} [tiimeriLinkField] Name of tiimeri link field.
  * @param {string} [caseManagementLinkField] Name of case management link field.
  *
  * @param {string} [contractUnlinkable] Contract is unlinkable.
- * @returns {Array} Array containing contract ID, description fields, alfresco link,
+ * @returns {Array} Array containing contract ID, description fields, tiimeri link,
  * case management link and attributes.
  */
 export const contractListTexts = (
     contracts: { layerId: number, features: Object[] },
     contractIdField?: string,
     contractDescriptionField?: string,
-    alfrescoLinkField?: string,
+    tiimeriLinkField?: string,
     caseManagementLinkField?: string,
     contractUnlinkable?: boolean,
     domain?: Object,
@@ -39,7 +39,7 @@ export const contractListTexts = (
             description: domain
                 ? getCodedValue(domain, feature.attributes[contractDescriptionField])
                 : feature.attributes[contractDescriptionField],
-            alfrescoUrl: alfrescoLinkField ? getContractDocumentUrl('alfresco', alfrescoLinkField, feature.attributes) : '',
+            tiimeriUrl: tiimeriLinkField ? getContractDocumentUrl('tiimeri', tiimeriLinkField, feature.attributes) : '',
             caseManagementUrl: caseManagementLinkField ? getContractDocumentUrl('caseManagement', caseManagementLinkField, feature.attributes) : '',
             attributes: feature.attributes,
             layerId: contracts.layerId,

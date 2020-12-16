@@ -32,7 +32,7 @@ type Props = {
     ) => void,
 };
 
-const alfrescoTitle = strings.modalFeatureContracts.listView.tiimeriLink;
+const tiimeriTitle = strings.modalFeatureContracts.listView.tiimeriLink;
 const caseManagementTitle = strings.modalFeatureContracts.listView.caseManagementLink;
 const { showLocation } = strings.modalContractDetails.listView.showLocation;
 
@@ -124,11 +124,11 @@ const ModalContractDetailsView = ({
                             {layer.id === contractLayerId && (
                                 <Fragment>
                                     <Contract.IconWrapper.Icon
-                                        onClick={() => feature.alfrescoUrl
-                                            && window.open(feature.alfrescoUrl, '_blank')}
-                                        title={alfrescoTitle}
+                                        onClick={() => feature.tiimeriUrl
+                                            && window.open(feature.tiimeriUrl, '_blank')}
+                                        title={tiimeriTitle}
                                         className="fas fa-archive"
-                                        disabled={!feature.alfrescoUrl}
+                                        disabled={!feature.tiimeriUrl}
                                     />
                                     <Contract.IconWrapper.Icon
                                         onClick={() => feature.caseManagementUrl

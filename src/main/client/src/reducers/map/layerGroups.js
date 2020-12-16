@@ -42,7 +42,7 @@ type Layer = {
     active: boolean,
     attribution: string,
     authentication: any,
-    alfrescoLinkField: string,
+    tiimeriLinkField: string,
     caseManagementLinkField: string,
     relations: Array<Relation>,
     geometryType: string,
