@@ -30,7 +30,7 @@ public class ContractDocumentController {
     }
 
     /**
-     * Handles redirecting to alfresco or case management search URL.
+     * Handles redirecting to tiimeri or case management search URL.
      *
      * @param request HTTP Request. Contains document type and search value as query parameters.
      * @return Redirects to contract document URL.

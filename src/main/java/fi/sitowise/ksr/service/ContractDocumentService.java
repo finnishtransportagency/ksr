@@ -15,16 +15,16 @@ public class ContractDocumentService {
 
     private static final Logger LOG = LogManager.getLogger(ContractDocumentService.class);
 
-    @Value("${contractdocument.alfresco.search.url}")
-    private String alfrescoUrl;
+    @Value("${contractdocument.tiimeri.search.url}")
+    private String tiimeriUrl;
 
     @Value("${contractdocument.casemanagement.search.url}")
     private String caseManagementUrl;
 
     /**
-     * Gets redirect URL for alfresco- or case management document search.
+     * Gets redirect URL for tiimeri- or case management document search.
      *
-     * @param documentType Type of document. Can be either alfresco or caseManagement.
+     * @param documentType Type of document. Can be either tiimeri or caseManagement.
      * @param searchValue Value used in contract document search.
      * @return URL to be redirected to.
      */
@@ -37,8 +37,8 @@ public class ContractDocumentService {
         }
 
         switch (documentType) {
-            case "alfresco":
-                redirectUrl = String.format("%s#searchTerm=*%s*&scope=vuokravalvonta&sortField=null", alfrescoUrl, searchValue);
+            case "tiimeri":
+                redirectUrl = String.format("%s*%s*", tiimeriUrl, searchValue);
                 break;
             case "caseManagement":
                 redirectUrl = String.format("%s#/?q=%s", caseManagementUrl, searchValue);
