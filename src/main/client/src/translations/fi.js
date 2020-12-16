@@ -326,7 +326,7 @@ const fi = {
             edit: 'Muokkaa sopimusta',
             unlink: 'Poista sopimuksen linkitys kohteelta',
             caseManagementLink: 'Asianhallinta',
-            alfrescoLink: 'Alfresco',
+            tiimeriLink: 'Tiimeri',
         },
         linkContract: {
             title: 'Sopimuksen linkittäminen',

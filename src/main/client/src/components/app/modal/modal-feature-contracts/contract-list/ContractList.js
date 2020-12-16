@@ -77,7 +77,7 @@ class ContractList extends Component<Props, State> {
                     c,
                     contractLayer ? contractLayer.contractIdField : '',
                     contractLayer ? contractLayer.contractDescriptionField : '',
-                    contractLayer ? contractLayer.alfrescoLinkField : '',
+                    contractLayer ? contractLayer.tiimeriLinkField : '',
                     contractLayer ? contractLayer.caseManagementLinkField : '',
                     nestedVal(contractLayer && contractLayer.relations.find(r => r), ['relationType'], false) === 'many',
                     domain,

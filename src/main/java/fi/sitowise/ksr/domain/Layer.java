@@ -14,7 +14,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static fi.sitowise.ksr.utils.EsriUtils.createBasicQueryParams;
 import static fi.sitowise.ksr.utils.EsriUtils.createUrl;
@@ -62,7 +61,7 @@ public class Layer implements Serializable {
     private boolean hasRelations;
     private String contractIdField;
     private String contractDescriptionField;
-    private String alfrescoLinkField;
+    private String tiimeriLinkField;
     private String caseManagementLinkField;
     @JsonIgnore
     private String relationType;
@@ -114,7 +113,7 @@ public class Layer implements Serializable {
         this.setUpdaterField(lr.getUpdaterField());
         this.setContractIdField(lr.getContractIdField());
         this.setContractDescriptionField(lr.getContractDescriptionField());
-        this.setAlfrescoLinkField(lr.getAlfrescoLinkField());
+        this.setTiimeriLinkField(lr.getTiimeriLinkField());
         this.setCaseManagementLinkField(lr.getCaseManagementLinkField());
         this.setBackground(lr.getBackground());
         this.setParentLayer(lr.getParentLayer());
@@ -708,21 +707,21 @@ public class Layer implements Serializable {
     }
 
     /**
-     * Gets layer Alfresco link fields.
+     * Gets layer Tiimeri link fields.
      *
-     * @return Alfresco link field(s).
+     * @return Tiimeri link field(s).
      */
-    public String getAlfrescoLinkField() {
-        return alfrescoLinkField;
+    public String getTiimeriLinkField() {
+        return tiimeriLinkField;
     }
 
     /**
-     * Sets layers Alfresco link fields.
+     * Sets layers Tiimeri link fields.
      *
-     * @param alfrescoLinkField Alfresco link field name.
+     * @param tiimeriLinkField Tiimeri link field name.
      */
-    public void setAlfrescoLinkField(String alfrescoLinkField) {
-        this.alfrescoLinkField = alfrescoLinkField;
+    public void setTiimeriLinkField(String tiimeriLinkField) {
+        this.tiimeriLinkField = tiimeriLinkField;
     }
 
     /**

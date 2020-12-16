@@ -19,7 +19,7 @@ const setup = (prop) => {
             name: 'test',
             contractIdField: 'contractId',
             contractDescriptionField: 'contractDescription',
-            alfrescoLinkField: 'alfrescoUrl',
+            tiimeriLinkField: 'tiimeriUrl',
             caseManagementLinkField: 'caseManagementUrl',
             relations: [],
         }],
@@ -65,14 +65,14 @@ describe('<ContractList />', () => {
             layerId: 123,
             features: [{
                 attributes: {
-                    alfrescoUrl: '123',
+                    tiimeriUrl: '123',
                     caseManagementUrl: '123',
                     contractId: 123,
                     contractDescription: 'Description field 1',
                 },
             }, {
                 attributes: {
-                    alfrescoUrl: '456',
+                    tiimeriUrl: '456',
                     caseManagementUrl: '456',
                     contractId: 456,
                     contractDescription: 'Description field 2',
@@ -82,10 +82,10 @@ describe('<ContractList />', () => {
 
         const expectedResult = [{
             contract: [{
-                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
+                tiimeriUrl: 'http://testurl/ksr/api/contract-document?documentType=tiimeri&searchValue=123',
                 caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=123',
                 attributes: {
-                    alfrescoUrl: '123',
+                    tiimeriUrl: '123',
                     caseManagementUrl: '123',
                     contractDescription: 'Description field 1',
                     contractId: 123,
@@ -95,10 +95,10 @@ describe('<ContractList />', () => {
                 id: 123,
                 layerId: 123,
             }, {
-                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=456',
+                tiimeriUrl: 'http://testurl/ksr/api/contract-document?documentType=tiimeri&searchValue=456',
                 caseManagementUrl: 'http://testurl/ksr/api/contract-document?documentType=caseManagement&searchValue=456',
                 attributes: {
-                    alfrescoUrl: '456',
+                    tiimeriUrl: '456',
                     caseManagementUrl: '456',
                     contractDescription: 'Description field 2',
                     contractId: 456,

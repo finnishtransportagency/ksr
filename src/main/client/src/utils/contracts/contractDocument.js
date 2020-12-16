@@ -3,7 +3,7 @@
 /**
  * Gets contract document URL.
  *
- * @param {string} documentType Type of contract link (alfresco | caseManagement).
+ * @param {string} documentType Type of contract link (tiimeri | caseManagement).
  * @param {string} linkField Comma separated string with possible link fields.
  * @param {Object} attributes Feature attributes.
  *
@@ -20,7 +20,7 @@ export const getContractDocumentUrl = (
         const field = linkFields.find(f => attributes[f]);
         const searchValue = attributes[field];
 
-        if (documentType === 'alfresco' || documentType === 'caseManagement') {
+        if (documentType === 'tiimeri' || documentType === 'caseManagement') {
             return `${window.location.href}api/contract-document?documentType=${documentType}&searchValue=${searchValue}`;
         }
     }
