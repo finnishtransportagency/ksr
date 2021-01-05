@@ -16,8 +16,7 @@ const SketchUndoRedo = ({
     canRedo,
     canUndo,
     show,
-}: Props) => {
-    return (
+}: Props) => (
     <Fragment>
         <div
             style={{ visibility: show ? 'visible' : 'hidden' }}
@@ -26,8 +25,8 @@ const SketchUndoRedo = ({
             tabIndex={0}
             className={`esri-component esri-widget--button esri-widget esri-interactive ${canUndo ? '' : 'disabled'}`}
             title={strings.sketchTool.undo}
-            onClick={undo}
-            onKeyPress={undo}
+            onClick={canUndo ? undo : undefined}
+            onKeyPress={canUndo ? undo : undefined}
         >
             <span className="esri-icon-undo" />
         </div>
@@ -38,12 +37,12 @@ const SketchUndoRedo = ({
             tabIndex={0}
             className={`esri-component esri-widget--button esri-widget esri-interactive ${canRedo ? '' : 'disabled'}`}
             title={strings.sketchTool.redo}
-            onClick={redo}
-            onKeyPress={redo}
+            onClick={canRedo ? redo : undefined}
+            onKeyPress={canRedo ? redo : undefined}
         >
             <span className="esri-icon-redo" />
         </div>
     </Fragment>
-)};
+);
 
 export default SketchUndoRedo;
