@@ -310,6 +310,66 @@ class SketchTool extends Component<Props, State> {
                     }
                 };
 
+                const createSketchOutLineLabelGraphic = (geometry, value, type, id) => new Graphic({
+                    geometry,
+                    symbol: {
+                        type: 'text',
+                        color: '#000000',
+                        text: value || '',
+                        font: {
+                            size: 12,
+                            family: 'sans-serif',
+                            weight: 'bold',
+                        },
+                    },
+                    type,
+                    id,
+                });
+                const removeLengthLabels = () => {
+                    const labels = tempGraphicsLayer.graphics.items.filter(i => i.type === 'sketch-polygon-side-length');
+                    tempGraphicsLayer.removeMany(labels);
+                };
+
+                const drawPolygonOutlineLengths = (rings: number[][][]) => {
+                    removeLengthLabels();
+
+                    rings.forEach((ring, i) => {
+                        if (ring.length > 3) {
+                            ring.forEach((point, j) => {
+                                if (j < ring.length - 1) {
+                                    const x1 = point[0];
+                                    const x2 = ring[j + 1][0];
+                                    const y1 = point[1];
+                                    const y2 = ring[j + 1][1];
+                                    const measure = `${parseFloat(geometryEngine.distance(
+                                        new Point({
+                                            x: x1,
+                                            y: y1,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                        new Point({
+                                            x: x2,
+                                            y: y2,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                    )).toFixed(2)} m`;
+                                    const label = createSketchOutLineLabelGraphic(
+                                        new Point({
+                                            x: (x1 + x2) / 2,
+                                            y: (y1 + y2) / 2,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                        measure,
+                                        'sketch-polygon-side-length',
+                                        `sketch-polygon-side-length-${i}-${j}`,
+                                    );
+                                    tempGraphicsLayer.add(label);
+                                }
+                            });
+                        }
+                    });
+                };
+
                 const selectFeaturesFromDraw = async (event) => {
                     const { active } = this.props;
                     if (
@@ -333,6 +393,8 @@ class SketchTool extends Component<Props, State> {
 
                                 updatePolygonLabels();
                                 tempGraphicsLayer.add(areaLabel);
+
+                                drawPolygonOutlineLengths(rings);
                             }
                         }
                     } else if (event.state === 'complete') {
@@ -348,6 +410,7 @@ class SketchTool extends Component<Props, State> {
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
                             addGraphic(graphic);
+                            removeLengthLabels();
 
                             // Combine multiple polygons into multipolygon
                             if (event.tool === 'polygon') {
