@@ -330,11 +330,11 @@ class SketchTool extends Component<Props, State> {
                     tempGraphicsLayer.removeMany(labels);
                 };
 
-                const drawPolygonOutlineLengths = (rings: number[][][]) => {
+                const drawPolygonOutlineLengths = (rings: number[][][], noDuplicates?: boolean) => {
                     removeLengthLabels();
 
                     rings.forEach((ring, i) => {
-                        if (ring.length > 3) {
+                        if (ring.length > (noDuplicates ? 2 : 3)) {
                             ring.forEach((point, j) => {
                                 if (j < ring.length - 1) {
                                     const x1 = point[0];
@@ -459,8 +459,83 @@ class SketchTool extends Component<Props, State> {
                     }
                 };
 
+                const getMovingPointFromPolygon = (movingPoint, polygonSketch) => {
+                    let ringsIdx;
+                    let pointIdx;
+                    const matchingPolygon = polygonSketch.find((pol) => {
+                        const mathingRing = pol.rings.findIndex((ring) => {
+                            const mathingPoint = ring.findIndex(
+                                point => point[0] === movingPoint.x
+                                    && point[1] === movingPoint.y,
+                            );
+                            if (mathingPoint >= 0) {
+                                pointIdx = mathingPoint;
+                                return true;
+                            }
+                            return false;
+                        });
+                        if (mathingRing >= 0) {
+                            ringsIdx = mathingRing;
+                            return true;
+                        }
+                        return false;
+                    });
+                    return {
+                        ringsIdx,
+                        pointIdx,
+                        matchingPolygon,
+                    };
+                };
+
+                const drawSideLengthsToNearest = (event) => {
+                    const movingPoint = event.toolEventInfo.mover.geometry;
+                    const polygonSketch = tempGraphicsLayer.graphics.items
+                        .filter(item => item.type === 'sketch-graphic' && item.geometry.type === 'polygon')
+                        .map(pol => pol.geometry);
+
+                    const {
+                        ringsIdx, pointIdx, matchingPolygon,
+                    } = getMovingPointFromPolygon(movingPoint, polygonSketch);
+
+                    if (matchingPolygon) {
+                        const points = [];
+                        const { rings } = matchingPolygon;
+                        if (pointIdx === 0) {
+                            points.push(
+                                rings[ringsIdx][rings[ringsIdx].length - 2],
+                                rings[ringsIdx][pointIdx],
+                                rings[ringsIdx][pointIdx + 1],
+                            );
+                        } else {
+                            points.push(
+                                rings[ringsIdx][pointIdx - 1],
+                                rings[ringsIdx][pointIdx],
+                                rings[ringsIdx][pointIdx + 1],
+                            );
+                        }
+                        drawPolygonOutlineLengths([points], true);
+                    }
+                };
+
+                const handleReshape = (event) => {
+                    if (event.toolEventInfo && event.toolEventInfo.type.startsWith('reshape')) {
+                        switch (event.toolEventInfo.type) {
+                            case 'reshape':
+                                drawSideLengthsToNearest(event);
+                                break;
+                            case 'reshape-stop':
+                                removeLengthLabels();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                };
+
                 const onUpdate = (event) => {
                     updatePolygonLabels();
+
+                    handleReshape(event);
 
                     if (event.graphics[0].geometry.isSelfIntersecting) {
                         const clonedSymbol = event.graphics[0].symbol.clone();
