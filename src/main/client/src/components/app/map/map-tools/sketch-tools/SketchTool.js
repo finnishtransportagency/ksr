@@ -525,7 +525,9 @@ class SketchTool extends Component<Props, State> {
         const {
             data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
         } = this.props;
-        const { editSketchIcon, validGeometry } = this.state;
+        const {
+            editSketchIcon, validGeometry, canRedo, canUndo,
+        } = this.state;
 
         const hasSelectedFeatures = data.length > 0;
         const hasAdminGraphics = tempGraphicsLayer
@@ -562,8 +564,8 @@ class SketchTool extends Component<Props, State> {
                     showNewAreaButton={showNewAreaButton}
                     redo={this.redo}
                     undo={this.undo}
-                    canRedo={this.state.canRedo}
-                    canUndo={this.state.canUndo}
+                    canRedo={canRedo}
+                    canUndo={canUndo}
                 />
             </Fragment>
         );
