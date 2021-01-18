@@ -399,6 +399,7 @@ class SketchTool extends Component<Props, State> {
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     }
                     this.setState({
+                        validGeometry: this.validGeometry(),
                         canRedo: event.target.canRedo(),
                         canUndo: event.target.canUndo(),
                     });
@@ -421,6 +422,7 @@ class SketchTool extends Component<Props, State> {
                         event.graphics[0].symbol = clonedSymbol;
                     }
                     this.setState({
+                        validGeometry: this.validGeometry(),
                         canRedo: event.target.canRedo(),
                         canUndo: event.target.canUndo(),
                     });
