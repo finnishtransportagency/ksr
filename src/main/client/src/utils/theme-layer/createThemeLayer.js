@@ -1,6 +1,8 @@
 // @flow
 
 import esriLoader from 'esri-loader';
+import { toggleLayerLegend } from '../../reducers/map/actions';
+import store from '../../store';
 
 /**
  * Create theme layer for given feature layer by setting new ClassBreaksRenderer with given
@@ -44,19 +46,32 @@ export const createThemeLayer = async (
  * @param {Object} layer Layer containing the default renderer.
  * @param {Object[]} layerList List of layers.
  * @param {Function} setLayerList Function for setting updated layer list.
+ * @param {boolean} layerLegendActive boolean value indication if legend is open
  */
 export const resetLayerTheme = (
     featureLayer: Object,
     layer: Object,
     layerList: Object[],
     setLayerList: (Object[]) => void,
+    layerLegendActive: boolean,
 ) => {
     featureLayer.renderer = layer.renderer;
     featureLayer.legendEnabled = false;
 
-    const newLayerList = layerList.map(l => ({
-        ...l,
-        renderer: l.id === layer.id ? null : l.renderer,
-    }));
+    let activeLegends = false;
+
+    const newLayerList = layerList.map((l) => {
+        const isSelectedLayer = l.id === layer.id;
+        if (!isSelectedLayer && l.renderer) {
+            activeLegends = true;
+        }
+        return {
+            ...l,
+            renderer: isSelectedLayer ? null : l.renderer,
+        };
+    });
     setLayerList(newLayerList);
+    if (!activeLegends && layerLegendActive) {
+        store.dispatch(toggleLayerLegend());
+    }
 };

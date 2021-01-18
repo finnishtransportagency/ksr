@@ -105,11 +105,12 @@ class ModalThemeLayer extends Component<Props, State> {
             view,
             layerList,
             setLayerList,
+            layerLegendActive,
         } = this.props;
         const fl = view.map.findLayerById(layerId);
         const layer = layerList.find(l => l.id === layerId);
         if (fl && layer && layer.renderer) {
-            resetLayerTheme(fl, layer, layerList, setLayerList);
+            resetLayerTheme(fl, layer, layerList, setLayerList, layerLegendActive);
         }
     };
 
