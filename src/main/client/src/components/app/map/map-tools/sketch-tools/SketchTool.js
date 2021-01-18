@@ -310,6 +310,66 @@ class SketchTool extends Component<Props, State> {
                     }
                 };
 
+                const createSketchOutLineLabelGraphic = (geometry, value, type, id) => new Graphic({
+                    geometry,
+                    symbol: {
+                        type: 'text',
+                        color: '#000000',
+                        text: value || '',
+                        font: {
+                            size: 12,
+                            family: 'sans-serif',
+                            weight: 'bold',
+                        },
+                    },
+                    type,
+                    id,
+                });
+                const removeLengthLabels = () => {
+                    const labels = tempGraphicsLayer.graphics.items.filter(i => i.type === 'sketch-polygon-side-length');
+                    tempGraphicsLayer.removeMany(labels);
+                };
+
+                const drawPolygonOutlineLengths = (rings: number[][][], noDuplicates?: boolean) => {
+                    removeLengthLabels();
+
+                    rings.forEach((ring, i) => {
+                        if (ring.length > (noDuplicates ? 2 : 3)) {
+                            ring.forEach((point, j) => {
+                                if (j < ring.length - 1) {
+                                    const x1 = point[0];
+                                    const x2 = ring[j + 1][0];
+                                    const y1 = point[1];
+                                    const y2 = ring[j + 1][1];
+                                    const measure = `${parseFloat(geometryEngine.distance(
+                                        new Point({
+                                            x: x1,
+                                            y: y1,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                        new Point({
+                                            x: x2,
+                                            y: y2,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                    )).toFixed(2)} m`;
+                                    const label = createSketchOutLineLabelGraphic(
+                                        new Point({
+                                            x: (x1 + x2) / 2,
+                                            y: (y1 + y2) / 2,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                        measure,
+                                        'sketch-polygon-side-length',
+                                        `sketch-polygon-side-length-${i}-${j}`,
+                                    );
+                                    tempGraphicsLayer.add(label);
+                                }
+                            });
+                        }
+                    });
+                };
+
                 const selectFeaturesFromDraw = async (event) => {
                     const { active } = this.props;
                     if (
@@ -333,6 +393,8 @@ class SketchTool extends Component<Props, State> {
 
                                 updatePolygonLabels();
                                 tempGraphicsLayer.add(areaLabel);
+
+                                drawPolygonOutlineLengths(rings);
                             }
                         }
                     } else if (event.state === 'complete') {
@@ -348,6 +410,7 @@ class SketchTool extends Component<Props, State> {
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
                             addGraphic(graphic);
+                            removeLengthLabels();
 
                             // Combine multiple polygons into multipolygon
                             if (event.tool === 'polygon') {
@@ -396,8 +459,83 @@ class SketchTool extends Component<Props, State> {
                     }
                 };
 
+                const getMovingPointFromPolygon = (movingPoint, polygonSketch) => {
+                    let ringsIdx;
+                    let pointIdx;
+                    const matchingPolygon = polygonSketch.find((pol) => {
+                        const mathingRing = pol.rings.findIndex((ring) => {
+                            const mathingPoint = ring.findIndex(
+                                point => point[0] === movingPoint.x
+                                    && point[1] === movingPoint.y,
+                            );
+                            if (mathingPoint >= 0) {
+                                pointIdx = mathingPoint;
+                                return true;
+                            }
+                            return false;
+                        });
+                        if (mathingRing >= 0) {
+                            ringsIdx = mathingRing;
+                            return true;
+                        }
+                        return false;
+                    });
+                    return {
+                        ringsIdx,
+                        pointIdx,
+                        matchingPolygon,
+                    };
+                };
+
+                const drawSideLengthsToNearest = (event) => {
+                    const movingPoint = event.toolEventInfo.mover.geometry;
+                    const polygonSketch = tempGraphicsLayer.graphics.items
+                        .filter(item => item.type === 'sketch-graphic' && item.geometry.type === 'polygon')
+                        .map(pol => pol.geometry);
+
+                    const {
+                        ringsIdx, pointIdx, matchingPolygon,
+                    } = getMovingPointFromPolygon(movingPoint, polygonSketch);
+
+                    if (matchingPolygon) {
+                        const points = [];
+                        const { rings } = matchingPolygon;
+                        if (pointIdx === 0) {
+                            points.push(
+                                rings[ringsIdx][rings[ringsIdx].length - 2],
+                                rings[ringsIdx][pointIdx],
+                                rings[ringsIdx][pointIdx + 1],
+                            );
+                        } else {
+                            points.push(
+                                rings[ringsIdx][pointIdx - 1],
+                                rings[ringsIdx][pointIdx],
+                                rings[ringsIdx][pointIdx + 1],
+                            );
+                        }
+                        drawPolygonOutlineLengths([points], true);
+                    }
+                };
+
+                const handleReshape = (event) => {
+                    if (event.toolEventInfo && event.toolEventInfo.type.startsWith('reshape')) {
+                        switch (event.toolEventInfo.type) {
+                            case 'reshape':
+                                drawSideLengthsToNearest(event);
+                                break;
+                            case 'reshape-stop':
+                                removeLengthLabels();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                };
+
                 const onUpdate = (event) => {
                     updatePolygonLabels();
+
+                    handleReshape(event);
 
                     if (event.graphics[0].geometry.isSelfIntersecting) {
                         const clonedSymbol = event.graphics[0].symbol.clone();
