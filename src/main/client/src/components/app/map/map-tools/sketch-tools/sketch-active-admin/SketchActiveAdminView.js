@@ -1,6 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations/index';
+import SketchUndoRedo from '../sketch-undo-redo/SketchUndoRedo';
 
 type Props = {
     editSketchIcon: string,
@@ -14,6 +15,10 @@ type Props = {
     validGeometry: boolean,
     activeTool: string,
     showNewAreaButton: boolean,
+    redo: () => void,
+    undo: () => void,
+    canRedo: boolean,
+    canUndo: boolean,
 };
 
 const SketchActiveAdminView = ({
@@ -28,6 +33,10 @@ const SketchActiveAdminView = ({
     validGeometry,
     activeTool,
     showNewAreaButton,
+    redo,
+    undo,
+    canRedo,
+    canUndo,
 }: Props) => (
     <Fragment>
         <div id="create-new-feature-wrapper">
@@ -70,6 +79,13 @@ const SketchActiveAdminView = ({
             >
                 <span className="esri-icon-plus" />
             </div>
+            <SketchUndoRedo
+                redo={redo}
+                undo={undo}
+                canRedo={canRedo}
+                canUndo={canUndo}
+                show={hasAdminGraphics || activeTool === 'sketchActiveAdmin'}
+            />
             <div
                 style={{ visibility: showAdminView ? 'visible' : 'hidden' }}
                 id="draw-create-new-feature"

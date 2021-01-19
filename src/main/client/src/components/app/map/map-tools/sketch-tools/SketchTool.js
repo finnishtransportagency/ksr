@@ -14,11 +14,15 @@ import { nestedVal } from '../../../../../utils/nestedValue';
 type State = {
     editSketchIcon: string,
     validGeometry: boolean,
+    canRedo: boolean,
+    canUndo: boolean,
 };
 
 const initialState = {
     editSketchIcon: 'polygon',
     validGeometry: true,
+    canRedo: false,
+    canUndo: false,
 };
 
 type Props = {
@@ -457,6 +461,11 @@ class SketchTool extends Component<Props, State> {
                         }
                         resetMapTools(draw, sketchViewModel, setActiveTool);
                     }
+                    this.setState({
+                        validGeometry: this.validGeometry(),
+                        canRedo: event.target.canRedo(),
+                        canUndo: event.target.canUndo(),
+                    });
                 };
 
                 const getMovingPointFromPolygon = (movingPoint, polygonSketch) => {
@@ -550,8 +559,11 @@ class SketchTool extends Component<Props, State> {
                         clonedSymbol.outline = createSketchOutlineGraphic(true, updateModeActive);
                         event.graphics[0].symbol = clonedSymbol;
                     }
-
-                    this.setState({ validGeometry: this.validGeometry() });
+                    this.setState({
+                        validGeometry: this.validGeometry(),
+                        canRedo: event.target.canRedo(),
+                        canUndo: event.target.canUndo(),
+                    });
                 };
 
                 sketchViewModel.on('create', selectFeaturesFromDraw);
@@ -626,6 +638,16 @@ class SketchTool extends Component<Props, State> {
         return false;
     };
 
+    redo = () => {
+        const { sketchViewModel } = this.props;
+        sketchViewModel.redo();
+    };
+
+    undo = () => {
+        const { sketchViewModel } = this.props;
+        sketchViewModel.undo();
+    };
+
     // Assign constructor ref flowtypes
     drawNewFeatureButton: any;
 
@@ -643,7 +665,9 @@ class SketchTool extends Component<Props, State> {
         const {
             data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
         } = this.props;
-        const { editSketchIcon, validGeometry } = this.state;
+        const {
+            editSketchIcon, validGeometry, canRedo, canUndo,
+        } = this.state;
 
         const hasSelectedFeatures = data.length > 0;
         const hasAdminGraphics = tempGraphicsLayer
@@ -678,6 +702,10 @@ class SketchTool extends Component<Props, State> {
                     validGeometry={validGeometry}
                     activeTool={active}
                     showNewAreaButton={showNewAreaButton}
+                    redo={this.redo}
+                    undo={this.undo}
+                    canRedo={canRedo}
+                    canUndo={canUndo}
                 />
             </Fragment>
         );

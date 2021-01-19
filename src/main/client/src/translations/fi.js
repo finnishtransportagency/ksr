@@ -229,6 +229,8 @@ const fi = {
         acceptSelection: 'Hyväksy geometria',
         activeAdmin: 'Luontityökalu',
         newArea: 'Luo kohteelle uusi alue',
+        redo: 'Palauta',
+        undo: 'Kumoa',
     },
     mapLayerView: {
         removeTooltip: 'Poista karttataso',
