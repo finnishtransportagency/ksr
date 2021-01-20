@@ -398,6 +398,7 @@ const fi = {
         createThemeLayer: 'Luo teemataso',
         toggleAdminTool: 'Muokkaus päälle/pois',
         toggleVisibility: 'Näytä/piilota karttataso',
+        toggleVisibleZoomOut: 'Näytä/piilota karttataso loitontaessa kauas',
         zoomIn: 'Lähennä karttaa nähdäksesi karttatason',
         zoomOut: 'Loitonna karttaa nähdäksesi karttatason',
     },

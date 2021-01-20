@@ -17,6 +17,8 @@ type Props = {
     handleAdminModeChange: (layerId: string) => void,
     populateTable: (layer: Object) => void,
     loadingLayers: string[],
+    toggleVisibleZoomOut: (layerId: string, original: number) => void,
+    layersVisibleZoomOut: Object[],
 };
 
 const MapLayersView = ({
@@ -31,6 +33,8 @@ const MapLayersView = ({
     handleAdminModeChange,
     populateTable,
     loadingLayers,
+    toggleVisibleZoomOut,
+    layersVisibleZoomOut,
 }: Props) => (
     <Fragment>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -60,6 +64,8 @@ const MapLayersView = ({
                                                     handleAdminModeChange={handleAdminModeChange}
                                                     populateTable={populateTable}
                                                     loadingLayers={loadingLayers}
+                                                    toggleVisibleZoomOut={toggleVisibleZoomOut}
+                                                    layersVisibleZoomOut={layersVisibleZoomOut}
                                                 />
                                             )}
                                             {l.active
@@ -80,6 +86,8 @@ const MapLayersView = ({
                                                     handleAdminModeChange={handleAdminModeChange}
                                                     populateTable={populateTable}
                                                     loadingLayers={loadingLayers}
+                                                    toggleVisibleZoomOut={toggleVisibleZoomOut}
+                                                    layersVisibleZoomOut={layersVisibleZoomOut}
                                                 />
                                             )}
                                         </div>

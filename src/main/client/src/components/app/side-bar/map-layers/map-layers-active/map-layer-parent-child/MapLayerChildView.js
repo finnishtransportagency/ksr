@@ -20,6 +20,8 @@ type Props = {
     mapScale: number,
     populateTable: (layer: Object) => void,
     loadingLayers: string[],
+    toggleVisibleZoomOut: (layerId: string, original: number) => void,
+    layersVisibleZoomOut: Object[],
 };
 
 const MapLayerChildView = ({
@@ -30,6 +32,8 @@ const MapLayerChildView = ({
     mapScale,
     populateTable,
     loadingLayers,
+    toggleVisibleZoomOut,
+    layersVisibleZoomOut,
 }: Props) => (
     <LayerSettings
         childLayer
@@ -44,6 +48,8 @@ const MapLayerChildView = ({
                 mapScale={mapScale}
                 toggleLayer={toggleLayer}
                 childLayer
+                toggleVisibleZoomOut={toggleVisibleZoomOut}
+                layersViewableZoomOut={layersVisibleZoomOut}
             />
             <LayerSettings.ContentMain childLayer>
                 <LayerSettings.ContentTop>
