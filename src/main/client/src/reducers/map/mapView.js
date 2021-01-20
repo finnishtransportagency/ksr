@@ -6,9 +6,12 @@ import {
     REMOVE_LAYER_FROM_VIEW,
     SET_GRAPH_LAYER,
     SET_MAP_VIEW,
+    TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
 } from '../../constants/actionTypes';
 
-const initialState = {};
+const initialState = {
+    layersVisibleZoomOut: [],
+};
 
 type Action = {
     type: string,
@@ -16,7 +19,36 @@ type Action = {
     graphicsLayer: Object,
     layerIds: Array<any>,
     layerId: string,
+    originalMinScale: number,
 };
+
+const toggleLayerVisibleZoomOut = (state, action) => {
+    let layersVisibleZoomOut = state.layersVisibleZoomOut || [];
+    const stored = layersVisibleZoomOut.find(l => l.id === action.layerId);
+
+    const layers = state.view.map.layers.map((item) => {
+        if (item.id === action.layerId) {
+            item.minScale = stored ? stored.original : Number.MAX_VALUE;
+        }
+        return item;
+    });
+
+    if (!stored) {
+        layersVisibleZoomOut = [
+            ...state.layersVisibleZoomOut,
+            { id: action.layerId, original: action.originalMinScale },
+        ];
+    } else {
+        layersVisibleZoomOut = layersVisibleZoomOut
+            .filter(l => l.id !== action.layerId);
+    }
+    return {
+        ...state,
+        layers,
+        layersVisibleZoomOut,
+    };
+};
+
 
 export default (state: Object = initialState, action: Action) => {
     switch (action.type) {
@@ -57,6 +89,8 @@ export default (state: Object = initialState, action: Action) => {
                     .filter(l => l.id === action.layerId));
             }
             return state;
+        case TOGGLE_LAYER_VISIBLE_ZOOM_OUT:
+            return toggleLayerVisibleZoomOut(state, action);
         default:
             return state;
     }
