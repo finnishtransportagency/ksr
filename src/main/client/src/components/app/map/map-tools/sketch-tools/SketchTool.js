@@ -23,6 +23,7 @@ const initialState = {
     validGeometry: true,
     canRedo: false,
     canUndo: false,
+    movingGeometry: undefined,
 };
 
 type Props = {
@@ -496,6 +497,27 @@ class SketchTool extends Component<Props, State> {
                     };
                 };
 
+                const preventGeometryMove = (event) => {
+                    if (event.toolEventInfo && event.toolEventInfo.type.startsWith('move')
+                        && event.toolEventInfo.mover.geometry.type !== 'point') {
+                        const sketchGraphic = tempGraphicsLayer.graphics.items.find(a => a.type === 'sketch-graphic');
+                        const eventInfoType = event.toolEventInfo.type;
+                        const { movingGeometry } = this.state;
+                        if (eventInfoType === 'move-start') {
+                            this.setState({
+                                movingGeometry: sketchGraphic.geometry,
+                            });
+                        } else if (eventInfoType === 'move') {
+                            sketchGraphic.geometry = movingGeometry;
+                        } else {
+                            sketchGraphic.geometry = movingGeometry;
+                            this.setState({ movingGeometry: undefined });
+                        }
+                        return true;
+                    }
+                    return false;
+                };
+
                 const drawSideLengthsToNearest = (event) => {
                     const movingPoint = event.toolEventInfo.mover.geometry;
                     const polygonSketch = tempGraphicsLayer.graphics.items
@@ -542,8 +564,10 @@ class SketchTool extends Component<Props, State> {
                 };
 
                 const onUpdate = (event) => {
+                    if (preventGeometryMove(event)) {
+                        return;
+                    }
                     updatePolygonLabels();
-
                     handleReshape(event);
 
                     if (event.graphics[0].geometry.isSelfIntersecting) {
