@@ -21,6 +21,8 @@ type Props = {
     handleAdminModeChange: (layerId: string) => void,
     populateTable: (layer: Object) => void,
     loadingLayers: string[],
+    toggleVisibleZoomOut: (layerId: string, original: number) => void,
+    layersVisibleZoomOut: Object[],
 };
 
 const MapLayerParentChildView = ({
@@ -34,11 +36,17 @@ const MapLayerParentChildView = ({
     handleAdminModeChange,
     populateTable,
     loadingLayers,
+    toggleVisibleZoomOut,
+    layersVisibleZoomOut,
 }: Props) => (
     <div>
         {!layer.parentLayer && (
             <LayerSettings
-                toggledHidden={mapScale && !layerViewable(layer, mapScale)}
+                toggledHidden={mapScale && (
+                    !layerViewable(layer, mapScale)
+                    && !layerList.filter(l => l.parentLayer === layer.id)
+                        .some(l => (layersVisibleZoomOut || []).find(la => la.id === l.id))
+                )}
             >
                 <LayerSettings.Content>
                     <LayerSettings.ContentMain>
@@ -81,6 +89,8 @@ const MapLayerParentChildView = ({
                                     mapScale={mapScale}
                                     populateTable={populateTable}
                                     loadingLayers={loadingLayers}
+                                    toggleVisibleZoomOut={toggleVisibleZoomOut}
+                                    layersVisibleZoomOut={layersVisibleZoomOut}
                                 />
                             ))}
                     </LayerSettings.ContentMain>

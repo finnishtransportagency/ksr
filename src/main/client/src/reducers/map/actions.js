@@ -388,3 +388,9 @@ export const hideLayer = (layerIds: string[]) => ({
 export const toggleIndexMap = () => ({
     type: types.TOGGLE_INDEX_MAP,
 });
+
+export const toggleLayerVisibleZoomOut = (layerId, originalMinScale) => ({
+    type: types.TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
+    layerId,
+    originalMinScale,
+});
