@@ -152,7 +152,7 @@ class EsriMap extends Component<Props> {
             scale: mapScale,
             spatialReference: epsg3067,
             constraints: {
-                maxScale: 500,
+                maxScale: 20,
                 minScale: 5000000,
             },
             popup: {
