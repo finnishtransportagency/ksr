@@ -40,7 +40,20 @@ const MapLayerToggle = ({
         if (matchingAndOriginallyHidden || !layerViewable(layer, mapScale)) {
             return (
                 <Fragment>
-                    <i className="fas fa-eye-slash" />
+                    {(shouldShowZoomOutToggle && matching)
+                        ? (
+                            <div
+                                className="symbolWrapper"
+                                ref={(node) => {
+                                    if (node) {
+                                        node.innerHTML = '';
+                                        node.appendChild(layer.legendSymbol.cloneNode(true));
+                                    }
+                                }}
+                            />
+                        )
+                        : <i className="fas fa-eye-slash" />}
+
                     {shouldShowZoomOutToggle && <MapLayerToggleIcon visible={matching} /> }
                 </Fragment>
             );
