@@ -11,6 +11,7 @@ import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
 import { updatePortal } from '../portal/actions';
+import { closeTableIfNothingToShow } from '../utils';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -445,6 +446,7 @@ export const closeTableTab = (
                                 type: types.CLOSE_LAYER,
                                 layerId,
                             });
+                            closeTableIfNothingToShow();
                             view.popup.close();
                             dispatch(updatePortal());
                         },
@@ -462,6 +464,7 @@ export const closeTableTab = (
                     type: types.CLOSE_LAYER,
                     layerId,
                 });
+                closeTableIfNothingToShow();
                 view.popup.close();
                 dispatch(updatePortal());
             },
