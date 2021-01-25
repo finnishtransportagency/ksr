@@ -13,9 +13,11 @@ describe('<MapLayerToggle />', () => {
                 minScale: 50000,
                 maxScale: 500,
                 legendSymbol: legendSymbol || null,
+                type: 'wms'
             },
             mapScale: mapScale || 1500,
-            onToggleVisibility: jest.fn(),
+            toggleVisibleZoomOut: jest.fn(),
+            layersViewableZoomOut: [],
         };
         const wrapper = shallow(<MapLayerToggle {...props} />);
         return { wrapper, props };

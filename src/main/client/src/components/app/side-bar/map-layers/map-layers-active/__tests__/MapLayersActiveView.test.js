@@ -163,11 +163,4 @@ describe('<MapLayersActiveView />', () => {
         wrapper.find(LayerSettings.Icons).find(LayerSettings.Icon).at(3).simulate('click');
         expect(handleAdminModeChange).toHaveBeenCalled();
     });
-
-    it('should call toggleLayer on visibility click', () => {
-        const { toggleLayer } = wrapper.props();
-
-        wrapper.find(LayerSettings.Toggle).at(0).simulate('click');
-        expect(toggleLayer).toHaveBeenCalled();
-    });
 });
