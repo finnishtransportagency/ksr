@@ -12,6 +12,7 @@ import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
 import { nestedVal } from '../../utils/nestedValue';
+import { closeTableIfNothingToShow } from '../utils';
 
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
@@ -216,6 +217,7 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function, getStat
             layerIds: childLayers.map(childLayer => childLayer.id),
         });
     }
+    closeTableIfNothingToShow();
 };
 
 export const getActiveLayerTab = () => ({
