@@ -567,12 +567,15 @@ export const sketchSaveData = (
                     addressField,
                 ));
                 dispatch(deSelectSelected());
+                closeTableIfNothingToShow();
             },
             () => {
                 dispatch(deSelectSelected());
+                closeTableIfNothingToShow();
             },
         ));
     } else {
         dispatch(deSelectSelected());
+        closeTableIfNothingToShow();
     }
 };
