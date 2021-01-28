@@ -191,6 +191,10 @@ export const activateLayers = (
     if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layersToBeActivated));
 };
 
+export const toggleLayerLegend = () => ({
+    type: types.TOGGLE_LAYER_LEGEND,
+});
+
 export const deactivateLayer = (layerId: string) => (dispatch: Function, getState: Function) => {
     const { layerList } = dispatch(getState).map.layerGroups;
 
@@ -217,6 +221,14 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function, getStat
             type: types.REMOVE_LAYER_FROM_VIEW,
             layerIds: childLayers.map(childLayer => childLayer.id),
         });
+    }
+
+    const mapState = store.getState().map;
+    const shouldCloseLegend = mapState.layerLegend.layerLegendActive
+        && !mapState.layerGroups.layerList
+            .some(layer => layer.visible && layer.renderer && layer.id !== layerId);
+    if (shouldCloseLegend) {
+        dispatch(toggleLayerLegend());
     }
     closeTableIfNothingToShow();
 };
@@ -363,10 +375,6 @@ export const setHasGraphics = (hasGraphics: boolean) => ({
 export const removeLayersView = (layerIds: Array<number>) => ({
     type: types.REMOVE_LAYER_FROM_VIEW,
     layerIds,
-});
-
-export const toggleLayerLegend = () => ({
-    type: types.TOGGLE_LAYER_LEGEND,
 });
 
 export const toggleLayer = (layerId: string) => (dispatch: Function) => {

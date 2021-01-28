@@ -328,6 +328,7 @@ export default (state: State = initialState, action: Action) => {
                             active: false,
                             visible: false,
                             failOnLoad: action.failOnLoad ? action.failOnLoad : false,
+                            renderer: null,
                         };
                     }
 
