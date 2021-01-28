@@ -46,8 +46,11 @@ const MapLayerToggle = ({
                                 className="symbolWrapper"
                                 ref={(node) => {
                                     if (node) {
+                                        const eyeNode: HTMLElement = document.createElement('i');
+                                        eyeNode.className = 'fas fa-eye';
                                         node.innerHTML = '';
                                         node.appendChild(layer.legendSymbol.cloneNode(true));
+                                        node.appendChild(eyeNode);
                                     }
                                 }}
                             />
@@ -78,8 +81,14 @@ const MapLayerToggle = ({
 
     const onClick = () => {
         if (matching) {
-            if (shouldShowZoomOutToggle && matchingAndOriginallyHidden) {
-                toggleVisibleZoomOut(layer.id, layer.minScale);
+            if (shouldShowZoomOutToggle) {
+                if (matchingAndOriginallyHidden) {
+                    toggleVisibleZoomOut(layer.id, layer.minScale);
+                } else {
+                    toggleLayer(layer.id);
+                }
+            } else if (!matchingAndOriginallyHidden) {
+                toggleLayer(layer.id);
             }
         } else if (layerViewable(layer, mapScale)) {
             toggleLayer(layer.id);
