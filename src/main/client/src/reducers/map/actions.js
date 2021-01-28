@@ -13,6 +13,7 @@ import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
 import { nestedVal } from '../../utils/nestedValue';
 import { closeTableIfNothingToShow } from '../utils';
+import store from '../../store';
 
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
@@ -368,10 +369,22 @@ export const toggleLayerLegend = () => ({
     type: types.TOGGLE_LAYER_LEGEND,
 });
 
-export const toggleLayer = (layerId: string) => ({
-    type: types.TOGGLE_LAYER,
-    layerId,
-});
+export const toggleLayer = (layerId: string) => (dispatch: Function) => {
+    dispatch({
+        type: types.TOGGLE_LAYER,
+        layerId,
+    });
+    const mapState = store.getState().map;
+    const shouldOpenLegend = mapState.layerGroups.layerList
+        .find(layer => layer.id === layerId && layer.visible && layer.renderer)
+        && !mapState.layerLegend.layerLegendActive;
+    const shouldCloseLegend = !mapState.layerGroups.layerList
+        .some(layer => layer.visible && layer.renderer)
+        && mapState.layerLegend.layerLegendActive;
+    if (shouldCloseLegend || shouldOpenLegend) {
+        dispatch(toggleLayerLegend());
+    }
+};
 
 export const toggleMeasurements = () => ({
     type: types.TOGGLE_MEASUREMENTS,
