@@ -46,8 +46,11 @@ const MapLayerToggle = ({
                                 className="symbolWrapper"
                                 ref={(node) => {
                                     if (node) {
+                                        const eyeNode: HTMLElement = document.createElement('i');
+                                        eyeNode.className = 'fas fa-eye';
                                         node.innerHTML = '';
                                         node.appendChild(layer.legendSymbol.cloneNode(true));
+                                        node.appendChild(eyeNode);
                                     }
                                 }}
                             />
