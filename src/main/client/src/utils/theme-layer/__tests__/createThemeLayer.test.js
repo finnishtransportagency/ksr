@@ -38,6 +38,7 @@ describe('createThemeLayer', () => {
         };
         const otherLayer = {
             renderer: null,
+            visible: true,
             id: 2,
         };
         resetLayerTheme(featureLayer, layer, [layer, otherLayer], jest.fn, true);
@@ -55,6 +56,7 @@ describe('createThemeLayer', () => {
         };
         const otherLayer = {
             renderer: 'otherRenderer',
+            visible: true,
             id: 2,
         };
         resetLayerTheme(featureLayer, layer, [layer, otherLayer], jest.fn, true);
