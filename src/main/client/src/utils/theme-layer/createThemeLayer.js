@@ -62,7 +62,7 @@ export const resetLayerTheme = (
 
     const newLayerList = layerList.map((l) => {
         const isSelectedLayer = l.id === layer.id;
-        if (!isSelectedLayer && l.renderer) {
+        if (!isSelectedLayer && l.renderer && l.visible) {
             activeLegends = true;
         }
         return {

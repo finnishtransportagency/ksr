@@ -13,6 +13,7 @@ import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
 import { nestedVal } from '../../utils/nestedValue';
 import { closeTableIfNothingToShow } from '../utils';
+import store from '../../store';
 
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
@@ -190,6 +191,10 @@ export const activateLayers = (
     if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layersToBeActivated));
 };
 
+export const toggleLayerLegend = () => ({
+    type: types.TOGGLE_LAYER_LEGEND,
+});
+
 export const deactivateLayer = (layerId: string) => (dispatch: Function, getState: Function) => {
     const { layerList } = dispatch(getState).map.layerGroups;
 
@@ -216,6 +221,14 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function, getStat
             type: types.REMOVE_LAYER_FROM_VIEW,
             layerIds: childLayers.map(childLayer => childLayer.id),
         });
+    }
+
+    const mapState = store.getState().map;
+    const shouldCloseLegend = mapState.layerLegend.layerLegendActive
+        && !mapState.layerGroups.layerList
+            .some(layer => layer.visible && layer.renderer && layer.id !== layerId);
+    if (shouldCloseLegend) {
+        dispatch(toggleLayerLegend());
     }
     closeTableIfNothingToShow();
 };
@@ -364,14 +377,22 @@ export const removeLayersView = (layerIds: Array<number>) => ({
     layerIds,
 });
 
-export const toggleLayerLegend = () => ({
-    type: types.TOGGLE_LAYER_LEGEND,
-});
-
-export const toggleLayer = (layerId: string) => ({
-    type: types.TOGGLE_LAYER,
-    layerId,
-});
+export const toggleLayer = (layerId: string) => (dispatch: Function) => {
+    dispatch({
+        type: types.TOGGLE_LAYER,
+        layerId,
+    });
+    const mapState = store.getState().map;
+    const shouldOpenLegend = mapState.layerGroups.layerList
+        .find(layer => layer.id === layerId && layer.visible && layer.renderer)
+        && !mapState.layerLegend.layerLegendActive;
+    const shouldCloseLegend = !mapState.layerGroups.layerList
+        .some(layer => layer.visible && layer.renderer)
+        && mapState.layerLegend.layerLegendActive;
+    if (shouldCloseLegend || shouldOpenLegend) {
+        dispatch(toggleLayerLegend());
+    }
+};
 
 export const toggleMeasurements = () => ({
     type: types.TOGGLE_MEASUREMENTS,
