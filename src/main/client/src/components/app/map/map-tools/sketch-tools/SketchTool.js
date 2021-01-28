@@ -461,6 +461,9 @@ class SketchTool extends Component<Props, State> {
                             );
                         }
                         resetMapTools(draw, sketchViewModel, setActiveTool);
+                    } else if (event.state === 'cancel') {
+                        removeLengthLabels();
+                        updatePolygonLabels();
                     }
                     this.setState({
                         validGeometry: this.validGeometry(),
