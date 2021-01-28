@@ -375,6 +375,17 @@ class SketchTool extends Component<Props, State> {
                     });
                 };
 
+                const updateLabels = (rings, geometry) => {
+                    const polygon = createPolygon(rings);
+                    const measure = measurement(polygon);
+                    const areaLabel = createLabelGraphic(geometry, measure);
+
+                    updatePolygonLabels();
+                    tempGraphicsLayer.add(areaLabel);
+
+                    drawPolygonOutlineLengths(rings);
+                };
+
                 const selectFeaturesFromDraw = async (event) => {
                     const { active } = this.props;
                     if (
@@ -392,14 +403,7 @@ class SketchTool extends Component<Props, State> {
                                 && event.graphic.geometry.rings[0].length > 2) {
                                 const { geometry } = event.graphic;
                                 const { rings } = geometry;
-                                const polygon = createPolygon(rings);
-                                const measure = measurement(polygon);
-                                const areaLabel = createLabelGraphic(geometry, measure);
-
-                                updatePolygonLabels();
-                                tempGraphicsLayer.add(areaLabel);
-
-                                drawPolygonOutlineLengths(rings);
+                                updateLabels(rings, geometry);
                             }
                         }
                     } else if (event.state === 'complete') {
@@ -551,6 +555,15 @@ class SketchTool extends Component<Props, State> {
                     }
                 };
 
+                const handleUndoRedo = (event) => {
+                    if (['undo', 'redo'].includes(event.type)) {
+                        if (event.tool === 'polygon') {
+                            const { geometry } = event.graphics[0];
+                            updateLabels(geometry.rings, geometry);
+                        }
+                    }
+                };
+
                 const handleReshape = (event) => {
                     if (event.toolEventInfo && event.toolEventInfo.type.startsWith('reshape')) {
                         switch (event.toolEventInfo.type) {
@@ -572,6 +585,7 @@ class SketchTool extends Component<Props, State> {
                     }
                     updatePolygonLabels();
                     handleReshape(event);
+                    handleUndoRedo(event);
 
                     if (event.graphics[0].geometry.isSelfIntersecting) {
                         const clonedSymbol = event.graphics[0].symbol.clone();
