@@ -114,13 +114,13 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
             }));
     });
 
-    Promise.all(searchQueries).then(() => {
+    Promise.all(searchQueries).then(async () => {
+        await dispatch(activateLayers(layersToBeAdded.layers));
+
         dispatch({
             type: types.SEARCH_FEATURES_FULFILLED,
             layers: parseData(layersToBeAdded, false),
         });
-
-        dispatch(activateLayers(layersToBeAdded.layers));
 
         if (layersToBeAdded.layers.length) {
             dispatch({
@@ -136,6 +136,8 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                 layers: layersToBeAdded.layers,
             });
         }
+
+        dispatch(selectFeatures(layersToBeAdded));
     });
 };
 
