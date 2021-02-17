@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import ModalContractDetails from './ModalContractDetails';
 import { setActiveModal } from '../../../../reducers/modal/actions';
-import { updateLayerFields } from '../../../../reducers/map/actions';
+import { updateLayerFields, updateRelatedLayersData } from '../../../../reducers/map/actions';
 import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
 
 const mapStateToProps = (state) => {
@@ -33,6 +33,9 @@ const mapDispatchToProps = dispatch => ({
     },
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
+    },
+    updateRelatedLayersData: (layers: Object[]) => {
+        dispatch(updateRelatedLayersData(layers));
     },
 });
 

@@ -5,6 +5,7 @@ import { nestedVal } from '../../../../../utils/nestedValue';
 import ContractList from './ContractList';
 import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
+import { updateRelatedLayersData } from '../../../../../reducers/map/actions';
 
 const mapStateToProps = (state) => {
     const { layerId, objectId } = state.contract.contractList;
@@ -20,6 +21,7 @@ const mapStateToProps = (state) => {
         currentLayer,
         contractLayers,
         editLayerPermission,
+        layerList,
     };
 };
 
@@ -29,6 +31,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveModal: (activeModal: string, data: any) => {
         dispatch(setActiveModal(activeModal, data));
+    },
+    updateLayerData: (layer: Object) => {
+        dispatch(updateRelatedLayersData([layer]));
     },
 });
 
