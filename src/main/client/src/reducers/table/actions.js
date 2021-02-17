@@ -475,6 +475,7 @@ export const closeTableTab = (
 export const addNonSpatialContentToTable = (
     layer: Object,
     workspaceFeatures?: Object[],
+    clear?: boolean,
 ) => (dispatch: Function) => {
     dispatch({
         type: types.SET_LOADING_LAYERS,
@@ -518,6 +519,7 @@ export const addNonSpatialContentToTable = (
             dispatch({
                 type: types.SELECT_FEATURES,
                 layers,
+                clear,
             });
             dispatch({
                 type: types.REMOVE_LOADING_LAYERS,
