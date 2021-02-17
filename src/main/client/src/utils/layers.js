@@ -151,3 +151,11 @@ export const relatedLayers = (allLayersOriginal: Object[], layerList: Object[]) 
     });
     return layers;
 };
+
+export const getSiblingsOrSelf = (allLayers, layer) => {
+    const parent = allLayers.find(l => l.id === layer.parentLayer);
+    if (!parent) {
+        return [layer];
+    }
+    return allLayers.filter(l => l.parentLayer === parent.id);
+};

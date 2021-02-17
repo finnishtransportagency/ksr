@@ -93,6 +93,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                         const newLayer = {
                             ...selectedLayer,
                             name: selectedLayer.name,
+                            originalQueryMap: queryMap,
                             definitionExpression: queryString,
                             visible: true,
                             active: true,
@@ -476,12 +477,13 @@ export const addNonSpatialContentToTable = (
     layer: Object,
     workspaceFeatures?: Object[],
     clear?: boolean,
-) => (dispatch: Function) => {
+    selectedFeatures?: Object[],
+) => async (dispatch: Function) => {
     dispatch({
         type: types.SET_LOADING_LAYERS,
         layerIds: [layer.id],
     });
-    fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
+    await fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
         .then(async (results) => {
             if (workspaceFeatures) {
                 results.layers.forEach((l) => {
@@ -525,6 +527,9 @@ export const addNonSpatialContentToTable = (
                 type: types.REMOVE_LOADING_LAYERS,
                 layerIds: [layer.id],
             });
+            if (selectedFeatures) {
+                selectedFeatures.forEach(f => dispatch(toggleSelection(f)));
+            }
         })
         .catch(err => console.error(err));
 };
