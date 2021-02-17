@@ -6,7 +6,7 @@ import strings from '../../translations';
 import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
-import { activateLayers } from '../map/actions';
+import { activateLayers, updateRelatedLayersData } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
@@ -387,6 +387,9 @@ export const saveEditedFeatures = (
                         }
                     });
             }
+
+            const layersToUpdate = editedLayers.map(l => layerList.find(la => la.id === l.id));
+            dispatch(updateRelatedLayersData(layersToUpdate));
         });
 
     return {
