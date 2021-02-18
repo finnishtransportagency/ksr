@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
@@ -9,6 +9,7 @@ import LoadingIcon from '../../../shared/LoadingIcon';
 import SearchFieldView from './search-field/SearchFieldView';
 import { InputInfo } from '../../../../ui/elements/TextInput';
 import { LabelInfoWrapper } from './styles';
+import SearchResultLayer from './SearchResultLayer';
 
 type Props = {
     handleLayerChange: Function,
@@ -27,6 +28,8 @@ type Props = {
     fetching: boolean,
     suggestions: Array<string>,
     suggestionsActive: boolean,
+    searchResults: Array<Object>,
+    openSearchResult: Function,
 };
 
 const SearchLayerView = ({
@@ -46,6 +49,8 @@ const SearchLayerView = ({
     fetching,
     suggestions,
     suggestionsActive,
+    searchResults,
+    openSearchResult,
 }: Props) => (
     <Scrollbars
         autoHide
@@ -145,6 +150,19 @@ const SearchLayerView = ({
             </div>
             <LoadingIcon loading={fetching} />
         </form>
+        {(searchResults && searchResults.length > 0)
+        && (
+            <Fragment>
+                {searchResults.map(l => (
+                    <SearchResultLayer
+                        key={l.id}
+                        title={l.title}
+                        id={l.id}
+                        onClick={openSearchResult}
+                    />
+                ))}
+            </Fragment>
+        )}
     </Scrollbars>
 );
 

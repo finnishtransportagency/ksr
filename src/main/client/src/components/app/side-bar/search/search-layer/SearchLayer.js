@@ -23,6 +23,8 @@ type Props = {
         suggestions: Array<string>,
         suggestionsActive: boolean,
     },
+    searchResults: Array<Object>,
+    openSearchResultTable: Function,
 };
 
 type State = {
@@ -287,7 +289,13 @@ class SearchLayer extends Component<Props, State> {
     };
 
     render() {
-        const { setSearchState, queryOptions, searchState } = this.props;
+        const {
+            setSearchState,
+            queryOptions,
+            searchState,
+            searchResults,
+            openSearchResultTable,
+        } = this.props;
         const {
             selectedLayer,
             searchFieldValues,
@@ -316,6 +324,8 @@ class SearchLayer extends Component<Props, State> {
                 fetching={fetching}
                 suggestions={suggestions}
                 suggestionsActive={suggestionsActive}
+                searchResults={searchResults}
+                openSearchResult={openSearchResultTable}
             />
         );
     }
