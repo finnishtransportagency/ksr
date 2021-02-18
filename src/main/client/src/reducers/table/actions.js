@@ -74,6 +74,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
     const searchQueries = [];
 
     dispatch({ type: types.SEARCH_FEATURES });
+    let hasResults = false;
 
     queryMap.forEach((queryString, selectedLayer) => {
         const layerData = {
@@ -109,12 +110,14 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                         };
 
                         layersToBeAdded.layers.push(newLayer);
+                        if (!hasResults) hasResults = true;
                     });
                 }
             }));
     });
 
     Promise.all(searchQueries).then(async () => {
+        if (!hasResults) toast.error(strings.search.notFound);
         await dispatch(activateLayers(layersToBeAdded.layers));
 
         dispatch({
