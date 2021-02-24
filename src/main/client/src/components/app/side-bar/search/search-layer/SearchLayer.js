@@ -143,8 +143,8 @@ class SearchLayer extends Component<Props, State> {
                 searchFieldValues[index].queryText = evt.target.value;
                 if (suggestionsActive) {
                     const text = `'${evt.target.value}%'`;
-                    const queryColumn = searchFieldValues[index].name;
-                    const queryString = `LOWER(${queryColumn}) LIKE LOWER(${text})`;
+                    const queryColumns = type === 'text' ? [searchFieldValues[index].name] : optionsField.map(field => field.name);
+                    const queryString = queryColumns.map(c => `LOWER(${c}) LIKE LOWER(${text})`).join(' OR ');
                     window.clearTimeout(suggestionQuery);
                     if (this.abortController) {
                         this.abortController.abort();
@@ -160,8 +160,9 @@ class SearchLayer extends Component<Props, State> {
                                 fetchSearchSuggestions(
                                     selectedLayer,
                                     queryString,
-                                    queryColumn,
+                                    queryColumns,
                                     signal,
+                                    inputValue,
                                 ).then((suggestions) => {
                                     if (suggestions) {
                                         // Sort array and remove duplicates.
