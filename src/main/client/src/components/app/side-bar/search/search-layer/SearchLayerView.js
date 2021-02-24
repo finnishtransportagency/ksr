@@ -91,17 +91,39 @@ const SearchLayerView = ({
                         <i className="fas fa-question-circle" />
                     </InputInfo>
                 </LabelInfoWrapper>
-                <TextInput
-                    disabled={fetching}
-                    type="text"
-                    value={textSearch}
-                    onChange={handleTextChange}
-                    placeholder=""
-                    name="allFields"
-                    required={!searchFieldValues.length}
-                    minLength={2}
-                    autoComplete="off"
-                />
+                {(!selectedLayer
+                    || selectedLayer === 'queryAll'
+                    || selectedLayer === 'queryActive')
+                    ? (
+                        <TextInput
+                            disabled={fetching}
+                            type="text"
+                            value={textSearch}
+                            onChange={handleTextChange}
+                            placeholder=""
+                            name="allFields"
+                            required={!searchFieldValues.length}
+                            minLength={2}
+                            autoComplete="off"
+                        />
+                    )
+                    : (
+                        <SearchFieldView
+                            field={{ type: 'text-all-columns' }}
+                            index={0}
+                            searchFieldValues={undefined}
+                            setSearchState={setSearchState}
+                            selectedLayer={selectedLayer}
+                            textSearch={textSearch}
+                            handleChangeField={handleChangeField}
+                            handleFieldBlur={handleFieldBlur}
+                            handleRemoveField={handleRemoveField}
+                            fetching={fetching}
+                            suggestions={suggestions}
+                            suggestionsActive={suggestionsActive}
+                        />
+                    )
+                }
             </label>
             {searchFieldValues.map((a, i) => (
                 <SearchFieldView
