@@ -132,24 +132,39 @@ class SearchLayer extends Component<Props, State> {
     handleChangeField = (type: string, evt: Object, index: number) => {
         const { suggestionQuery, fetchingSuggestions } = this.state;
         const { setSearchState, searchState } = this.props;
-        const { selectedLayer, textSearch, suggestionsActive } = searchState;
+        const {
+            selectedLayer,
+            textSearch,
+            suggestionsActive,
+            optionsField,
+        } = searchState;
 
         const searchFieldValues = [
             ...searchState.searchFieldValues,
         ];
 
+        const inputValue = evt.target.value;
         switch (type) {
+            case 'text-all-columns':
             case 'text': {
-                searchFieldValues[index].queryText = evt.target.value;
+                setSearchState(
+                    selectedLayer,
+                    type === 'text' ? textSearch : inputValue,
+                    searchFieldValues,
+                    [],
+                    suggestionsActive,
+                );
+
+                if (type === 'text') searchFieldValues[index].queryText = inputValue;
                 if (suggestionsActive) {
                     const text = `'${evt.target.value}%'`;
-                    const queryColumn = searchFieldValues[index].name;
-                    const queryString = `LOWER(${queryColumn}) LIKE LOWER(${text})`;
+                    const queryColumns = type === 'text' ? [searchFieldValues[index].name] : optionsField.map(field => field.name);
+                    const queryString = queryColumns.map(c => `LOWER(${c}) LIKE LOWER(${text})`).join(' OR ');
                     window.clearTimeout(suggestionQuery);
                     if (this.abortController) {
                         this.abortController.abort();
                     }
-                    if (evt.target.value.trim().length > 0) {
+                    if (evt.target.value.trim().length > 1) {
                         this.setState({
                             // Workaround for IE since it does not support aborting yet at least.
                             fetchingSuggestions: true,
@@ -160,8 +175,9 @@ class SearchLayer extends Component<Props, State> {
                                 fetchSearchSuggestions(
                                     selectedLayer,
                                     queryString,
-                                    queryColumn,
+                                    queryColumns,
                                     signal,
+                                    inputValue.toLowerCase(),
                                 ).then((suggestions) => {
                                     if (suggestions) {
                                         // Sort array and remove duplicates.
@@ -173,7 +189,7 @@ class SearchLayer extends Component<Props, State> {
 
                                         setSearchState(
                                             selectedLayer,
-                                            textSearch,
+                                            null,
                                             searchFieldValues,
                                             sortedSuggestions,
                                             suggestionsActive,
@@ -203,7 +219,7 @@ class SearchLayer extends Component<Props, State> {
         if (!fetchingSuggestions) {
             setSearchState(
                 selectedLayer,
-                textSearch,
+                type === 'text' ? textSearch : inputValue,
                 searchFieldValues,
                 [],
                 suggestionsActive,

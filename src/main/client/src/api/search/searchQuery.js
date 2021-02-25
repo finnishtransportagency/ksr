@@ -36,21 +36,23 @@ export const fetchSearchQuery = (
  *
  * @param {number} layerId Layer id (ID in database) that is used in fetch URL.
  * @param {string} whereQueryString Parsed query string that is used in fetch URL.
- * @param {string} queryColumn Column which the suggestions are fetched for.
+ * @param {string} queryColumns Columns which the suggestions are fetched for.
  * @param {any} signal Request signal which can be used to abort the request.
+ * @param {string} text Input text to fetch suggestions for
  *
  * @returns {Promise<string[]>} Suggested search words.
  */
 export const fetchSearchSuggestions = (
     layerId: string,
     whereQueryString: string,
-    queryColumn: string,
+    queryColumns: string,
     signal: any,
+    text: string,
 ) => fetch(`api/proxy/layer/${layerId}/query?${
     querystring.stringify({
         where: whereQueryString,
         f: 'pjson',
-        outFields: queryColumn,
+        outFields: queryColumns.join(','),
     })
 }`, { ...config(), signal })
     .then(handleErrors)
@@ -58,7 +60,9 @@ export const fetchSearchSuggestions = (
     .then((r) => {
         if (!r.error && r.features.length) {
             return r.features
-                .map(feature => feature.attributes[queryColumn])
+                .map(feature => Object.values(feature.attributes)
+                    .filter(v => v && v.toString().toLowerCase().startsWith(text)))
+                .flat()
                 .slice(0, 10);
         }
         return [];

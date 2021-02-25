@@ -53,8 +53,8 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 selectedLayer: action.selectedLayer,
-                textSearch: action.textSearch,
-                searchFieldValues: action.searchFieldValues,
+                textSearch: action.textSearch === null ? state.textSearch : action.textSearch,
+                searchFieldValues: action.searchFieldValues ? action.searchFieldValues : [],
                 suggestions: action.suggestions,
                 suggestionsActive: action.suggestionsActive,
             };
