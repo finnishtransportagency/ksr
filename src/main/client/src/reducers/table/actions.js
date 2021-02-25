@@ -74,6 +74,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
     const searchQueries = [];
 
     dispatch({ type: types.SEARCH_FEATURES });
+    let hasResults = false;
 
     queryMap.forEach((queryString, selectedLayer) => {
         const layerData = {
@@ -110,18 +111,20 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                         };
 
                         layersToBeAdded.layers.push(newLayer);
+                        if (!hasResults) hasResults = true;
                     });
                 }
             }));
     });
 
-    Promise.all(searchQueries).then(() => {
+    Promise.all(searchQueries).then(async () => {
+        if (!hasResults) toast.error(strings.search.notFound);
+        await dispatch(activateLayers(layersToBeAdded.layers));
+
         dispatch({
             type: types.SEARCH_FEATURES_FULFILLED,
             layers: parseData(layersToBeAdded, false),
         });
-
-        dispatch(activateLayers(layersToBeAdded.layers));
 
         if (layersToBeAdded.layers.length) {
             dispatch({
@@ -137,6 +140,8 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                 layers: layersToBeAdded.layers,
             });
         }
+
+        dispatch(selectFeatures(layersToBeAdded));
     });
 };
 

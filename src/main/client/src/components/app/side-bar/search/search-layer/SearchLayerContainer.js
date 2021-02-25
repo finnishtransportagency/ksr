@@ -1,9 +1,10 @@
 // @flow
 import { connect } from 'react-redux';
-import { searchFeatures } from '../../../../../reducers/table/actions';
+import { searchFeatures, setActiveTable, toggleTable } from '../../../../../reducers/table/actions';
 import { setSearchState, setSearchOptions } from '../../../../../reducers/search/actions';
 import SearchLayer from './SearchLayer';
 import strings from '../../../../../translations';
+import { setActiveNav } from '../../../../../reducers/navigation/actions';
 
 const mapStateToProps = (state) => {
     const allQueryableLayers = state.map.layerGroups.layerList
@@ -21,6 +22,8 @@ const mapStateToProps = (state) => {
         queryOptions,
         searchState: state.search.searchState,
         layerList: state.map.layerGroups.layerList,
+        searchResults: state.table.features.layers.filter(l => l.id.endsWith('.s')),
+        tableOpen: state.table.toggleTable,
     });
 };
 
@@ -40,8 +43,33 @@ const mapDispatchToProps = dispatch => ({
     setSearchOptions: (layerId, layerList) => {
         dispatch(setSearchOptions(layerId, layerList));
     },
+    toggleTable: () => {
+        dispatch(toggleTable());
+    },
+    setActiveTable: (layerId: string) => {
+        dispatch(setActiveTable(layerId));
+    },
+    closeSideBar: () => {
+        dispatch(setActiveNav('search'));
+    },
 });
 
-const SearchLayerContainer = (connect(mapStateToProps, mapDispatchToProps)(SearchLayer): any);
+const mergeProps = (stateToProps, dispatchToProps) => ({
+    ...stateToProps,
+    ...dispatchToProps,
+    openSearchResultTable: (layerId: string) => {
+        if (window.innerWidth <= 768) {
+            dispatchToProps.closeSideBar();
+        }
+        if (!stateToProps.tableOpen) {
+            dispatchToProps.toggleTable();
+        }
+        dispatchToProps.setActiveTable(layerId);
+    },
+});
+
+const SearchLayerContainer = (
+    connect(mapStateToProps, mapDispatchToProps, mergeProps)(SearchLayer): any
+);
 
 export default SearchLayerContainer;
