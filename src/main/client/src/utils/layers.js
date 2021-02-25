@@ -107,3 +107,55 @@ export const isContract = (layer: Object) => {
 export const findFirstContractLayer = (contractLayers: Object[]) => (
     contractLayers.find(c => c.name && c.name.toLowerCase() !== 'tlaite sopimushallinta')
 );
+
+/**
+ * Get all layers related to any of given layers. Return empty array if layer list is undefined.
+ *
+ * @param allLayersOriginal All layers to search from.
+ * @param layerList Given layers to get all related layers including itself.
+ * @returns {[]|*[]} Related layers as array.
+ */
+export const relatedLayers = (allLayersOriginal: Object[], layerList: Object[]) => {
+    if (!layerList) {
+        return [];
+    }
+    let allLayers = allLayersOriginal;
+    const contractLayers = allLayers.filter(l => ['maanvuokrasopimukset', 'sopimukset'].includes(l.name.toLowerCase()));
+    const layers = [];
+    layerList.forEach((layer) => {
+        // Prevent adding duplicate layers
+        if (layers.some(lay => lay.id === layer.id)) {
+            return;
+        }
+        const parentLayer = layer.parentLayer
+            && allLayers.find(l => l.id === layer.parentLayer);
+        // Special handling for layers related to table PALKEET_CONTRACT
+        if (contractLayers
+            .some(l => l.id === layer.id || (parentLayer && l.id === parentLayer.id))) {
+            contractLayers.forEach(l => layers.push(l));
+            const parent = parentLayer || contractLayers.find(lay => lay.name.toLowerCase() === 'maanvuokrasopimukset');
+            allLayers.forEach((l) => {
+                if (l.parentLayer === parent.id) layers.push(l);
+            });
+        } else {
+            allLayers.forEach((l) => {
+                if (l.id === layer.id
+                    || l.parentLayer === layer.id
+                    || (parentLayer && (l.id === parentLayer.id
+                        || l.parentLayer === parentLayer.id))) {
+                    layers.push(l);
+                }
+            });
+        }
+        allLayers = allLayers.filter(l => !layers.some(lay => lay.id === l.id));
+    });
+    return layers;
+};
+
+export const getSiblingsOrSelf = (allLayers, layer) => {
+    const parent = allLayers.find(l => l.id === layer.parentLayer);
+    if (!parent) {
+        return [layer];
+    }
+    return allLayers.filter(l => l.parentLayer === parent.id);
+};

@@ -65,6 +65,7 @@ type Action = {
     filtered: Array<Object>,
     objectId: number,
     objectIdFieldName: string,
+    clear: boolean,
 };
 
 const initialState = {
@@ -82,7 +83,7 @@ export default (state: State = initialState, action: Action) => {
         case SELECT_FEATURES:
             return {
                 ...state,
-                ...mergeLayers(state.layers, action.layers, state.activeTable),
+                ...mergeLayers(state.layers, action.layers, state.activeTable, action.clear),
             };
         case SET_ACTIVE_TABLE:
             return {

@@ -32,6 +32,7 @@ type Props = {
     ) => void,
     tableFeaturesLayers: Object[],
     view: Object,
+    updateRelatedLayersData: (layers: Object[]) => void;
 };
 
 const ModalContractDetails = (props: Props) => {
@@ -48,6 +49,7 @@ const ModalContractDetails = (props: Props) => {
         showConfirmModal,
         tableFeaturesLayers,
         view,
+        updateRelatedLayersData,
     } = props;
 
     const [activeView, setActiveView] = useState('contractDetails');
@@ -199,6 +201,7 @@ const ModalContractDetails = (props: Props) => {
                     contractObjectId,
                     featureObjectId,
                 );
+                updateRelatedLayersData([detailLayer, contractLayer]);
 
                 if (unlinkSuccess) {
                     toast.success(featureUnlinkSuccess);

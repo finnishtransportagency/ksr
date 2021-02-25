@@ -6,7 +6,7 @@ import strings from '../../translations';
 import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
-import { activateLayers } from '../map/actions';
+import { activateLayers, updateRelatedLayersData } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
@@ -93,6 +93,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                         const newLayer = {
                             ...selectedLayer,
                             name: selectedLayer.name,
+                            originalQueryMap: queryMap,
                             definitionExpression: queryString,
                             visible: true,
                             active: true,
@@ -386,6 +387,9 @@ export const saveEditedFeatures = (
                         }
                     });
             }
+
+            const layersToUpdate = editedLayers.map(l => layerList.find(la => la.id === l.id));
+            dispatch(updateRelatedLayersData(layersToUpdate));
         });
 
     return {
@@ -475,12 +479,14 @@ export const closeTableTab = (
 export const addNonSpatialContentToTable = (
     layer: Object,
     workspaceFeatures?: Object[],
-) => (dispatch: Function) => {
+    clear?: boolean,
+    selectedFeatures?: Object[],
+) => async (dispatch: Function) => {
     dispatch({
         type: types.SET_LOADING_LAYERS,
         layerIds: [layer.id],
     });
-    fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
+    await fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
         .then(async (results) => {
             if (workspaceFeatures) {
                 results.layers.forEach((l) => {
@@ -518,11 +524,15 @@ export const addNonSpatialContentToTable = (
             dispatch({
                 type: types.SELECT_FEATURES,
                 layers,
+                clear,
             });
             dispatch({
                 type: types.REMOVE_LOADING_LAYERS,
                 layerIds: [layer.id],
             });
+            if (selectedFeatures) {
+                selectedFeatures.forEach(f => dispatch(toggleSelection(f)));
+            }
         })
         .catch(err => console.error(err));
 };
