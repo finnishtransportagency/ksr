@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import SketchToolContainer from './sketch-tools/SketchToolContainer';
 import MapDrawContainer from './map-draw/MapDrawContainer';
 
@@ -19,8 +19,7 @@ class MapTools extends Component<Props> {
     }
 
     mapTools = () => {
-        esriLoader
-            .loadModules([
+        loadModules([
                 'esri/views/2d/draw/Draw',
                 'esri/widgets/Sketch/SketchViewModel',
             ])

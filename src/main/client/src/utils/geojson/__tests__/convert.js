@@ -1,4 +1,4 @@
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { project } from '../../projection';
 import convert from '../convert';
 
@@ -15,7 +15,7 @@ class GeometryMock {
 
 describe('geojson - convert', () => {
     beforeAll(() => {
-        esriLoader.loadModules.mockResolvedValue([
+        loadModules.mockResolvedValue([
             GeometryMock,
             GeometryMock,
             GeometryMock,

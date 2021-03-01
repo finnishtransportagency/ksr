@@ -1,6 +1,6 @@
 // @flow
 import uuidv4 from 'uuid/v4';
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import React, { Component } from 'react';
 import { resetMapTools, removeTemporaryDrawings } from '../../../../../utils/mapTools';
 import * as styles from '../../../../ui/defaultStyles';
@@ -46,14 +46,13 @@ class MapDraw extends Component<Props, null> {
     }
 
     mapDraw = () => {
-        esriLoader
-            .loadModules([
-                'esri/geometry/Polygon',
-                'esri/geometry/Polyline',
-                'esri/geometry/Point',
-                'esri/Graphic',
-                'esri/geometry/geometryEngine',
-            ])
+        loadModules([
+            'esri/geometry/Polygon',
+            'esri/geometry/Polyline',
+            'esri/geometry/Point',
+            'esri/Graphic',
+            'esri/geometry/geometryEngine',
+        ])
             .then(([Polygon, Polyline, Point, Graphic, geometryEngine]) => {
                 const {
                     view, draw, setActiveTool, active, showMeasurements,

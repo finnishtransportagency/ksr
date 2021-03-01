@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { toast } from 'react-toastify';
 import { layerData } from '../api/map/layerData';
 import strings from '../translations';
@@ -43,7 +43,7 @@ export const setCenterPoint = async (
     mapScale: number,
     view: Object,
 ) => {
-    const [Point, SpatialReference] = await esriLoader.loadModules([
+    const [Point, SpatialReference] = await loadModules([
         'esri/geometry/Point',
         'esri/geometry/SpatialReference',
     ]);
@@ -80,7 +80,7 @@ export const addLayers = async (
     isOverviewMap: boolean = false,
     layerList: Object[],
 ) => {
-    const [esriConfig, WMSLayer, WMTSLayer, FeatureLayer] = await esriLoader.loadModules([
+    const [esriConfig, WMSLayer, WMTSLayer, FeatureLayer] = await loadModules([
         'esri/config',
         'esri/layers/WMSLayer',
         'esri/layers/WMTSLayer',
@@ -186,7 +186,7 @@ export const highlight = async (
     view: Object,
     selectedFeatures: Array<Object>,
 ) => {
-    const [Query] = await esriLoader.loadModules(['esri/tasks/support/Query']);
+    const [Query] = await loadModules(['esri/tasks/support/Query']);
     if (view) {
         const highlightFeatures = (layer: Object, layerView: Object, features: Object[]) => {
             if (layer.layerHighlight) {
@@ -264,7 +264,7 @@ export const drawPropertyArea = async (
     view: Object,
     features: Object[],
 ) => {
-    const [Polygon, Graphic] = await esriLoader.loadModules([
+    const [Polygon, Graphic] = await loadModules([
         'esri/geometry/Polygon',
         'esri/Graphic',
     ]);
@@ -387,7 +387,7 @@ export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
  * @param {Object[]} features Features to zoom to.
  */
 export const zoomToFeatures = async (view: Object, features: Object[]) => {
-    const [Point, Polygon, Polyline] = await esriLoader.loadModules([
+    const [Point, Polygon, Polyline] = await loadModules([
         'esri/geometry/Point',
         'esri/geometry/Polygon',
         'esri/geometry/Polyline',

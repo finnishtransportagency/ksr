@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 
 /**
  * Creates an esri.Graphic for highlight purposes from given geometry.
@@ -76,7 +76,7 @@ export const createGraphic = (
  * @returns {Promise<Array<*>>} List of Point or Polygon geometry.
  */
 const initializeToGeometry = async (view: Object, geomToBuffer: Object[]) => {
-    const [Point, Polygon] = await esriLoader.loadModules([
+    const [Point, Polygon] = await loadModules([
         'esri/geometry/Point',
         'esri/geometry/Polygon',
     ]);
@@ -117,7 +117,7 @@ export const setBuffer = async (
     selectedFeaturesOnly?: boolean,
     activeLayerId?: string,
 ) => {
-    const [Graphic, geometryEngine] = await esriLoader.loadModules([
+    const [Graphic, geometryEngine] = await loadModules([
         'esri/Graphic',
         'esri/geometry/geometryEngine',
     ]);
@@ -167,11 +167,10 @@ export const setSingleFeatureBuffer = (
     selectedGeometryData: Object[],
     distance: number,
 ) => {
-    esriLoader
-        .loadModules([
-            'esri/Graphic',
-            'esri/geometry/geometryEngine',
-        ])
+    loadModules([
+        'esri/Graphic',
+        'esri/geometry/geometryEngine',
+    ])
         .then(([
             Graphic,
             geometryEngine,

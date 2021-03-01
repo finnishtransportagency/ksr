@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import React, { Component, createRef, Fragment } from 'react';
 import { toast } from 'react-toastify';
 import strings from '../../../../../translations';
@@ -117,14 +117,13 @@ class SketchTool extends Component<Props, State> {
     }
 
     sketchTool = () => {
-        esriLoader
-            .loadModules([
-                'esri/geometry/geometryEngine',
-                'esri/geometry/Polygon',
-                'esri/geometry/Polyline',
-                'esri/Graphic',
-                'esri/geometry/Point',
-            ])
+        loadModules([
+            'esri/geometry/geometryEngine',
+            'esri/geometry/Polygon',
+            'esri/geometry/Polyline',
+            'esri/Graphic',
+            'esri/geometry/Point',
+        ])
             .then(([geometryEngine, Polygon, Polyline, Graphic, Point]) => {
                 const {
                     view,
