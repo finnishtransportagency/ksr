@@ -394,10 +394,10 @@ class SketchTool extends Component<Props, State> {
                     ) {
                         if (event.graphic.geometry.isSelfIntersecting
                             || event.graphic.geometry.rings.length > 1) {
-                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(false);
+                            event.graphic.symbol = createSketchLineGraphic(false);
                             this.setState({ validGeometry: false });
                         } else {
-                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(true);
+                            event.graphic.symbol = createSketchLineGraphic(true);
                             if (event.graphic !== null
                                 && event.graphic.geometry.rings[0].length > 2) {
                                 const { geometry } = event.graphic;
@@ -413,6 +413,7 @@ class SketchTool extends Component<Props, State> {
                             propertyAreaSearch,
                             setPropertyInfo,
                             authorities,
+                            sketchViewModel
                         } = this.props;
 
                         // Skip finding layers if Administrator editing is in use
@@ -470,8 +471,8 @@ class SketchTool extends Component<Props, State> {
                     }
                     this.setState({
                         validGeometry: this.validGeometry(),
-                        canRedo: event.target.canRedo(),
-                        canUndo: event.target.canUndo(),
+                        canRedo: sketchViewModel.canRedo(),
+                        canUndo: sketchViewModel.canUndo(),
                     });
                 };
 
@@ -601,8 +602,8 @@ class SketchTool extends Component<Props, State> {
                     }
                     this.setState({
                         validGeometry: this.validGeometry(),
-                        canRedo: event.target.canRedo(),
-                        canUndo: event.target.canUndo(),
+                        canRedo: sketchViewModel.canRedo(),
+                        canUndo: sketchViewModel.canUndo(),
                     });
                 };
 
