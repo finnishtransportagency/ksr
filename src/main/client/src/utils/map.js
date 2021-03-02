@@ -49,7 +49,7 @@ export const setCenterPoint = async (
     ]);
     const epsg3067 = new SpatialReference(3067);
 
-    const point = Point({
+    const point = new Point({
         x: mapCenter[0],
         y: mapCenter[1],
         spatialReference: epsg3067,
