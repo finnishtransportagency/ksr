@@ -351,7 +351,7 @@ class EsriMap extends Component<Props> {
                             setHasGraphics(hasGraphics);
                         }
                     });
-                } else if (!results.some(item => item.graphic.layer.type === 'graphics')) {
+                } else if (!results.some(item => item.graphic.type === 'draw-graphic')) {
                     // Flow does not recognize flatMap so use any instead of Object[] for now.
                     const layers: any = await queryFeatures(
                         // Use scalable circle as click point to make point and line type features
