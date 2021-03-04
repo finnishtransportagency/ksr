@@ -34,6 +34,10 @@ public class KsrGeoprocessingUtils {
         JSONParser parser = new JSONParser();
         Map<String, String[]> queryParams = request.getParameterMap();
 
+        // TODO: Temp empty print params because arcgis js 4.18 Print widget 
+        //  doesn't send request params correctly. Doesn't work if null.
+        customPrintParameters.put("customPrintParameters", "{}");
+
         for (Map.Entry<String, String[]> entry : queryParams.entrySet()) {
             for (String value : entry.getValue()) {
                 if (entry.getKey().equals("Web_Map_as_JSON")) {
