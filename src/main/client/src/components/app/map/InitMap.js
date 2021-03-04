@@ -250,6 +250,8 @@ class EsriMap extends Component<Props> {
                 multipleConversions: false,
             });
 
+            // coordinateWidget not ready without timeout
+            await new Promise(resolve => setTimeout(resolve, 300));
             const formats = coordinateWidget.formats
                 .filter(f => f.name === 'basemap' || f.name === 'xy');
 
