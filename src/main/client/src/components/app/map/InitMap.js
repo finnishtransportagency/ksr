@@ -367,18 +367,21 @@ class EsriMap extends Component<Props> {
                     );
                     const features = layers ? layers.flatMap(layer => layer.features) : [];
                     const { activeAdminTool, geometryType } = this.props;
-                    view.popup.open({
-                        location: event.mapPoint,
-                        promises: [mapSelectPopup(
-                            features,
-                            view,
-                            layerList,
-                            activeAdminTool,
-                            geometryType,
-                            event.x,
-                            event.y,
-                        )],
-                    });
+
+                    if (!activeTool) {
+                        view.popup.open({
+                            location: event.mapPoint,
+                            promises: [mapSelectPopup(
+                                features,
+                                view,
+                                layerList,
+                                activeAdminTool,
+                                geometryType,
+                                event.x,
+                                event.y,
+                            )],
+                        });
+                    }
                 }
             });
         });

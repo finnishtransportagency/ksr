@@ -464,7 +464,6 @@ class SketchTool extends Component<Props, State> {
                                 selectFeatures,
                             );
                         }
-                        resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else if (event.state === 'cancel') {
                         removeLengthLabels();
                         updatePolygonLabels();
@@ -647,6 +646,8 @@ class SketchTool extends Component<Props, State> {
             setTempGraphicsLayer,
             sketchViewModel,
             tempGraphicsLayer,
+            draw,
+            setActiveTool,
         } = this.props;
 
         setActiveFeatureMode('create');
@@ -654,6 +655,7 @@ class SketchTool extends Component<Props, State> {
         layer.graphics = undefined;
         setTempGraphicsLayer(layer);
         sketchViewModel.cancel();
+        resetMapTools(draw, sketchViewModel, setActiveTool);
     };
 
     showAdminView = (): boolean => {
