@@ -73,6 +73,7 @@ class SketchTool extends Component<Props, State> {
         this.toggleSelectToolsButton = createRef();
         this.removeSelection = this.removeSelection.bind(this);
         this.removeSketch = this.removeSketch.bind(this);
+        this.acceptSketch = this.acceptSketch.bind(this);
         this.toggleSelectTools = this.toggleSelectTools.bind(this);
     }
 
@@ -658,6 +659,19 @@ class SketchTool extends Component<Props, State> {
         resetMapTools(draw, sketchViewModel, setActiveTool);
     };
 
+    acceptSketch = () => {
+        const {
+            sketchViewModel,
+            draw,
+            setActiveTool,
+            setActiveModal,
+            editModeActive,
+        } = this.props;
+
+        setActiveModal(editModeActive);
+        resetMapTools(draw, sketchViewModel, setActiveTool);
+    }
+
     showAdminView = (): boolean => {
         const { activeAdminTool, layerList } = this.props;
 
@@ -706,7 +720,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
+            data, view, tempGraphicsLayer, isOpen, active,
         } = this.props;
         const {
             editSketchIcon, validGeometry, canRedo, canUndo,
@@ -736,12 +750,11 @@ class SketchTool extends Component<Props, State> {
                 <SketchActiveAdminView
                     editSketchIcon={editSketchIcon}
                     removeSketch={this.removeSketch}
+                    acceptSketch={this.acceptSketch}
                     showAdminView={this.showAdminView()}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
                     drawNewAreaButtonRef={this.drawNewAreaButton}
                     hasAdminGraphics={hasAdminGraphics}
-                    setActiveModal={setActiveModal}
-                    editModeActive={editModeActive}
                     validGeometry={validGeometry}
                     activeTool={active}
                     showNewAreaButton={showNewAreaButton}
