@@ -555,12 +555,14 @@ class ReactTable extends Component<Props, State> {
             ['parentLayer']);
             const activeLayer: any = layerList.find(ll => ll.id === parentLayer)
                 || layerList.find(ll => ll.id === layerFeatures.id);
-            const relationLayer = activeLayer && activeLayer.relations.length > 0
+            const relationLayer = activeLayer && activeLayer.relations
+            && activeLayer.relations.length > 0
                 ? layerList.find(ll => ll.id === String(activeLayer.relations
                     .find(r => r).relationLayerId))
                 : null;
 
             const tableColumns = (activeLayer
+                && activeLayer.relations
                 && activeLayer.relations.length > 0
                 && activeLayer.relations.find(r => r).relationType !== null
                 && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer)))
