@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules, loadCss } from 'esri-loader';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import clone from 'clone';
@@ -79,7 +79,7 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        esriLoader.loadCss('https://js.arcgis.com/4.13/esri/css/main.css');
+        loadCss('4.18');
 
         const [
             MapView,
@@ -100,27 +100,26 @@ class EsriMap extends Component<Props> {
             Conversion,
             Search,
             watchUtils,
-        ] = await esriLoader
-            .loadModules([
-                'esri/views/MapView',
-                'esri/Map',
-                'esri/widgets/Locate',
-                'esri/widgets/Track',
-                'esri/widgets/ScaleBar',
-                'esri/geometry/SpatialReference',
-                'esri/widgets/Compass',
-                'esri/geometry/geometryEngine',
-                'esri/geometry/Circle',
-                'esri/geometry/Point',
-                'esri/widgets/Print',
-                'esri/layers/GraphicsLayer',
-                'esri/Graphic',
-                'esri/widgets/Legend',
-                'esri/widgets/CoordinateConversion',
-                'esri/widgets/CoordinateConversion/support/Conversion',
-                'esri/widgets/Search',
-                'esri/core/watchUtils',
-            ]);
+        ] = await loadModules([
+            'esri/views/MapView',
+            'esri/Map',
+            'esri/widgets/Locate',
+            'esri/widgets/Track',
+            'esri/widgets/ScaleBar',
+            'esri/geometry/SpatialReference',
+            'esri/widgets/Compass',
+            'esri/geometry/geometryEngine',
+            'esri/geometry/Circle',
+            'esri/geometry/Point',
+            'esri/widgets/Print',
+            'esri/layers/GraphicsLayer',
+            'esri/Graphic',
+            'esri/widgets/Legend',
+            'esri/widgets/CoordinateConversion',
+            'esri/widgets/CoordinateConversion/support/Conversion',
+            'esri/widgets/Search',
+            'esri/core/watchUtils',
+        ]);
 
         const {
             mapCenter,
@@ -251,6 +250,8 @@ class EsriMap extends Component<Props> {
                 multipleConversions: false,
             });
 
+            // coordinateWidget not ready without timeout
+            await new Promise(resolve => setTimeout(resolve, 300));
             const formats = coordinateWidget.formats
                 .filter(f => f.name === 'basemap' || f.name === 'xy');
 
@@ -352,7 +353,7 @@ class EsriMap extends Component<Props> {
                             setHasGraphics(hasGraphics);
                         }
                     });
-                } else if (!results.some(item => item.graphic.layer.type === 'graphics')) {
+                } else if (!results.some(item => item.graphic.type === 'draw-graphic')) {
                     // Flow does not recognize flatMap so use any instead of Object[] for now.
                     const layers: any = await queryFeatures(
                         // Use scalable circle as click point to make point and line type features
@@ -366,18 +367,21 @@ class EsriMap extends Component<Props> {
                     );
                     const features = layers ? layers.flatMap(layer => layer.features) : [];
                     const { activeAdminTool, geometryType } = this.props;
-                    view.popup.open({
-                        location: event.mapPoint,
-                        promises: [mapSelectPopup(
-                            features,
-                            view,
-                            layerList,
-                            activeAdminTool,
-                            geometryType,
-                            event.x,
-                            event.y,
-                        )],
-                    });
+
+                    if (!activeTool) {
+                        view.popup.open({
+                            location: event.mapPoint,
+                            promises: [mapSelectPopup(
+                                features,
+                                view,
+                                layerList,
+                                activeAdminTool,
+                                geometryType,
+                                event.x,
+                                event.y,
+                            )],
+                        });
+                    }
                 }
             });
         });

@@ -1,4 +1,4 @@
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { when } from 'jest-when';
 import DigitransitLocatorBuilder from '../DigitransitLocatorBuilder';
 import { fetchAddresses } from '../api';
@@ -23,7 +23,7 @@ const promiseUtils = { create: executor => new Promise(executor) };
 
 describe('digitransit - DigitransitLocatorBuilder', () => {
     beforeAll(() => {
-        esriLoader.loadModules.mockResolvedValue([LocatorMock, promiseUtils]);
+        loadModules.mockResolvedValue([LocatorMock, promiseUtils]);
         when(fetchAddresses)
             .calledWith('Helsinki', 2)
             .mockResolvedValue([

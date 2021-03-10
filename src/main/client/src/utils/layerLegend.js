@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 
 /**
  * Get legend symbol.
@@ -8,8 +8,7 @@ import esriLoader from 'esri-loader';
  * @returns {Promise} Promise html element that contains legend symbol.
  */
 export const getLegendSymbol = async (symbol: Object) => {
-    const [symbolPreview] = await esriLoader
-        .loadModules(['esri/symbols/support/symbolPreview']);
+    const [symbolPreview] = await loadModules(['esri/symbols/support/symbolPreview']);
     return symbolPreview.renderPreviewHTML(symbol, {
         size: 12,
     });

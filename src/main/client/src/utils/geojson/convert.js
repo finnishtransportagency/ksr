@@ -1,6 +1,6 @@
 // @flow
 
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { project } from '../projection';
 
 /**
@@ -23,7 +23,7 @@ const convert = async (
         Polyline,
         Polygon,
         Multipoint,
-    ] = await esriLoader.loadModules([
+    ] = await loadModules([
         'esri/geometry/Point',
         'esri/geometry/Polyline',
         'esri/geometry/Polygon',

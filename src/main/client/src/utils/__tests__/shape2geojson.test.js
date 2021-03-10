@@ -1,4 +1,4 @@
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { shape2geoJson, convertLayerListFormat } from '../shape2geojson';
 import { convert } from '../geojson';
 import { getLegendSymbol } from '../layerLegend';
@@ -35,7 +35,7 @@ describe('shape2geojson4', () => {
     };
 
     beforeAll(() => {
-        esriLoader.loadModules.mockResolvedValue([FeatureLayerMock]);
+        loadModules.mockResolvedValue([FeatureLayerMock]);
         convert.mockResolvedValue({
             x: 134,
             y: 131,
