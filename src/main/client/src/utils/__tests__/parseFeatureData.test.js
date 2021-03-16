@@ -71,7 +71,7 @@ describe('parseFeatureData', () => {
         const data = mergeData(a, b);
 
         expect(data.length).toBe(6);
-        expect(data.filter(o => o._selected).length).toBe(5);
+        expect(data.filter(o => o._selected).length).toBe(4);
     });
 
     it('updateColumns - should update layer columns', () => {
