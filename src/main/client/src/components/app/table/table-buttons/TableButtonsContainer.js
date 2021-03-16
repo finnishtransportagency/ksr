@@ -44,13 +44,22 @@ const mapStateToProps = (state) => {
         : false;
     const layer = layerList
         .find(l => l.id === layerId);
-    const activeTableLayer = layerList
-        .find(l => l.id === activeTable && l.type === 'agfs' && l.layers);
 
     const { addressField, featureType } = layerId
     && layerList.find(l => l.id === layerId);
 
-    const parentLayer = nestedVal(layerList.find(l => l.id === activeTable.replace('.s', '')), ['parentLayer']);
+    let activeTableLayer = layerList
+        .find(l => l.id === activeTable && l.type === 'agfs' && l.layers);
+    const parentLayer = nestedVal(
+        layerList.find(l => l.id === activeTable.replace('.s', '')),
+        ['parentLayer'],
+    );
+
+    // Find correct layers -data for child layer
+    if (!activeTableLayer && parentLayer) {
+        activeTableLayer = layerList.find(l => l.id === parentLayer && l.type === 'agfs' && l.layers);
+    }
+
     const currentTabAdmin = parentLayer
         ? parentLayer.replace('.s', '') === layerId.replace('.s', '')
         : activeTable.replace('.s', '') === layerId.replace('.s', '');
