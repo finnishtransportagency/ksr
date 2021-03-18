@@ -35,26 +35,23 @@ export const queryFeatures = (
         if (layer.queryFeatures && layer.visible) {
             if (!layerId) {
                 if (layer.featureType === 'shapefile') {
-                    view.whenLayerView(layer).then((layerView) => {
-                        queries.push(layerView.queryFeatures(query)
-                            .then(results => handleQueryResult(layer, results, 'shapefile')));
-                    });
+                    queries.push(view.whenLayerView(layer)
+                        .then(layerView => layerView.queryFeatures(query))
+                        .then(results => handleQueryResult(layer, results, 'shapefile')));
                 } else if (view.scale < layer.minScale && view.scale > layer.maxScale) {
                     if (!layer.definitionExpression) {
                         queries.push(layer.queryFeatures(query)
                             .then(results => handleQueryResult(layer, results, 'select')));
                     } else {
-                        view.whenLayerView(layer).then((layerView) => {
-                            queries.push(layerView.queryFeatures(query)
-                                .then(results => handleQueryResult(layer, results, 'search')));
-                        });
+                        queries.push(view.whenLayerView(layer)
+                            .then(layerView => layerView.queryFeatures(query))
+                            .then(results => handleQueryResult(layer, results, 'search')));
                     }
                 }
             } else if (layer.featureType === 'shapefile' && layer.id !== layerId) {
-                view.whenLayerView(layer).then((layerView) => {
-                    queries.push(layerView.queryFeatures(query)
-                        .then(results => handleQueryResult(layer, results, 'shapefile')));
-                });
+                queries.push(view.whenLayerView(layer)
+                    .then(layerView => layerView.queryFeatures(query))
+                    .then(results => handleQueryResult(layer, results, 'shapefile')));
             } else if (view.scale < layer.minScale
                 && view.scale > layer.maxScale
                 && layer.id !== layerId
@@ -63,10 +60,9 @@ export const queryFeatures = (
                     queries.push(layer.queryFeatures(query)
                         .then(results => handleQueryResult(layer, results, 'select')));
                 } else {
-                    view.whenLayerView(layer).then((layerView) => {
-                        queries.push(layerView.queryFeatures(query)
-                            .then(results => handleQueryResult(layer, results, 'search')));
-                    });
+                    queries.push(view.whenLayerView(layer)
+                        .then(layerView => layerView.queryFeatures(query))
+                        .then(results => handleQueryResult(layer, results, 'search')));
                 }
             }
         }
