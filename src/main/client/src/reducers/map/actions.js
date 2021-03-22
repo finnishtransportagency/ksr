@@ -201,24 +201,15 @@ const getSelectedLayersAndFeatures = (dispatch: Function, state: Object) => {
     const selectedLayers = [];
     state.table.features.layers.forEach((l) => {
         const allSelected = !l.data.some(f => !f._selected);
-        if (l._source === 'select') {
+        const selectedTableFeatures = l.data
+            .filter(f => f._selected);
+        if (selectedTableFeatures.length && l.data
+            .filter(f => !f._selected)) {
             selectedLayers.push({
                 id: l.id,
-                featureObjectIdList: l.data.filter(f => f._selected).map(f => f[`${f._layerId}/OBJECTID`]),
+                selectedTableFeatures,
                 allSelected,
             });
-        } else {
-            const selectedTableFeatures = l.data
-                .filter(f => f._selected);
-            if (selectedTableFeatures.length && l.data
-                .filter(f => !f._selected)) {
-                selectedLayers.push({
-                    id: l.id,
-                    table: true,
-                    selectedTableFeatures,
-                    allSelected,
-                });
-            }
         }
         if (allSelected) {
             dispatch({
@@ -236,9 +227,7 @@ const addSelectedFeaturesForFetching = (
     const siblingLayers = getSiblingsOrSelf(allLayers, layer);
     siblingLayers.forEach((l) => {
         let selectedFeatures;
-        if (selectedLayer.featureObjectIdList) {
-            selectedFeatures = selectedLayer.featureObjectIdList;
-        } else if (selectedLayer.selectedTableFeatures) {
+        if (selectedLayer.selectedTableFeatures) {
             selectedFeatures = selectedLayer.selectedTableFeatures.map(f => f[`${f._layerId}/OBJECTID`]);
         }
         if (fetchSelected.get(l)) {
@@ -262,7 +251,6 @@ export const updateRelatedLayersData = (
 
     state.map.mapView.view.popup.close();
     let searchMap;
-    let promises = [];
     relatedLayers.forEach(async (layer) => {
         if (layer._source !== 'search') {
             const selectedLayer = selectedLayers.find(l => l.id === layer.id);
@@ -272,14 +260,12 @@ export const updateRelatedLayersData = (
             if (layer.active) {
                 const view = state.map.mapView.view
                     .allLayerViews.find(v => v.layer.id === layer.id);
-                if (view && view.layer) promises.push(view.layer.refresh());
+                if (view && view.layer) view.layer.refresh();
             }
             if (state.table.features.layers.some(l => l.id === layer.id)) {
-                const features = (selectedLayer && selectedLayer.table)
+                const features = (selectedLayer)
                     ? selectedLayer.selectedTableFeatures : undefined;
-                if (!selectedLayer
-                    || (!selectedLayer.table && !selectedLayer.allSelected)
-                    || (selectedLayer.table && !features)) {
+                if (!selectedLayer || !selectedLayer.allSelected) {
                     dispatch(addNonSpatialContentToTable(layer, undefined, true, features));
                 }
             }
@@ -293,16 +279,14 @@ export const updateRelatedLayersData = (
         dispatch(searchFeatures(searchMap));
     }
     if (fetchSelected.size) {
-        promises = [];
+        const promises = [];
         fetchSelected.forEach((value, key) => {
-            if (!key.table) {
-                promises.push(fetchSearchQuery(
-                    key.id,
-                    `OBJECTID IN (${value.join(',')})`,
-                    key.name,
-                    { layers: [] },
-                ));
-            }
+            promises.push(fetchSearchQuery(
+                key.id,
+                `OBJECTID IN (${value.join(',')})`,
+                key.name,
+                { layers: [] },
+            ));
         });
         Promise.all(promises).then((r) => {
             r.forEach((res) => {
