@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import React, { Component, createRef, Fragment } from 'react';
 import { toast } from 'react-toastify';
 import strings from '../../../../../translations';
@@ -73,6 +73,7 @@ class SketchTool extends Component<Props, State> {
         this.toggleSelectToolsButton = createRef();
         this.removeSelection = this.removeSelection.bind(this);
         this.removeSketch = this.removeSketch.bind(this);
+        this.acceptSketch = this.acceptSketch.bind(this);
         this.toggleSelectTools = this.toggleSelectTools.bind(this);
     }
 
@@ -117,14 +118,13 @@ class SketchTool extends Component<Props, State> {
     }
 
     sketchTool = () => {
-        esriLoader
-            .loadModules([
-                'esri/geometry/geometryEngine',
-                'esri/geometry/Polygon',
-                'esri/geometry/Polyline',
-                'esri/Graphic',
-                'esri/geometry/Point',
-            ])
+        loadModules([
+            'esri/geometry/geometryEngine',
+            'esri/geometry/Polygon',
+            'esri/geometry/Polyline',
+            'esri/Graphic',
+            'esri/geometry/Point',
+        ])
             .then(([geometryEngine, Polygon, Polyline, Graphic, Point]) => {
                 const {
                     view,
@@ -395,10 +395,10 @@ class SketchTool extends Component<Props, State> {
                     ) {
                         if (event.graphic.geometry.isSelfIntersecting
                             || event.graphic.geometry.rings.length > 1) {
-                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(false);
+                            event.graphic.symbol = createSketchLineGraphic(false);
                             this.setState({ validGeometry: false });
                         } else {
-                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(true);
+                            event.graphic.symbol = createSketchLineGraphic(true);
                             if (event.graphic !== null
                                 && event.graphic.geometry.rings[0].length > 2) {
                                 const { geometry } = event.graphic;
@@ -414,6 +414,7 @@ class SketchTool extends Component<Props, State> {
                             propertyAreaSearch,
                             setPropertyInfo,
                             authorities,
+                            sketchViewModel
                         } = this.props;
 
                         // Skip finding layers if Administrator editing is in use
@@ -464,15 +465,14 @@ class SketchTool extends Component<Props, State> {
                                 selectFeatures,
                             );
                         }
-                        resetMapTools(draw, sketchViewModel, setActiveTool);
                     } else if (event.state === 'cancel') {
                         removeLengthLabels();
                         updatePolygonLabels();
                     }
                     this.setState({
                         validGeometry: this.validGeometry(),
-                        canRedo: event.target.canRedo(),
-                        canUndo: event.target.canUndo(),
+                        canRedo: sketchViewModel.canRedo(),
+                        canUndo: sketchViewModel.canUndo(),
                     });
                 };
 
@@ -602,8 +602,8 @@ class SketchTool extends Component<Props, State> {
                     }
                     this.setState({
                         validGeometry: this.validGeometry(),
-                        canRedo: event.target.canRedo(),
-                        canUndo: event.target.canUndo(),
+                        canRedo: sketchViewModel.canRedo(),
+                        canUndo: sketchViewModel.canUndo(),
                     });
                 };
 
@@ -647,6 +647,8 @@ class SketchTool extends Component<Props, State> {
             setTempGraphicsLayer,
             sketchViewModel,
             tempGraphicsLayer,
+            draw,
+            setActiveTool,
         } = this.props;
 
         setActiveFeatureMode('create');
@@ -654,7 +656,21 @@ class SketchTool extends Component<Props, State> {
         layer.graphics = undefined;
         setTempGraphicsLayer(layer);
         sketchViewModel.cancel();
+        resetMapTools(draw, sketchViewModel, setActiveTool);
     };
+
+    acceptSketch = () => {
+        const {
+            sketchViewModel,
+            draw,
+            setActiveTool,
+            setActiveModal,
+            editModeActive,
+        } = this.props;
+
+        setActiveModal(editModeActive);
+        resetMapTools(draw, sketchViewModel, setActiveTool);
+    }
 
     showAdminView = (): boolean => {
         const { activeAdminTool, layerList } = this.props;
@@ -704,7 +720,7 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
+            data, view, tempGraphicsLayer, isOpen, active,
         } = this.props;
         const {
             editSketchIcon, validGeometry, canRedo, canUndo,
@@ -734,12 +750,11 @@ class SketchTool extends Component<Props, State> {
                 <SketchActiveAdminView
                     editSketchIcon={editSketchIcon}
                     removeSketch={this.removeSketch}
+                    acceptSketch={this.acceptSketch}
                     showAdminView={this.showAdminView()}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
                     drawNewAreaButtonRef={this.drawNewAreaButton}
                     hasAdminGraphics={hasAdminGraphics}
-                    setActiveModal={setActiveModal}
-                    editModeActive={editModeActive}
                     validGeometry={validGeometry}
                     activeTool={active}
                     showNewAreaButton={showNewAreaButton}

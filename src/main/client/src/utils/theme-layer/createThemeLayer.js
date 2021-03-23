@@ -1,6 +1,5 @@
 // @flow
-
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { toggleLayerLegend } from '../../reducers/map/actions';
 import store from '../../store';
 
@@ -23,8 +22,7 @@ export const createThemeLayer = async (
     layerList: Object[],
     setLayerList: (Object[]) => void,
 ) => {
-    const [colorRendererCreator] = await esriLoader
-        .loadModules(['esri/renderers/smartMapping/creators/color']);
+    const [colorRendererCreator] = await loadModules(['esri/renderers/smartMapping/creators/color']);
     const response = await colorRendererCreator.createClassBreaksRenderer(rendererParams);
     const newLayerList = layerList.map(layer => ({
         ...layer,

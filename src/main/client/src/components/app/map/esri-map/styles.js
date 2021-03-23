@@ -28,8 +28,8 @@ export const Wrapper = styled.div`
             z-index: 2;
         }
         
-        .esri-legend--card {
-            bottom: 10px;
+        .esri-legend {
+            margin-bottom: 10px;
         }
         
         .esri-coordinate-conversion {

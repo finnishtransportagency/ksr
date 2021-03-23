@@ -22,6 +22,7 @@ type Props = {
         accept: Function,
     ) => void,
     setActiveModal: (activeModal: string, data: any) => void,
+    updateLayerData: (layer: Object) => void,
 };
 
 type State = {
@@ -104,6 +105,7 @@ class ContractList extends Component<Props, State> {
             contractLayers,
             objectId,
             showConfirmModal,
+            updateLayerData,
         } = this.props;
 
         const contractLayer: Object = contractLayers.find(c => c.id === layerId);
@@ -166,6 +168,8 @@ class ContractList extends Component<Props, State> {
                         contracts: contractsReduced,
                         fetchingContracts: false,
                     });
+
+                    updateLayerData(currentLayer);
                 } else {
                     toast.error(contractUnlinkError);
                     this.setState({ fetchingContracts: false });

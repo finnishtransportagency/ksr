@@ -7,11 +7,10 @@ type Props = {
     editSketchIcon: string,
     showAdminView: boolean,
     removeSketch: () => void,
+    acceptSketch: () => void,
     drawNewFeatureButtonRef: () => void,
     drawNewAreaButtonRef: () => void,
     hasAdminGraphics: boolean,
-    setActiveModal: (editModeActive: boolean) => void,
-    editModeActive: boolean,
     validGeometry: boolean,
     activeTool: string,
     showNewAreaButton: boolean,
@@ -25,11 +24,10 @@ const SketchActiveAdminView = ({
     editSketchIcon,
     showAdminView,
     removeSketch,
+    acceptSketch,
     drawNewFeatureButtonRef,
     drawNewAreaButtonRef,
     hasAdminGraphics,
-    setActiveModal,
-    editModeActive,
     validGeometry,
     activeTool,
     showNewAreaButton,
@@ -61,11 +59,11 @@ const SketchActiveAdminView = ({
                 title={strings.sketchTool.acceptSelection}
                 onClick={
                     hasAdminGraphics && validGeometry ? () => {
-                        setActiveModal(editModeActive);
+                        acceptSketch();
                     } : null}
                 onKeyPress={
                     hasAdminGraphics && validGeometry ? () => {
-                        setActiveModal(editModeActive);
+                        acceptSketch();
                     } : null}
             >
                 <span className="esri-icon-check-mark" />

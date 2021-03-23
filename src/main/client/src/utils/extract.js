@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 
 /**
  * Extract selected features to desired format.
@@ -15,12 +15,11 @@ export const extractSelected = (
     selectedGeometryData: Array<Object>,
     format: string,
 ) => (
-    esriLoader
-        .loadModules([
-            'esri/Graphic',
-            'esri/tasks/Geoprocessor',
-            'esri/tasks/support/FeatureSet',
-        ])
+    loadModules([
+        'esri/Graphic',
+        'esri/tasks/Geoprocessor',
+        'esri/tasks/support/FeatureSet',
+    ])
         .then(([
             Graphic,
             Geoprocessor,

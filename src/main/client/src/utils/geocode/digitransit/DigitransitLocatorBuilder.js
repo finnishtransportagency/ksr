@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { fetchAddresses } from './api';
 import cache, { addToCache } from './cache';
 
@@ -17,7 +17,7 @@ const DigitransitLocatorBuilder = {
      * @returns {Promise<Object>} Promise that will resolve to DigitransitLocator.
      */
     build: async () => {
-        const [Locator, promiseUtils] = await esriLoader.loadModules([
+        const [Locator, promiseUtils] = await loadModules([
             'esri/tasks/Locator',
             'esri/core/promiseUtils',
         ]);

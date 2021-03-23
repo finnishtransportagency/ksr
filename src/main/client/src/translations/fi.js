@@ -34,6 +34,7 @@ const fi = {
             not: 'Ei sisällä (täsmälleen)',
             notLike: 'Ei sisällä (osittain)',
         },
+        notFound: 'Ei hakua vastaavia tuloksia.',
     },
     reactTable: {
         previousText: 'Edellinen',
