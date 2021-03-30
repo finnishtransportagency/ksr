@@ -77,6 +77,7 @@ const fi = {
             acceptText: 'Hylkää',
             cancelText: 'Peruuta',
         },
+        caseManagement: 'Asianhallinta',
     },
     modalFilter: {
         title: 'Suodata sarakkeita',

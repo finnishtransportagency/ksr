@@ -17,6 +17,7 @@ import { copyFeature } from '../../../utils/map-selection/copyFeature';
 import { addLayers, removeGraphicsFromMap } from '../../../utils/map';
 import { convert } from '../../../utils/geojson';
 import { DigitransitLocatorBuilder } from '../../../utils/geocode';
+import { getDocumentUrl } from '../../../utils/contracts/contractDocument';
 
 type Props = {
     layerList: Array<any>,
@@ -558,6 +559,11 @@ class EsriMap extends Component<Props> {
                         setActiveModal('showAddress', data);
                     }
                     break;
+                case 'case-management-link':
+                    if (selectedFeature.attributes.DNRO) {
+                        window.open(getDocumentUrl(selectedFeature.attributes.DNRO), '_bland');
+                    }
+                    break;
                 default:
                     break;
             }
@@ -606,6 +612,18 @@ class EsriMap extends Component<Props> {
         view.popup.watch('visible', (visible) => {
             if (!visible) {
                 removeGraphicsFromMap(view, 'selected-popup-feature');
+            }
+        });
+
+        view.popup.watch('selectedFeature', (graphic) => {
+            if (graphic) {
+                const dnro = graphic.attributes.DNRO;
+                const template = graphic.getEffectivePopupTemplate();
+                template.actions.forEach((action) => {
+                    if (action.id === 'case-management-link') {
+                        action.disabled = !dnro;
+                    }
+                });
             }
         });
 
