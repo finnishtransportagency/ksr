@@ -164,6 +164,14 @@ export const mapSelectPopup = async (
                     actions.push(editFeatureAction);
                 }
 
+                if (matchingLayer.name === 'Käyttöoikeussopimukset') {
+                    actions.push({
+                        title: strings.esriMap.caseManagement,
+                        id: 'case-management-link',
+                        className: 'fas fa-book',
+                    });
+                }
+
                 if (matchingLayer && matchingLayer.geometryType === 'polygon') {
                     const getAllPropertyInfo = {
                         title: strings.esriMap.getAllPropertyInfo,

@@ -1,4 +1,15 @@
 // @flow
+/**
+ * Get document url built from document type and search value.
+ * @param searchValue Search value, usually case number or other identifier.
+ * @param documentType Type of the fetched document.
+ * @returns {string} URL of the document.
+ */
+export const getDocumentUrl = (
+    searchValue: string,
+    documentType: string = 'caseManagement',
+) => (`${window.location.href}api/contract-document?documentType=${documentType}&searchValue=${searchValue}`);
+
 
 /**
  * Gets contract document URL.
@@ -21,7 +32,7 @@ export const getContractDocumentUrl = (
         const searchValue = attributes[field];
 
         if (documentType === 'tiimeri' || documentType === 'caseManagement') {
-            return `${window.location.href}api/contract-document?documentType=${documentType}&searchValue=${searchValue}`;
+            return getDocumentUrl(searchValue, documentType);
         }
     }
     return null;
