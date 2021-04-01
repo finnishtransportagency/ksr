@@ -616,7 +616,7 @@ class EsriMap extends Component<Props> {
         });
 
         view.popup.watch('selectedFeature', (graphic) => {
-            if (graphic) {
+            if (graphic && graphic.attributes) {
                 const dnro = graphic.attributes.DNRO;
                 const template = graphic.getEffectivePopupTemplate();
                 template.actions.forEach((action) => {
