@@ -6,19 +6,35 @@ import { notAllowedFields } from './fields';
  * Get custom className for column if needed.
  *
  * @param {string} type Column type.
+ * @param {string} name Column name.
  * @returns {string} Custom className if needed otherwise an empty string.
  */
-const columnClassName = (type: string) => {
+const columnClassName = (type: string, name: string) => {
+    let className;
     switch (type) {
         case 'double':
         case 'esriFieldTypeDouble':
-            return 'decimal';
+            className = 'decimal';
+            break;
         case 'date':
         case 'esriFieldTypeDate':
-            return 'date';
+            className = 'date';
+            break;
         default:
-            return '';
+            className = '';
     }
+    if ([
+        'LAND_AREA',
+        'LASKETTU_ALA',
+        'P_ALA_BRM',
+        'P_ALA_HTM',
+        'SHAPE_AREA',
+        'UNITS_RENTED_SUM',
+        'UNITS',
+    ].includes(name)) {
+        className += className.length ? ' area' : 'area';
+    }
+    return className;
 };
 
 /**
@@ -47,7 +63,7 @@ export const parseColumns = (id: string, data: Object[]): Object[] => {
             codedValues: f.domain.codedValues,
         } : null,
         minWidth: f.type === 'esriFieldTypeDate' ? 140 : 100,
-        className: columnClassName(f.type),
+        className: columnClassName(f.type, f.name),
     }));
 };
 
