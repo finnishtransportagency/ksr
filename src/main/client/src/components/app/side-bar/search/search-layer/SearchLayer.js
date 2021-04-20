@@ -145,7 +145,10 @@ class SearchLayer extends Component<Props, State> {
             ...searchState.searchFieldValues,
         ];
 
-        const inputValue = evt.target.value;
+        const inputValue = evt.target
+            ? evt.target.value
+            : evt;
+
         switch (type) {
             case 'text-all-columns':
             case 'text': {
@@ -159,14 +162,18 @@ class SearchLayer extends Component<Props, State> {
 
                 if (type === 'text') searchFieldValues[index].queryText = inputValue;
                 if (suggestionsActive) {
-                    const text = `'${evt.target.value}%'`;
-                    const queryColumns = type === 'text' ? [searchFieldValues[index].name] : optionsField.map(field => field.name);
-                    const queryString = queryColumns.map(c => `LOWER(${c}) LIKE LOWER(${text})`).join(' OR ');
+                    const text = `'${inputValue}%'`;
+                    const queryColumns = type === 'text'
+                        ? [searchFieldValues[index].name]
+                        : optionsField.map(field => field.name);
+                    const queryString = queryColumns
+                        .map(c => `LOWER(${c}) LIKE LOWER(${text})`)
+                        .join(' OR ');
                     window.clearTimeout(suggestionQuery);
                     if (this.abortController) {
                         this.abortController.abort();
                     }
-                    if (evt.target.value.trim().length > 1) {
+                    if (inputValue.trim().length > 1) {
                         this.setState({
                             // Workaround for IE since it does not support aborting yet at least.
                             fetchingSuggestions: true,
@@ -206,13 +213,13 @@ class SearchLayer extends Component<Props, State> {
                 break;
             }
             case 'expression':
-                searchFieldValues[index].queryExpression = evt;
+                searchFieldValues[index].queryExpression = inputValue;
                 break;
             case 'codedValue':
-                searchFieldValues[index].queryText = evt;
+                searchFieldValues[index].queryText = inputValue;
                 break;
             case 'date':
-                searchFieldValues[index].queryDate = evt.target.value;
+                searchFieldValues[index].queryDate = inputValue;
                 break;
             default:
                 break;
