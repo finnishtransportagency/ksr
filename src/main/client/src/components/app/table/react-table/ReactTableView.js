@@ -23,10 +23,13 @@ type Props = {
     activeAdminTool: string,
     activeTable: string,
     layerList: Object[],
+    setTableInstance: Function,
+    onFetchData: Function,
 };
 
 type State = {
     filtered: Object[],
+    tableInstance: Object,
 };
 
 class ReactTableView extends Component<Props, State> {
@@ -66,13 +69,14 @@ class ReactTableView extends Component<Props, State> {
         const {
             data,
             columns,
-            setRowFilter,
             toggleSelection,
             toggleSelectAll,
             selectAll,
             renderCustomCell,
             renderFilter,
             currentCellData,
+            setTableInstance,
+            onFetchData,
         } = this.props;
 
         return (
@@ -82,11 +86,8 @@ class ReactTableView extends Component<Props, State> {
                 <SelectableTable
                     className="-striped -highlight"
                     onFetchData={(state, instance) => {
-                        const currentRecords = instance.getResolvedState().sortedData;
-                        setRowFilter(currentRecords.map(r => ({
-                            id: r._original._id,
-                            layerId: r._original._layerId,
-                        })));
+                        setTableInstance(instance);
+                        onFetchData();
                     }}
                     data={data}
                     TableComponent={CustomTableView}
