@@ -44,6 +44,7 @@ type State = {
         rowIndex: ?number,
         key: ?string,
     },
+    tableInstance: Object,
 };
 
 const defaultState = {
@@ -54,6 +55,7 @@ const defaultState = {
         rowIndex: null,
         key: null,
     },
+    tableInstance: undefined,
 };
 
 let cellEditTimer;
@@ -68,7 +70,7 @@ class ReactTable extends Component<Props, State> {
         this.toggleSelection = this.toggleSelection.bind(this);
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps: Props) {
         const { updatePortal, portalIsOpen } = this.props;
         const paginationBottom = document.getElementsByClassName('pagination-bottom')[0];
         if (paginationBottom) {
@@ -88,8 +90,8 @@ class ReactTable extends Component<Props, State> {
             bodyElement.style.height = `calc(100% - ${tbodyHeight}px)`;
         }
 
-        const { currentCellData } = this.state;
-        const { setTableEdited, layerFeatures } = this.props;
+        const { currentCellData, tableInstance } = this.state;
+        const { setTableEdited, layerFeatures, activeTable } = this.props;
 
         // Logic for handling whether table save button should be disabled or not
         if (layerFeatures) {
@@ -119,6 +121,10 @@ class ReactTable extends Component<Props, State> {
             } else {
                 setTableEdited(false);
             }
+        }
+
+        if (prevProps.activeTable !== activeTable && tableInstance) {
+            this.onFetchData();
         }
     }
 
@@ -526,6 +532,22 @@ class ReactTable extends Component<Props, State> {
         return null;
     };
 
+    setTableInstance = (instance: Object) => {
+        this.setState({ tableInstance: instance });
+    };
+
+    onFetchData = () => {
+        const { tableInstance } = this.state;
+        if (tableInstance) {
+            const { setRowFilter } = this.props;
+            const currentRecords = tableInstance.getResolvedState().sortedData;
+            setRowFilter(currentRecords.map(r => ({
+                id: r._original._id,
+                layerId: r._original._layerId,
+            })));
+        }
+    };
+
     render() {
         const {
             fetching,
@@ -586,6 +608,8 @@ class ReactTable extends Component<Props, State> {
                     activeAdminTool={activeAdminTool}
                     activeTable={activeTable}
                     layerList={layerList}
+                    setTableInstance={this.setTableInstance}
+                    onFetchData={this.onFetchData}
                 />
             );
         }
