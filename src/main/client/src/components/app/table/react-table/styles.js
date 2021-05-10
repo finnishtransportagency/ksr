@@ -104,7 +104,7 @@ export const WrapperReactTable = styled.div`
                     outline: none;
                 };
                 
-                &.decimal {
+                &.decimal, &.area {
                     text-align: right;
                 };
 

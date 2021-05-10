@@ -95,6 +95,7 @@ const MapLayerSettings = ({
                     {
                         layer.type === 'agfs'
                         && layer._source !== 'search'
+                        && layer._source !== 'shapefile'
                         && (
                             <LayerSettings.Icons>
                                 <LayerSettings.Icon
