@@ -84,6 +84,60 @@ public class SHJService {
     }
 
     /**
+     * Update feature on layer Käyttöoikeussopimukset.
+     *
+     * @param attributes Attributes retrieved via API.
+     * @throws URISyntaxException if could not create URI to ArcGis-server.
+     * @throws IOException if could not open http response.
+     */
+    public boolean updateFeature (Map<String, Object> attributes) throws URISyntaxException, IOException {
+        Layer layer = getKayttooikeussopimuksetLayer();
+        Map<String, Object> fields = convertNamesShjToKsr(attributes);
+
+        String sopnum = (String) fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName());
+        if (sopnum == null) {
+            throw new KsrApiException.BadRequestException(String.format("Required value %s is missing.",
+                    KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName()));
+        }
+
+        Optional<String> getFeaturesUrl = layer.getGetFeaturesUrl("SOPIMUSNUM", sopnum);
+        if (!getFeaturesUrl.isPresent()) {
+            throw new KsrApiException.InternalServerErrorException(
+                    "Failed to build url for updating contract data.");
+        }
+        InputStream is = httpRequestService.getURLContents(getFeaturesUrl.get(),
+                layer.getUseInternalProxy(),
+                layer.getAuthentication());
+        Response response = Response.fromInputStream(is, layer.getId());
+
+        if (response.getFeatures().size() == 0) {
+            throw new KsrApiException.NotFoundErrorException(
+                    String.format(
+                            "Contract with contract number %s not found. Could not update.",
+                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName()).toString()
+                    ));
+        } else if (response.getFeatures().size() > 1) {
+            throw new KsrApiException.InternalServerErrorException(
+                    String.format(
+                            "More than one contract found with contract number %s.",
+                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName()).toString()
+                    ));
+        } else {
+            String objectIdField = response.getObjectIdFieldName();
+            fields.put(objectIdField, response.getFeatures().get(0).getAttributeValue(objectIdField));
+        }
+
+        String endPointUrl = layer.getUrl() + "/updateFeatures";
+        EditResponse editResponse = getEditResponse(endPointUrl, fields, layer);
+        if (editResponse.getError() != null) {
+            throw new KsrApiException.BadRequestException(((ArrayList<String>) editResponse.getError().get("details"))
+                    .get(0));
+        }
+
+        return editResponse.hasUpdateSuccess();
+    }
+
+    /**
      * Send add/update request to ArcGis and return response.
      *
      * @param endPointUrl URL to layer service. Should include addFeatures of updateFeatures in the end.

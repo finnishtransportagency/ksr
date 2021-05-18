@@ -74,4 +74,45 @@ public class SHJController {
         }
     }
 
+    @ApiOperation("Update existing contract (käyttöoikeussopimus).")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "attributes",
+                    value = "Object with following allowed properties\n\n" +
+                            "sopimustunniste: Integer, required \n" +
+                            "kohde: String,\n" +
+                            "kayttotarkoitus: String,\n" +
+                            "saantotapa: Integer,\n" +
+                            "voimassaoloAlkaa: String, format=YYYY-MM-DD,\n" +
+                            "voimassaoloPaattyy: String, format=YYYY-MM-DD,\n" +
+                            "paattymistapa: Integer,\n" +
+                            "korvaustapa: Integer,\n" +
+                            "sopimustapa: Integer,\n" +
+                            "liikennemuoto: String\n" +
+                            "lisatiedot: String,\n" +
+                            "muokkausaika: String, format=YYYY-MM-DD,\n" +
+                            "muokkaaja: String.",
+                    required = true,
+                    paramType = "body"),
+    })
+    @PostMapping(value = "/kos")
+    public ResponseEntity<?> updateKayttooikeussopimus(@RequestBody Map<String, Object> attributes) throws IOException {
+        try {
+            if (shjService.updateFeature(attributes)) {
+                LOG.info(String.format(
+                        "Successfully updated contract with contract number %s by using SHJ API.",
+                        attributes.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())
+                ));
+                return ResponseEntity.ok().build();
+            }
+            LOG.info(String.format(
+                    "Could not update contract with contract number %s by using SHJ API.",
+                    attributes.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())
+            ));
+            return ResponseEntity.badRequest().build();
+        } catch (URISyntaxException e) {
+            throw new KsrApiException.InternalServerErrorException("Error when trying to update contract.");
+        }
+    }
+
 }
