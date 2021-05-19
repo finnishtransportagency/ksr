@@ -34,6 +34,15 @@ export const setLayerLegend = async (
                 // Select first symbol if layer has multiple legends.
                 const symbol = fl.renderer.uniqueValueInfos[0].symbol.clone();
                 layer.legendSymbol = await getLegendSymbol(symbol);
+                const uniqueSymbols = [];
+                for (let idx = 0; idx < fl.renderer.uniqueValueInfos.length; idx += 1) {
+                    uniqueSymbols.push({
+                        symbol: await getLegendSymbol(fl.renderer.uniqueValueInfos[idx]
+                            .symbol.clone()),
+                        label: fl.renderer.uniqueValueInfos[idx].label,
+                    });
+                }
+                layer.uniqueSymbols = uniqueSymbols;
             }
         }
     }
