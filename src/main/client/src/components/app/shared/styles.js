@@ -32,3 +32,8 @@ export const Text = styled.div`
     -ms-text-overflow: ellipsis;
     text-overflow: ellipsis;
 `;
+
+export const TooltipChildrenWrapper = styled.div`
+    overflow-y: scroll;
+    max-height: 400px;
+`;
