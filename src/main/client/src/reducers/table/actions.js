@@ -108,6 +108,12 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             renderer: null,
                             parentLayer: null,
                             minScale: 18489297,
+                            uniqueSymbols: selectedLayer.uniqueSymbols
+                                ? selectedLayer.uniqueSymbols.map(s => ({
+                                    ...s,
+                                    symbol: s.symbol.cloneNode(true),
+                                }))
+                                : undefined,
                         };
 
                         layersToBeAdded.layers.push(newLayer);
