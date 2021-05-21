@@ -30,6 +30,7 @@
     "react-table": "6.10.3",
     "react-table-hoc-fixed-columns": "^2.0.1",
     "react-toastify": "^4.5.2",
+    "react-tooltip": "^4.2.19",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "shapefile": "^0.6.6",
