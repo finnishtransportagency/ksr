@@ -77,6 +77,7 @@ public class Layer implements Serializable {
     private String propertyIdField;
     private List<String> requiredUniqueFields;
     private List<Relation> relations;
+    private boolean wmsLegend;
 
     /**
      * Construct a Layer.
@@ -120,6 +121,7 @@ public class Layer implements Serializable {
         this.setQueryColumnsCustom(lr.getQueryColumns());
         this.setPropertyIdField(lr.getPropertyIdField());
         this.setRequiredUniqueFieldsCustom(lr.getRequiredUniqueFields());
+        this.setWmsLegend(lr.getWmsLegend());
 
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
@@ -951,6 +953,23 @@ public class Layer implements Serializable {
      */
     public void setRelations(List<Relation> relations) {
         this.relations = relations;
+    }
+
+    /**
+     * Get boolean value indication if WMS-layer should show legend.
+     *
+     * @return wmsLayer.
+     */
+    public boolean getWmsLegend() {
+        return wmsLegend;
+    }
+
+    /**
+     * Set value to wmsLayer.
+     * @param wmsLegend Boolean value to be set.
+     */
+    public void setWmsLegend(String wmsLegend) {
+        this.wmsLegend = "1".equals(wmsLegend);
     }
 
     /**
