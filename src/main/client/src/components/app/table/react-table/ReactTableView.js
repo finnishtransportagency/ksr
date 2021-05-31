@@ -25,6 +25,8 @@ type Props = {
     layerList: Object[],
     setTableInstance: Function,
     onFetchData: Function,
+    setPage: Function,
+    activePage: Number,
 };
 
 type State = {
@@ -36,7 +38,7 @@ class ReactTableView extends Component<Props, State> {
     // Custom view update handling to reduce redundant re-renders for improved performance
     shouldComponentUpdate(nextProps: Props) {
         const {
-            data, currentCellData, activeAdminTool, activeTable, columns, layerList,
+            data, currentCellData, activeAdminTool, activeTable, columns, layerList, activePage,
         } = this.props;
         const isChildLayer = nestedVal(
             layerList.find(ll => ll.id === activeTable),
@@ -55,6 +57,7 @@ class ReactTableView extends Component<Props, State> {
         const layerListChanged = JSON.stringify(nextProps.layerList) !== JSON.stringify(layerList);
         const filteredColumnsChanged = nextProps.columns.length
             !== columns.length;
+        const pageChanged = nextProps.activePage !== activePage;
 
         return tableChanged
             || adminChanged
@@ -62,7 +65,8 @@ class ReactTableView extends Component<Props, State> {
             || currentCellChanged
             || filteredColumnsChanged
             || layerListChanged
-            || delayedChildLayerUpdate;
+            || delayedChildLayerUpdate
+            || pageChanged;
     }
 
     render() {
@@ -77,6 +81,8 @@ class ReactTableView extends Component<Props, State> {
             currentCellData,
             setTableInstance,
             onFetchData,
+            setPage,
+            activePage,
         } = this.props;
 
         return (
@@ -89,6 +95,7 @@ class ReactTableView extends Component<Props, State> {
                         setTableInstance(instance);
                         onFetchData();
                     }}
+                    page={activePage}
                     data={data}
                     TableComponent={CustomTableView}
                     filterable
@@ -135,7 +142,9 @@ class ReactTableView extends Component<Props, State> {
                     selectType="checkbox"
                     isSelected={r => r._selected}
                     selectAll={selectAll}
-                    onPageChange={() => {
+                    onPageChange={(pageIndex) => {
+                        const { activeTable } = this.props;
+                        setPage({ layerId: activeTable, page: pageIndex });
                         document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
                     }}
                     toggleSelection={toggleSelection}

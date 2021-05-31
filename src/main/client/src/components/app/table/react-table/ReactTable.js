@@ -34,6 +34,8 @@ type Props = {
     setTableEdited: Function,
     updatePortal: Function,
     portalIsOpen: boolean,
+    activePage: Object,
+    setActivePage: Function,
 };
 
 type State = {
@@ -558,7 +560,12 @@ class ReactTable extends Component<Props, State> {
             setRowFilter,
             activeAdminTool,
             activeTable,
+            setActivePage,
+            activePage,
         } = this.props;
+
+        const layerPage = layerFeatures && layerFeatures.id && activePage[layerFeatures.id];
+        const currentPage = layerPage || 0;
 
         if (!layerFeatures) {
             return (
@@ -610,6 +617,8 @@ class ReactTable extends Component<Props, State> {
                     layerList={layerList}
                     setTableInstance={this.setTableInstance}
                     onFetchData={this.onFetchData}
+                    setPage={setActivePage}
+                    activePage={currentPage}
                 />
             );
         }

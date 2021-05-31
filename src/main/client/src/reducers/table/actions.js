@@ -558,6 +558,11 @@ export const setButtonAmount = (buttonAmount: ?number) => ({
     buttonAmount,
 });
 
+export const setActivePage = (page: Object) => ({
+    type: types.SET_ACTIVE_PAGE,
+    page,
+});
+
 export const setTableEdited = (hasTableEdited: boolean) => ({
     type: types.TABLE_EDITED,
     hasTableEdited,
