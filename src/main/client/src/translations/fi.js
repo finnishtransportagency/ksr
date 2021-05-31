@@ -403,6 +403,7 @@ const fi = {
         toggleVisibleZoomOut: 'Näytä/piilota karttataso loitontaessa kauas',
         zoomIn: 'Lähennä karttaa nähdäksesi karttatason',
         zoomOut: 'Loitonna karttaa nähdäksesi karttatason',
+        showMultiSymbol: 'Näytä tason symbolien kuvaukset',
     },
     searchProperty: {
         propertyIdentifier: 'Kiinteistötunnus',
