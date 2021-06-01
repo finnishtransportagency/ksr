@@ -273,6 +273,12 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
+    handlePageChange = (pageIndex) => {
+        const { activeTable, setActivePage } = this.props;
+        setActivePage({ layerId: activeTable, page: pageIndex });
+        document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
+    };
+
     renderSelectInput = (cellField: Object, cellInfo: Object, filter: any, onChange: Function) => {
         // Add empty option for empty and null values
         const options = [<option key="-" value="" />].concat(
@@ -283,7 +289,10 @@ class ReactTable extends Component<Props, State> {
         return (
             <TableSelect
                 value={filter ? filter.value : ''}
-                onChange={event => onChange(event.target.value)}
+                onChange={(event) => {
+                    this.handlePageChange(0);
+                    onChange(event.target.value);
+                }}
             >
                 {options}
             </TableSelect>
@@ -429,7 +438,10 @@ class ReactTable extends Component<Props, State> {
             style={{ minHeight: '1rem' }}
             type="text"
             value={filter ? filter.value : ''}
-            onChange={evt => onChange(evt.target.value)}
+            onChange={(evt) => {
+                this.handlePageChange(0);
+                onChange(evt.target.value);
+            }}
         />
     );
 
@@ -560,7 +572,6 @@ class ReactTable extends Component<Props, State> {
             setRowFilter,
             activeAdminTool,
             activeTable,
-            setActivePage,
             activePage,
         } = this.props;
 
@@ -617,7 +628,7 @@ class ReactTable extends Component<Props, State> {
                     layerList={layerList}
                     setTableInstance={this.setTableInstance}
                     onFetchData={this.onFetchData}
-                    setPage={setActivePage}
+                    onPageChange={this.handlePageChange}
                     activePage={currentPage}
                 />
             );
