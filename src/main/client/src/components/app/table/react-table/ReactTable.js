@@ -273,6 +273,12 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
+    handlePageChange = (pageIndex) => {
+        const { activeTable, setActivePage } = this.props;
+        setActivePage({ layerId: activeTable, page: pageIndex });
+        document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
+    };
+
     renderSelectInput = (cellField: Object, cellInfo: Object, filter: any, onChange: Function) => {
         // Add empty option for empty and null values
         const options = [<option key="-" value="" />].concat(
@@ -560,7 +566,6 @@ class ReactTable extends Component<Props, State> {
             setRowFilter,
             activeAdminTool,
             activeTable,
-            setActivePage,
             activePage,
         } = this.props;
 
@@ -617,7 +622,7 @@ class ReactTable extends Component<Props, State> {
                     layerList={layerList}
                     setTableInstance={this.setTableInstance}
                     onFetchData={this.onFetchData}
-                    setPage={setActivePage}
+                    onPageChange={this.handlePageChange}
                     activePage={currentPage}
                 />
             );

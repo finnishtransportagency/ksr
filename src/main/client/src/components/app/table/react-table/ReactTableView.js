@@ -13,7 +13,6 @@ import { nestedVal } from '../../../../utils/nestedValue';
 type Props = {
     data: Array<any>,
     columns: Array<any>,
-    setRowFilter: Function,
     toggleSelection: Function,
     toggleSelectAll: Function,
     selectAll: boolean,
@@ -25,7 +24,7 @@ type Props = {
     layerList: Object[],
     setTableInstance: Function,
     onFetchData: Function,
-    setPage: Function,
+    onPageChange: Function,
     activePage: Number,
 };
 
@@ -81,7 +80,7 @@ class ReactTableView extends Component<Props, State> {
             currentCellData,
             setTableInstance,
             onFetchData,
-            setPage,
+            onPageChange,
             activePage,
         } = this.props;
 
@@ -142,11 +141,7 @@ class ReactTableView extends Component<Props, State> {
                     selectType="checkbox"
                     isSelected={r => r._selected}
                     selectAll={selectAll}
-                    onPageChange={(pageIndex) => {
-                        const { activeTable } = this.props;
-                        setPage({ layerId: activeTable, page: pageIndex });
-                        document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
-                    }}
+                    onPageChange={onPageChange}
                     toggleSelection={toggleSelection}
                     toggleAll={toggleSelectAll}
                     getTdProps={(state, r, c) => {
