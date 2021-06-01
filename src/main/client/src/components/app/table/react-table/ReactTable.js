@@ -289,7 +289,10 @@ class ReactTable extends Component<Props, State> {
         return (
             <TableSelect
                 value={filter ? filter.value : ''}
-                onChange={event => onChange(event.target.value)}
+                onChange={(event) => {
+                    this.handlePageChange(0);
+                    onChange(event.target.value);
+                }}
             >
                 {options}
             </TableSelect>
@@ -435,7 +438,10 @@ class ReactTable extends Component<Props, State> {
             style={{ minHeight: '1rem' }}
             type="text"
             value={filter ? filter.value : ''}
-            onChange={evt => onChange(evt.target.value)}
+            onChange={(evt) => {
+                this.handlePageChange(0);
+                onChange(evt.target.value);
+            }}
         />
     );
 
