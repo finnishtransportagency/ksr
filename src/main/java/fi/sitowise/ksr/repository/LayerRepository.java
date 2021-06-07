@@ -5,6 +5,7 @@ import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.jooq.tables.records.LayerPermissionRecord;
 import fi.sitowise.ksr.jooq.tables.records.LayerRecord;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -95,5 +96,16 @@ public class LayerRepository {
                     r.into(LayerRecord.class),
                     r.into(LayerPermissionRecord.class)
             ));
+    }
+
+    @Cacheable("get_layer_by_name")
+    public Layer getLayerByName(String name) {
+        return context
+                .selectFrom(LAYER)
+                .where(LAYER.NAME.equal(name))
+                .fetchOne(r -> new Layer(
+                        r.into(LayerRecord.class),
+                        r.into(LayerPermissionRecord.class)
+                ));
     }
 }
