@@ -47,7 +47,7 @@ export const setLayerLegend = async (
         }
     } else if (layer.type === 'wms' && layer.wmsLegend) {
         const symbol: HTMLImageElement = document.createElement('img');
-        symbol.src = `${layer.url}?request=GetLegendGraphic&layer=${layer.layers}&format=image/png`;
+        symbol.src = `${layer.url}?request=GetLegendGraphic&layer=${layer.layers}&format=image/png&version=1.3.0`;
         layer.uniqueSymbols = [{ symbol }];
     }
 };
