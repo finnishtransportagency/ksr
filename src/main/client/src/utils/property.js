@@ -45,9 +45,10 @@ export const propertyIdFormat = (propertyId: string) => {
  * Convert property info to argcis save format.
  *
  * @param {Object} propertyData property info data.
+ * @param {number} ownerUnclearValue value of user-set OWNER_UNCLEAR-attribute
  * @returns {Promise<Object[]>} Promise that represents the list of formatted features.
  */
-export const formatPropertyInfoToSaveFormat = (propertyData: Object) => {
+export const formatPropertyInfoToSaveFormat = (propertyData: Object, ownerUnclearValue: number) => {
     if (Array.isArray(propertyData.features) && propertyData.features.length > 0) {
         return Promise.all(propertyData.features.map(async p => ({
             attributes: ({
@@ -59,6 +60,7 @@ export const formatPropertyInfoToSaveFormat = (propertyData: Object) => {
                 PROPERTY_ID: p.properties.propertyIdentifier,
                 REGISTER_UNIT_TYPE: p.properties.registerUnitTypeId,
                 REGISTRATION_DATE: p.properties.registrationDate,
+                OWNER_UNCLEAR: ownerUnclearValue,
             }),
             geometry: nestedVal(p, ['geometry', 'coordinates'])
                 && await convert(p.geometry),
