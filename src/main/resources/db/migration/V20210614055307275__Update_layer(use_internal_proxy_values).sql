@@ -1,0 +1,1 @@
+UPDATE LAYER SET USE_INTERNAL_PROXY = '1' WHERE NAME IN ('Kallioperä', 'Maaperä', 'Rataverkko (moniraiteinen)', 'Rataverkko', 'Tasoristeykset (Digiroad)', 'Tasoristeykset (kaikki)', 'Tasoristeykset (poisto- ja parantamishankkeet)', 'Tasoristeykset (Vuokatti-Kontionmäki)', 'Tasoristeykset (Toijala-Valkeakoski)', 'Tasoristeykset (Tampere-Pori)');
