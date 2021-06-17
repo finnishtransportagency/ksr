@@ -224,7 +224,7 @@ public class HttpRequestService {
      * @param base     HttpRequestBase of request.
      * @param useProxy Boolean indicating if proxy should be used.
      */
-    private void setProxy(HttpRequestBase base, boolean useProxy) {
+    public void setProxy(HttpRequestBase base, boolean useProxy) {
         if (useProxy) {
             base.setConfig(proxyRequestConfig);
         } else {
@@ -282,6 +282,10 @@ public class HttpRequestService {
             String msg = String.format("Error handling request. URL: [%s]. Proxy: [%b]", endPointUrl, useProxy);
             throw new KsrApiException.InternalServerErrorException(msg, e);
         }
+    }
+
+    public CloseableHttpResponse getCloseableResponse(HttpHost target, HttpRequestBase base) throws IOException {
+        return closeableHttpClient.execute(target, base);
     }
 
     /**

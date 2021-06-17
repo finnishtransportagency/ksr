@@ -70,6 +70,8 @@ export const TABLE_EDITED = 'TABLE_EDITED';
 
 export const SET_BUTTON_AMOUNT = 'SET_BUTTON_AMOUNT';
 
+export const SET_ACTIVE_PAGE = 'SET_ACTIVE_PAGE';
+
 export const ADD_FILTERED = 'ADD_FILTERED';
 
 // Search

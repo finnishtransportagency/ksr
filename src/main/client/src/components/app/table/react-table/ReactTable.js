@@ -34,6 +34,8 @@ type Props = {
     setTableEdited: Function,
     updatePortal: Function,
     portalIsOpen: boolean,
+    activePage: Object,
+    setActivePage: Function,
 };
 
 type State = {
@@ -229,6 +231,7 @@ class ReactTable extends Component<Props, State> {
                 && activeLayer._source !== 'shapefile'
                 && activeLayer.layerPermission.updateLayer
                 && cellField.editable
+                && cellField.name !== 'PROPERTY_ID'
                 && activeLayer.updaterField !== cellField.name
                 && !activeLayer.requiredUniqueFields.some(field => field === cellField.name);
         }
@@ -271,6 +274,12 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
+    handlePageChange = (pageIndex) => {
+        const { activeTable, setActivePage } = this.props;
+        setActivePage({ layerId: activeTable, page: pageIndex });
+        document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
+    };
+
     renderSelectInput = (cellField: Object, cellInfo: Object, filter: any, onChange: Function) => {
         // Add empty option for empty and null values
         const options = [<option key="-" value="" />].concat(
@@ -281,7 +290,10 @@ class ReactTable extends Component<Props, State> {
         return (
             <TableSelect
                 value={filter ? filter.value : ''}
-                onChange={event => onChange(event.target.value)}
+                onChange={(event) => {
+                    this.handlePageChange(0);
+                    onChange(event.target.value);
+                }}
             >
                 {options}
             </TableSelect>
@@ -427,7 +439,10 @@ class ReactTable extends Component<Props, State> {
             style={{ minHeight: '1rem' }}
             type="text"
             value={filter ? filter.value : ''}
-            onChange={evt => onChange(evt.target.value)}
+            onChange={(evt) => {
+                this.handlePageChange(0);
+                onChange(evt.target.value);
+            }}
         />
     );
 
@@ -558,7 +573,11 @@ class ReactTable extends Component<Props, State> {
             setRowFilter,
             activeAdminTool,
             activeTable,
+            activePage,
         } = this.props;
+
+        const layerPage = layerFeatures && layerFeatures.id && activePage[layerFeatures.id];
+        const currentPage = layerPage || 0;
 
         if (!layerFeatures) {
             return (
@@ -610,6 +629,8 @@ class ReactTable extends Component<Props, State> {
                     layerList={layerList}
                     setTableInstance={this.setTableInstance}
                     onFetchData={this.onFetchData}
+                    onPageChange={this.handlePageChange}
+                    activePage={currentPage}
                 />
             );
         }

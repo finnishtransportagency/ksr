@@ -85,6 +85,11 @@ const Toggle = styled.div`
     `}
 `;
 
+const MultiSymbol = styled.div`
+    cursor: pointer;
+    margin-left: -1rem;
+`;
+
 LayerSettings.Content = Content;
 LayerSettings.Drag = Drag;
 LayerSettings.Icons = Icons;
@@ -95,5 +100,6 @@ LayerSettings.Toggle = Toggle;
 LayerSettings.ContentTop = ContentTop;
 LayerSettings.ContentMain = ContentMain;
 LayerSettings.Loading = Loading;
+LayerSettings.MultiSymbol = MultiSymbol;
 
 export default LayerSettings;

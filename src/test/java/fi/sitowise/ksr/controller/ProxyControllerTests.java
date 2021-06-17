@@ -2,13 +2,11 @@ package fi.sitowise.ksr.controller;
 
 import fi.sitowise.ksr.domain.LayerAction;
 import fi.sitowise.ksr.helper.OAMHeaderHelper;
-import fi.sitowise.ksr.repository.LayerGroupRepository;
-import fi.sitowise.ksr.repository.RelationRepository;
-import fi.sitowise.ksr.repository.UserLayerRepository;
-import fi.sitowise.ksr.repository.WorkspaceRepository;
+import fi.sitowise.ksr.repository.*;
 import fi.sitowise.ksr.service.LayerService;
 import fi.sitowise.ksr.service.ProxyService;
 import fi.sitowise.ksr.domain.Layer;
+import fi.sitowise.ksr.service.SHJService;
 import fi.sitowise.ksr.utils.KsrStringUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,6 +71,12 @@ public class ProxyControllerTests {
     ProxyService proxyService;
 
     /**
+     * SHJ service.
+     */
+    @MockBean
+    SHJService shjService;
+
+    /**
      * Layer group repository.
      */
     @MockBean
@@ -95,6 +99,12 @@ public class ProxyControllerTests {
      */
     @MockBean
     WorkspaceRepository workspaceRepository;
+
+    /**
+     * Layer repository.
+     */
+    @MockBean
+    LayerRepository layerRepository;
 
     /**
      * Sets webAppContext and adds springSecurity.

@@ -108,6 +108,12 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             renderer: null,
                             parentLayer: null,
                             minScale: 18489297,
+                            uniqueSymbols: selectedLayer.uniqueSymbols
+                                ? selectedLayer.uniqueSymbols.map(s => ({
+                                    ...s,
+                                    symbol: s.symbol.cloneNode(true),
+                                }))
+                                : undefined,
                         };
 
                         layersToBeAdded.layers.push(newLayer);
@@ -550,6 +556,11 @@ export const setSearchFeatures = (layers: Object[]) => ({
 export const setButtonAmount = (buttonAmount: ?number) => ({
     type: types.SET_BUTTON_AMOUNT,
     buttonAmount,
+});
+
+export const setActivePage = (page: Object) => ({
+    type: types.SET_ACTIVE_PAGE,
+    page,
 });
 
 export const setTableEdited = (hasTableEdited: boolean) => ({

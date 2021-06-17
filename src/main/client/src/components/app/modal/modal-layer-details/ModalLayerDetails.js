@@ -85,7 +85,10 @@ class ModalFilter extends Component<Props, State> {
                     combinedData.attributes[activeLayer.propertyIdField],
                     null,
                 );
-                const formatFeature = await formatPropertyInfoToSaveFormat(data);
+                const formatFeature = await formatPropertyInfoToSaveFormat(
+                    data,
+                    combinedData.attributes.OWNER_UNCLEAR,
+                );
                 if (formatFeature[0] && formatFeature[0].geometry !== null) {
                     await save.saveData('add', view, originalLayerId, formatFeature, objectId.name, false, false);
                     // found newly added property so we can zoom to feature.
