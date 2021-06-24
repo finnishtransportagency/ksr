@@ -1,0 +1,1 @@
+UPDATE LAYER SET USE_INTERNAL_PROXY = '1' WHERE NAME IN ('Kallioperä', 'Maaperä');
