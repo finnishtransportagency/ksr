@@ -11,7 +11,7 @@ describe('contracts', () => {
                     attributes: {
                         contractId: 123,
                         contractDescription: 'Test description.',
-                        alfrescoLinkField: '123',
+                        tiimeriLinkField: '123',
                         caseManagementLinkField: '123',
                     },
                 },
@@ -19,7 +19,7 @@ describe('contracts', () => {
                     attributes: {
                         contractId: 456,
                         contractDescription: 'Test description 2.',
-                        alfrescoLinkField: '456',
+                        tiimeriLinkField: '456',
                         caseManagementLinkField: '456',
                     },
                 },
@@ -27,7 +27,7 @@ describe('contracts', () => {
         };
         const contractIdField = 'contractId';
         const contractDescriptionField = 'contractDescription';
-        const alfrescoLinkField = 'alfrescoLinkField';
+        const tiimeriLinkField = 'tiimeriLinkField';
         const caseManagementLinkField = 'caseManagementLinkField';
         const contractUnlinkable = false;
 
@@ -36,9 +36,9 @@ describe('contracts', () => {
                 id: 123,
                 layerId: 123,
                 description: 'Test description.',
-                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=123',
+                tiimeriUrl: 'http://testurl/ksr/api/contract-document?documentType=tiimeri&searchValue=123',
                 attributes: {
-                    alfrescoLinkField: '123',
+                    tiimeriLinkField: '123',
                     caseManagementLinkField: '123',
                     contractDescription: 'Test description.',
                     contractId: 123,
@@ -50,9 +50,9 @@ describe('contracts', () => {
                 id: 456,
                 layerId: 123,
                 description: 'Test description 2.',
-                alfrescoUrl: 'http://testurl/ksr/api/contract-document?documentType=alfresco&searchValue=456',
+                tiimeriUrl: 'http://testurl/ksr/api/contract-document?documentType=tiimeri&searchValue=456',
                 attributes: {
-                    alfrescoLinkField: '456',
+                    tiimeriLinkField: '456',
                     caseManagementLinkField: '456',
                     contractDescription: 'Test description 2.',
                     contractId: 456,
@@ -66,7 +66,7 @@ describe('contracts', () => {
             contracts,
             contractIdField,
             contractDescriptionField,
-            alfrescoLinkField,
+            tiimeriLinkField,
             caseManagementLinkField,
             contractUnlinkable,
         )).toEqual(expectedResult);
@@ -78,7 +78,7 @@ describe('contracts', () => {
         };
         const contractIdField = 'contractId';
         const contractDescriptionField = 'contractDescription';
-        const alfrescoLinkField = 'alfrescoLinkField';
+        const tiimeriLinkField = 'tiimeriLinkField';
         const caseManagementLinkField = 'caseManagementLinkField';
         const contractUnlinkable = false;
 
@@ -88,7 +88,7 @@ describe('contracts', () => {
             contracts,
             contractIdField,
             contractDescriptionField,
-            alfrescoLinkField,
+            tiimeriLinkField,
             caseManagementLinkField,
             contractUnlinkable,
         )).toEqual([]);
@@ -96,7 +96,7 @@ describe('contracts', () => {
             contracts2,
             contractIdField,
             contractDescriptionField,
-            alfrescoLinkField,
+            tiimeriLinkField,
             caseManagementLinkField,
             contractUnlinkable,
         )).toEqual([]);

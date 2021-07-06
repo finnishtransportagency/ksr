@@ -1,33 +1,40 @@
 // @flow
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations/index';
+import SketchUndoRedo from '../sketch-undo-redo/SketchUndoRedo';
 
 type Props = {
     editSketchIcon: string,
     showAdminView: boolean,
     removeSketch: () => void,
+    acceptSketch: () => void,
     drawNewFeatureButtonRef: () => void,
     drawNewAreaButtonRef: () => void,
     hasAdminGraphics: boolean,
-    setActiveModal: (editModeActive: boolean) => void,
-    editModeActive: boolean,
     validGeometry: boolean,
     activeTool: string,
     showNewAreaButton: boolean,
+    redo: () => void,
+    undo: () => void,
+    canRedo: boolean,
+    canUndo: boolean,
 };
 
 const SketchActiveAdminView = ({
     editSketchIcon,
     showAdminView,
     removeSketch,
+    acceptSketch,
     drawNewFeatureButtonRef,
     drawNewAreaButtonRef,
     hasAdminGraphics,
-    setActiveModal,
-    editModeActive,
     validGeometry,
     activeTool,
     showNewAreaButton,
+    redo,
+    undo,
+    canRedo,
+    canUndo,
 }: Props) => (
     <Fragment>
         <div id="create-new-feature-wrapper">
@@ -52,11 +59,11 @@ const SketchActiveAdminView = ({
                 title={strings.sketchTool.acceptSelection}
                 onClick={
                     hasAdminGraphics && validGeometry ? () => {
-                        setActiveModal(editModeActive);
+                        acceptSketch();
                     } : null}
                 onKeyPress={
                     hasAdminGraphics && validGeometry ? () => {
-                        setActiveModal(editModeActive);
+                        acceptSketch();
                     } : null}
             >
                 <span className="esri-icon-check-mark" />
@@ -70,6 +77,13 @@ const SketchActiveAdminView = ({
             >
                 <span className="esri-icon-plus" />
             </div>
+            <SketchUndoRedo
+                redo={redo}
+                undo={undo}
+                canRedo={canRedo}
+                canUndo={canUndo}
+                show={hasAdminGraphics || activeTool === 'sketchActiveAdmin'}
+            />
             <div
                 style={{ visibility: showAdminView ? 'visible' : 'hidden' }}
                 id="draw-create-new-feature"

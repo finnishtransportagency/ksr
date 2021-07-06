@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import React, { Component, createRef, Fragment } from 'react';
 import { toast } from 'react-toastify';
 import strings from '../../../../../translations';
@@ -14,11 +14,16 @@ import { nestedVal } from '../../../../../utils/nestedValue';
 type State = {
     editSketchIcon: string,
     validGeometry: boolean,
+    canRedo: boolean,
+    canUndo: boolean,
 };
 
 const initialState = {
     editSketchIcon: 'polygon',
     validGeometry: true,
+    canRedo: false,
+    canUndo: false,
+    movingGeometry: undefined,
 };
 
 type Props = {
@@ -68,6 +73,7 @@ class SketchTool extends Component<Props, State> {
         this.toggleSelectToolsButton = createRef();
         this.removeSelection = this.removeSelection.bind(this);
         this.removeSketch = this.removeSketch.bind(this);
+        this.acceptSketch = this.acceptSketch.bind(this);
         this.toggleSelectTools = this.toggleSelectTools.bind(this);
     }
 
@@ -112,14 +118,13 @@ class SketchTool extends Component<Props, State> {
     }
 
     sketchTool = () => {
-        esriLoader
-            .loadModules([
-                'esri/geometry/geometryEngine',
-                'esri/geometry/Polygon',
-                'esri/geometry/Polyline',
-                'esri/Graphic',
-                'esri/geometry/Point',
-            ])
+        loadModules([
+            'esri/geometry/geometryEngine',
+            'esri/geometry/Polygon',
+            'esri/geometry/Polyline',
+            'esri/Graphic',
+            'esri/geometry/Point',
+        ])
             .then(([geometryEngine, Polygon, Polyline, Graphic, Point]) => {
                 const {
                     view,
@@ -310,6 +315,77 @@ class SketchTool extends Component<Props, State> {
                     }
                 };
 
+                const createSketchOutLineLabelGraphic = (geometry, value, type, id) => new Graphic({
+                    geometry,
+                    symbol: {
+                        type: 'text',
+                        color: '#000000',
+                        text: value || '',
+                        font: {
+                            size: 12,
+                            family: 'sans-serif',
+                            weight: 'bold',
+                        },
+                    },
+                    type,
+                    id,
+                });
+                const removeLengthLabels = () => {
+                    const labels = tempGraphicsLayer.graphics.items.filter(i => i.type === 'sketch-polygon-side-length');
+                    tempGraphicsLayer.removeMany(labels);
+                };
+
+                const drawPolygonOutlineLengths = (rings: number[][][], noDuplicates?: boolean) => {
+                    removeLengthLabels();
+
+                    rings.forEach((ring, i) => {
+                        if (ring.length > (noDuplicates ? 2 : 3)) {
+                            ring.forEach((point, j) => {
+                                if (j < ring.length - 1) {
+                                    const x1 = point[0];
+                                    const x2 = ring[j + 1][0];
+                                    const y1 = point[1];
+                                    const y2 = ring[j + 1][1];
+                                    const measure = `${parseFloat(geometryEngine.distance(
+                                        new Point({
+                                            x: x1,
+                                            y: y1,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                        new Point({
+                                            x: x2,
+                                            y: y2,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                    )).toFixed(2)} m`;
+                                    const label = createSketchOutLineLabelGraphic(
+                                        new Point({
+                                            x: (x1 + x2) / 2,
+                                            y: (y1 + y2) / 2,
+                                            spatialReference: view.spatialReference,
+                                        }),
+                                        measure,
+                                        'sketch-polygon-side-length',
+                                        `sketch-polygon-side-length-${i}-${j}`,
+                                    );
+                                    tempGraphicsLayer.add(label);
+                                }
+                            });
+                        }
+                    });
+                };
+
+                const updateLabels = (rings, geometry) => {
+                    const polygon = createPolygon(rings);
+                    const measure = measurement(polygon);
+                    const areaLabel = createLabelGraphic(geometry, measure);
+
+                    updatePolygonLabels();
+                    tempGraphicsLayer.add(areaLabel);
+
+                    drawPolygonOutlineLengths(rings);
+                };
+
                 const selectFeaturesFromDraw = async (event) => {
                     const { active } = this.props;
                     if (
@@ -319,20 +395,15 @@ class SketchTool extends Component<Props, State> {
                     ) {
                         if (event.graphic.geometry.isSelfIntersecting
                             || event.graphic.geometry.rings.length > 1) {
-                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(false);
+                            event.graphic.symbol = createSketchLineGraphic(false);
                             this.setState({ validGeometry: false });
                         } else {
-                            event.target._activeLineGraphic.symbol = createSketchLineGraphic(true);
+                            event.graphic.symbol = createSketchLineGraphic(true);
                             if (event.graphic !== null
                                 && event.graphic.geometry.rings[0].length > 2) {
                                 const { geometry } = event.graphic;
                                 const { rings } = geometry;
-                                const polygon = createPolygon(rings);
-                                const measure = measurement(polygon);
-                                const areaLabel = createLabelGraphic(geometry, measure);
-
-                                updatePolygonLabels();
-                                tempGraphicsLayer.add(areaLabel);
+                                updateLabels(rings, geometry);
                             }
                         }
                     } else if (event.state === 'complete') {
@@ -343,11 +414,13 @@ class SketchTool extends Component<Props, State> {
                             propertyAreaSearch,
                             setPropertyInfo,
                             authorities,
+                            sketchViewModel
                         } = this.props;
 
                         // Skip finding layers if Administrator editing is in use
                         if (active === 'sketchActiveAdmin') {
                             addGraphic(graphic);
+                            removeLengthLabels();
 
                             // Combine multiple polygons into multipolygon
                             if (event.tool === 'polygon') {
@@ -392,12 +465,127 @@ class SketchTool extends Component<Props, State> {
                                 selectFeatures,
                             );
                         }
-                        resetMapTools(draw, sketchViewModel, setActiveTool);
+                    } else if (event.state === 'cancel') {
+                        removeLengthLabels();
+                        updatePolygonLabels();
+                    }
+                    this.setState({
+                        validGeometry: this.validGeometry(),
+                        canRedo: sketchViewModel.canRedo(),
+                        canUndo: sketchViewModel.canUndo(),
+                    });
+                };
+
+                const getMovingPointFromPolygon = (movingPoint, polygonSketch) => {
+                    let ringsIdx;
+                    let pointIdx;
+                    const matchingPolygon = polygonSketch.find((pol) => {
+                        const mathingRing = pol.rings.findIndex((ring) => {
+                            const mathingPoint = ring.findIndex(
+                                point => point[0] === movingPoint.x
+                                    && point[1] === movingPoint.y,
+                            );
+                            if (mathingPoint >= 0) {
+                                pointIdx = mathingPoint;
+                                return true;
+                            }
+                            return false;
+                        });
+                        if (mathingRing >= 0) {
+                            ringsIdx = mathingRing;
+                            return true;
+                        }
+                        return false;
+                    });
+                    return {
+                        ringsIdx,
+                        pointIdx,
+                        matchingPolygon,
+                    };
+                };
+
+                const preventGeometryMove = (event) => {
+                    if (event.toolEventInfo && event.toolEventInfo.type.startsWith('move')
+                        && event.toolEventInfo.mover.geometry.type !== 'point') {
+                        const sketchGraphic = tempGraphicsLayer.graphics.items.find(a => a.type === 'sketch-graphic');
+                        const eventInfoType = event.toolEventInfo.type;
+                        const { movingGeometry } = this.state;
+                        if (eventInfoType === 'move-start') {
+                            this.setState({
+                                movingGeometry: sketchGraphic.geometry,
+                            });
+                        } else if (eventInfoType === 'move') {
+                            sketchGraphic.geometry = movingGeometry;
+                        } else {
+                            sketchGraphic.geometry = movingGeometry;
+                            this.setState({ movingGeometry: undefined });
+                        }
+                        return true;
+                    }
+                    return false;
+                };
+
+                const drawSideLengthsToNearest = (event) => {
+                    const movingPoint = event.toolEventInfo.mover.geometry;
+                    const polygonSketch = tempGraphicsLayer.graphics.items
+                        .filter(item => item.type === 'sketch-graphic' && item.geometry.type === 'polygon')
+                        .map(pol => pol.geometry);
+
+                    const {
+                        ringsIdx, pointIdx, matchingPolygon,
+                    } = getMovingPointFromPolygon(movingPoint, polygonSketch);
+
+                    if (matchingPolygon) {
+                        const points = [];
+                        const { rings } = matchingPolygon;
+                        if (pointIdx === 0) {
+                            points.push(
+                                rings[ringsIdx][rings[ringsIdx].length - 2],
+                                rings[ringsIdx][pointIdx],
+                                rings[ringsIdx][pointIdx + 1],
+                            );
+                        } else {
+                            points.push(
+                                rings[ringsIdx][pointIdx - 1],
+                                rings[ringsIdx][pointIdx],
+                                rings[ringsIdx][pointIdx + 1],
+                            );
+                        }
+                        drawPolygonOutlineLengths([points], true);
+                    }
+                };
+
+                const handleUndoRedo = (event) => {
+                    if (['undo', 'redo'].includes(event.type)) {
+                        if (event.tool === 'polygon') {
+                            const { geometry } = event.graphics[0];
+                            updateLabels(geometry.rings, geometry);
+                        }
+                    }
+                };
+
+                const handleReshape = (event) => {
+                    if (event.toolEventInfo && event.toolEventInfo.type.startsWith('reshape')) {
+                        switch (event.toolEventInfo.type) {
+                            case 'reshape':
+                                drawSideLengthsToNearest(event);
+                                break;
+                            case 'reshape-stop':
+                                removeLengthLabels();
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 };
 
                 const onUpdate = (event) => {
+                    if (preventGeometryMove(event)) {
+                        return;
+                    }
                     updatePolygonLabels();
+                    handleReshape(event);
+                    handleUndoRedo(event);
 
                     if (event.graphics[0].geometry.isSelfIntersecting) {
                         const clonedSymbol = event.graphics[0].symbol.clone();
@@ -412,8 +600,11 @@ class SketchTool extends Component<Props, State> {
                         clonedSymbol.outline = createSketchOutlineGraphic(true, updateModeActive);
                         event.graphics[0].symbol = clonedSymbol;
                     }
-
-                    this.setState({ validGeometry: this.validGeometry() });
+                    this.setState({
+                        validGeometry: this.validGeometry(),
+                        canRedo: sketchViewModel.canRedo(),
+                        canUndo: sketchViewModel.canUndo(),
+                    });
                 };
 
                 sketchViewModel.on('create', selectFeaturesFromDraw);
@@ -456,6 +647,8 @@ class SketchTool extends Component<Props, State> {
             setTempGraphicsLayer,
             sketchViewModel,
             tempGraphicsLayer,
+            draw,
+            setActiveTool,
         } = this.props;
 
         setActiveFeatureMode('create');
@@ -463,7 +656,21 @@ class SketchTool extends Component<Props, State> {
         layer.graphics = undefined;
         setTempGraphicsLayer(layer);
         sketchViewModel.cancel();
+        resetMapTools(draw, sketchViewModel, setActiveTool);
     };
+
+    acceptSketch = () => {
+        const {
+            sketchViewModel,
+            draw,
+            setActiveTool,
+            setActiveModal,
+            editModeActive,
+        } = this.props;
+
+        setActiveModal(editModeActive);
+        resetMapTools(draw, sketchViewModel, setActiveTool);
+    }
 
     showAdminView = (): boolean => {
         const { activeAdminTool, layerList } = this.props;
@@ -488,6 +695,16 @@ class SketchTool extends Component<Props, State> {
         return false;
     };
 
+    redo = () => {
+        const { sketchViewModel } = this.props;
+        sketchViewModel.redo();
+    };
+
+    undo = () => {
+        const { sketchViewModel } = this.props;
+        sketchViewModel.undo();
+    };
+
     // Assign constructor ref flowtypes
     drawNewFeatureButton: any;
 
@@ -503,9 +720,11 @@ class SketchTool extends Component<Props, State> {
 
     render() {
         const {
-            data, view, tempGraphicsLayer, setActiveModal, isOpen, editModeActive, active,
+            data, view, tempGraphicsLayer, isOpen, active,
         } = this.props;
-        const { editSketchIcon, validGeometry } = this.state;
+        const {
+            editSketchIcon, validGeometry, canRedo, canUndo,
+        } = this.state;
 
         const hasSelectedFeatures = data.length > 0;
         const hasAdminGraphics = tempGraphicsLayer
@@ -531,15 +750,18 @@ class SketchTool extends Component<Props, State> {
                 <SketchActiveAdminView
                     editSketchIcon={editSketchIcon}
                     removeSketch={this.removeSketch}
+                    acceptSketch={this.acceptSketch}
                     showAdminView={this.showAdminView()}
                     drawNewFeatureButtonRef={this.drawNewFeatureButton}
                     drawNewAreaButtonRef={this.drawNewAreaButton}
                     hasAdminGraphics={hasAdminGraphics}
-                    setActiveModal={setActiveModal}
-                    editModeActive={editModeActive}
                     validGeometry={validGeometry}
                     activeTool={active}
                     showNewAreaButton={showNewAreaButton}
+                    redo={this.redo}
+                    undo={this.undo}
+                    canRedo={canRedo}
+                    canUndo={canUndo}
                 />
             </Fragment>
         );

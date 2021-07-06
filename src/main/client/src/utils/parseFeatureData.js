@@ -6,19 +6,35 @@ import { notAllowedFields } from './fields';
  * Get custom className for column if needed.
  *
  * @param {string} type Column type.
+ * @param {string} name Column name.
  * @returns {string} Custom className if needed otherwise an empty string.
  */
-const columnClassName = (type: string) => {
+const columnClassName = (type: string, name: string) => {
+    let className;
     switch (type) {
         case 'double':
         case 'esriFieldTypeDouble':
-            return 'decimal';
+            className = 'decimal';
+            break;
         case 'date':
         case 'esriFieldTypeDate':
-            return 'date';
+            className = 'date';
+            break;
         default:
-            return '';
+            className = '';
     }
+    if ([
+        'LAND_AREA',
+        'LASKETTU_ALA',
+        'P_ALA_BRM',
+        'P_ALA_HTM',
+        'SHAPE_AREA',
+        'UNITS_RENTED_SUM',
+        'UNITS',
+    ].includes(name)) {
+        className += className.length ? ' area' : 'area';
+    }
+    return className;
 };
 
 /**
@@ -47,7 +63,7 @@ export const parseColumns = (id: string, data: Object[]): Object[] => {
             codedValues: f.domain.codedValues,
         } : null,
         minWidth: f.type === 'esriFieldTypeDate' ? 140 : 100,
-        className: columnClassName(f.type),
+        className: columnClassName(f.type, f.name),
     }));
 };
 
@@ -99,9 +115,11 @@ export const parseData = (data: Object, selected?: boolean) => {
 };
 
 /**
- * Merge two arrays of features. If features does not exists in
- * currentData (matching done with '_id') then add it, otherwise
- * update its matching attributes.
+ * Merge two arrays of features.
+ *
+ * If features do not exists in currentData (matching done with '_id') then add it; otherwise
+ * remove existing features first before adding them back (update existing before delete might not
+ * work because some features use duplicate IDs).
  *
  * @param {Object[]} currentData Array of current features.
  * @param {Object[]} newData Array of incoming features.
@@ -109,21 +127,10 @@ export const parseData = (data: Object, selected?: boolean) => {
  * @returns {Object[] } Array of merged input arrays.
  */
 export const mergeData = (currentData: Object[], newData: Object[]) => {
-    const data = [...currentData];
-    newData.forEach((newFeature) => {
-        const matchingFeature = data.find(f => f._id === newFeature._id);
-        if (matchingFeature) {
-            Object.keys(matchingFeature).forEach((key) => {
-                matchingFeature[key] = newFeature[key] === undefined
-                    ? matchingFeature[key]
-                    : newFeature[key];
-                return matchingFeature;
-            });
-        } else {
-            data.push(newFeature);
-        }
-    });
-    return data;
+    const newFeatureIds = newData.map(d => d._id);
+    return [...currentData]
+        .filter(f => !newFeatureIds.some(nId => nId === f._id))
+        .concat(newData);
 };
 
 /**

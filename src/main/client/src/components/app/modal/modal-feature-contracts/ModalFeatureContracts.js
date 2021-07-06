@@ -21,6 +21,7 @@ type Props = {
     createLayerPermission: boolean,
     editLayerPermission: boolean,
     updateLayerFields: (layerId: string, fields: Object[]) => void,
+    updateLayerData: (layer: Object) => void;
 };
 
 type State = {
@@ -132,7 +133,7 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     handleSubmitLinkToContract = () => {
         const {
-            objectId, currentLayer, contractLayers, view,
+            objectId, currentLayer, contractLayers, view, updateLayerData,
         } = this.props;
         const contractLayer: Object = findFirstContractLayer(contractLayers);
         this.setState({
@@ -161,6 +162,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                     } else {
                         await updateContractLink(contractNumber, currentLayer, objectId, view);
                     }
+                    updateLayerData(currentLayer);
 
                     this.setState({ ...this.initialState });
                 },
@@ -171,7 +173,9 @@ class ModalFeatureContracts extends Component<Props, State> {
     };
 
     handleSubmitEditContract = async () => {
-        const { view, contractLayers } = this.props;
+        const {
+            view, contractLayers, updateLayerData,
+        } = this.props;
         const { layerId } = this.state;
         const contractLayer = contractLayers.find(c => c.id === layerId);
 
@@ -199,6 +203,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                 false,
                 this.state.formOptions.editedFields[objectIdFieldName],
             );
+            updateLayerData(contractLayer);
 
             this.setState({ ...this.initialState });
         }
@@ -206,7 +211,7 @@ class ModalFeatureContracts extends Component<Props, State> {
 
     handleSubmitAddContract = () => {
         const {
-            objectId, currentLayer, contractLayers, view,
+            objectId, currentLayer, contractLayers, view, updateLayerData,
         } = this.props;
         const contractLayer: Object = findFirstContractLayer(contractLayers);
         this.setState({
@@ -249,6 +254,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                         } else {
                             await updateContractLink(contractNumber, currentLayer, objectId, view);
                         }
+                        updateLayerData(contractLayer);
                     }
                     this.setState({ ...this.initialState });
                 },

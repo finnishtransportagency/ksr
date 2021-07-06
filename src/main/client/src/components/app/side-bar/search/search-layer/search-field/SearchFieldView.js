@@ -39,17 +39,19 @@ const SearchFieldView = ({
     suggestionsActive,
 }: Props) => (
     <SearchFieldWrapper>
-        <SearchFieldWrapper.Title>
-            <div>{field.label}</div>
-            <SearchFieldWrapper.Remove
-                role="button"
-                tabIndex={index}
-                onClick={() => handleRemoveField(index)}
-                onKeyUp={() => handleRemoveField(index)}
-            >
-                <i className="fas fa-times" />
-            </SearchFieldWrapper.Remove>
-        </SearchFieldWrapper.Title>
+        {searchFieldValues && (
+            <SearchFieldWrapper.Title>
+                <div>{field.label}</div>
+                <SearchFieldWrapper.Remove
+                    role="button"
+                    tabIndex={index}
+                    onClick={() => handleRemoveField(index)}
+                    onKeyUp={() => handleRemoveField(index)}
+                >
+                    <i className="fas fa-times" />
+                </SearchFieldWrapper.Remove>
+            </SearchFieldWrapper.Title>
+        )}
         <SearchFieldWrapper.Inputs>
             {searchFieldValues
             && !searchFieldValues[index].domain
@@ -95,20 +97,31 @@ const SearchFieldView = ({
                         deleteRemoves={false}
                     />
                 )}
-                {searchFieldValues
-                && !searchFieldValues[index].domain
-                && field.type !== 'esriFieldTypeDate'
+                {(!searchFieldValues
+                || (!searchFieldValues[index].domain
+                && field.type !== 'esriFieldTypeDate'))
                 && (
-                    <Downshift onSelect={(selectedItem) => {
-                        searchFieldValues[index].queryText = selectedItem;
-                        setSearchState(
-                            selectedLayer,
-                            textSearch,
-                            searchFieldValues,
-                            [],
-                            suggestionsActive,
-                        );
-                    }}
+                    <Downshift onSelect={
+                        searchFieldValues
+                            ? (selectedItem) => {
+                                searchFieldValues[index].queryText = selectedItem;
+                                setSearchState(
+                                    selectedLayer,
+                                    textSearch,
+                                    searchFieldValues,
+                                    [],
+                                    suggestionsActive,
+                                );
+                            }
+                            : (selectedItem) => {
+                                setSearchState(
+                                    selectedLayer,
+                                    selectedItem,
+                                    searchFieldValues,
+                                    [],
+                                    suggestionsActive,
+                                );
+                            }}
                     >
                         {({
                             getInputProps,
@@ -121,12 +134,12 @@ const SearchFieldView = ({
                                 <TextInput
                                     {...getInputProps({
                                         onChange: (evt) => {
-                                            handleChangeField('text', evt, index);
+                                            handleChangeField(searchFieldValues ? 'text' : 'text-all-columns', evt, index);
                                         },
                                     })}
                                     disabled={fetching}
                                     type="text"
-                                    value={field.queryText}
+                                    value={searchFieldValues ? field.queryText : textSearch}
                                     index={index}
                                     onBlur={handleFieldBlur}
                                 />

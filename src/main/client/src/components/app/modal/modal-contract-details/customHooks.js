@@ -69,10 +69,10 @@ export const useDetailList = (
                                     ['attributes', layer.contractDescriptionField],
                                     '',
                                 ),
-                                alfrescoUrl: layer.alfrescoLinkField
+                                tiimeriUrl: layer.tiimeriLinkField
                                     ? getContractDocumentUrl(
-                                        'alfresco',
-                                        layer.alfrescoLinkField,
+                                        'tiimeri',
+                                        layer.tiimeriLinkField,
                                         feature.attributes,
                                     )
                                     : '',

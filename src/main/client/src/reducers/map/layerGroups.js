@@ -17,6 +17,7 @@ import {
     DEACTIVATE_LAYER,
     UPDATE_LAYER_FIELDS,
     CLOSE_LAYER,
+    TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
 } from '../../constants/actionTypes';
 
 import { addLayerToUserGroup, addOrReplaceLayers, addOrReplaceLayersInSearchGroup } from '../../utils/layers';
@@ -42,7 +43,7 @@ type Layer = {
     active: boolean,
     attribution: string,
     authentication: any,
-    alfrescoLinkField: string,
+    tiimeriLinkField: string,
     caseManagementLinkField: string,
     relations: Array<Relation>,
     geometryType: string,
@@ -93,6 +94,34 @@ const initialState = {
     layerGroups: [],
     layerList: [],
     fetching: true,
+    layersVisibleZoomOut: [],
+};
+
+const toggleLayerVisibleZoomOut = (state, action) => {
+    let layersVisibleZoomOut = state.layersVisibleZoomOut || [];
+    const stored = layersVisibleZoomOut.find(l => l.id === action.layerId);
+
+    const layerList = state.layerList.map((item) => {
+        if (item.id === action.layerId) {
+            item.minScale = stored ? stored.original : Number.MAX_VALUE;
+        }
+        return item;
+    });
+
+    if (!stored) {
+        layersVisibleZoomOut = [
+            ...layersVisibleZoomOut,
+            { id: action.layerId, original: action.originalMinScale },
+        ];
+    } else {
+        layersVisibleZoomOut = layersVisibleZoomOut
+            .filter(l => l.id !== action.layerId);
+    }
+    return {
+        ...state,
+        layerList,
+        layersVisibleZoomOut,
+    };
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -299,6 +328,7 @@ export default (state: State = initialState, action: Action) => {
                             active: false,
                             visible: false,
                             failOnLoad: action.failOnLoad ? action.failOnLoad : false,
+                            renderer: null,
                         };
                     }
 
@@ -312,6 +342,8 @@ export default (state: State = initialState, action: Action) => {
                     return { ...l };
                 }): Array<Layer>),
             };
+        case TOGGLE_LAYER_VISIBLE_ZOOM_OUT:
+            return toggleLayerVisibleZoomOut(state, action);
         default:
             return state;
     }

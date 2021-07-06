@@ -12,6 +12,7 @@ describe('Layer group reducer', () => {
             layerGroups: [],
             layerList: [],
             fetching: true,
+            layersVisibleZoomOut: [],
         };
 
         expect(reducer(undefined, { type: '' })).toEqual(initialState);
@@ -22,6 +23,7 @@ describe('Layer group reducer', () => {
             layerGroups: [],
             layerList: [],
             fetching: true,
+            layersVisibleZoomOut: [],
         };
 
         expect(reducer(undefined, {

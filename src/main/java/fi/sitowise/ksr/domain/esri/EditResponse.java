@@ -6,6 +6,7 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A POJO representing a response for applyEdits action on FeatureService REST API.
@@ -14,6 +15,7 @@ public class EditResponse {
     private List<Result> addResults;
     private List<Result> updateResults;
     private List<Result> deleteResults;
+    private Map<String, Object> error;
 
     /**
      * Returns list of results for add-operations.
@@ -56,6 +58,14 @@ public class EditResponse {
      * @param deleteResults List of results for delete-operations.
      */
     public void setDeleteResults(List<Result> deleteResults) { this.deleteResults = deleteResults; }
+
+    public Map<String, Object> getError() {
+        return error;
+    }
+
+    public void setError(Map<String, Object> error) {
+        this.error = error;
+    }
 
     /**
      * Returns boolean indicating if any of the add-operations was successful.

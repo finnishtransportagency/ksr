@@ -7,11 +7,15 @@ import { deleteUserLayer } from '../../api/user-layer/deleteUserLayer';
 import * as types from '../../constants/actionTypes';
 import { addLayers, getSingleLayerFields } from '../../utils/map';
 import { reorderChildLayers, reorderLayers } from '../../utils/reorder';
-import { addNonSpatialContentToTable } from '../table/actions';
+import { addNonSpatialContentToTable, searchFeatures, selectFeatures } from '../table/actions';
 import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
 import { nestedVal } from '../../utils/nestedValue';
+import { closeTableIfNothingToShow } from '../utils';
+import store from '../../store';
+import { getSiblingsOrSelf, relatedLayers as getRelatedLayers } from '../../utils/layers';
+import { fetchSearchQuery } from '../../api/search/searchQuery';
 
 export const setLayerList = (layerList: Array<any>) => ({
     type: types.SET_LAYER_LIST,
@@ -189,6 +193,109 @@ export const activateLayers = (
     if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layersToBeActivated));
 };
 
+export const toggleLayerLegend = () => ({
+    type: types.TOGGLE_LAYER_LEGEND,
+});
+
+const getSelectedLayersAndFeatures = (dispatch: Function, state: Object) => {
+    const selectedLayers = [];
+    state.table.features.layers.forEach((l) => {
+        const allSelected = !l.data.some(f => !f._selected);
+        const selectedTableFeatures = l.data
+            .filter(f => f._selected);
+        if (selectedTableFeatures.length && l.data
+            .filter(f => !f._selected)) {
+            selectedLayers.push({
+                id: l.id,
+                selectedTableFeatures,
+                allSelected,
+            });
+        }
+        if (allSelected) {
+            dispatch({
+                type: types.CLOSE_LAYER,
+                layerId: l.id,
+            });
+        }
+    });
+    return selectedLayers;
+};
+
+const addSelectedFeaturesForFetching = (
+    allLayers: Object[], layer: Object, selectedLayer: Object, fetchSelected: Map,
+) => {
+    const siblingLayers = getSiblingsOrSelf(allLayers, layer);
+    siblingLayers.forEach((l) => {
+        let selectedFeatures;
+        if (selectedLayer.selectedTableFeatures) {
+            selectedFeatures = selectedLayer.selectedTableFeatures.map(f => f[`${f._layerId}/OBJECTID`]);
+        }
+        if (fetchSelected.get(l)) {
+            const oldValue = fetchSelected.get(l);
+            fetchSelected.set(l, oldValue.concat(selectedFeatures));
+        } else {
+            fetchSelected.set(l, selectedFeatures);
+        }
+    });
+};
+
+export const updateRelatedLayersData = (
+    layers: Object[],
+) => (dispatch: Function, getState: Function) => {
+    const state = dispatch(getState);
+    const allLayers = state.map.layerGroups.layerList;
+    const fetchSelected = new Map();
+
+    const selectedLayers = getSelectedLayersAndFeatures(dispatch, state);
+    const relatedLayers = getRelatedLayers(allLayers, layers);
+
+    state.map.mapView.view.popup.close();
+    let searchMap;
+    relatedLayers.forEach(async (layer) => {
+        if (layer._source !== 'search') {
+            const selectedLayer = selectedLayers.find(l => l.id === layer.id);
+            if (selectedLayers.some(l => l.id === layer.id)) {
+                addSelectedFeaturesForFetching(allLayers, layer, selectedLayer, fetchSelected);
+            }
+            if (layer.active) {
+                const view = state.map.mapView.view
+                    .allLayerViews.find(v => v.layer.id === layer.id);
+                if (view && view.layer) view.layer.refresh();
+            }
+            if (state.table.features.layers.some(l => l.id === layer.id)) {
+                const features = (selectedLayer)
+                    ? selectedLayer.selectedTableFeatures : undefined;
+                if (!selectedLayer || !selectedLayer.allSelected) {
+                    dispatch(addNonSpatialContentToTable(layer, undefined, true, features));
+                }
+            }
+        } else if (!searchMap) {
+            if (layer.originalQueryMap) {
+                searchMap = layer.originalQueryMap;
+            }
+        }
+    });
+    if (searchMap) {
+        dispatch(searchFeatures(searchMap));
+    }
+    if (fetchSelected.size) {
+        const promises = [];
+        fetchSelected.forEach((value, key) => {
+            promises.push(fetchSearchQuery(
+                key.id,
+                `OBJECTID IN (${value.join(',')})`,
+                key.name,
+                { layers: [] },
+            ));
+        });
+        Promise.all(promises).then((r) => {
+            r.forEach((res) => {
+                if (res.layers.some(l => l.features.length)) dispatch(selectFeatures(res));
+            });
+        });
+    }
+};
+
 export const deactivateLayer = (layerId: string) => (dispatch: Function, getState: Function) => {
     const { layerList } = dispatch(getState).map.layerGroups;
 
@@ -216,6 +323,15 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function, getStat
             layerIds: childLayers.map(childLayer => childLayer.id),
         });
     }
+
+    const mapState = store.getState().map;
+    const shouldCloseLegend = mapState.layerLegend.layerLegendActive
+        && !mapState.layerGroups.layerList
+            .some(layer => layer.visible && layer.renderer && layer.id !== layerId);
+    if (shouldCloseLegend) {
+        dispatch(toggleLayerLegend());
+    }
+    closeTableIfNothingToShow();
 };
 
 export const getActiveLayerTab = () => ({
@@ -362,14 +478,22 @@ export const removeLayersView = (layerIds: Array<number>) => ({
     layerIds,
 });
 
-export const toggleLayerLegend = () => ({
-    type: types.TOGGLE_LAYER_LEGEND,
-});
-
-export const toggleLayer = (layerId: string) => ({
-    type: types.TOGGLE_LAYER,
-    layerId,
-});
+export const toggleLayer = (layerId: string) => (dispatch: Function) => {
+    dispatch({
+        type: types.TOGGLE_LAYER,
+        layerId,
+    });
+    const mapState = store.getState().map;
+    const shouldOpenLegend = mapState.layerGroups.layerList
+        .find(layer => layer.id === layerId && layer.visible && layer.renderer)
+        && !mapState.layerLegend.layerLegendActive;
+    const shouldCloseLegend = !mapState.layerGroups.layerList
+        .some(layer => layer.visible && layer.renderer)
+        && mapState.layerLegend.layerLegendActive;
+    if (shouldCloseLegend || shouldOpenLegend) {
+        dispatch(toggleLayerLegend());
+    }
+};
 
 export const toggleMeasurements = () => ({
     type: types.TOGGLE_MEASUREMENTS,
@@ -387,4 +511,10 @@ export const hideLayer = (layerIds: string[]) => ({
 
 export const toggleIndexMap = () => ({
     type: types.TOGGLE_INDEX_MAP,
+});
+
+export const toggleLayerVisibleZoomOut = (layerId, originalMinScale) => ({
+    type: types.TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
+    layerId,
+    originalMinScale,
 });

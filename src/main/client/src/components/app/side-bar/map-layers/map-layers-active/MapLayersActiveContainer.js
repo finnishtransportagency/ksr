@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
-import { setLayerList, toggleLayer } from '../../../../../reducers/map/actions';
+import { setLayerList, toggleLayer, toggleLayerVisibleZoomOut } from '../../../../../reducers/map/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapLayersActive from './MapLayersActive';
 import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
@@ -10,6 +10,7 @@ import { addNonSpatialContentToTable } from '../../../../../reducers/table/actio
 const mapStateToProps = state => ({
     mapLayerList: state.map.layerGroups.layerList.filter(l => l.type !== 'agfl'),
     dataLayerList: state.map.layerGroups.layerList.filter(l => l.type === 'agfl'),
+    layersVisibleZoomOut: state.map.layerGroups.layersVisibleZoomOut,
     fetching: state.map.layerGroups.fetching,
     activeAdminTool: state.adminTool.active.layerId,
     mapScale: state.map.mapConfig.mapScale,
@@ -38,6 +39,9 @@ const mapDispatchToProps = dispatch => ({
     },
     addNonSpatialContentToTable: (layer) => {
         dispatch(addNonSpatialContentToTable(layer));
+    },
+    toggleVisibleZoomOut: (layerId, original) => {
+        dispatch(toggleLayerVisibleZoomOut(layerId, original));
     },
 });
 

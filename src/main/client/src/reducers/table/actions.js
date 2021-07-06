@@ -6,11 +6,12 @@ import strings from '../../translations';
 import { parseData } from '../../utils/parseFeatureData';
 import save from '../../utils/saveFeatureData';
 import { searchQueryMap } from '../../utils/workspace/loadWorkspace';
-import { activateLayers } from '../map/actions';
+import { activateLayers, updateRelatedLayersData } from '../map/actions';
 import { getSingleLayerFields } from '../../utils/map';
 import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
 import { updatePortal } from '../portal/actions';
+import { closeTableIfNothingToShow } from '../utils';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -73,6 +74,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
     const searchQueries = [];
 
     dispatch({ type: types.SEARCH_FEATURES });
+    let hasResults = false;
 
     queryMap.forEach((queryString, selectedLayer) => {
         const layerData = {
@@ -92,6 +94,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                         const newLayer = {
                             ...selectedLayer,
                             name: selectedLayer.name,
+                            originalQueryMap: queryMap,
                             definitionExpression: queryString,
                             visible: true,
                             active: true,
@@ -105,21 +108,29 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             renderer: null,
                             parentLayer: null,
                             minScale: 18489297,
+                            uniqueSymbols: selectedLayer.uniqueSymbols
+                                ? selectedLayer.uniqueSymbols.map(s => ({
+                                    ...s,
+                                    symbol: s.symbol.cloneNode(true),
+                                }))
+                                : undefined,
                         };
 
                         layersToBeAdded.layers.push(newLayer);
+                        if (!hasResults) hasResults = true;
                     });
                 }
             }));
     });
 
-    Promise.all(searchQueries).then(() => {
+    Promise.all(searchQueries).then(async () => {
+        if (!hasResults) toast.error(strings.search.notFound);
+        await dispatch(activateLayers(layersToBeAdded.layers));
+
         dispatch({
             type: types.SEARCH_FEATURES_FULFILLED,
             layers: parseData(layersToBeAdded, false),
         });
-
-        dispatch(activateLayers(layersToBeAdded.layers));
 
         if (layersToBeAdded.layers.length) {
             dispatch({
@@ -135,6 +146,8 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                 layers: layersToBeAdded.layers,
             });
         }
+
+        dispatch(selectFeatures(layersToBeAdded));
     });
 };
 
@@ -385,6 +398,9 @@ export const saveEditedFeatures = (
                         }
                     });
             }
+
+            const layersToUpdate = editedLayers.map(l => layerList.find(la => la.id === l.id));
+            dispatch(updateRelatedLayersData(layersToUpdate));
         });
 
     return {
@@ -445,6 +461,7 @@ export const closeTableTab = (
                                 type: types.CLOSE_LAYER,
                                 layerId,
                             });
+                            closeTableIfNothingToShow();
                             view.popup.close();
                             dispatch(updatePortal());
                         },
@@ -462,6 +479,7 @@ export const closeTableTab = (
                     type: types.CLOSE_LAYER,
                     layerId,
                 });
+                closeTableIfNothingToShow();
                 view.popup.close();
                 dispatch(updatePortal());
             },
@@ -472,12 +490,14 @@ export const closeTableTab = (
 export const addNonSpatialContentToTable = (
     layer: Object,
     workspaceFeatures?: Object[],
-) => (dispatch: Function) => {
+    clear?: boolean,
+    selectedFeatures?: Object[],
+) => async (dispatch: Function) => {
     dispatch({
         type: types.SET_LOADING_LAYERS,
         layerIds: [layer.id],
     });
-    fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
+    await fetchSearchQuery(layer.id, '1=1', layer.name, { layers: [] })
         .then(async (results) => {
             if (workspaceFeatures) {
                 results.layers.forEach((l) => {
@@ -515,11 +535,15 @@ export const addNonSpatialContentToTable = (
             dispatch({
                 type: types.SELECT_FEATURES,
                 layers,
+                clear,
             });
             dispatch({
                 type: types.REMOVE_LOADING_LAYERS,
                 layerIds: [layer.id],
             });
+            if (selectedFeatures) {
+                selectedFeatures.forEach(f => dispatch(toggleSelection(f)));
+            }
         })
         .catch(err => console.error(err));
 };
@@ -532,6 +556,11 @@ export const setSearchFeatures = (layers: Object[]) => ({
 export const setButtonAmount = (buttonAmount: ?number) => ({
     type: types.SET_BUTTON_AMOUNT,
     buttonAmount,
+});
+
+export const setActivePage = (page: Object) => ({
+    type: types.SET_ACTIVE_PAGE,
+    page,
 });
 
 export const setTableEdited = (hasTableEdited: boolean) => ({
@@ -564,12 +593,15 @@ export const sketchSaveData = (
                     addressField,
                 ));
                 dispatch(deSelectSelected());
+                closeTableIfNothingToShow();
             },
             () => {
                 dispatch(deSelectSelected());
+                closeTableIfNothingToShow();
             },
         ));
     } else {
         dispatch(deSelectSelected());
+        closeTableIfNothingToShow();
     }
 };

@@ -27,6 +27,8 @@ type Props = {
     addNonSpatialContentToTable: (layer: Object) => void,
     tableLayers: Object[],
     loadingLayers: string[],
+    toggleVisibleZoomOut: (layerId: string, original: number) => void,
+    layersVisibleZoomOut: any,
 };
 
 type State = {
@@ -119,6 +121,8 @@ class MapLayersActive extends Component<Props, State> {
             toggleLayer,
             mapScale,
             loadingLayers,
+            toggleVisibleZoomOut,
+            layersVisibleZoomOut,
         } = this.props;
         if (!fetching) {
             return (
@@ -135,6 +139,8 @@ class MapLayersActive extends Component<Props, State> {
                         handleAdminModeChange={this.handleAdminModeChange}
                         populateTable={this.populateTable}
                         loadingLayers={loadingLayers}
+                        toggleVisibleZoomOut={toggleVisibleZoomOut}
+                        layersVisibleZoomOut={layersVisibleZoomOut}
                     />
                     <DataLayersActiveView
                         dataLayerList={dataLayerList.filter(l => l.active)}

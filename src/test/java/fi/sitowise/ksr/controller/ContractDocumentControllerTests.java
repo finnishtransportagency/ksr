@@ -43,23 +43,23 @@ public class ContractDocumentControllerTests extends AuthControllerTestBase {
     }
 
     @Test
-    public void testRedirectToContractDocumentUrlAlfrescoIsFoundAndRedirected() throws Exception {
-        Mockito.when(contractDocumentService.getContractDocumentUrl(Mockito.eq("alfresco"), Mockito.anyString()))
+    public void testRedirectToContractDocumentUrlTiimeriIsFoundAndRedirected() throws Exception {
+        Mockito.when(contractDocumentService.getContractDocumentUrl(Mockito.eq("tiimeri"), Mockito.anyString()))
                 .thenAnswer((Answer<String>) this::createTestUrl);
 
         this.mockMvc.perform(get("/api/contract-document")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
-                .param("documentType", "alfresco")
+                .param("documentType", "tiimeri")
                 .param("searchValue", "123"))
                 .andExpect(status().isFound())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("http://test.url.com?documentType=alfresco&searchValue=123"));
+                .andExpect(MockMvcResultMatchers.redirectedUrl("http://test.url.com?documentType=tiimeri&searchValue=123"));
 
         this.mockMvc.perform(get("/api/contract-document")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN"))
-                .param("documentType", "alfresco")
+                .param("documentType", "tiimeri")
                 .param("searchValue", "789"))
                 .andExpect(status().isFound())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("http://test.url.com?documentType=alfresco&searchValue=789"));
+                .andExpect(MockMvcResultMatchers.redirectedUrl("http://test.url.com?documentType=tiimeri&searchValue=789"));
     }
 
     @Test

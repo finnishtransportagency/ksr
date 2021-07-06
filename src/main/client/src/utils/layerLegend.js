@@ -1,5 +1,5 @@
 // @flow
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 
 /**
  * Get legend symbol.
@@ -8,8 +8,7 @@ import esriLoader from 'esri-loader';
  * @returns {Promise} Promise html element that contains legend symbol.
  */
 export const getLegendSymbol = async (symbol: Object) => {
-    const [symbolPreview] = await esriLoader
-        .loadModules(['esri/symbols/support/symbolPreview']);
+    const [symbolPreview] = await loadModules(['esri/symbols/support/symbolPreview']);
     return symbolPreview.renderPreviewHTML(symbol, {
         size: 12,
     });
@@ -35,7 +34,20 @@ export const setLayerLegend = async (
                 // Select first symbol if layer has multiple legends.
                 const symbol = fl.renderer.uniqueValueInfos[0].symbol.clone();
                 layer.legendSymbol = await getLegendSymbol(symbol);
+                const uniqueSymbols = [];
+                for (let idx = 0; idx < fl.renderer.uniqueValueInfos.length; idx += 1) {
+                    uniqueSymbols.push({
+                        symbol: await getLegendSymbol(fl.renderer.uniqueValueInfos[idx]
+                            .symbol.clone()),
+                        label: fl.renderer.uniqueValueInfos[idx].label,
+                    });
+                }
+                layer.uniqueSymbols = uniqueSymbols;
             }
         }
+    } else if (layer.type === 'wms' && layer.wmsLegend) {
+        const symbol: HTMLImageElement = document.createElement('img');
+        symbol.src = `${layer.url}?request=GetLegendGraphic&layer=${layer.layers}&format=image/png&version=1.3.0`;
+        layer.uniqueSymbols = [{ symbol }];
     }
 };

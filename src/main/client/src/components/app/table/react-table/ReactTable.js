@@ -34,6 +34,8 @@ type Props = {
     setTableEdited: Function,
     updatePortal: Function,
     portalIsOpen: boolean,
+    activePage: Object,
+    setActivePage: Function,
 };
 
 type State = {
@@ -44,6 +46,7 @@ type State = {
         rowIndex: ?number,
         key: ?string,
     },
+    tableInstance: Object,
 };
 
 const defaultState = {
@@ -54,6 +57,7 @@ const defaultState = {
         rowIndex: null,
         key: null,
     },
+    tableInstance: undefined,
 };
 
 let cellEditTimer;
@@ -68,7 +72,7 @@ class ReactTable extends Component<Props, State> {
         this.toggleSelection = this.toggleSelection.bind(this);
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps: Props) {
         const { updatePortal, portalIsOpen } = this.props;
         const paginationBottom = document.getElementsByClassName('pagination-bottom')[0];
         if (paginationBottom) {
@@ -88,8 +92,8 @@ class ReactTable extends Component<Props, State> {
             bodyElement.style.height = `calc(100% - ${tbodyHeight}px)`;
         }
 
-        const { currentCellData } = this.state;
-        const { setTableEdited, layerFeatures } = this.props;
+        const { currentCellData, tableInstance } = this.state;
+        const { setTableEdited, layerFeatures, activeTable } = this.props;
 
         // Logic for handling whether table save button should be disabled or not
         if (layerFeatures) {
@@ -119,6 +123,10 @@ class ReactTable extends Component<Props, State> {
             } else {
                 setTableEdited(false);
             }
+        }
+
+        if (prevProps.activeTable !== activeTable && tableInstance) {
+            this.onFetchData();
         }
     }
 
@@ -223,6 +231,7 @@ class ReactTable extends Component<Props, State> {
                 && activeLayer._source !== 'shapefile'
                 && activeLayer.layerPermission.updateLayer
                 && cellField.editable
+                && cellField.name !== 'PROPERTY_ID'
                 && activeLayer.updaterField !== cellField.name
                 && !activeLayer.requiredUniqueFields.some(field => field === cellField.name);
         }
@@ -265,6 +274,12 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
+    handlePageChange = (pageIndex) => {
+        const { activeTable, setActivePage } = this.props;
+        setActivePage({ layerId: activeTable, page: pageIndex });
+        document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
+    };
+
     renderSelectInput = (cellField: Object, cellInfo: Object, filter: any, onChange: Function) => {
         // Add empty option for empty and null values
         const options = [<option key="-" value="" />].concat(
@@ -275,7 +290,10 @@ class ReactTable extends Component<Props, State> {
         return (
             <TableSelect
                 value={filter ? filter.value : ''}
-                onChange={event => onChange(event.target.value)}
+                onChange={(event) => {
+                    this.handlePageChange(0);
+                    onChange(event.target.value);
+                }}
             >
                 {options}
             </TableSelect>
@@ -421,7 +439,10 @@ class ReactTable extends Component<Props, State> {
             style={{ minHeight: '1rem' }}
             type="text"
             value={filter ? filter.value : ''}
-            onChange={evt => onChange(evt.target.value)}
+            onChange={(evt) => {
+                this.handlePageChange(0);
+                onChange(evt.target.value);
+            }}
         />
     );
 
@@ -526,6 +547,22 @@ class ReactTable extends Component<Props, State> {
         return null;
     };
 
+    setTableInstance = (instance: Object) => {
+        this.setState({ tableInstance: instance });
+    };
+
+    onFetchData = () => {
+        const { tableInstance } = this.state;
+        if (tableInstance) {
+            const { setRowFilter } = this.props;
+            const currentRecords = tableInstance.getResolvedState().sortedData;
+            setRowFilter(currentRecords.map(r => ({
+                id: r._original._id,
+                layerId: r._original._layerId,
+            })));
+        }
+    };
+
     render() {
         const {
             fetching,
@@ -536,7 +573,11 @@ class ReactTable extends Component<Props, State> {
             setRowFilter,
             activeAdminTool,
             activeTable,
+            activePage,
         } = this.props;
+
+        const layerPage = layerFeatures && layerFeatures.id && activePage[layerFeatures.id];
+        const currentPage = layerPage || 0;
 
         if (!layerFeatures) {
             return (
@@ -555,12 +596,14 @@ class ReactTable extends Component<Props, State> {
             ['parentLayer']);
             const activeLayer: any = layerList.find(ll => ll.id === parentLayer)
                 || layerList.find(ll => ll.id === layerFeatures.id);
-            const relationLayer = activeLayer && activeLayer.relations.length > 0
+            const relationLayer = activeLayer && activeLayer.relations
+            && activeLayer.relations.length > 0
                 ? layerList.find(ll => ll.id === String(activeLayer.relations
                     .find(r => r).relationLayerId))
                 : null;
 
             const tableColumns = (activeLayer
+                && activeLayer.relations
                 && activeLayer.relations.length > 0
                 && activeLayer.relations.find(r => r).relationType !== null
                 && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer)))
@@ -584,6 +627,10 @@ class ReactTable extends Component<Props, State> {
                     activeAdminTool={activeAdminTool}
                     activeTable={activeTable}
                     layerList={layerList}
+                    setTableInstance={this.setTableInstance}
+                    onFetchData={this.onFetchData}
+                    onPageChange={this.handlePageChange}
+                    activePage={currentPage}
                 />
             );
         }

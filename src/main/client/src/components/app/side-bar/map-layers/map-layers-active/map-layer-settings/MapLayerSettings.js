@@ -25,6 +25,8 @@ type Props = {
     handleAdminModeChange: (layerId: string) => void,
     populateTable: (layer: Object) => void,
     loadingLayers: string[],
+    toggleVisibleZoomOut: (layerId: string, original: number) => void,
+    layersVisibleZoomOut: Object[],
 };
 
 const MapLayerSettings = ({
@@ -39,6 +41,8 @@ const MapLayerSettings = ({
     handleAdminModeChange,
     populateTable,
     loadingLayers,
+    toggleVisibleZoomOut,
+    layersVisibleZoomOut,
 }: Props) => (
     <LayerSettings
         toggledHidden={
@@ -55,6 +59,8 @@ const MapLayerSettings = ({
                         mapScale={mapScale}
                         toggleLayer={toggleLayer}
                         childLayer={false}
+                        toggleVisibleZoomOut={toggleVisibleZoomOut}
+                        layersViewableZoomOut={layersVisibleZoomOut}
                     />
                 )
             }
@@ -89,6 +95,7 @@ const MapLayerSettings = ({
                     {
                         layer.type === 'agfs'
                         && layer._source !== 'search'
+                        && layer._source !== 'shapefile'
                         && (
                             <LayerSettings.Icons>
                                 <LayerSettings.Icon

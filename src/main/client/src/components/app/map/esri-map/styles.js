@@ -28,8 +28,8 @@ export const Wrapper = styled.div`
             z-index: 2;
         }
         
-        .esri-legend--card {
-            bottom: 10px;
+        .esri-legend {
+            margin-bottom: 10px;
         }
         
         .esri-coordinate-conversion {
@@ -68,6 +68,8 @@ export const Wrapper = styled.div`
         #draw-create-new-feature,
         #accept-create-new-feature,
         #reject-create-new-feature,        
+        #redo-new-feature,
+        #undo-new-feature,
         #remove-selection {
             display: inline-flex;
         };
@@ -82,7 +84,8 @@ export const Wrapper = styled.div`
         
         #toggle-select-tools,
         #toggle-draw-tools,
-        #draw-create-new-feature {
+        #draw-create-new-feature,
+        #undo-new-feature {
             margin-left: 10px;
         };
         
@@ -115,6 +118,8 @@ export const Wrapper = styled.div`
         #draw-create-new-feature,
         #reject-create-new-feature,
         #accept-create-new-feature,
+        #redo-new-feature,
+        #undo-new-feature,
         #remove-selection {
             background: ${styles.colorMain};
             color: ${styles.colorFontLight};

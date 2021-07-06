@@ -5,12 +5,19 @@ import { setActiveModal } from '../../../../reducers/modal/actions';
 import ReactTable from './ReactTable';
 
 import {
-    toggleSelection, toggleSelectAll, setEditedLayer, setRowFilter, setTableEdited, addFiltered,
+    toggleSelection,
+    toggleSelectAll,
+    setEditedLayer,
+    setRowFilter,
+    setTableEdited,
+    addFiltered,
+    setActivePage,
 } from '../../../../reducers/table/actions';
 import { updatePortal } from '../../../../reducers/portal/actions';
 
 const mapStateToProps = (state) => {
     const { activeTable, editedLayers } = state.table.features;
+    const { activePage } = state.table;
 
     const layerFeatures = activeTable && editedLayers.length
         ? editedLayers.find(l => l.id === activeTable)
@@ -28,6 +35,7 @@ const mapStateToProps = (state) => {
         layerList: state.map.layerGroups.layerList,
         activeAdminTool: state.adminTool.active.layerId,
         portalIsOpen: state.portal.togglePortal,
+        activePage,
     };
 };
 
@@ -55,6 +63,9 @@ const mapDispatchToProps = dispatch => ({
     },
     addFiltered: (filtered) => {
         dispatch(addFiltered(filtered));
+    },
+    setActivePage: (page) => {
+        dispatch(setActivePage(page));
     },
     updatePortal: () => {
         dispatch(updatePortal());

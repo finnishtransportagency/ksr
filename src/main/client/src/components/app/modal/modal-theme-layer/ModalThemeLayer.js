@@ -94,8 +94,8 @@ class ModalThemeLayer extends Component<Props, State> {
                 layerList,
                 setLayerList,
             );
-
-            if (!layerLegendActive) toggleLayerLegend();
+            const layerVisible = layerList.find(layer => layer.id === layerId).visible;
+            if (!layerLegendActive && layerVisible) toggleLayerLegend();
         }
     };
 
@@ -105,11 +105,12 @@ class ModalThemeLayer extends Component<Props, State> {
             view,
             layerList,
             setLayerList,
+            layerLegendActive,
         } = this.props;
         const fl = view.map.findLayerById(layerId);
         const layer = layerList.find(l => l.id === layerId);
         if (fl && layer && layer.renderer) {
-            resetLayerTheme(fl, layer, layerList, setLayerList);
+            resetLayerTheme(fl, layer, layerList, setLayerList, layerLegendActive);
         }
     };
 

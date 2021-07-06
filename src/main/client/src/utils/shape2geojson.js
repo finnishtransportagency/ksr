@@ -1,6 +1,6 @@
 // @flow
 import * as shapefile from 'shapefile';
-import esriLoader from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import { convert } from './geojson';
 import { getLegendSymbol } from './layerLegend';
 import { toDisplayDate } from './date';
@@ -171,7 +171,7 @@ const createLayer = async (
     id: number,
     color: ?string,
 ) => {
-    const [FeatureLayer] = await esriLoader.loadModules(['esri/layers/FeatureLayer']);
+    const [FeatureLayer] = await loadModules(['esri/layers/FeatureLayer']);
 
     if (graphics.length < 1 || graphics[0].geometry === null) {
         return null;

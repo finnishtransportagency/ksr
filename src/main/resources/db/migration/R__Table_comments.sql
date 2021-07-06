@@ -30,7 +30,7 @@ comment on column layer.feature_type is 'Type of the feature. Either road, water
 comment on column layer.updater_field is 'Field-name on the layer containing name of updater.';
 comment on column layer.contract_id_field is 'Name of contract-relation id field to be shown in contract list.';
 comment on column layer.contract_description_field is 'Name of contract-relation description field to be shown in contract list.';
-comment on column layer.alfresco_link_field is 'Name of columns which refers layer contract number and/or register number for Alfresco.';
+comment on column layer.tiimeri_link_field is 'Name of columns which refers layer contract number and/or register number for Tiimeri.';
 comment on column layer.case_management_link_field is 'Name of columns which refers layer contract number and/or register number for Asianhallinta.';
 comment on column layer.background is 'If the layer can be used as a background layer. Defaults to false ("0"). ';
 comment on column layer.parent_layer is 'Id of parent layer which sublayer belongs to.';

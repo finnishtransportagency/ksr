@@ -34,6 +34,7 @@ const fi = {
             not: 'Ei sisällä (täsmälleen)',
             notLike: 'Ei sisällä (osittain)',
         },
+        notFound: 'Ei hakua vastaavia tuloksia.',
     },
     reactTable: {
         previousText: 'Edellinen',
@@ -76,6 +77,7 @@ const fi = {
             acceptText: 'Hylkää',
             cancelText: 'Peruuta',
         },
+        caseManagement: 'Asianhallinta',
     },
     modalFilter: {
         title: 'Suodata sarakkeita',
@@ -229,6 +231,8 @@ const fi = {
         acceptSelection: 'Hyväksy geometria',
         activeAdmin: 'Luontityökalu',
         newArea: 'Luo kohteelle uusi alue',
+        redo: 'Palauta',
+        undo: 'Kumoa',
     },
     mapLayerView: {
         removeTooltip: 'Poista karttataso',
@@ -326,7 +330,7 @@ const fi = {
             edit: 'Muokkaa sopimusta',
             unlink: 'Poista sopimuksen linkitys kohteelta',
             caseManagementLink: 'Asianhallinta',
-            alfrescoLink: 'Alfresco',
+            tiimeriLink: 'Tiimeri',
         },
         linkContract: {
             title: 'Sopimuksen linkittäminen',
@@ -396,8 +400,10 @@ const fi = {
         createThemeLayer: 'Luo teemataso',
         toggleAdminTool: 'Muokkaus päälle/pois',
         toggleVisibility: 'Näytä/piilota karttataso',
+        toggleVisibleZoomOut: 'Näytä/piilota karttataso loitontaessa kauas',
         zoomIn: 'Lähennä karttaa nähdäksesi karttatason',
         zoomOut: 'Loitonna karttaa nähdäksesi karttatason',
+        showMultiSymbol: 'Näytä tason symbolien kuvaukset',
     },
     searchProperty: {
         propertyIdentifier: 'Kiinteistötunnus',

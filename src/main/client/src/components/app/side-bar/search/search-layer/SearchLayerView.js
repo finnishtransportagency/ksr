@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
@@ -9,6 +9,7 @@ import LoadingIcon from '../../../shared/LoadingIcon';
 import SearchFieldView from './search-field/SearchFieldView';
 import { InputInfo } from '../../../../ui/elements/TextInput';
 import { LabelInfoWrapper } from './styles';
+import SearchResultLayer from './SearchResultLayer';
 
 type Props = {
     handleLayerChange: Function,
@@ -27,6 +28,8 @@ type Props = {
     fetching: boolean,
     suggestions: Array<string>,
     suggestionsActive: boolean,
+    searchResults: Array<Object>,
+    openSearchResult: Function,
 };
 
 const SearchLayerView = ({
@@ -46,6 +49,8 @@ const SearchLayerView = ({
     fetching,
     suggestions,
     suggestionsActive,
+    searchResults,
+    openSearchResult,
 }: Props) => (
     <Scrollbars
         autoHide
@@ -91,17 +96,39 @@ const SearchLayerView = ({
                         <i className="fas fa-question-circle" />
                     </InputInfo>
                 </LabelInfoWrapper>
-                <TextInput
-                    disabled={fetching}
-                    type="text"
-                    value={textSearch}
-                    onChange={handleTextChange}
-                    placeholder=""
-                    name="allFields"
-                    required={!searchFieldValues.length}
-                    minLength={2}
-                    autoComplete="off"
-                />
+                {(!selectedLayer
+                    || selectedLayer === 'queryAll'
+                    || selectedLayer === 'queryActive')
+                    ? (
+                        <TextInput
+                            disabled={fetching}
+                            type="text"
+                            value={textSearch}
+                            onChange={handleTextChange}
+                            placeholder=""
+                            name="allFields"
+                            required={!searchFieldValues.length}
+                            minLength={2}
+                            autoComplete="off"
+                        />
+                    )
+                    : (
+                        <SearchFieldView
+                            field={{ type: 'text-all-columns' }}
+                            index={0}
+                            searchFieldValues={undefined}
+                            setSearchState={setSearchState}
+                            selectedLayer={selectedLayer}
+                            textSearch={textSearch}
+                            handleChangeField={handleChangeField}
+                            handleFieldBlur={handleFieldBlur}
+                            handleRemoveField={handleRemoveField}
+                            fetching={fetching}
+                            suggestions={suggestions}
+                            suggestionsActive={suggestionsActive}
+                        />
+                    )
+                }
             </label>
             {searchFieldValues.map((a, i) => (
                 <SearchFieldView
@@ -145,6 +172,19 @@ const SearchLayerView = ({
             </div>
             <LoadingIcon loading={fetching} />
         </form>
+        {(searchResults && searchResults.length > 0)
+        && (
+            <Fragment>
+                {searchResults.map(l => (
+                    <SearchResultLayer
+                        key={l.id}
+                        title={l.title}
+                        id={l.id}
+                        onClick={openSearchResult}
+                    />
+                ))}
+            </Fragment>
+        )}
     </Scrollbars>
 );
 

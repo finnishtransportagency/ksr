@@ -4,7 +4,7 @@ import { removeContractListInfo } from '../../../../reducers/contract/actions';
 import ModalFeatureContracts from './ModalFeatureContracts';
 import { getContractLayers } from '../../../../utils/contracts/contracts';
 import { nestedVal } from '../../../../utils/nestedValue';
-import { updateLayerFields } from '../../../../reducers/map/actions';
+import { updateRelatedLayersData, updateLayerFields } from '../../../../reducers/map/actions';
 
 const mapStateToProps = (state) => {
     const { layerId } = state.contract.contractList;
@@ -37,6 +37,9 @@ const mapDispatchToProps = dispatch => ({
     },
     updateLayerFields: (layerId, fields) => {
         dispatch(updateLayerFields(layerId, fields));
+    },
+    updateLayerData: (layer) => {
+        dispatch(updateRelatedLayersData([layer]));
     },
 });
 
