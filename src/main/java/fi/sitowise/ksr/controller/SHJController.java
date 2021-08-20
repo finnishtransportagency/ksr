@@ -53,7 +53,7 @@ public class SHJController {
                     required = true,
                     paramType = "body"),
     })
-    @PutMapping(value = "/kos")
+    @PostMapping(value = "/kos")
     public ResponseEntity<?> addKayttooikeussopimus(@RequestBody Map<String, Object> attributes) throws IOException {
         try {
             if (shjService.addFeature(attributes)) {
@@ -95,7 +95,7 @@ public class SHJController {
                     required = true,
                     paramType = "body"),
     })
-    @PostMapping(value = "/kos")
+    @PutMapping(value = "/kos")
     public ResponseEntity<?> updateKayttooikeussopimus(@RequestBody Map<String, Object> attributes) throws IOException {
         try {
             if (shjService.updateFeature(attributes)) {
