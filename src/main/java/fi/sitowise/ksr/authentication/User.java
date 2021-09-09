@@ -75,6 +75,7 @@ public class User implements UserDetails {
             case Role.ROLE_UPDATER:
             case Role.ROLE_NAMED_USER:
             case Role.ROLE_USER:
+            case Role.ROLE_SOPULI_USER:
     			return true;
     		default:
     			return false;
