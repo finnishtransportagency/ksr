@@ -88,6 +88,7 @@ class ModalFilter extends Component<Props, State> {
                 const formatFeature = await formatPropertyInfoToSaveFormat(
                     data,
                     combinedData.attributes.OWNER_UNCLEAR,
+                    combinedData.attributes.NOTES,
                 );
                 if (formatFeature[0] && formatFeature[0].geometry !== null) {
                     await save.saveData('add', view, originalLayerId, formatFeature, objectId.name, false, false);
