@@ -36,6 +36,7 @@ comment on column layer.background is 'If the layer can be used as a background 
 comment on column layer.parent_layer is 'Id of parent layer which sublayer belongs to.';
 comment on column layer.property_id_field is 'Name of property id field';
 comment on column layer.required_unique_fields is 'Feature columns which should be not-null and unique. Will be used when adding new feature (unique check) or when editing existing feature (not editable).';
+comment on column layer.editable_columns is 'Feature columns which should be editable (and others not) even if columns are not set read-only in ArcGis-server.';
 
 comment on table layer_permission is 'Layer permissions.';
 comment on column layer_permission.layer_id is 'Identifier of the layer that the permissions belong to.';
