@@ -29,6 +29,7 @@ type State = {
 
 const initialState = {
     fadeOut: false,
+    modalScrollSize: window.innerHeight - 220,
 };
 
 class Modal extends Component<Props, State> {
@@ -45,6 +46,7 @@ class Modal extends Component<Props, State> {
         this.toggleModal = this.toggleModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+        this.setModalScrollSize = this.setModalScrollSize.bind(this);
     }
 
     toggleModal = () => {
@@ -69,6 +71,20 @@ class Modal extends Component<Props, State> {
         if (modalSubmit[index].toggleModal) this.toggleModal();
     };
 
+    setModalScrollSize = () => {
+        this.setState(
+            {
+                modalScrollSize: window.innerHeight - 220,
+            },
+        );
+    };
+
+    componentDidMount() {
+        this.setModalScrollSize();
+
+        window.addEventListener('resize', this.setModalScrollSize);
+    }
+
     render() {
         const {
             title,
@@ -78,7 +94,7 @@ class Modal extends Component<Props, State> {
             activeModal,
             handleGoBack,
         } = this.props;
-        const { fadeOut } = this.state;
+        const { fadeOut, modalScrollSize } = this.state;
 
         if (activeModal) {
             return createPortal(
@@ -91,6 +107,7 @@ class Modal extends Component<Props, State> {
                     handleModalCancel={this.handleCancel}
                     handleSubmit={this.handleSubmit}
                     handleGoBack={handleGoBack}
+                    modalScrollSize={modalScrollSize}
                 />,
                 modalRoot,
             );

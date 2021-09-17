@@ -11,7 +11,7 @@ const Modal = styled.div`
     color: ${styles.colorFontDark};
     margin-top: 2rem;
     visibility: visible;
-    max-height: 90%;
+    max-height: calc(100% - 4rem);
     height: fit-content;
     width: 700px;
     z-index: 1050;

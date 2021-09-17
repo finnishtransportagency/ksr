@@ -21,6 +21,7 @@ type Props = {
     fadeOut: boolean,
     handleSubmit: (index: number) => void,
     handleGoBack: Function,
+    modalScrollSize: number,
 };
 
 const ModalView = ({
@@ -32,6 +33,7 @@ const ModalView = ({
     fadeOut,
     handleSubmit,
     handleGoBack,
+    modalScrollSize,
 }: Props) => (
     <Modal.Blur>
         <Draggable bounds="parent" handle=".handler">
@@ -42,7 +44,7 @@ const ModalView = ({
                         <i className="fas fa-times" />
                     </button>
                 </Modal.Header>
-                <Scrollbars autoHeight autoHeightMax={500} className="modal-content-scroll-wrapper">
+                <Scrollbars autoHeight autoHeightMax={modalScrollSize} className="modal-content-scroll-wrapper">
                     <Modal.Content>
                         {content}
                     </Modal.Content>
