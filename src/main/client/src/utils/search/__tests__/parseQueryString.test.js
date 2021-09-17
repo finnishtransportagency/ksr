@@ -286,7 +286,7 @@ describe('parseQueryString - filterExpressionsByType', () => {
             queryColumnsList,
         );
 
-        expect(queryString).toBe("fieldName1 = DATE '2018-02-22'");
+        expect(queryString).toBe("CAST(SUBSTRING(fieldName1,0,10) AS DATE) = DATE '2018-02-22'");
 
         searchFieldValues = [
             {
@@ -310,6 +310,6 @@ describe('parseQueryString - filterExpressionsByType', () => {
             queryColumnsList,
         );
 
-        expect(queryString2).toBe("fieldName1 = DATE '2018-02-22' AND LOWER(fieldName2) = LOWER('helsinki')");
+        expect(queryString2).toBe("CAST(SUBSTRING(fieldName1,0,10) AS DATE) = DATE '2018-02-22' AND LOWER(fieldName2) = LOWER('helsinki')");
     });
 });
