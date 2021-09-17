@@ -506,6 +506,19 @@ class EsriMap extends Component<Props> {
                         }
                     }
                     break;
+                case 'feature-data': {
+                    const attributeData = view.popup.foundFeatures
+                        .find(feature => feature.layer.id === layer.id).attributes;
+
+                    const modalData = {
+                        layerId: layer.id,
+                        attributeData,
+                        fromSource: 'map',
+                    };
+
+                    setActiveModal('singleFeatureInfo', modalData);
+                    break;
+                }
                 case 'copy-feature':
                     await copySelectedFeature('create');
                     break;
