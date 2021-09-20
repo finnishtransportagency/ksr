@@ -232,6 +232,8 @@ class ReactTable extends Component<Props, State> {
                 && activeLayer.layerPermission.updateLayer
                 && cellField.editable
                 && cellField.name !== 'PROPERTY_ID'
+                && (!activeLayer.editableColumnsList.length
+                    || activeLayer.editableColumnsList.includes(cellField.name))
                 && activeLayer.updaterField !== cellField.name
                 && !activeLayer.requiredUniqueFields.some(field => field === cellField.name);
         }
