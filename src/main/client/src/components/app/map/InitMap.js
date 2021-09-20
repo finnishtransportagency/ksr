@@ -80,7 +80,7 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        loadCss('4.18');
+        loadCss('4.20');
 
         const [
             MapView,
