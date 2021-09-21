@@ -20,21 +20,14 @@ class MapTools extends Component<Props> {
 
     mapTools = () => {
         loadModules([
-            'esri/views/2d/draw/Draw',
-            'esri/widgets/Sketch/SketchViewModel',
-        ])
+                'esri/views/2d/draw/Draw',
+                'esri/widgets/Sketch/SketchViewModel',
+            ])
             .then(([Draw, SketchViewModel]) => {
                 const { setMapTools, view, tempGraphicsLayer } = this.props;
 
                 const draw = new Draw({
                     view,
-                });
-
-                const snapSource = [];
-                view.map.allLayers.forEach((layer) => {
-                    snapSource.push({
-                        layer,
-                    });
                 });
 
                 const sketchViewModel = new SketchViewModel({
@@ -43,11 +36,6 @@ class MapTools extends Component<Props> {
                     defaultUpdateOptions: {
                         tool: 'reshape',
                         toggleToolOnClick: false,
-                    },
-                    snappingOptions: {
-                        enabled: true,
-                        featureSources: snapSource,
-                        distance: 15,
                     },
                 });
 
