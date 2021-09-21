@@ -7,7 +7,7 @@
     "date-fns": "^2.7.0",
     "dompurify": "^2.0.8",
     "downshift": "^3.2.4",
-    "esri-loader": "3.0.0",
+    "esri-loader": "3.2.0",
     "nano-equal": "^2.0.2",
     "proj4": "^2.5.0",
     "querystring": "^0.2.0",

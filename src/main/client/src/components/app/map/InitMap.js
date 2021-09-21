@@ -80,7 +80,7 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        loadCss('4.18');
+        loadCss('4.20');
 
         const [
             MapView,
@@ -274,36 +274,34 @@ class EsriMap extends Component<Props> {
             }
         }
 
-        overview.when(() => {
-            view.when(() => {
-                // Change compass widgets default dial icon to compass icon.
-                const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
-                compassIcon.classList.remove('esri-icon-dial');
-                compassIcon.classList.add('esri-icon-compass');
+        view.when(() => {
+            // Change compass widgets default dial icon to compass icon.
+            const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
+            compassIcon.classList.remove('esri-icon-dial');
+            compassIcon.classList.add('esri-icon-compass');
 
-                const extentgraphic = new Graphic({
-                    geometry: null,
-                    symbol: {
-                        type: 'simple-fill',
-                        color: extentGraphic,
-                        outline: null,
-                    },
-                });
-                overview.graphics.add(extentgraphic);
+            const extentgraphic = new Graphic({
+                geometry: null,
+                symbol: {
+                    type: 'simple-fill',
+                    color: extentGraphic,
+                    outline: null,
+                },
+            });
+            overview.graphics.add(extentgraphic);
 
-                // Get the new extent of the view only when view is stationary.
-                watchUtils.whenTrue(view, 'stationary', () => {
-                    if (view.extent) {
-                        overview.goTo({
-                            center: view.center,
-                            scale:
+            // Get the new extent of the view only when view is stationary.
+            watchUtils.whenTrue(view, 'stationary', () => {
+                if (view.extent) {
+                    overview.goTo({
+                        center: view.center,
+                        scale:
                                 view.scale
                                 * 100,
-                        });
+                    });
 
-                        extentgraphic.geometry = view.extent;
-                    }
-                });
+                    extentgraphic.geometry = view.extent;
+                }
             });
         });
 
