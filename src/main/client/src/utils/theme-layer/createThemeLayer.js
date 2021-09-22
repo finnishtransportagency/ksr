@@ -22,7 +22,7 @@ export const createThemeLayer = async (
     layerList: Object[],
     setLayerList: (Object[]) => void,
 ) => {
-    const [colorRendererCreator] = await loadModules(['esri/renderers/smartMapping/creators/color']);
+    const [colorRendererCreator] = await loadModules(['esri/smartMapping/renderers/color']);
     const response = await colorRendererCreator.createClassBreaksRenderer(rendererParams);
     const newLayerList = layerList.map(layer => ({
         ...layer,
