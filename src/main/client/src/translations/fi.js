@@ -487,6 +487,10 @@ const fi = {
         submitChange: 'Vaihda',
         submitDisable: 'Poistu',
     },
+    modalSingleFeatureInfo: {
+        title: 'Kohteen ominaisuustiedot',
+        cancel: 'Peruuta',
+    },
 };
 
 export default fi;
