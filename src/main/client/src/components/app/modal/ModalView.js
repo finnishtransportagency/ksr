@@ -18,6 +18,7 @@ import ModalContractDetailsContainer from './modal-contract-details/ModalContrac
 import ModalDownloadCsvContainer from './modal-donwload-csv/ModalDownloadCsvContainer';
 import ModalShowAddressContainer from './modal-show-address/ModalShowAddressContainer';
 import ModalZoomToFeaturesContainer from './modal-zoom-to-features/ModalZoomToFeaturesContainer';
+import ModalSingleFeatureInfo from './modal-single-feature-info/ModalSingleFeatureInfo';
 
 type Props = {
     activeModal: string,
@@ -42,6 +43,7 @@ const ModalView = ({ activeModal, confirmModal }: Props) => (
         {activeModal === 'downloadCSV' && <ModalDownloadCsvContainer />}
         {activeModal === 'zoomToFeatures' && <ModalZoomToFeaturesContainer />}
         {activeModal === 'showAddress' && <ModalShowAddressContainer />}
+        {activeModal === 'singleFeatureInfo' && <ModalSingleFeatureInfo />}
         {confirmModal && <ConfirmModalContainer />}
     </Fragment>
 );

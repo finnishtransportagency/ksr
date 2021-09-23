@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
 import { cellEditValidate, getValue, preventKeyPress } from '../../../../utils/cellEditValidate';
-import { addContractColumn } from '../../../../utils/contracts/contractColumn';
+import { addActionColumn } from '../../../../utils/contracts/actionColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';
 import { TableInput, TableSelect, WrapperReactTableNoTable } from './styles';
@@ -176,16 +176,24 @@ class ReactTable extends Component<Props, State> {
         return getCodedValue(domain, content);
     };
 
-    handleContractClick = (row: Object) => {
-        const {
-            setActiveModal, setContractListInfo, activeTable, layerList,
-        } = this.props;
+    getLayerData = () => {
+        const { activeTable, layerList } = this.props;
 
         const layerId = activeTable.replace('.s', '');
         const parentLayerId = nestedVal(layerList.find(l => l.id === layerId), ['parentLayer']);
         const layer: Object = parentLayerId
             ? layerList.find(l => l.id === parentLayerId.replace('.s', ''))
             : layerList.find(l => l.id === layerId);
+
+        return layer;
+    }
+
+    handleContractClick = (row: Object) => {
+        const {
+            setActiveModal, setContractListInfo, activeTable,
+        } = this.props;
+
+        const layer = this.getLayerData();
 
         const idFieldName = nestedVal(
             layer.fields.find(field => field.type === 'esriFieldTypeOID'),
@@ -207,6 +215,19 @@ class ReactTable extends Component<Props, State> {
             setActiveModal('featureContracts');
             setContractListInfo(layer.id, objectId);
         }
+    };
+
+    handleFeatureInfoClick = (row: Object) => {
+        const { setActiveModal } = this.props;
+
+        const layer = this.getLayerData();
+
+        const modalData = {
+            layerId: layer.id,
+            attributeData: row.original,
+            fromSource: 'table',
+        };
+        setActiveModal('singleFeatureInfo', modalData);
     };
 
     isCellEditable = (cellField: Object) => {
@@ -604,17 +625,20 @@ class ReactTable extends Component<Props, State> {
                     .find(r => r).relationLayerId))
                 : null;
 
-            const tableColumns = (activeLayer
+            const layerHasRelations = activeLayer
                 && activeLayer.relations
                 && activeLayer.relations.length > 0
                 && activeLayer.relations.find(r => r).relationType !== null
-                && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer)))
-                ? addContractColumn(
-                    this.handleContractClick,
-                    columns,
-                    isContract(activeLayer),
-                )
-                : columns;
+                && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer));
+
+            const tableColumns = addActionColumn(
+                this.handleContractClick,
+                this.handleFeatureInfoClick,
+                columns,
+                isContract(activeLayer),
+                layerHasRelations,
+            );
+
             return (
                 <ReactTableView
                     data={data}
