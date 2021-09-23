@@ -24,8 +24,8 @@ const ModalSingleFeatureInfo = () => {
         if (
             field
             && field.type !== 'esriFieldTypeOID'
-            && key !== 'LINK_OBJECTID'
-            && key !== 'CONTRACT_UUID'
+            && !key.includes('LINK_OBJECTID')
+            && !key.includes('CONTRACT_UUID')
         ) {
             return {
                 label: field.label,
