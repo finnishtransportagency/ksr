@@ -4,6 +4,7 @@ import {
     SET_ACTIVE_TOOL,
     SET_ACTIVE_TOOL_MENU,
     SET_ACTIVE_FEATURE_MODE,
+    SET_SNAPPING_FEATURE_SOURCES,
 } from '../../constants/actionTypes';
 
 const initialState = {
@@ -21,6 +22,7 @@ type Action = {
     active: string,
     activeToolMenu: string,
     activeFeatureMode: string,
+    featureSources: Object[],
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -31,6 +33,11 @@ export default (state: Object = initialState, action: Action) => {
                 draw: action.draw,
                 sketchViewModel: action.sketchViewModel,
             };
+        case SET_SNAPPING_FEATURE_SOURCES:
+            if (state.sketchViewModel && state.sketchViewModel.snappingOptions) {
+                state.sketchViewModel.snappingOptions.featureSources = action.featureSources;
+            }
+            return state;
         case SET_ACTIVE_TOOL:
             return {
                 ...state,

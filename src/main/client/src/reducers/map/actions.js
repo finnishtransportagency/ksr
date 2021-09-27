@@ -382,6 +382,11 @@ export const setActiveFeatureMode = (activeFeatureMode: string) => ({
     activeFeatureMode,
 });
 
+export const setSnappingFeatureSources = (featureSources: Object) => ({
+    type: types.SET_SNAPPING_FEATURE_SOURCES,
+    featureSources,
+});
+
 export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
     fetchAddUserLayer(layerValues)
         .then((l) => {
