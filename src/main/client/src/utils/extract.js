@@ -18,7 +18,7 @@ export const extractSelected = (
     loadModules([
         'esri/Graphic',
         'esri/tasks/Geoprocessor',
-        'esri/tasks/support/FeatureSet',
+        'esri/rest/support/FeatureSet',
     ])
         .then(([
             Graphic,

@@ -186,7 +186,7 @@ export const highlight = async (
     view: Object,
     selectedFeatures: Array<Object>,
 ) => {
-    const [Query] = await loadModules(['esri/tasks/support/Query']);
+    const [Query] = await loadModules(['esri/rest/support/Query']);
     if (view) {
         const highlightFeatures = (layer: Object, layerView: Object, features: Object[]) => {
             if (layer.layerHighlight) {
