@@ -340,7 +340,7 @@ const ModalContractDetails = (props: Props) => {
             <Fragment>
                 {activeView === 'contractDetails' && (
                     <ModalContractDetailsView
-                        contractLayerId={contractLayer.id}
+                        contractLayer={contractLayer}
                         detailList={detailList}
                         fetchingDetailList={fetchingDetailList}
                         activeAdmin={detailList.some(layer => layer.id === activeAdmin)}
