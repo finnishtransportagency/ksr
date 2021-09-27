@@ -1,7 +1,10 @@
 import { cleanup } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react-hooks';
 import {
-    useCancelText, useDetailList, useFeatureAttributes, useTitle, useModalSubmit,
+    useCancelText,
+    useFeatureAttributes,
+    useTitle,
+    useModalSubmit,
 } from '../customHooks';
 import strings from '../../../../../translations';
 
@@ -170,7 +173,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         let permission;
         let detailLayers;
         const contractDetails = [];
-        const contractLayer = { id: 123 };
+        const contractLayer = { id: 123, name: 'testLayer' };
         const contractObjectId = 123;
         const setActiveView = jest.fn();
         const activeDetailLayer = { id: 456 };

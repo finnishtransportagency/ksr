@@ -247,7 +247,10 @@ export const useModalSubmit = (
     useEffect(() => {
         switch (activeView) {
             case 'contractDetails':
-                if (detailList.some(layer => layer.id === activeAdmin)) {
+                if (
+                    detailList.some(layer => layer.id === activeAdmin)
+                    && contractLayer.name.toLowerCase() !== 'tlaite sopimushallinta'
+                ) {
                     setModalSubmit([{
                         text: strings.modalContractDetails.addNewDetail,
                         handleSubmit: () => setActiveView('chooseDetailLayer'),
