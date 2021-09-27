@@ -449,7 +449,8 @@ const fi = {
         placeholder: 'Hae osoitteella tai paikalla',
     },
     shapefileColorView: {
-        title: '2) Valitse kohteiden väri',
+        title: '2) Valitse kohteiden väri seuraavista vaihtoehdoista',
+        titleCustomColor: 'tai valitse oma vapaavalintainen väri',
         customTitle: 'Valitse vapaavalintainen väri',
         selectTitle: 'Valitse väri',
     },
