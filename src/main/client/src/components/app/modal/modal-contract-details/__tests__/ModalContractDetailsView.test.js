@@ -49,6 +49,10 @@ describe('<ModalContractDetailsView />', () => {
     it('render - should show details list', () => {
         const props = {
             ...minProps,
+            contractLayer: {
+                id: '123',
+                name: 'testLayer',
+            },
             detailList: [{
                 id: '123',
                 name: 'Layer 1',
@@ -89,7 +93,10 @@ describe('<ModalContractDetailsView />', () => {
     it('render - should show correct amount of icons with editPermission', () => {
         const props = {
             ...minProps,
-            contractLayerId: '123',
+            contractLayer: {
+                id: '123',
+                name: 'testLayer',
+            },
             fetchingDetailList: false,
             activeAdmin: true,
             detailList: [{
@@ -141,7 +148,10 @@ describe('<ModalContractDetailsView />', () => {
     it('render - should show correct amount of icons without editPermission', () => {
         const props = {
             ...minProps,
-            contractLayerId: '123',
+            contractLayer: {
+                id: '123',
+                name: 'testLayer',
+            },
             fetchingDetailList: false,
             detailList: [{
                 id: '123',

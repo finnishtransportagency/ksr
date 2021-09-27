@@ -356,6 +356,7 @@ const fi = {
         cancelText: 'Peruuta',
         backText: 'Takaisin',
         errorNoFeaturesFound: 'Ei löydettyjä kohteita',
+        errorSopimushallintaAttributes: 'Sopimushallinta lisätietojen haussa tapahtui odottamaton virhe',
         errorNoAttributesFound: 'Ei löydettyjä tietoja.',
         chooseLayer: 'Valitse lisätieto taso',
         addNewDetail: 'Uusi lisätieto',
