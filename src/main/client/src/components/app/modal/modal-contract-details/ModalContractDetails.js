@@ -15,6 +15,7 @@ import { getSingleLayerFields, zoomToFeatures } from '../../../../utils/map';
 import { unlinkFeatureFromContract } from '../../../../utils/contracts/contracts';
 import { nestedVal } from '../../../../utils/nestedValue';
 import { queryFeatures } from '../../../../api/search/searchQuery';
+import { fetchContractRelation } from '../../../../api/contract/contractRelations';
 
 type Props = {
     contractLayer: Object,
@@ -224,10 +225,60 @@ const ModalContractDetails = (props: Props) => {
     const getContractDetails = async () => {
         setFetchingDetailList(true);
 
-        const contractDetailsRes = await fetchContractDetails(
+        let contractDetailsRes = await fetchContractDetails(
             parseInt(contractLayer.id, 10),
             contractObjectId,
         );
+
+        // Custom logic for Tlaite Sopimushallinta to get connected sopimukset and yhteystiedot.
+        if (contractLayer.name.toLowerCase() === 'tlaite sopimushallinta') {
+            try {
+                const turvalaiteId = layerList.find(ll => ll.name.toLowerCase() === 'turvalaite').id;
+                const turvalaiteSopimusId = layerList.find(ll => ll.name.toLowerCase() === 'tlaite sopimus').id;
+                const turvalaiteNumero = contractDetailsRes
+                    .find(a => a.id === turvalaiteId).features[0].attributes.TLNUMERO;
+
+                const contractDetailsResTurvalaite = await fetchContractRelation(
+                    turvalaiteId,
+                    turvalaiteNumero,
+                );
+
+                const turvalaiteFeatures = contractDetailsResTurvalaite
+                    .find(res => res.layerId === turvalaiteSopimusId).features;
+
+                if (turvalaiteFeatures !== null) {
+                    const sopimusObjectIdt = turvalaiteFeatures
+                        .map(res => res.attributes.OBJECTID);
+
+                    const tlaiteSopimusResponses = await Promise.all(
+                        sopimusObjectIdt.map(async objectId => fetchContractDetails(
+                            turvalaiteSopimusId,
+                            objectId,
+                        )),
+                    );
+
+                    const flatResponse = tlaiteSopimusResponses
+                        .flatMap(tlaiteRes => tlaiteRes)
+                        .filter(tlaiteRes => !contractDetailsRes
+                            .map(res => res.id)
+                            .includes(tlaiteRes.id));
+                    const ids = flatResponse.map(flatRes => flatRes.id);
+                    const filtered = flatResponse
+                        .filter(({ id }, index) => !ids.includes(id, index + 1))
+                        .map(flatRes => ({
+                            ...flatRes,
+                            features: flatResponse
+                                .filter(res => res.id === flatRes.id)
+                                .map(res => res.features)
+                                .flatMap(res => res),
+                        }));
+
+                    contractDetailsRes = contractDetailsRes.concat(filtered);
+                }
+            } catch (error) {
+                toast.error(strings.modalContractDetails.errorSopimushallintaAttributes);
+            }
+        }
 
         if (contractDetailsRes && contractDetailsRes.length) {
             await Promise.all(contractDetailsRes.map(async (layer) => {
