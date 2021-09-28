@@ -16,6 +16,7 @@ type Props = {
     setActiveModal: Function,
     layerList: Array<any>,
     addShapefile: Function,
+    addShapeFeaturesToTable: Function,
 };
 
 const initialState = {
@@ -41,7 +42,9 @@ class ModalShapefile extends Component<Props, State> {
 
     onSubmit = async () => {
         const { acceptedFiles, color } = this.state;
-        const { layerList, view, addShapefile } = this.props;
+        const {
+            layerList, view, addShapefile, addShapeFeaturesToTable,
+        } = this.props;
 
         const shapeFile = getFileByExtension(acceptedFiles, 'shp');
         const dbfFile = getFileByExtension(acceptedFiles, 'dbf');
@@ -71,6 +74,7 @@ class ModalShapefile extends Component<Props, State> {
             if (layer) {
                 view.map.add(layer);
                 if (layer.source) view.goTo(layer.source.items);
+                addShapeFeaturesToTable({ layers: [layer] });
                 const definition = convertLayerListFormat(layer);
                 addShapefile(definition);
             }

@@ -26,6 +26,11 @@ export const selectFeatures = (features: {}) => ({
     layers: parseData(features, true),
 });
 
+export const addShapeFeaturesToTable = (features: {}) => ({
+    type: types.SELECT_FEATURES,
+    layers: parseData(features, false),
+});
+
 export const addUpdateLayers = (
     layerId: string,
     objectIdFieldName: string,
