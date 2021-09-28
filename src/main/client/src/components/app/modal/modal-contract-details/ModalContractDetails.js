@@ -233,8 +233,10 @@ const ModalContractDetails = (props: Props) => {
         // Custom logic for Tlaite Sopimushallinta to get connected sopimukset and yhteystiedot.
         if (contractLayer.name.toLowerCase() === 'tlaite sopimushallinta') {
             try {
-                const turvalaiteId = layerList.find(ll => ll.name.toLowerCase() === 'turvalaite').id;
-                const turvalaiteSopimusId = layerList.find(ll => ll.name.toLowerCase() === 'tlaite sopimus').id;
+                const turvalaiteId = layerList.filter(ll => ll._source !== 'search')
+                    .find(ll => ll.name.toLowerCase() === 'turvalaite').id;
+                const turvalaiteSopimusId = layerList.filter(ll => ll._source !== 'search')
+                    .find(ll => ll.name.toLowerCase() === 'tlaite sopimus').id;
                 const turvalaiteNumero = contractDetailsRes
                     .find(a => a.id === turvalaiteId).features[0].attributes.TLNUMERO;
 
