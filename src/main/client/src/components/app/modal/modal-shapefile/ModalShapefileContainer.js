@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import ModalShapefile from './ModalShapefile';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import { addShapefile } from '../../../../reducers/map/actions';
+import { addShapeFeaturesToTable } from '../../../../reducers/table/actions';
 
 const mapStateToProps = state => ({
     view: state.map.mapView.view,
@@ -15,6 +16,9 @@ const mapDispatchToProps = dispatch => ({
     },
     addShapefile: (layer) => {
         dispatch(addShapefile(layer));
+    },
+    addShapeFeaturesToTable: (features) => {
+        dispatch(addShapeFeaturesToTable(features));
     },
 });
 

@@ -536,7 +536,7 @@ class ReactTable extends Component<Props, State> {
         const { layerList, activeTable } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
         let originalLayer: Object = layerList.find(l => l.id === activeTable.replace('.s', ''));
-        originalLayer = originalLayer.parentLayer
+        originalLayer = originalLayer && originalLayer.parentLayer
             ? layerList.find(l => l.id === originalLayer.parentLayer)
             : originalLayer;
 

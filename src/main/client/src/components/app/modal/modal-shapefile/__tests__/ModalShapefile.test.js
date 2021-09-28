@@ -20,6 +20,7 @@ const setup = (prop) => {
         setActiveModal: jest.fn(),
         layerList: [],
         addShapefile: jest.fn(),
+        addShapeFeaturesToTable: jest.fn(),
     };
 
     const props = prop || minProps;
