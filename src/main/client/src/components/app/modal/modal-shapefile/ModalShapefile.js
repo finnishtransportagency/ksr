@@ -70,6 +70,7 @@ class ModalShapefile extends Component<Props, State> {
             );
             if (layer) {
                 view.map.add(layer);
+                if (layer.source) view.goTo(layer.source.items);
                 const definition = convertLayerListFormat(layer);
                 addShapefile(definition);
             }
