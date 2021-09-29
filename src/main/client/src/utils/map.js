@@ -318,7 +318,7 @@ export const drawPropertyArea = async (
             const geometry = createPolygon(coordinates);
             const propertyLabel = createTextSymbol(property.properties.propertyIdentifier);
             const propertyLabelGraphic = new Graphic({
-                geometry: geometry.centroid,
+                geometry: geometry.extent.center,
                 symbol: propertyLabel,
                 id: 'propertyAreaLabel',
             });
