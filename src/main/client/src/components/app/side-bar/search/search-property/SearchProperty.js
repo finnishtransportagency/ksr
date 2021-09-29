@@ -47,6 +47,7 @@ class SearchProperty extends Component<Props, State> {
         evt.preventDefault();
         const { handleClear, view } = this.props;
         handleClear('propertyArea', view);
+        this.setState(initialState);
     };
 
     handlePropertyIdChange = (evt: Object) => {
