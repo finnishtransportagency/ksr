@@ -264,9 +264,10 @@ export const drawPropertyArea = async (
     view: Object,
     features: Object[],
 ) => {
-    const [Polygon, Graphic] = await loadModules([
+    const [Polygon, Graphic, TextSymbol] = await loadModules([
         'esri/geometry/Polygon',
         'esri/Graphic',
+        'esri/symbols/TextSymbol',
     ]);
     const createPolygon = vertices => new Polygon({
         rings: vertices,
@@ -288,6 +289,17 @@ export const drawPropertyArea = async (
         propertyId,
     });
 
+    const createTextSymbol = (text): any => new TextSymbol({
+        text,
+        color: 'black',
+        haloColor: 'white',
+        haloSize: '1px',
+        font: {
+            size: 10,
+            family: 'Exo 2',
+        },
+    });
+
     let propertyGraphics = [];
     features.forEach((property) => {
         propertyGraphics = property.geometry.coordinates.map((coordinates) => {
@@ -298,6 +310,19 @@ export const drawPropertyArea = async (
             );
             view.graphics.add(graphic);
             return [...propertyGraphics, graphic];
+        });
+    });
+
+    features.forEach((property) => {
+        property.geometry.coordinates.forEach((coordinates) => {
+            const geometry = createPolygon(coordinates);
+            const propertyLabel = createTextSymbol(property.properties.propertyIdentifier);
+            const propertyLabelGraphic = new Graphic({
+                geometry: geometry.centroid,
+                symbol: propertyLabel,
+                id: 'propertyAreaLabel',
+            });
+            view.graphics.add(propertyLabelGraphic);
         });
     });
     view.goTo(propertyGraphics);
