@@ -45,6 +45,7 @@ export const setSearchOptions = (
 
 export const clearProperties = (graphicId: string, view: Object) => {
     removeGraphicsFromMap(view, graphicId);
+    removeGraphicsFromMap(view, 'propertyAreaLabel');
     return { type: types.CLEAR_PROPERTY_INFO };
 };
 
@@ -76,6 +77,7 @@ export const setPropertyInfo = (
     });
 
     removeGraphicsFromMap(view, graphicId);
+    removeGraphicsFromMap(view, 'propertyAreaLabel');
 
     ({ controller: propertyController, signal: propertySignal } = abortFetch(propertyController));
     fetchPropertyInfo(queryParameters, propertySignal)
