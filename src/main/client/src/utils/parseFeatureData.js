@@ -233,7 +233,7 @@ export const syncWithLayersList = (
     currentActiveTable: string,
 ): Object => {
     const layers = currentLayers.filter(l => layerList.find(ll => (
-        (ll.id === l.id && l.id.indexOf('.s') > 0)
+        (ll.id === l.id && l.id.indexOf('_s') > 0)
         || (ll.id === l.id && ll.active === true))) !== undefined);
 
     const editedLayers = clone(layers, true, 3);

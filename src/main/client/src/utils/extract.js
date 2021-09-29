@@ -31,7 +31,7 @@ export const extractSelected = (
             const featureSet = new FeatureSet({ features: inputGraphicContainer });
 
             return gp.submitJob({
-                Layers_to_Clip: layerId.replace('.s', ''),
+                Layers_to_Clip: layerId.replace('_s', ''),
                 Area_of_Interest: featureSet,
                 Feature_Format: format,
             }).then(result => gp.waitForJobCompletion(result.jobId))

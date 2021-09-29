@@ -18,7 +18,7 @@ export const createWorkspaceJsonBody = (
     const layers = layerList
         .filter(l => l.active && l._source !== 'shapefile')
         .map((l, i) => ({
-            layerId: l.userLayer ? null : parseInt(l.id.replace('.s', ''), 10),
+            layerId: l.userLayer ? null : parseInt(l.id.replace('_s', ''), 10),
             userLayerId: l.userLayer ? parseInt(l.id, 10) : null,
             visible: l.visible ? '1' : '0',
             opacity: l.opacity,

@@ -112,8 +112,8 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 layers: (state.layers.filter(l => l.id !== action.layerId): Object[]),
                 editedLayers: (state.editedLayers.filter(l => l.id !== action.layerId)
-                    .map(l => (l.id === `${action.layerId}.s`
-                        ? state.layers.find(a => a.id === `${action.layerId}.s`)
+                    .map(l => (l.id === `${action.layerId}_s`
+                        ? state.layers.find(a => a.id === `${action.layerId}_s`)
                         : l)): Object[]),
                 activeTable: getActiveTable(
                     state.layers.filter(l => l.id !== action.layerId),

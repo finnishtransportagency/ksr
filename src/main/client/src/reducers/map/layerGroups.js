@@ -179,7 +179,7 @@ export default (state: State = initialState, action: Action) => {
 
                         // Make removed search layer's source layer visible.
                         if (state.layerList.filter(ll => ll._source === 'search')
-                            .some(ll => ll.id.replace('.s', '') === l.id)) {
+                            .some(ll => ll.id.replace('_s', '') === l.id)) {
                             return { ...l, visible: true };
                         }
                         return { ...l };
@@ -191,7 +191,7 @@ export default (state: State = initialState, action: Action) => {
             const filteredSearch = (state.layerList
                 .filter(layer => layer.id !== action.layerId)
                 .map(layer => {
-                    if (layer.id === action.layerId.replace('.s', '')) {
+                    if (layer.id === action.layerId.replace('_s', '')) {
                         return {
                             ...layer,
                             visible: layer.active ? true : layer.visible,
@@ -237,7 +237,7 @@ export default (state: State = initialState, action: Action) => {
                     .filter(l => l.id !== action.layerId)
                     .map(l => ({
                         ...l,
-                        visible: l.id === action.layerId.replace('.s', '')
+                        visible: l.id === action.layerId.replace('_s', '')
                             ? true
                             : l.visible,
                     })): Array<Layer>),
@@ -332,7 +332,7 @@ export default (state: State = initialState, action: Action) => {
                         };
                     }
 
-                    if (action.layerId.endsWith('.s') && action.layerId.replace('.s', '') === l.id) {
+                    if (action.layerId.endsWith('_s') && action.layerId.replace('_s', '') === l.id) {
                         return {
                             ...l,
                             visible: true,

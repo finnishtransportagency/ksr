@@ -61,7 +61,7 @@ export const getContractLayers = (layerId: string, layerList: Object[]) => {
     if (!layerId) return { currentLayer: null, contractLayers: [] };
 
     const currentLayer = layerList.find(layer => layer.id === layerId
-        .replace('.s', ''));
+        .replace('_s', ''));
     const relationLayers = nestedVal(currentLayer, ['relations']);
     if (relationLayers === null) {
         return { currentLayer, contractLayers: [] };

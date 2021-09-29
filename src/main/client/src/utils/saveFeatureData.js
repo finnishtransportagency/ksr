@@ -304,7 +304,7 @@ const saveData = async (
                             });
                         } else if (childLayers.length > 0) {
                             childLayers.forEach((cLayer) => {
-                                if (layerToUpdated && layers.some(l => l.id === cLayer.id.replace('.s', ''))) {
+                                if (layerToUpdated && layers.some(l => l.id === cLayer.id.replace('_s', ''))) {
                                     layerToUpdated.features.forEach((objectId: number) => {
                                         store.dispatch(addUpdateLayers(
                                             cLayer.id,
@@ -432,7 +432,7 @@ const saveEditedFeatureData = (
 ) => {
     if (view && Array.isArray(editedData)) {
         const promises = editedData.map((ed) => {
-            let layerId = ed.id.replace('.s', '');
+            let layerId = ed.id.replace('_s', '');
 
             const currentLayer: Object = layerList.find(l => l.id === layerId);
             const parentLayer = currentLayer && layerList.find(l => currentLayer.parentLayer

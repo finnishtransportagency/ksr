@@ -79,12 +79,12 @@ export default (state: Object = initialState, action: Action) => {
         case CLEAR_TABLE_DATA:
             if (state.view && state.view.map) {
                 state.view.map.layers.removeMany(state.view.map.layers
-                    .filter(l => l.id.endsWith('.s')));
+                    .filter(l => l.id.endsWith('_s')));
             }
             return state;
         case CLOSE_LAYER:
         case CLEAR_SEARCH_DATA:
-            if (state.view && state.view.map && action.layerId.endsWith('.s')) {
+            if (state.view && state.view.map && action.layerId.endsWith('_s')) {
                 state.view.map.layers.removeMany(state.view.map.layers
                     .filter(l => l.id === action.layerId));
             }

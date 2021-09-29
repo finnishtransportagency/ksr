@@ -130,11 +130,11 @@ const MapLayerSettings = ({
                         ((!layer.userLayer
                         && layer._source !== 'shapefile'
                         && nestedVal(
-                            layerList.find(l => l.id === layer.id.replace('.s', '')),
+                            layerList.find(l => l.id === layer.id.replace('_s', '')),
                             ['active'],
                         )
                         && !nestedVal(
-                            layerList.find(l => l.id === layer.id.replace('.s', '')),
+                            layerList.find(l => l.id === layer.id.replace('_s', '')),
                             ['parentLayer'],
                         )
                         && (layer.type === 'agfs' || layer.type === 'agfl')
@@ -143,13 +143,13 @@ const MapLayerSettings = ({
                             || layer.layerPermission.deleteLayer)))
                          && (
                              <LayerSettings.Icons
-                                 activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
+                                 activeAdminTool={activeAdminTool === layer.id.replace('_s', '')}
                              >
                                  <LayerSettings.Icon
                                      role="button"
                                      tabIndex={0}
-                                     onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
-                                     onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                     onKeyPress={() => handleAdminModeChange(layer.id.replace('_s', ''))}
+                                     onClick={() => handleAdminModeChange(layer.id.replace('_s', ''))}
                                      className="fas fa-edit"
                                      title={strings.mapLayerSettings.toggleAdminTool}
                                  />

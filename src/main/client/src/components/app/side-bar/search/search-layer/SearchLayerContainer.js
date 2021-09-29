@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
         queryOptions,
         searchState: state.search.searchState,
         layerList: state.map.layerGroups.layerList,
-        searchResults: state.table.features.layers.filter(l => l.id.endsWith('.s')),
+        searchResults: state.table.features.layers.filter(l => l.id.endsWith('_s')),
         tableOpen: state.table.toggleTable,
     });
 };

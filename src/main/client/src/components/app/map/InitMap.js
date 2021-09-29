@@ -419,7 +419,7 @@ class EsriMap extends Component<Props> {
                 selectedFeature,
                 ['layer', 'id'],
             );
-            const layer = layerList.find(ll => layerId && layerId.replace('.s', '') === ll.id);
+            const layer = layerList.find(ll => layerId && layerId.replace('_s', '') === ll.id);
 
 
             const copySelectedFeature = async (activeFeatureMode: string) => {

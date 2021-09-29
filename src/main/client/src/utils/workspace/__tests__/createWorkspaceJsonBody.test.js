@@ -108,7 +108,7 @@ describe('createWorkspaceJsonBody', () => {
                 opacity: 1,
                 definitionExpression: '',
             }, {
-                id: '1.s',
+                id: '1_s',
                 active: true,
                 visible: true,
                 opacity: 0.4,
@@ -163,7 +163,7 @@ describe('createWorkspaceJsonBody', () => {
                 opacity: 0.6,
                 definitionExpression: '',
             }, {
-                id: '1.s',
+                id: '1_s',
                 active: true,
                 visible: true,
                 opacity: 0.2,
@@ -187,7 +187,7 @@ describe('createWorkspaceJsonBody', () => {
             }];
         const selectedFeatures = [
             { id: '2', data: [{ _id: 44, _selected: true }, { _id: 52, _selected: false }] },
-            { id: '1.s', data: [{ _id: 480, _selected: true }] },
+            { id: '1_s', data: [{ _id: 480, _selected: true }] },
         ];
         const view = {
             scale: 20000,

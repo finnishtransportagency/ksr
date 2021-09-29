@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
     const { activeTable } = state.table.features;
 
     const selectedData = layers
-        .filter(layer => activeTable.replace('.s', '') === layer.id.replace('.s', ''))
+        .filter(layer => activeTable.replace('_s', '') === layer.id.replace('_s', ''))
         .flatMap(layer => layer.data)
         .filter(data => data._selected);
 

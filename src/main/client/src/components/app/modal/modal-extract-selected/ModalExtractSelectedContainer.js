@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 
     // Use parent layers' id for child layer
     if (layerId !== null) {
-        const parentLayer = nestedVal(layerList.find(l => l.id === layerId.replace('.s', '')), ['parentLayer']);
+        const parentLayer = nestedVal(layerList.find(l => l.id === layerId.replace('_s', '')), ['parentLayer']);
         layerId = parentLayer || layerId;
     }
 

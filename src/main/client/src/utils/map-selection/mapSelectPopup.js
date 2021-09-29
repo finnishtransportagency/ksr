@@ -85,7 +85,7 @@ export const mapSelectPopup = async (
 
             if (feature.layer) {
                 let matchingLayer: Object = layerList
-                    .find(ll => ll.id === feature.layer.id.replace('.s', ''));
+                    .find(ll => ll.id === feature.layer.id.replace('_s', ''));
 
                 if (feature.layer.featureType === 'shapefile') {
                     const columns = feature.layer.fields.slice(0, 5);
