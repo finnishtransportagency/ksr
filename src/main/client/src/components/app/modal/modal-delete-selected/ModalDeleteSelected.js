@@ -50,7 +50,7 @@ class ModalDeleteSelected extends Component<Props, State> {
             .map(fd => fd._id)
             .join(', ');
 
-        saveDeletedFeatures(view, layerId.replace('.s', ''), objectIds, deleteComment);
+        saveDeletedFeatures(view, layerId.replace('_s', ''), objectIds, deleteComment);
     };
 
     render() {

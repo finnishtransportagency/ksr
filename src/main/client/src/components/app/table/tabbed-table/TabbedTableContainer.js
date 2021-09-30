@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
             title: l.title,
             _source: l._source,
             type: l.type,
-            parentLayer: nestedVal(layerList.find(layer => layer.id === l.id.replace('.s', '')), ['parentLayer']),
+            parentLayer: nestedVal(layerList.find(layer => layer.id === l.id.replace('_s', '')), ['parentLayer']),
         })),
         activeTable: state.table.features.activeTable,
         activeAdmin: state.adminTool.active.layerId,

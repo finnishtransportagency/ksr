@@ -136,8 +136,8 @@ export const activateLayers = (
                 const workspaceLayer = workspace !== undefined
                     && (layer.definitionExpression
                         ? workspace.layers.find(wl => wl.definitionExpression
-                            && (wl.layerId === layer.id.replace('.s', '')
-                                || wl.userLayerId === layer.id.replace('.s', '')))
+                            && (wl.layerId === layer.id.replace('_s', '')
+                                || wl.userLayerId === layer.id.replace('_s', '')))
                         : workspace.layers.find(wl => wl.layerId === layer.id
                             || wl.userLayerId === layer.id));
 

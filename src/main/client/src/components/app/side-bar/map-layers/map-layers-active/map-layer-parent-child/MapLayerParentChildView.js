@@ -56,7 +56,7 @@ const MapLayerParentChildView = ({
                             </LayerSettings.Title>
                             {
                                 ((nestedVal(
-                                    layerList.find(l => l.id === layer.id.replace('.s', '')),
+                                    layerList.find(l => l.id === layer.id.replace('_s', '')),
                                     ['active'],
                                 )
                                     && (layer.layerPermission.createLayer
@@ -64,13 +64,13 @@ const MapLayerParentChildView = ({
                                         || layer.layerPermission.deleteLayer)))
                                 && (
                                     <LayerSettings.Icons
-                                        activeAdminTool={activeAdminTool === layer.id.replace('.s', '')}
+                                        activeAdminTool={activeAdminTool === layer.id.replace('_s', '')}
                                     >
                                         <LayerSettings.Icon
                                             role="button"
                                             tabIndex={0}
-                                            onKeyPress={() => handleAdminModeChange(layer.id.replace('.s', ''))}
-                                            onClick={() => handleAdminModeChange(layer.id.replace('.s', ''))}
+                                            onKeyPress={() => handleAdminModeChange(layer.id.replace('_s', ''))}
+                                            onClick={() => handleAdminModeChange(layer.id.replace('_s', ''))}
                                             className="fas fa-edit"
                                             title={strings.mapLayerSettings.toggleAdminTool}
                                         />

@@ -145,7 +145,7 @@ class ReactTable extends Component<Props, State> {
     getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
         const { activeAdminTool, activeTable, layerList } = this.props;
 
-        const activeLayer: Object = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const activeLayer: Object = layerList.find(l => l.id === activeTable.replace('_s', ''));
         const parentLayer = activeLayer.parentLayer
             && layerList.find(l => l.id === activeLayer.parentLayer);
         let className = '';
@@ -179,10 +179,10 @@ class ReactTable extends Component<Props, State> {
     getLayerData = () => {
         const { activeTable, layerList } = this.props;
 
-        const layerId = activeTable.replace('.s', '');
+        const layerId = activeTable.replace('_s', '');
         const parentLayerId = nestedVal(layerList.find(l => l.id === layerId), ['parentLayer']);
         const layer: Object = parentLayerId
-            ? layerList.find(l => l.id === parentLayerId.replace('.s', ''))
+            ? layerList.find(l => l.id === parentLayerId.replace('_s', ''))
             : layerList.find(l => l.id === layerId);
 
         return layer;
@@ -233,7 +233,7 @@ class ReactTable extends Component<Props, State> {
     isCellEditable = (cellField: Object) => {
         const { activeAdminTool, layerList, activeTable } = this.props;
 
-        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
         const parentLayer = activeLayer && activeLayer.parentLayer
             && layerList.find(l => l.id === activeLayer.parentLayer);
 
@@ -471,8 +471,8 @@ class ReactTable extends Component<Props, State> {
 
     renderCustomCell = (cellInfo: Object) => {
         const { layerList, activeTable, activeAdminTool } = this.props;
-        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
-        const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
+        const originalLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
 
         let cellField = activeLayer && activeLayer.fields
             .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
@@ -485,7 +485,7 @@ class ReactTable extends Component<Props, State> {
                     && parentLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
             cellField = parentLayer && parentCell ? parentCell : originalCell;
             if (parentLayer) cellField = childLayerDomainValues(cellField, parentLayer);
-            const currentAdminActive = activeAdminTool === activeTable.replace('.s', '')
+            const currentAdminActive = activeAdminTool === activeTable.replace('_s', '')
                 || (parentLayer && activeAdminTool === parentLayer.id);
 
             if (currentAdminActive) {
@@ -535,7 +535,7 @@ class ReactTable extends Component<Props, State> {
     renderFilter = (cellInfo: Object, filter: any, onChange: Function) => {
         const { layerList, activeTable } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
-        let originalLayer: Object = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        let originalLayer: Object = layerList.find(l => l.id === activeTable.replace('_s', ''));
         originalLayer = originalLayer && originalLayer.parentLayer
             ? layerList.find(l => l.id === originalLayer.parentLayer)
             : originalLayer;
@@ -615,7 +615,7 @@ class ReactTable extends Component<Props, State> {
             const { currentCellData } = this.state;
 
             const parentLayer = nestedVal(layerList
-                .find(ll => ll.id === layerFeatures.id.replace('.s', '')),
+                .find(ll => ll.id === layerFeatures.id.replace('_s', '')),
             ['parentLayer']);
             const activeLayer: any = layerList.find(ll => ll.id === parentLayer)
                 || layerList.find(ll => ll.id === layerFeatures.id);

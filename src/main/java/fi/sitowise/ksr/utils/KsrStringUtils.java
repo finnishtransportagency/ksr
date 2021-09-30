@@ -75,8 +75,8 @@ public class KsrStringUtils {
             return null;
         }
 
-        if (str.contains(".s")) {
-            return str.replace(".s", "");
+        if (str.contains("_s")) {
+            return str.replace("_s", "");
         } else {
             return str;
         }

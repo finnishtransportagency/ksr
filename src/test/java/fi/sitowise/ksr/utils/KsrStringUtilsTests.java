@@ -47,8 +47,8 @@ public class KsrStringUtilsTests {
 
     @Test
     public void testReplaceSearchId() {
-        Assert.assertEquals("2", KsrStringUtils.replaceSearchId("2.s"));
-        Assert.assertEquals("17", KsrStringUtils.replaceSearchId("17.s"));
+        Assert.assertEquals("2", KsrStringUtils.replaceSearchId("2_s"));
+        Assert.assertEquals("17", KsrStringUtils.replaceSearchId("17_s"));
         Assert.assertEquals("15", KsrStringUtils.replaceSearchId("15"));
         Assert.assertNull(KsrStringUtils.replaceSearchId(null));
     }
