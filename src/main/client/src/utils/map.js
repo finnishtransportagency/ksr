@@ -296,35 +296,38 @@ export const drawPropertyArea = async (
         haloSize: '1px',
         font: {
             size: 10,
-            family: 'Exo 2',
         },
     });
 
-    let propertyGraphics = [];
+    const propertyGraphics = [];
+    const propertyLabelGraphics = [];
     features.forEach((property) => {
-        propertyGraphics = property.geometry.coordinates.map((coordinates) => {
-            const geometry = createPolygon(coordinates);
-            const graphic = createPolygonGraphic(
-                geometry,
-                property.properties.propertyIdentifier,
-            );
-            view.graphics.add(graphic);
-            return [...propertyGraphics, graphic];
-        });
-    });
+        const { coordinates } = property.geometry;
+        const { propertyIdentifier } = property.properties;
 
-    features.forEach((property) => {
-        property.geometry.coordinates.forEach((coordinates) => {
-            const geometry = createPolygon(coordinates);
-            const propertyLabel = createTextSymbol(property.properties.propertyIdentifier);
+        coordinates.forEach((coordinate) => {
+            const geometry = createPolygon(coordinate);
+            const propertyGraphic = createPolygonGraphic(
+                geometry,
+                propertyIdentifier,
+            );
+
+            const { center } = geometry.extent;
+            const propertyLabel = createTextSymbol(propertyIdentifier);
             const propertyLabelGraphic = new Graphic({
-                geometry: geometry.centroid,
+                geometry: center,
                 symbol: propertyLabel,
                 id: 'propertyAreaLabel',
             });
-            view.graphics.add(propertyLabelGraphic);
+
+            propertyGraphics.push(propertyGraphic);
+            propertyLabelGraphics.push(propertyLabelGraphic);
         });
     });
+
+    view.graphics.addMany(propertyGraphics);
+    view.graphics.addMany(propertyLabelGraphics);
+
     view.goTo(propertyGraphics);
 };
 
