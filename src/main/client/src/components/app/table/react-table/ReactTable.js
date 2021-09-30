@@ -176,12 +176,12 @@ class ReactTable extends Component<Props, State> {
         return getCodedValue(domain, content);
     };
 
-    getLayerData = () => {
+    getLayerData = (getParentLayer: boolean) => {
         const { activeTable, layerList } = this.props;
 
         const layerId = activeTable.replace('_s', '');
         const parentLayerId = nestedVal(layerList.find(l => l.id === layerId), ['parentLayer']);
-        const layer: Object = parentLayerId
+        const layer: Object = parentLayerId && getParentLayer
             ? layerList.find(l => l.id === parentLayerId.replace('_s', ''))
             : layerList.find(l => l.id === layerId);
 
@@ -193,7 +193,7 @@ class ReactTable extends Component<Props, State> {
             setActiveModal, setContractListInfo, activeTable,
         } = this.props;
 
-        const layer = this.getLayerData();
+        const layer = this.getLayerData(true);
 
         const idFieldName = nestedVal(
             layer.fields.find(field => field.type === 'esriFieldTypeOID'),
@@ -220,7 +220,7 @@ class ReactTable extends Component<Props, State> {
     handleFeatureInfoClick = (row: Object) => {
         const { setActiveModal } = this.props;
 
-        const layer = this.getLayerData();
+        const layer = this.getLayerData(false);
 
         const modalData = {
             layerId: layer.id,
