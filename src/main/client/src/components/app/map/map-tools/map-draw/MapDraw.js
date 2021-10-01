@@ -55,7 +55,7 @@ class MapDraw extends Component<Props, null> {
         ])
             .then(([Polygon, Polyline, Point, Graphic, geometryEngine]) => {
                 const {
-                    view, draw, setActiveTool, active, showMeasurements,
+                    view, draw, setActiveTool, showMeasurements,
                 } = this.props;
 
                 const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
@@ -306,6 +306,8 @@ class MapDraw extends Component<Props, null> {
                 };
 
                 drawPolygonButton.addEventListener('click', () => {
+                    const { active } = this.props;
+
                     if (active === 'drawPolygon') {
                         this.resetCurrentTool();
                     } else {
@@ -317,6 +319,8 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawLineButton.addEventListener('click', () => {
+                    const { active } = this.props;
+
                     if (active === 'drawPolyline') {
                         this.resetCurrentTool();
                     } else {
@@ -328,6 +332,8 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawPointButton.addEventListener('click', () => {
+                    const { active } = this.props;
+
                     if (active === 'drawPoint') {
                         this.resetCurrentTool();
                     } else {
@@ -339,6 +345,8 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawTextButton.addEventListener('click', () => {
+                    const { active } = this.props;
+
                     if (active === 'drawText') {
                         this.resetCurrentTool();
                     } else {
@@ -350,6 +358,8 @@ class MapDraw extends Component<Props, null> {
                 });
 
                 drawEraseButton.addEventListener('click', () => {
+                    const { active } = this.props;
+
                     if (active === 'drawErase') {
                         this.resetCurrentTool();
                     } else {
