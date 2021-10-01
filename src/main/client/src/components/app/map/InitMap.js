@@ -60,6 +60,7 @@ type Props = {
     deactivateLayer: (layerId: string) => void,
     setScale: number => void,
     setActiveNav: (selectedNav: string) => void,
+    setActiveTool: (active: string) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -336,7 +337,7 @@ class EsriMap extends Component<Props> {
         view.on('click', (event) => {
             view.popup.close();
             view.hitTest(event).then(async (response) => {
-                const { activeTool, setHasGraphics } = this.props;
+                const { activeTool, setHasGraphics, setActiveTool } = this.props;
                 const { results } = response;
 
                 if (activeTool === 'drawErase' && results.length) {
@@ -350,6 +351,9 @@ class EsriMap extends Component<Props> {
                                 && view.graphics
                                 && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
                             setHasGraphics(hasGraphics);
+                            if (!hasGraphics) {
+                                setActiveTool('');
+                            }
                         }
                     });
                 } else if (!results.some(item => item.graphic.type === 'draw-graphic')) {
