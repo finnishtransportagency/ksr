@@ -88,13 +88,13 @@ const initializeToGeometry = async (view: Object, geomToBuffer: Object[]) => {
     });
 
     const createPolygon = geom => new Polygon({
-        ...geom,
+        rings: geom.rings,
         spatialReference: view.spatialReference,
     });
 
     return geomToBuffer[0].rings
-        ? geomToBuffer.map(geom => createPolygon(geom))
-        : geomToBuffer.map(geom => createPoint(geom));
+        ? geomToBuffer.map(geom => (geom.initialized ? geom : createPolygon(geom)))
+        : geomToBuffer.map(geom => (geom.initialized ? geom : createPoint(geom)));
 };
 
 /**
