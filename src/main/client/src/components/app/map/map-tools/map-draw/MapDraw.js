@@ -42,6 +42,8 @@ class MapDraw extends Component<Props, null> {
                     && active === 'drawText'
                     && prevProps.active === '') {
             this.removeHighlightFromButton('draw-text');
+        } else if (active !== prevProps.active && active === '') {
+            this.removeHighlightsFromButtons();
         }
     }
 
