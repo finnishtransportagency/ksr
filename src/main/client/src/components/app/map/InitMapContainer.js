@@ -7,7 +7,8 @@ import {
     setActiveFeatureMode,
     activateLayers,
     deactivateLayer,
-    setScale, setActiveTool,
+    setScale,
+    setActiveTool,
 } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import { setPropertyInfo } from '../../../reducers/search/actions';
