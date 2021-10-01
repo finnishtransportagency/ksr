@@ -7,6 +7,7 @@ import {
     SET_GRAPH_LAYER,
     SET_MAP_VIEW,
     TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
+    SET_WORKSPACE,
 } from '../../constants/actionTypes';
 
 const initialState = {
@@ -91,6 +92,14 @@ export default (state: Object = initialState, action: Action) => {
             return state;
         case TOGGLE_LAYER_VISIBLE_ZOOM_OUT:
             return toggleLayerVisibleZoomOut(state, action);
+        case SET_WORKSPACE: {
+            if (state.view && state.view.map) {
+                const shapeLayers = state.view.map.layers
+                    .filter(item => item.featureType === 'shapefile');
+                state.view.map.layers.removeMany(shapeLayers);
+            }
+            return state;
+        }
         default:
             return state;
     }
