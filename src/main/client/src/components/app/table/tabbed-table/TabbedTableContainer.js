@@ -30,8 +30,8 @@ const mapDispatchToProps = dispatch => ({
     setActiveTable: (activeTable) => {
         dispatch(setActiveTable(activeTable));
     },
-    closeTableTab: (layerId, view, editedLayers, featureType, addressField) => {
-        dispatch(closeTableTab(layerId, view, editedLayers, featureType, addressField));
+    closeTableTab: (layerId, view, editedLayers, featureType, addressField, isAgfl) => {
+        dispatch(closeTableTab(layerId, view, editedLayers, featureType, addressField, isAgfl));
     },
 });
 

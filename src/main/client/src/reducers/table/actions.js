@@ -12,6 +12,7 @@ import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
 import { updatePortal } from '../portal/actions';
 import { closeTableIfNothingToShow } from '../utils';
+import { setActiveAdminTool } from '../adminTool/actions';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -438,6 +439,7 @@ export const closeTableTab = (
     editedLayers: Object[],
     featureType: string,
     addressField: string,
+    isAgfl: boolean,
 ) => (dispatch: Function) => {
     const editedLayer = editedLayers.find(e => e.id === layerId);
     const containsEdit = editedLayer && editedLayer.data
@@ -460,6 +462,9 @@ export const closeTableTab = (
                                 featureType,
                                 addressField,
                             ));
+                            if (isAgfl) {
+                                dispatch(setActiveAdminTool('', []));
+                            }
                         },
                         () => {
                             dispatch({
@@ -484,6 +489,9 @@ export const closeTableTab = (
                     type: types.CLOSE_LAYER,
                     layerId,
                 });
+                if (isAgfl) {
+                    dispatch(setActiveAdminTool('', []));
+                }
                 closeTableIfNothingToShow();
                 view.popup.close();
                 dispatch(updatePortal());

@@ -70,13 +70,16 @@ const TabbedTableView = ({
                             <ButtonIcon
                                 title={strings.modalClearTableTab.info}
                                 active={activeTable === l.id}
-                                onClick={() => closeTableTab(
-                                    l.id,
-                                    view,
-                                    editedLayers,
-                                    featureType,
-                                    addressField,
-                                )}
+                                onClick={() => {
+                                    closeTableTab(
+                                        l.id,
+                                        view,
+                                        editedLayers,
+                                        featureType,
+                                        addressField,
+                                        l.type === 'agfl',
+                                    );
+                                }}
                                 className="fas fa-times"
                                 admin={activeAdmin === l.id.replace('_s', '')
                                 || (l.parentLayer && activeAdmin === l.parentLayer.replace('_s', ''))}
