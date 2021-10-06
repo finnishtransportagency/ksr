@@ -292,6 +292,7 @@ export const clearTableData = (
     featureType: string,
     addressField: string,
     layerList: Object[],
+    isAdminAgfl: boolean,
 ) => (dispatch: Function) => {
     let editedLayer: any = null;
     editedLayers.map(layer => layer.id === layer.id.replace('_s', '') && layer.data.some((d) => {
@@ -323,6 +324,9 @@ export const clearTableData = (
                                     dispatch({
                                         type: types.CLEAR_TABLE_DATA,
                                     });
+                                    if (isAdminAgfl) {
+                                        dispatch(setActiveAdminTool('', []));
+                                    }
                                     view.popup.close();
                                 });
                         },
@@ -345,6 +349,9 @@ export const clearTableData = (
                 dispatch({
                     type: types.CLEAR_TABLE_DATA,
                 });
+                if (isAdminAgfl) {
+                    dispatch(setActiveAdminTool('', []));
+                }
                 view.popup.close();
             },
         ));
