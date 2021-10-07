@@ -141,6 +141,11 @@ export default (state: State = initialState, action: Action) => {
             return {
                 ...state,
                 layerList: action.layerList,
+                layerGroups: state.layerGroups.map(layerGroup => ({
+                    ...layerGroup,
+                    layers: layerGroup.layers
+                        .filter(l => action.layerList.some(ll => ll.id === l.id)),
+                })),
             };
         case HIDE_LAYER:
             return {
