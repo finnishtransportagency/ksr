@@ -15,6 +15,7 @@ type Props = {
     featureType: string,
     addressField: string,
     layerList: Object[],
+    activeAdminTool: string,
 };
 
 /** Table actions that can target all open tables */
@@ -30,6 +31,7 @@ const AllLayersView = ({
     featureType,
     addressField,
     layerList,
+    activeAdminTool,
 }: Props) => (
     <Fragment>
         <Table.Button
@@ -38,7 +40,15 @@ const AllLayersView = ({
             disabled={!originalLayers.length}
             onClick={
                 originalLayers.length ? () => {
-                    clearTableData(view, editedLayers, featureType, addressField, layerList);
+                    clearTableData(
+                        view,
+                        editedLayers,
+                        featureType,
+                        addressField,
+                        layerList,
+                        activeAdminTool
+                        && layerList.find(l => l.id === activeAdminTool && l.type === 'agfl') !== undefined,
+                    );
                 } : null}
         >
             <i className="fas fa-trash" />
