@@ -415,35 +415,48 @@ export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
  * @param {Object[]} features Features to zoom to.
  */
 export const zoomToFeatures = async (view: Object, features: Object[]) => {
-    const [Point, Polygon, Polyline] = await loadModules([
+    const [Point, Polygon, Polyline, geometryEngine] = await loadModules([
         'esri/geometry/Point',
         'esri/geometry/Polygon',
         'esri/geometry/Polyline',
+        'esri/geometry/geometryEngine',
     ]);
-    const geometries = features.map((feature) => {
-        if (feature.geometry.x && feature.geometry.y && !feature.geometry.__accessor__) {
-            return new Point({
-                x: feature.geometry.x,
-                y: feature.geometry.y,
-                spatialReference: { wkid: 3067 },
-            });
+
+    const geometries = [];
+    features.forEach((feature) => {
+        if (feature.geometry.x
+            && feature.geometry.y
+            && !geometries.some(f => geometryEngine.equals(f, feature.geometry))) {
+            geometries.push(feature.geometry.__accessor__
+                ? feature.geometry
+                : new Point({
+                    x: feature.geometry.x,
+                    y: feature.geometry.y,
+                    spatialReference: { wkid: 3067 },
+                }));
         }
 
-        if (feature.geometry.rings && !feature.geometry.__accessor__) {
-            return new Polygon({
-                rings: feature.geometry.rings,
-                spatialReference: { wkid: 3067 },
-            });
+        if (feature.geometry.rings
+            && !geometries.some(f => geometryEngine.equals(f, feature.geometry))) {
+            geometries.push(feature.geometry.__accessor__
+                ? feature.geometry
+                : new Polygon({
+                    rings: feature.geometry.rings,
+                    spatialReference: { wkid: 3067 },
+                }));
         }
 
-        if (feature.geometry.paths && !feature.geometry.__accessor__) {
-            return new Polyline({
-                paths: feature.geometry.paths,
-                spatialReference: { wkid: 3067 },
-            });
+        if (feature.geometry.paths
+            && !geometries.some(f => geometryEngine.equals(f, feature.geometry))) {
+            geometries.push(feature.geometry.__accessor__
+                ? feature.geometry
+                : new Polyline({
+                    paths: feature.geometry.paths,
+                    spatialReference: { wkid: 3067 },
+                }));
         }
-        return feature.geometry;
     });
+
     if (geometries && geometries.length === 1 && geometries[0].type === 'point') {
         view.goTo({
             target: geometries,
