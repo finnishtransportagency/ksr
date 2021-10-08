@@ -58,6 +58,7 @@ type Props = {
     addressField: string,
     hasTableEdited: boolean,
     sketchSaveData: Function,
+    resetFeatureNoGeometry: Function,
 };
 
 class SketchTool extends Component<Props, State> {
@@ -134,6 +135,7 @@ class SketchTool extends Component<Props, State> {
                     tempGraphicsLayer,
                     setActiveToolMenu,
                     setTempGraphicsLayer,
+                    resetFeatureNoGeometry,
                 } = this.props;
 
                 const drawNewFeatureButton = this.drawNewFeatureButton.current;
@@ -152,6 +154,7 @@ class SketchTool extends Component<Props, State> {
                     if (active === 'sketchActiveAdmin') {
                         setActiveToolMenu('');
                         resetMapTools(draw, sketchViewModel, setActiveTool);
+                        resetFeatureNoGeometry();
                     } else if (!active) {
                         view.popup.close();
                         setActiveToolMenu('sketchActiveAdmin');
@@ -649,6 +652,7 @@ class SketchTool extends Component<Props, State> {
             tempGraphicsLayer,
             draw,
             setActiveTool,
+            resetFeatureNoGeometry,
         } = this.props;
 
         setActiveFeatureMode('create');
@@ -657,6 +661,7 @@ class SketchTool extends Component<Props, State> {
         setTempGraphicsLayer(layer);
         sketchViewModel.cancel();
         resetMapTools(draw, sketchViewModel, setActiveTool);
+        resetFeatureNoGeometry();
     };
 
     acceptSketch = () => {
