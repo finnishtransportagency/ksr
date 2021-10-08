@@ -334,6 +334,9 @@ export const clearTableData = (
                             dispatch({
                                 type: types.CLEAR_TABLE_DATA,
                             });
+                            if (isAdminAgfl) {
+                                dispatch(setActiveAdminTool('', []));
+                            }
                             view.popup.close();
                         },
                     ));
@@ -479,6 +482,9 @@ export const closeTableTab = (
                                 layerId,
                             });
                             closeTableIfNothingToShow();
+                            if (isAgfl) {
+                                dispatch(setActiveAdminTool('', []));
+                            }
                             view.popup.close();
                             dispatch(updatePortal());
                         },
