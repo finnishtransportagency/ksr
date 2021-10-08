@@ -631,3 +631,10 @@ export const sketchSaveData = (
         closeTableIfNothingToShow();
     }
 };
+
+export const addFeatureNoGeometry = (featureNoGeometry: Object) => (dispatch: Function) => {
+    dispatch({
+        type: types.ADD_FEATURE_NO_GEOMETRY,
+        featureNoGeometry,
+    });
+};
