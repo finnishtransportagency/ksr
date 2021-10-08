@@ -54,6 +54,7 @@ const fi = {
         extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
         zoomToSelected: 'Kohdista haluamiin kohteisiin',
         windowPortal: 'Avaa taulu uuteen ikkunaan',
+        addMissingGeometry: 'Lisää puuttuva geometria',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',

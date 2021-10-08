@@ -36,6 +36,8 @@ type Props = {
     portalIsOpen: boolean,
     activePage: Object,
     setActivePage: Function,
+    addNewGeometryToFeature: Function,
+    sketchActive: boolean,
 };
 
 type State = {
@@ -597,6 +599,8 @@ class ReactTable extends Component<Props, State> {
             activeAdminTool,
             activeTable,
             activePage,
+            addNewGeometryToFeature,
+            sketchActive,
         } = this.props;
 
         const layerPage = layerFeatures && layerFeatures.id && activePage[layerFeatures.id];
@@ -637,6 +641,10 @@ class ReactTable extends Component<Props, State> {
                 columns,
                 isContract(activeLayer),
                 layerHasRelations,
+                activeLayer.type === 'agfl',
+                activeAdminTool && (activeAdminTool === activeLayer.id),
+                sketchActive,
+                addNewGeometryToFeature,
             );
 
             return (

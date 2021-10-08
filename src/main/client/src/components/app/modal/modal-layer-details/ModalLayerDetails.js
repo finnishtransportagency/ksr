@@ -23,6 +23,7 @@ type Props = {
     objectId: Object,
     editModeActive: boolean,
     setActiveFeatureMode: (string) => void,
+    featureNoGeometry: Object,
 };
 
 type State = {
@@ -46,6 +47,9 @@ class ModalFilter extends Component<Props, State> {
         const copiedFeatures = props.layer.graphics.items.length
             ? props.layer.graphics.items.filter(graphic => graphic.type === 'sketch-graphic')
             : [];
+        if (copiedFeatures.length && props.featureNoGeometry) {
+            copiedFeatures[0].attributes = props.featureNoGeometry;
+        }
 
         const existingAttributes = copiedFeatures
         && copiedFeatures.length

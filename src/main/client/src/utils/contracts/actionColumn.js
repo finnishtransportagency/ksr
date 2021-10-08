@@ -14,6 +14,8 @@ import * as styles from '../../components/ui/defaultStyles';
  * @param {Object[]} columns Currently active layer's table columns.
  * @param {boolean} contract Whether the current layer is main contract layer.
  * @param {boolean} layerHasRelations Whether the current layer has contract relations.
+ * @param {boolean} isAgfl Whether layer type is agfl.
+ * @param {boolean} adminActive Whether current tab layer is in admin mode.
  *
  * @returns {Object[]} Modified columns with action buttons as first column.
  */
@@ -23,6 +25,10 @@ export const addActionColumn = (
     columns: Object[],
     contract: boolean,
     layerHasRelations: boolean,
+    isAgfl: boolean,
+    adminActive: boolean,
+    sketchToolActive: boolean,
+    addNewGeometryToFeature: Function,
 ) => {
     const actionColumn = {
         Header: '',
@@ -58,6 +64,26 @@ export const addActionColumn = (
                     >
                         <i className="fas fa-list" />
                     </div>
+                    { !isAgfl && !row.original.geometry && (
+                        <div
+                            title={strings.reactTable.addMissingGeometry}
+                            role="button"
+                            tabIndex={0}
+                            className={`contract-icon${adminActive && !sketchToolActive ? '' : ' disabled'}`}
+                            onClick={() => {
+                                if (adminActive && !sketchToolActive) {
+                                    addNewGeometryToFeature(row.original);
+                                }
+                            }}
+                            onKeyPress={() => {
+                                if (adminActive && !sketchToolActive) {
+                                    addNewGeometryToFeature(row.original);
+                                }
+                            }}
+                        >
+                            <i className="esri-icon-polygon" />
+                        </div>
+                    )}
                 </Fragment>
             ),
             style: {
