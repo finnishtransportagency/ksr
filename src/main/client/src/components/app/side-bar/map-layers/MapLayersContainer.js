@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch(setActiveModal(activeModal));
     },
     toggleLayerLegend: () => {
-        dispatch(toggleLayerLegend());
+        dispatch(toggleLayerLegend(true));
     },
     toggleIndexMap: () => {
         dispatch(toggleIndexMap());
