@@ -162,12 +162,6 @@ export const Wrapper = styled.div`
             };
         `};
 
-        ${props => props.layerLegendActive && props.tableOpen && css`
-            .esri-coordinate-conversion, .esri-legend--stacked {
-                right: 45px;
-            };
-        `};
-
         @media only screen and (max-width: 768px) {
             left: 0;
             width: 100%;
@@ -205,13 +199,6 @@ export const Wrapper = styled.div`
             .esri-coordinate-conversion, .esri-legend--stacked {
                 right: 0; 
              }
-            ${props => (props.indexMapActive || props.layerLegendActive) && css`
-                @media only screen and (min-height: 486px) and (min-width: 486px) {
-                    .esri-coordinate-conversion, .esri-legend--stacked {
-                        right: 45px;
-                    }
-                }
-            `};
         };
     };
         
