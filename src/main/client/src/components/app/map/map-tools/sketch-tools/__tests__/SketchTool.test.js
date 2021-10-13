@@ -20,6 +20,7 @@ const setup = () => {
             initialized: true,
         },
         setActiveFeatureMode: jest.fn(),
+        resetFeatureNoGeometry: () => {},
     };
     const wrapper = mount(<SketchTool {...props} />);
 
@@ -40,6 +41,7 @@ describe('<SketchTool />', () => {
             draw: {
             },
             activeAdminTool: '',
+            resetFeatureNoGeometry: () => {},
         };
         const spy = jest.spyOn(wrapper.instance(), 'sketchTool');
         wrapper.instance().componentDidUpdate(prevProps);
@@ -53,6 +55,7 @@ describe('<SketchTool />', () => {
             draw: {
             },
             activeAdminTool: 'sketchActiveAdmin',
+            resetFeatureNoGeometry: () => {},
         };
         const spy = jest.spyOn(wrapper.instance(), 'removeSketch');
         wrapper.instance().componentDidUpdate(prevProps);

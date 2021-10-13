@@ -5,6 +5,7 @@ import {
     SET_ACTIVE_TOOL_MENU,
     SET_ACTIVE_FEATURE_MODE,
     SET_SNAPPING_FEATURE_SOURCES,
+    ADD_FEATURE_NO_GEOMETRY,
 } from '../../constants/actionTypes';
 
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
     active: '',
     activeToolMenu: '',
     activeFeatureMode: 'create',
+    featureNoGeometry: undefined,
 };
 
 type Action = {
@@ -23,6 +25,7 @@ type Action = {
     activeToolMenu: string,
     activeFeatureMode: string,
     featureSources: Object[],
+    featureNoGeometry: Object,
 };
 
 export default (state: Object = initialState, action: Action) => {
@@ -52,6 +55,12 @@ export default (state: Object = initialState, action: Action) => {
             return {
                 ...state,
                 activeFeatureMode: action.activeFeatureMode,
+            };
+        case ADD_FEATURE_NO_GEOMETRY:
+            return {
+                ...state,
+                activeFeatureMode: action.featureNoGeometry ? 'edit' : 'create',
+                featureNoGeometry: action.featureNoGeometry,
             };
         default:
             return state;
