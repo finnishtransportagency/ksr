@@ -183,6 +183,7 @@ const createLayer = async (
         // create an instance of esri/layers/support/Field for each field object
         fields: createFields(graphics[0].attributes),
         objectIdField: 'ObjectID', // This must be defined when creating a layer from Graphics
+        objectIdFieldName: 'ObjectID',
         renderer: createSymbol(graphics[0].geometry, color),
         outFields: ['*'],
         title: fileName,

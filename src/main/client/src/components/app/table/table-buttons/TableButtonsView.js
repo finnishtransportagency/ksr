@@ -109,6 +109,7 @@ const TableButtonsView = ({
             featureType={featureType}
             addressField={addressField}
             layerList={layerList}
+            activeAdminTool={activeAdminTool}
         />
         <ActiveLayerView
             isOpen={isOpen}

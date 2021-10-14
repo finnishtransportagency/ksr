@@ -1,4 +1,5 @@
 // @flow
+import { toast } from 'react-toastify';
 import { fetchLayerGroups } from '../../api/map/layerGroups';
 import { fetchMapConfig } from '../../api/map/mapConfig';
 import { layerData } from '../../api/map/layerData';
@@ -12,7 +13,7 @@ import { setLayerLegend } from '../../utils/layerLegend';
 import { setWorkspaceFeatures } from '../workspace/actions';
 import strings from '../../translations';
 import { nestedVal } from '../../utils/nestedValue';
-import { closeTableIfNothingToShow } from '../utils';
+import { closeTableIfNothingToShow, shouldToggleLayerLegend } from '../utils';
 import store from '../../store';
 import { getSiblingsOrSelf, relatedLayers as getRelatedLayers } from '../../utils/layers';
 import { fetchSearchQuery } from '../../api/search/searchQuery';
@@ -136,8 +137,8 @@ export const activateLayers = (
                 const workspaceLayer = workspace !== undefined
                     && (layer.definitionExpression
                         ? workspace.layers.find(wl => wl.definitionExpression
-                            && (wl.layerId === layer.id.replace('.s', '')
-                                || wl.userLayerId === layer.id.replace('.s', '')))
+                            && (wl.layerId === layer.id.replace('_s', '')
+                                || wl.userLayerId === layer.id.replace('_s', '')))
                         : workspace.layers.find(wl => wl.layerId === layer.id
                             || wl.userLayerId === layer.id));
 
@@ -193,9 +194,31 @@ export const activateLayers = (
     if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layersToBeActivated));
 };
 
-export const toggleLayerLegend = () => ({
-    type: types.TOGGLE_LAYER_LEGEND,
-});
+export const toggleLayerLegend = (forceToggle?: boolean) => (dispatch: Function) => {
+    const { layerLegendActive, manualClose } = store.getState().map.layerLegend;
+
+    if (forceToggle && layerLegendActive) {
+        dispatch({
+            type: types.TOGGLE_LAYER_LEGEND,
+            manualClose: true,
+        });
+    }
+
+    if (forceToggle && !layerLegendActive) {
+        if (shouldToggleLayerLegend(dispatch)) {
+            dispatch({
+                type: types.TOGGLE_LAYER_LEGEND,
+                manualClose: false,
+            });
+        } else {
+            toast.error(strings.mapLayers.noLayerLegendToShow);
+        }
+    }
+
+    if (!forceToggle && !manualClose) {
+        shouldToggleLayerLegend(dispatch);
+    }
+};
 
 const getSelectedLayersAndFeatures = (dispatch: Function, state: Object) => {
     const selectedLayers = [];
@@ -324,13 +347,7 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function, getStat
         });
     }
 
-    const mapState = store.getState().map;
-    const shouldCloseLegend = mapState.layerLegend.layerLegendActive
-        && !mapState.layerGroups.layerList
-            .some(layer => layer.visible && layer.renderer && layer.id !== layerId);
-    if (shouldCloseLegend) {
-        dispatch(toggleLayerLegend());
-    }
+    shouldToggleLayerLegend(dispatch);
     closeTableIfNothingToShow();
 };
 
@@ -380,6 +397,11 @@ export const setActiveTool = (active: string) => ({
 export const setActiveFeatureMode = (activeFeatureMode: string) => ({
     type: types.SET_ACTIVE_FEATURE_MODE,
     activeFeatureMode,
+});
+
+export const setSnappingFeatureSources = (featureSources: Object) => ({
+    type: types.SET_SNAPPING_FEATURE_SOURCES,
+    featureSources,
 });
 
 export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
@@ -483,26 +505,22 @@ export const toggleLayer = (layerId: string) => (dispatch: Function) => {
         type: types.TOGGLE_LAYER,
         layerId,
     });
-    const mapState = store.getState().map;
-    const shouldOpenLegend = mapState.layerGroups.layerList
-        .find(layer => layer.id === layerId && layer.visible && layer.renderer)
-        && !mapState.layerLegend.layerLegendActive;
-    const shouldCloseLegend = !mapState.layerGroups.layerList
-        .some(layer => layer.visible && layer.renderer)
-        && mapState.layerLegend.layerLegendActive;
-    if (shouldCloseLegend || shouldOpenLegend) {
-        dispatch(toggleLayerLegend());
-    }
+
+    shouldToggleLayerLegend(dispatch);
 };
 
 export const toggleMeasurements = () => ({
     type: types.TOGGLE_MEASUREMENTS,
 });
 
-export const setScale = (mapScale: number) => ({
-    type: types.SET_SCALE,
-    mapScale,
-});
+export const setScale = (mapScale: number) => (dispatch: Function) => {
+    dispatch({
+        type: types.SET_SCALE,
+        mapScale,
+    });
+
+    shouldToggleLayerLegend(dispatch);
+};
 
 export const hideLayer = (layerIds: string[]) => ({
     type: types.HIDE_LAYER,
@@ -513,8 +531,12 @@ export const toggleIndexMap = () => ({
     type: types.TOGGLE_INDEX_MAP,
 });
 
-export const toggleLayerVisibleZoomOut = (layerId, originalMinScale) => ({
-    type: types.TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
-    layerId,
-    originalMinScale,
-});
+export const toggleLayerVisibleZoomOut = (layerId, originalMinScale) => (dispatch: Function) => {
+    dispatch({
+        type: types.TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
+        layerId,
+        originalMinScale,
+    });
+
+    shouldToggleLayerLegend(dispatch);
+};

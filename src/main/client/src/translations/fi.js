@@ -7,6 +7,7 @@ const fi = {
         addNewLayer: 'Uusi taso',
         failedToLoadLayer: 'Tason lataus epäonnistui',
         toggleLayerLegend: 'Selite',
+        noLayerLegendToShow: 'Ei näytettäviä selitteitä',
         toggleIndexMap: 'Indeksikartta',
         filterAllLayers: 'Hae karttatasoja',
         noLayersFound: 'Ei hakua vastaavia karttatasoja',
@@ -53,6 +54,7 @@ const fi = {
         extractSelectedData: 'Tallenna valitut kohteet toiseen paikkatietoformaattiin',
         zoomToSelected: 'Kohdista haluamiin kohteisiin',
         windowPortal: 'Avaa taulu uuteen ikkunaan',
+        addMissingGeometry: 'Lisää puuttuva geometria',
     },
     esriMap: {
         openGoogleStreetView: 'Google Street View',
@@ -356,6 +358,7 @@ const fi = {
         cancelText: 'Peruuta',
         backText: 'Takaisin',
         errorNoFeaturesFound: 'Ei löydettyjä kohteita',
+        errorSopimushallintaAttributes: 'Sopimushallinta lisätietojen haussa tapahtui odottamaton virhe',
         errorNoAttributesFound: 'Ei löydettyjä tietoja.',
         chooseLayer: 'Valitse lisätieto taso',
         addNewDetail: 'Uusi lisätieto',
@@ -449,7 +452,8 @@ const fi = {
         placeholder: 'Hae osoitteella tai paikalla',
     },
     shapefileColorView: {
-        title: '2) Valitse kohteiden väri',
+        title: '2) Valitse kohteiden väri seuraavista vaihtoehdoista',
+        titleCustomColor: 'tai valitse oma vapaavalintainen väri',
         customTitle: 'Valitse vapaavalintainen väri',
         selectTitle: 'Valitse väri',
     },
@@ -486,6 +490,10 @@ const fi = {
         cancel: 'Peruuta',
         submitChange: 'Vaihda',
         submitDisable: 'Poistu',
+    },
+    modalSingleFeatureInfo: {
+        title: 'Kohteen ominaisuustiedot',
+        cancel: 'Peruuta',
     },
 };
 

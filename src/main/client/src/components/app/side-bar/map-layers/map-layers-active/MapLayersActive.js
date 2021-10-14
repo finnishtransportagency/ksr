@@ -79,17 +79,17 @@ class MapLayersActive extends Component<Props, State> {
         } = this.props;
 
         if (activeAdminTool) {
-            const disable = activeAdminTool === layerId.replace('.s', '');
+            const disable = activeAdminTool === layerId.replace('_s', '');
             showConfirmModal(
                 disable ? contentDisable : contentChange,
                 disable ? submitDisable : submitChange,
                 cancel,
                 () => {
-                    setActiveAdminTool(layerId.replace('.s', ''), mapLayerList);
+                    setActiveAdminTool(layerId.replace('_s', ''), mapLayerList);
                 },
             );
         } else {
-            setActiveAdminTool(layerId.replace('.s', ''), mapLayerList);
+            setActiveAdminTool(layerId.replace('_s', ''), mapLayerList);
         }
     };
 

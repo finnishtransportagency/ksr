@@ -95,13 +95,13 @@ const findMatchingLayers = (view: Object, layerId: string): Object[] => {
  * If save targets any parentLayers, all child layers will be refreshed.
  *
  * @param {Object} res Body of the response from ArcGIS Server.
- * @param {Object[]} layersToRefresh List of featurelayers to be refreshed on map.
+ * @param {Object} layersToRefresh Featurelayers to be refreshed on map.
  * @param {boolean} [hideToast] Show saving data toast or not.
  */
-const handleSaveResponse = (res: Object, layersToRefresh: Object[], hideToast?: boolean) => {
+const handleSaveResponse = (res: Object, layersToRefresh: Object, hideToast?: boolean) => {
     if (res && Array.isArray(res.addResults) && res.addResults.some(e => e.success)) {
         if (layersToRefresh && layersToRefresh.length > 0) {
-            layersToRefresh.forEach(l => l.refresh());
+            layersToRefresh.items.forEach(item => item.doRefresh());
         }
         const ids = res.addResults.filter(e => e.success).map(e => e.objectId);
         if (!hideToast) {
@@ -119,7 +119,7 @@ const handleSaveResponse = (res: Object, layersToRefresh: Object[], hideToast?: 
  *
  * @param {Object} res Body of the response from ArcGIS Server.
  * @param {string} layerId Id of the corresponding layer.
- * @param {Object[]} layersToRefresh List of layers to be refreshed.
+ * @param {Object} layersToRefresh Featurelayers to be refreshed on map.
  * @param {boolean} [hideToast] Show saving data toast or not.
  *
  * @returns {Object} Object containing layer id and feature ids of the updated features.
@@ -127,11 +127,11 @@ const handleSaveResponse = (res: Object, layersToRefresh: Object[], hideToast?: 
 const handleUpdateResponse = (
     res: Object,
     layerId: string,
-    layersToRefresh: Object[],
+    layersToRefresh: Object,
     hideToast?: boolean,
 ): Object => {
     if (layersToRefresh && layersToRefresh.length > 0) {
-        layersToRefresh.forEach(l => l.refresh());
+        layersToRefresh.items.forEach(item => item.doRefresh());
     }
     const layer = {
         layerId,
@@ -155,13 +155,13 @@ const handleUpdateResponse = (
  * Handles response from Esri ArcGIS Servers FeatureService deleteFeatures -request.
  *
  * @param {Object} res Body of the response from ArcGIS Server.
- * @param {Object[]} layersToRefresh List of layers to be refreshed on map.
+ * @param {Object} layersToRefresh Featurelayers to be refreshed on map.
  */
-const handleDeleteResponse = (res: Object, layersToRefresh: Object[]) => {
+const handleDeleteResponse = (res: Object, layersToRefresh: Object) => {
     if (res && Array.isArray(res.deleteResults) && res.deleteResults.some(e => e.success)) {
         const deletedIds = res.deleteResults.filter(e => e.success).map(e => e.objectId);
         if (layersToRefresh && layersToRefresh.length > 0) {
-            layersToRefresh.forEach(l => l.refresh());
+            layersToRefresh.items.forEach(item => item.doRefresh());
         }
         toast.success(`${strings.saveFeatureData.featureDeleteSuccess} [${deletedIds.join(', ')}]`);
     } else {
@@ -304,7 +304,7 @@ const saveData = async (
                             });
                         } else if (childLayers.length > 0) {
                             childLayers.forEach((cLayer) => {
-                                if (layerToUpdated && layers.some(l => l.id === cLayer.id.replace('.s', ''))) {
+                                if (layerToUpdated && layers.some(l => l.id === cLayer.id.replace('_s', ''))) {
                                     layerToUpdated.features.forEach((objectId: number) => {
                                         store.dispatch(addUpdateLayers(
                                             cLayer.id,
@@ -432,7 +432,7 @@ const saveEditedFeatureData = (
 ) => {
     if (view && Array.isArray(editedData)) {
         const promises = editedData.map((ed) => {
-            let layerId = ed.id.replace('.s', '');
+            let layerId = ed.id.replace('_s', '');
 
             const currentLayer: Object = layerList.find(l => l.id === layerId);
             const parentLayer = currentLayer && layerList.find(l => currentLayer.parentLayer

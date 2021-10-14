@@ -90,7 +90,7 @@ export const queryWorkspaceFeatures = (
  * @returns {Object} Found layer from the list.
  */
 const findLayer = (list, layer) => list
-    .find(l => (layer.layerId || layer.userLayerId).replace('.s', '') === (l.id || l.userLayerId));
+    .find(l => (layer.layerId || layer.userLayerId).replace('_s', '') === (l.id || l.userLayerId));
 
 
 /**
@@ -114,7 +114,7 @@ export const updateLayerList = (workspace: Object, layerList: Object[]): Object[
                 ...acc,
                 {
                     ...match,
-                    id: `${match.id}.s`,
+                    id: `${match.id}_s`,
                     definitionExpression: wLayer.definitionExpression,
                     opacity: wLayer.opacity,
                     layerOrder: wLayer.layerOrder,
@@ -153,8 +153,8 @@ export const searchQueryMap = (
     .map(layer => [{
         ...layer,
         layer: layerList.find(l => l.definitionExpression
-        && (l.id.replace('.s', '') === layer.layerId
-            || l.id.replace('.s', '') === layer.userLayerId)),
+        && (l.id.replace('_s', '') === layer.layerId
+            || l.id.replace('_s', '') === layer.userLayerId)),
     },
     layer.definitionExpression]));
 
@@ -189,8 +189,8 @@ export const loadWorkspace = async (
     const workspaceLayers = workspaceLayerList
         .filter(l => (l.definitionExpression
             ? workspace.layers.find(wl => wl.definitionExpression
-                && (wl.layerId === l.id.replace('.s', '')
-                    || wl.userLayerId === l.id.replace('.s', '')))
+                && (wl.layerId === l.id.replace('_s', '')
+                    || wl.userLayerId === l.id.replace('_s', '')))
             : workspace.layers.find(wl => wl.layerId === l.id || wl.userLayerId === l.id)));
 
     workspaceLayerList.forEach((l) => {

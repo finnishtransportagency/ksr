@@ -447,13 +447,13 @@ describe('utils/table', () => {
         expect(columnsWithoutLayerId(key, data, foundData)).toMatchObject(expectedResult);
 
         data = {
-            '123.s/Objectid': 1,
+            '123_s/Objectid': 1,
             _edited: [{
                 originalValue: 'Test 1',
                 editedValue: 'Test 1',
-                title: '123.s/Objectid',
+                title: '123_s/Objectid',
             }],
-            _layerId: '123.s',
+            _layerId: '123_s',
         };
         foundData = {
             _edited: [{
@@ -467,7 +467,7 @@ describe('utils/table', () => {
             _edited: [{
                 originalValue: 'Test 1',
                 editedValue: 'Test 2',
-                title: '123.s/Objectid',
+                title: '123_s/Objectid',
             }],
         };
         expect(columnsWithoutLayerId(key, data, foundData)).toMatchObject(expectedResult);
@@ -492,13 +492,13 @@ describe('utils/table', () => {
             .toMatchObject(expectedResult);
 
         data = {
-            '123.s/Objectid': 1,
-            '123.s/Testcolumn': 'Original value',
+            '123_s/Objectid': 1,
+            '123_s/Testcolumn': 'Original value',
             _edited: [],
-            _layerId: '123.s',
+            _layerId: '123_s',
         };
 
-        expectedResult = { '123.s/Testcolumn': 'New value' };
+        expectedResult = { '123_s/Testcolumn': 'New value' };
         expect(columnsWithLayerId(key, data, foundData, editedLayerId))
             .toMatchObject(expectedResult);
     });
@@ -570,19 +570,19 @@ describe('utils/table', () => {
                 },
             ],
         }, {
-            id: '123.s',
+            id: '123_s',
             data: [
                 {
-                    _layerId: '123.s',
+                    _layerId: '123_s',
                     _id: 1,
                     _edited: [],
-                    '123.s/Testcolumn': 'Original value',
+                    '123_s/Testcolumn': 'Original value',
                 },
                 {
-                    _layerId: '123.s',
+                    _layerId: '123_s',
                     _id: 2,
                     _edited: [],
-                    '123.s/Testcolumn': 'Original value',
+                    '123_s/Testcolumn': 'Original value',
                 },
             ],
         }];
@@ -618,23 +618,23 @@ describe('utils/table', () => {
                 },
             ],
         }, {
-            id: '123.s',
+            id: '123_s',
             data: [
                 {
-                    _layerId: '123.s',
+                    _layerId: '123_s',
                     _id: 1,
                     _edited: [{
                         originalValue: 'Original value',
                         editedValue: 'New value',
-                        title: '123.s/Testcolumn',
+                        title: '123_s/Testcolumn',
                     }],
-                    '123.s/Testcolumn': 'New value',
+                    '123_s/Testcolumn': 'New value',
                 },
                 {
-                    _layerId: '123.s',
+                    _layerId: '123_s',
                     _id: 2,
                     _edited: [],
-                    '123.s/Testcolumn': 'Original value',
+                    '123_s/Testcolumn': 'Original value',
                 },
             ],
         }];

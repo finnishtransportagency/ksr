@@ -8,21 +8,39 @@ type Props = {
     view: Object,
     setMapTools: Function,
     tempGraphicsLayer: Object,
+    viewLayersCount: Object,
+    setSnappingFeatureSources: Function,
 };
 
 class MapTools extends Component<Props> {
     componentDidUpdate(prevProps: any) {
-        const { view } = this.props;
+        const { view, viewLayersCount, setSnappingFeatureSources } = this.props;
         if (view !== prevProps.view) {
             this.mapTools();
         }
+
+        if (viewLayersCount !== prevProps.viewLayersCount) {
+            setSnappingFeatureSources(this.getSnappingFeatureSourcesFromView(view));
+        }
     }
+
+    getSnappingFeatureSourcesFromView = (view) => {
+        const featureSources = [];
+        view.map.allLayers.forEach((layer) => {
+            if (!['wmts', 'wms'].includes(layer.type)) {
+                featureSources.push({
+                    layer,
+                });
+            }
+        });
+        return featureSources;
+    };
 
     mapTools = () => {
         loadModules([
-                'esri/views/2d/draw/Draw',
-                'esri/widgets/Sketch/SketchViewModel',
-            ])
+            'esri/views/2d/draw/Draw',
+            'esri/widgets/Sketch/SketchViewModel',
+        ])
             .then(([Draw, SketchViewModel]) => {
                 const { setMapTools, view, tempGraphicsLayer } = this.props;
 
@@ -30,12 +48,19 @@ class MapTools extends Component<Props> {
                     view,
                 });
 
+                const featureSources = this.getSnappingFeatureSourcesFromView(view);
+
                 const sketchViewModel = new SketchViewModel({
                     view,
                     layer: tempGraphicsLayer,
                     defaultUpdateOptions: {
                         tool: 'reshape',
                         toggleToolOnClick: false,
+                    },
+                    snappingOptions: {
+                        enabled: true,
+                        distance: 15,
+                        featureSources,
                     },
                 });
 

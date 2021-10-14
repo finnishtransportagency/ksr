@@ -7,6 +7,7 @@ import {
     SET_GRAPH_LAYER,
     SET_MAP_VIEW,
     TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
+    SET_WORKSPACE,
 } from '../../constants/actionTypes';
 
 const initialState = {
@@ -79,18 +80,26 @@ export default (state: Object = initialState, action: Action) => {
         case CLEAR_TABLE_DATA:
             if (state.view && state.view.map) {
                 state.view.map.layers.removeMany(state.view.map.layers
-                    .filter(l => l.id.endsWith('.s')));
+                    .filter(l => l.id.endsWith('_s')));
             }
             return state;
         case CLOSE_LAYER:
         case CLEAR_SEARCH_DATA:
-            if (state.view && state.view.map && action.layerId.endsWith('.s')) {
+            if (state.view && state.view.map && action.layerId.endsWith('_s')) {
                 state.view.map.layers.removeMany(state.view.map.layers
                     .filter(l => l.id === action.layerId));
             }
             return state;
         case TOGGLE_LAYER_VISIBLE_ZOOM_OUT:
             return toggleLayerVisibleZoomOut(state, action);
+        case SET_WORKSPACE: {
+            if (state.view && state.view.map) {
+                const shapeLayers = state.view.map.layers
+                    .filter(item => item.featureType === 'shapefile');
+                state.view.map.layers.removeMany(shapeLayers);
+            }
+            return state;
+        }
         default:
             return state;
     }

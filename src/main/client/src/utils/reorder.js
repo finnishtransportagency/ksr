@@ -64,7 +64,7 @@ export const reorderLayers = (layerGroups: Object[], layerList: Object[], foundL
     });
 
     const originalLayer = originalLayerList
-        .find(layer => layer.id === foundLayer.id.replace('.s', ''));
+        .find(layer => layer.id === foundLayer.id.replace('_s', ''));
     const originalLayerOrder: number = originalLayer ? originalLayer.layerOrder : 0;
 
     const layersWithLowerOrder: Object[] = originalLayerList

@@ -12,6 +12,7 @@ import { nestedVal } from '../../utils/nestedValue';
 import { showConfirmModal } from '../confirmModal/actions';
 import { updatePortal } from '../portal/actions';
 import { closeTableIfNothingToShow } from '../utils';
+import { setActiveAdminTool } from '../adminTool/actions';
 
 export const toggleTable = () => ({
     type: types.TOGGLE_TABLE,
@@ -24,6 +25,11 @@ export const toggleFilter = () => ({
 export const selectFeatures = (features: {}) => ({
     type: types.SELECT_FEATURES,
     layers: parseData(features, true),
+});
+
+export const addShapeFeaturesToTable = (features: {}) => ({
+    type: types.SELECT_FEATURES,
+    layers: parseData(features, false),
 });
 
 export const addUpdateLayers = (
@@ -80,7 +86,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
         const layerData = {
             layers: [],
         };
-        dispatch({ type: types.CLEAR_SEARCH_DATA, layerId: `${selectedLayer.id}.s` });
+        dispatch({ type: types.CLEAR_SEARCH_DATA, layerId: `${selectedLayer.id}_s` });
 
         searchQueries.push(fetchSearchQuery(
             selectedLayer.id,
@@ -98,7 +104,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
                             definitionExpression: queryString,
                             visible: true,
                             active: true,
-                            id: `${selectedLayer.id}.s`,
+                            id: `${selectedLayer.id}_s`,
                             _source: 'search',
                             layerGroupName: strings.search.searchLayerGroupName,
                             title: fetchedLayer.title,
@@ -135,7 +141,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
         if (layersToBeAdded.layers.length) {
             dispatch({
                 type: types.HIDE_LAYER,
-                // Remove '.s' at the end of layer id.
+                // Remove '_s' at the end of layer id.
                 layerIds: layersToBeAdded.layers
                     .filter(newLayer => newLayer.type !== 'agfl')
                     .map(newLayer => newLayer.id.slice(0, -2)),
@@ -196,8 +202,8 @@ export const searchWorkspaceFeatures = (
                                 active: true,
                                 opacity: selectedLayer.opacity,
                                 id: selectedLayer.userLayerId
-                                    ? `${selectedLayer.userLayerId}.s`
-                                    : `${selectedLayer.layerId}.s`,
+                                    ? `${selectedLayer.userLayerId}_s`
+                                    : `${selectedLayer.layerId}_s`,
                                 _source: 'search',
                                 layerGroupName: strings.search.searchLayerGroupName,
                                 title: fetchedLayer.title,
@@ -214,7 +220,7 @@ export const searchWorkspaceFeatures = (
                     } else {
                         dispatch({
                             type: types.CLEAR_SEARCH_DATA,
-                            layerId: `${selectedLayer.layerId}.s`,
+                            layerId: `${selectedLayer.layerId}_s`,
                         });
                     }
                 })
@@ -286,9 +292,10 @@ export const clearTableData = (
     featureType: string,
     addressField: string,
     layerList: Object[],
+    isAdminAgfl: boolean,
 ) => (dispatch: Function) => {
     let editedLayer: any = null;
-    editedLayers.map(layer => layer.id === layer.id.replace('.s', '') && layer.data.some((d) => {
+    editedLayers.map(layer => layer.id === layer.id.replace('_s', '') && layer.data.some((d) => {
         if (d._edited && d._edited.length > 0) {
             editedLayer = layer;
         }
@@ -317,6 +324,9 @@ export const clearTableData = (
                                     dispatch({
                                         type: types.CLEAR_TABLE_DATA,
                                     });
+                                    if (isAdminAgfl) {
+                                        dispatch(setActiveAdminTool('', []));
+                                    }
                                     view.popup.close();
                                 });
                         },
@@ -324,6 +334,9 @@ export const clearTableData = (
                             dispatch({
                                 type: types.CLEAR_TABLE_DATA,
                             });
+                            if (isAdminAgfl) {
+                                dispatch(setActiveAdminTool('', []));
+                            }
                             view.popup.close();
                         },
                     ));
@@ -339,6 +352,9 @@ export const clearTableData = (
                 dispatch({
                     type: types.CLEAR_TABLE_DATA,
                 });
+                if (isAdminAgfl) {
+                    dispatch(setActiveAdminTool('', []));
+                }
                 view.popup.close();
             },
         ));
@@ -373,7 +389,7 @@ export const saveEditedFeatures = (
             const editedLayerId = nestedVal(edits, ['0', 'layerId']);
 
             const foundLayer = layerList.find(layer => layer.id === editedLayerId);
-            const foundSearchLayer = layerList.find(layer => layer.id === `${editedLayerId}.s`);
+            const foundSearchLayer = layerList.find(layer => layer.id === `${editedLayerId}_s`);
 
             if (foundSearchLayer) {
                 const queryMap = new Map([
@@ -387,7 +403,7 @@ export const saveEditedFeatures = (
             if (layerList.some(ll => ll.parentLayer === foundLayer.id)) {
                 layerList.filter(childLayer => childLayer.parentLayer === foundLayer.id)
                     .forEach((childLayer) => {
-                        const foundChildSearchLayer = layerList.find(layer => layer.id === `${childLayer.id}.s`);
+                        const foundChildSearchLayer = layerList.find(layer => layer.id === `${childLayer.id}_s`);
 
                         if (foundChildSearchLayer) {
                             const queryMap = new Map([
@@ -433,6 +449,7 @@ export const closeTableTab = (
     editedLayers: Object[],
     featureType: string,
     addressField: string,
+    isAgfl: boolean,
 ) => (dispatch: Function) => {
     const editedLayer = editedLayers.find(e => e.id === layerId);
     const containsEdit = editedLayer && editedLayer.data
@@ -455,6 +472,9 @@ export const closeTableTab = (
                                 featureType,
                                 addressField,
                             ));
+                            if (isAgfl) {
+                                dispatch(setActiveAdminTool('', []));
+                            }
                         },
                         () => {
                             dispatch({
@@ -462,6 +482,9 @@ export const closeTableTab = (
                                 layerId,
                             });
                             closeTableIfNothingToShow();
+                            if (isAgfl) {
+                                dispatch(setActiveAdminTool('', []));
+                            }
                             view.popup.close();
                             dispatch(updatePortal());
                         },
@@ -479,6 +502,9 @@ export const closeTableTab = (
                     type: types.CLOSE_LAYER,
                     layerId,
                 });
+                if (isAgfl) {
+                    dispatch(setActiveAdminTool('', []));
+                }
                 closeTableIfNothingToShow();
                 view.popup.close();
                 dispatch(updatePortal());
@@ -604,4 +630,11 @@ export const sketchSaveData = (
         dispatch(deSelectSelected());
         closeTableIfNothingToShow();
     }
+};
+
+export const addFeatureNoGeometry = (featureNoGeometry: Object) => (dispatch: Function) => {
+    dispatch({
+        type: types.ADD_FEATURE_NO_GEOMETRY,
+        featureNoGeometry,
+    });
 };

@@ -6,7 +6,7 @@ import LoadingIcon from '../../shared/LoadingIcon';
 import { nestedVal } from '../../../../utils/nestedValue';
 
 type Props = {
-    contractLayerId: string,
+    contractLayer: Object,
     detailList: Object[],
     fetchingDetailList: boolean,
     activeAdmin: boolean,
@@ -37,7 +37,7 @@ const caseManagementTitle = strings.modalFeatureContracts.listView.caseManagemen
 const { showLocation } = strings.modalContractDetails.listView.showLocation;
 
 const ModalContractDetailsView = ({
-    contractLayerId,
+    contractLayer,
     detailList,
     fetchingDetailList,
     activeAdmin,
@@ -105,11 +105,12 @@ const ModalContractDetailsView = ({
                                     className="fas fa-edit"
                                 />
                             )}
-                            {layer.id !== contractLayerId
+                            {layer.id !== contractLayer.id
                             && activeAdmin
                             && layer.editPermission
+                            && contractLayer.name.toLowerCase() !== 'tlaite sopimushallinta'
                             && nestedVal(
-                                detailList.find(l => l.id === contractLayerId),
+                                detailList.find(l => l.id === contractLayer.id),
                                 ['editPermission'],
                             ) && (
                                 <Contract.IconWrapper.Icon
@@ -121,7 +122,7 @@ const ModalContractDetailsView = ({
                                     className="fas fa-unlink"
                                 />
                             )}
-                            {layer.id === contractLayerId && (
+                            {layer.id === contractLayer.id && (
                                 <Fragment>
                                     <Contract.IconWrapper.Icon
                                         onClick={() => feature.tiimeriUrl

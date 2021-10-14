@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(SHJController.SHJ_API_URL)
+@PreAuthorize("hasAnyAuthority('KSR_ROLE_SOPULI_USER', 'KSR_ROLE_ADMIN')")
 public class SHJController {
 
     private final SHJService shjService;

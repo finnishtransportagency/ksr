@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import DOMPurify from 'dompurify';
 import { cellEditValidate, getValue, preventKeyPress } from '../../../../utils/cellEditValidate';
-import { addContractColumn } from '../../../../utils/contracts/contractColumn';
+import { addActionColumn } from '../../../../utils/contracts/actionColumn';
 import LoadingIcon from '../../shared/LoadingIcon';
 import ReactTableView from './ReactTableView';
 import { TableInput, TableSelect, WrapperReactTableNoTable } from './styles';
@@ -36,6 +36,8 @@ type Props = {
     portalIsOpen: boolean,
     activePage: Object,
     setActivePage: Function,
+    addNewGeometryToFeature: Function,
+    sketchActive: boolean,
 };
 
 type State = {
@@ -145,7 +147,7 @@ class ReactTable extends Component<Props, State> {
     getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
         const { activeAdminTool, activeTable, layerList } = this.props;
 
-        const activeLayer: Object = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const activeLayer: Object = layerList.find(l => l.id === activeTable.replace('_s', ''));
         const parentLayer = activeLayer.parentLayer
             && layerList.find(l => l.id === activeLayer.parentLayer);
         let className = '';
@@ -176,16 +178,24 @@ class ReactTable extends Component<Props, State> {
         return getCodedValue(domain, content);
     };
 
+    getLayerData = (getParentLayer: boolean) => {
+        const { activeTable, layerList } = this.props;
+
+        const layerId = activeTable.replace('_s', '');
+        const parentLayerId = nestedVal(layerList.find(l => l.id === layerId), ['parentLayer']);
+        const layer: Object = parentLayerId && getParentLayer
+            ? layerList.find(l => l.id === parentLayerId.replace('_s', ''))
+            : layerList.find(l => l.id === layerId);
+
+        return layer;
+    }
+
     handleContractClick = (row: Object) => {
         const {
-            setActiveModal, setContractListInfo, activeTable, layerList,
+            setActiveModal, setContractListInfo, activeTable,
         } = this.props;
 
-        const layerId = activeTable.replace('.s', '');
-        const parentLayerId = nestedVal(layerList.find(l => l.id === layerId), ['parentLayer']);
-        const layer: Object = parentLayerId
-            ? layerList.find(l => l.id === parentLayerId.replace('.s', ''))
-            : layerList.find(l => l.id === layerId);
+        const layer = this.getLayerData(true);
 
         const idFieldName = nestedVal(
             layer.fields.find(field => field.type === 'esriFieldTypeOID'),
@@ -209,10 +219,23 @@ class ReactTable extends Component<Props, State> {
         }
     };
 
+    handleFeatureInfoClick = (row: Object) => {
+        const { setActiveModal } = this.props;
+
+        const layer = this.getLayerData(false);
+
+        const modalData = {
+            layerId: layer.id,
+            attributeData: row.original,
+            fromSource: 'table',
+        };
+        setActiveModal('singleFeatureInfo', modalData);
+    };
+
     isCellEditable = (cellField: Object) => {
         const { activeAdminTool, layerList, activeTable } = this.props;
 
-        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
         const parentLayer = activeLayer && activeLayer.parentLayer
             && layerList.find(l => l.id === activeLayer.parentLayer);
 
@@ -232,6 +255,8 @@ class ReactTable extends Component<Props, State> {
                 && activeLayer.layerPermission.updateLayer
                 && cellField.editable
                 && cellField.name !== 'PROPERTY_ID'
+                && (!activeLayer.editableColumnsList.length
+                    || activeLayer.editableColumnsList.includes(cellField.name))
                 && activeLayer.updaterField !== cellField.name
                 && !activeLayer.requiredUniqueFields.some(field => field === cellField.name);
         }
@@ -448,8 +473,8 @@ class ReactTable extends Component<Props, State> {
 
     renderCustomCell = (cellInfo: Object) => {
         const { layerList, activeTable, activeAdminTool } = this.props;
-        const activeLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
-        const originalLayer = layerList.find(l => l.id === activeTable.replace('.s', ''));
+        const activeLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
+        const originalLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
 
         let cellField = activeLayer && activeLayer.fields
             .find(f => `${activeTable}/${f.name}` === cellInfo.column.id);
@@ -462,7 +487,7 @@ class ReactTable extends Component<Props, State> {
                     && parentLayer.fields.find(f => f.name === nestedVal(cellField, ['name']));
             cellField = parentLayer && parentCell ? parentCell : originalCell;
             if (parentLayer) cellField = childLayerDomainValues(cellField, parentLayer);
-            const currentAdminActive = activeAdminTool === activeTable.replace('.s', '')
+            const currentAdminActive = activeAdminTool === activeTable.replace('_s', '')
                 || (parentLayer && activeAdminTool === parentLayer.id);
 
             if (currentAdminActive) {
@@ -512,8 +537,8 @@ class ReactTable extends Component<Props, State> {
     renderFilter = (cellInfo: Object, filter: any, onChange: Function) => {
         const { layerList, activeTable } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
-        let originalLayer: Object = layerList.find(l => l.id === activeTable.replace('.s', ''));
-        originalLayer = originalLayer.parentLayer
+        let originalLayer: Object = layerList.find(l => l.id === activeTable.replace('_s', ''));
+        originalLayer = originalLayer && originalLayer.parentLayer
             ? layerList.find(l => l.id === originalLayer.parentLayer)
             : originalLayer;
 
@@ -574,6 +599,8 @@ class ReactTable extends Component<Props, State> {
             activeAdminTool,
             activeTable,
             activePage,
+            addNewGeometryToFeature,
+            sketchActive,
         } = this.props;
 
         const layerPage = layerFeatures && layerFeatures.id && activePage[layerFeatures.id];
@@ -592,7 +619,7 @@ class ReactTable extends Component<Props, State> {
             const { currentCellData } = this.state;
 
             const parentLayer = nestedVal(layerList
-                .find(ll => ll.id === layerFeatures.id.replace('.s', '')),
+                .find(ll => ll.id === layerFeatures.id.replace('_s', '')),
             ['parentLayer']);
             const activeLayer: any = layerList.find(ll => ll.id === parentLayer)
                 || layerList.find(ll => ll.id === layerFeatures.id);
@@ -602,17 +629,24 @@ class ReactTable extends Component<Props, State> {
                     .find(r => r).relationLayerId))
                 : null;
 
-            const tableColumns = (activeLayer
+            const layerHasRelations = activeLayer
                 && activeLayer.relations
                 && activeLayer.relations.length > 0
                 && activeLayer.relations.find(r => r).relationType !== null
-                && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer)))
-                ? addContractColumn(
-                    this.handleContractClick,
-                    columns,
-                    isContract(activeLayer),
-                )
-                : columns;
+                && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer));
+
+            const tableColumns = addActionColumn(
+                this.handleContractClick,
+                this.handleFeatureInfoClick,
+                columns,
+                isContract(activeLayer),
+                layerHasRelations,
+                activeLayer.type === 'agfl',
+                activeAdminTool && (activeAdminTool === activeLayer.id),
+                sketchActive,
+                addNewGeometryToFeature,
+            );
+
             return (
                 <ReactTableView
                     data={data}

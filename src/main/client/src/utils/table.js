@@ -46,7 +46,7 @@ export const applyEdits = (
     layers: Object[],
     edits: Object[],
 ): Object[] => layers.map((layer: Object) => {
-    const editLayer = edits.find(e => e.layerId === layer.id.replace('.s', ''));
+    const editLayer = edits.find(e => e.layerId === layer.id.replace('_s', ''));
     if (editLayer) {
         return {
             ...layer,
@@ -160,7 +160,7 @@ export const applyEditedLayers = (editedLayers: Object[], editedData: Object): O
     editedLayers.map((editedLayer) => {
         const editedLayerId = editedData._layerId;
 
-        if (editedLayer.id.replace('.s', '') === editedLayerId.replace('.s', '')) {
+        if (editedLayer.id.replace('_s', '') === editedLayerId.replace('_s', '')) {
             return {
                 ...editedLayer,
                 data: findEditedData(editedLayer, editedData),

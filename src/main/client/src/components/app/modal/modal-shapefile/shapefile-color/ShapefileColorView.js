@@ -27,6 +27,9 @@ const ShapefileColorView = ({ color, setColor }: Props) => (
                     />
                 ))
             }
+        </ColorRow>
+        <H2>{strings.shapefileColorView.titleCustomColor}</H2>
+        <ColorRow>
             <ColorInput
                 type="color"
                 title={strings.shapefileColorView.customTitle}

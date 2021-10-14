@@ -23,6 +23,9 @@ public class Role {
 	/** The role user. (=Katselukäyttäjä) */
 	public static final String ROLE_USER = "KSR_ROLE_USER";
 
+	/** The role Sopuli user. */
+	public static final String ROLE_SOPULI_USER = "KSR_ROLE_SOPULI_USER";
+
 	/**
 	 * Check if role matches any of the defined roles.
 	 *
@@ -34,6 +37,7 @@ public class Role {
 				|| ROLE_UPDATER.equalsIgnoreCase(role)
 				|| ROLE_EXTERNAL_UPDATER.equalsIgnoreCase(role)
 				|| ROLE_NAMED_USER.equalsIgnoreCase(role)
-				|| ROLE_USER.equalsIgnoreCase(role);
+				|| ROLE_USER.equalsIgnoreCase(role)
+				|| ROLE_SOPULI_USER.equalsIgnoreCase(role);
 	}
 }

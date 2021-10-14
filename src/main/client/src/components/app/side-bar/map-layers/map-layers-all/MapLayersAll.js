@@ -56,7 +56,7 @@ class MapLayersActive extends Component<Props> {
         if (foundLayer && !foundLayer.active) {
             if (foundLayer.definitionExpression) {
                 setSearchFeatures([foundLayer]);
-                hideLayer([foundLayer.id.replace('.s', '')]);
+                hideLayer([foundLayer.id.replace('_s', '')]);
             }
             activateLayers([foundLayer]);
         } else {
@@ -79,7 +79,7 @@ class MapLayersActive extends Component<Props> {
 
         // Hide search layer's source layer.
         foundLayers.filter(l => l._source === 'search')
-            .map(l => !l.active && hideLayer([l.id.replace('.s', '')]));
+            .map(l => !l.active && hideLayer([l.id.replace('_s', '')]));
 
         this.updateLayerList(foundLayers);
     };

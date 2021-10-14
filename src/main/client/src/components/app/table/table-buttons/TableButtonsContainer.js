@@ -51,7 +51,7 @@ const mapStateToProps = (state) => {
     let activeTableLayer = layerList
         .find(l => l.id === activeTable && l.type === 'agfs' && l.layers);
     const parentLayer = nestedVal(
-        layerList.find(l => l.id === activeTable.replace('.s', '')),
+        layerList.find(l => l.id === activeTable.replace('_s', '')),
         ['parentLayer'],
     );
 
@@ -61,8 +61,8 @@ const mapStateToProps = (state) => {
     }
 
     const currentTabAdmin = parentLayer
-        ? parentLayer.replace('.s', '') === layerId.replace('.s', '')
-        : activeTable.replace('.s', '') === layerId.replace('.s', '');
+        ? parentLayer.replace('_s', '') === layerId.replace('_s', '')
+        : activeTable.replace('_s', '') === layerId.replace('_s', '');
 
     const selectedAdminData = tableFeaturesLayers
         .filter(l => l.id === activeTable)
@@ -107,8 +107,10 @@ const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    clearTableData: (view, editedLayers, featureType, addressField, layerList) => {
-        dispatch(clearTableData(view, editedLayers, featureType, addressField, layerList));
+    clearTableData: (view, editedLayers, featureType, addressField, layerList, isAdminAgfl) => {
+        dispatch(
+            clearTableData(view, editedLayers, featureType, addressField, layerList, isAdminAgfl),
+        );
     },
     saveEditedFeatures: (view, editedLayers, featureType, addressField) => {
         dispatch(saveEditedFeatures(view, editedLayers, featureType, addressField));

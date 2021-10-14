@@ -61,7 +61,7 @@ export const getContractLayers = (layerId: string, layerList: Object[]) => {
     if (!layerId) return { currentLayer: null, contractLayers: [] };
 
     const currentLayer = layerList.find(layer => layer.id === layerId
-        .replace('.s', ''));
+        .replace('_s', ''));
     const relationLayers = nestedVal(currentLayer, ['relations']);
     if (relationLayers === null) {
         return { currentLayer, contractLayers: [] };
@@ -508,7 +508,7 @@ export const fieldEdited = (
 ): boolean => {
     const existingValue = existingAttributes[name];
     if (field.name === name) {
-        if (value || existingValue) {
+        if (value || value === 0 || existingValue) {
             return existingValue !== value;
         }
         return false;

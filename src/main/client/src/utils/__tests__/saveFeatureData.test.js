@@ -36,10 +36,10 @@ describe('saveFeatureData', () => {
     });
 
     it('handleSaveResponse - invalid response - should not refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = { length: 1, items: [{ doRefresh: jest.fn() }] };
         save.handleSaveResponse({ addResults: 1 }, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(0);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(0);
         });
     });
 
@@ -50,15 +50,18 @@ describe('saveFeatureData', () => {
     });
 
     it('handleSaveResponse - invalid parameters - should not refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = { length: 1, items: [{ doRefresh: jest.fn() }] };
         save.handleSaveResponse(null, null);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(0);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(0);
         });
     });
 
     it('handleSaveResponse - one successful - should refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = {
+            length: 1,
+            items: [{ doRefresh: jest.fn() }],
+        };
         const response = {
             addResults: [
                 { success: false },
@@ -67,13 +70,13 @@ describe('saveFeatureData', () => {
             ],
         };
         save.handleSaveResponse(response, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(1);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(1);
         });
     });
 
     it('handleSaveResponse - not success - should not refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = { length: 1, items: [{ doRefresh: jest.fn() }] };
         const response = {
             addResults: [
                 { success: false },
@@ -82,13 +85,16 @@ describe('saveFeatureData', () => {
             ],
         };
         save.handleSaveResponse(response, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(0);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(0);
         });
     });
 
     it('handleSaveResponse - all success - should refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = {
+            length: 1,
+            items: [{ doRefresh: jest.fn() }],
+        };
         const response = {
             addResults: [
                 { success: true },
@@ -97,16 +103,16 @@ describe('saveFeatureData', () => {
             ],
         };
         save.handleSaveResponse(response, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(1);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(1);
         });
     });
 
     it('handleDeleteResponse - invalid response - should not refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = { length: 1, items: [{ doRefresh: jest.fn() }] };
         save.handleDeleteResponse({ deleteResults: 1 }, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(0);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(0);
         });
     });
 
@@ -115,15 +121,18 @@ describe('saveFeatureData', () => {
     });
 
     it('handleDeleteResponse - invalid parameters - should not refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = { length: 1, items: [{ doRefresh: jest.fn() }] };
         save.handleDeleteResponse(null, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(0);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(0);
         });
     });
 
     it('handleDeleteResponse - one successful - should refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = {
+            length: 1,
+            items: [{ doRefresh: jest.fn() }],
+        };
         const response = {
             deleteResults: [
                 { success: false },
@@ -132,13 +141,13 @@ describe('saveFeatureData', () => {
             ],
         };
         save.handleDeleteResponse(response, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(1);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(1);
         });
     });
 
     it('handleDeleteResponse - not success - should not refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }];
+        const layersToRefresh = { length: 1, items: [{ doRefresh: jest.fn() }] };
         const response = {
             deleteResults: [
                 { success: false },
@@ -147,13 +156,19 @@ describe('saveFeatureData', () => {
             ],
         };
         save.handleDeleteResponse(response, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(0);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(0);
         });
     });
 
     it('handleDeleteResponse - all success - should refresh layer', () => {
-        const layersToRefresh = [{ refresh: jest.fn() }, { refresh: jest.fn() }];
+        const layersToRefresh = {
+            length: 2,
+            items: [
+                { doRefresh: jest.fn() },
+                { doRefresh: jest.fn() },
+            ],
+        };
         const response = {
             deleteResults: [
                 { success: true },
@@ -162,8 +177,8 @@ describe('saveFeatureData', () => {
             ],
         };
         save.handleDeleteResponse(response, layersToRefresh);
-        layersToRefresh.forEach((layer) => {
-            expect(layer.refresh.mock.calls.length).toBe(1);
+        layersToRefresh.items.forEach((item) => {
+            expect(item.doRefresh.mock.calls.length).toBe(1);
         });
     });
 
