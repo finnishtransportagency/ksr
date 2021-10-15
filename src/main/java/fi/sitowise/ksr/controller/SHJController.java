@@ -73,6 +73,9 @@ public class SHJController {
         } catch (URISyntaxException e) {
             LOG.error("Could not build url for adding feature by SHJ API.");
             throw new KsrApiException.InternalServerErrorException("Error when trying to create new contract.");
+        } catch (Exception e) {
+            LOG.error(String.format("Unexpected error: %s", e.getMessage()), e.getCause());
+            throw new KsrApiException.InternalServerErrorException("Unexpected error:", e);
         }
     }
 
@@ -114,6 +117,9 @@ public class SHJController {
             return ResponseEntity.badRequest().build();
         } catch (URISyntaxException e) {
             throw new KsrApiException.InternalServerErrorException("Error when trying to update contract.");
+        } catch (Exception e) {
+            LOG.error(String.format("Unexpected error: %s", e.getMessage()), e.getCause());
+            throw new KsrApiException.InternalServerErrorException("Unexpected error:", e);
         }
     }
 
