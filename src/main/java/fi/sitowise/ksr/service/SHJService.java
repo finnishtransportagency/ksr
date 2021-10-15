@@ -241,13 +241,19 @@ public class SHJService {
             if (key.equals(KayttooikeussopimusFieldNames.ALKUPAIVA.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.ALKUPAIVA.getKsrName(),
-                        Date.valueOf((String) attributes.get(key)));
+                        attributes.get(key) != null
+                                ? Date.valueOf((String) attributes.get(key))
+                                : null
+                );
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.LOPPUPAIVA.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.LOPPUPAIVA.getKsrName(),
-                        Date.valueOf((String) attributes.get(key)));
+                        attributes.get(key) != null
+                            ? Date.valueOf((String) attributes.get(key))
+                            : null
+                        );
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.PAATTYMIST.getShjName())) {
@@ -283,7 +289,10 @@ public class SHJService {
             if (key.equals(KayttooikeussopimusFieldNames.VIIMEINEN.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.VIIMEINEN.getKsrName(),
-                        Date.valueOf((String) attributes.get(key)));
+                        attributes.get(key) != null
+                                ? Date.valueOf((String) attributes.get(key))
+                                : null
+                );
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.EDITOIJA.getShjName())) {
