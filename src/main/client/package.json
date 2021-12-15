@@ -1,6 +1,6 @@
 {
   "name": "ksr",
-  "version": "1.7.2",
+  "version": "1.7.1",
   "private": true,
   "dependencies": {
     "clone": "^2.1.2",
