@@ -2,7 +2,8 @@ package fi.sitowise.ksr.utils.shj;
 
 public enum  KayttooikeussopimusFieldNames {
     OBJECTID ("OBJECTID", "OBJECTID"),
-    SOPIMUSNUM ("SOPIMUSNUM", "sopimustunniste"),
+    SOPIMUSNUM ("SOPIMUSNUM", "sopimusnumero"),
+    SOPIMUSTUNNISTE ("SOPIMUSTUNNISTE", "sopimustunniste"),
     SOPNUMTEXT ("SOPNUMTEXT", "sopmuntext"),
     KOHDE ("KOHDE", "kohde"),
     KAYTTOTARK ("KAYTTOTARK", "kayttotarkoitus"),
