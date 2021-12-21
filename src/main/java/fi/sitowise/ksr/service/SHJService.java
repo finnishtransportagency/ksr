@@ -168,7 +168,7 @@ public class SHJService {
     private Layer getKayttooikeussopimuksetLayer() {
         Layer layer = layerRepository.getLayerByName("Käyttöoikeussopimukset");
         if (layer == null) {
-            throw new KsrApiException.NotFoundErrorException("Layer not found.");
+            throw new KsrApiException.InternalServerErrorException("Layer not found.");
         }
         return layer;
     }

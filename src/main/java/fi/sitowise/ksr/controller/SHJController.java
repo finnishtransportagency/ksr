@@ -73,6 +73,9 @@ public class SHJController {
         } catch (URISyntaxException e) {
             LOG.error("Could not build url for adding feature by SHJ API.");
             throw new KsrApiException.InternalServerErrorException("Error when trying to create new contract.");
+        } catch (KsrApiException.BadRequestException e) {
+            LOG.error(String.format("Bad request: %s", e.getMessage()), e.getCause());
+            throw new KsrApiException.BadRequestException(String.format("Bad request: %s", e.getMessage()), e);
         } catch (Exception e) {
             LOG.error(String.format("Unexpected error: %s", e.getMessage()), e.getCause());
             throw new KsrApiException.InternalServerErrorException("Unexpected error:", e);
@@ -116,7 +119,14 @@ public class SHJController {
             ));
             return ResponseEntity.badRequest().build();
         } catch (URISyntaxException e) {
+            LOG.error("Could not build url for adding feature by SHJ API.");
             throw new KsrApiException.InternalServerErrorException("Error when trying to update contract.");
+        } catch (KsrApiException.BadRequestException e) {
+            LOG.error(String.format("Bad request: %s", e.getMessage()), e.getCause());
+            throw new KsrApiException.BadRequestException(String.format("Bad request: %s", e.getMessage()), e);
+        } catch (KsrApiException.NotFoundErrorException e) {
+            LOG.error(String.format("Not found: %s", e.getMessage()), e.getCause());
+            throw new KsrApiException.NotFoundErrorException(String.format("Not found: %s", e.getMessage()));
         } catch (Exception e) {
             LOG.error(String.format("Unexpected error: %s", e.getMessage()), e.getCause());
             throw new KsrApiException.InternalServerErrorException("Unexpected error:", e);
