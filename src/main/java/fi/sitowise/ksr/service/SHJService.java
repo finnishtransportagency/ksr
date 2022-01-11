@@ -7,6 +7,7 @@ import fi.sitowise.ksr.domain.esri.Response;
 import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.LayerRepository;
 import fi.sitowise.ksr.utils.shj.KayttooikeussopimusFieldNames;
+import fi.sitowise.ksr.utils.shj.VAYLATYYPPI;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
@@ -167,7 +168,7 @@ public class SHJService {
     private Layer getKayttooikeussopimuksetLayer() {
         Layer layer = layerRepository.getLayerByName("Käyttöoikeussopimukset");
         if (layer == null) {
-            throw new KsrApiException.NotFoundErrorException("Layer not found.");
+            throw new KsrApiException.InternalServerErrorException("Layer not found.");
         }
         return layer;
     }
@@ -217,6 +218,12 @@ public class SHJService {
             if (key.equals(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName(),
+                        attributes.get(key));
+                continue;
+            }
+            if (key.equals(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName())) {
+                retVal.put(
+                        KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName(),
                         attributes.get(key));
                 continue;
             }
@@ -275,9 +282,31 @@ public class SHJService {
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.VAYLATYYPPI.getShjName())) {
-                retVal.put(
-                        KayttooikeussopimusFieldNames.VAYLATYYPPI.getKsrName(),
-                        attributes.get(key));
+                String value = (String) attributes.get(key);
+                if (value != null) {
+                    value = value.toLowerCase();
+                    if (value.equals(VAYLATYYPPI.RATA.getShjName())) {
+                        retVal.put(
+                                KayttooikeussopimusFieldNames.VAYLATYYPPI.getKsrName(),
+                                VAYLATYYPPI.RATA.getKsrName());
+                    } else if (value.equals(VAYLATYYPPI.VESI.getShjName())) {
+                        retVal.put(
+                                KayttooikeussopimusFieldNames.VAYLATYYPPI.getKsrName(),
+                                VAYLATYYPPI.VESI.getKsrName());
+                    } else if (value.equals(VAYLATYYPPI.TIE.getShjName())) {
+                        retVal.put(
+                                KayttooikeussopimusFieldNames.VAYLATYYPPI.getKsrName(),
+                                VAYLATYYPPI.TIE.getKsrName());
+                    } else if (value.equals(VAYLATYYPPI.MUU.getShjName())) {
+                        retVal.put(
+                                KayttooikeussopimusFieldNames.VAYLATYYPPI.getKsrName(),
+                                VAYLATYYPPI.MUU.getKsrName());
+                    }
+                } else {
+                    retVal.put(
+                            KayttooikeussopimusFieldNames.VAYLATYYPPI.getKsrName(),
+                            attributes.get(key));
+                }
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.MUISTIINPANOT.getShjName())) {
@@ -301,7 +330,13 @@ public class SHJService {
                         attributes.get(key));
                 continue;
             }
-            throw new KsrApiException.BadRequestException(String.format("Unidenfied field name %s.", key));
+            if (key.equals(KayttooikeussopimusFieldNames.DNRO.getShjName())) {
+                retVal.put(
+                        KayttooikeussopimusFieldNames.DNRO.getKsrName(),
+                        attributes.get(key));
+                continue;
+            }
+            throw new KsrApiException.BadRequestException(String.format("Unidentified field name %s.", key));
         }
         if (attributes.get(KayttooikeussopimusFieldNames.VIIMEINEN.getKsrName()) == null) {
             retVal.put(
