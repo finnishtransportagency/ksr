@@ -62,6 +62,8 @@ export const mapSelectPopup = async (
     const wmsFeatures = await getFeatureInfo(layerList, x, y, view.extent, view.height, view.width);
     const newResults = [...results, ...wmsFeatures];
 
+    view.popup.foundFeatures = newResults;
+
     if (newResults.length) {
         newResults.forEach((feature) => {
             const selectIntersectAction = {
@@ -83,7 +85,7 @@ export const mapSelectPopup = async (
 
             if (feature.layer) {
                 let matchingLayer: Object = layerList
-                    .find(ll => ll.id === feature.layer.id.replace('.s', ''));
+                    .find(ll => ll.id === feature.layer.id.replace('_s', ''));
 
                 if (feature.layer.featureType === 'shapefile') {
                     const columns = feature.layer.fields.slice(0, 5);
@@ -130,6 +132,14 @@ export const mapSelectPopup = async (
                         actions.push(contractLink);
                     }
                 }
+
+                const featureDetails = {
+                    title: strings.modalSingleFeatureInfo.title,
+                    id: 'feature-data',
+                    className: 'fas fa-list',
+                };
+
+                actions.push(featureDetails);
 
                 const addCopyAction = activeAdminTool
                     && matchingLayer

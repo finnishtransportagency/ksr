@@ -186,7 +186,7 @@ export const highlight = async (
     view: Object,
     selectedFeatures: Array<Object>,
 ) => {
-    const [Query] = await loadModules(['esri/tasks/support/Query']);
+    const [Query] = await loadModules(['esri/rest/support/Query']);
     if (view) {
         const highlightFeatures = (layer: Object, layerView: Object, features: Object[]) => {
             if (layer.layerHighlight) {
@@ -264,9 +264,10 @@ export const drawPropertyArea = async (
     view: Object,
     features: Object[],
 ) => {
-    const [Polygon, Graphic] = await loadModules([
+    const [Polygon, Graphic, TextSymbol] = await loadModules([
         'esri/geometry/Polygon',
         'esri/Graphic',
+        'esri/symbols/TextSymbol',
     ]);
     const createPolygon = vertices => new Polygon({
         rings: vertices,
@@ -288,18 +289,45 @@ export const drawPropertyArea = async (
         propertyId,
     });
 
-    let propertyGraphics = [];
+    const createTextSymbol = (text): any => new TextSymbol({
+        text,
+        color: 'black',
+        haloColor: 'white',
+        haloSize: '1px',
+        font: {
+            size: 10,
+        },
+    });
+
+    const propertyGraphics = [];
+    const propertyLabelGraphics = [];
     features.forEach((property) => {
-        propertyGraphics = property.geometry.coordinates.map((coordinates) => {
-            const geometry = createPolygon(coordinates);
-            const graphic = createPolygonGraphic(
+        const { coordinates } = property.geometry;
+        const { propertyIdentifier } = property.properties;
+
+        coordinates.forEach((coordinate) => {
+            const geometry = createPolygon(coordinate);
+            const propertyGraphic = createPolygonGraphic(
                 geometry,
-                property.properties.propertyIdentifier,
+                propertyIdentifier,
             );
-            view.graphics.add(graphic);
-            return [...propertyGraphics, graphic];
+
+            const { center } = geometry.extent;
+            const propertyLabel = createTextSymbol(propertyIdentifier);
+            const propertyLabelGraphic = new Graphic({
+                geometry: center,
+                symbol: propertyLabel,
+                id: 'propertyAreaLabel',
+            });
+
+            propertyGraphics.push(propertyGraphic);
+            propertyLabelGraphics.push(propertyLabelGraphic);
         });
     });
+
+    view.graphics.addMany(propertyGraphics);
+    view.graphics.addMany(propertyLabelGraphics);
+
     view.goTo(propertyGraphics);
 };
 
@@ -387,35 +415,48 @@ export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
  * @param {Object[]} features Features to zoom to.
  */
 export const zoomToFeatures = async (view: Object, features: Object[]) => {
-    const [Point, Polygon, Polyline] = await loadModules([
+    const [Point, Polygon, Polyline, geometryEngine] = await loadModules([
         'esri/geometry/Point',
         'esri/geometry/Polygon',
         'esri/geometry/Polyline',
+        'esri/geometry/geometryEngine',
     ]);
-    const geometries = features.map((feature) => {
-        if (feature.geometry.x && feature.geometry.y && !feature.geometry.__accessor__) {
-            return new Point({
-                x: feature.geometry.x,
-                y: feature.geometry.y,
-                spatialReference: { wkid: 3067 },
-            });
+
+    const geometries = [];
+    features.forEach((feature) => {
+        if (feature.geometry.x
+            && feature.geometry.y
+            && !geometries.some(f => geometryEngine.equals(f, feature.geometry))) {
+            geometries.push(feature.geometry.__accessor__
+                ? feature.geometry
+                : new Point({
+                    x: feature.geometry.x,
+                    y: feature.geometry.y,
+                    spatialReference: { wkid: 3067 },
+                }));
         }
 
-        if (feature.geometry.rings && !feature.geometry.__accessor__) {
-            return new Polygon({
-                rings: feature.geometry.rings,
-                spatialReference: { wkid: 3067 },
-            });
+        if (feature.geometry.rings
+            && !geometries.some(f => geometryEngine.equals(f, feature.geometry))) {
+            geometries.push(feature.geometry.__accessor__
+                ? feature.geometry
+                : new Polygon({
+                    rings: feature.geometry.rings,
+                    spatialReference: { wkid: 3067 },
+                }));
         }
 
-        if (feature.geometry.paths && !feature.geometry.__accessor__) {
-            return new Polyline({
-                paths: feature.geometry.paths,
-                spatialReference: { wkid: 3067 },
-            });
+        if (feature.geometry.paths
+            && !geometries.some(f => geometryEngine.equals(f, feature.geometry))) {
+            geometries.push(feature.geometry.__accessor__
+                ? feature.geometry
+                : new Polyline({
+                    paths: feature.geometry.paths,
+                    spatialReference: { wkid: 3067 },
+                }));
         }
-        return feature.geometry;
     });
+
     if (geometries && geometries.length === 1 && geometries[0].type === 'point') {
         view.goTo({
             target: geometries,

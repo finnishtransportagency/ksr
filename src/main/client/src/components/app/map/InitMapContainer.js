@@ -8,6 +8,7 @@ import {
     activateLayers,
     deactivateLayer,
     setScale,
+    setActiveTool,
 } from '../../../reducers/map/actions';
 import { setActiveModal } from '../../../reducers/modal/actions';
 import { setPropertyInfo } from '../../../reducers/search/actions';
@@ -111,6 +112,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setActiveNav: (selectedNav) => {
         dispatch(setActiveNav(selectedNav));
+    },
+    setActiveTool: (active) => {
+        dispatch(setActiveTool(active));
     },
 });
 

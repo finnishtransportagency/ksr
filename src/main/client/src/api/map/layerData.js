@@ -11,7 +11,7 @@ import { config } from '../config';
  * @returns {Promise<Object>} All data found from layer that will be passed to layer list.
  */
 export const layerData = (layerId: string): Promise<Object> => (
-    fetch(`api/proxy/layer/${layerId.replace('.s', '')}?${
+    fetch(`api/proxy/layer/${layerId.replace('_s', '')}?${
         querystring.stringify({
             f: 'pjson',
         })

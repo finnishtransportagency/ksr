@@ -60,6 +60,7 @@ type Props = {
     deactivateLayer: (layerId: string) => void,
     setScale: number => void,
     setActiveNav: (selectedNav: string) => void,
+    setActiveTool: (active: string) => void,
 };
 
 class EsriMap extends Component<Props> {
@@ -80,7 +81,7 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        loadCss('4.18');
+        loadCss('4.21');
 
         const [
             MapView,
@@ -274,36 +275,34 @@ class EsriMap extends Component<Props> {
             }
         }
 
-        overview.when(() => {
-            view.when(() => {
-                // Change compass widgets default dial icon to compass icon.
-                const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
-                compassIcon.classList.remove('esri-icon-dial');
-                compassIcon.classList.add('esri-icon-compass');
+        view.when(() => {
+            // Change compass widgets default dial icon to compass icon.
+            const compassIcon = document.getElementsByClassName('esri-icon-dial')[0];
+            compassIcon.classList.remove('esri-icon-dial');
+            compassIcon.classList.add('esri-icon-compass');
 
-                const extentgraphic = new Graphic({
-                    geometry: null,
-                    symbol: {
-                        type: 'simple-fill',
-                        color: extentGraphic,
-                        outline: null,
-                    },
-                });
-                overview.graphics.add(extentgraphic);
+            const extentgraphic = new Graphic({
+                geometry: null,
+                symbol: {
+                    type: 'simple-fill',
+                    color: extentGraphic,
+                    outline: null,
+                },
+            });
+            overview.graphics.add(extentgraphic);
 
-                // Get the new extent of the view only when view is stationary.
-                watchUtils.whenTrue(view, 'stationary', () => {
-                    if (view.extent) {
-                        overview.goTo({
-                            center: view.center,
-                            scale:
+            // Get the new extent of the view only when view is stationary.
+            watchUtils.whenTrue(view, 'stationary', () => {
+                if (view.extent) {
+                    overview.goTo({
+                        center: view.center,
+                        scale:
                                 view.scale
                                 * 100,
-                        });
+                    });
 
-                        extentgraphic.geometry = view.extent;
-                    }
-                });
+                    extentgraphic.geometry = view.extent;
+                }
             });
         });
 
@@ -338,7 +337,7 @@ class EsriMap extends Component<Props> {
         view.on('click', (event) => {
             view.popup.close();
             view.hitTest(event).then(async (response) => {
-                const { activeTool, setHasGraphics } = this.props;
+                const { activeTool, setHasGraphics, setActiveTool } = this.props;
                 const { results } = response;
 
                 if (activeTool === 'drawErase' && results.length) {
@@ -352,6 +351,9 @@ class EsriMap extends Component<Props> {
                                 && view.graphics
                                 && view.graphics.filter(g => g.type === 'draw-graphic').length > 0;
                             setHasGraphics(hasGraphics);
+                            if (!hasGraphics) {
+                                setActiveTool('');
+                            }
                         }
                     });
                 } else if (!results.some(item => item.graphic.type === 'draw-graphic')) {
@@ -421,7 +423,7 @@ class EsriMap extends Component<Props> {
                 selectedFeature,
                 ['layer', 'id'],
             );
-            const layer = layerList.find(ll => layerId && layerId.replace('.s', '') === ll.id);
+            const layer = layerList.find(ll => layerId && layerId.replace('_s', '') === ll.id);
 
 
             const copySelectedFeature = async (activeFeatureMode: string) => {
@@ -506,6 +508,19 @@ class EsriMap extends Component<Props> {
                         }
                     }
                     break;
+                case 'feature-data': {
+                    const attributeData = view.popup.foundFeatures
+                        .find(feature => feature.layer.id === layer.id).attributes;
+
+                    const modalData = {
+                        layerId: layer.id,
+                        attributeData,
+                        fromSource: 'map',
+                    };
+
+                    setActiveModal('singleFeatureInfo', modalData);
+                    break;
+                }
                 case 'copy-feature':
                     await copySelectedFeature('create');
                     break;

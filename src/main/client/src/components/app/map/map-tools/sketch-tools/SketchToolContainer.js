@@ -7,7 +7,7 @@ import {
     setActiveFeatureMode,
 } from '../../../../../reducers/map/actions';
 import { setPropertyInfo } from '../../../../../reducers/search/actions';
-import { selectFeatures, sketchSaveData } from '../../../../../reducers/table/actions';
+import { addFeatureNoGeometry, selectFeatures, sketchSaveData } from '../../../../../reducers/table/actions';
 import SketchTool from './SketchTool';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 
@@ -57,6 +57,9 @@ const mapDispatchToProps = dispatch => ({
     },
     sketchSaveData: (view, editedLayers, featureType, addressField, hasTableEdited) => {
         dispatch(sketchSaveData(view, editedLayers, featureType, addressField, hasTableEdited));
+    },
+    resetFeatureNoGeometry: () => {
+        dispatch(addFeatureNoGeometry());
     },
 });
 

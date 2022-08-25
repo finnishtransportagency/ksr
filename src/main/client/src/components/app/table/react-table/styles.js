@@ -187,8 +187,16 @@ export const WrapperReactTable = styled.div`
             cursor: pointer;
         };
         
-        .contract-icon:hover {
+        .contract-icon.disabled {
+            cursor: not-allowed;
+        };
+        
+        .contract-icon:not(.disabled):hover {
             color: ${styles.colorMain};
+        }
+        
+        .contract-icon.disabled {
+            color: ${styles.colorFontDisabled};
         }
         
         .contract-icon:focus {

@@ -58,6 +58,8 @@ const FeatureDetailsForm = (props: Props) => {
                     || !field.editable
                     || field.name === layer.updaterField
                     || field.name === 'CONTRACT_UUID'
+                    || (layer.editableColumnsList.length
+                        && !layer.editableColumnsList.includes(field.name))
                     || (layer.contractIdField !== relationColumnOut
                         && relationColumnOut === field.name)
                     || (formType === 'edit'

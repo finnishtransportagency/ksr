@@ -151,7 +151,7 @@ describe('loadWorkspace', () => {
                 visible: false,
             },
             {
-                id: '123.s',
+                id: '123_s',
                 opacity: 0.3,
                 layerOrder: 2,
                 visible: false,
@@ -183,7 +183,7 @@ describe('loadWorkspace', () => {
                 layerOrder: 2,
             },
             {
-                id: '123.s',
+                id: '123_s',
                 visible: false,
                 active: false,
                 opacity: 1,
@@ -252,7 +252,7 @@ describe('loadWorkspace', () => {
                 visible: false,
             },
             {
-                id: '123.s',
+                id: '123_s',
                 opacity: 0.3,
                 layerOrder: 2,
                 visible: false,
@@ -269,7 +269,7 @@ describe('loadWorkspace', () => {
                 visible: true,
                 definitionExpression: 'Search query',
                 layer: {
-                    id: '123.s',
+                    id: '123_s',
                     layerOrder: 2,
                     opacity: 0.3,
                     visible: false,

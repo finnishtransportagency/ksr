@@ -20,13 +20,4 @@ describe('actions', () => {
 
         expect(actions.setMapDrawText('Should return this text')).toEqual(expectedAction);
     });
-
-    it('setScale - should return correct redux-action', () => {
-        const expectedAction = {
-            type: types.SET_SCALE,
-            mapScale: 123456,
-        };
-
-        expect(actions.setScale(123456)).toEqual(expectedAction);
-    });
 });

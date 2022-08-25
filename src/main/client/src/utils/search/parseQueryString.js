@@ -99,7 +99,7 @@ export const parseQueryString = (
                     queryString.push(`${name} ${queryExpression} ${queryText.trim()}`);
                 }
             } else if (queryDate.trim().length > 0) {
-                queryString.push(`${name} = DATE '${queryDate.trim()}'`);
+                queryString.push(`CAST(SUBSTRING(${name},0,10) AS DATE) = DATE '${queryDate.trim()}'`);
             } else {
                 const text = queryExpression === 'LIKE' || queryExpression === 'NOT LIKE'
                     ? `'%${queryText.trim().replace(/'/g, "''")}%'`

@@ -78,6 +78,7 @@ public class Layer implements Serializable {
     private List<String> requiredUniqueFields;
     private List<Relation> relations;
     private boolean wmsLegend;
+    private List<String> editableColumns;
 
     /**
      * Construct a Layer.
@@ -122,6 +123,7 @@ public class Layer implements Serializable {
         this.setPropertyIdField(lr.getPropertyIdField());
         this.setRequiredUniqueFieldsCustom(lr.getRequiredUniqueFields());
         this.setWmsLegend(lr.getWmsLegend());
+        this.setEditableColumnsCustom(lr.getEditableColumns());
 
         if (lpr != null) {
             this.setLayerPermission(new LayerPermission(lpr));
@@ -970,6 +972,47 @@ public class Layer implements Serializable {
      */
     public void setWmsLegend(String wmsLegend) {
         this.wmsLegend = "1".equals(wmsLegend);
+    }
+
+    /**
+     * Get editable columns as string list.
+     * @return
+     */
+    public List<String> getEditableColumnsList() {
+        return editableColumns;
+    }
+
+    /**
+     * Set value to editableColumns.
+     * @param editableColumns
+     */
+    public void setEditableColumns(List<String> editableColumns) {
+        this.editableColumns = editableColumns;
+    }
+
+    /**
+     * @return editable columns as QueryColumnTypeRecord
+     */
+    @JsonIgnore
+    public QueryColumnTypeRecord getEditableColumnsCustom() {
+        if (editableColumns != null) {
+            QueryColumnTypeRecord qRecord = new QueryColumnTypeRecord();
+            qRecord.addAll(editableColumns);
+            return qRecord;
+        }
+        return null;
+    }
+
+    /**
+     * Set value to editableColumns and empty list if input parameter is null.
+     * @param editableColumns
+     */
+    public void setEditableColumnsCustom(List<String> editableColumns) {
+        if (editableColumns == null) {
+            this.editableColumns = Collections.emptyList();
+        } else {
+            this.editableColumns = new ArrayList<>(editableColumns);
+        }
     }
 
     /**
