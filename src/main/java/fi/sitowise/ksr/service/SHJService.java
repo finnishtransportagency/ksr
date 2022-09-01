@@ -51,14 +51,14 @@ public class SHJService {
     public boolean addFeature (Map<String, Object> attributes) throws URISyntaxException, IOException {
         Layer layer = getKayttooikeussopimuksetLayer();
         Map<String, Object> fields = convertNamesShjToKsr(attributes);
-        String sopnum = (String) fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName());
+        String sopimustunniste = (String) fields.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName());
 
-        if (sopnum == null) {
+        if (sopimustunniste == null) {
             throw new KsrApiException.BadRequestException(String.format("Required value %s is missing.",
-                    KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName()));
+                    KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName()));
         }
 
-        Optional<String> getFeaturesUrl = layer.getGetFeaturesUrl("SOPIMUSNUM", sopnum);
+        Optional<String> getFeaturesUrl = layer.getGetFeaturesUrl(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName(), sopimustunniste);
         if (!getFeaturesUrl.isPresent()) {
             throw new KsrApiException.InternalServerErrorException("Unexpected error occurred.");
         }
@@ -70,7 +70,7 @@ public class SHJService {
             throw new KsrApiException.BadRequestException(
                     String.format(
                             "Contract identifier %s already exists.",
-                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName()).toString()
+                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName()).toString()
                     ));
         }
 
@@ -95,13 +95,13 @@ public class SHJService {
         Layer layer = getKayttooikeussopimuksetLayer();
         Map<String, Object> fields = convertNamesShjToKsr(attributes);
 
-        String sopnum = (String) fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName());
-        if (sopnum == null) {
+        String sopimustunniste = (String) fields.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName());
+        if (sopimustunniste == null) {
             throw new KsrApiException.BadRequestException(String.format("Required value %s is missing.",
-                    KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName()));
+                    KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName()));
         }
 
-        Optional<String> getFeaturesUrl = layer.getGetFeaturesUrl("SOPIMUSNUM", sopnum);
+        Optional<String> getFeaturesUrl = layer.getGetFeaturesUrl(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName(), sopimustunniste);
         if (!getFeaturesUrl.isPresent()) {
             throw new KsrApiException.InternalServerErrorException(
                     "Failed to build url for updating contract data.");
@@ -114,14 +114,14 @@ public class SHJService {
         if (response.getFeatures().size() == 0) {
             throw new KsrApiException.NotFoundErrorException(
                     String.format(
-                            "Contract with contract number %s not found. Could not update.",
-                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName()).toString()
+                            "Contract with contract identifier %s not found. Could not update.",
+                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName()).toString()
                     ));
         } else if (response.getFeatures().size() > 1) {
             throw new KsrApiException.InternalServerErrorException(
                     String.format(
-                            "More than one contract found with contract number %s.",
-                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName()).toString()
+                            "More than one contract found with contract identifier %s.",
+                            fields.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName()).toString()
                     ));
         } else {
             String objectIdField = response.getObjectIdFieldName();
