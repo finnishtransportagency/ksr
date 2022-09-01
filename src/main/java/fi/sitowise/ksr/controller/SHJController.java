@@ -39,7 +39,8 @@ public class SHJController {
             @ApiImplicitParam(
                     name = "attributes",
                     value = "Object with following allowed properties\n\n" +
-                            "sopimustunniste: Integer, required \n" +
+                            "sopimusnumero: String" +
+                            "sopimustunniste: String, required \n" +
                             "kohde: String,\n" +
                             "kayttotarkoitus: String,\n" +
                             "saantotapa: Integer,\n" +
@@ -51,7 +52,8 @@ public class SHJController {
                             "liikennemuoto: String\n" +
                             "lisatiedot: String,\n" +
                             "muokkausaika: String, format=YYYY-MM-DD,\n" +
-                            "muokkaaja: String.",
+                            "muokkaaja: String,\n" +
+                            "diaarinumero: String.",
                     required = true,
                     paramType = "body"),
     })
@@ -60,14 +62,14 @@ public class SHJController {
         try {
             if (shjService.addFeature(attributes)) {
                 LOG.info(String.format(
-                        "Contract with contract number %s added by using SHJ API.",
-                        attributes.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())
+                        "Contract with contract identifier %s added by using SHJ API.",
+                        attributes.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName())
                 ));
                 return ResponseEntity.ok().build();
             }
             LOG.info(String.format(
-                    "Could not add a new contract with contract number %s by using SHJ API.",
-                    attributes.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())
+                    "Could not add a new contract with contract identifier %s by using SHJ API.",
+                    attributes.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName())
             ));
             return ResponseEntity.badRequest().build();
         } catch (URISyntaxException e) {
@@ -87,7 +89,8 @@ public class SHJController {
             @ApiImplicitParam(
                     name = "attributes",
                     value = "Object with following allowed properties\n\n" +
-                            "sopimustunniste: Integer, required \n" +
+                            "sopimusnumero: String" +
+                            "sopimustunniste: String, required \n" +
                             "kohde: String,\n" +
                             "kayttotarkoitus: String,\n" +
                             "saantotapa: Integer,\n" +
@@ -99,7 +102,8 @@ public class SHJController {
                             "liikennemuoto: String\n" +
                             "lisatiedot: String,\n" +
                             "muokkausaika: String, format=YYYY-MM-DD,\n" +
-                            "muokkaaja: String.",
+                            "muokkaaja: String,\n" +
+                            "diaarinumero: String.",
                     required = true,
                     paramType = "body"),
     })
@@ -108,14 +112,14 @@ public class SHJController {
         try {
             if (shjService.updateFeature(attributes)) {
                 LOG.info(String.format(
-                        "Successfully updated contract with contract number %s by using SHJ API.",
-                        attributes.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())
+                        "Successfully updated contract with contract identifier %s by using SHJ API.",
+                        attributes.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName())
                 ));
                 return ResponseEntity.ok().build();
             }
             LOG.info(String.format(
-                    "Could not update contract with contract number %s by using SHJ API.",
-                    attributes.get(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())
+                    "Could not update contract with contract identifier %s by using SHJ API.",
+                    attributes.get(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName())
             ));
             return ResponseEntity.badRequest().build();
         } catch (URISyntaxException e) {
