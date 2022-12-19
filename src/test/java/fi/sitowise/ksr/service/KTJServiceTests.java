@@ -82,7 +82,7 @@ public class KTJServiceTests {
                 "<ogc:Intersects>" +
                 "<ogc:PropertyName>ktjkiiwfs:rekisteriyksikonPalstanTietoja/ktjkiiwfs:RekisteriyksikonPalstanTietoja/ktjkiiwfs:sijainti</ogc:PropertyName>" +
                 "<gml:Point>" +
-                "<gml:pos>123.400000 432.200000</gml:pos>" +
+                "<gml:pos>123,400000 432,200000</gml:pos>" +
                 "</gml:Point>" +
                 "</ogc:Intersects>" +
                 "</ogc:Filter>" +

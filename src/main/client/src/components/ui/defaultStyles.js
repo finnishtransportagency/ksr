@@ -5,6 +5,7 @@ export const colorMain = '#00b0f5';
 export const colorMainLight = '#49c2f1';
 export const colorMainDark = '#009ae1';
 
+
 export const colorFontDark = '#444444';
 export const colorFontLight = '#F1F1F1';
 export const colorFontDisabled = '#97999B';
@@ -39,6 +40,7 @@ export const GlobalStyle = createGlobalStyle`
         font-family: 'Exo 2', Arial, sans-serif;
         font-weight: 400;
         font-size: 16px;
+      
         background: ${colorBackgroundLight};
         color: ${colorFontDark};
         

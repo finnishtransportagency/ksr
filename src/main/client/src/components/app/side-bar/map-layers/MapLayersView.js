@@ -50,6 +50,7 @@ const MapLayersView = ({
     <Fragment>
         <SideBar.Header>
             <H1>{strings.mapLayers.title}</H1>
+
             <ToggleButtonWrapper>
                 <ToggleButton
                     tabIndex="0"

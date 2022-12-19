@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components';
 import { Button } from '../../../ui/elements';
 
+
+
 export const ButtonLayerNav = styled(Button)`
     width: 50%;
     border-bottom: 5px solid transparent;
@@ -39,6 +41,7 @@ export const LayerFilterWrapper = styled.div`
 
 export const ToggleButtonWrapper = styled.div`
     text-align: right;
+    background: #4cd964;
 `;
 
 export const ToggleButton = styled.div`

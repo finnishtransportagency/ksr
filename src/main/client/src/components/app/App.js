@@ -4,12 +4,13 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import HomeContainer from './home/HomeContainer';
 import { GlobalStyle } from '../ui/defaultStyles';
+import '../../global.css';
 
 const App = ({ store }: any) => (
     <Provider store={store}>
         <Fragment>
-            <GlobalStyle />
-            {/* $FlowFixMe */}
+          <GlobalStyle />
+          {/* $FlowFixMe */}
             <Router basename={`${process.env.PUBLIC_URL}`}>
                 <Switch>
                     <Route path="/" component={HomeContainer} />

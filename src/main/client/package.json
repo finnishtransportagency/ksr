@@ -42,6 +42,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "legacyStart": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build && jest -u",
     "test": "jest",
     "eject": "react-scripts eject",
