@@ -26,6 +26,7 @@ const FeatureDetailsForm = (props: Props) => {
     const [requiredFields, setRequiredFields] = useState([]);
     const [requiredUniqueFields, setRequiredUniqueFields] = useState([]);
     const [validForm, setValidForm] = useState(false);
+    const [customValidatorsCheck, setCustomValidatorsCheck] = useState(true);
 
     /**
      * Gets form fields for the layer when component mounts.
@@ -73,6 +74,21 @@ const FeatureDetailsForm = (props: Props) => {
                     };
                 }
                 return field;
+            })
+            .map((field) => {
+                if (field.type === 'esriFieldTypeInteger') {
+                    return {
+                        ...field,
+                        max: 999999999,
+                    };
+                }
+                if (field.type === 'esriFieldTypeSmallInteger') {
+                    return {
+                        ...field,
+                        max: 9999,
+                    };
+                }
+                return field;
             });
 
         setFields(foundFields);
@@ -117,8 +133,8 @@ const FeatureDetailsForm = (props: Props) => {
                     ? { ...editedFields, [objectIdField.name]: objectIdField.data }
                     : { ...editedFields },
                 submitDisabled: formType === 'edit'
-                    ? (!Object.entries(editedFields).length || !validForm)
-                    : !validForm,
+                    ? (!Object.entries(editedFields).length || !validForm) || !customValidatorsCheck
+                    : !validForm || !customValidatorsCheck,
             });
         }
     }, [fields, validForm]);
@@ -159,6 +175,13 @@ const FeatureDetailsForm = (props: Props) => {
             data: f.name === name ? value : f.data,
             edited: fieldEdited(f, name, existingAttributes, value),
         })));
+
+        setCustomValidatorsCheck(!fields.some((f) => {
+            const tempField = f.name === field.name ? field : f;
+            return ['esriFieldTypeInteger', 'esriFieldTypeSmallInteger'].includes(tempField.type)
+                && tempField.max !== undefined
+                && Number(value) > tempField.max;
+        }));
 
         if (!field.nullable) {
             if (field.unique) {
