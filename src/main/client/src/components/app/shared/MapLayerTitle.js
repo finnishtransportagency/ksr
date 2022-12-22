@@ -41,7 +41,7 @@ const MapLayerTitle = ({ layer, showLayerGroup, childLayer }: Props) => {
                         </Icon>
                     )
                 }
-                <Text>
+                <Text title={layer.name ? layer.name : layer.title}>
                     <span>{layer.name ? layer.name : layer.title}</span>
                 </Text>
             </MapLayerTitleWrapper>
@@ -49,7 +49,7 @@ const MapLayerTitle = ({ layer, showLayerGroup, childLayer }: Props) => {
                 showLayerGroup
                 && (
                     <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup childLayer>
-                        <Text>
+                        <Text  title={layer.layerGroupName}>
                             <span>{layer.layerGroupName}</span>
                         </Text>
                     </MapLayerTitleWrapper>

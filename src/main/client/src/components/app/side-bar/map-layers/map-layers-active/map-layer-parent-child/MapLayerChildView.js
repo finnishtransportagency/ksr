@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
@@ -34,78 +34,90 @@ const MapLayerChildView = ({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) => (
-    <LayerSettings
+}: Props) => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (loadingLayers && loadingLayers.some(ll => ll === layer.id)) {
+            setIsLoading(true);
+        } else if (isLoading) {
+            setIsLoading(false)
+        }
+    }, [loadingLayers]);
+
+    return (
+      <LayerSettings
         childLayer
         toggledHidden={
-            !layer.visible
-            || (mapScale && !layerViewable(layer, mapScale))
+          !layer.visible
+          || (mapScale && !layerViewable(layer, mapScale))
         }
-    >
-        <LayerSettings.Content childLayer>
-            <MapLayerToggle
+      >
+          <LayerSettings.Content childLayer>
+              <MapLayerToggle
                 layer={layer}
                 mapScale={mapScale}
                 toggleLayer={toggleLayer}
                 childLayer
                 toggleVisibleZoomOut={toggleVisibleZoomOut}
                 layersViewableZoomOut={layersVisibleZoomOut}
-            />
-            <LayerSettings.ContentMain childLayer>
-                <LayerSettings.ContentTop>
-                    <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
-                        <MapLayerTitle layer={layer} childLayer />
-                    </LayerSettings.Title>
-                    {
+              />
+              <LayerSettings.ContentMain childLayer>
+                  <LayerSettings.ContentTop>
+                      <LayerSettings.Title>
+                          <MapLayerTitle layer={layer} childLayer />
+                      </LayerSettings.Title>
+                      {isLoading &&
                         <LayerSettings.Icons>
                             <LayerSettings.Loading>
                                 {
-                                    loadingLayers && loadingLayers.some(ll => ll === layer.id)
-                                    && <LoadingIcon size={6} loading />
+                                  isLoading
+                                  && <LoadingIcon size={6} loading />
                                 }
                             </LayerSettings.Loading>
                         </LayerSettings.Icons>
-                    }
-                    {
+                      }
+                      {
                         layer.type === 'agfs'
                         && (
-                            <LayerSettings.Icons>
-                                <LayerSettings.Icon
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyPress={() => populateTable(layer)}
-                                    onClick={() => populateTable(layer)}
-                                    className="fas fa-align-justify"
-                                    title={strings.mapLayerSettings.showAllFeatures}
-                                />
-                            </LayerSettings.Icons>
-                        )
-                    }
-                    <LayerSettings.Icons>
-                        {themeLayerFields(layer).length > 0 && (
-                            <LayerSettings.Icon
+                          <LayerSettings.Icons>
+                              <LayerSettings.Icon
                                 role="button"
                                 tabIndex={0}
-                                onKeyPress={() => createThemeLayer(layer.id)}
-                                onClick={() => createThemeLayer(layer.id)}
-                                className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
-                                title={strings.mapLayerSettings.createThemeLayer}
+                                onKeyPress={() => populateTable(layer)}
+                                onClick={() => populateTable(layer)}
+                                className="fas fa-align-justify"
+                                title={strings.mapLayerSettings.showAllFeatures}
+                              />
+                          </LayerSettings.Icons>
+                        )
+                      }
+                      <LayerSettings.Icons>
+                          {themeLayerFields(layer).length > 0 && (
+                            <LayerSettings.Icon
+                              role="button"
+                              tabIndex={0}
+                              onKeyPress={() => createThemeLayer(layer.id)}
+                              onClick={() => createThemeLayer(layer.id)}
+                              className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
+                              title={strings.mapLayerSettings.createThemeLayer}
                             />
-                        )}
-                    </LayerSettings.Icons>
-                </LayerSettings.ContentTop>
-                <LayerSettings.Slider>
-                    <Slider
+                          )}
+                      </LayerSettings.Icons>
+                  </LayerSettings.ContentTop>
+                  <LayerSettings.Slider>
+                      <Slider
                         min={0}
                         max={1}
                         step={0.01}
                         defaultValue={layer.opacity}
                         onChange={evt => onOpacityChange(evt, layer.id)}
-                    />
-                </LayerSettings.Slider>
-            </LayerSettings.ContentMain>
-        </LayerSettings.Content>
-    </LayerSettings>
-);
+                      />
+                  </LayerSettings.Slider>
+              </LayerSettings.ContentMain>
+          </LayerSettings.Content>
+      </LayerSettings>
+    );
+}
 
 export default MapLayerChildView;

@@ -51,7 +51,7 @@ const MapLayerParentChildView = ({
                 <LayerSettings.Content>
                     <LayerSettings.ContentMain>
                         <LayerSettings.ContentTop>
-                            <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
+                            <LayerSettings.Title>
                                 <MapLayerTitle layer={layer} showLayerGroup />
                             </LayerSettings.Title>
                             {
