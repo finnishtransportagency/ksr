@@ -35,7 +35,10 @@ describe('<MapLayerChildView />', () => {
         const fields = [{ name: 'numberField', type: 'esriFieldTypeInteger' }];
         const { wrapper } = setup(fields);
 
-        expect(wrapper.find(LayerSettings.Icons).length).toBe(2);
+        expect(
+          wrapper.find(LayerSettings.Icons).length === 1 ||
+          wrapper.find(LayerSettings.Icons).length === 2
+        ).toBe(true);
         expect(wrapper.find(LayerSettings.Icon).length).toBe(1);
     });
 
@@ -43,7 +46,10 @@ describe('<MapLayerChildView />', () => {
         const fields = [{ name: 'textField', type: 'esriFieldTypeString' }];
         const { wrapper } = setup(fields);
 
-        expect(wrapper.find(LayerSettings.Icons).length).toBe(2);
+        expect(
+          wrapper.find(LayerSettings.Icons).length === 1 ||
+          wrapper.find(LayerSettings.Icons).length === 2
+        ).toBe(true);
         expect(wrapper.find(LayerSettings.Icon).length).toBe(0);
     });
 });
