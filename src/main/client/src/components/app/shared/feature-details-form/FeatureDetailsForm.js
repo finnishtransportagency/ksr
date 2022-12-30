@@ -80,12 +80,14 @@ const FeatureDetailsForm = (props: Props) => {
                     return {
                         ...field,
                         max: 999999999,
+                        min: 0,
                     };
                 }
                 if (field.type === 'esriFieldTypeSmallInteger') {
                     return {
                         ...field,
                         max: 9999,
+                        min: 0,
                     };
                 }
                 return field;
@@ -179,8 +181,10 @@ const FeatureDetailsForm = (props: Props) => {
         setCustomValidatorsCheck(!fields.some((f) => {
             const tempField = f.name === field.name ? field : f;
             return ['esriFieldTypeInteger', 'esriFieldTypeSmallInteger'].includes(tempField.type)
-                && tempField.max !== undefined
-                && Number(value) > tempField.max;
+                && ((tempField.max !== undefined
+                && Number(value) > tempField.max)
+                || (tempField.min !== undefined
+                        && Number(value) < tempField.min));
         }));
 
         if (!field.nullable) {
