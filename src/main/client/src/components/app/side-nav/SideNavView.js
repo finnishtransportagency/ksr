@@ -5,6 +5,7 @@ import strings from '../../../translations';
 import SideBarSubContainer from '../side-bar/SideBarSubContainer';
 import HelpModalContainer from '../side-bar/helpmodal/HelpModalContainer';
 import HelpModal from '../side-bar/helpmodal/HelpModal';
+import CloseButtonContainer from '../side-bar/helpmodal/CloseButtonContainer';
 
 type Props = {
     setActiveNav: (string) => void,
@@ -61,9 +62,9 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => {
                       }}
                       >
                           <SideNav.Link
-                              title="kysyttävää?"
+                              title={strings.helpModal.hoverTitle}
                               active={false}
-                              onClick={() => { setShowHelpModal(true); }}
+                              onClick={() => { setShowHelpModal(!showHelpModal); }}
                           >
                               <i className="fas fa-question" />
                           </SideNav.Link>
@@ -76,11 +77,14 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => {
           {showHelpModal
 
           && (
-              <HelpModalContainer>
+              <HelpModalContainer onClick={() => setShowHelpModal(false)}>
                   <HelpModal>
-
-
-                  Tähän tulee sähköpostiosoite ja teksti.
+                      {strings.helpModal.text}
+                      {' '}
+                      <a href={`mailto:${strings.helpModal.email}`}>{strings.helpModal.email}</a>
+                      <CloseButtonContainer onClick={() => setShowHelpModal(false)}>
+                          <i className="far fa-window-close" />
+                      </CloseButtonContainer>
                   </HelpModal>
               </HelpModalContainer>
           )
