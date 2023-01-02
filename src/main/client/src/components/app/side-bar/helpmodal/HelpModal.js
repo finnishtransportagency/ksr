@@ -7,6 +7,7 @@ const HelpModal = styled.div`
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   color: ${styles.colorBackgroundLight};
   position: relative;
+  z-index: 9999;
   
   a {
     color: ${styles.colorBackgroundLight};
