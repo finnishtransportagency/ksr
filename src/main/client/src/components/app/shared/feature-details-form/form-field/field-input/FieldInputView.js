@@ -58,6 +58,8 @@ const FieldInputView = ({
             maxLength={field.length}
             required={!field.nullable}
             disabled={disabled}
+            max={field.max}
+            min={field.min}
         />
     );
 };

@@ -163,7 +163,11 @@ export const preventKeyPress = (e: Object, cellField: Object) => {
     switch (cellField.type) {
         case 'esriFieldTypeInteger':
         case 'esriFieldTypeSmallInteger':
-            if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' ') {
+            if (Number.isNaN(parseInt(e.key, 10)) || e.key === ' '
+            || (cellField.type === 'esriFieldTypeInteger'
+                    && e.target.innerText.length >= 9)
+            || (cellField.type === 'esriFieldTypeSmallInteger'
+                    && e.target.innerText.length >= 4)) {
                 return e.preventDefault();
             }
             break;
