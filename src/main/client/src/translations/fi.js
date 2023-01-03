@@ -495,6 +495,11 @@ const fi = {
         title: 'Kohteen ominaisuustiedot',
         cancel: 'Peruuta',
     },
+    helpModal: {
+        hoverTitle: 'Ota yhteyttä',
+        text: 'Tukipalvelun yhteystiedot: ',
+        email: 'ksr-tuki@vayla.fi',
+    },
 };
 
 export default fi;

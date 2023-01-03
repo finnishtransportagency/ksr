@@ -20,6 +20,11 @@ const Link = styled.div`
     ${props => props.active && css`
         border-left: 5px solid ${styles.colorMain};
     `};
+
+    @media only screen and (max-width: 420px) {
+        height: 60px;
+        width: 50px;
+    }
     
     @media only screen and (max-width: 768px) {
         border-left: none;
