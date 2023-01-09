@@ -8,6 +8,7 @@ import fi.sitowise.ksr.exceptions.KsrApiException;
 import fi.sitowise.ksr.repository.LayerRepository;
 import fi.sitowise.ksr.utils.shj.KayttooikeussopimusFieldNames;
 import fi.sitowise.ksr.utils.shj.VAYLATYYPPI;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
@@ -218,25 +219,25 @@ public class SHJService {
             if (key.equals(KayttooikeussopimusFieldNames.SOPIMUSNUM.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.SOPIMUSNUM.getKsrName(),
-                        attributes.get(key));
+                        StringUtils.substring((String) attributes.get(key), 0, 20));
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.SOPIMUSTUNNISTE.getKsrName(),
-                        attributes.get(key));
+                        StringUtils.substring((String) attributes.get(key), 0, 50));
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.KOHDE.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.KOHDE.getKsrName(),
-                        attributes.get(key));
+                        StringUtils.substring((String) attributes.get(key), 0, 254));
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.KAYTTOTARK.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.KAYTTOTARK.getKsrName(),
-                        attributes.get(key));
+                        StringUtils.substring((String) attributes.get(key), 0, 30));
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.SAANTOTAPA.getShjName())) {
@@ -312,7 +313,7 @@ public class SHJService {
             if (key.equals(KayttooikeussopimusFieldNames.MUISTIINPANOT.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.MUISTIINPANOT.getKsrName(),
-                        attributes.get(key));
+                        StringUtils.substring((String) attributes.get(key), 0, 4000));
                 continue;
             }
             if (key.equals(KayttooikeussopimusFieldNames.VIIMEINEN.getShjName())) {
@@ -333,7 +334,31 @@ public class SHJService {
             if (key.equals(KayttooikeussopimusFieldNames.DNRO.getShjName())) {
                 retVal.put(
                         KayttooikeussopimusFieldNames.DNRO.getKsrName(),
-                        attributes.get(key));
+                        StringUtils.substring((String) attributes.get(key), 0, 50));
+                continue;
+            }
+            if (key.equals(KayttooikeussopimusFieldNames.KUNTA.getShjName())) {
+                retVal.put(
+                        KayttooikeussopimusFieldNames.KUNTA.getKsrName(),
+                        StringUtils.substring((String) attributes.get(key), 0, 50));
+                continue;
+            }
+            if (key.equals(KayttooikeussopimusFieldNames.ALUE.getShjName())) {
+                retVal.put(
+                        KayttooikeussopimusFieldNames.ALUE.getKsrName(),
+                        StringUtils.substring((String) attributes.get(key), 0, 50));
+                continue;
+            }
+            if (key.equals(KayttooikeussopimusFieldNames.OSAPUOLI_A.getShjName())) {
+                retVal.put(
+                        KayttooikeussopimusFieldNames.OSAPUOLI_A.getKsrName(),
+                        StringUtils.substring((String) attributes.get(key), 0, 50));
+                continue;
+            }
+            if (key.equals(KayttooikeussopimusFieldNames.OSAPUOLI_B.getShjName())) {
+                retVal.put(
+                        KayttooikeussopimusFieldNames.OSAPUOLI_B.getKsrName(),
+                        StringUtils.substring((String) attributes.get(key), 0, 50));
                 continue;
             }
             throw new KsrApiException.BadRequestException(String.format("Unidentified field name %s.", key));
