@@ -1,7 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
 import MediaQuery from 'react-responsive';
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import strings from '../../../../translations';
 import SideBar from '../../../ui/blocks/SideBar';
 import { H1, TextInput } from '../../../ui/elements';

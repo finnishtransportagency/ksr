@@ -1,7 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
-import 'react-select/dist/react-select.css';
+import { Scrollbars } from 'react-custom-scrollbars-2';
+//import 'react-select/dist/react-select.css';
 import strings from '../../../../../translations';
 import { TextInput, Button } from '../../../../ui/elements';
 import Property from '../../../../ui/blocks/Property';

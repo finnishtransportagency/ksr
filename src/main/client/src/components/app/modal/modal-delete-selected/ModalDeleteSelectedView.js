@@ -1,6 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import strings from '../../../../translations';
 import { TextArea, FilteredDataTable } from './styles';
 

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import 'react-select/dist/react-select.css';
+//import 'react-select/dist/react-select.css';
 import strings from '../../../../translations';
 import Radiobutton from '../../../ui/blocks/Radiobutton';
 import { H1 } from '../../../ui/elements';

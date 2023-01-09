@@ -1,6 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import strings from '../../../../translations/fi';
 import SideBar from '../../../ui/blocks/SideBar';
 import { H1, Button } from '../../../ui/elements';

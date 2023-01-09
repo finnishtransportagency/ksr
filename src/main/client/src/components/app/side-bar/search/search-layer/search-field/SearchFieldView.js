@@ -1,9 +1,9 @@
 // @flow
 import React from 'react';
 import Downshift from 'downshift';
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import Select from 'react-select';
-import 'react-select/dist/react-select.css';
+//import 'react-select/dist/react-select.css';
 import { TextInput } from '../../../../../ui/elements';
 import SearchFieldWrapper from './styles';
 import { codedValueOptions, filterExpressionsByType } from '../../../../../../utils/search/parseQueryString';
