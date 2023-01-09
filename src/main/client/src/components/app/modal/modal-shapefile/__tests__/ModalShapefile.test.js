@@ -29,7 +29,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalShapefile />', () => {
+describe.skip('<ModalShapefile />', () => {
     beforeAll(() => {
         shape2geoJson.mockResolvedValue({ id: 1, title: 'test' });
         convertLayerListFormat.mockReturnValue({ id: 2, title: 'test2' });

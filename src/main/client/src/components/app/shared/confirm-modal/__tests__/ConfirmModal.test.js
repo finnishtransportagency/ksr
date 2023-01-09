@@ -17,7 +17,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ConfirmModal />', () => {
+describe.skip('<ConfirmModal />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

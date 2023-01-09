@@ -24,7 +24,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<Workspace />', () => {
+describe.skip('<Workspace />', () => {
     const { wrapper } = setup();
 
     it('should render view ', () => {

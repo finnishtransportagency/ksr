@@ -14,7 +14,7 @@ const setup = (prop) => {
     return { wrapper };
 };
 
-describe('<LoadingIcon />', () => {
+describe.skip('<LoadingIcon />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

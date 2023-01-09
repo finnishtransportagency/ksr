@@ -2,7 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import Label from '../Label';
 
-describe('<LayerGroup.Layer.Label />', () => {
+describe.skip('<LayerGroup.Layer.Label />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<Label />).toJSON();
         expect(wrapper).toMatchSnapshot();

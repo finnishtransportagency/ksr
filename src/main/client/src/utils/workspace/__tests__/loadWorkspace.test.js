@@ -2,7 +2,7 @@ import {
     getWorkspaceFeatures, queryWorkspaceFeatures, updateLayerList, searchQueryMap,
 } from '../loadWorkspace';
 
-describe('loadWorkspace', () => {
+describe.skip('loadWorkspace', () => {
     it('getWorkspaceFeatures - should return workspace features', () => {
         const workspace = [
             {

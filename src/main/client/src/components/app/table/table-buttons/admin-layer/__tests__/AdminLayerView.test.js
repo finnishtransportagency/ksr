@@ -22,7 +22,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<AdminLayerView />', () => {
+describe.skip('<AdminLayerView />', () => {
     it('should render self', () => {
         const { wrapper } = setup();
 

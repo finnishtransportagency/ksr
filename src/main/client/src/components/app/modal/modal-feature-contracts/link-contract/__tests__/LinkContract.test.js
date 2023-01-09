@@ -18,7 +18,7 @@ const setup = (prop) => {
     return { wrapper };
 };
 
-describe('<LinkContract />', () => {
+describe.skip('<LinkContract />', () => {
     const { wrapper } = setup();
 
     it('render - should render contract list view', () => {

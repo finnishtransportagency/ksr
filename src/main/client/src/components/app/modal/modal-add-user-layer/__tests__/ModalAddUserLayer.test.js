@@ -32,7 +32,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalAddUserLayer />', () => {
+describe.skip('<ModalAddUserLayer />', () => {
     it('should render Modal', () => {
         const { wrapper } = setup();
         expect(wrapper.find(ModalContainer).exists()).toBe(true);

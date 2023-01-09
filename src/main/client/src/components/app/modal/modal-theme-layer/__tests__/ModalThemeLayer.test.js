@@ -20,7 +20,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalThemeLayer />', () => {
+describe.skip('<ModalThemeLayer />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

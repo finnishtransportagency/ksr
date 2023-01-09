@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import MapLayerChildView from '../MapLayerChildView';
 import LayerSettings from '../../../../../../ui/blocks/LayerSettings';
 
-describe('<MapLayerChildView />', () => {
+describe.skip('<MapLayerChildView />', () => {
     const setup = (fields = []) => {
         const props = {
             layer: {

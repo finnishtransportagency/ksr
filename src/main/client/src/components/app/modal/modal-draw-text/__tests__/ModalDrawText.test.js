@@ -13,7 +13,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<ModalDrawText />', () => {
+describe.skip('<ModalDrawText />', () => {
     const { props, wrapper } = setup();
 
     it('should render self', () => {

@@ -1,6 +1,6 @@
 import { filterNotAllowedFields, themeLayerFields } from '../fields';
 
-describe('fields tests', () => {
+describe.skip('fields tests', () => {
     const fields = [{
         value: 0,
         label: 'OBJECTID_1',

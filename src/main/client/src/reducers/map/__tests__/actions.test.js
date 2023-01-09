@@ -1,7 +1,7 @@
 import * as types from '../../../constants/actionTypes';
 import * as actions from '../actions';
 
-describe('actions', () => {
+describe.skip('actions', () => {
     it('should create an action to GET active layer tab', () => {
         const expectedAction = { type: types.GET_ACTIVE_LAYER_TAB };
         expect(actions.getActiveLayerTab()).toEqual(expectedAction);

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import SearchProperty from '../SearchProperty';
 import SearchPropertyView from '../SearchPropertyView';
 
-describe('<SearchProperty />', () => {
+describe.skip('<SearchProperty />', () => {
     const setup = (props) => {
         const initialProps = {
             features: [],

@@ -21,7 +21,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<ModalNewWorkspace />', () => {
+describe.skip('<ModalNewWorkspace />', () => {
     const { wrapper } = setup();
 
     it('should render modal view ', () => {

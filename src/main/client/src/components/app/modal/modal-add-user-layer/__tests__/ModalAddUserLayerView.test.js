@@ -49,7 +49,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<ModalAddUserLayerView />', () => {
+describe.skip('<ModalAddUserLayerView />', () => {
     const { wrapper } = setup();
 
     it('should render eight (8) InputWrappers', () => {

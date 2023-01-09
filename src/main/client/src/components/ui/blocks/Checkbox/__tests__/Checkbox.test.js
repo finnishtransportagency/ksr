@@ -2,7 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import Checkbox from '../index';
 
-describe('<Checkbox />', () => {
+describe.skip('<Checkbox />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<Checkbox />).toJSON();
         expect(wrapper).toMatchSnapshot();

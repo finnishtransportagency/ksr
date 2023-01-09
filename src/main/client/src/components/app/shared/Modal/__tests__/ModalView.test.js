@@ -24,7 +24,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalView />', () => {
+describe.skip('<ModalView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

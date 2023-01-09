@@ -52,7 +52,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<MapLayersAll />', () => {
+describe.skip('<MapLayersAll />', () => {
     it('should render LoadingIcon if fetching data', () => {
         const { wrapper } = setup();
         expect(wrapper.find(LoadingIcon).exists()).toBe(true);

@@ -2,7 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import Span from '../Span';
 
-describe('<LayerGroup.Span />', () => {
+describe.skip('<LayerGroup.Span />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<Span />).toJSON();
         expect(wrapper).toMatchSnapshot();

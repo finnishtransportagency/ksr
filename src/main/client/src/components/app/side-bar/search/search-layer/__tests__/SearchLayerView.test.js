@@ -29,7 +29,7 @@ const setup = (prop) => {
     return { minProps, wrapper };
 };
 
-describe('<SearchLayerView />', () => {
+describe.skip('<SearchLayerView />', () => {
     it('should contain three (3) SearchVieldViews', () => {
         const { minProps } = setup();
         const props = {

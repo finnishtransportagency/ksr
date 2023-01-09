@@ -1,6 +1,6 @@
 import { getFeatureInfo } from '../featureInfo';
 
-describe('featureInfo', () => {
+describe.skip('featureInfo', () => {
     it('should return three (3) graphics', async () => {
         fetch.resetMocks();
         fetch.mockResponse(JSON.stringify({

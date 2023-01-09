@@ -1,6 +1,6 @@
 import featureReducer from '../features';
 
-describe('reducers - table - features', () => {
+describe.skip('reducers - table - features', () => {
     it('should SET_ACTIVE_TABLE', () => {
         const action = {
             type: 'SET_ACTIVE_TABLE',

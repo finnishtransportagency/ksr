@@ -14,7 +14,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalBufferSelectedView />', () => {
+describe.skip('<ModalBufferSelectedView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

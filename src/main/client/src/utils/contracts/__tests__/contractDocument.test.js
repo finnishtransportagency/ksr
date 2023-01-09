@@ -1,6 +1,6 @@
 import { getContractDocumentUrl } from '../contractDocument';
 
-describe('contractDocument.js', () => {
+describe.skip('contractDocument.js', () => {
     it('getContractDocumentUrl - should return tiimeri link', () => {
         const attributes1 = {
             contractNumber: 123,

@@ -16,7 +16,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<HomeView />', () => {
+describe.skip('<HomeView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

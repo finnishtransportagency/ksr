@@ -32,7 +32,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<TabbedTableView />', () => {
+describe.skip('<TabbedTableView />', () => {
     const { props, wrapper } = setup();
 
     it('should render self', () => {

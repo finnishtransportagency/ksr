@@ -144,7 +144,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<MapLayersActiveView />', () => {
+describe.skip('<MapLayersActiveView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

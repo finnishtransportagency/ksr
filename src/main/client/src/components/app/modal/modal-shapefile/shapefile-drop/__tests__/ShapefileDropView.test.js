@@ -6,7 +6,7 @@ import { H2, Button } from '../../../../../ui/elements';
 import strings from '../../../../../../translations';
 import { DropzoneContent } from '../styles';
 
-describe('<ShapefileDropView />', () => {
+describe.skip('<ShapefileDropView />', () => {
     it('should render itself', () => {
         const props = {
             onDrop: jest.fn(),

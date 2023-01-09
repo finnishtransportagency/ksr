@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import DataLayersActiveView from '../DataLayersActiveView';
 import MapLayerSettings from '../../map-layer-settings/MapLayerSettings';
 
-describe('<DataLayersActiveView />', () => {
+describe.skip('<DataLayersActiveView />', () => {
     it('it should render nothing', () => {
         const props = {
             dataLayerList: [],

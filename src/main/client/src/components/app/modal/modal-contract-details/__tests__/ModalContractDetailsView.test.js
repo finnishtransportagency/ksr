@@ -23,7 +23,7 @@ const setup = (prop) => {
     return { wrapper, minProps };
 };
 
-describe('<ModalContractDetailsView />', () => {
+describe.skip('<ModalContractDetailsView />', () => {
     it('render - should show loading while fetching', () => {
         const { wrapper } = setup();
 

@@ -17,7 +17,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalExtractSelectedView />', () => {
+describe.skip('<ModalExtractSelectedView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

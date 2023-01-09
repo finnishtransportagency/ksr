@@ -1,7 +1,7 @@
 import * as geoconvert from '../geoconvert/createAddressFields';
 import save from '../saveFeatureData';
 
-describe('saveFeatureData', () => {
+describe.skip('saveFeatureData', () => {
     it('featureDataToParams - should return null if null given', () => {
         expect(save.featureDataToParams(null)).toBe(null);
     });

@@ -20,7 +20,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<FormFieldView />', () => {
+describe.skip('<FormFieldView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

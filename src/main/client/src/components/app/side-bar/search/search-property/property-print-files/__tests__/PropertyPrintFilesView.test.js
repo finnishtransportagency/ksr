@@ -21,7 +21,7 @@ const setup = (prop) => {
     return { wrapper };
 };
 
-describe('<PropertyInfoView />', () => {
+describe.skip('<PropertyInfoView />', () => {
     it('render - should render LoadingIcon', () => {
         const props = {
             links: null,

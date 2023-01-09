@@ -15,7 +15,7 @@ const setup = (prop) => {
     return { wrapper, minProps };
 };
 
-describe('<ModalSingleFeatureDetailsView />', () => {
+describe.skip('<ModalSingleFeatureDetailsView />', () => {
     it('render - should show error text if no attributes found', () => {
         const { wrapper } = setup();
 

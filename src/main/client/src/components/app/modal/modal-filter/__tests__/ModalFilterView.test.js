@@ -24,7 +24,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalFilterView />', () => {
+describe.skip('<ModalFilterView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

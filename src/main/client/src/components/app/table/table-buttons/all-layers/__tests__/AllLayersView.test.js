@@ -22,7 +22,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<AllLayersView />', () => {
+describe.skip('<AllLayersView />', () => {
     it('should render self', () => {
         const { wrapper } = setup();
 

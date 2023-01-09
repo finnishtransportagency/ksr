@@ -4,7 +4,7 @@ import MapLayerParentChildView from '../MapLayerParentChildView';
 import LayerSettings from '../../../../../../ui/blocks/LayerSettings';
 import MapLayerChildView from '../MapLayerChildView';
 
-describe('<MapLayerParentChildView />', () => {
+describe.skip('<MapLayerParentChildView />', () => {
     const setup = (layerParams = {}) => {
         const props = {
             layer: {

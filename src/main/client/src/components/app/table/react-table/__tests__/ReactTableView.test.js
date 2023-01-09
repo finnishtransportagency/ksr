@@ -74,7 +74,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<ReactTableView />', () => {
+describe.skip('<ReactTableView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

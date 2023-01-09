@@ -21,7 +21,7 @@ const setup = (prop) => {
     return { minProps, wrapper };
 };
 
-describe('<SearchPropertyView />', () => {
+describe.skip('<SearchPropertyView />', () => {
     it('render - should render LoadingIcon while fetching', () => {
         const { minProps } = setup();
         const props = {

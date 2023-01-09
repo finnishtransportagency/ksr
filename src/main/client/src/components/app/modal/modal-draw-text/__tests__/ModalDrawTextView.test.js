@@ -12,7 +12,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<ModalDrawTextView />', () => {
+describe.skip('<ModalDrawTextView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

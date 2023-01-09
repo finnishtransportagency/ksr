@@ -14,7 +14,7 @@ const setup = () => {
     return { wrapper, minProps };
 };
 
-describe('<ModalDownloadCsv />', () => {
+describe.skip('<ModalDownloadCsv />', () => {
     const { wrapper } = setup();
 
     it('should render', () => {

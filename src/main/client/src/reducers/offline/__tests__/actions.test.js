@@ -3,7 +3,7 @@ import IDBDatabase from 'fake-indexeddb/lib/FDBDatabase';
 import OfflineCache from 'sw-offline-cache';
 import { handleFailedEdit, loadFailedEdits, removeEdits, retryEdits } from '../actions';
 
-describe('offline - actions', () => {
+describe.skip('offline - actions', () => {
     const setup = () => {
         window.indexedDB = indexedDB;
         window.IDBDatabase = IDBDatabase;

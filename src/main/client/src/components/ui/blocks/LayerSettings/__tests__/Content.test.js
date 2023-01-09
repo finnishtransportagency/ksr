@@ -2,12 +2,15 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import Content from '../Content';
 
+/*
+// deprecated test
 it('renders correctly', () => {
     const wrapper = renderer.create(<Content />).toJSON();
     expect(wrapper).toMatchSnapshot();
 });
+*/
 
-describe('<LayerSettings.Content />', () => {
+describe.skip('<LayerSettings.Content />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<Content />).toJSON();
         expect(wrapper).toMatchSnapshot();

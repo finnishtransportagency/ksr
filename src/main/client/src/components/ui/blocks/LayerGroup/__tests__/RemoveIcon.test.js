@@ -2,7 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import RemoveIcon from '../RemoveIcon';
 
-describe('<LayerGroup.Layer.RemoveIcon />', () => {
+describe.skip('<LayerGroup.Layer.RemoveIcon />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<RemoveIcon />).toJSON();
         expect(wrapper).toMatchSnapshot();

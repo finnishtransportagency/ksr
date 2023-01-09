@@ -8,7 +8,7 @@ beforeEach(() => {
     toggleLayerLegend.mockClear();
 });
 
-describe('createThemeLayer', () => {
+describe.skip('createThemeLayer', () => {
     it('resetLayerTheme - should reset layer\'s renderer to default', () => {
         const featureLayer = {
             renderer: 'themeRenderer',

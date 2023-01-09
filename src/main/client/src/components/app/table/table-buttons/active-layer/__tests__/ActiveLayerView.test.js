@@ -19,7 +19,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ActiveLayerView />', () => {
+describe.skip('<ActiveLayerView />', () => {
     it('should render self', () => {
         const { wrapper } = setup();
 

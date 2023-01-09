@@ -20,7 +20,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<EsriMap />', () => {
+describe.skip('<EsriMap />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

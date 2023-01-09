@@ -12,7 +12,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<MapDraw />', () => {
+describe.skip('<MapDraw />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

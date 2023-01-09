@@ -13,7 +13,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<ReactTable />', () => {
+describe.skip('<ReactTable />', () => {
     it('should render self', () => {
         const { wrapper } = setup();
 

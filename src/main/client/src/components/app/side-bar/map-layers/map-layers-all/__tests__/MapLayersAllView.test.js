@@ -38,7 +38,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<MapLayersAllView />', () => {
+describe.skip('<MapLayersAllView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

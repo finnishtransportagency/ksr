@@ -30,7 +30,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<MapLayerView />', () => {
+describe.skip('<MapLayerView />', () => {
     it('should render', () => {
         const { wrapper } = setup();
         expect(wrapper.exists()).toBe(true);

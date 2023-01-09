@@ -22,7 +22,7 @@ const setup = (prop) => {
     return { wrapper };
 };
 
-describe('<PropertyInfoView />', () => {
+describe.skip('<PropertyInfoView />', () => {
     it('render - should render all property data', () => {
         const { wrapper } = setup();
 

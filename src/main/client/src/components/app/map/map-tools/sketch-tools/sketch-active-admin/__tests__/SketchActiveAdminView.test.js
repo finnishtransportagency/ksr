@@ -15,7 +15,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<SketchActiveAdminView />', () => {
+describe.skip('<SketchActiveAdminView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

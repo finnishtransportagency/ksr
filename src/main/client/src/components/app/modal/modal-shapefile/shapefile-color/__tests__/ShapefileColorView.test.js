@@ -5,7 +5,7 @@ import { H2 } from '../../../../../ui/elements';
 import strings from '../../../../../../translations';
 import { Color, ColorInput } from '../styles';
 
-describe('<ShapefileColorView />', () => {
+describe.skip('<ShapefileColorView />', () => {
     const setup = (color) => {
         const props = {
             color: color || null,

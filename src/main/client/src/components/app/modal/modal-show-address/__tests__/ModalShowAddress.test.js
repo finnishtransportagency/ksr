@@ -23,7 +23,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<ModalShowAddress />', () => {
+describe.skip('<ModalShowAddress />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

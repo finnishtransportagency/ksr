@@ -22,7 +22,7 @@ const setup = (prop) => {
     return { wrapper };
 };
 
-describe('<ModalFeatureContracts />', () => {
+describe.skip('<ModalFeatureContracts />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

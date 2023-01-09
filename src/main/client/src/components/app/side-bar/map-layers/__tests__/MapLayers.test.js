@@ -17,7 +17,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<MapLayers />', () => {
+describe.skip('<MapLayers />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

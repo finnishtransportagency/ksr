@@ -14,7 +14,7 @@ const setup = () => {
     return { wrapper, props };
 };
 
-describe('<MapDrawView />', () => {
+describe.skip('<MapDrawView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

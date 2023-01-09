@@ -55,7 +55,7 @@ class EditContract extends Component<Props, State> {
             objectId,
         );
 
-        const contract = contracts
+        const contract = contracts || []
             .reduce((arr, c) => arr.concat(c.features), [])
             .find(f => f && f.attributes
                 && f.attributes[contractLayer.contractIdField] === contractNumber);

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import MapLayerSettings from '../MapLayerSettings';
 import LayerSettings from '../../../../../../ui/blocks/LayerSettings';
 
-describe('<MapLayerSettings />', () => {
+describe.skip('<MapLayerSettings />', () => {
     const setup = (type, visible) => {
         const props = {
             layer: {

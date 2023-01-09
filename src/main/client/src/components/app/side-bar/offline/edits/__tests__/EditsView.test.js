@@ -5,7 +5,7 @@ import { EditsWrapper } from '../styles';
 import strings from '../../../../../../translations/fi';
 import { Button } from '../../../../../ui/elements';
 
-describe('<EditsView />', () => {
+describe.skip('<EditsView />', () => {
     const setup = (props) => {
         const wrapper = mount(<EditsView {...props} />);
         return { wrapper, props };

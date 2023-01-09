@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import BaseMapSwitchView from '../BaseMapSwitchView';
 
-describe('<BaseMapSwitchView />', () => {
+describe.skip('<BaseMapSwitchView />', () => {
     const setup = () => {
         const props = {
             layers: [

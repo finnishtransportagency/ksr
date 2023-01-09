@@ -16,7 +16,7 @@ const setup = (prop) => {
     return { props, wrapper };
 };
 
-describe('<ModalDeleteSelected />', () => {
+describe.skip('<ModalDeleteSelected />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

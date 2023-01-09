@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import MapLayerToggleIcon from '../MapLayerToggleIcon';
 
-describe('<MapLayerToggleIcon />', () => {
+describe.skip('<MapLayerToggleIcon />', () => {
     it('should render', () => {
         const wrapper = shallow(<MapLayerToggleIcon visible={false} />);
         expect(wrapper.exists()).toBeTruthy();

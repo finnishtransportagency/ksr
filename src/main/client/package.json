@@ -44,7 +44,7 @@
     "start": "react-scripts start",
     "legacyStartDev": "react-scripts start --openssl-legacy-provider",
     "build": "react-scripts build && jest -u",
-    "jest:u": "jest -u",
+    "jest:u": "jest -u --json --outputFile=-testit.json",
     "build:dev": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
@@ -82,6 +82,8 @@
     "flow-bin": "^0.116.1",
     "http-proxy-middleware": "^0.19.1",
     "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.3.1",
+    "jest-environment-jsdom": "^29.3.1",
     "jest-fetch-mock": "^2.1.2",
     "jest-styled-components": "^6.3.4",
     "jest-when": "^2.7.0",
@@ -93,7 +95,7 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupTestFrameworkScriptFile": "./config/setupTests.js",
+    "setupFilesAfterEnv": ["./config/setupTests.js"],
     "testURL": "http://testurl/ksr/",
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"

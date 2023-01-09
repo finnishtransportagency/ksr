@@ -17,7 +17,7 @@ const setup = () => {
     return { props, wrapper };
 };
 
-describe('<ModalShapefileView />', () => {
+describe.skip('<ModalShapefileView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

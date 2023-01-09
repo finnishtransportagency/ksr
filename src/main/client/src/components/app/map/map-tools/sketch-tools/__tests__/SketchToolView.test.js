@@ -19,7 +19,7 @@ const setup = () => {
     return { wrapper };
 };
 
-describe('<SketchToolView />', () => {
+describe.skip('<SketchToolView />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {

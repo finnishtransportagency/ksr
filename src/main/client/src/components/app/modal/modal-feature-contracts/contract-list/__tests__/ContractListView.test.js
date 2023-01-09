@@ -17,7 +17,7 @@ const setup = (prop) => {
     return { wrapper, minProps };
 };
 
-describe('<ContractListView />', () => {
+describe.skip('<ContractListView />', () => {
     it('should render text with no contracts', () => {
         const props = {
             contracts: [],

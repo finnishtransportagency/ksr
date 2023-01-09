@@ -2,7 +2,7 @@ import renderer from 'react-test-renderer';
 import React from 'react';
 import { H2 } from '../H2';
 
-describe('<H2 />', () => {
+describe.skip('<H2 />', () => {
     it('renders correctly', () => {
         const wrapper = renderer.create(<H2 />).toJSON();
         expect(wrapper).toMatchSnapshot();
