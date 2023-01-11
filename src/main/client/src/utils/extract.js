@@ -1,5 +1,9 @@
 // @flow
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
+
+import Graphic from '@arcgis/core/Graphic';
+import * as Geoprocessor from '@arcgis/core/rest/geoprocessor';
+import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 
 /**
  * Extract selected features to desired format.
@@ -14,28 +18,17 @@ export const extractSelected = (
     layerId: string,
     selectedGeometryData: Array<Object>,
     format: string,
-) => (
-    loadModules([
-        'esri/Graphic',
-        'esri/tasks/Geoprocessor',
-        'esri/rest/support/FeatureSet',
-    ])
-        .then(([
-            Graphic,
-            Geoprocessor,
-            FeatureSet,
-        ]) => {
-            const gp = new Geoprocessor(extractServiceUrl);
-            const inputGraphicContainer = selectedGeometryData
-                .map(geometry => new Graphic({ geometry }));
-            const featureSet = new FeatureSet({ features: inputGraphicContainer });
+) => {
+    const gp = new Geoprocessor(extractServiceUrl);
+    const inputGraphicContainer = selectedGeometryData
+        .map(geometry => new Graphic({ geometry }));
+    const featureSet = new FeatureSet({ features: inputGraphicContainer });
 
-            return gp.submitJob({
-                Layers_to_Clip: layerId.replace('_s', ''),
-                Area_of_Interest: featureSet,
-                Feature_Format: format,
-            }).then(result => gp.waitForJobCompletion(result.jobId))
-                .then(r => gp.getResultData(r.jobId, 'Output_Zip_File'))
-                .then(res => res.value.url);
-        })
-);
+    return gp.submitJob({
+        Layers_to_Clip: layerId.replace('_s', ''),
+        Area_of_Interest: featureSet,
+        Feature_Format: format,
+    }).then(result => gp.waitForJobCompletion(result.jobId))
+        .then(r => gp.getResultData(r.jobId, 'Output_Zip_File'))
+        .then(res => res.value.url);
+};

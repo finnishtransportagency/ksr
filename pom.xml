@@ -197,8 +197,8 @@
 			        </execution>
 			    </executions>
 			    <configuration>
-			        <nodeVersion>v10.16.3</nodeVersion>
-			        <npmVersion>6.9.0</npmVersion>
+			        <nodeVersion>v14.21.2</nodeVersion>
+			        <npmVersion>6.14.17</npmVersion>
 					<installDirectory>.mvn</installDirectory>
 			        <workingDirectory>src/main/client</workingDirectory>
 					<environmentVariables>

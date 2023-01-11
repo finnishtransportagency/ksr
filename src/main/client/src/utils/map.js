@@ -1,8 +1,22 @@
 // @flow
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
 import { toast } from 'react-toastify';
-import { layerData } from '../api/map/layerData';
+
+
+import Graphic from '@arcgis/core/Graphic';
+import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import Polygon from '@arcgis/core/geometry/Polygon';
+import Polyline from '@arcgis/core/geometry/Polyline';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import Point from '@arcgis/core/geometry/Point';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import esriConfig from '@arcgis/core/config';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import Query from '@arcgis/core/rest/support/Query';
 import strings from '../translations';
+import { layerData } from '../api/map/layerData';
 
 /**
  * Fit map on the extent of given layers.
@@ -43,10 +57,6 @@ export const setCenterPoint = async (
     mapScale: number,
     view: Object,
 ) => {
-    const [Point, SpatialReference] = await loadModules([
-        'esri/geometry/Point',
-        'esri/geometry/SpatialReference',
-    ]);
     const epsg3067 = new SpatialReference(3067);
 
     const point = new Point({
@@ -80,12 +90,6 @@ export const addLayers = async (
     isOverviewMap: boolean = false,
     layerList: Object[],
 ) => {
-    const [esriConfig, WMSLayer, WMTSLayer, FeatureLayer] = await loadModules([
-        'esri/config',
-        'esri/layers/WMSLayer',
-        'esri/layers/WMTSLayer',
-        'esri/layers/FeatureLayer',
-    ]);
     const searchLayers = [];
     const failedLayers = [];
     await Promise.all(layers.map(async (layer) => {
@@ -186,7 +190,6 @@ export const highlight = async (
     view: Object,
     selectedFeatures: Array<Object>,
 ) => {
-    const [Query] = await loadModules(['esri/rest/support/Query']);
     if (view) {
         const highlightFeatures = (layer: Object, layerView: Object, features: Object[]) => {
             if (layer.layerHighlight) {
@@ -264,11 +267,6 @@ export const drawPropertyArea = async (
     view: Object,
     features: Object[],
 ) => {
-    const [Polygon, Graphic, TextSymbol] = await loadModules([
-        'esri/geometry/Polygon',
-        'esri/Graphic',
-        'esri/symbols/TextSymbol',
-    ]);
     const createPolygon = vertices => new Polygon({
         rings: vertices,
         spatialReference: view.spatialReference,
@@ -415,13 +413,6 @@ export const getSingleLayerFields = async (layer: Object): Promise<Object> => {
  * @param {Object[]} features Features to zoom to.
  */
 export const zoomToFeatures = async (view: Object, features: Object[]) => {
-    const [Point, Polygon, Polyline, geometryEngine] = await loadModules([
-        'esri/geometry/Point',
-        'esri/geometry/Polygon',
-        'esri/geometry/Polyline',
-        'esri/geometry/geometryEngine',
-    ]);
-
     const geometries = [];
     features.forEach((feature) => {
         if (feature.geometry.x

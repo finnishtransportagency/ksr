@@ -1,5 +1,11 @@
 // @flow
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
+
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import Polygon from '@arcgis/core/geometry/Polygon';
+import Graphic from '@arcgis/core/Graphic';
+import Point from '@arcgis/core/geometry/Point';
+
 
 /**
  * Creates an esri.Graphic for highlight purposes from given geometry.
@@ -14,7 +20,6 @@ import { loadModules } from 'esri-loader';
  */
 export const createGraphic = (
     geometry: Object,
-    Graphic: any,
 ) => {
     if (
         geometry === null
@@ -76,11 +81,6 @@ export const createGraphic = (
  * @returns {Promise<Array<*>>} List of Point or Polygon geometry.
  */
 const initializeToGeometry = async (view: Object, geomToBuffer: Object[]) => {
-    const [Point, Polygon] = await loadModules([
-        'esri/geometry/Point',
-        'esri/geometry/Polygon',
-    ]);
-
     const createPoint = geom => new Point({
         x: geom.x,
         y: geom.y,
@@ -117,11 +117,6 @@ export const setBuffer = async (
     selectedFeaturesOnly?: boolean,
     activeLayerId?: string,
 ) => {
-    const [Graphic, geometryEngine] = await loadModules([
-        'esri/Graphic',
-        'esri/geometry/geometryEngine',
-    ]);
-
     if (view && (tableGeometryData.length > 0 || selectedGeometryData.length > 0)) {
         const featureData = selectedFeaturesOnly
             ? selectedGeometryData
@@ -167,28 +162,19 @@ export const setSingleFeatureBuffer = (
     selectedGeometryData: Object[],
     distance: number,
 ) => {
-    loadModules([
-        'esri/Graphic',
-        'esri/geometry/geometryEngine',
-    ])
-        .then(([
+    if (view && selectedGeometryData.length > 0) {
+        const featureBuffers = geometryEngine.buffer(
+            selectedGeometryData, [
+                distance,
+            ], 'meters',
+            true,
+        );
+
+        const bufferGraphic = createGraphic(
+            featureBuffers[0],
             Graphic,
-            geometryEngine,
-        ]) => {
-            if (view && selectedGeometryData.length > 0) {
-                const featureBuffers = geometryEngine.buffer(
-                    selectedGeometryData, [
-                        distance,
-                    ], 'meters',
-                    true,
-                );
+        );
 
-                const bufferGraphic = createGraphic(
-                    featureBuffers[0],
-                    Graphic,
-                );
-
-                view.graphics.add(bufferGraphic);
-            }
-        });
+        view.graphics.add(bufferGraphic);
+    }
 };

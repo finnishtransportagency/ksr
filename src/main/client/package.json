@@ -3,11 +3,12 @@
   "version": "1.7.1",
   "private": true,
   "dependencies": {
+    "@arcgis/core": "^4.20.2",
     "clone": "^2.1.2",
     "date-fns": "^2.7.0",
     "dompurify": "^2.0.8",
     "downshift": "^3.2.4",
-    "esri-loader": "^3.7.0",
+    "esri-loader": "^3.3.0",
     "nano-equal": "^2.0.2",
     "proj4": "^2.5.0",
     "querystring": "^0.2.0",
@@ -42,7 +43,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "legacyStartDev": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build && jest -u",
+    "justBuild": "react-scripts --openssl-legacy-provider build",
     "test": "jest",
     "eject": "react-scripts eject",
     "flow": "flow"

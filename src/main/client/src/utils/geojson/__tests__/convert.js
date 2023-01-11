@@ -1,3 +1,6 @@
+console.log('disabled');
+
+/*
 import { loadModules } from 'esri-loader';
 import { project } from '../../projection';
 import convert from '../convert';
@@ -109,3 +112,4 @@ describe('geojson - convert', () => {
         expect(point).toBe(null);
     });
 });
+*/

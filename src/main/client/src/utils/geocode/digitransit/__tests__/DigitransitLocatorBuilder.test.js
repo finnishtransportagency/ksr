@@ -1,4 +1,4 @@
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
 import { when } from 'jest-when';
 import DigitransitLocatorBuilder from '../DigitransitLocatorBuilder';
 import { fetchAddresses } from '../api';

@@ -1,6 +1,12 @@
 // @flow
 
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
+
+import Polygon from '@arcgis/core/geometry/Polygon';
+import Polyline from '@arcgis/core/geometry/Polyline';
+import Point from '@arcgis/core/geometry/Point';
+import Multipoint from '@arcgis/core/geometry/Multipoint';
+
 import { project } from '../projection';
 
 /**
@@ -18,18 +24,6 @@ const convert = async (
     sSrs: number = 3067,
     tSrs: number = 3067,
 ) => {
-    const [
-        Point,
-        Polyline,
-        Polygon,
-        Multipoint,
-    ] = await loadModules([
-        'esri/geometry/Point',
-        'esri/geometry/Polyline',
-        'esri/geometry/Polygon',
-        'esri/geometry/Multipoint',
-    ]);
-
     const coordinates = sSrs !== tSrs
         ? project(`EPSG:${sSrs}`, `EPSG:${tSrs}`, geom.coordinates) : geom.coordinates;
 

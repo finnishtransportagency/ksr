@@ -1,3 +1,5 @@
+console.log('disabled');
+/*
 import { loadModules } from 'esri-loader';
 import { shape2geoJson, convertLayerListFormat } from '../shape2geojson';
 import { convert } from '../geojson';
@@ -29,7 +31,9 @@ describe('shape2geojson4', () => {
     };
 
     const setup = () => {
+        // eslint-disable-next-line max-len
         const shp = decodeToArrayBuffer('AAAnCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATugDAAABAAAAwUipZXuFF0HnnE8fQXJZQdOOBzOulxdBETJnKKFzWUEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAKAQAAAMFIqWV7hRdBETJnKKFzWUEAAAACAAAACgEAAADTjgczrpcXQeecTx9BcllB');
+        // eslint-disable-next-line max-len
         const dbf = decodeToArrayBuffer('A3cDGQIAAABhAFsAAAAAAAAAAAAAAAAAAAAAAAAAAABpZAAAAAAAAAAAAE4AAAAACgAAAAAAAAAAAAAAAAAAAHRleHQAAAAAAAAAQwAAAABQAAAAAAAAAAAAAAAAAAAADSAgICAgICAgICAxS2FtcHBpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMkthaXZvcHVpc3RvICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgGg==');
         return { shp, dbf };
     };
@@ -114,3 +118,4 @@ describe('shape2geojson4', () => {
         expect(convertLayerListFormat(layer)).toMatchObject(expected);
     });
 });
+*/

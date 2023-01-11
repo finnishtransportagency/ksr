@@ -1,23 +1,45 @@
 // @flow
-import { loadModules, loadCss } from 'esri-loader';
+// import { loadModules, loadCss } from 'esri-loader';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import clone from 'clone';
 import { isMobile } from 'react-device-detect';
-import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
-import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
-import { queryFeatures } from '../../../utils/queryFeatures';
-import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loadWorkspace';
-import EsriMapContainer from './esri-map/EsriMapContainer';
-import { getStreetViewLink } from '../../../utils/map-selection/streetView';
-import { colorBackgroundDark, colorFeatureHighlight, extentGraphic } from '../../ui/defaultStyles';
-import { nestedVal } from '../../../utils/nestedValue';
-import strings from '../../../translations';
-import { copyFeature } from '../../../utils/map-selection/copyFeature';
+
+
+import MapView from '@arcgis/core/views/MapView';
+import Map from '@arcgis/core/Map';
+import Locate from '@arcgis/core/widgets/Locate';
+import Track from '@arcgis/core/widgets/Track';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Compass from '@arcgis/core/widgets/Compass';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import Circle from '@arcgis/core/geometry/Circle';
+import Point from '@arcgis/core/geometry/Point';
+import Print from '@arcgis/core/widgets/Print';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import Graphic from '@arcgis/core/Graphic';
+import Legend from '@arcgis/core/widgets/Legend';
+import CoordinateConversion from '@arcgis/core/widgets/CoordinateConversion';
+import Conversion from '@arcgis/core/widgets/CoordinateConversion/support/Conversion';
+import Search from '@arcgis/core/widgets/Search';
+import * as watchUtils from '@arcgis/core/core/watchUtils';
+
 import { addLayers, removeGraphicsFromMap } from '../../../utils/map';
 import { convert } from '../../../utils/geojson';
 import { DigitransitLocatorBuilder } from '../../../utils/geocode';
 import { getDocumentUrl } from '../../../utils/contracts/contractDocument';
+
+import { copyFeature } from '../../../utils/map-selection/copyFeature';
+import strings from '../../../translations';
+import { nestedVal } from '../../../utils/nestedValue';
+import { colorBackgroundDark, colorFeatureHighlight, extentGraphic } from '../../ui/defaultStyles';
+import { getStreetViewLink } from '../../../utils/map-selection/streetView';
+import EsriMapContainer from './esri-map/EsriMapContainer';
+import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loadWorkspace';
+import { queryFeatures } from '../../../utils/queryFeatures';
+import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
+import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
 
 type Props = {
     layerList: Array<any>,
@@ -81,47 +103,8 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        loadCss('4.25');
+        // loadCss('4.23');
 
-        const [
-            MapView,
-            Map,
-            Locate,
-            Track,
-            ScaleBar,
-            SpatialReference,
-            Compass,
-            geometryEngine,
-            Circle,
-            Point,
-            Print,
-            GraphicsLayer,
-            Graphic,
-            Legend,
-            CoordinateConversion,
-            Conversion,
-            Search,
-            watchUtils,
-        ] = await loadModules([
-            'esri/views/MapView',
-            'esri/Map',
-            'esri/widgets/Locate',
-            'esri/widgets/Track',
-            'esri/widgets/ScaleBar',
-            'esri/geometry/SpatialReference',
-            'esri/widgets/Compass',
-            'esri/geometry/geometryEngine',
-            'esri/geometry/Circle',
-            'esri/geometry/Point',
-            'esri/widgets/Print',
-            'esri/layers/GraphicsLayer',
-            'esri/Graphic',
-            'esri/widgets/Legend',
-            'esri/widgets/CoordinateConversion',
-            'esri/widgets/CoordinateConversion/support/Conversion',
-            'esri/widgets/Search',
-            'esri/core/watchUtils',
-        ]);
 
         const {
             mapCenter,
