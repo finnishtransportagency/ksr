@@ -49,6 +49,7 @@ public class EsriUtils {
             URIBuilder builder = new URIBuilder();
             builder.setScheme(url.getProtocol());
             builder.setHost(url.getHost());
+            if (url.getPort() > 0) builder.setPort(url.getPort());
             builder.setPath(
                     KsrStringUtils.replaceMultipleSlashes(
                             String.format("%s/%s", url.getPath(), "query")
