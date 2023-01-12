@@ -90,6 +90,7 @@ class EsriMap extends Component<Props> {
 
     printWidget: ?Object = null;
 
+
     componentDidUpdate(prevProps: Props) {
         const { initialLoading, printServiceUrl } = this.props;
 
@@ -195,7 +196,7 @@ class EsriMap extends Component<Props> {
             includeDefaultSources: false,
             sources: [
                 {
-                    locator: new (await DigitransitLocatorBuilder.build())(),
+                    locator: new DigitransitLocatorBuilder.build(),
                     placeholder: strings.geocode.placeholder,
                     name: 'Digitransit',
                 },
@@ -230,7 +231,6 @@ class EsriMap extends Component<Props> {
         view.ui.add([scaleBar], 'bottom-left');
 
         if (!isMobile) {
-            console.log('ISNT MOBILE');
             const coordinateWidget = new CoordinateConversion({
                 view,
                 multipleConversions: false,
@@ -240,26 +240,24 @@ class EsriMap extends Component<Props> {
             await new Promise(resolve => setTimeout(resolve, 300));
             const formats: CoordinateConversion["formats"] = coordinateWidget.formats
                 .filter(f => f.name === 'basemap' || f.name === 'xy');
-            console.log(formats);
-
-            if (formats) {
-                const epsg = formats.find(format => format.name === 'basemap');
-                const wgs = formats.find(format => format.name === 'xy');
 
 
-                if (epsg && wgs) {
-                    const epsgClone = clone(epsg, true, 3);
-                    epsgClone.name = 'ETRS-TM35FIN';
-                    const wgsClone = clone(wgs, true, 3);
-                    wgsClone.name = 'WGS84';
+            const epsg = formats.find(format => format.name === 'basemap');
+            const wgs = formats.find(format => format.name === 'xy');
 
-                    coordinateWidget.formats.removeAll();
-                    coordinateWidget.formats.addMany([epsgClone, wgsClone]);
 
-                    coordinateWidget.conversions.removeAll();
-                    coordinateWidget.conversions.add(new Conversion({ format: epsgClone }));
-                    view.ui.add([coordinateWidget], 'bottom-right');
-                }
+            if (epsg && wgs) {
+                const epsgClone = clone(epsg, true, 3);
+                epsgClone.name = 'ETRS-TM35FIN';
+                const wgsClone = clone(wgs, true, 3);
+                wgsClone.name = 'WGS84';
+
+                coordinateWidget.formats.removeAll();
+                coordinateWidget.formats.addMany([epsgClone, wgsClone]);
+
+                coordinateWidget.conversions.removeAll();
+                coordinateWidget.conversions.add(new Conversion({ format: epsgClone }));
+                view.ui.add([coordinateWidget], 'bottom-right');
             }
         }
 

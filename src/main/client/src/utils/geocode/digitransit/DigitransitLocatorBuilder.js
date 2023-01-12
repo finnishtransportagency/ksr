@@ -1,10 +1,12 @@
 // @flow
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
+
+import { addressToLocations, suggestLocations } from '@arcgis/core/rest/locator';
 
 import * as promiseUtils from '@arcgis/core/core/promiseUtils';
 
-import { fetchAddresses } from './api';
-import cache, { addToCache } from './cache';
+/* import { fetchAddresses } from './api';
+import cache, { addToCache } from './cache'; */
 
 /**
  * A Builder that asynchronously builds a DigitransitLocator that is a subClass of
@@ -20,9 +22,9 @@ const DigitransitLocatorBuilder = {
      * @returns {Promise<Object>} Promise that will resolve to DigitransitLocator.
      */
     build: async () => {
-        const [Locator] = await loadModules([
+        /* const [Locator] = await loadModules([
             'esri/tasks/Locator',
-        ]);
+        ]); */
 
         /**
          * Creates a ArcGIS JS API 4 compatible Promise.
@@ -43,6 +45,12 @@ const DigitransitLocatorBuilder = {
          *
          * @see {@link https://digitransit.fi/en/developers/apis/2-geocoding-api/address-search/} For API-usage.
          */
+
+        const DigitransitLocator = {
+            addressToLocations,
+            suggestLocations,
+        };
+
         /* const DigitransitLocator = Locator.createSubclass({
             declaredClass: 'esri.tasks.Locator.DigitransitLocator',
             outSpatialReference: { wkid: 3067 },
@@ -78,10 +86,9 @@ const DigitransitLocatorBuilder = {
                 const promise = fetchAddresses(text, maxSuggestions).then(addToCache);
                 return cancellablePromise(promise);
             },
-        });
+        }); */
 
-        return DigitransitLocator; */
-        return null;
+        return DigitransitLocator;
     },
 };
 
