@@ -43,11 +43,11 @@ const DigitransitLocatorBuilder = {
          *
          * @see {@link https://digitransit.fi/en/developers/apis/2-geocoding-api/address-search/} For API-usage.
          */
-        const DigitransitLocator = Locator.createSubclass({
+        /* const DigitransitLocator = Locator.createSubclass({
             declaredClass: 'esri.tasks.Locator.DigitransitLocator',
             outSpatialReference: { wkid: 3067 },
 
-            /**
+            /!**
              * Geocodes an address into a location using Digitransit geocode service.
              *
              * @override Overrides method from esri.tasks.Locator.
@@ -56,7 +56,7 @@ const DigitransitLocatorBuilder = {
              * @param {number} maxLocations Max number of locations to return.
              * @param {string} magicKey Id of the selected suggested location.
              * @return {Promise<Object[]>} Promise with geocoding results.
-             */
+             *!/
             addressToLocations: ({ address, maxLocations, magicKey }) => {
                 if (magicKey && cache.has(magicKey)) {
                     return cancellablePromise(Promise.resolve([cache.get(magicKey)]));
@@ -65,7 +65,7 @@ const DigitransitLocatorBuilder = {
                 return cancellablePromise(fetchAddresses(text, maxLocations));
             },
 
-            /**
+            /!**
              * Geocodes text into geocoding suggestions.
              *
              * @override Overrides method from esri.tasks.Locator.
@@ -73,14 +73,15 @@ const DigitransitLocatorBuilder = {
              * @param {string} text User input to geocode into suggestions.
              * @param {number} maxSuggestions Max number of suggestions to return.
              * @returns {Promise<Object[]>} Promise with suggestions.
-             */
+             *!/
             suggestLocations: ({ text, maxSuggestions }) => {
                 const promise = fetchAddresses(text, maxSuggestions).then(addToCache);
                 return cancellablePromise(promise);
             },
         });
 
-        return DigitransitLocator;
+        return DigitransitLocator; */
+        return null;
     },
 };
 
