@@ -1,12 +1,10 @@
 {
   "plugins": [
     "react",
-    "flowtype",
     "react-hooks"
   ],
   "extends": [
-    "airbnb",
-    "plugin:flowtype/recommended"
+    "airbnb"
   ],
   "rules": {
     "func-names": [

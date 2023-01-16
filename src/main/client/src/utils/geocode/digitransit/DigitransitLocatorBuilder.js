@@ -14,19 +14,30 @@ import cache, { addToCache } from './cache'; */
  *
  * @returns {Object} Object that has a build method to build a DigitransitLocator.
  */
-const DigitransitLocatorBuilder = {
+class DigitransitLocator {
+    constructor() {
+        this.addressToLocations = addressToLocations;
+        this.suggestLocations = suggestLocations;
+        this.cancellablePromise = (promise: Promise<any>) => promiseUtils
+          .create((resolve, reject) => {
+              promise.then(resolve).catch(reject);
+          });
+    }
+}
 
-    /**
+/* const DigitransitLocatorBuilder = {
+
+    /!**
      * Builds a DigitransitLocator class that is Subclass of 'esri.tasks.Locator'.
      *
      * @returns {Promise<Object>} Promise that will resolve to DigitransitLocator.
-     */
-    build: async () => {
-        /* const [Locator] = await loadModules([
+     *!/
+    Build: async () => {
+        /!* const [Locator] = await loadModules([
             'esri/tasks/Locator',
-        ]); */
+        ]); *!/
 
-        /**
+        /!**
          * Creates a ArcGIS JS API 4 compatible Promise.
          *
          * ArcGIS JS API expects that Promise can be cancelled using .cancel() -method,
@@ -34,24 +45,25 @@ const DigitransitLocatorBuilder = {
          *
          * @param {Promise<any>} promise Promise to wrap inside.
          * @returns {Promise<any>} Promise that conforms ArcGIS JS API requirements.
-         */
+         *!/
         const cancellablePromise = (promise: Promise<any>) => promiseUtils
             .create((resolve, reject) => {
                 promise.then(resolve).catch(reject);
             });
 
-        /**
+        /!**
          * A Custom esri.tasks.Locator that geocodes addresses using Digitransit geocoding api.
          *
          * @see {@link https://digitransit.fi/en/developers/apis/2-geocoding-api/address-search/} For API-usage.
-         */
+         *!/
 
         const DigitransitLocator = {
+            cancellablePromise,
             addressToLocations,
             suggestLocations,
         };
 
-        /* const DigitransitLocator = Locator.createSubclass({
+        /!* const DigitransitLocator = Locator.createSubclass({
             declaredClass: 'esri.tasks.Locator.DigitransitLocator',
             outSpatialReference: { wkid: 3067 },
 
@@ -86,10 +98,10 @@ const DigitransitLocatorBuilder = {
                 const promise = fetchAddresses(text, maxSuggestions).then(addToCache);
                 return cancellablePromise(promise);
             },
-        }); */
+        }); *!/
 
         return DigitransitLocator;
     },
-};
+}; */
 
-export default DigitransitLocatorBuilder;
+export default DigitransitLocator;

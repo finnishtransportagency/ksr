@@ -1,7 +1,9 @@
 import indexedDB from 'fake-indexeddb';
 import IDBDatabase from 'fake-indexeddb/lib/FDBDatabase';
 import OfflineCache from 'sw-offline-cache';
-import { handleFailedEdit, loadFailedEdits, removeEdits, retryEdits } from '../actions';
+import {
+    handleFailedEdit, loadFailedEdits, removeEdits, retryEdits,
+} from '../actions';
 
 describe('offline - actions', () => {
     const setup = () => {

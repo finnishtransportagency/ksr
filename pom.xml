@@ -172,7 +172,7 @@
 			            </goals>
 			        </execution>
 
-			        <execution>
+			       <!-- <execution>
 			            <id>npm install</id>
 			            <phase>compile</phase>
 			            <goals>
@@ -182,9 +182,9 @@
 			                <arguments>install</arguments>
 							<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
-			        </execution>
+			        </execution>-->
 
-			        <execution>
+			        <!--<execution>
 			            <id>Frontend production build</id>
 			            <phase>compile</phase>
 			            <goals>
@@ -194,7 +194,7 @@
 			                <arguments>run build</arguments>
 							<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
 			            </configuration>
-			        </execution>
+			        </execution>-->
 			    </executions>
 			    <configuration>
 			        <nodeVersion>v14.21.2</nodeVersion>

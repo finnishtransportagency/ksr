@@ -27,4 +27,3 @@ describe('<LinkContract />', () => {
         expect(wrapper.find(LinkContractView).exists()).toBe(true);
     });
 });
-

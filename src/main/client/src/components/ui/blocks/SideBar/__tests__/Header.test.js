@@ -15,4 +15,3 @@ describe('<Header />', () => {
         expect(wrapper).toHaveStyleRule('justify-content', 'space-between');
     });
 });
-

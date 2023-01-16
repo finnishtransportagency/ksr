@@ -1,9 +1,10 @@
 import 'react-app-polyfill/ie11';
-import 'babel-polyfill';
+import '@babel/polyfill';
 import 'url-search-params-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { TextDecoder } from 'text-encoding';
+
 
 import App from './components/app/App';
 import store from './store';

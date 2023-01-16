@@ -1,13 +1,11 @@
 import * as types from '../../../constants/actionTypes';
 import reducer from '../layerGroups';
 import store from '../../../store';
+
 jest.mock('../../../store');
 
 describe('Layer group reducer', () => {
-    
-
     it('should return initial state', () => {
-        
         const initialState = {
             layerGroups: [],
             layerList: [],

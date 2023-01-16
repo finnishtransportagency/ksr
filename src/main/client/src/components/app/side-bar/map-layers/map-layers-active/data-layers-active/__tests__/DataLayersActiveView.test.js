@@ -39,4 +39,3 @@ describe('<DataLayersActiveView />', () => {
         expect(wrapper.find(MapLayerSettings).length).toBe(2);
     });
 });
-
