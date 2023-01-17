@@ -5,9 +5,9 @@ import { setActiveFeatureMode, setTempGraphicsLayer } from '../../../../reducers
 
 const mapStateToProps = (state) => {
     const activeLayer = (
-        state.map.layerGroups.layerList && state.map.layerGroups.layerList.length ?
-            state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId) :
-            null
+        state.map.layerGroups.layerList && state.map.layerGroups.layerList.length
+            ? state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId)
+            : null
     );
     const { addressField, featureType } = state.map.layerGroups.layerList
         .find(l => l.id === state.adminTool.active.layerId);

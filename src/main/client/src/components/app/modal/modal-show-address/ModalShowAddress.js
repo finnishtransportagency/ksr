@@ -32,9 +32,11 @@ class ModalShowAddress extends Component<Props, State> {
         const { data } = this.props;
         const { featureType } = data;
         const addressField = 'address';
-        const feature = await createAddressFields(data,
+        const feature = await createAddressFields(
+            data,
             featureType,
-            addressField);
+            addressField,
+        );
         if (feature) {
             if (feature.attributes.address === '') {
                 this.setState({

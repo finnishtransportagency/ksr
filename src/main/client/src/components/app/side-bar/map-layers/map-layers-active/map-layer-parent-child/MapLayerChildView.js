@@ -24,7 +24,7 @@ type Props = {
     layersVisibleZoomOut: Object[],
 };
 
-const MapLayerChildView = ({
+function MapLayerChildView({
     layer,
     toggleLayer,
     onOpacityChange,
@@ -34,7 +34,7 @@ const MapLayerChildView = ({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) => {
+}: Props) {
     const isLoading = loadingLayers && loadingLayers.some(ll => ll === layer.id);
     return (
         <LayerSettings
@@ -109,6 +109,6 @@ const MapLayerChildView = ({
             </LayerSettings.Content>
         </LayerSettings>
     );
-};
+}
 
 export default MapLayerChildView;

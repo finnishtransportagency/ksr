@@ -53,12 +53,12 @@ declare module 'styled-components' {
   declare export class StyleSheet {
     static get master() : StyleSheet;
     static get instance() : StyleSheet;
-    static reset(forceServer? : boolean) : void;
+    static reset(forceServer?: boolean) : void;
 
-    id : number;
-    forceServer : boolean;
-    target : ?HTMLElement;
-    tagMap : { [string]: Tag<any>, ... }; // eslint-disable-line flowtype/no-weak-types
+    id: number;
+    forceServer: boolean;
+    target: ?HTMLElement;
+    tagMap: { [string]: Tag<any>, ... }; // eslint-disable-line flowtype/no-weak-types
     deferred: { [string]: string[] | void, ... };
     rehydratedNames: { [string]: boolean, ... };
     ignoreRehydratedNames: { [string]: boolean, ... };
@@ -71,14 +71,14 @@ declare module 'styled-components' {
     rehydrate() : this;
     clone() : StyleSheet;
     sealAllTags() : void;
-    makeTag(tag : ?Tag<any>) : Tag<any>; // eslint-disable-line flowtype/no-weak-types
+    makeTag(tag: ?Tag<any>) : Tag<any>; // eslint-disable-line flowtype/no-weak-types
     getImportRuleTag() : Tag<any>; // eslint-disable-line flowtype/no-weak-types
-    getTagForId(id : string): Tag<any>; // eslint-disable-line flowtype/no-weak-types
+    getTagForId(id: string): Tag<any>; // eslint-disable-line flowtype/no-weak-types
     hasId(id: string) : boolean;
     hasNameForId(id: string, name: string) : boolean;
-    deferredInject(id : string, cssRules : string[]) : void;
-    inject(id: string, cssRules : string[], name? : string) : void;
-    remove(id : string) : void;
+    deferredInject(id: string, cssRules: string[]) : void;
+    inject(id: string, cssRules: string[], name?: string) : void;
+    remove(id: string) : void;
     toHtml() : string;
     toReactElements() : React$ElementType[];
   }
@@ -121,11 +121,11 @@ declare module 'styled-components' {
   }
 
   declare export class KeyFrames {
-    id : string;
-    name : string;
-    rules : string[];
+    id: string;
+    name: string;
+    rules: string[];
 
-    constructor(name : string, rules : string[]) : this;
+    constructor(name: string, rules: string[]) : this;
     inject(StyleSheet) : void;
     toString() : string;
     getName() : string;
@@ -180,18 +180,15 @@ declare module 'styled-components' {
     [[call]]: TaggedTemplateLiteral<PropsWithTheme<StyleProps, Theme>, StyledComponent<StyleProps, Theme, Instance>>;
     +attrs: <A: {...}>(((StyleProps) => A) | A) => TaggedTemplateLiteral<
       PropsWithTheme<{|...$Exact<StyleProps>, ...$Exact<A>|}, Theme>,
-      StyledComponent<React$Config<{|...$Exact<StyleProps>, ...$Exact<A>|}, $Exact<A>>, Theme, Instance>
-    >;
+      StyledComponent<React$Config<{|...$Exact<StyleProps>, ...$Exact<A>|}, $Exact<A>>, Theme, Instance>>;
   |}
 
   declare export type StyledShorthandFactory<V> = {|
     [[call]]: <StyleProps, Theme>(string[], ...Interpolation<PropsWithTheme<StyleProps, Theme>>[]) => StyledComponent<StyleProps, Theme, V>;
     +attrs: <A: {...}, StyleProps = {||}, Theme = {||}>(((StyleProps) => A) | A) => TaggedTemplateLiteral<
       PropsWithTheme<{|...$Exact<StyleProps>, ...$Exact<A>|}, Theme>,
-      StyledComponent<React$Config<{|...$Exact<StyleProps>, ...$Exact<A>|}, $Exact<A>>, Theme, V>
-    >;
+      StyledComponent<React$Config<{|...$Exact<StyleProps>, ...$Exact<A>|}, $Exact<A>>, Theme, V>>;
   |}
-
 
   declare type BuiltinElementInstances = {
     a: React$ElementRef<'a'>,
@@ -335,8 +332,7 @@ declare module 'styled-components' {
 
   declare type ConvenientShorthands = $ObjMap<
     BuiltinElementInstances,
-    <V>(V) => StyledShorthandFactory<V>
-  >
+    <V>(V) => StyledShorthandFactory<V>>
 
   declare interface Styled {
     <StyleProps, Theme, ElementName: $Keys<BuiltinElementInstances>>(ElementName): StyledFactory<StyleProps, Theme, BuiltinElementType<ElementName>>;
@@ -346,73 +342,72 @@ declare module 'styled-components' {
   declare export default Styled & ConvenientShorthands
 }
 
-
 declare module 'styled-components/native' {
-  import type {
-    CSSRules,
-    CSSConstructor,
-    KeyFramesConstructor,
-    CreateGlobalStyleConstructor,
-    StyledComponent,
-    Interpolation,
+    import type {
+        CSSRules,
+        CSSConstructor,
+        KeyFramesConstructor,
+        CreateGlobalStyleConstructor,
+        StyledComponent,
+        Interpolation,
 
-    // "private" types
-    TaggedTemplateLiteral,
-    StyledFactory,
-    StyledShorthandFactory,
-    ThemeProps,
-    PropsWithTheme,
-  } from 'styled-components';
+        // "private" types
+        TaggedTemplateLiteral,
+        StyledFactory,
+        StyledShorthandFactory,
+        ThemeProps,
+        PropsWithTheme,
+    } from 'styled-components';
 
   declare type BuiltinElementInstances = {
-    ActivityIndicator:             React$ComponentType<{...}>,
-    ActivityIndicatorIOS:          React$ComponentType<{...}>,
-    ART:                           React$ComponentType<{...}>,
-    Button:                        React$ComponentType<{...}>,
-    DatePickerIOS:                 React$ComponentType<{...}>,
-    DrawerLayoutAndroid:           React$ComponentType<{...}>,
-    Image:                         React$ComponentType<{...}>,
-    ImageBackground:               React$ComponentType<{...}>,
-    ImageEditor:                   React$ComponentType<{...}>,
-    ImageStore:                    React$ComponentType<{...}>,
-    KeyboardAvoidingView:          React$ComponentType<{...}>,
-    ListView:                      React$ComponentType<{...}>,
-    MapView:                       React$ComponentType<{...}>,
-    Modal:                         React$ComponentType<{...}>,
-    NavigatorIOS:                  React$ComponentType<{...}>,
-    Picker:                        React$ComponentType<{...}>,
-    PickerIOS:                     React$ComponentType<{...}>,
-    ProgressBarAndroid:            React$ComponentType<{...}>,
-    ProgressViewIOS:               React$ComponentType<{...}>,
-    ScrollView:                    React$ComponentType<{...}>,
-    SegmentedControlIOS:           React$ComponentType<{...}>,
-    Slider:                        React$ComponentType<{...}>,
-    SliderIOS:                     React$ComponentType<{...}>,
-    SnapshotViewIOS:               React$ComponentType<{...}>,
-    Switch:                        React$ComponentType<{...}>,
-    RecyclerViewBackedScrollView:  React$ComponentType<{...}>,
-    RefreshControl:                React$ComponentType<{...}>,
-    SafeAreaView:                  React$ComponentType<{...}>,
-    StatusBar:                     React$ComponentType<{...}>,
-    SwipeableListView:             React$ComponentType<{...}>,
-    SwitchAndroid:                 React$ComponentType<{...}>,
-    SwitchIOS:                     React$ComponentType<{...}>,
-    TabBarIOS:                     React$ComponentType<{...}>,
-    Text:                          React$ComponentType<{...}>,
-    TextInput:                     React$ComponentType<{...}>,
-    ToastAndroid:                  React$ComponentType<{...}>,
-    ToolbarAndroid:                React$ComponentType<{...}>,
-    Touchable:                     React$ComponentType<{...}>,
-    TouchableHighlight:            React$ComponentType<{...}>,
-    TouchableNativeFeedback:       React$ComponentType<{...}>,
-    TouchableOpacity:              React$ComponentType<{...}>,
-    TouchableWithoutFeedback:      React$ComponentType<{...}>,
-    View:                          React$ComponentType<{...}>,
-    ViewPagerAndroid:              React$ComponentType<{...}>,
-    WebView:                       React$ComponentType<{...}>,
-    FlatList:                      React$ComponentType<{...}>,
-    SectionList:                   React$ComponentType<{...}>,
-    VirtualizedList:               React$ComponentType<{...}>,
+    ActivityIndicator: React$ComponentType<{...}>,
+    ActivityIndicatorIOS: React$ComponentType<{...}>,
+    ART: React$ComponentType<{...}>,
+    Button: React$ComponentType<{...}>,
+    DatePickerIOS: React$ComponentType<{...}>,
+    DrawerLayoutAndroid: React$ComponentType<{...}>,
+    Image: React$ComponentType<{...}>,
+    ImageBackground: React$ComponentType<{...}>,
+    ImageEditor: React$ComponentType<{...}>,
+    ImageStore: React$ComponentType<{...}>,
+    KeyboardAvoidingView: React$ComponentType<{...}>,
+    ListView: React$ComponentType<{...}>,
+    MapView: React$ComponentType<{...}>,
+    Modal: React$ComponentType<{...}>,
+    NavigatorIOS: React$ComponentType<{...}>,
+    Picker: React$ComponentType<{...}>,
+    PickerIOS: React$ComponentType<{...}>,
+    ProgressBarAndroid: React$ComponentType<{...}>,
+    ProgressViewIOS: React$ComponentType<{...}>,
+    ScrollView: React$ComponentType<{...}>,
+    SegmentedControlIOS: React$ComponentType<{...}>,
+    Slider: React$ComponentType<{...}>,
+    SliderIOS: React$ComponentType<{...}>,
+    SnapshotViewIOS: React$ComponentType<{...}>,
+    Switch: React$ComponentType<{...}>,
+    RecyclerViewBackedScrollView: React$ComponentType<{...}>,
+    RefreshControl: React$ComponentType<{...}>,
+    SafeAreaView: React$ComponentType<{...}>,
+    StatusBar: React$ComponentType<{...}>,
+    SwipeableListView: React$ComponentType<{...}>,
+    SwitchAndroid: React$ComponentType<{...}>,
+    SwitchIOS: React$ComponentType<{...}>,
+    TabBarIOS: React$ComponentType<{...}>,
+    Text: React$ComponentType<{...}>,
+    TextInput: React$ComponentType<{...}>,
+    ToastAndroid: React$ComponentType<{...}>,
+    ToolbarAndroid: React$ComponentType<{...}>,
+    Touchable: React$ComponentType<{...}>,
+    TouchableHighlight: React$ComponentType<{...}>,
+    TouchableNativeFeedback: React$ComponentType<{...}>,
+    TouchableOpacity: React$ComponentType<{...}>,
+    TouchableWithoutFeedback: React$ComponentType<{...}>,
+    View: React$ComponentType<{...}>,
+    ViewPagerAndroid: React$ComponentType<{...}>,
+    WebView: React$ComponentType<{...}>,
+    FlatList: React$ComponentType<{...}>,
+    SectionList: React$ComponentType<{...}>,
+    VirtualizedList: React$ComponentType<{...}>,
     ...
   }
 
@@ -420,8 +415,7 @@ declare module 'styled-components/native' {
 
   declare type ConvenientShorthands = $ObjMap<
     BuiltinElementInstances,
-    <V>(V) => StyledShorthandFactory<V>
-  >
+    <V>(V) => StyledShorthandFactory<V>>
 
   declare interface Styled {
     <StyleProps, Theme, ElementName: $Keys<BuiltinElementInstances>>(ElementName): StyledFactory<StyleProps, Theme, BuiltinElementType<ElementName>>;

@@ -46,7 +46,7 @@ type ReactTestInstance = {
 
 type TestRendererOptions = { createNodeMock(element: React$Element<any>): any, ... };
 
-declare module "react-test-renderer" {
+declare module 'react-test-renderer' {
   declare export type ReactTestRenderer = {
     toJSON(): null | ReactTestRendererJSON,
     toTree(): null | ReactTestRendererTree,
@@ -67,7 +67,7 @@ declare module "react-test-renderer" {
   declare function act(callback: () => void): Thenable;
 }
 
-declare module "react-test-renderer/shallow" {
+declare module 'react-test-renderer/shallow' {
   declare export default class ShallowRenderer {
     static createRenderer(): ShallowRenderer;
     getMountedInstance(): ReactTestInstance;

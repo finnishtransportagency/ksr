@@ -1,5 +1,14 @@
 import { objectToCsv } from '../csvFile';
 
+jest.mock('use-resize-observer', () => ({
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => ({
+        observe: jest.fn(),
+        unobserve: jest.fn(),
+        disconnect: jest.fn(),
+    })),
+}));
+
 describe('csvFile.js', () => {
     it('should correctly make CSV formated string', () => {
         const data = [{

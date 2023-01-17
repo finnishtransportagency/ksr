@@ -9,7 +9,7 @@ type Props = {
     filtered: Object[],
 };
 
-const ModalDownloadCsv = (props: Props) => {
+function ModalDownloadCsv(props: Props) {
     const {
         mergedLayerFeatures,
         filtered,
@@ -71,6 +71,6 @@ const ModalDownloadCsv = (props: Props) => {
         </ModalContainer>
 
     );
-};
+}
 
 export default ModalDownloadCsv;

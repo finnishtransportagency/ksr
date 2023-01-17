@@ -16,7 +16,7 @@ describe('offline - actions', () => {
         await db.open();
         const edits = await db.getAllEdits(true);
         await Promise.all(edits.map(edit => db.removeEdit(edit.key)));
-        return await db.close();
+        return db.close();
     };
 
     it('should handleFailedEdits', () => {

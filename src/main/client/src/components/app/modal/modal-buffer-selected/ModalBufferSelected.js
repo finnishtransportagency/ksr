@@ -121,8 +121,7 @@ class ModalBufferSelected extends Component<Props, State> {
             <ModalContainer
                 title={singleFeature
                     ? strings.modalBufferSelectedData.titleSingleFeature
-                    : strings.modalBufferSelectedData.title
-                }
+                    : strings.modalBufferSelectedData.title}
                 modalSubmit={modalSubmit}
                 cancelText={strings.modalBufferSelectedData.cancel}
             >

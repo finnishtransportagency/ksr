@@ -57,7 +57,7 @@ export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
             }
             return res;
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
 /**

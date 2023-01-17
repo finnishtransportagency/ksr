@@ -19,7 +19,9 @@ const initialState: State = {
 
 class ModalDrawText extends React.Component<Props, State> {
     handleTextChange: Function; // eslint-disable-line react/sort-comp
+
     handleModalSubmit: Function; // eslint-disable-line react/sort-comp
+
     handleModalCancel: Function; // eslint-disable-line react/sort-comp
 
     constructor(props: Props) {
@@ -47,7 +49,6 @@ class ModalDrawText extends React.Component<Props, State> {
     handleModalCancel() {
         this.props.setActiveTool('');
     }
-
 
     render() {
         const { text } = this.state;

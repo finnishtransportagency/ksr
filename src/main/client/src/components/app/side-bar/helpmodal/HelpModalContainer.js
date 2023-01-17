@@ -5,7 +5,6 @@ import strings from '../../../../translations';
 import CloseButtonContainer from './CloseButtonContainer';
 import HelpModalView from './HelpModalView';
 
-
 const HelpModalContainer = styled.div`
   height: 100%;
   width: 100%;
@@ -21,7 +20,7 @@ type Props = {
   onClickOutside: Function,
 }
 
-const HelpModal = ({ onClickOutside }: Props) => {
+function HelpModal({ onClickOutside }: Props) {
     const ref = useRef(null);
 
     useEffect(() => {
@@ -48,6 +47,6 @@ const HelpModal = ({ onClickOutside }: Props) => {
             </HelpModalView>
         </HelpModalContainer>
     );
-};
+}
 
 export default HelpModal;

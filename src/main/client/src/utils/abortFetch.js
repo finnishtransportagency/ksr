@@ -25,4 +25,3 @@ export const abortFetch = (controller: any) => {
         signal: undefined,
     };
 };
-

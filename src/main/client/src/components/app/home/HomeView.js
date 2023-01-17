@@ -30,23 +30,25 @@ const toastProps = {
     closeButton: false,
 };
 
-const HomeView = ({ loading }: Props) => (
-    <Fragment>
-        { loading && (
-            <LoadingWrapper>
-                <LoadingIcon size={20} loading={loading} />
-            </LoadingWrapper>
-        )}
-        <SideNavContainer />
-        <SideBarContainer />
-        <InitMapContainer />
-        <TableContainer />
-        <ModalContainer />
-        <PortalContainer />
-        <Toast>
-            <ToastContainer {...toastProps} />
-        </Toast>
-    </Fragment>
-);
+function HomeView({ loading }: Props) {
+    return (
+        <>
+            { loading && (
+                <LoadingWrapper>
+                    <LoadingIcon size={20} loading={loading} />
+                </LoadingWrapper>
+            )}
+            <SideNavContainer />
+            <SideBarContainer />
+            <InitMapContainer />
+            <TableContainer />
+            <ModalContainer />
+            <PortalContainer />
+            <Toast>
+                <ToastContainer {...toastProps} />
+            </Toast>
+        </>
+    );
+}
 
 export default HomeView;

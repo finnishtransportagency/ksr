@@ -15,9 +15,9 @@ type Props = {
     layersViewableZoomOut: Object[],
 };
 
-const MapLayerToggle = ({
+function MapLayerToggle({
     layer, mapScale, toggleLayer, childLayer, toggleVisibleZoomOut, layersViewableZoomOut,
-}: Props) => {
+}: Props) {
     const matching = layersViewableZoomOut !== undefined
         ? layersViewableZoomOut.find(l => l.id === layer.id)
         : undefined;
@@ -73,32 +73,30 @@ const MapLayerToggle = ({
     const getContent = () => {
         if (matchingAndOriginallyHidden || !layerViewable(layer, mapScale)) {
             return (
-                <Fragment>
+                <>
                     {(shouldShowZoomOutToggle && matching)
                         ? (
-                            <Fragment>
-                                <div
-                                    className="symbolWrapper"
-                                    ref={(node) => {
-                                        if (node) {
-                                            const eyeNode: HTMLElement = document.createElement('i');
-                                            eyeNode.className = 'fas fa-eye';
-                                            node.innerHTML = '';
-                                            node.appendChild(layer.legendSymbol.cloneNode(true));
-                                            node.appendChild(eyeNode);
-                                        }
-                                    }}
-                                />
-                            </Fragment>
+                            <div
+                                className="symbolWrapper"
+                                ref={(node) => {
+                                    if (node) {
+                                        const eyeNode: HTMLElement = document.createElement('i');
+                                        eyeNode.className = 'fas fa-eye';
+                                        node.innerHTML = '';
+                                        node.appendChild(layer.legendSymbol.cloneNode(true));
+                                        node.appendChild(eyeNode);
+                                    }
+                                }}
+                            />
                         )
                         : <i className="fas fa-eye-slash" />}
 
                     {shouldShowZoomOutToggle && <MapLayerToggleIcon visible={matching} /> }
-                </Fragment>
+                </>
             );
         } if (layer.legendSymbol) {
             return (
-                <Fragment>
+                <>
                     <div
                         className="symbolWrapper"
                         ref={(node) => {
@@ -109,7 +107,7 @@ const MapLayerToggle = ({
                         }}
                     />
                     <MapLayerToggleIcon visible={layer.visible} />
-                </Fragment>
+                </>
             );
         }
         return <MapLayerToggleIcon visible={layer.visible} />;
@@ -134,7 +132,7 @@ const MapLayerToggle = ({
     };
 
     return (
-        <Fragment>
+        <>
             <LayerSettings.Toggle
                 title={getTitle(layer, mapScale)}
                 onClick={onClick}
@@ -158,10 +156,9 @@ const MapLayerToggle = ({
                         }}
                     />,
                     getTooltip()]
-                )
-            }
-        </Fragment>
+                )}
+        </>
     );
-};
+}
 
 export default MapLayerToggle;

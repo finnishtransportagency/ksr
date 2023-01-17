@@ -23,7 +23,7 @@ type Props = {
     loadingLayers: string[],
 };
 
-const MapLayerView = ({
+function MapLayerView({
     layer,
     isUserlayer,
     handleLayerClick,
@@ -33,58 +33,60 @@ const MapLayerView = ({
     layerList,
     showConfirmModal,
     loadingLayers,
-}: Props) => (
-    <LayerGroup.Layer>
-        {loadingLayers.some(ll => ll === layer.id) && <LoadingIcon size={6} loading />}
-        <LayerGroup.Layer.Label
-            htmlFor={layer.id}
-            failOnLoad={nestedVal(layerList.find(l => l.id === layer.id), ['failOnLoad'])}
-        >
-            <input
-                disabled={inputDisabled || loadingLayers.some(ll => ll === layer.id)}
-                onChange={handleLayerClick}
-                checked={checked}
-                type="checkbox"
-                value={layer.name}
-                id={layer.id}
-            />
-            {
-                layer.type === 'agfl'
+}: Props) {
+    return (
+        <LayerGroup.Layer>
+            {loadingLayers.some(ll => ll === layer.id) && <LoadingIcon size={6} loading />}
+            <LayerGroup.Layer.Label
+                htmlFor={layer.id}
+                failOnLoad={nestedVal(layerList.find(l => l.id === layer.id), ['failOnLoad'])}
+            >
+                <input
+                    disabled={inputDisabled || loadingLayers.some(ll => ll === layer.id)}
+                    onChange={handleLayerClick}
+                    checked={checked}
+                    type="checkbox"
+                    value={layer.name}
+                    id={layer.id}
+                />
+                {
+                    layer.type === 'agfl'
                 && (
-                    <Fragment>
+                    <>
                         <i className="fas fa-table" />
                         {' '}
                         <span>{layer.name}</span>
-                    </Fragment>
+                    </>
                 )
-            }
+                }
+                {
+                    layer.type !== 'agfl' && <span>{layer.name}</span>
+                }
+            </LayerGroup.Layer.Label>
             {
-                layer.type !== 'agfl' && <span>{layer.name}</span>
+                layer.userLayer && isUserlayer
+                    ? (
+                        <LayerGroup.Layer.RemoveIcon
+                            data-balloon={strings.mapLayerView.removeTooltip}
+                            data-balloon-pos="left"
+                            onClick={() => {
+                                if (!loadingLayers.some(ll => ll === layer.id)) {
+                                    showConfirmModal(
+                                        strings.modalRemoveUserLayer.content,
+                                        strings.modalRemoveUserLayer.submit,
+                                        strings.modalRemoveUserLayer.cancel,
+                                        () => { removeUserLayer(layerList); },
+                                    );
+                                }
+                            }}
+                        >
+                            <i className="fas fa-trash" />
+                        </LayerGroup.Layer.RemoveIcon>
+                    )
+                    : null
             }
-        </LayerGroup.Layer.Label>
-        {
-            layer.userLayer && isUserlayer
-                ? (
-                    <LayerGroup.Layer.RemoveIcon
-                        data-balloon={strings.mapLayerView.removeTooltip}
-                        data-balloon-pos="left"
-                        onClick={() => {
-                            if (!loadingLayers.some(ll => ll === layer.id)) {
-                                showConfirmModal(
-                                    strings.modalRemoveUserLayer.content,
-                                    strings.modalRemoveUserLayer.submit,
-                                    strings.modalRemoveUserLayer.cancel,
-                                    () => { removeUserLayer(layerList); },
-                                );
-                            }
-                        }}
-                    >
-                        <i className="fas fa-trash" />
-                    </LayerGroup.Layer.RemoveIcon>
-                )
-                : null
-        }
-    </LayerGroup.Layer>
-);
+        </LayerGroup.Layer>
+    );
+}
 
 export default MapLayerView;

@@ -10,16 +10,18 @@ type Props = {
     setColor: (string) => void,
 };
 
-const ModalShapefileView = ({
+function ModalShapefileView({
     onDrop,
     acceptedFiles,
     color,
     setColor,
-}: Props) => (
-    <Fragment>
-        <ShapefileDropView onDrop={onDrop} acceptedFiles={acceptedFiles} />
-        <ShapefileColorView color={color} setColor={setColor} />
-    </Fragment>
-);
+}: Props) {
+    return (
+        <>
+            <ShapefileDropView onDrop={onDrop} acceptedFiles={acceptedFiles} />
+            <ShapefileColorView color={color} setColor={setColor} />
+        </>
+    );
+}
 
 export default ModalShapefileView;

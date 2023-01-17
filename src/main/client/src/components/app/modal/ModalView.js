@@ -25,27 +25,29 @@ type Props = {
     confirmModal: boolean,
 };
 
-const ModalView = ({ activeModal, confirmModal }: Props) => (
-    <Fragment>
-        {activeModal === 'filter' && <ModalFilterContainer />}
-        {activeModal === 'deleteSelected' && <ModalDeleteSelectedContainer />}
-        {activeModal === 'bufferSelectedData' && <ModalBufferSelectedContainer />}
-        {activeModal === 'extractSelectedData' && <ModalExtractSelectedContainer />}
-        {activeModal === 'addUserLayer' && <ModalAddUserLayerContainer />}
-        {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
-        {activeModal === 'newWorkspace' && <ModalNewWorkspaceContainer />}
-        {activeModal === 'shapefile' && <ModalShapefileContainer />}
-        {activeModal === 'drawText' && <ModalDrawTextContainer />}
-        {activeModal === 'featureContracts' && <ModalFeatureContractsContainer />}
-        {activeModal === 'offlineSave' && <ModalOfflineSavedView />}
-        {activeModal === 'themeLayer' && <ModalThemeLayerContainer />}
-        {activeModal === 'contractDetails' && <ModalContractDetailsContainer />}
-        {activeModal === 'downloadCSV' && <ModalDownloadCsvContainer />}
-        {activeModal === 'zoomToFeatures' && <ModalZoomToFeaturesContainer />}
-        {activeModal === 'showAddress' && <ModalShowAddressContainer />}
-        {activeModal === 'singleFeatureInfo' && <ModalSingleFeatureInfo />}
-        {confirmModal && <ConfirmModalContainer />}
-    </Fragment>
-);
+function ModalView({ activeModal, confirmModal }: Props) {
+    return (
+        <>
+            {activeModal === 'filter' && <ModalFilterContainer />}
+            {activeModal === 'deleteSelected' && <ModalDeleteSelectedContainer />}
+            {activeModal === 'bufferSelectedData' && <ModalBufferSelectedContainer />}
+            {activeModal === 'extractSelectedData' && <ModalExtractSelectedContainer />}
+            {activeModal === 'addUserLayer' && <ModalAddUserLayerContainer />}
+            {activeModal === 'editLayerDetails' && <ModalLayerDetailsContainer />}
+            {activeModal === 'newWorkspace' && <ModalNewWorkspaceContainer />}
+            {activeModal === 'shapefile' && <ModalShapefileContainer />}
+            {activeModal === 'drawText' && <ModalDrawTextContainer />}
+            {activeModal === 'featureContracts' && <ModalFeatureContractsContainer />}
+            {activeModal === 'offlineSave' && <ModalOfflineSavedView />}
+            {activeModal === 'themeLayer' && <ModalThemeLayerContainer />}
+            {activeModal === 'contractDetails' && <ModalContractDetailsContainer />}
+            {activeModal === 'downloadCSV' && <ModalDownloadCsvContainer />}
+            {activeModal === 'zoomToFeatures' && <ModalZoomToFeaturesContainer />}
+            {activeModal === 'showAddress' && <ModalShowAddressContainer />}
+            {activeModal === 'singleFeatureInfo' && <ModalSingleFeatureInfo />}
+            {confirmModal && <ConfirmModalContainer />}
+        </>
+    );
+}
 
 export default ModalView;

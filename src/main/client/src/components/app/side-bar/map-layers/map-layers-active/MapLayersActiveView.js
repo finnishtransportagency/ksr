@@ -21,7 +21,7 @@ type Props = {
     layersVisibleZoomOut: Object[],
 };
 
-const MapLayersView = ({
+function MapLayersView({
     mapLayerList,
     onDragEnd,
     onOpacityChange,
@@ -35,8 +35,8 @@ const MapLayersView = ({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) => (
-    <Fragment>
+}: Props) {
+    return (
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
                 {dropProvided => (
@@ -98,7 +98,7 @@ const MapLayersView = ({
                 )}
             </Droppable>
         </DragDropContext>
-    </Fragment>
-);
+    );
+}
 
 export default MapLayersView;

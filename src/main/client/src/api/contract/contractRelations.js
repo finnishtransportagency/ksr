@@ -13,7 +13,7 @@ export const fetchContractRelation = (layerId: number, objectId: number): any =>
     fetch(`api/contract/${layerId}/${objectId}`, config())
         .then(handleErrors)
         .then(r => r.json())
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );
 
 /**
@@ -42,7 +42,7 @@ export const linkContract = (
             if (res.ok && res.status === 200) return 'exists';
             return null;
         })
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );
 
 /**
@@ -67,7 +67,7 @@ export const unlinkContract = (
     })
         .then(res => res.ok && res.status === 200)
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return false;
         })
 );

@@ -20,7 +20,7 @@ type Props = {
 };
 
 class Search extends Component<Props, null> {
-    abortController: ?Object = null; // eslint-disable-line react/sort-comp
+    // abortController: ?Object = null; // eslint-disable-line react/sort-comp
 
     constructor(props: Props) {
         super(props);

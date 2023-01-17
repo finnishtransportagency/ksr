@@ -15,7 +15,7 @@ type Props = {
     activeTool: string,
 };
 
-const SketchToolView = ({
+function SketchToolView({
     removeSelection,
     drawRectangleButtonRef,
     drawPolygonButtonRef,
@@ -25,8 +25,8 @@ const SketchToolView = ({
     hasSelectedFeatures,
     isOpen,
     activeTool,
-}: Props) => (
-    <Fragment>
+}: Props) {
+    return (
         <div id="select-tool-outer-wrapper">
             <div
                 style={{ visibility: hasSelectedFeatures ? 'visible' : 'hidden' }}
@@ -79,7 +79,7 @@ const SketchToolView = ({
                 <span className="esri-icon-navigation" />
             </div>
         </div>
-    </Fragment>
-);
+    );
+}
 
 export default SketchToolView;

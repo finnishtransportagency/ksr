@@ -20,7 +20,7 @@ export const fetchWorkspace = (workspaceName: ?string, isPublic: boolean) => {
                 }
                 return null;
             })
-            .catch(err => console.log(err));
+            .catch(err => console.error(err));
     }
     return fetch('api/workspace', config())
         .then((r) => {
@@ -29,7 +29,7 @@ export const fetchWorkspace = (workspaceName: ?string, isPublic: boolean) => {
             }
             return null;
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
 /**

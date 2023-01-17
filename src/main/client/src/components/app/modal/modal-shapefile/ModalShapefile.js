@@ -29,7 +29,6 @@ const getFileByExtension = (files, extension) => files
         && file.name
         && file.name.split('.').pop() === extension);
 
-
 class ModalShapefile extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -115,20 +114,18 @@ class ModalShapefile extends Component<Props, State> {
         }];
 
         return (
-            <Fragment>
-                <ModalContainer
-                    title={strings.modalShapefile.title}
-                    modalSubmit={modalSubmit}
-                    cancelText={strings.modalShapefile.cancelText}
-                >
-                    <ModalShapefileView
-                        onDrop={this.onDrop}
-                        acceptedFiles={acceptedFiles}
-                        color={color}
-                        setColor={this.setColor}
-                    />
-                </ModalContainer>
-            </Fragment>
+            <ModalContainer
+                title={strings.modalShapefile.title}
+                modalSubmit={modalSubmit}
+                cancelText={strings.modalShapefile.cancelText}
+            >
+                <ModalShapefileView
+                    onDrop={this.onDrop}
+                    acceptedFiles={acceptedFiles}
+                    color={color}
+                    setColor={this.setColor}
+                />
+            </ModalContainer>
         );
     }
 }

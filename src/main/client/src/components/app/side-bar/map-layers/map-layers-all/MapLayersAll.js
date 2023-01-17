@@ -132,7 +132,8 @@ class MapLayersActive extends Component<Props> {
                         ? group.layers
                         : group.layers.filter(layer => nestedVal(
                             layer.relations && layer.relations.find(r => r),
-                            ['relationType'], '',
+                            ['relationType'],
+                            '',
                         ) !== 'link')
                             .filter(layer => layer.name
                                 .toLowerCase().includes(layersToFindTrimmed)),

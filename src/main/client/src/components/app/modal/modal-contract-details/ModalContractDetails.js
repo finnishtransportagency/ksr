@@ -36,7 +36,7 @@ type Props = {
     updateRelatedLayersData: (layers: Object[]) => void;
 };
 
-const ModalContractDetails = (props: Props) => {
+function ModalContractDetails(props: Props) {
     let isMounted: boolean = true;
 
     const {
@@ -339,7 +339,7 @@ const ModalContractDetails = (props: Props) => {
             cancelText={cancelText}
             handleGoBack={handleGoBack}
         >
-            <Fragment>
+            <>
                 {activeView === 'contractDetails' && (
                     <ModalContractDetailsView
                         contractLayer={contractLayer}
@@ -382,9 +382,9 @@ const ModalContractDetails = (props: Props) => {
                         existingAttributes={existingAttributes}
                     />
                 )}
-            </Fragment>
+            </>
         </ModalContainer>
     );
-};
+}
 
 export default ModalContractDetails;

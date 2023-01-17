@@ -1,7 +1,7 @@
 // flow-typed signature: 7a1f2db09f1e8a40d686f3e56d9112ac
 // flow-typed version: c6154227d1/react-custom-scrollbars_v4.2.x/flow_>=v0.104.x
 
-declare module "react-custom-scrollbars" {
+declare module 'react-custom-scrollbars' {
   declare type PositionValues = {
     top: number,
     left: number,

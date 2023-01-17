@@ -29,7 +29,7 @@ export const fetchSearchQuery = (
         if (!r.error && r.features.length > 0) data.layers.push({ ...r, id: layerId, title });
         return data;
     })
-    .catch(err => console.log(err));
+    .catch(err => console.error(err));
 
 /**
  * Fetch search suggestions for given column.
@@ -67,7 +67,7 @@ export const fetchSearchSuggestions = (
         }
         return [];
     })
-    .catch(err => console.log(err));
+    .catch(err => console.error(err));
 
 /**
  * Query for finding features with given layer and query string.
@@ -91,4 +91,4 @@ export const queryFeatures = (
 }`, { ...config(), signal })
     .then(handleErrors)
     .then(r => r.json())
-    .catch(err => console.log(err));
+    .catch(err => console.error(err));

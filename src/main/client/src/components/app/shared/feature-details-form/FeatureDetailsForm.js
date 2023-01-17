@@ -17,7 +17,7 @@ type Props = {
 let controller;
 let signal;
 let existsQuery;
-const FeatureDetailsForm = (props: Props) => {
+function FeatureDetailsForm(props: Props) {
     const {
         layer, setFormOptions, formType, existingAttributes,
     } = props;
@@ -285,7 +285,7 @@ const FeatureDetailsForm = (props: Props) => {
             requiredUniqueFields={requiredUniqueFields}
         />
     );
-};
+}
 
 FeatureDetailsForm.defaultProps = {
     existingAttributes: {},

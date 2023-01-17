@@ -5,8 +5,8 @@ type Props = {
     visible: boolean,
 };
 
-const MapLayerToggleIcon = ({ visible }: Props) => (
-    <i className={visible ? 'fas fa-toggle-on' : 'fas fa-toggle-off'} />
-);
+function MapLayerToggleIcon({ visible }: Props) {
+    return <i className={visible ? 'fas fa-toggle-on' : 'fas fa-toggle-off'} />;
+}
 
 export default MapLayerToggleIcon;

@@ -19,7 +19,7 @@ type Props = {
     layersToFind: string,
 };
 
-const MapLayersAllView = ({
+function MapLayersAllView({
     layerGroups,
     layerList,
     handleGroupClick,
@@ -28,35 +28,36 @@ const MapLayersAllView = ({
     handleLayerGroupClick,
     loadingLayers,
     layersToFind,
-}: Props) => (
-    <Fragment>
-        {
-            layerGroups.some(group => group.layers.length)
-                ? (
-                    layerGroups.map(lg => lg.layers.length > 0 && (
-                        <LayerGroup
-                            key={lg.id}
-                            active={activeGroups.some(group => group === lg.id)}
-                        >
-                            <LayerGroup.Header>
-                                <LayerGroup.Span
-                                    onClick={() => handleGroupClick(lg.id)}
-                                >
-                                    {lg.name}
-                                </LayerGroup.Span>
-                                <LayerGroup.Loading onClick={() => handleGroupClick(lg.id)}>
-                                    <LoadingIcon
-                                        size={8}
-                                        loading={loadingLayers.some(ll => lg.layers.some(l => l.id
+}: Props) {
+    return (
+        <>
+            {
+                layerGroups.some(group => group.layers.length)
+                    ? (
+                        layerGroups.map(lg => lg.layers.length > 0 && (
+                            <LayerGroup
+                                key={lg.id}
+                                active={activeGroups.some(group => group === lg.id)}
+                            >
+                                <LayerGroup.Header>
+                                    <LayerGroup.Span
+                                        onClick={() => handleGroupClick(lg.id)}
+                                    >
+                                        {lg.name}
+                                    </LayerGroup.Span>
+                                    <LayerGroup.Loading onClick={() => handleGroupClick(lg.id)}>
+                                        <LoadingIcon
+                                            size={8}
+                                            loading={loadingLayers.some(ll => lg.layers.some(l => l.id
                                             === ll))}
-                                    />
-                                </LayerGroup.Loading>
-                                <CheckboxWrapper>
-                                    <Checkbox
-                                        htmlFor={lg.name}
-                                        layerAllView
-                                        checkedSome={
-                                            layerList.filter(layer => layer.layerGroupName
+                                        />
+                                    </LayerGroup.Loading>
+                                    <CheckboxWrapper>
+                                        <Checkbox
+                                            htmlFor={lg.name}
+                                            layerAllView
+                                            checkedSome={
+                                                layerList.filter(layer => layer.layerGroupName
                                             === lg.name
                                             && !layer.failOnLoad
                                             && layer.relationType !== 'link'
@@ -66,7 +67,7 @@ const MapLayersAllView = ({
                                                     || layer.name.toLowerCase()
                                                         .includes(layersToFind))
                                                 : true))
-                                                .some(l => l.active)
+                                                    .some(l => l.active)
                                             && !layerList.filter(layer => layer.layerGroupName
                                                 === lg.name
                                                 && !layer.parentLayer
@@ -74,7 +75,8 @@ const MapLayersAllView = ({
                                                 && nestedVal(
                                                     layer.relations
                                                     && layer.relations.find(r => r),
-                                                    ['relationType'], '',
+                                                    ['relationType'],
+                                                    '',
                                                 ) !== 'link'
                                                 && (layersToFind
                                                     ? (layer.layerGroupName.toLowerCase()
@@ -83,22 +85,23 @@ const MapLayersAllView = ({
                                                             .includes(layersToFind))
                                                     : true))
                                                 .every(l => l.active)
-                                        }
-                                    >
-                                        <Checkbox.Input
-                                            hidden
-                                            id={lg.name}
-                                            name={lg.name}
-                                            type="checkbox"
-                                            checked={
-                                                layerList.filter(layer => layer.layerGroupName
+                                            }
+                                        >
+                                            <Checkbox.Input
+                                                hidden
+                                                id={lg.name}
+                                                name={lg.name}
+                                                type="checkbox"
+                                                checked={
+                                                    layerList.filter(layer => layer.layerGroupName
                                                     === lg.name
                                                     && !layer.parentLayer
                                                     && !layer.failOnLoad
                                                     && nestedVal(
                                                         layer.relations
                                                         && layer.relations.find(r => r),
-                                                        ['relationType'], '',
+                                                        ['relationType'],
+                                                        '',
                                                     ) !== 'link'
                                                     && (layersToFind
                                                         ? (layer.layerGroupName.toLowerCase()
@@ -113,7 +116,8 @@ const MapLayersAllView = ({
                                                     && nestedVal(
                                                         layer.relations
                                                         && layer.relations.find(r => r),
-                                                        ['relationType'], '',
+                                                        ['relationType'],
+                                                        '',
                                                     ) !== 'link'
                                                     && (layersToFind
                                                         ? (layer.layerGroupName.toLowerCase()
@@ -122,39 +126,40 @@ const MapLayersAllView = ({
                                                                 .includes(layersToFind))
                                                         : true))
                                                     .every(l => l.active)
+                                                }
+                                                onChange={() => handleLayerGroupClick(lg.name)}
+                                            />
+                                            <Checkbox.Checkmark layerAllView />
+                                        </Checkbox>
+                                    </CheckboxWrapper>
+                                    <div
+                                        className="arrow-wrapper"
+                                        role="checkbox"
+                                        aria-checked="false"
+                                        aria-labelledby={lg.name}
+                                        tabIndex={lg.id}
+                                        onClick={() => handleGroupClick(lg.id)}
+                                        onKeyPress={() => handleGroupClick(lg.id)}
+                                    >
+                                        <i
+                                            className={
+                                                activeGroups.some(group => group === lg.id)
+                                                    ? 'fas fa-chevron-up'
+                                                    : 'fas fa-chevron-down'
                                             }
-                                            onChange={() => handleLayerGroupClick(lg.name)}
                                         />
-                                        <Checkbox.Checkmark layerAllView />
-                                    </Checkbox>
-                                </CheckboxWrapper>
-                                <div
-                                    className="arrow-wrapper"
-                                    role="checkbox"
-                                    aria-checked="false"
-                                    aria-labelledby={lg.name}
-                                    tabIndex={lg.id}
-                                    onClick={() => handleGroupClick(lg.id)}
-                                    onKeyPress={() => handleGroupClick(lg.id)}
+                                    </div>
+                                </LayerGroup.Header>
+                                <LayerGroup.Content
+                                    hidden={!activeGroups.some(group => group === lg.id)}
                                 >
-                                    <i
-                                        className={
-                                            activeGroups.some(group => group === lg.id)
-                                                ? 'fas fa-chevron-up'
-                                                : 'fas fa-chevron-down'
-                                        }
-                                    />
-                                </div>
-                            </LayerGroup.Header>
-                            <LayerGroup.Content
-                                hidden={!activeGroups.some(group => group === lg.id)}
-                            >
-                                {lg.layers.filter(layer => (nestedVal(
-                                    layer.relations && layer.relations.find(r => r),
-                                    ['relationType'], '',
-                                ) !== 'link'))
-                                    .sort((a, b) => b.layerOrder - a.layerOrder)
-                                    .map(l => (layerList.find(layer => layer.id === l.id
+                                    {lg.layers.filter(layer => (nestedVal(
+                                        layer.relations && layer.relations.find(r => r),
+                                        ['relationType'],
+                                        '',
+                                    ) !== 'link'))
+                                        .sort((a, b) => b.layerOrder - a.layerOrder)
+                                        .map(l => (layerList.find(layer => layer.id === l.id
                                             && !layer.parentLayer)
                                         && (
                                             <MapLayerContainer
@@ -165,19 +170,20 @@ const MapLayersAllView = ({
                                                 handleLayerClick={handleLayerClick}
                                                 checked={nestedVal(
                                                     layerList.find(layer => layer.id === l.id),
-                                                    ['active'], false,
+                                                    ['active'],
+                                                    false,
                                                 )}
                                             />
                                         )
-                                    ))
-                                }
-                            </LayerGroup.Content>
-                        </LayerGroup>
-                    ))
-                )
-                : <NoLayersFoundWrapper>{strings.mapLayers.noLayersFound}</NoLayersFoundWrapper>
-        }
-    </Fragment>
-);
+                                        ))}
+                                </LayerGroup.Content>
+                            </LayerGroup>
+                        ))
+                    )
+                    : <NoLayersFoundWrapper>{strings.mapLayers.noLayersFound}</NoLayersFoundWrapper>
+            }
+        </>
+    );
+}
 
 export default MapLayersAllView;

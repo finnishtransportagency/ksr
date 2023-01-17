@@ -60,7 +60,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-
 const mapDispatchToProps = dispatch => ({
     selectFeatures: (features) => {
         dispatch(selectFeatures(features));

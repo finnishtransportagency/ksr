@@ -14,10 +14,10 @@ type Props = {
     disabled: boolean
 };
 
-const FormFieldView = ({
+function FormFieldView({
     index, field, handleOnChange, fetching, valid, disabled,
-}: Props) => (
-    <Fragment>
+}: Props) {
+    return (
         <label
             htmlFor={index}
         >
@@ -35,8 +35,7 @@ const FormFieldView = ({
                         data-balloon={(!fetching && !valid)
                         || (field.data.trim().length === 0)
                             ? `${field.label} ${strings.modalFeatureContracts.addEditContract.contractFound}`
-                            : null
-                        }
+                            : null}
                         data-balloon-pos="left"
                         data-balloon-length="large"
                     >
@@ -54,8 +53,7 @@ const FormFieldView = ({
                     index={index}
                     disabled={disabled}
                 />
-            )
-            }
+            )}
             {field.nullable
             && (
                 <FieldInputView
@@ -64,10 +62,9 @@ const FormFieldView = ({
                     index={index}
                     disabled={disabled}
                 />
-            )
-            }
+            )}
         </label>
-    </Fragment>
-);
+    );
+}
 
 export default FormFieldView;

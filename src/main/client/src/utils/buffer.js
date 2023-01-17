@@ -6,7 +6,6 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 
-
 /**
  * Creates an esri.Graphic for highlight purposes from given geometry.
  *
@@ -135,9 +134,11 @@ export const setBuffer = async (
 
         if (geomToBuffer.length > 0) {
             const featureBuffers = geometryEngine.buffer(
-                geomToBuffer, [
+                geomToBuffer,
+                [
                     distance,
-                ], 'meters',
+                ],
+                'meters',
                 true,
             );
 
@@ -164,9 +165,11 @@ export const setSingleFeatureBuffer = (
 ) => {
     if (view && selectedGeometryData.length > 0) {
         const featureBuffers = geometryEngine.buffer(
-            selectedGeometryData, [
+            selectedGeometryData,
+            [
                 distance,
-            ], 'meters',
+            ],
+            'meters',
             true,
         );
 

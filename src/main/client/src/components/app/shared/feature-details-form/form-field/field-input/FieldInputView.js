@@ -12,9 +12,9 @@ type Props = {
     disabled: boolean,
 };
 
-const FieldInputView = ({
+function FieldInputView({
     field, handleOnChange, index, disabled,
-}: Props) => {
+}: Props) {
     if (
         field.domain
         && (field.domain.type === 'codedValue' || field.domain.type === 'coded-value')
@@ -62,6 +62,6 @@ const FieldInputView = ({
             min={field.min}
         />
     );
-};
+}
 
 export default FieldInputView;

@@ -10,10 +10,10 @@ type Props = {
     activeNav: string,
 };
 
-const SideNavView = ({ setActiveNav, activeNav }: Props) => {
+function SideNavView({ setActiveNav, activeNav }: Props) {
     const [showHelpModal, setShowHelpModal] = useState(false);
     return (
-        <React.Fragment>
+        <>
             <SideNav>
                 <SideNav.Logo onClick={() => { setActiveNav(''); }}>
                     <img src="images/VAYLAwhite.png" alt="" />
@@ -76,10 +76,9 @@ const SideNavView = ({ setActiveNav, activeNav }: Props) => {
 
             && (
                 <HelpModalContainer onClickOutside={() => setShowHelpModal(false)} />
-            )
-            }
-        </React.Fragment>
+            )}
+        </>
     );
-};
+}
 
 export default SideNavView;

@@ -50,7 +50,6 @@ const toggleLayerVisibleZoomOut = (state, action) => {
     };
 };
 
-
 export default (state: Object = initialState, action: Action) => {
     switch (action.type) {
         case SET_MAP_VIEW:

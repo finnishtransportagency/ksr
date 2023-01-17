@@ -337,16 +337,14 @@ class ModalFeatureContracts extends Component<Props, State> {
                 handleModalCancel={this.handleModalCancel}
                 cancelText={activeView !== 'contractList'
                     ? strings.modalFeatureContracts.backText
-                    : strings.modalFeatureContracts.cancelText
-                }
+                    : strings.modalFeatureContracts.cancelText}
                 handleGoBack={activeView !== 'contractList'
                     ? () => {
                         this.handleGoBack();
                     }
-                    : null
-                }
+                    : null}
             >
-                <Fragment>
+                <>
                     {activeView === 'contractList' && (
                         <ContractListContainer
                             setActiveView={this.setActiveView}
@@ -375,7 +373,7 @@ class ModalFeatureContracts extends Component<Props, State> {
                             fields={nestedVal(contractLayers.find(c => c.id === layerId), ['fields'])}
                         />
                     )}
-                </Fragment>
+                </>
             </ModalContainer>
         );
     }

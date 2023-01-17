@@ -23,7 +23,7 @@ type Props = {
 };
 
 /** Table actions that are only visible for currently active admin table */
-const AdminLayerView = ({
+function AdminLayerView({
     isOpen,
     setActiveModal,
     activeDelete,
@@ -35,48 +35,50 @@ const AdminLayerView = ({
     addressField,
     view,
     hasTableEdited,
-}: Props) => (
-    <Fragment>
-        <Table.Button
-            title={strings.reactTable.saveEditedData}
-            tableOpen={isOpen}
-            disabled={!hasTableEdited}
-            onClick={
-                hasTableEdited
-                    ? () => {
-                        showConfirmModal(
-                            strings.modalSaveEditedData.content,
-                            strings.modalSaveEditedData.submit,
-                            strings.modalSaveEditedData.cancel,
-                            () => {
-                                saveEditedFeatures(
-                                    view,
-                                    editedLayers,
-                                    featureType,
-                                    addressField,
-                                );
-                            },
-                        );
+}: Props) {
+    return (
+        <>
+            <Table.Button
+                title={strings.reactTable.saveEditedData}
+                tableOpen={isOpen}
+                disabled={!hasTableEdited}
+                onClick={
+                    hasTableEdited
+                        ? () => {
+                            showConfirmModal(
+                                strings.modalSaveEditedData.content,
+                                strings.modalSaveEditedData.submit,
+                                strings.modalSaveEditedData.cancel,
+                                () => {
+                                    saveEditedFeatures(
+                                        view,
+                                        editedLayers,
+                                        featureType,
+                                        addressField,
+                                    );
+                                },
+                            );
+                        } : null
+                }
+                admin
+            >
+                <i className="fas fa-save" />
+            </Table.Button>
+            <Table.Button
+                title={strings.reactTable.deleteSelected}
+                tableOpen={isOpen}
+                disabled={!activeDelete || !selectedAdminData}
+                onClick={
+                    activeDelete && selectedAdminData ? () => {
+                        setActiveModal('deleteSelected');
                     } : null
-            }
-            admin
-        >
-            <i className="fas fa-save" />
-        </Table.Button>
-        <Table.Button
-            title={strings.reactTable.deleteSelected}
-            tableOpen={isOpen}
-            disabled={!activeDelete || !selectedAdminData}
-            onClick={
-                activeDelete && selectedAdminData ? () => {
-                    setActiveModal('deleteSelected');
-                } : null
-            }
-            admin
-        >
-            <i className="fas fa-eraser" />
-        </Table.Button>
-    </Fragment>
-);
+                }
+                admin
+            >
+                <i className="fas fa-eraser" />
+            </Table.Button>
+        </>
+    );
+}
 
 export default AdminLayerView;

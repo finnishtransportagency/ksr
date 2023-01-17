@@ -20,5 +20,5 @@ export const fetchWorkspaceNameExists = (workspaceName: string, signal: any) => 
         signal,
     })
         .then(r => r.json())
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );

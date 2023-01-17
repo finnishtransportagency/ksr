@@ -12,7 +12,7 @@ type Props = {
     tableLayers: Object[],
 };
 
-const DataLayersActiveView = ({
+function DataLayersActiveView({
     dataLayerList,
     activeAdminTool,
     createNonSpatialFeature,
@@ -20,10 +20,10 @@ const DataLayersActiveView = ({
     handleAdminModeChange,
     addNonSpatialContentToTable,
     tableLayers,
-}: Props) => {
+}: Props) {
     if (dataLayerList.length === 0) return null;
     return (
-        <Fragment>
+        <>
             <br />
             {
                 dataLayerList.map(l => (
@@ -44,8 +44,8 @@ const DataLayersActiveView = ({
                     />
                 ))
             }
-        </Fragment>
+        </>
     );
-};
+}
 
 export default DataLayersActiveView;

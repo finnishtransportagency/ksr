@@ -1,12 +1,13 @@
-console.log('disabled');
-/*
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
 import { shape2geoJson, convertLayerListFormat } from '../shape2geojson';
 import { convert } from '../geojson';
 import { getLegendSymbol } from '../layerLegend';
 import strings from '../../translations';
 
-jest.mock('esri-loader');
+// import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+
+// jest.mock('esri-loader');
+jest.mock('@arcgis/core/layers/FeatureLayer');
 jest.mock('../geojson');
 jest.mock('../layerLegend');
 
@@ -39,7 +40,7 @@ describe('shape2geojson4', () => {
     };
 
     beforeAll(() => {
-        loadModules.mockResolvedValue([FeatureLayerMock]);
+        // loadModules.mockResolvedValue([FeatureLayerMock]);
         convert.mockResolvedValue({
             x: 134,
             y: 131,
@@ -118,4 +119,3 @@ describe('shape2geojson4', () => {
         expect(convertLayerListFormat(layer)).toMatchObject(expected);
     });
 });
-*/

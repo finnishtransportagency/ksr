@@ -32,7 +32,7 @@ type Props = {
     openSearchResult: Function,
 };
 
-const SearchLayerView = ({
+function SearchLayerView({
     handleLayerChange,
     handleAddField,
     handleTextChange,
@@ -51,130 +51,130 @@ const SearchLayerView = ({
     suggestionsActive,
     searchResults,
     openSearchResult,
-}: Props) => (
-    <Scrollbars
-        autoHide
-        className="sidebar-content-scroll-wrapper"
-        renderView={scrollProps => (
-            <div {...scrollProps} className="sidebar-content-scroll-inner" />
-        )}
-        renderThumbVertical={scrollProps => (
-            <div {...scrollProps} className="sidebar-content-scroll-thumb" />
-        )}
-    >
-        <form onSubmit={handleSubmit}>
-            <label
-                htmlFor="choose-layer"
-                onClick={e => e.preventDefault()}
-            >
-                <p id="choose-layer">{strings.search.chooseLayer}</p>
-                <Select
-                    disabled={fetching}
-                    onBlurResetsInput={false}
-                    onSelectResetsInput={false}
-                    options={queryableLayers}
-                    simpleValue
-                    name="choose-layer"
-                    placeholder=""
-                    value={selectedLayer}
-                    onChange={handleLayerChange}
-                    searchable={false}
-                />
-            </label>
-            <label
-                htmlFor="allFields"
-                hidden={!selectedLayer || searchFieldValues.length > 0}
-            >
-                <LabelInfoWrapper>
-                    <p>{strings.search.searchAllFields}</p>
-                    <InputInfo
-                        select
-                        data-balloon={strings.search.searchAllFieldsInfo}
-                        data-balloon-pos="left"
-                        data-balloon-length="medium"
-                    >
-                        <i className="fas fa-question-circle" />
-                    </InputInfo>
-                </LabelInfoWrapper>
-                {(!selectedLayer
-                    || selectedLayer === 'queryAll'
-                    || selectedLayer === 'queryActive')
-                    ? (
-                        <TextInput
-                            disabled={fetching}
-                            type="text"
-                            value={textSearch}
-                            onChange={handleTextChange}
-                            placeholder=""
-                            name="allFields"
-                            required={!searchFieldValues.length}
-                            minLength={2}
-                            autoComplete="off"
-                        />
-                    )
-                    : (
-                        <SearchFieldView
-                            field={{ type: 'text-all-columns' }}
-                            index={0}
-                            searchFieldValues={undefined}
-                            setSearchState={setSearchState}
-                            selectedLayer={selectedLayer}
-                            textSearch={textSearch}
-                            handleChangeField={handleChangeField}
-                            handleFieldBlur={handleFieldBlur}
-                            handleRemoveField={handleRemoveField}
-                            fetching={fetching}
-                            suggestions={suggestions}
-                            suggestionsActive={suggestionsActive}
-                        />
-                    )
-                }
-            </label>
-            {searchFieldValues.map((a, i) => (
-                <SearchFieldView
-                    key={a.id}
-                    field={a}
-                    index={i}
-                    searchFieldValues={searchFieldValues}
-                    setSearchState={setSearchState}
-                    selectedLayer={selectedLayer}
-                    textSearch={textSearch}
-                    handleChangeField={handleChangeField}
-                    handleFieldBlur={handleFieldBlur}
-                    handleRemoveField={handleRemoveField}
-                    fetching={fetching}
-                    suggestions={suggestions}
-                    suggestionsActive={suggestionsActive}
-                />
-            ))}
-            <Button disabled={!selectedLayer || fetching}>
-                {strings.search.buttonSearch}
-            </Button>
-            <div
-                hidden={!selectedLayer
-                || selectedLayer === 'queryAll'
-                || selectedLayer === 'queryActive'}
-            >
-                <label htmlFor="selectField" hidden={!selectedLayer}>
-                    <p id="selectField">{strings.search.addField}</p>
+}: Props) {
+    return (
+        <Scrollbars
+            autoHide
+            className="sidebar-content-scroll-wrapper"
+            renderView={scrollProps => (
+                <div {...scrollProps} className="sidebar-content-scroll-inner" />
+            )}
+            renderThumbVertical={scrollProps => (
+                <div {...scrollProps} className="sidebar-content-scroll-thumb" />
+            )}
+        >
+            <form onSubmit={handleSubmit}>
+                <label
+                    htmlFor="choose-layer"
+                    onClick={e => e.preventDefault()}
+                >
+                    <p id="choose-layer">{strings.search.chooseLayer}</p>
                     <Select
                         disabled={fetching}
                         onBlurResetsInput={false}
                         onSelectResetsInput={false}
-                        options={optionsField}
+                        options={queryableLayers}
                         simpleValue
-                        name="selectField"
+                        name="choose-layer"
                         placeholder=""
-                        onChange={handleAddField}
+                        value={selectedLayer}
+                        onChange={handleLayerChange}
                         searchable={false}
                     />
                 </label>
-            </div>
-            <LoadingIcon loading={fetching} />
-        </form>
-        {(searchResults && searchResults.length > 0)
+                <label
+                    htmlFor="allFields"
+                    hidden={!selectedLayer || searchFieldValues.length > 0}
+                >
+                    <LabelInfoWrapper>
+                        <p>{strings.search.searchAllFields}</p>
+                        <InputInfo
+                            select
+                            data-balloon={strings.search.searchAllFieldsInfo}
+                            data-balloon-pos="left"
+                            data-balloon-length="medium"
+                        >
+                            <i className="fas fa-question-circle" />
+                        </InputInfo>
+                    </LabelInfoWrapper>
+                    {(!selectedLayer
+                    || selectedLayer === 'queryAll'
+                    || selectedLayer === 'queryActive')
+                        ? (
+                            <TextInput
+                                disabled={fetching}
+                                type="text"
+                                value={textSearch}
+                                onChange={handleTextChange}
+                                placeholder=""
+                                name="allFields"
+                                required={!searchFieldValues.length}
+                                minLength={2}
+                                autoComplete="off"
+                            />
+                        )
+                        : (
+                            <SearchFieldView
+                                field={{ type: 'text-all-columns' }}
+                                index={0}
+                                searchFieldValues={undefined}
+                                setSearchState={setSearchState}
+                                selectedLayer={selectedLayer}
+                                textSearch={textSearch}
+                                handleChangeField={handleChangeField}
+                                handleFieldBlur={handleFieldBlur}
+                                handleRemoveField={handleRemoveField}
+                                fetching={fetching}
+                                suggestions={suggestions}
+                                suggestionsActive={suggestionsActive}
+                            />
+                        )}
+                </label>
+                {searchFieldValues.map((a, i) => (
+                    <SearchFieldView
+                        key={a.id}
+                        field={a}
+                        index={i}
+                        searchFieldValues={searchFieldValues}
+                        setSearchState={setSearchState}
+                        selectedLayer={selectedLayer}
+                        textSearch={textSearch}
+                        handleChangeField={handleChangeField}
+                        handleFieldBlur={handleFieldBlur}
+                        handleRemoveField={handleRemoveField}
+                        fetching={fetching}
+                        suggestions={suggestions}
+                        suggestionsActive={suggestionsActive}
+                    />
+                ))}
+                <Button disabled={!selectedLayer || fetching}>
+                    {strings.search.buttonSearch}
+                </Button>
+                <div
+                    hidden={!selectedLayer
+                || selectedLayer === 'queryAll'
+                || selectedLayer === 'queryActive'}
+                >
+                    <label htmlFor="selectField" hidden={!selectedLayer}>
+                        <p id="selectField">{strings.search.addField}</p>
+                        <Select
+                            disabled={fetching}
+                            onBlurResetsInput={false}
+                            onSelectResetsInput={false}
+                            options={optionsField}
+                            simpleValue
+                            name="selectField"
+                            placeholder=""
+                            onChange={handleAddField}
+                            searchable={false}
+                        />
+                    </label>
+                </div>
+                <LoadingIcon loading={fetching} />
+            </form>
+            {(searchResults && searchResults.length > 0)
         && (
-            <Fragment>
+            <>
                 {searchResults.map(l => (
                     <SearchResultLayer
                         key={l.id}
@@ -183,9 +183,10 @@ const SearchLayerView = ({
                         onClick={openSearchResult}
                     />
                 ))}
-            </Fragment>
+            </>
         )}
-    </Scrollbars>
-);
+        </Scrollbars>
+    );
+}
 
 export default SearchLayerView;

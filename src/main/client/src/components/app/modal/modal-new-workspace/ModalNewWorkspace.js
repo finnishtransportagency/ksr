@@ -28,6 +28,7 @@ const initialState = {
 
 class ModalNewWorkspace extends Component<Props, State> {
     abortController: ?Object = null; // eslint-disable-line react/sort-comp
+
     existsQuery: ?number = 0; // eslint-disable-line react/sort-comp
 
     constructor(props: Props) {

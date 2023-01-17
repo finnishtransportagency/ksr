@@ -23,7 +23,6 @@ declare module 'url-search-params-polyfill' {
  * needed.
  */
 
-
 // Filename aliases
 declare module 'url-search-params-polyfill/index' {
   declare module.exports: $Exports<'url-search-params-polyfill'>;

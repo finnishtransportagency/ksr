@@ -41,7 +41,6 @@ import { queryFeatures } from '../../../utils/queryFeatures';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
 
-
 type Props = {
     layerList: Array<any>,
     mapCenter: Array<number>,
@@ -91,7 +90,6 @@ class EsriMap extends Component<Props> {
 
     printWidget: ?Object = null;
 
-
     componentDidUpdate(prevProps: Props) {
         const { initialLoading, printServiceUrl } = this.props;
 
@@ -106,7 +104,6 @@ class EsriMap extends Component<Props> {
 
     async initMap() {
         // loadCss('4.23');
-
 
         const {
             mapCenter,
@@ -204,7 +201,6 @@ class EsriMap extends Component<Props> {
             ],
         });
 
-
         this.legendWidget = new Legend({
             view,
             style: {
@@ -232,19 +228,16 @@ class EsriMap extends Component<Props> {
         );
         view.ui.add([scaleBar], 'bottom-left');
 
-
         if (!isMobile) {
             const coordinateWidget = new CoordinateConversion({
                 view,
                 multipleConversions: false,
             });
 
-
             // coordinateWidget not ready without timeout
             await new Promise(resolve => setTimeout(resolve, 300));
             const formats = coordinateWidget.formats
                 .filter(f => f.name === 'basemap' || f.name === 'xy');
-
 
             const epsg = formats.find(format => format.name === 'basemap');
             const wgs = formats.find(format => format.name === 'xy');
@@ -415,7 +408,6 @@ class EsriMap extends Component<Props> {
                 ['layer', 'id'],
             );
             const layer = layerList.find(ll => layerId && layerId.replace('_s', '') === ll.id);
-
 
             const copySelectedFeature = async (activeFeatureMode: string) => {
                 const copiedFeature = view.popup.viewModel.selectedFeature;

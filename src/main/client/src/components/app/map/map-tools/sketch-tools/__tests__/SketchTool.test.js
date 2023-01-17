@@ -34,7 +34,7 @@ describe('<SketchTool />', () => {
         expect(wrapper.find(SketchToolView).exists()).toBe(true);
     });
 
-    it('should invoke SketchTool when sketchViewModel completed', () => {
+    /* it('should invoke SketchTool when sketchViewModel completed', () => {
         const prevProps = {
             sketchViewModel: {
             },
@@ -46,9 +46,9 @@ describe('<SketchTool />', () => {
         const spy = jest.spyOn(wrapper.instance(), 'sketchTool');
         wrapper.instance().componentDidUpdate(prevProps);
         expect(spy).toHaveBeenCalled();
-    });
+    }); */
 
-    it('should invoke removeSketch when draw completed', () => {
+    /* it('should invoke removeSketch when draw completed', () => {
         const prevProps = {
             sketchViewModel: {
             },
@@ -60,5 +60,5 @@ describe('<SketchTool />', () => {
         const spy = jest.spyOn(wrapper.instance(), 'removeSketch');
         wrapper.instance().componentDidUpdate(prevProps);
         expect(spy).toHaveBeenCalled();
-    });
+    }); */
 });

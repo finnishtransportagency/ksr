@@ -74,7 +74,7 @@ export const queryWorkspaceFeatures = (
                             _source: 'select',
                         };
                     })
-                    .catch(err => console.log(err)));
+                    .catch(err => console.error(err)));
             }
         }
     });
@@ -91,7 +91,6 @@ export const queryWorkspaceFeatures = (
  */
 const findLayer = (list, layer) => list
     .find(l => (layer.layerId || layer.userLayerId).replace('_s', '') === (l.id || l.userLayerId));
-
 
 /**
  * Update layer list with workspace settings.

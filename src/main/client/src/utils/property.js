@@ -2,9 +2,9 @@
 import { nestedVal } from './nestedValue';
 import { convert } from './geojson';
 
-const zeroRegexp = RegExp(/^([0-9]{14})$/);
-const hyphenRegexp = RegExp(/^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$/);
-const hyphenIdentifierPattern = RegExp(/\b0*([1-9][0-9]*|0)\b/);
+const zeroRegexp = /^([0-9]{14})$/;
+const hyphenRegexp = /^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$/;
+const hyphenIdentifierPattern = /\b0*([1-9][0-9]*|0)\b/;
 
 /**
  * Validate property id format.

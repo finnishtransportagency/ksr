@@ -6,7 +6,6 @@ import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import SketchToolContainer from './sketch-tools/SketchToolContainer';
 import MapDrawContainer from './map-draw/MapDrawContainer';
 
-
 type Props = {
     view: Object,
     setMapTools: Function,
@@ -67,10 +66,10 @@ class MapTools extends Component<Props> {
 
     render() {
         return (
-            <Fragment>
+            <>
                 <SketchToolContainer />
                 <MapDrawContainer />
-            </Fragment>
+            </>
         );
     }
 }

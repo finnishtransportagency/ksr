@@ -142,7 +142,7 @@ export const findEditedData = (layer: Object, editedData: Object): Object[] => l
                 }
 
                 return columnsWithLayerId(key, data, editedData, editedData._layerId);
-            }).reduce((acc, cur) => Object.assign({}, acc, cur))
+            }).reduce((acc, cur) => ({ ...acc, ...cur }))
         : data));
 
 /**

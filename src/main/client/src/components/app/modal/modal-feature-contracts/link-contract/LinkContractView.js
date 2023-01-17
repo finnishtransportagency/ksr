@@ -11,13 +11,13 @@ type Props = {
     contractExists: boolean,
 };
 
-const LinkContractView = ({
+function LinkContractView({
     handleInputChange,
     contractNumber,
     fetching,
     contractExists,
-}: Props) => (
-    <Fragment>
+}: Props) {
+    return (
         <label htmlFor={strings.modalFeatureContracts.linkContract.contractNumber}>
             <span>{strings.modalFeatureContracts.linkContract.contractNumber}</span>
             <InputWithIcon>
@@ -33,8 +33,7 @@ const LinkContractView = ({
                 <InputInfo
                     data-balloon={!fetching && contractNumber && !contractExists
                         ? strings.modalFeatureContracts.linkContract.noContractFound
-                        : null
-                    }
+                        : null}
                     data-balloon-pos="left"
                     data-balloon-length="large"
                 >
@@ -44,7 +43,7 @@ const LinkContractView = ({
                 </InputInfo>
             </InputWithIcon>
         </label>
-    </Fragment>
-);
+    );
+}
 
 export default LinkContractView;

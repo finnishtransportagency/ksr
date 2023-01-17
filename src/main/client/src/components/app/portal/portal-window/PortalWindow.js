@@ -61,7 +61,7 @@ class PortalWindow extends Component<Props, State> {
         togglePortal();
         window.removeEventListener('beforeunload', this.handleClose.bind(this));
         externalWindow.close();
-    }
+    };
 
     copyStyles = (sourceDoc: any, targetDoc: any) => {
         Array.from(sourceDoc.styleSheets).forEach((styleSheet) => {
@@ -87,11 +87,11 @@ class PortalWindow extends Component<Props, State> {
             targetDoc.head.appendChild(styleSheet.ownerNode.cloneNode(true));
         });
         Array.from(sourceDoc.fonts).forEach(font => targetDoc.fonts.add(font));
-    }
+    };
 
     handleEmptyStyle = (externalWindow: any) => {
         externalWindow.document.body.style = 'margin: 0; background: #444444;';
-    }
+    };
 
     render() {
         const { externalWindow, elementContainer } = this.state;

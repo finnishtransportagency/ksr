@@ -188,7 +188,7 @@ class ReactTable extends Component<Props, State> {
             : layerList.find(l => l.id === layerId);
 
         return layer;
-    }
+    };
 
     handleContractClick = (row: Object) => {
         const {
@@ -618,9 +618,11 @@ class ReactTable extends Component<Props, State> {
             const { columns, data } = layerFeatures;
             const { currentCellData } = this.state;
 
-            const parentLayer = nestedVal(layerList
-                .find(ll => ll.id === layerFeatures.id.replace('_s', '')),
-            ['parentLayer']);
+            const parentLayer = nestedVal(
+                layerList
+                    .find(ll => ll.id === layerFeatures.id.replace('_s', '')),
+                ['parentLayer'],
+            );
             const activeLayer: any = layerList.find(ll => ll.id === parentLayer)
                 || layerList.find(ll => ll.id === layerFeatures.id);
             const relationLayer = activeLayer && activeLayer.relations

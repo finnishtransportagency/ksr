@@ -129,7 +129,7 @@ class Workspace extends Component<Props, null> {
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                 });
         });
     };

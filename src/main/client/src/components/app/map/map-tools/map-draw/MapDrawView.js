@@ -12,10 +12,10 @@ type Props = {
     activeTool: string,
 };
 
-const MapDrawView = ({
+function MapDrawView({
     hasGraphics, removeDrawings, toggleDrawTools, isActive, showMeasurements, activeTool,
-}: Props) => (
-    <Fragment>
+}: Props) {
+    return (
         <DrawToolOuterWrapper id="draw-tool-outer-wrapper">
             <div
                 id="toggle-draw-tools"
@@ -85,7 +85,7 @@ const MapDrawView = ({
                 <span className="esri-icon-close" />
             </div>
         </DrawToolOuterWrapper>
-    </Fragment>
-);
+    );
+}
 
 export default MapDrawView;

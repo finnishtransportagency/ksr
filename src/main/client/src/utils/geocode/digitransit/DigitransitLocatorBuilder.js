@@ -19,9 +19,9 @@ class DigitransitLocator {
         this.addressToLocations = addressToLocations;
         this.suggestLocations = suggestLocations;
         this.cancellablePromise = (promise: Promise<any>) => promiseUtils
-          .create((resolve, reject) => {
-              promise.then(resolve).catch(reject);
-          });
+            .create((resolve, reject) => {
+                promise.then(resolve).catch(reject);
+            });
     }
 }
 

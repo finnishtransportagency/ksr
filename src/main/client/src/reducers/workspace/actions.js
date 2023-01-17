@@ -68,7 +68,7 @@ export const updateWorkspaces = (
                 throw new Error('GET_WORKSPACE_LIST_REJECTED -error');
             }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
 /**

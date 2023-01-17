@@ -37,7 +37,7 @@ type Props = {
     layerList: Object[],
 };
 
-const TableButtons = ({
+function TableButtons({
     toggleTable,
     isOpen,
     setActiveModal,
@@ -65,7 +65,7 @@ const TableButtons = ({
     portalIsOpen,
     updatePortal,
     layerList,
-}: Props) => {
+}: Props) {
     const [bufferExists, setBufferExists] = useState(false);
 
     /** Update redux prop that keeps track of amount of visible buttons on table */
@@ -128,6 +128,6 @@ const TableButtons = ({
             layerList={layerList}
         />
     );
-};
+}
 
 export default TableButtons;

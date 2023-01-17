@@ -7,8 +7,8 @@ type Props = {
     featureAttributes: Object[],
 };
 
-const ModalSingleFeatureDetailsView = ({ featureAttributes }: Props): any => (
-    featureAttributes.length > 0
+function ModalSingleFeatureDetailsView({ featureAttributes }: Props): any {
+    return featureAttributes.length > 0
         ? featureAttributes.map(attribute => (
             attribute.value !== null
             && attribute.value !== undefined
@@ -24,7 +24,7 @@ const ModalSingleFeatureDetailsView = ({ featureAttributes }: Props): any => (
                 </ContractFeatureAttribute>
             )
         ))
-        : <p>{strings.modalContractDetails.errorNoAttributesFound}</p>
-);
+        : <p>{strings.modalContractDetails.errorNoAttributesFound}</p>;
+}
 
 export default ModalSingleFeatureDetailsView;

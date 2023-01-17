@@ -24,7 +24,7 @@ type Props = {
     modalScrollSize: number,
 };
 
-const ModalView = ({
+function ModalView({
     handleModalCancel,
     modalSubmit,
     content,
@@ -34,43 +34,44 @@ const ModalView = ({
     handleSubmit,
     handleGoBack,
     modalScrollSize,
-}: Props) => (
-    <Modal.Blur>
-        <Draggable bounds="parent" handle=".handler">
-            <Modal fadeOut={fadeOut}>
-                <Modal.Header className="handler">
-                    <H1 secondary>{title}</H1>
-                    <button type="button" onClick={handleModalCancel}>
-                        <i className="fas fa-times" />
-                    </button>
-                </Modal.Header>
-                <Scrollbars autoHeight autoHeightMax={modalScrollSize} className="modal-content-scroll-wrapper">
-                    <Modal.Content>
-                        {content}
-                    </Modal.Content>
-                </Scrollbars>
-                {modalSubmit.length || cancelText
-                    ? (
-                        <Modal.Footer>
-                            {modalSubmit.map((submit, i) => (
-                                <Button
-                                    key={submit.text}
-                                    disabled={submit.disabled}
-                                    onClick={() => handleSubmit(i)}
-                                >
-                                    {submit.text}
+}: Props) {
+    return (
+        <Modal.Blur>
+            <Draggable bounds="parent" handle=".handler">
+                <Modal fadeOut={fadeOut}>
+                    <Modal.Header className="handler">
+                        <H1 secondary>{title}</H1>
+                        <button type="button" onClick={handleModalCancel}>
+                            <i className="fas fa-times" />
+                        </button>
+                    </Modal.Header>
+                    <Scrollbars autoHeight autoHeightMax={modalScrollSize} className="modal-content-scroll-wrapper">
+                        <Modal.Content>
+                            {content}
+                        </Modal.Content>
+                    </Scrollbars>
+                    {modalSubmit.length || cancelText
+                        ? (
+                            <Modal.Footer>
+                                {modalSubmit.map((submit, i) => (
+                                    <Button
+                                        key={submit.text}
+                                        disabled={submit.disabled}
+                                        onClick={() => handleSubmit(i)}
+                                    >
+                                        {submit.text}
+                                    </Button>
+                                ))}
+                                <Button flat onClick={handleGoBack || handleModalCancel}>
+                                    {cancelText}
                                 </Button>
-                            ))}
-                            <Button flat onClick={handleGoBack || handleModalCancel}>
-                                {cancelText}
-                            </Button>
-                        </Modal.Footer>
-                    )
-                    : null
-                }
-            </Modal>
-        </Draggable>
-    </Modal.Blur>
-);
+                            </Modal.Footer>
+                        )
+                        : null}
+                </Modal>
+            </Draggable>
+        </Modal.Blur>
+    );
+}
 
 export default ModalView;

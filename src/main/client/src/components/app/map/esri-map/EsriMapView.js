@@ -15,7 +15,7 @@ type Props = {
     indexMapActive: boolean,
 };
 
-const EsriMapView = ({
+function EsriMapView({
     activeNav,
     view,
     isOpenTable,
@@ -23,25 +23,27 @@ const EsriMapView = ({
     layerLegendActive,
     tableButtonAmount,
     indexMapActive,
-}: Props) => (
-    <Wrapper
-        sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
-        tableOpen={isOpenTable}
-        adminToolActive={adminToolActive}
-        loading={!view}
-        layerLegendActive={layerLegendActive}
-        tableButtonAmount={tableButtonAmount}
-        indexMapActive={indexMapActive}
-    >
-        <LoadingIcon size={0} loading={!view} />
-        <div id="mapView">
-            <MapToolsContainer view={view} />
-            <div id="overView">
-                <div id="extentDiv" />
+}: Props) {
+    return (
+        <Wrapper
+            sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
+            tableOpen={isOpenTable}
+            adminToolActive={adminToolActive}
+            loading={!view}
+            layerLegendActive={layerLegendActive}
+            tableButtonAmount={tableButtonAmount}
+            indexMapActive={indexMapActive}
+        >
+            <LoadingIcon size={0} loading={!view} />
+            <div id="mapView">
+                <MapToolsContainer view={view} />
+                <div id="overView">
+                    <div id="extentDiv" />
+                </div>
             </div>
-        </div>
-        <BaseMapSwitchContainer />
-    </Wrapper>
-);
+            <BaseMapSwitchContainer />
+        </Wrapper>
+    );
+}
 
 export default EsriMapView;

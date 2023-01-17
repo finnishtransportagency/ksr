@@ -2,7 +2,6 @@
 // import { loadModules } from 'esri-loader';
 import { toast } from 'react-toastify';
 
-
 import Graphic from '@arcgis/core/Graphic';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';

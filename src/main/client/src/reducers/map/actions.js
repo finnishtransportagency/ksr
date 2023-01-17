@@ -53,7 +53,7 @@ export const getLayerGroups = () => async (dispatch: Function) => {
                 (fetchedLayer) => {
                     updateLayerFields(fetchedLayer.id, fetchedLayer.fields);
                 },
-            ).catch(err => console.log(err));
+            ).catch(err => console.error(err));
         }
     });
 
@@ -244,9 +244,7 @@ const getSelectedLayersAndFeatures = (dispatch: Function, state: Object) => {
     return selectedLayers;
 };
 
-const addSelectedFeaturesForFetching = (
-    allLayers: Object[], layer: Object, selectedLayer: Object, fetchSelected: Map,
-) => {
+const addSelectedFeaturesForFetching = (allLayers: Object[], layer: Object, selectedLayer: Object, fetchSelected: Map) => {
     const siblingLayers = getSiblingsOrSelf(allLayers, layer);
     siblingLayers.forEach((l) => {
         let selectedFeatures;
@@ -370,7 +368,7 @@ export const getMapConfig = () => (dispatch: Function) => {
             printServiceUrl: r.printServiceUrl,
             extractServiceUrl: r.extractServiceUrl,
         }))
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
 export const setMapView = (view: any) => ({
@@ -429,7 +427,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                             });
                             dispatch(activateLayers([userLayer]));
                         })
-                        .catch(err => console.log(err));
+                        .catch(err => console.error(err));
                 } else {
                     const userLayer = {
                         ...l,
@@ -445,7 +443,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                 }
             }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
 export const removeUserLayer = (layerId: string) => ({

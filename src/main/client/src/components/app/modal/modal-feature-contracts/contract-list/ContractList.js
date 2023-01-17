@@ -184,9 +184,11 @@ class ContractList extends Component<Props, State> {
 
         const contractLayer = contractLayers.find(c => c.id === layerId);
 
-        const objectIdField = nestedVal(contractLayer
+        const objectIdField = nestedVal(
+            contractLayer
             && contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
-        ['label']);
+            ['label'],
+        );
 
         const contractObject = contracts
             .find(c => c.contract && c.contract

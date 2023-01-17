@@ -170,7 +170,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         let modalSubmit;
         let activeView;
         let formOptions;
-        let permission;
+        const permission = { create: true, edit: true };
         let detailLayers;
         const contractDetails = [];
         const contractLayer = { id: 123, name: 'testLayer' };
@@ -247,7 +247,7 @@ describe('Modal Contract Details - Custom Hooks', () => {
         expect(modalSubmit).toEqual([]);
 
         activeView = 'contractDetails';
-        permission = { create: true, edit: true };
+
         detailLayers = [{ id: 123 }];
         renderHook(() => {
             modalSubmit = useModalSubmit(

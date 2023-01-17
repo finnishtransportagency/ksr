@@ -10,7 +10,6 @@ export const getDocumentUrl = (
     documentType: string = 'caseManagement',
 ) => (`${window.location.href}api/contract-document?documentType=${documentType}&searchValue=${searchValue}`);
 
-
 /**
  * Gets contract document URL.
  *

@@ -126,7 +126,7 @@ class MapLayersActive extends Component<Props, State> {
         } = this.props;
         if (!fetching) {
             return (
-                <Fragment>
+                <>
                     <MapLayersActiveView
                         mapLayerList={mapLayerList}
                         onDragEnd={this.onDragEnd}
@@ -150,7 +150,7 @@ class MapLayersActive extends Component<Props, State> {
                         handleAdminModeChange={this.handleAdminModeChange}
                         populateTable={this.populateTable}
                     />
-                </Fragment>
+                </>
             );
         }
 

@@ -11,5 +11,5 @@ import { config } from '../config';
 export const fetchGetGeoconvert = (queryParams: string): Promise<Object> => (
     fetch(`api/geoconvert?${queryParams}`, config())
         .then(r => r.json())
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );

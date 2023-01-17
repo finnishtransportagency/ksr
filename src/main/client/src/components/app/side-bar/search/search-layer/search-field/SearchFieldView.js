@@ -24,7 +24,7 @@ type Props = {
     suggestionsActive: boolean,
 };
 
-const SearchFieldView = ({
+function SearchFieldView({
     field,
     index,
     searchFieldValues,
@@ -37,23 +37,24 @@ const SearchFieldView = ({
     fetching,
     suggestions,
     suggestionsActive,
-}: Props) => (
-    <SearchFieldWrapper>
-        {searchFieldValues && (
-            <SearchFieldWrapper.Title>
-                <div>{field.label}</div>
-                <SearchFieldWrapper.Remove
-                    role="button"
-                    tabIndex={index}
-                    onClick={() => handleRemoveField(index)}
-                    onKeyUp={() => handleRemoveField(index)}
-                >
-                    <i className="fas fa-times" />
-                </SearchFieldWrapper.Remove>
-            </SearchFieldWrapper.Title>
-        )}
-        <SearchFieldWrapper.Inputs>
-            {searchFieldValues
+}: Props) {
+    return (
+        <SearchFieldWrapper>
+            {searchFieldValues && (
+                <SearchFieldWrapper.Title>
+                    <div>{field.label}</div>
+                    <SearchFieldWrapper.Remove
+                        role="button"
+                        tabIndex={index}
+                        onClick={() => handleRemoveField(index)}
+                        onKeyUp={() => handleRemoveField(index)}
+                    >
+                        <i className="fas fa-times" />
+                    </SearchFieldWrapper.Remove>
+                </SearchFieldWrapper.Title>
+            )}
+            <SearchFieldWrapper.Inputs>
+                {searchFieldValues
             && !searchFieldValues[index].domain
             && field.type !== 'esriFieldTypeDate'
             && (
@@ -73,14 +74,14 @@ const SearchFieldView = ({
                     />
                 </SearchFieldWrapper.Expression>
             )}
-            <SearchFieldWrapper.Text
-                onClick={(e) => {
-                    if (field.type !== 'esriFieldTypeDate') {
-                        e.preventDefault();
-                    }
-                }}
-            >
-                {searchFieldValues
+                <SearchFieldWrapper.Text
+                    onClick={(e) => {
+                        if (field.type !== 'esriFieldTypeDate') {
+                            e.preventDefault();
+                        }
+                    }}
+                >
+                    {searchFieldValues
                 && searchFieldValues[index].domain
                 && field.type !== 'esriFieldTypeDate'
                 && (
@@ -97,7 +98,7 @@ const SearchFieldView = ({
                         deleteRemoves={false}
                     />
                 )}
-                {(!searchFieldValues
+                    {(!searchFieldValues
                 || (!searchFieldValues[index].domain
                 && field.type !== 'esriFieldTypeDate'))
                 && (
@@ -121,7 +122,8 @@ const SearchFieldView = ({
                                     [],
                                     suggestionsActive,
                                 );
-                            }}
+                            }
+                    }
                     >
                         {({
                             getInputProps,
@@ -167,7 +169,7 @@ const SearchFieldView = ({
                         )}
                     </Downshift>
                 )}
-                {field.type === 'esriFieldTypeDate'
+                    {field.type === 'esriFieldTypeDate'
                 && (
                     <TextInput
                         name={field.name}
@@ -177,9 +179,10 @@ const SearchFieldView = ({
                         onChange={evt => handleChangeField('date', evt, index)}
                     />
                 )}
-            </SearchFieldWrapper.Text>
-        </SearchFieldWrapper.Inputs>
-    </SearchFieldWrapper>
-);
+                </SearchFieldWrapper.Text>
+            </SearchFieldWrapper.Inputs>
+        </SearchFieldWrapper>
+    );
+}
 
 export default SearchFieldView;

@@ -1,11 +1,10 @@
-console.log('disabled');
-
-/*
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
 import { project } from '../../projection';
 import convert from '../convert';
 
-jest.mock('esri-loader');
+// jest.mock('esri-loader');
+// import Geometry from "@arcgis/core/geometry/Geometry";
+jest.mock('@arcgis/core/geometry/Geometry');
 jest.mock('../../projection');
 
 class GeometryMock {
@@ -16,14 +15,14 @@ class GeometryMock {
     }
 }
 
-describe('geojson - convert', () => {
+describe.skip('geojson - convert', () => {
     beforeAll(() => {
-        loadModules.mockResolvedValue([
+        /* loadModules.mockResolvedValue([
             GeometryMock,
             GeometryMock,
             GeometryMock,
             GeometryMock,
-        ]);
+        ]) */
         project.mockReturnValue([11, 22]);
     });
 
@@ -112,4 +111,3 @@ describe('geojson - convert', () => {
         expect(point).toBe(null);
     });
 });
-*/

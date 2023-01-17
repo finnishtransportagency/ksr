@@ -25,8 +25,11 @@ export const setSearchOptions = (
     selectedLayer: number,
     layerList: any,
 ) => {
-    let layerFields = nestedVal(layerList.find(l => l.id === selectedLayer),
-        ['fields'], []);
+    let layerFields = nestedVal(
+        layerList.find(l => l.id === selectedLayer),
+        ['fields'],
+        [],
+    );
 
     if (nestedVal(layerList.find(layer => layer.id === selectedLayer), ['parentLayer'])) {
         const parentLayerId = nestedVal(

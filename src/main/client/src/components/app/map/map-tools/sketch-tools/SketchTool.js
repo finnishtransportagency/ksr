@@ -672,7 +672,7 @@ class SketchTool extends Component<Props, State> {
 
         setActiveModal(editModeActive);
         resetMapTools(draw, sketchViewModel, setActiveTool);
-    }
+    };
 
     showAdminView = (): boolean => {
         const { activeAdminTool, layerList } = this.props;
@@ -736,7 +736,7 @@ class SketchTool extends Component<Props, State> {
         const showNewAreaButton = hasAdminGraphics && editSketchIcon === 'polygon';
 
         return (
-            <Fragment>
+            <>
                 <SketchToolView
                     removeSelection={this.removeSelection}
                     drawRectangleButtonRef={this.drawRectangleButton}
@@ -765,7 +765,7 @@ class SketchTool extends Component<Props, State> {
                     canRedo={canRedo}
                     canUndo={canUndo}
                 />
-            </Fragment>
+            </>
         );
     }
 }

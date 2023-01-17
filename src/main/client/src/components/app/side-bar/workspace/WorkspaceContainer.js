@@ -5,7 +5,9 @@ import { searchWorkspaceFeatures, selectFeatures } from '../../../../reducers/ta
 import { setWorkspace, setWorkspaceRejected, updateWorkspaces } from '../../../../reducers/workspace/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import Workspace from './Workspace';
-import { setLayerList, toggleLayerLegend, activateLayers, deactivateLayer } from '../../../../reducers/map/actions';
+import {
+    setLayerList, toggleLayerLegend, activateLayers, deactivateLayer,
+} from '../../../../reducers/map/actions';
 
 const mapStateToProps = state => ({
     workspaceList: state.workspace.workspace.workspaceList,
