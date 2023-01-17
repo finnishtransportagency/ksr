@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 // import clone from 'clone';
 import { isMobile } from 'react-device-detect';
 
-
+import Format from '@arcgis/core/widgets/CoordinateConversion/support/Format';
 import MapView from '@arcgis/core/views/MapView';
 import Map from '@arcgis/core/Map';
 import Locate from '@arcgis/core/widgets/Locate';
@@ -40,6 +40,7 @@ import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loa
 import { queryFeatures } from '../../../utils/queryFeatures';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
+
 
 type Props = {
     layerList: Array<any>,
@@ -203,7 +204,6 @@ class EsriMap extends Component<Props> {
             ],
         });
 
-        console.log('SEARCH', search);
 
         this.legendWidget = new Legend({
             view,
@@ -232,7 +232,6 @@ class EsriMap extends Component<Props> {
         );
         view.ui.add([scaleBar], 'bottom-left');
 
-        console.log('VIEW', view);
 
         if (!isMobile) {
             const coordinateWidget = new CoordinateConversion({
@@ -240,35 +239,29 @@ class EsriMap extends Component<Props> {
                 multipleConversions: false,
             });
 
-            console.log('WIDGET', coordinateWidget);
 
             // coordinateWidget not ready without timeout
             await new Promise(resolve => setTimeout(resolve, 300));
             const formats = coordinateWidget.formats
                 .filter(f => f.name === 'basemap' || f.name === 'xy');
 
-            console.log('FORMATS', formats, coordinateWidget.formats);
-
 
             const epsg = formats.find(format => format.name === 'basemap');
             const wgs = formats.find(format => format.name === 'xy');
 
-            console.log('EPSG', epsg);
-            console.log('wgs', wgs);
-
             if (epsg && wgs) {
-                const epsgClone = { ...epsg }; // clone(epsg, true, 3);
+                const epsgClone = new Format({ ...epsg }); // clone(epsg, true, 3);
                 epsgClone.name = 'ETRS-TM35FIN';
                 epsgClone.label = 'ETRS-TM35FIN';
-                const wgsClone = { ...wgs }; // clone(wgs, true, 3);
+                const wgsClone = new Format({ ...wgs }); // clone(wgs, true, 3);
                 wgsClone.name = 'WGS84';
                 wgsClone.label = 'WGS84';
 
                 coordinateWidget.formats.removeAll();
-                coordinateWidget.formats.addMany([epsg, wgs]);
+                coordinateWidget.formats.addMany([epsgClone, wgsClone]);
 
                 coordinateWidget.conversions.removeAll();
-                coordinateWidget.conversions.add(new Conversion({ format: epsg }));
+                coordinateWidget.conversions.add(new Conversion({ format: epsgClone }));
                 view.ui.add([coordinateWidget], 'bottom-right');
             }
         }
