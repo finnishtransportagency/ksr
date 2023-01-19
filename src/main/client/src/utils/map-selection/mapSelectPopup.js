@@ -149,7 +149,9 @@ export const mapSelectPopup = async (
                         matchingLayer.geometryType,
                     )
                     && matchingLayer
-                    && matchingLayer.layerPermission.createLayer;
+                    && matchingLayer.layerPermission.createLayer
+                    && (matchingLayer.name.toLowerCase() !== 'käyttöoikeussopimukset'
+                        || feature.attributes.SOPIMUSTUNNISTE === null);
 
                 if (addCopyAction) {
                     const copyFeatureAction = {
