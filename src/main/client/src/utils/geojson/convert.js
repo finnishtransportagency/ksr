@@ -28,33 +28,54 @@ const convert = async (
         ? project(`EPSG:${sSrs}`, `EPSG:${tSrs}`, geom.coordinates) : geom.coordinates;
 
     switch (geom.type.toLowerCase()) {
-        case 'point':
-            return new Point({
-                x: coordinates[0],
-                y: coordinates[1],
-                spatialReference: { wkid: tSrs },
-            });
+        case 'point': {
+            let newPoint = await new Point();
+
+            newPoint = {
+                ...newPoint, x: coordinates[0], y: coordinates[1], spatialReference: { wkid: tSrs },
+            };
+
+            return newPoint;
+        }
         case 'polyline':
-        case 'linestring':
-            return new Polyline({
+        case 'linestring': {
+            let newPoly = await new Polyline();
+            newPoly = {
+                ...newPoly,
                 paths: geom.coordinates,
                 spatialReference: { wkid: tSrs },
-            });
-        case 'multipolygon':
-            return new Polygon({
-                rings: geom.coordinates.flatMap(c => c),
+            };
+            return newPoly;
+        }
+        case 'multipolygon': {
+            const rings = [geom.coordinates.flatMap(c => c)];
+            let newPolygon = await new Polygon();
+            newPolygon = {
+                ...newPolygon,
+                rings,
                 spatialReference: { wkid: tSrs },
-            });
-        case 'polygon':
-            return new Polygon({
+            };
+
+            return newPolygon;
+        }
+        case 'polygon': {
+            let newPolygon = new Polygon();
+            newPolygon = {
+                ...newPolygon,
                 rings: geom.coordinates,
                 spatialReference: { wkid: tSrs },
-            });
-        case 'multipoint':
-            return new Multipoint({
+            };
+            return newPolygon;
+        }
+        case 'multipoint': {
+            let newMultipoint = await new Multipoint();
+            newMultipoint = {
+                ...newMultipoint,
                 points: geom.coordinates,
                 spatialReference: { wkid: tSrs },
-            });
+            };
+            return newMultipoint;
+        }
         default:
             return null;
     }

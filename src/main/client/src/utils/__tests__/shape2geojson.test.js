@@ -4,20 +4,17 @@ import { convert } from '../geojson';
 import { getLegendSymbol } from '../layerLegend';
 import strings from '../../translations';
 
-// import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-
-// jest.mock('esri-loader');
-jest.mock('@arcgis/core/layers/FeatureLayer');
+jest.mock('../featurelayer');
 jest.mock('../geojson');
 jest.mock('../layerLegend');
 
-class FeatureLayerMock {
+/* class FeatureLayerMock {
     constructor(params) {
         Object.entries(params).forEach(([key, value]) => {
             this[key] = value;
         });
     }
-}
+} */
 
 describe('shape2geojson4', () => {
     const decodeToArrayBuffer = (encoded) => {
@@ -81,7 +78,10 @@ describe('shape2geojson4', () => {
         ];
 
         expect(fields).toMatchObject(expectedFields);
-        expect(symbol.color).toBe('#ff0000');
+        expect(symbol.color.r).toBe(255); // ('#ff0000');
+        expect(symbol.color.g).toBe(0);
+        expect(symbol.color.b).toBe(0);
+        expect(symbol.color.a).toBe(1);
     });
 
     it('convertLayerListFormat - should convert to layerListFormat', () => {

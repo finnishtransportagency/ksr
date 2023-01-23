@@ -55,6 +55,8 @@ class EditContract extends Component<Props, State> {
             objectId,
         );
 
+        if (!contracts || !contracts.length || contracts.length < 1) return;
+
         const contract = contracts
             .reduce((arr, c) => arr.concat(c.features), [])
             .find(f => f && f.attributes
