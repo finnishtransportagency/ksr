@@ -9,7 +9,6 @@
     "date-fns": "^2.7.0",
     "dompurify": "^2.0.8",
     "downshift": "^3.2.4",
-    "esri-loader": "^3.3.0",
     "nano-equal": "^2.0.2",
     "proj4": "^2.5.0",
     "querystring": "^0.2.0",
@@ -41,7 +40,7 @@
     "text-encoding": "^0.7.0",
     "url-search-params-polyfill": "^5.0.0",
     "use-resize-observer": "^9.1.0",
-    "uuid": "^3.3.2"
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
