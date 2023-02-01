@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 // import { loadModules } from 'esri-loader';
 import Draw from '@arcgis/core/views/draw/Draw';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SketchToolContainer from './sketch-tools/SketchToolContainer';
 import MapDrawContainer from './map-draw/MapDrawContainer';
 
@@ -49,7 +50,7 @@ class MapTools extends Component<Props> {
 
         const sketchViewModel = new SketchViewModel({
             view,
-            layer: tempGraphicsLayer,
+            layer: tempGraphicsLayer || new GraphicsLayer(),
             defaultUpdateOptions: {
                 tool: 'reshape',
                 toggleToolOnClick: false,

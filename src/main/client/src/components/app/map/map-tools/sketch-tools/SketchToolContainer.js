@@ -8,7 +8,8 @@ import {
 } from '../../../../../reducers/map/actions';
 import { setPropertyInfo } from '../../../../../reducers/search/actions';
 import { addFeatureNoGeometry, selectFeatures, sketchSaveData } from '../../../../../reducers/table/actions';
-import SketchTool from './SketchTool';
+// import SketchTool from './SketchTool';
+import SketchTool2 from './SketchTool2';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 
 const mapStateToProps = state => ({
@@ -63,6 +64,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SketchToolContainer = (connect(mapStateToProps, mapDispatchToProps)(SketchTool): any);
+const SketchToolContainer = (connect(mapStateToProps, mapDispatchToProps)(SketchTool2): any);
 
 export default SketchToolContainer;

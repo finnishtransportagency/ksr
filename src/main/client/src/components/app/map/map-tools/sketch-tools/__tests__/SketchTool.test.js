@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import SketchTool from '../SketchTool';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
+import SketchTool2 from '../SketchTool2';
 import SketchToolView from '../SketchToolView';
 
 const setup = () => {
@@ -15,26 +16,27 @@ const setup = () => {
         tempGraphicsLayer: { graphics: [] },
         setTempGraphicsLayer: jest.fn(),
         setActiveTool: jest.fn(),
-        sketchViewModel: {
-            cancel: jest.fn(),
-            initialized: true,
-        },
+        sketchViewModel: new SketchViewModel(),
         setActiveFeatureMode: jest.fn(),
         resetFeatureNoGeometry: () => {},
     };
-    const wrapper = mount(<SketchTool {...props} />);
+    const wrapper = mount(<SketchTool2 {...props} />);
 
     return { wrapper };
 };
 
-describe('<SketchTool />', () => {
+describe('<SketchTool2 />', () => {
     const { wrapper } = setup();
 
     it('should render self', () => {
         expect(wrapper.find(SketchToolView).exists()).toBe(true);
     });
 
-    /* it('should invoke SketchTool when sketchViewModel completed', () => {
+    /** Note!
+     *  Test below should be rewritten for SketchTool2
+     *  Private functions can't be spied.
+     * */
+/*    it('should invoke SketchTool when sketchViewModel completed', () => {
         const prevProps = {
             sketchViewModel: {
             },
@@ -46,9 +48,9 @@ describe('<SketchTool />', () => {
         const spy = jest.spyOn(wrapper.instance(), 'sketchTool');
         wrapper.instance().componentDidUpdate(prevProps);
         expect(spy).toHaveBeenCalled();
-    }); */
+    });
 
-    /* it('should invoke removeSketch when draw completed', () => {
+    it('should invoke removeSketch when draw completed', () => {
         const prevProps = {
             sketchViewModel: {
             },
