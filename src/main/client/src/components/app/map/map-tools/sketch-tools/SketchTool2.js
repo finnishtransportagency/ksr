@@ -15,6 +15,7 @@ import SketchActiveAdminView from './sketch-active-admin/SketchActiveAdminView';
 import { queryFeatures } from '../../../../../utils/queryFeatures';
 import { convertEsriGeometryType } from '../../../../../utils/type';
 import { nestedVal } from '../../../../../utils/nestedValue';
+import save from '../../../../../utils/saveFeatureData';
 
 type State = {
     editSketchIcon: string,
@@ -128,16 +129,50 @@ export default function SketchTool2({ ...props }: Props) {
         }
     };
 
-    const acceptSketch = () => {
+    const acceptSketch = async () => {
         const {
             draw,
             setActiveTool,
             setActiveModal,
             editModeActive,
+            setTempGraphicsLayer,
+            setActiveFeatureMode,
+            data,
+            layerList,
+            activeAdminTool,
         } = props;
 
-        setActiveModal(editModeActive);
-        resetMapTools(draw, sketchViewModel, setActiveTool);
+        const kayttoikParentLayer = layerList.find(l => l.name === 'Käyttöoikeussopimukset');
+        const tempGraphics = localTempGraphicsLayer.graphics.items.filter(graphic => graphic.type === 'sketch-graphic');
+        if (kayttoikParentLayer
+            && activeAdminTool === kayttoikParentLayer.id
+            && tempGraphics && tempGraphics.length
+            && tempGraphics[0].attributes
+            && tempGraphics[0].attributes.SOPIMUSTUNNISTE !== null
+            && data && data.length
+        ) {
+            const objectIdFieldName = kayttoikParentLayer.fields.find(field => field.type === 'esriFieldTypeOID').name;
+            const newData = {
+                geometry: tempGraphics[0].geometry,
+                attributes: { [objectIdFieldName]: tempGraphics[0].attributes[objectIdFieldName] },
+            };
+            resetMapTools(draw, sketchViewModel, setActiveTool);
+            await save.saveData(
+                'update',
+                view,
+                kayttoikParentLayer.id,
+                [newData],
+                objectIdFieldName,
+                false,
+                true,
+            );
+            localTempGraphicsLayer.graphics = undefined;
+            setActiveFeatureMode('create');
+        } else {
+            setActiveModal(editModeActive);
+            resetMapTools(draw, sketchViewModel, setActiveTool);
+        }
+        setTempGraphicsLayer(localTempGraphicsLayer);
     };
     const showAdminView = (): boolean => {
         const { activeAdminTool, layerList } = props;

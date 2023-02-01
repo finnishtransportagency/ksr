@@ -232,12 +232,17 @@ class ReactTable extends Component<Props, State> {
         setActiveModal('singleFeatureInfo', modalData);
     };
 
-    isCellEditable = (cellField: Object) => {
+    isCellEditable = (cellField: Object, cellInfo?: Object) => {
         const { activeAdminTool, layerList, activeTable } = this.props;
 
         const activeLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
         const parentLayer = activeLayer && activeLayer.parentLayer
             && layerList.find(l => l.id === activeLayer.parentLayer);
+
+        if (parentLayer && activeLayer && parentLayer.name === 'Käyttöoikeussopimukset'
+            && (cellField.name === 'SOPIMUSTUNNISTE' || (cellInfo && cellInfo.original[`${activeLayer.id}/SOPIMUSTUNNISTE`] != null))) {
+            return false;
+        }
 
         if (activeLayer && parentLayer) {
             return (activeAdminTool === activeLayer.id || activeAdminTool === parentLayer.id)
@@ -491,7 +496,7 @@ class ReactTable extends Component<Props, State> {
                 || (parentLayer && activeAdminTool === parentLayer.id);
 
             if (currentAdminActive) {
-                const contentEditable = this.isCellEditable(cellField);
+                const contentEditable = this.isCellEditable(cellField, cellInfo);
                 const content = this.getCellContent(cellField, cellInfo);
 
                 if (contentEditable) {

@@ -64,7 +64,8 @@ function FeatureDetailsForm(props: Props) {
                     || (layer.contractIdField !== relationColumnOut
                         && relationColumnOut === field.name)
                     || (formType === 'edit'
-                        && field.unique),
+                        && field.unique)
+                    || (layer.name === 'Käyttöoikeussopimukset' && field.name === 'SOPIMUSTUNNISTE'),
             }))
             .map((field) => {
                 if (field.type === 'esriFieldTypeDate') {
