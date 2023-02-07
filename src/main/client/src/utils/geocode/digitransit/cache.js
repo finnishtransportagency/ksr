@@ -11,7 +11,7 @@ const cache: Map<string, Object> = new Map();
  * @param {Object[]} items Items to put into cache.
  * @returns {Object[]} Array of original items.
  */
-export const addToCache = (items: Object[]) => {
+export const addToCache = (items: Array<Object>): Array<any> => {
     if (cache.size > 100) {
         cache.clear();
     }

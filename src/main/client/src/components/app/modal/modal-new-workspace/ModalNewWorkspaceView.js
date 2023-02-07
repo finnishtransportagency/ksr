@@ -17,7 +17,7 @@ function ModalNewWorkspaceView({
     workspaceName,
     submitDisabled,
     fetching,
-}: Props) {
+}: Props): React$Element<"label"> {
     return (
         <label htmlFor={strings.modalNewWorkspace.workspaceName}>
             <span>{strings.modalNewWorkspace.workspaceName}</span>

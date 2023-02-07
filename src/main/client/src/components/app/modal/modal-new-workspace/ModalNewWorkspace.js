@@ -40,7 +40,7 @@ class ModalNewWorkspace extends Component<Props, State> {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange = (evt: Object) => {
+    handleInputChange: any = (evt: Object) => {
         const workspaceName = evt.target.value;
 
         window.clearTimeout(this.existsQuery);
@@ -70,7 +70,7 @@ class ModalNewWorkspace extends Component<Props, State> {
         }
     };
 
-    handleSubmit = () => {
+    handleSubmit: any = () => {
         const {
             layerList,
             view,
@@ -89,7 +89,7 @@ class ModalNewWorkspace extends Component<Props, State> {
         updateWorkspaces(fetchSaveWorkspace, workspaceJson, 'create');
     };
 
-    render() {
+    render(): any {
         const { workspaceName, submitDisabled, fetching } = this.state;
 
         const modalSubmit = [{

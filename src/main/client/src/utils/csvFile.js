@@ -33,7 +33,7 @@ export const download = (data: string, tableName: string) => {
  *
  * @returns {string} String in csv format.
  */
-export const objectToCsv = (data: Object[], columns: Object[]) => {
+export const objectToCsv = (data: Object[], columns: Object[]): string => {
     const csvRows = [];
     csvRows.push(columns.map(c => c.Header).join(','));
     // loop over the rows

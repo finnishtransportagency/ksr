@@ -11,7 +11,7 @@ type Props = {
 
 function FeatureDetailsFormView({
     fields, handleOnChange, requiredUniqueFields,
-}: Props) {
+}: Props): React$Element<"form"> {
     return (
         <form>
             {fields && fields.filter(field => !field.hidden && !field.nullable).map((field, i) => (

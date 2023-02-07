@@ -60,23 +60,23 @@ const mapStateToProps = (state: Object) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    selectFeatures: (features) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    selectFeatures: (features: any) => {
         dispatch(selectFeatures(features));
     },
-    setMapView: (view) => {
+    setMapView: (view: any) => {
         dispatch(setMapView(view));
     },
-    setTempGraphicsLayer: (graphicsLayer) => {
+    setTempGraphicsLayer: (graphicsLayer: any) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
     },
-    setActiveModal: (activeModal, data?) => {
+    setActiveModal: (activeModal: any, data?: any) => {
         dispatch(setActiveModal(activeModal, data));
     },
-    setSingleLayerGeometry: (geometry) => {
+    setSingleLayerGeometry: (geometry: any) => {
         dispatch(setSingleLayerGeometry(geometry));
     },
-    setHasGraphics: (hasGraphics) => {
+    setHasGraphics: (hasGraphics: any) => {
         dispatch(setHasGraphics(hasGraphics));
     },
     setWorkspace: () => {
@@ -85,10 +85,10 @@ const mapDispatchToProps = dispatch => ({
     setWorkspaceRejected: () => {
         dispatch(setWorkspaceRejected());
     },
-    setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
+    setPropertyInfo: (queryParameter: any, view: any, graphicId: any, authorities: any) => {
         dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
     },
-    setContractListInfo: (layerId, objectId) => {
+    setContractListInfo: (layerId: any, objectId: any) => {
         dispatch(setContractListInfo(layerId, objectId));
     },
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
@@ -103,16 +103,16 @@ const mapDispatchToProps = dispatch => ({
     activateLayers: (layers: Object[], workspace?: Object) => {
         dispatch(activateLayers(layers, workspace));
     },
-    deactivateLayer: (layerId) => {
+    deactivateLayer: (layerId: any) => {
         dispatch(deactivateLayer(layerId));
     },
     setScale: (scale: number) => {
         dispatch(setScale(scale));
     },
-    setActiveNav: (selectedNav) => {
+    setActiveNav: (selectedNav: any) => {
         dispatch(setActiveNav(selectedNav));
     },
-    setActiveTool: (active) => {
+    setActiveTool: (active: any) => {
         dispatch(setActiveTool(active));
     },
 });

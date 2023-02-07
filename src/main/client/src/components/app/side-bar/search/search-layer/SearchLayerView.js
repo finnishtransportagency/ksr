@@ -51,7 +51,7 @@ function SearchLayerView({
     suggestionsActive,
     searchResults,
     openSearchResult,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <Scrollbars
             autoHide

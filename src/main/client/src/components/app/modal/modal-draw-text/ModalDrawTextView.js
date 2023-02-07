@@ -7,7 +7,7 @@ type Props = {
     handleTextChange: Function,
 };
 
-function ModalDrawTextView({ handleTextChange }: Props) {
+function ModalDrawTextView({ handleTextChange }: Props): React$Element<React$FragmentType> {
     return (
         <>
             <label htmlFor="modalDrawTextInput" />

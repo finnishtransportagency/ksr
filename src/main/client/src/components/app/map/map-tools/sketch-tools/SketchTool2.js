@@ -76,7 +76,7 @@ const sketchSymbol = {
     },
 };
 
-export default function SketchTool2({ ...props }: Props) {
+export default function SketchTool2({ ...props }: Props): React$Element<React$FragmentType> {
     const drawNewFeatureButtonRef = useRef();
     const drawNewAreaButtonRef = useRef();
     const drawRectangleButtonRef = useRef();
@@ -162,7 +162,6 @@ export default function SketchTool2({ ...props }: Props) {
             && tempGraphics[0].attributes.SOPIMUSTUNNISTE !== null
             && data && data.length
         ) {
-            console.log('IF', tempGraphics);
             const objectIdFieldName = kayttoikParentLayer.fields.find(field => field.type === 'esriFieldTypeOID').name;
             const newData = {
                 geometry: tempGraphics[0].geometry,
@@ -181,7 +180,6 @@ export default function SketchTool2({ ...props }: Props) {
             localTempGraphicsLayer.graphics = undefined;
             setActiveFeatureMode('create');
         } else {
-            console.log('ELSE', tempGraphics);
             setActiveModal(editModeActive);
             resetMapTools(draw, sketchViewModel, setActiveTool);
         }
@@ -456,8 +454,6 @@ export default function SketchTool2({ ...props }: Props) {
                 authorities,
             } = props;
 
-            console.log('COMPLETE', event);
-
             const ltg = ltgRef.current;
 
             // Skip finding layers if Administrator editing is in use
@@ -696,7 +692,6 @@ export default function SketchTool2({ ...props }: Props) {
         drawNewAreaButton.addEventListener('click', () => {
             const convertedGeometryType = convertEsriGeometryType(geometryTypeRef.current);
             sketchViewModel.create(convertedGeometryType);
-            console.log('click', ltgRef.current?.graphics?.items, props.tempGraphicsLayer?.graphics?.items);
             drawNewAreaButton.style.backgroundColor = styles.colorMainDark;
         });
 

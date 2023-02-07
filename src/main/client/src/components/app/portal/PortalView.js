@@ -6,7 +6,7 @@ type Props = {
     portalIsOpen: boolean,
 }
 
-function PortalView({ portalIsOpen }: Props) {
+function PortalView({ portalIsOpen }: Props): React$Element<React$FragmentType> {
     return (
         <>
             {portalIsOpen && <PortalWindowContainer />}

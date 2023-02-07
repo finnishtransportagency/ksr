@@ -10,7 +10,7 @@ type Props = {
     activeNav: string,
 };
 
-function SideNavView({ setActiveNav, activeNav }: Props) {
+function SideNavView({ setActiveNav, activeNav }: Props): React$Element<React$FragmentType> {
     const [showHelpModal, setShowHelpModal] = useState(false);
     return (
         <>

@@ -23,7 +23,7 @@ type Action = {
     originalMinScale: number,
 };
 
-const toggleLayerVisibleZoomOut = (state, action) => {
+const toggleLayerVisibleZoomOut = (state: Object, action: any) => {
     let layersVisibleZoomOut = state.layersVisibleZoomOut || [];
     const stored = layersVisibleZoomOut.find(l => l.id === action.layerId);
 
@@ -50,7 +50,7 @@ const toggleLayerVisibleZoomOut = (state, action) => {
     };
 };
 
-export default (state: Object = initialState, action: Action) => {
+export default (state: Object = initialState, action: Action): any => {
     switch (action.type) {
         case SET_MAP_VIEW:
             return {

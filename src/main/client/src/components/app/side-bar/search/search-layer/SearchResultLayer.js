@@ -8,7 +8,7 @@ type Props = {
     onClick: Function,
 };
 
-function SearchResultLayer({ title, id, onClick }: Props) {
+function SearchResultLayer({ title, id, onClick }: Props): React$Element<React$FragmentType> {
     return (
         <StyledSearchResultLayer
             tabIndex="0"

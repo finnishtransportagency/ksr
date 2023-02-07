@@ -122,16 +122,16 @@ class ModalFeatureContracts extends Component<Props, State> {
         }
     }
 
-    handleGoBack = () => {
+    handleGoBack: any = () => {
         this.setState({ ...this.initialState });
     };
 
-    handleModalCancel = () => {
+    handleModalCancel: any = () => {
         const { removeContractListInfo } = this.props;
         removeContractListInfo();
     };
 
-    handleSubmitLinkToContract = () => {
+    handleSubmitLinkToContract: any = () => {
         const {
             objectId, currentLayer, contractLayers, view, updateLayerData,
         } = this.props;
@@ -172,7 +172,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         });
     };
 
-    handleSubmitEditContract = async () => {
+    handleSubmitEditContract: any = async () => {
         const {
             view, contractLayers, updateLayerData,
         } = this.props;
@@ -209,7 +209,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         }
     };
 
-    handleSubmitAddContract = () => {
+    handleSubmitAddContract: any = () => {
         const {
             objectId, currentLayer, contractLayers, view, updateLayerData,
         } = this.props;
@@ -264,7 +264,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         });
     };
 
-    contractLinkValidation = (
+    contractLinkValidation: any = (
         validContract?: boolean,
         contractNumber?: string,
         contractUuid?: string,
@@ -294,7 +294,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         }
     };
 
-    setActiveView = (activeView: string, contractNumber: string, layerId: string) => {
+    setActiveView: any = (activeView: string, contractNumber: string, layerId: string) => {
         this.setState({
             ...this.state,
             activeView,
@@ -310,7 +310,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         });
     };
 
-    setFormOptions = (formOptions: Object) => {
+    setFormOptions: any = (formOptions: Object) => {
         const { modalSubmit } = this.state;
         this.setState({
             formOptions: {
@@ -324,7 +324,7 @@ class ModalFeatureContracts extends Component<Props, State> {
         });
     };
 
-    render() {
+    render(): React$Element<any> {
         const { contractLayers, currentLayer } = this.props;
         const {
             activeView, title, modalSubmit, contractNumber, layerId,

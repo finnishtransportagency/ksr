@@ -8,7 +8,7 @@ import { config } from '../config';
  *
  * @returns {Promise<Object>} Promise response data.
  */
-export const deleteUserLayer = (layerId: string) => (
+export const deleteUserLayer = (layerId: string): Promise<Response> => (
     fetch(`api/user-layer/${encodeURIComponent(layerId)}`, {
         ...config(),
         method: 'DELETE',

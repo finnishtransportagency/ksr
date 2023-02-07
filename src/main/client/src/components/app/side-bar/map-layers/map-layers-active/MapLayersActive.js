@@ -45,7 +45,7 @@ class MapLayersActive extends Component<Props, State> {
         this.populateTable = this.populateTable.bind(this);
     }
 
-    onDragEnd = (result: DropResult) => {
+    onDragEnd: any = (result: any) => {
         const { mapLayerList, setLayerList, dataLayerList } = this.props;
 
         if (!result.destination) {
@@ -61,7 +61,7 @@ class MapLayersActive extends Component<Props, State> {
         setLayerList(layerListReorder.concat(dataLayerList));
     };
 
-    onOpacityChange = (evt: Number, id: Number) => {
+    onOpacityChange: any = (evt: Number, id: Number) => {
         const { setLayerList, dataLayerList, mapLayerList } = this.props;
         const foundLayer = mapLayerList.find(l => l.id === id);
 
@@ -69,7 +69,7 @@ class MapLayersActive extends Component<Props, State> {
         setLayerList(mapLayerList.concat(dataLayerList));
     };
 
-    handleAdminModeChange = (layerId: string) => {
+    handleAdminModeChange: any = (layerId: string) => {
         const {
             contentChange, contentDisable, submitChange, submitDisable, cancel,
         } = strings.modalConfirmAdminChange;
@@ -93,7 +93,7 @@ class MapLayersActive extends Component<Props, State> {
         }
     };
 
-    populateTable = (layer: Object) => {
+    populateTable: any = (layer: Object) => {
         const { tableLayers, showConfirmModal, addNonSpatialContentToTable } = this.props;
         const active = tableLayers.some(tl => tl.id === layer.id);
         if (active) {
@@ -110,7 +110,7 @@ class MapLayersActive extends Component<Props, State> {
         }
     };
 
-    render() {
+    render(): any {
         const {
             mapLayerList,
             fetching,

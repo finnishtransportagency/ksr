@@ -10,7 +10,7 @@ import {
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import MapDraw from './MapDraw';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     view: state.map.mapView.view,
     active: state.map.mapTools.active,
     draw: state.map.mapTools.draw,
@@ -22,18 +22,18 @@ const mapStateToProps = state => ({
     showMeasurements: state.map.mapDraw.showMeasurements,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setActiveTool: (active) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setActiveTool: (active: string) => {
         if (active === 'drawText') {
             dispatch(setActiveModal('drawText'));
         }
         dispatch(setMapDrawText(''));
         dispatch(setActiveTool(active));
     },
-    setActiveToolMenu: (activeMenu) => {
+    setActiveToolMenu: (activeMenu: any) => {
         dispatch(setActiveToolMenu(activeMenu));
     },
-    setHasGraphics: (hasGraphics) => {
+    setHasGraphics: (hasGraphics: any) => {
         dispatch(setHasGraphics(hasGraphics));
     },
     toggleMeasurements: () => {

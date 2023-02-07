@@ -6,7 +6,7 @@ import EditsContainer from './edits/EditsContainer';
 import { H1 } from '../../../ui/elements';
 import strings from '../../../../translations/fi';
 
-function OfflineView() {
+function OfflineView(): any {
     return (
         <>
             <SideBar.Header>

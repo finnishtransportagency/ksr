@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 // @flow
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations';
@@ -11,13 +12,13 @@ type Props = {
     mapScale: number,
     toggleLayer: (string) => void,
     childLayer: boolean,
-    toggleVisibleZoomOut: (string, number) => void,
-    layersViewableZoomOut: Object[],
+    toggleVisibleZoomOut?: (string, number) => void,
+    layersViewableZoomOut?: Object[],
 };
 
 function MapLayerToggle({
     layer, mapScale, toggleLayer, childLayer, toggleVisibleZoomOut, layersViewableZoomOut,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     const matching = layersViewableZoomOut !== undefined
         ? layersViewableZoomOut.find(l => l.id === layer.id)
         : undefined;
@@ -29,7 +30,7 @@ function MapLayerToggle({
     const getMultilayerNode = () => {
         const multiSymbolIcon: HTMLElement = document.createElement('i');
         multiSymbolIcon.className = 'fas fa-plus';
-        multiSymbolIcon.style = 'font-size: 0.7em';
+        multiSymbolIcon.style.fontSize = '0.7em';
         multiSymbolIcon.setAttribute('data-for', tooltipId);
         multiSymbolIcon.setAttribute('data-tip', 'tooltip');
         multiSymbolIcon.setAttribute('data-event', 'click');
@@ -91,7 +92,7 @@ function MapLayerToggle({
                         )
                         : <i className="fas fa-eye-slash" />}
 
-                    {shouldShowZoomOutToggle && <MapLayerToggleIcon visible={matching} /> }
+                    {shouldShowZoomOutToggle && <MapLayerToggleIcon visible={matching || false} /> }
                 </>
             );
         } if (layer.legendSymbol) {
@@ -116,7 +117,7 @@ function MapLayerToggle({
     const onClick = () => {
         if (matching) {
             if (shouldShowZoomOutToggle) {
-                if (matchingAndOriginallyHidden) {
+                if (matchingAndOriginallyHidden && toggleVisibleZoomOut) {
                     toggleVisibleZoomOut(layer.id, layer.minScale);
                 } else {
                     toggleLayer(layer.id);
@@ -126,7 +127,7 @@ function MapLayerToggle({
             }
         } else if (layerViewable(layer, mapScale)) {
             toggleLayer(layer.id);
-        } else if (shouldShowZoomOutToggle) {
+        } else if (shouldShowZoomOutToggle && toggleVisibleZoomOut) {
             toggleVisibleZoomOut(layer.id, layer.minScale);
         }
     };
@@ -134,7 +135,7 @@ function MapLayerToggle({
     return (
         <>
             <LayerSettings.Toggle
-                title={getTitle(layer, mapScale)}
+                title={getTitle()}
                 onClick={onClick}
                 viewable={anyToggleViewable}
                 childLayer={childLayer}

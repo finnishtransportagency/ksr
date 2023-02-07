@@ -23,7 +23,7 @@ const convert = async (
     geom: Object,
     sSrs: number = 3067,
     tSrs: number = 3067,
-) => {
+): any => {
     const coordinates = sSrs !== tSrs
         ? project(`EPSG:${sSrs}`, `EPSG:${tSrs}`, geom.coordinates) : geom.coordinates;
 

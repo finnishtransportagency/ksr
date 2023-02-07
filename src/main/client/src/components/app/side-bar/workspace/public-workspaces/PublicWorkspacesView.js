@@ -14,7 +14,7 @@ function PublicWorkspacesView({
     workspaceList,
     handleSelectWorkspace,
     loadingLayers,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <WorkspaceTitle>{strings.workspace.titlePublicWorkspace}</WorkspaceTitle>

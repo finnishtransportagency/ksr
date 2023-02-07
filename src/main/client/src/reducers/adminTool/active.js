@@ -18,7 +18,7 @@ type Action = {
     layerList: Array<any>,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case SET_ACTIVE_ADMIN_TOOL:
             return {

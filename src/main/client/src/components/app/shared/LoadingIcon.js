@@ -8,7 +8,7 @@ type Props = {
     size?: number,
 };
 
-function LoadingIcon({ loading, size }: Props) {
+function LoadingIcon({ loading, size }: Props): React$Element<"div"> {
     return (
         <div className="loading-icon">
             <PulseLoader color={styles.colorMain} size={size} loading={loading} />

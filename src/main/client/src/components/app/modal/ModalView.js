@@ -25,7 +25,7 @@ type Props = {
     confirmModal: boolean,
 };
 
-function ModalView({ activeModal, confirmModal }: Props) {
+function ModalView({ activeModal, confirmModal }: Props): React$Element<React$FragmentType> {
     return (
         <>
             {activeModal === 'filter' && <ModalFilterContainer />}

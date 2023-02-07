@@ -4,7 +4,7 @@ import ModalDownloadCsv from './ModalDownloadCsv';
 import { mergeColumnsByHeaderAndLabel } from '../../../../utils/parseFeatureData';
 import { nestedVal } from '../../../../utils/nestedValue';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { activeTable, layers, filtered } = state.table.features;
     const { layerList } = state.map.layerGroups;
 

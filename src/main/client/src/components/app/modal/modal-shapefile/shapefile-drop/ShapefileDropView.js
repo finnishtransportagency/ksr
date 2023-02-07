@@ -10,7 +10,7 @@ type Props = {
     acceptedFiles: File[],
 };
 
-function ShapefileDropView({ onDrop, acceptedFiles }: Props) {
+function ShapefileDropView({ onDrop, acceptedFiles }: Props): React$Element<React$FragmentType> {
     return (
         <>
             <H2>{strings.shapefileDropView.title}</H2>

@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import TableView from './TableView';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     isOpen: state.table.toggleTable,
     activeNav: state.navigation.activeNav,
     portalIsOpen: state.portal.togglePortal,

@@ -8,7 +8,7 @@ type Props = {
     properties: Object,
 };
 
-function PropertyInfoView({ properties }: Props) {
+function PropertyInfoView({ properties }: Props): React$Element<React$FragmentType> {
     return (
         <>
             <PropertyFeature>

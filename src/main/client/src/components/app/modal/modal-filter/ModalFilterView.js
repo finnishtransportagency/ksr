@@ -9,7 +9,7 @@ type Props = {
     handleOnChange: (name: string) => void,
 };
 
-function ModalFilterView({ columns, handleOnChange }: Props) {
+function ModalFilterView({ columns, handleOnChange }: Props): React$Element<React$FragmentType> {
     return (
         <>
             <Description>{strings.modalFilter.description}</Description>

@@ -14,7 +14,7 @@ import store from '../../store';
  *
  * @returns {Object[]} List of layer features saved in workspace.
  */
-export const getWorkspaceFeatures = (workspace: Object[]) => {
+export const getWorkspaceFeatures = (workspace: Array<Object>): Array<{ featureId: number, layerId: any, selected: any, ... }> => {
     const workspaceFeatures = [];
     if (workspace) {
         workspace.forEach((layer) => {
@@ -89,7 +89,7 @@ export const queryWorkspaceFeatures = (
  * @param {Object} layer workspace layer.
  * @returns {Object} Found layer from the list.
  */
-const findLayer = (list, layer) => list
+const findLayer = (list: any, layer: any) => list
     .find(l => (layer.layerId || layer.userLayerId).replace('_s', '') === (l.id || l.userLayerId));
 
 /**
@@ -217,7 +217,7 @@ export const loadWorkspace = async (
  *
  * @returns {Object | null} Found workspace or null.
  */
-export const getWorkspaceFromUrl = async () => {
+export const getWorkspaceFromUrl = async (): any => {
     const urlParams = new URLSearchParams(window.location.search);
     const workspaceUuid = urlParams.get('workspace');
     return workspaceUuid && getWorkspaceUuid(workspaceUuid);

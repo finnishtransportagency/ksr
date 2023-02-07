@@ -11,7 +11,7 @@ import strings from '../../translations';
  *
  * @return {Promise<Object>} Contains single workspaces data.
  */
-export const fetchWorkspace = (workspaceName: ?string, isPublic: boolean) => {
+export const fetchWorkspace = (workspaceName: ?string, isPublic: boolean): Promise<?any> => {
     if (workspaceName) {
         return fetch(`api/workspace/?workspaceName=${workspaceName}&isPublic=${String(isPublic)}`, config())
             .then((r) => {
@@ -39,7 +39,7 @@ export const fetchWorkspace = (workspaceName: ?string, isPublic: boolean) => {
  *
  * @returns {Promise<Object> | Promise<null>} Promise object with found workspace or null.
  */
-export const getWorkspaceUuid = async (workspaceUuid: string) => {
+export const getWorkspaceUuid = async (workspaceUuid: string): Promise<any> | Promise<null> => {
     const res = await fetch(`api/workspace/${workspaceUuid}`, config());
     if (!res.ok) {
         toast.error(strings.workspace.share.sharedWorkspaceLoadError);

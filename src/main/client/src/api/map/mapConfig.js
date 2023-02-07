@@ -6,7 +6,7 @@ import { config } from '../config';
  *
  * @returns {Promise<Object>} Promise with map config data.
  */
-export const fetchMapConfig = () => (
+export const fetchMapConfig = (): Promise<any> => (
     fetch('api/map', config())
         .then(r => r.json())
 );

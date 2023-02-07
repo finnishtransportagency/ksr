@@ -26,7 +26,7 @@ function ModalThemeLayerView({
     selectedClassification,
     numClasses,
     layerFields,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <ModalThemeLayerWrapper>
             <label

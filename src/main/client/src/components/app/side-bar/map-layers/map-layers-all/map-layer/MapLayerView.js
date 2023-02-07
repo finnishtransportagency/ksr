@@ -33,7 +33,7 @@ function MapLayerView({
     layerList,
     showConfirmModal,
     loadingLayers,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <LayerGroup.Layer>
             {loadingLayers.some(ll => ll === layer.id) && <LoadingIcon size={6} loading />}

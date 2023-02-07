@@ -29,7 +29,7 @@ function ModalZoomToFeatures({
     selectedGeometryData,
     view,
     activeLayerId,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     const [currentTableOnly, setCurrentTableOnly] = useState(initialState.currentTableOnly);
     const [
         selectedFeaturesOnly,

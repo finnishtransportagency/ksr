@@ -7,7 +7,7 @@ type Props = {
     style: any,
 };
 
-function CustomTableView({ children, style }: Props) {
+function CustomTableView({ children, style }: Props): React$Element<"div"> {
     return (
         <div className="rt-rtable" role="grid" {...style}>
             <Scrollbars

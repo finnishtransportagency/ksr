@@ -47,7 +47,7 @@ const initialState = {
     propertyAreaSearch: false,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case SET_PROPERTY_INFO:
             return {

@@ -34,7 +34,7 @@ function MapLayerChildView({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     const isLoading = loadingLayers && loadingLayers.some(ll => ll === layer.id);
     return (
         <LayerSettings

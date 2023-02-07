@@ -26,7 +26,7 @@ function WorkspaceView({
     handleSelectWorkspace,
     handleShareWorkspace,
     loadingLayers,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <SideBar.Header>

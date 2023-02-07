@@ -45,7 +45,7 @@ function ModalContractDetailsView({
     handleFeatureEditClick,
     handleFeatureUnlinkClick,
     handleFeatureLocateClick,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             {fetchingDetailList && <LoadingIcon loading={fetchingDetailList} />}

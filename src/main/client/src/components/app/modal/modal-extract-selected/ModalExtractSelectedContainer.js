@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ModalExtractSelected from './ModalExtractSelected';
 import { nestedVal } from '../../../../utils/nestedValue';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const selectedGeometryData = [];
     const layer = state.table.features.layers.find(l => l.id === state.table.features.activeTable);
     if (layer) layer.data.forEach(d => d._selected && selectedGeometryData.push(d.geometry));
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 
     // Use parent layers' id for child layer
     if (layerId !== null) {
-        const parentLayer = nestedVal(layerList.find(l => l.id === layerId.replace('_s', '')), ['parentLayer']);
+        const parentLayer = nestedVal(layerList.find(l => l.id === layerId?.replace('_s', '')), ['parentLayer']);
         layerId = parentLayer || layerId;
     }
 

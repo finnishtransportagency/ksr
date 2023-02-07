@@ -25,7 +25,7 @@ function SketchToolView({
     hasSelectedFeatures,
     isOpen,
     activeTool,
-}: Props) {
+}: Props): React$Element<"div"> {
     return (
         <div id="select-tool-outer-wrapper">
             <div

@@ -20,7 +20,25 @@ type Action = {
     cancel?: Function,
 };
 
-export default (state: Object = initialState, action: Action) => {
+export default (state: Object = initialState, action: Action): | any
+  | {
+    accept: any,
+    acceptText: string,
+    body: string,
+    cancel: any | void,
+    cancelText: string,
+    show: boolean,
+    ...
+  }
+  | {
+    accept: () => void,
+    acceptText: string,
+    body: string,
+    cancel: () => void,
+    cancelText: string,
+    show: boolean,
+    ...
+  } => {
     switch (action.type) {
         case SHOW_CONFIRM_MODAL:
             return {

@@ -28,7 +28,7 @@ function MapLayersAllView({
     handleLayerGroupClick,
     loadingLayers,
     layersToFind,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             {

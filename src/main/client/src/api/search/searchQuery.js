@@ -45,10 +45,10 @@ export const fetchSearchQuery = (
 export const fetchSearchSuggestions = (
     layerId: string,
     whereQueryString: string,
-    queryColumns: string,
+    queryColumns: string[],
     signal: any,
     text: string,
-) => fetch(`api/proxy/layer/${layerId}/query?${
+): Promise<void | Array<empty>> => fetch(`api/proxy/layer/${layerId}/query?${
     querystring.stringify({
         where: whereQueryString,
         f: 'pjson',

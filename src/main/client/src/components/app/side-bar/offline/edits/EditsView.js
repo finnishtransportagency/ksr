@@ -10,7 +10,7 @@ type Props = {
     removeEdits: Function,
 };
 
-function EditsView({ count, retryEdits, removeEdits }: Props) {
+function EditsView({ count, retryEdits, removeEdits }: Props): React$Element<React$FragmentType> {
     return (
         <EditsWrapper>
             <H2>{strings.offline.edits.title}</H2>

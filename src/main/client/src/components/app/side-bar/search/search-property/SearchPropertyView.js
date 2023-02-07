@@ -33,7 +33,7 @@ function SearchPropertyView({
     handleClear,
     submitDisabled,
     propertyId,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <Scrollbars
             autoHide

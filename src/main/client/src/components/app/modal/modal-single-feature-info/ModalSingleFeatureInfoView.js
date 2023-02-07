@@ -6,7 +6,7 @@ type Props = {
     featureData: Object[],
 }
 
-const ModalSingleFeatureInfoView = (props: Props) => {
+const ModalSingleFeatureInfoView = (props: Props): Array<React$Element<any>> => {
     const { featureData } = props;
 
     return (

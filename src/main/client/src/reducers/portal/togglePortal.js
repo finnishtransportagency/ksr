@@ -9,7 +9,7 @@ type Action = {
     type: string,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): boolean | State => {
     switch (action.type) {
         case TOGGLE_PORTAL:
             return !state;

@@ -10,7 +10,7 @@ type Props = {
     activeNav: string,
 };
 
-function SideBarView({ activeNav }: Props) {
+function SideBarView({ activeNav }: Props): React$Element<React$FragmentType> {
     return (
         <SideBar active={
             activeNav === 'search'

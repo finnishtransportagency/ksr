@@ -7,11 +7,11 @@ import { loadFailedEdits } from '../../../reducers/offline/actions';
 import { setLoading } from '../../../reducers/loading/actions';
 import Home from './Home';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     loading: state.loading.loading,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     updateWorkspaces: (workspaceFetch: Function, fetchParam: Object | string) => (
         dispatch(updateWorkspaces(workspaceFetch, fetchParam))
     ),

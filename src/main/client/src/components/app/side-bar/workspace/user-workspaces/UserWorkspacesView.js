@@ -21,7 +21,7 @@ function UserWorkspacesView({
     handleSelectWorkspace,
     handleShareWorkspace,
     loadingLayers,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <WorkspaceTitle extraPadding>{strings.workspace.titleUserWorkspace}</WorkspaceTitle>

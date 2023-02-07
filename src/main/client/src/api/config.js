@@ -18,7 +18,7 @@ const getHeaders = (contentType: string) => {
  *
  * @param {string} [contentType=json] Header's content type.
  */
-export const config = (contentType?: string = 'json') => ({
+export const config = (contentType?: string = 'json'): any => ({
     headers: getHeaders(contentType),
     credentials: 'include',
     mode: 'cors',
@@ -33,7 +33,7 @@ export const config = (contentType?: string = 'json') => ({
  * @throws Will throw an error if response is not ok.
  * @returns {Promise} Promise with response data.
  */
-export const handleErrors = (response: Object, toastText?: string) => {
+export const handleErrors = (response: Object, toastText?: string): any => {
     if (!response.ok) {
         if (toastText) toast.error(toastText);
         throw Error(response.statusText);

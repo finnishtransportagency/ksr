@@ -14,7 +14,7 @@ type Props = {
 
 function FieldInputView({
     field, handleOnChange, index, disabled,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     if (
         field.domain
         && (field.domain.type === 'codedValue' || field.domain.type === 'coded-value')

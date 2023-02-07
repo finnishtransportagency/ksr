@@ -7,7 +7,7 @@ import MapLayersActive from './MapLayersActive';
 import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
 import { addNonSpatialContentToTable } from '../../../../../reducers/table/actions';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     mapLayerList: state.map.layerGroups.layerList.filter(l => l.type !== 'agfl'),
     dataLayerList: state.map.layerGroups.layerList.filter(l => l.type === 'agfl'),
     layersVisibleZoomOut: state.map.layerGroups.layersVisibleZoomOut,
@@ -18,11 +18,11 @@ const mapStateToProps = state => ({
     loadingLayers: state.loading.loadingLayers,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setLayerList: (layerList) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setLayerList: (layerList: any) => {
         dispatch(setLayerList(layerList));
     },
-    setActiveAdminTool: (layerId, layerList) => {
+    setActiveAdminTool: (layerId: any, layerList: any) => {
         dispatch(setActiveAdminTool(layerId, layerList));
     },
     createNonSpatialFeature: () => {
@@ -37,10 +37,10 @@ const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    addNonSpatialContentToTable: (layer) => {
+    addNonSpatialContentToTable: (layer: any) => {
         dispatch(addNonSpatialContentToTable(layer));
     },
-    toggleVisibleZoomOut: (layerId, original) => {
+    toggleVisibleZoomOut: (layerId: any, original: any) => {
         dispatch(toggleLayerVisibleZoomOut(layerId, original));
     },
 });

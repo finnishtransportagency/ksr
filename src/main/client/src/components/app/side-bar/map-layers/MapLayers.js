@@ -37,15 +37,15 @@ class MapLayers extends Component<Props, State> {
         this.setActiveSubGroups = this.setActiveSubGroups.bind(this);
     }
 
-    setActiveGroups = (activeGroups: number[]) => {
+    setActiveGroups: any = (activeGroups: number[]) => {
         this.setState({ activeGroups });
     };
 
-    setActiveSubGroups = (activeSubGroups: number[]) => {
+    setActiveSubGroups: any = (activeSubGroups: number[]) => {
         this.setState({ activeSubGroups });
     };
 
-    handleButtonClickLayers = (tab: string) => {
+    handleButtonClickLayers: any = (tab: string) => {
         const { activeTab, setActiveLayerTab } = this.props;
         if (activeTab !== tab) {
             document.getElementsByClassName('layer-view-inner-scroll-wrapper')[0].scrollTop = 0;
@@ -53,7 +53,7 @@ class MapLayers extends Component<Props, State> {
         setActiveLayerTab(tab);
     };
 
-    handleInputChange = (event: Object) => {
+    handleInputChange: any = (event: Object) => {
         const { layerGroups } = this.props;
         const layersToFind = event.target.value;
         const activeGroups = layersToFind ? layerGroups.layerGroups.map(group => group.id) : [];
@@ -65,7 +65,7 @@ class MapLayers extends Component<Props, State> {
         this.setState({ layersToFind, activeGroups, activeSubGroups });
     };
 
-    render() {
+    render(): any {
         const { layersToFind, activeGroups, activeSubGroups } = this.state;
         const {
             activeTab,

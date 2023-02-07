@@ -638,7 +638,7 @@ class EsriMap extends Component<Props> {
         setMapView(view);
         setTempGraphicsLayer(tempGraphicsLayer);
 
-        let workspace = await getWorkspaceFromUrl();
+        let workspace: any = await getWorkspaceFromUrl();
         if (workspace) {
             await loadWorkspace(
                 workspace,

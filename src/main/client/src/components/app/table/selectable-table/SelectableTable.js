@@ -8,7 +8,7 @@ const FixedColumns = withFixedColumns(ReactTable);
 const CheckboxTableHOC = checkboxHOC(FixedColumns);
 
 class SelectableTable extends CheckboxTableHOC {
-    render() {
+    render(): any {
         const {
             columns: originalCols,
             selectWidth,

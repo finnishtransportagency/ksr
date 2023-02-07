@@ -21,7 +21,7 @@ function ModalBufferSelectedView({
     handleTableSelectionChange,
     handleFeatureSelectionChange,
     singleFeature,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             {!singleFeature && (

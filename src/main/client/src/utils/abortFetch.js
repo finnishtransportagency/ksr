@@ -9,7 +9,7 @@ const { AbortController } = window;
  *
  * @returns {Object} Object with controller and signal.
  */
-export const abortFetch = (controller: any) => {
+export const abortFetch = (controller: any): { controller: any, signal: any, ... } | { controller: any, signal: void, ... } => {
     if (controller !== undefined) controller.abort();
 
     if ('AbortController' in window) {

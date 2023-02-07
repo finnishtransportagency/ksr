@@ -17,7 +17,7 @@ function ContractListView({
     setActiveView,
     editLayerPermission,
     handleContractDetailsClick,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             {!contracts.length && <p>{strings.modalFeatureContracts.listView.noContracts}</p>}

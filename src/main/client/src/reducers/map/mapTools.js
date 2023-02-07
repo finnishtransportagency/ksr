@@ -28,7 +28,7 @@ type Action = {
     featureNoGeometry: Object,
 };
 
-export default (state: Object = initialState, action: Action) => {
+export default (state: Object = initialState, action: Action): any => {
     switch (action.type) {
         case SET_MAP_TOOLS:
             return {

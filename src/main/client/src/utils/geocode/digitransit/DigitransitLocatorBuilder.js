@@ -15,6 +15,12 @@ import cache, { addToCache } from './cache'; */
  * @returns {Object} Object that has a build method to build a DigitransitLocator.
  */
 class DigitransitLocator {
+    addressToLocations: (url: string, params: any, requestOptions?: any) => Promise<any[]>;
+
+    suggestLocations: (url: string, params: any, requestOptions?: any) => Promise<any[]>;
+
+    cancellablePromise: any;
+
     constructor() {
         this.addressToLocations = addressToLocations;
         this.suggestLocations = suggestLocations;

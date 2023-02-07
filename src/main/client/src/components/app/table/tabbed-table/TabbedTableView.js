@@ -39,7 +39,7 @@ function TabbedTableView({
     editedLayers,
     featureType,
     addressField,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <WrapperTabbedTable>
@@ -78,7 +78,6 @@ function TabbedTableView({
                                             editedLayers,
                                             featureType,
                                             addressField,
-                                            l.type === 'agfl',
                                         );
                                     }}
                                     className="fas fa-times"

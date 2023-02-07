@@ -7,15 +7,15 @@ import { TooltipChildrenWrapper } from './styles';
 type Props = {
     id: string,
     children: React$Node,
-    place: string,
-    effect: string,
-    clickable: boolean,
-    eventOff: string,
+    place?: string,
+    clickable?: boolean,
+    eventOff?: string,
+    effect?: string,
 };
 
-const tooltipRoot = document.getElementById('tooltip-root');
+const tooltipRoot: any = document.getElementById('tooltip-root');
 
-const Tooltip = (props: Props) => {
+const Tooltip = (props: Props): any => {
     const {
         id, children, place, effect, clickable, eventOff,
     } = props;

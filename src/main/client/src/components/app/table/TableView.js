@@ -10,7 +10,7 @@ type Props = {
     portalIsOpen: boolean,
 };
 
-function TableView({ isOpen, activeNav, portalIsOpen }: Props) {
+function TableView({ isOpen, activeNav, portalIsOpen }: Props): React$Element<React$FragmentType> {
     return (
         <Table
             sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}

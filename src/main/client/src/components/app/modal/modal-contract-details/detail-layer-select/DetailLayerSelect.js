@@ -17,7 +17,7 @@ function DetailLayerSelect({
     setActiveView,
     setActiveDetailLayer,
     layerList,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             {detailLayers.map(detailLayer => (

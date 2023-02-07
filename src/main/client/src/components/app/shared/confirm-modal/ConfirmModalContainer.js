@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { hideConfirmModal } from '../../../../reducers/confirmModal/actions';
 import ConfirmModal from './ConfirmModal';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     show: state.confirmModal.show,
     body: state.confirmModal.body,
     acceptText: state.confirmModal.acceptText,
@@ -12,7 +12,7 @@ const mapStateToProps = state => ({
     cancel: state.confirmModal.cancel,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     hideConfirmModal: () => {
         dispatch(hideConfirmModal());
     },

@@ -14,7 +14,7 @@ type Props = {
 
 function MapDrawView({
     hasGraphics, removeDrawings, toggleDrawTools, isActive, showMeasurements, activeTool,
-}: Props) {
+}: Props): React$Element<any> {
     return (
         <DrawToolOuterWrapper id="draw-tool-outer-wrapper">
             <div

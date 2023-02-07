@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import EditContract from './EditContract';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: Object, ownProps: Object) => {
     const { objectId } = state.contract.contractList;
 
     return {

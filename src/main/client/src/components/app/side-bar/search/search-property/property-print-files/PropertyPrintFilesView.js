@@ -10,7 +10,7 @@ type Props = {
     fetching: boolean,
 };
 
-function PropertyPrintFilesView({ links, fetching }: Props) {
+function PropertyPrintFilesView({ links, fetching }: Props): React$Element<React$FragmentType> {
     return (
         <>
             {fetching && <LoadingIcon loading={fetching} />}

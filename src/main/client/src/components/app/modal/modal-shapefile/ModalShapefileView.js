@@ -15,7 +15,7 @@ function ModalShapefileView({
     acceptedFiles,
     color,
     setColor,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <ShapefileDropView onDrop={onDrop} acceptedFiles={acceptedFiles} />

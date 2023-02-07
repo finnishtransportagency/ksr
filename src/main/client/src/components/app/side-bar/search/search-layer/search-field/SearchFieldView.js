@@ -12,7 +12,6 @@ import { toDisplayDate } from '../../../../../../utils/date';
 type Props = {
     field: Object,
     index: number,
-    searchFieldValues: Array<Object>,
     setSearchState: Function,
     selectedLayer: string,
     textSearch: string,
@@ -22,6 +21,8 @@ type Props = {
     fetching: boolean,
     suggestions: Array<string>,
     suggestionsActive: boolean,
+    // eslint-disable-next-line react/require-default-props
+    searchFieldValues?: Array<Object>,
 };
 
 function SearchFieldView({
@@ -37,7 +38,7 @@ function SearchFieldView({
     fetching,
     suggestions,
     suggestionsActive,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <SearchFieldWrapper>
             {searchFieldValues && (

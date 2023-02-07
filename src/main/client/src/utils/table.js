@@ -8,7 +8,7 @@
 * @param {Object} data Object A single feature.
 * @return {Object} Object Features edits applied, if any done.
 */
-export const clearEdits = (data: Object) => (
+export const clearEdits = (data: Object): any => (
     Object.entries(data).reduce((a: Object, c: [string, any]) => {
         if (c[0] === '_edited' && Array.isArray(c[1])) {
             c[1].forEach((value) => {
@@ -92,7 +92,7 @@ export const applyDeletedFeatures = (
  * @returns {Object} Column with original or new value.
  */
 export const columnsWithoutLayerId = (key: string, data: Object, foundData: Object): Object => {
-    const newTitle = edited => `${data._layerId}/${edited.title.split('/')[1]}`;
+    const newTitle = (edited: any) => `${data._layerId}/${edited.title.split('/')[1]}`;
 
     return key === '_edited'
         ? { [key]: foundData._edited.map(edited => ({ ...edited, title: newTitle(edited) })) }

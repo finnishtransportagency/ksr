@@ -16,7 +16,7 @@ type Props = {
 
 function FormFieldView({
     index, field, handleOnChange, fetching, valid, disabled,
-}: Props) {
+}: Props): React$Element<"label"> {
     return (
         <label
             htmlFor={index}

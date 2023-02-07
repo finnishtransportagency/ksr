@@ -58,7 +58,7 @@ class ModalShowAddress extends Component<Props, State> {
         }
     }
 
-    render() {
+    render(): any {
         const { address, modalSubmit, fetchingAddress } = this.state;
 
         return (

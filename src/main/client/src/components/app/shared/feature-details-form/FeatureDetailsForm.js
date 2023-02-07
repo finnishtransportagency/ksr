@@ -17,7 +17,7 @@ type Props = {
 let controller;
 let signal;
 let existsQuery;
-function FeatureDetailsForm(props: Props) {
+function FeatureDetailsForm(props: Props): any {
     const {
         layer, setFormOptions, formType, existingAttributes,
     } = props;

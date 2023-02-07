@@ -9,7 +9,7 @@ import strings from '../../translations';
  *
  * @returns {boolean} Returns true if type is a number.
  */
-export const searchFieldIsNumber = (type: string) => {
+export const searchFieldIsNumber = (type: string): boolean => {
     const fieldNumberTypes = ['esriFieldTypeOID', 'esriFieldTypeSmallInteger', 'esriFieldTypeInteger', 'esriFieldTypeDouble'];
 
     return fieldNumberTypes.some(numberType => numberType === type);
@@ -76,7 +76,7 @@ export const parseQueryString = (
     textSearch: string,
     fields: Array<Object>,
     queryColumnsList: Array<string>,
-) => {
+): string => {
     const queryString = [];
 
     if (searchFieldValues.length > 0) {

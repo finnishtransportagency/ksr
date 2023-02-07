@@ -30,7 +30,7 @@ const toastProps = {
     closeButton: false,
 };
 
-function HomeView({ loading }: Props) {
+function HomeView({ loading }: Props): React$Element<React$FragmentType> {
     return (
         <>
             { loading && (

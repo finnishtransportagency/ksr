@@ -119,7 +119,7 @@ class EsriMap extends Component<Props> {
         }
     }
 
-    render() {
+    render(): React$Element<(_0: Props & { adminToolActive: boolean }) => React$Element<any>> {
         const {
             activeNav,
             isOpenTable,

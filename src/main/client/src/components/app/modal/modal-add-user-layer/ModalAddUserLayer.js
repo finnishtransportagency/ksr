@@ -58,13 +58,13 @@ class ModalAddUserLayer extends Component<Props, State> {
         this.handleOpacityChange = this.handleOpacityChange.bind(this);
     }
 
-    handleInputChange = (evt: Object) => {
+    handleInputChange: any = (evt: Object) => {
         this.setState({
             layerValues: { ...this.state.layerValues, [evt.target.name]: evt.target.value },
         });
     };
 
-    handleTypeChange = (type: string) => {
+    handleTypeChange: any = (type: string) => {
         const { layerValues } = this.state;
         this.setState({
             layerValues: {
@@ -74,7 +74,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         });
     };
 
-    handleCheckboxChange = (name: string) => {
+    handleCheckboxChange: any = (name: string) => {
         const { layerValues } = this.state;
         this.setState({
             layerValues: {
@@ -84,7 +84,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         });
     };
 
-    handleOpacityChange = (evt: Object) => {
+    handleOpacityChange: any = (evt: Object) => {
         const { layerValues } = this.state;
         this.setState({
             layerValues: {
@@ -94,7 +94,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         });
     };
 
-    handleSubmit = () => {
+    handleSubmit: any = () => {
         const { addUserLayer } = this.props;
         const layerValues = { ...this.state.layerValues };
 
@@ -119,7 +119,7 @@ class ModalAddUserLayer extends Component<Props, State> {
         addUserLayer(layerValues);
     };
 
-    render() {
+    render(): React$Element<any> {
         const { layerValues, optionsType } = this.state;
 
         const disabled = layerValues.type !== 'agfs'

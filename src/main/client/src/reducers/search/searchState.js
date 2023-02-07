@@ -37,7 +37,7 @@ const initialState = {
     suggestionsActive: true,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case SEARCH_FEATURES:
             return {

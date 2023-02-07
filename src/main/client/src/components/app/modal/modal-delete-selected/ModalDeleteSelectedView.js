@@ -14,7 +14,7 @@ function ModalDeleteSelectedView({
     deleteComment,
     handleTextareaChange,
     filteredData,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <label htmlFor="comment">{strings.modalDeleteSelected.commentLabel}</label>

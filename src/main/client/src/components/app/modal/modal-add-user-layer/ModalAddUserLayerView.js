@@ -25,7 +25,7 @@ function ModalAddUserLayerView({
     handleOpacityChange,
     layerValues,
     optionsType,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <label htmlFor={strings.modalAddUserLayer.name}>

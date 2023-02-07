@@ -19,7 +19,7 @@ function ConfirmModalView({
     acceptText,
     cancelText,
     fadeOut,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <Modal.Blur>
             <Modal confirm fadeOut={fadeOut}>

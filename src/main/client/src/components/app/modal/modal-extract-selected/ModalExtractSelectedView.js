@@ -20,7 +20,7 @@ function ModalExtractSelectedView({
     handleRadioChange,
     outputLink,
     extracting,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <p>{strings.modalExtractSelectedData.description}</p>

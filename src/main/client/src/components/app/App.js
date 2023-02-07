@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import HomeContainer from './home/HomeContainer';
 import { GlobalStyle } from '../ui/defaultStyles';
 
-function App({ store }: any) {
+function App({ store }: any): React$Element<any> {
     return (
         <Provider store={store}>
             <>

@@ -17,7 +17,7 @@ type Action = {
     type: string,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): State | { activeModal: string, data: any, ... } => {
     switch (action.type) {
         case SET_ACTIVE_MODAL:
             return {

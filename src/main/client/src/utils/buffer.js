@@ -17,9 +17,7 @@ import Point from '@arcgis/core/geometry/Point';
  *
  * @returns Graphic Returns Graphic if geometry is one of supported types otherwise null.
  */
-export const createGraphic = (
-    geometry: Object,
-) => {
+export const createGraphic = (geometry: Object): any | null => {
     if (
         geometry === null
         || geometry === undefined
@@ -80,13 +78,13 @@ export const createGraphic = (
  * @returns {Promise<Array<*>>} List of Point or Polygon geometry.
  */
 const initializeToGeometry = async (view: Object, geomToBuffer: Object[]) => {
-    const createPoint = geom => new Point({
+    const createPoint = (geom: any) => new Point({
         x: geom.x,
         y: geom.y,
         spatialReference: view.spatialReference,
     });
 
-    const createPolygon = geom => new Polygon({
+    const createPolygon = (geom: any) => new Polygon({
         rings: geom.rings,
         spatialReference: view.spatialReference,
     });
@@ -144,7 +142,6 @@ export const setBuffer = async (
 
             const bufferGraphic = createGraphic(
                 featureBuffers[0],
-                Graphic,
             );
             view.graphics.add(bufferGraphic);
         }
@@ -175,7 +172,6 @@ export const setSingleFeatureBuffer = (
 
         const bufferGraphic = createGraphic(
             featureBuffers[0],
-            Graphic,
         );
 
         view.graphics.add(bufferGraphic);

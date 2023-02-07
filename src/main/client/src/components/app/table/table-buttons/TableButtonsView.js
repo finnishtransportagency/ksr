@@ -29,7 +29,6 @@ type Props = {
     featureType: string,
     addressField: string,
     view: Object,
-    activeAdminTool: string,
     currentTabAdmin: boolean,
     bufferExists: boolean,
     handleClearBuffer: Function,
@@ -41,6 +40,7 @@ type Props = {
     featureType: string,
     addressField: string,
     layerList: Object[],
+    activeAdminTool: string,
 };
 
 function TableButtonsView({
@@ -70,7 +70,7 @@ function TableButtonsView({
     togglePortal,
     updatePortal,
     layerList,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
             <Table.Button

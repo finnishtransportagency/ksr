@@ -29,7 +29,7 @@ export const addActionColumn = (
     adminActive: boolean,
     sketchToolActive: boolean,
     addNewGeometryToFeature: Function,
-) => {
+): any => {
     const actionColumn = {
         Header: '',
         columns: [{

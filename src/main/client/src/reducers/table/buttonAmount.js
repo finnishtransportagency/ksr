@@ -10,7 +10,7 @@ type Action = {
     buttonAmount: ?number,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): void | number | State => {
     if (action.type === SET_BUTTON_AMOUNT) {
         return action.buttonAmount !== null
             ? action.buttonAmount

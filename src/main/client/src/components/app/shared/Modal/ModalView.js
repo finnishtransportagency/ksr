@@ -34,7 +34,7 @@ function ModalView({
     handleSubmit,
     handleGoBack,
     modalScrollSize,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <Modal.Blur>
             <Draggable bounds="parent" handle=".handler">

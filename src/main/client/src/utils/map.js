@@ -88,7 +88,7 @@ export const addLayers = async (
     isWorkspace: boolean,
     isOverviewMap: boolean = false,
     layerList: Object[],
-) => {
+): Promise<{ failedLayers: Array<any>, ... }> => {
     const searchLayers = [];
     const failedLayers = [];
     await Promise.all(layers.map(async (layer) => {
@@ -266,12 +266,12 @@ export const drawPropertyArea = async (
     view: Object,
     features: Object[],
 ) => {
-    const createPolygon = vertices => new Polygon({
+    const createPolygon = (vertices: any) => new Polygon({
         rings: vertices,
         spatialReference: view.spatialReference,
     });
 
-    const createPolygonGraphic = (geometry, propertyId): any => new Graphic({
+    const createPolygonGraphic = (geometry: any, propertyId: any): any => new Graphic({
         geometry,
         symbol: {
             type: 'simple-fill',
@@ -286,7 +286,7 @@ export const drawPropertyArea = async (
         propertyId,
     });
 
-    const createTextSymbol = (text): any => new TextSymbol({
+    const createTextSymbol = (text: any): any => new TextSymbol({
         text,
         color: 'black',
         haloColor: 'white',

@@ -10,7 +10,7 @@ import {
 } from '../../constants/actionTypes';
 
 type State = {
-    loading: boolean,
+    loading?: boolean,
     loadingLayers: string[],
 };
 
@@ -26,7 +26,7 @@ const initialState = {
     loadingLayers: [],
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): State | { loading: boolean, loadingLayers: Array<string>, ... } => {
     switch (action.type) {
         case SET_LOADING:
             return {
@@ -46,8 +46,7 @@ export default (state: State = initialState, action: Action) => {
         case REMOVE_LOADING_LAYER:
             return {
                 ...state,
-                loadingLayers: (state.loadingLayers
-                    .filter(layerId => layerId !== action.layerId): string[]),
+                loadingLayers: (state.loadingLayers?.filter(layerId => layerId !== action.layerId): string[]),
             };
         case REMOVE_LOADING_LAYERS:
             return {

@@ -38,7 +38,7 @@ function MapLayerParentChildView({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <div>
             {!layer.parentLayer && (

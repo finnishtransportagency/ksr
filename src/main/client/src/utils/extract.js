@@ -2,7 +2,7 @@
 // import { loadModules } from 'esri-loader';
 
 import Graphic from '@arcgis/core/Graphic';
-import * as Geoprocessor from '@arcgis/core/rest/geoprocessor';
+import * as geoprocessor from '@arcgis/core/rest/geoprocessor';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 
 /**
@@ -18,17 +18,18 @@ export const extractSelected = (
     layerId: string,
     selectedGeometryData: Array<Object>,
     format: string,
-) => {
-    const gp = new Geoprocessor(extractServiceUrl);
+): any => {
+    // const gp = new Geoprocessor(extractServiceUrl);
     const inputGraphicContainer = selectedGeometryData
         .map(geometry => new Graphic({ geometry }));
     const featureSet = new FeatureSet({ features: inputGraphicContainer });
 
-    return gp.submitJob({
+    return geoprocessor.submitJob({
         Layers_to_Clip: layerId.replace('_s', ''),
         Area_of_Interest: featureSet,
         Feature_Format: format,
-    }).then(result => gp.waitForJobCompletion(result.jobId))
-        .then(r => gp.getResultData(r.jobId, 'Output_Zip_File'))
-        .then(res => res.value.url);
+    }).then(result => result.waitForJobCompletion(result.jobId))
+        .then(r => r.getResultData(r.jobId, 'Output_Zip_File'))
+        .then(res => res.value.url)
+        .catch((e) => console.error(e));
 };

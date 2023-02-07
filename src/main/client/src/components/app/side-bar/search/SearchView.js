@@ -25,7 +25,7 @@ function SearchView({
     activeSearch,
     propertyAreaSearch,
     togglePropertyAreaSearch,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <SearchWrapper>
             <SideBar.Header>

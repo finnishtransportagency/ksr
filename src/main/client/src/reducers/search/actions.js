@@ -12,7 +12,15 @@ export const setSearchState = (
     searchFieldValues: Array<Object>,
     suggestions: Array<string>,
     suggestionsActive: boolean,
-) => ({
+): {
+  searchFieldValues: Array<any>,
+  selectedLayer: number,
+  suggestions: Array<string>,
+  suggestionsActive: boolean,
+  textSearch: string,
+  type: any,
+  ...
+} => ({
     type: types.SET_SEARCH_STATE,
     selectedLayer,
     textSearch,
@@ -24,7 +32,7 @@ export const setSearchState = (
 export const setSearchOptions = (
     selectedLayer: number,
     layerList: any,
-) => {
+): { optionsField: Array<any>, type: any, ... } => {
     let layerFields = nestedVal(
         layerList.find(l => l.id === selectedLayer),
         ['fields'],
@@ -46,7 +54,7 @@ export const setSearchOptions = (
     };
 };
 
-export const clearProperties = (graphicId: string, view: Object) => {
+export const clearProperties = (graphicId: string, view: Object): { type: any, ... } => {
     removeGraphicsFromMap(view, graphicId);
     removeGraphicsFromMap(view, 'propertyAreaLabel');
     return { type: types.CLEAR_PROPERTY_INFO };
@@ -73,7 +81,7 @@ export const setPropertyInfo = (
     view: Object,
     graphicId: string,
     authorities: Object[],
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({
         type: types.SET_PROPERTY_INFO,
         fetching: true,
@@ -156,11 +164,11 @@ export const setPropertyInfo = (
         });
 };
 
-export const setActiveSearch = (activeSearch: string) => ({
+export const setActiveSearch = (activeSearch: string): { activeSearch: string, type: any, ... } => ({
     type: types.SET_ACTIVE_SEARCH,
     activeSearch,
 });
 
-export const togglePropertyAreaSearch = () => ({
+export const togglePropertyAreaSearch = (): { type: any, ... } => ({
     type: types.TOGGLE_PROPERTY_AREA_SEARCH,
 });

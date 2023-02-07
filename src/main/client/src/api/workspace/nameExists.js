@@ -10,7 +10,7 @@ import { config } from '../config';
  *
  * @return {Promise<boolean>} Whether the name exists or not.
  */
-export const fetchWorkspaceNameExists = (workspaceName: string, signal: any) => (
+export const fetchWorkspaceNameExists = (workspaceName: string, signal: any): Promise<any | void> => (
     fetch(`api/workspace/exists?${
         querystring.stringify({
             name: workspaceName,

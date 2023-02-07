@@ -99,7 +99,7 @@ class ContractList extends Component<Props, State> {
         });
     }
 
-    handleUnlinkContract = (contractNumber: string, layerId: string) => {
+    handleUnlinkContract: any = (contractNumber: string, layerId: string) => {
         const {
             currentLayer,
             contractLayers,
@@ -178,7 +178,7 @@ class ContractList extends Component<Props, State> {
         );
     };
 
-    handleContractDetailsClick = async (contractNumber: number, layerId: string) => {
+    handleContractDetailsClick: any = async (contractNumber: number, layerId: string) => {
         const { contractLayers, setActiveModal } = this.props;
         const { contracts } = this.state;
 
@@ -211,7 +211,7 @@ class ContractList extends Component<Props, State> {
         setActiveModal('contractDetails', modalData);
     };
 
-    render() {
+    render(): any {
         const { contracts, fetchingContracts } = this.state;
         const {
             setActiveView,

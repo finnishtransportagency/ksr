@@ -16,7 +16,7 @@ function ModalZoomToFeaturesView({
     selectedFeaturesOnly,
     setCurrentTableOnly,
     setSelectedFeaturesOnly,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <p>{strings.modalZoomToFeatures.content.description}</p>

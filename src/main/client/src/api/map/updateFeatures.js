@@ -9,7 +9,7 @@ import { config } from '../config';
 *
 * @return {Promise<Object>} Promise with update response data.
 */
-export const updateFeatures = (layerId: string, params: string) => (
+export const updateFeatures = (layerId: string, params: string): Promise<any> => (
     fetch(`api/proxy/layer/${layerId}/updateFeatures`, {
         ...config('x-www-form-urlencoded'),
         method: 'POST',

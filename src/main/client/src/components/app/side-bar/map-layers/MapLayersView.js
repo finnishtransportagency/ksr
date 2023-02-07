@@ -46,7 +46,7 @@ function MapLayersView({
     layersToFind,
     toggleIndexMap,
     indexMapActive,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <SideBar.Header>

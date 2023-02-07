@@ -9,7 +9,7 @@ type Props = {
     filtered: Object[],
 };
 
-function ModalDownloadCsv(props: Props) {
+function ModalDownloadCsv(props: Props): React$Element<any> {
     const {
         mergedLayerFeatures,
         filtered,

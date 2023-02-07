@@ -3,8 +3,8 @@ import React, { Fragment } from 'react';
 import strings from '../../../../../../translations';
 
 type Props = {
-    redo: () => void,
-    undo: () => void,
+    redo: (x: Object) => void,
+    undo: (x: Object) => void,
     canRedo: boolean,
     canUndo: boolean,
     show: boolean,
@@ -16,7 +16,7 @@ function SketchUndoRedo({
     canRedo,
     canUndo,
     show,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <div

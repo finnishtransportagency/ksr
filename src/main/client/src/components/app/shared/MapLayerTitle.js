@@ -9,7 +9,7 @@ type Props = {
     childLayer?: boolean,
 };
 
-function MapLayerTitle({ layer, showLayerGroup, childLayer }: Props) {
+function MapLayerTitle({ layer, showLayerGroup, childLayer }: Props): React$Element<React$FragmentType> {
     let iconClass = '';
     switch (layer._source) {
         case 'search': {

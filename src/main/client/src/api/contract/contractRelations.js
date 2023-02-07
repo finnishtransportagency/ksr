@@ -32,7 +32,7 @@ export const linkContract = (
     layerObjectId: number,
     contractLayerId: number,
     contractObjectId: number,
-) => (
+): Promise<?string> => (
     fetch(`api/contract/link/${layerId}/${layerObjectId}/${contractLayerId}/${contractObjectId}`, {
         ...config(),
         method: 'POST',

@@ -16,7 +16,7 @@ function LinkContractView({
     contractNumber,
     fetching,
     contractExists,
-}: Props) {
+}: Props): React$Element<"label"> {
     return (
         <label htmlFor={strings.modalFeatureContracts.linkContract.contractNumber}>
             <span>{strings.modalFeatureContracts.linkContract.contractNumber}</span>

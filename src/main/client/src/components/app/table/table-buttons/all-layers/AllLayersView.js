@@ -32,7 +32,7 @@ function AllLayersView({
     addressField,
     layerList,
     activeAdminTool,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <Table.Button

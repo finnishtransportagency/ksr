@@ -35,7 +35,7 @@ function AdminLayerView({
     addressField,
     view,
     hasTableEdited,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <Table.Button

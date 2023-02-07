@@ -8,7 +8,7 @@
 export const getDocumentUrl = (
     searchValue: string,
     documentType: string = 'caseManagement',
-) => (`${window.location.href}api/contract-document?documentType=${documentType}&searchValue=${searchValue}`);
+): string => (`${window.location.href}api/contract-document?documentType=${documentType}&searchValue=${searchValue}`);
 
 /**
  * Gets contract document URL.
@@ -23,7 +23,7 @@ export const getContractDocumentUrl = (
     documentType: string,
     linkField: string,
     attributes: Object,
-) => {
+): null | string => {
     const linkFields = linkField.split(',');
     const fieldExists = linkFields.some(field => attributes[field]);
     if (fieldExists) {

@@ -45,7 +45,7 @@ class ModalBufferSelected extends Component<Props, State> {
         setSingleLayerGeometry({});
     }
 
-    handleBufferChange = (e: Object) => {
+    handleBufferChange: any = (e: Object) => {
         const submitDisabled = e.target.value === ''
             || e.target.value < 1
             || e.target.value > 100000;
@@ -56,19 +56,19 @@ class ModalBufferSelected extends Component<Props, State> {
         });
     };
 
-    handleTableSelectionChange = () => {
+    handleTableSelectionChange: any = () => {
         const { currentTableOnly } = this.state;
 
         this.setState({ currentTableOnly: !currentTableOnly });
     };
 
-    handleFeatureSelectionChange = () => {
+    handleFeatureSelectionChange: any = () => {
         const { selectedFeaturesOnly } = this.state;
 
         this.setState({ selectedFeaturesOnly: !selectedFeaturesOnly });
     };
 
-    render() {
+    render(): React$Element<any> {
         const {
             selectedGeometryData, view, activeLayerId, tableGeometryData, singleFeature,
         } = this.props;

@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 // @flow
 import React, { useEffect, useState } from 'react';
 import Slider from 'rc-slider';
@@ -23,10 +24,10 @@ type Props = {
     createThemeLayer: (layerId: string) => void,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
-    populateTable: (layer: Object) => void,
-    loadingLayers: string[],
-    toggleVisibleZoomOut: (layerId: string, original: number) => void,
-    layersVisibleZoomOut: Object[],
+    toggleVisibleZoomOut?: (layerId: string, original: number) => void,
+    populateTable?: (layer: Object) => void,
+    loadingLayers?: string[],
+    layersVisibleZoomOut?: Object[],
 };
 
 function MapLayerSettings({
@@ -43,7 +44,7 @@ function MapLayerSettings({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     const [isLoading, setIsLoading] = useState(false);
     const [showAllSettingsIcon, setShowAllSettingsIcon] = useState(false);
 
@@ -121,8 +122,8 @@ function MapLayerSettings({
                                     <LayerSettings.Icon
                                         role="button"
                                         tabIndex={0}
-                                        onKeyPress={() => populateTable(layer)}
-                                        onClick={() => populateTable(layer)}
+                                        onKeyPress={() => (populateTable || console.error)(layer)}
+                                        onClick={() => (populateTable || console.error)(layer)}
                                         className="fas fa-align-justify"
                                         title={strings.mapLayerSettings.showAllFeatures}
                                     />

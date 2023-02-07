@@ -45,7 +45,7 @@ class Workspace extends Component<Props, null> {
         this.handleSelectWorkspace = this.handleSelectWorkspace.bind(this);
     }
 
-    handleReplaceWorkspace = (workspaceName: string) => {
+    handleReplaceWorkspace: any = (workspaceName: string) => {
         const {
             layerList,
             view,
@@ -67,7 +67,7 @@ class Workspace extends Component<Props, null> {
         });
     };
 
-    handleDeleteWorkspace = (workspaceName: string) => {
+    handleDeleteWorkspace: any = (workspaceName: string) => {
         const { updateWorkspaces, showConfirmModal } = this.props;
         const { body, acceptText, cancelText } = strings.workspace.confirmDelete;
 
@@ -76,7 +76,7 @@ class Workspace extends Component<Props, null> {
         });
     };
 
-    handleSelectWorkspace = (workspaceName: string, isPublic: boolean) => {
+    handleSelectWorkspace: any = (workspaceName: string, isPublic: boolean) => {
         const {
             setWorkspace,
             setWorkspaceRejected,
@@ -134,7 +134,7 @@ class Workspace extends Component<Props, null> {
         });
     };
 
-    handleShareWorkspace = (workspaceName: string) => {
+    handleShareWorkspace: any = (workspaceName: string) => {
         const { workspaceList } = this.props;
         const workspace = workspaceList.find(ws => ws.name === workspaceName);
 
@@ -155,7 +155,7 @@ class Workspace extends Component<Props, null> {
         }
     };
 
-    render() {
+    render(): any {
         const { setActiveModal, workspaceList, loadingLayers } = this.props;
 
         return (

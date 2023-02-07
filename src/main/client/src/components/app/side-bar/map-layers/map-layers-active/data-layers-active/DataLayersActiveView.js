@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 // @flow
 import React, { Fragment } from 'react';
 import MapLayerSettings from '../map-layer-settings/MapLayerSettings';
@@ -8,8 +9,8 @@ type Props = {
     activeAdminTool: string,
     mapScale: number,
     handleAdminModeChange: (layerId: string) => void,
-    addNonSpatialContentToTable: (layer: Object) => void,
-    tableLayers: Object[],
+    addNonSpatialContentToTable?: (layer: Object) => void,
+    tableLayers?: Object[],
 };
 
 function DataLayersActiveView({
@@ -20,7 +21,7 @@ function DataLayersActiveView({
     handleAdminModeChange,
     addNonSpatialContentToTable,
     tableLayers,
-}: Props) {
+}: Props): any {
     if (dataLayerList.length === 0) return null;
     return (
         <>

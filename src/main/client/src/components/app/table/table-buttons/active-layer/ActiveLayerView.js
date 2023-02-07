@@ -20,7 +20,7 @@ function ActiveLayerView({
     geometryDataSelected,
     activeTableDataSelected,
     activeTableLayer,
-}: Props) {
+}: Props): React$Element<React$FragmentType> {
     return (
         <>
             <Table.Button

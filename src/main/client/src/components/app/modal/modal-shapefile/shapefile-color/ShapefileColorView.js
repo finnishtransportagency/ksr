@@ -11,7 +11,7 @@ type Props = {
 
 const colors = ['#e55934', '#17183b', '#ec4067', '#8cb369', '#05b2dc'];
 
-function ShapefileColorView({ color, setColor }: Props) {
+function ShapefileColorView({ color, setColor }: Props): React$Element<React$FragmentType> {
     return (
         <>
             <H2>{strings.shapefileColorView.title}</H2>

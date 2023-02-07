@@ -22,7 +22,7 @@ function BaseMapSwitchView({
     activateLayers,
     loadingLayers,
     tableButtonAmount,
-}: Props) {
+}: Props): React$Element<any> {
     return (
         <BaseMapContainer
             hidden={layers.length === 0}

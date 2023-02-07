@@ -8,7 +8,7 @@ import * as symbolUtils from '@arcgis/core/symbols/support/symbolUtils';
  * @param {Object} symbol Layer symbol.
  * @returns {Promise} Promise html element that contains legend symbol.
  */
-export const getLegendSymbol = async (symbol: Object) => symbolUtils.renderPreviewHTML(symbol, {
+export const getLegendSymbol = async (symbol: Object): Promise<any> => symbolUtils.renderPreviewHTML(symbol, {
     size: 12,
 });
 

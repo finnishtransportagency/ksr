@@ -54,17 +54,17 @@ class MapDraw extends Component<Props, null> {
         }
     }
 
-    mapDraw = () => {
+    mapDraw: (() => void) = () => {
         const {
             view, draw, setActiveTool, showMeasurements,
         } = this.props;
 
-        const drawPolygonButton = (document.getElementById: Function)('draw-polygon');
-        const drawLineButton = (document.getElementById: Function)('draw-line');
-        const drawPointButton = (document.getElementById: Function)('draw-point');
-        const drawTextButton = (document.getElementById: Function)('draw-text');
-        const drawEraseButton = (document.getElementById: Function)('draw-erase');
-        const drawToggleMeasurementsButton = (document.getElementById: Function)('toggle-measurements');
+        const drawPolygonButton = document?.getElementById('draw-polygon');
+        const drawLineButton = document?.getElementById('draw-line');
+        const drawPointButton = document?.getElementById('draw-point');
+        const drawTextButton = document?.getElementById('draw-text');
+        const drawEraseButton = document?.getElementById('draw-erase');
+        const drawToggleMeasurementsButton = document?.getElementById('toggle-measurements');
 
         const measureArea = (polygon: Object) => {
             const planarArea = geometryEngine.planarArea(
@@ -91,23 +91,23 @@ class MapDraw extends Component<Props, null> {
             return length;
         };
 
-        const createPolygon = vertices => new Polygon({
+        const createPolygon = (vertices: any) => new Polygon({
             rings: vertices,
             spatialReference: view.spatialReference,
         });
 
-        const createLine = vertices => new Polyline({
+        const createLine = (vertices: any) => new Polyline({
             paths: vertices,
             spatialReference: view.spatialReference,
         });
 
-        const createPoint = coordinates => new Point({
+        const createPoint = (coordinates: any[]) => new Point({
             x: coordinates[0],
             y: coordinates[1],
             spatialReference: view.spatialReference,
         });
 
-        const createPolygonGraphic = (geometry, style, complete): any => new Graphic({
+        const createPolygonGraphic = (geometry: any, style: string, complete: boolean): any => new Graphic({
             geometry,
             symbol: {
                 type: 'simple-fill',
@@ -125,7 +125,7 @@ class MapDraw extends Component<Props, null> {
             id: this.currentGraphicUUID,
         });
 
-        const createPolylineGraphic = (geometry, complete): any => new Graphic({
+        const createPolylineGraphic = (geometry: any, complete: boolean): any => new Graphic({
             geometry,
             symbol: {
                 type: 'simple-line',
@@ -137,7 +137,7 @@ class MapDraw extends Component<Props, null> {
             id: this.currentGraphicUUID,
         });
 
-        const createPointGraphic = (geometry, complete): any => new Graphic({
+        const createPointGraphic = (geometry: any, complete: boolean): any => new Graphic({
             geometry,
             symbol: {
                 type: 'simple-marker',
@@ -154,7 +154,7 @@ class MapDraw extends Component<Props, null> {
             id: this.currentGraphicUUID,
         });
 
-        const createTextGraphic = (geometry, complete): any => {
+        const createTextGraphic = (geometry: any, complete: boolean): any => {
             const { drawText } = this.props;
             if (drawText && drawText.trim().length > 0) {
                 return new Graphic({
@@ -176,7 +176,7 @@ class MapDraw extends Component<Props, null> {
             return null;
         };
 
-        const createLabelGraphic = (geometry, value, complete) => new Graphic({
+        const createLabelGraphic = (geometry: any, value: string, complete: boolean) => new Graphic({
             geometry: geometry.extent.center,
             symbol: {
                 type: 'text',
@@ -196,7 +196,7 @@ class MapDraw extends Component<Props, null> {
             visible: showMeasurements,
         });
 
-        const drawPolygon = (evt) => {
+        const drawPolygon = (evt: Object) => {
             const { vertices } = evt;
 
             if (vertices.length === 2) {
@@ -239,7 +239,7 @@ class MapDraw extends Component<Props, null> {
             }
         };
 
-        const drawLine = (evt) => {
+        const drawLine = (evt: Object) => {
             const { vertices } = evt;
             const line = createLine(vertices);
             const length = measureLength(line);
@@ -257,7 +257,7 @@ class MapDraw extends Component<Props, null> {
             }
         };
 
-        const drawPoint = (evt) => {
+        const drawPoint = (evt: Object) => {
             const { coordinates } = evt;
             const point = createPoint(coordinates);
 
@@ -272,7 +272,7 @@ class MapDraw extends Component<Props, null> {
             }
         };
 
-        const drawText = (evt) => {
+        const drawText = (evt: Object) => {
             const { coordinates } = evt;
             const point = createPoint(coordinates);
 
@@ -290,7 +290,7 @@ class MapDraw extends Component<Props, null> {
             }
         };
 
-        const drawingMode = (geometry, drawGeometry) => {
+        const drawingMode = (geometry: any, drawGeometry: any) => {
             const action = draw.create(geometry);
             this.currentGraphicUUID = uuidv4();
 
@@ -306,7 +306,7 @@ class MapDraw extends Component<Props, null> {
             }
         };
 
-        drawPolygonButton.addEventListener('click', () => {
+        drawPolygonButton?.addEventListener('click', () => {
             const { active } = this.props;
 
             if (active === 'drawPolygon') {
@@ -319,7 +319,7 @@ class MapDraw extends Component<Props, null> {
             }
         });
 
-        drawLineButton.addEventListener('click', () => {
+        drawLineButton?.addEventListener('click', () => {
             const { active } = this.props;
 
             if (active === 'drawPolyline') {
@@ -332,7 +332,7 @@ class MapDraw extends Component<Props, null> {
             }
         });
 
-        drawPointButton.addEventListener('click', () => {
+        drawPointButton?.addEventListener('click', () => {
             const { active } = this.props;
 
             if (active === 'drawPoint') {
@@ -345,7 +345,7 @@ class MapDraw extends Component<Props, null> {
             }
         });
 
-        drawTextButton.addEventListener('click', () => {
+        drawTextButton?.addEventListener('click', () => {
             const { active } = this.props;
 
             if (active === 'drawText') {
@@ -358,7 +358,7 @@ class MapDraw extends Component<Props, null> {
             }
         });
 
-        drawEraseButton.addEventListener('click', () => {
+        drawEraseButton?.addEventListener('click', () => {
             const { active } = this.props;
 
             if (active === 'drawErase') {
@@ -371,19 +371,21 @@ class MapDraw extends Component<Props, null> {
             }
         });
 
-        drawToggleMeasurementsButton.addEventListener('click', () => {
+        drawToggleMeasurementsButton?.addEventListener('click', () => {
             this.toggleMeasurements();
         });
     };
 
-    removeHighlightFromButton = (id: ?string) => {
-        const button = (document.getElementById: Function)(id);
-        if (button) {
-            button.style.backgroundColor = styles.colorMain;
+    removeHighlightFromButton: ((id: ?string) => void) = (id: ?string) => {
+        if (id) {
+            const button = document?.getElementById(id);
+            if (button) {
+                button.style.backgroundColor = styles.colorMain;
+            }
         }
     };
 
-    removeHighlightsFromButtons = (exceptButton: ?string) => {
+    removeHighlightsFromButtons: ((exceptButton: ?string) => void) = (exceptButton: ?string) => {
         const { view } = this.props;
         ['draw-polygon', 'draw-line', 'draw-point', 'draw-text', 'draw-erase']
             .filter(i => i !== exceptButton)
@@ -391,7 +393,7 @@ class MapDraw extends Component<Props, null> {
         removeTemporaryDrawings(view);
     };
 
-    removeHighlight = () => {
+    removeHighlight: (() => void) = () => {
         const { setActiveTool, view, setHasGraphics } = this.props;
 
         this.removeHighlightsFromButtons();
@@ -404,7 +406,7 @@ class MapDraw extends Component<Props, null> {
         setHasGraphics(hasGraphics);
     };
 
-    removeDrawings = () => {
+    removeDrawings: any | (() => void) | (() => void) = () => {
         const {
             view, draw, sketchViewModel, setActiveTool, setHasGraphics,
         } = this.props;
@@ -422,7 +424,7 @@ class MapDraw extends Component<Props, null> {
         setHasGraphics(hasGraphics);
     };
 
-    toggleDrawTools = () => {
+    toggleDrawTools: any | (() => void) | (() => void) = () => {
         const { isActive, setActiveToolMenu } = this.props;
         if (isActive) {
             setActiveToolMenu('');
@@ -431,7 +433,7 @@ class MapDraw extends Component<Props, null> {
         }
     };
 
-    resetCurrentTool = () => {
+    resetCurrentTool: (() => void) = () => {
         const { draw, setActiveTool } = this.props;
 
         setActiveTool('');
@@ -439,7 +441,7 @@ class MapDraw extends Component<Props, null> {
         this.removeHighlightsFromButtons();
     };
 
-    toggleMeasurements = () => {
+    toggleMeasurements: any | (() => void) | (() => void) = () => {
         const { view, toggleMeasurements } = this.props;
         toggleMeasurements();
         if (view.graphics.length) {
@@ -465,7 +467,7 @@ class MapDraw extends Component<Props, null> {
         }
     };
 
-    render() {
+    render(): React$Element<(_0: Props & { removeDrawings: any, activeTool: any, toggleDrawTools: any }) => any> {
         const {
             view,
             isActive,
