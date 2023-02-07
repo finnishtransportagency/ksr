@@ -20,7 +20,7 @@ import { showConfirmModal } from '../../../reducers/confirmModal/actions';
 import { removeLoading } from '../../../reducers/loading/actions';
 import { setActiveNav } from '../../../reducers/navigation/actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { layers } = state.table.features;
     const { layerList } = state.map.layerGroups;
     const geometryDataSelected = layers

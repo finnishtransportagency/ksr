@@ -84,7 +84,7 @@
     ],
     "flowtype/use-flow-type": 1,
     "arrow-parens": 0,
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": "off",
     "default-param-last": 0,
     "react/jsx-props-no-spreading": 0,
     "import/no-cycle": 0,

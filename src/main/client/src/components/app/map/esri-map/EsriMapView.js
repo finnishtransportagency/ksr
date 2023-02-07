@@ -23,13 +23,13 @@ function EsriMapView({
     layerLegendActive,
     tableButtonAmount,
     indexMapActive,
-}: Props) {
+}: Props): React$Element<any> {
     return (
         <Wrapper
             sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
             tableOpen={isOpenTable}
             adminToolActive={adminToolActive}
-            loading={!view}
+            $loading={!view}
             layerLegendActive={layerLegendActive}
             tableButtonAmount={tableButtonAmount}
             indexMapActive={indexMapActive}

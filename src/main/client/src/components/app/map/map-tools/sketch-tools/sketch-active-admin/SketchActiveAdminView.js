@@ -35,7 +35,7 @@ function SketchActiveAdminView({
     undo,
     canRedo,
     canUndo,
-}: Props) {
+}: Props): React$Element<"div"> {
     return (
         <div id="create-new-feature-wrapper">
             <div

@@ -15,11 +15,16 @@ type Props = {
     setSnappingFeatureSources: Function,
 };
 
+let mapToolsInitialized = false;
+
 class MapTools extends Component<Props> {
     componentDidUpdate(prevProps: any) {
-        const { view, viewLayersCount, setSnappingFeatureSources } = this.props;
-        if (view !== prevProps.view) {
-            this.mapTools();
+        const {
+            view, viewLayersCount, setSnappingFeatureSources, tempGraphicsLayer,
+        } = this.props;
+        if ((tempGraphicsLayer && !mapToolsInitialized) || (tempGraphicsLayer && view !== prevProps.view)) {
+            mapToolsInitialized = true;
+            this.mapTools(tempGraphicsLayer);
         }
 
         if (viewLayersCount !== prevProps.viewLayersCount) {
@@ -27,7 +32,7 @@ class MapTools extends Component<Props> {
         }
     }
 
-    getSnappingFeatureSourcesFromView = (view) => {
+    getSnappingFeatureSourcesFromView: ((view: any) => Array<any | { layer: any, ... }>) = (view: Object) => {
         const featureSources = [];
         view.map.allLayers.forEach((layer) => {
             if (!['wmts', 'wms'].includes(layer.type)) {
@@ -39,8 +44,8 @@ class MapTools extends Component<Props> {
         return featureSources;
     };
 
-    mapTools = () => {
-        const { setMapTools, view, tempGraphicsLayer } = this.props;
+    mapTools: ((tempGraphicsLayer?: Object) => void) = (tempGraphicsLayer) => {
+        const { setMapTools, view } = this.props;
 
         const draw = new Draw({
             view,
@@ -50,7 +55,7 @@ class MapTools extends Component<Props> {
 
         const sketchViewModel = new SketchViewModel({
             view,
-            layer: tempGraphicsLayer || new GraphicsLayer(),
+            layer: tempGraphicsLayer,
             defaultUpdateOptions: {
                 tool: 'reshape',
                 toggleToolOnClick: false,
@@ -65,7 +70,7 @@ class MapTools extends Component<Props> {
         setMapTools(draw, sketchViewModel);
     };
 
-    render() {
+    render(): React$Element<React$FragmentType> {
         return (
             <>
                 <SketchToolContainer />

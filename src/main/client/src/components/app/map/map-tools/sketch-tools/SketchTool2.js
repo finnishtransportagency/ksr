@@ -42,11 +42,11 @@ type Props = {
     tempGraphicsLayer: Object,
     data: Array<Object>,
     activeAdminTool: string,
-    setTempGraphicsLayer: Function,
+    setTempGraphicsLayer: (graphics: Object) => void,
     geometryType: string,
     setActiveModal: (editModeActive: boolean) => void,
     isOpen: boolean,
-    setActiveToolMenu: Function,
+    setActiveToolMenu: (something: any) => void,
     layerList: Object[],
     propertyAreaSearch: boolean,
     setPropertyInfo: (
@@ -65,6 +65,15 @@ type Props = {
     hasTableEdited: boolean,
     sketchSaveData: Function,
     resetFeatureNoGeometry: Function,
+};
+
+const sketchSymbol = {
+    type: 'simple-fill',
+    color: [0, 0, 0, 0.2],
+    outline: {
+        color: [0, 0, 0],
+        width: 1,
+    },
 };
 
 export default function SketchTool2({ ...props }: Props) {
@@ -143,7 +152,9 @@ export default function SketchTool2({ ...props }: Props) {
         } = props;
 
         const kayttoikParentLayer = layerList.find(l => l.name === 'Käyttöoikeussopimukset');
-        const tempGraphics = localTempGraphicsLayer.graphics.items.filter(graphic => graphic.type === 'sketch-graphic');
+        const tempGraphics = localTempGraphicsLayer.graphics.items
+            .filter((graphic) => graphic.type === 'sketch-graphic')
+            .filter((graphic, index, self) => index === self.findIndex((t) => t.uid === graphic.uid));
         if (kayttoikParentLayer
             && activeAdminTool === kayttoikParentLayer.id
             && tempGraphics && tempGraphics.length
@@ -151,6 +162,7 @@ export default function SketchTool2({ ...props }: Props) {
             && tempGraphics[0].attributes.SOPIMUSTUNNISTE !== null
             && data && data.length
         ) {
+            console.log('IF', tempGraphics);
             const objectIdFieldName = kayttoikParentLayer.fields.find(field => field.type === 'esriFieldTypeOID').name;
             const newData = {
                 geometry: tempGraphics[0].geometry,
@@ -169,10 +181,10 @@ export default function SketchTool2({ ...props }: Props) {
             localTempGraphicsLayer.graphics = undefined;
             setActiveFeatureMode('create');
         } else {
+            console.log('ELSE', tempGraphics);
             setActiveModal(editModeActive);
             resetMapTools(draw, sketchViewModel, setActiveTool);
         }
-        setTempGraphicsLayer(localTempGraphicsLayer);
     };
     const showAdminView = (): boolean => {
         const { activeAdminTool, layerList } = props;
@@ -426,6 +438,7 @@ export default function SketchTool2({ ...props }: Props) {
                 setState({ ...state, validGeometry: false });
             } else {
                 event.graphic.symbol = createSketchLineGraphic(true);
+
                 if (event.graphic !== null
                         && event.graphic.geometry.rings[0].length > 2) {
                     const { geometry } = event.graphic;
@@ -443,6 +456,8 @@ export default function SketchTool2({ ...props }: Props) {
                 authorities,
             } = props;
 
+            console.log('COMPLETE', event);
+
             const ltg = ltgRef.current;
 
             // Skip finding layers if Administrator editing is in use
@@ -452,10 +467,10 @@ export default function SketchTool2({ ...props }: Props) {
                     || graphic.geometry.rings.length > 1)) {
                     const clonedSymbol = graphic.symbol.clone();
                     clonedSymbol.outline = createSketchOutlineGraphic(false);
-                    graphic.symbol = clonedSymbol;
+                    graphic.symbol = sketchSymbol;
                 }
+
                 graphic.type = 'sketch-graphic';
-                await localTempGraphicsLayer.graphics.push(graphic);
 
                 // Combine multiple polygons into multipolygon
                 if (event.tool === 'polygon') {
@@ -464,17 +479,10 @@ export default function SketchTool2({ ...props }: Props) {
                     const combinedRings = sketchGraphicItems
                         .filter(item => item.type === 'sketch-graphic').flatMap(item => item.geometry.rings);
                     const firstSketchGraphic = ltg.graphics.items
-                        .find(item => item.type === 'sketch-graphic' || item.type === 'draw-measure-label');
+                        .find(item => item.type === 'sketch-graphic');
                     firstSketchGraphic.geometry.rings = combinedRings;
+                    firstSketchGraphic.symbol = sketchSymbol;
 
-                    // Remove excessive polygons that were used for combined rings
-                    /* sketchGraphicItems.forEach((sketchItem) => {
-                        if (sketchItem.uid !== firstSketchGraphic.uid) {
-                            ltg.remove(sketchItem);
-                        }
-                    }); */
-
-                    await sketchViewModel.layer.addMany([firstSketchGraphic]);
                     await sketchViewModel.update(firstSketchGraphic);
                 }
             } else {
@@ -541,28 +549,6 @@ export default function SketchTool2({ ...props }: Props) {
         };
     };
 
-    const preventGeometryMove = (event) => {
-        if (event.toolEventInfo && event.toolEventInfo.type.startsWith('move')
-                && event.toolEventInfo.mover.geometry.type !== 'point') {
-            const sketchGraphic = localTempGraphicsLayer.graphics.items.find(a => a.type === 'sketch-graphic');
-            const eventInfoType = event.toolEventInfo.type;
-            const { movingGeometry } = state;
-            if (eventInfoType === 'move-start') {
-                setState({
-                    ...state,
-                    movingGeometry: sketchGraphic.geometry,
-                });
-            } else if (eventInfoType === 'move') {
-                sketchGraphic.geometry = movingGeometry;
-            } else {
-                sketchGraphic.geometry = movingGeometry;
-                setState({ ...state, movingGeometry: undefined });
-            }
-            return true;
-        }
-        return false;
-    };
-
     const drawSideLengthsToNearest = (event) => {
         const movingPoint = event.toolEventInfo.mover.geometry;
         const polygonSketch = localTempGraphicsLayer.graphics.items
@@ -617,10 +603,21 @@ export default function SketchTool2({ ...props }: Props) {
         }
     };
 
-    const onUpdate = (event) => {
-        if (preventGeometryMove(event)) {
-            return;
+    const onUpdate = async (event) => {
+        const eventInfoType = event?.toolEventInfo?.type;
+        const eventGeometryType = event?.toolEventInfo?.mover?.geometry?.type;
+
+        if (eventInfoType?.startsWith('move-start') && eventGeometryType !== 'point') {
+            sketchViewModel.cancel();
         }
+
+        const shouldBeRemoved = ltgRef.current.graphics?.items
+            ?.find((graphic) => graphic.type === 'sketch-graphic' && graphic.uid !== event.graphics[0].uid);
+
+        if (shouldBeRemoved) {
+            ltgRef.current.graphics?.remove(shouldBeRemoved);
+        }
+
         updatePolygonLabels();
         handleReshape(event);
         handleUndoRedo(event);
@@ -639,6 +636,7 @@ export default function SketchTool2({ ...props }: Props) {
             event.graphics[0].symbol = clonedSymbol;
         }
         setState({
+            ...state,
             validGeometry: validGeometry(),
             canRedo: sketchViewModel.canRedo(),
             canUndo: sketchViewModel.canUndo(),
@@ -652,9 +650,6 @@ export default function SketchTool2({ ...props }: Props) {
     useEffect(() => {
         setSketchViewModel(props.sketchViewModel);
     }, [props.sketchViewModel]);
-
-    useEffect(() => {
-    }, [localTempGraphicsLayer]);
 
     useEffect(() => {
         setActive(props.active);
@@ -701,6 +696,7 @@ export default function SketchTool2({ ...props }: Props) {
         drawNewAreaButton.addEventListener('click', () => {
             const convertedGeometryType = convertEsriGeometryType(geometryTypeRef.current);
             sketchViewModel.create(convertedGeometryType);
+            console.log('click', ltgRef.current?.graphics?.items, props.tempGraphicsLayer?.graphics?.items);
             drawNewAreaButton.style.backgroundColor = styles.colorMainDark;
         });
 

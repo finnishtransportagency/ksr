@@ -149,7 +149,7 @@ class EsriMap extends Component<Props> {
             },
             highlightOptions: {
                 color: colorFeatureHighlight,
-                fillOpacity: 0,
+                fillOpacity: 0.1,
             },
         });
 
@@ -290,7 +290,7 @@ class EsriMap extends Component<Props> {
             });
         });
 
-        const stopEvtPropagation = (event) => {
+        const stopEvtPropagation = (event: Object) => {
             event.stopPropagation();
         };
 
@@ -373,14 +373,11 @@ class EsriMap extends Component<Props> {
             });
         });
 
-        (document.getElementById: Function)('select-tool-outer-wrapper').classList
-            .remove('esri-component');
+        document.getElementById('select-tool-outer-wrapper')?.classList?.remove('esri-component');
 
-        (document.getElementById: Function)('draw-tool-outer-wrapper').classList
-            .remove('esri-component');
+        document.getElementById('draw-tool-outer-wrapper')?.classList?.remove('esri-component');
 
-        (document.getElementById: Function)('create-new-feature-wrapper').classList
-            .remove('esri-component');
+        document.getElementById('create-new-feature-wrapper')?.classList?.remove('esri-component');
 
         view.popup.on('trigger-action', async (evt) => {
             const {
@@ -493,10 +490,10 @@ class EsriMap extends Component<Props> {
                     break;
                 case 'feature-data': {
                     const attributeData = view.popup.foundFeatures
-                        .find(feature => feature.layer.id === layer.id).attributes;
+                        .find(feature => feature.layer.id === layer?.id).attributes;
 
                     const modalData = {
-                        layerId: layer.id,
+                        layerId: layer?.id,
                         attributeData,
                         fromSource: 'map',
                     };
@@ -669,7 +666,7 @@ class EsriMap extends Component<Props> {
         window.history.pushState({}, document.title, window.location.pathname);
     }
 
-    render() {
+    render(): React$Element<any> {
         return <EsriMapContainer printWidget={this.printWidget} legendWidget={this.legendWidget} />;
     }
 }
