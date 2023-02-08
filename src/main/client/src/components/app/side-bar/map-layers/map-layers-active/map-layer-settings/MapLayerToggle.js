@@ -51,9 +51,10 @@ function MapLayerToggle({
 
     const getTooltip = () => layer.uniqueSymbols && layer.uniqueSymbols.length && (
         <Tooltip id={tooltipId}>
-            {layer.uniqueSymbols.map(s => (
+            {layer.uniqueSymbols.map((s) => (
                 <div
                     style={{ display: 'flex' }}
+                    key={`${tooltipId}-${s.label}`}
                     ref={(node) => {
                         if (node) {
                             node.innerHTML = '';

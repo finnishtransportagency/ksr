@@ -23,7 +23,7 @@ import Legend from '@arcgis/core/widgets/Legend';
 import CoordinateConversion from '@arcgis/core/widgets/CoordinateConversion';
 import Conversion from '@arcgis/core/widgets/CoordinateConversion/support/Conversion';
 import Search from '@arcgis/core/widgets/Search';
-import * as watchUtils from '@arcgis/core/core/watchUtils';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 import { addLayers, removeGraphicsFromMap } from '../../../utils/map';
 import { convert } from '../../../utils/geojson';
@@ -276,7 +276,7 @@ class EsriMap extends Component<Props> {
             overview.graphics.add(extentgraphic);
 
             // Get the new extent of the view only when view is stationary.
-            watchUtils.whenTrue(view, 'stationary', () => {
+            reactiveUtils.when(() => view.stationary, () => {
                 if (view.extent) {
                     overview.goTo({
                         center: view.center,
@@ -314,9 +314,7 @@ class EsriMap extends Component<Props> {
         // disable keyboard keys.
         overview.on('key-down', stopEvtPropagation);
 
-        watchUtils.watch(view, 'scale', () => {
-            setScale(view.scale);
-        });
+        reactiveUtils.watch(() => view.scale, () => setScale(view.scale));
 
         view.on('click', (event) => {
             view.popup.close();
