@@ -33,7 +33,7 @@ const convertFeature = async (feature: Object) => ({
  * @param {number} size Max number of results to be returned.
  * @returns {Promise<Object[]>} Promise of geocoding results.
  */
-export const fetchAddresses = (text: string, size: number) => {
+export const fetchAddresses = (text: string, size: number): Promise<Array<empty>> | Promise<any | Array<empty>> => {
     if (!text) {
         (console: any).errror('Empty search term given. Unable to search.');
         return Promise.resolve([]);

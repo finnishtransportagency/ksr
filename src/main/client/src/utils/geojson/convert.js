@@ -1,6 +1,12 @@
 // @flow
 
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
+
+import Polygon from '@arcgis/core/geometry/Polygon';
+import Polyline from '@arcgis/core/geometry/Polyline';
+import Point from '@arcgis/core/geometry/Point';
+import Multipoint from '@arcgis/core/geometry/Multipoint';
+
 import { project } from '../projection';
 
 /**
@@ -17,50 +23,59 @@ const convert = async (
     geom: Object,
     sSrs: number = 3067,
     tSrs: number = 3067,
-) => {
-    const [
-        Point,
-        Polyline,
-        Polygon,
-        Multipoint,
-    ] = await loadModules([
-        'esri/geometry/Point',
-        'esri/geometry/Polyline',
-        'esri/geometry/Polygon',
-        'esri/geometry/Multipoint',
-    ]);
-
+): any => {
     const coordinates = sSrs !== tSrs
         ? project(`EPSG:${sSrs}`, `EPSG:${tSrs}`, geom.coordinates) : geom.coordinates;
 
     switch (geom.type.toLowerCase()) {
-        case 'point':
-            return new Point({
-                x: coordinates[0],
-                y: coordinates[1],
-                spatialReference: { wkid: tSrs },
-            });
+        case 'point': {
+            let newPoint = await new Point();
+
+            newPoint = {
+                ...newPoint, x: coordinates[0], y: coordinates[1], spatialReference: { wkid: tSrs },
+            };
+
+            return newPoint;
+        }
         case 'polyline':
-        case 'linestring':
-            return new Polyline({
+        case 'linestring': {
+            let newPoly = await new Polyline();
+            newPoly = {
+                ...newPoly,
                 paths: geom.coordinates,
                 spatialReference: { wkid: tSrs },
-            });
-        case 'multipolygon':
-            return new Polygon({
-                rings: geom.coordinates.flatMap(c => c),
+            };
+            return newPoly;
+        }
+        case 'multipolygon': {
+            const rings = [geom.coordinates.flatMap(c => c)];
+            let newPolygon = await new Polygon();
+            newPolygon = {
+                ...newPolygon,
+                rings,
                 spatialReference: { wkid: tSrs },
-            });
-        case 'polygon':
-            return new Polygon({
+            };
+
+            return newPolygon;
+        }
+        case 'polygon': {
+            let newPolygon = new Polygon();
+            newPolygon = {
+                ...newPolygon,
                 rings: geom.coordinates,
                 spatialReference: { wkid: tSrs },
-            });
-        case 'multipoint':
-            return new Multipoint({
+            };
+            return newPolygon;
+        }
+        case 'multipoint': {
+            let newMultipoint = await new Multipoint();
+            newMultipoint = {
+                ...newMultipoint,
                 points: geom.coordinates,
                 spatialReference: { wkid: tSrs },
-            });
+            };
+            return newMultipoint;
+        }
         default:
             return null;
     }

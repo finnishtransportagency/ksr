@@ -30,7 +30,7 @@ class MapLayersActive extends Component<Props> {
         this.handleLayerGroupClick = this.handleLayerGroupClick.bind(this);
     }
 
-    handleGroupClick = (id: number) => {
+    handleGroupClick: any = (id: number) => {
         const { activeGroups, setActiveGroups } = this.props;
 
         const newGroups = activeGroups.filter(group => group !== id);
@@ -38,7 +38,7 @@ class MapLayersActive extends Component<Props> {
         setActiveGroups(newGroups);
     };
 
-    handleSubGroupClick = (id: number) => {
+    handleSubGroupClick: any = (id: number) => {
         const { activeSubGroups, setActiveSubGroups } = this.props;
 
         const newSubGroups = activeSubGroups.filter(group => group !== id);
@@ -46,7 +46,7 @@ class MapLayersActive extends Component<Props> {
         setActiveSubGroups(newSubGroups);
     };
 
-    handleLayerClick = (id: number) => {
+    handleLayerClick: any = (id: number) => {
         const {
             activateLayers, deactivateLayer, layerList, setSearchFeatures, hideLayer,
         } = this.props;
@@ -64,7 +64,7 @@ class MapLayersActive extends Component<Props> {
         }
     };
 
-    handleLayerGroupClick = (layerGroupName: string) => {
+    handleLayerGroupClick: any = (layerGroupName: string) => {
         const { layerList, layersToFind, hideLayer } = this.props;
 
         const foundLayers = layerList.filter(l => (
@@ -84,7 +84,7 @@ class MapLayersActive extends Component<Props> {
         this.updateLayerList(foundLayers);
     };
 
-    updateLayerList = (foundLayers: Object[]) => {
+    updateLayerList: any = (foundLayers: Object[]) => {
         const {
             activateLayers, deactivateLayer, loadingLayers, setSearchFeatures,
         } = this.props;
@@ -110,7 +110,7 @@ class MapLayersActive extends Component<Props> {
         }
     };
 
-    render() {
+    render(): any {
         const {
             layerGroups,
             fetching,
@@ -132,7 +132,8 @@ class MapLayersActive extends Component<Props> {
                         ? group.layers
                         : group.layers.filter(layer => nestedVal(
                             layer.relations && layer.relations.find(r => r),
-                            ['relationType'], '',
+                            ['relationType'],
+                            '',
                         ) !== 'link')
                             .filter(layer => layer.name
                                 .toLowerCase().includes(layersToFindTrimmed)),

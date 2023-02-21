@@ -19,7 +19,7 @@ type Props = {
 };
 
 /** Table actions that can target all open tables */
-const AllLayersView = ({
+function AllLayersView({
     isOpen,
     setActiveModal,
     originalLayers,
@@ -32,52 +32,56 @@ const AllLayersView = ({
     addressField,
     layerList,
     activeAdminTool,
-}: Props) => (
-    <Fragment>
-        <Table.Button
-            title={strings.reactTable.clearTableData}
-            tableOpen={isOpen}
-            disabled={!originalLayers.length}
-            onClick={
-                originalLayers.length ? () => {
-                    clearTableData(
-                        view,
-                        editedLayers,
-                        featureType,
-                        addressField,
-                        layerList,
-                        activeAdminTool
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <>
+            <Table.Button
+                title={strings.reactTable.clearTableData}
+                tableOpen={isOpen}
+                disabled={!originalLayers.length}
+                onClick={
+                    originalLayers.length ? () => {
+                        clearTableData(
+                            view,
+                            editedLayers,
+                            featureType,
+                            addressField,
+                            layerList,
+                            activeAdminTool
                         && layerList.find(l => l.id === activeAdminTool && l.type === 'agfl') !== undefined,
-                    );
-                } : null}
-        >
-            <i className="fas fa-trash" />
-        </Table.Button>
-        <Table.Button
-            title={strings.reactTable.bufferSelectedData}
-            tableOpen={isOpen}
-            disabled={!originalLayers.length}
-            active={bufferExists}
-            onClick={
-                bufferExists
-                    ? () => { if (originalLayers.length) handleClearBuffer(); }
-                    : () => { if (originalLayers.length) setActiveModal('bufferSelectedData'); }
-            }
-        >
-            <i className="far fa-dot-circle" />
-        </Table.Button>
-        <Table.Button
-            title={strings.reactTable.zoomToSelected}
-            tableOpen={isOpen}
-            disabled={!originalLayers.length}
-            onClick={
-                originalLayers.length
-                    ? async () => { setActiveModal('zoomToFeatures'); }
-                    : null}
-        >
-            <i className="fas fa-search-plus" />
-        </Table.Button>
-    </Fragment>
-);
+                        );
+                    } : null
+                }
+            >
+                <i className="fas fa-trash" />
+            </Table.Button>
+            <Table.Button
+                title={strings.reactTable.bufferSelectedData}
+                tableOpen={isOpen}
+                disabled={!originalLayers.length}
+                active={bufferExists}
+                onClick={
+                    bufferExists
+                        ? () => { if (originalLayers.length) handleClearBuffer(); }
+                        : () => { if (originalLayers.length) setActiveModal('bufferSelectedData'); }
+                }
+            >
+                <i className="far fa-dot-circle" />
+            </Table.Button>
+            <Table.Button
+                title={strings.reactTable.zoomToSelected}
+                tableOpen={isOpen}
+                disabled={!originalLayers.length}
+                onClick={
+                    originalLayers.length
+                        ? async () => { setActiveModal('zoomToFeatures'); }
+                        : null
+                }
+            >
+                <i className="fas fa-search-plus" />
+            </Table.Button>
+        </>
+    );
+}
 
 export default AllLayersView;

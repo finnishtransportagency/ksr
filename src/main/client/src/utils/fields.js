@@ -26,7 +26,7 @@ export const filterNotAllowedFields = (fields: Object[] = []): Object[] => (
  *
  * @returns {Object} Field with found domain values or field's domain as null.
  */
-export const childLayerDomainValues = (childField: Object, parentLayer: Object) => {
+export const childLayerDomainValues = (childField: Object, parentLayer: Object): any => {
     if (childField.domain) return childField;
     const { layerList } = store.getState().map.layerGroups;
     let domainFields;
@@ -61,7 +61,7 @@ export const childLayerDomainValues = (childField: Object, parentLayer: Object) 
  *
  * @returns {Object[]} Filtered fields that can be used by theme layer creation.
  */
-export const themeLayerFields = (layer: Object) => {
+export const themeLayerFields = (layer: Object): any => {
     if (layer && layer.fields) {
         return layer.fields.filter(field => (field.type === 'esriFieldTypeDouble'
             || field.type === 'esriFieldTypeInteger'

@@ -49,8 +49,7 @@ declare module 'react-select' {
     // method to filter a single option (option, filterString)
     filterOption?: (option: OptionType, filterString: string) => boolean,
     // boolean to enable default filtering or function to filter the options array ([options], filterString, [values])
-    filterOptions?:
-      | boolean
+    filterOptions?: | boolean
       | ((
           options: OptionsType,
           filterValue: string,

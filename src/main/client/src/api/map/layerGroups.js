@@ -7,7 +7,7 @@ import strings from '../../translations';
  *
  * @returns {Promise<Object[]>} Promise with layer group data.
  */
-export const fetchLayerGroups = () => (
+export const fetchLayerGroups = (): Promise<any[]> => (
     fetch('api/layergroup', config())
         .then(r => r.json())
         .then(layerGroups => layerGroups.map(lg => (

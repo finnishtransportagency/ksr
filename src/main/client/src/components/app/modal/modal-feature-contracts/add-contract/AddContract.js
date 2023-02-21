@@ -36,7 +36,7 @@ class AddContract extends Component<Props, State> {
         setFormOptions(initialState.formOptions);
     }
 
-    render() {
+    render(): React$Element<(props: any) => any> {
         const { contractLayer, setFormOptions } = this.props;
 
         return (

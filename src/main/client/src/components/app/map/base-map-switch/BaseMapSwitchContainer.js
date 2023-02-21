@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import BaseMapSwitchView from './BaseMapSwitchView';
 import { activateLayers, toggleLayer } from '../../../../reducers/map/actions';
 
-const sortNames = (a, b) => {
+const sortNames = (a: Object, b: Object) => {
     const aLower = a.name.toLowerCase();
     const bLower = b.name.toLowerCase();
     if (aLower < bLower) return -1;
@@ -11,7 +11,7 @@ const sortNames = (a, b) => {
     return 0;
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     layers: state.map.layerGroups.layerList
         .filter(l => l.background && l.name !== null)
         .sort(sortNames),
@@ -27,11 +27,11 @@ const mapStateToProps = state => ({
     tableButtonAmount: state.table.buttonAmount,
 });
 
-const mapDispatchToProps = dispatch => ({
-    toggleLayer: (layerId) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    toggleLayer: (layerId: string) => {
         dispatch(toggleLayer(layerId));
     },
-    activateLayers: (layers) => {
+    activateLayers: (layers: string[]) => {
         dispatch(activateLayers(layers));
     },
 });

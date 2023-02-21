@@ -15,14 +15,14 @@ export const queryFeatures = (
     view: Object,
     selectFeatures: Function,
     layerId?: Number,
-) => {
+): Promise<Array<$Call<<T>(p: T | Promise<T>) => T, any>>> => {
     const query = {
         geometry,
         outFields: ['*'],
         returnGeometry: true,
     };
     const queries = [];
-    const handleQueryResult = (layer, results, source) => ({
+    const handleQueryResult = (layer: any, results: any, source: string) => ({
         id: layer.id,
         title: layer.title,
         objectIdFieldName: layer.objectIdField,

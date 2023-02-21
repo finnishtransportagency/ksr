@@ -10,19 +10,21 @@ type Props = {
     activeNav: string,
 };
 
-const SideBarView = ({ activeNav }: Props) => (
-    <SideBar active={
-        activeNav === 'search'
+function SideBarView({ activeNav }: Props): React$Element<React$FragmentType> {
+    return (
+        <SideBar active={
+            activeNav === 'search'
             || activeNav === 'mapLayers'
             || activeNav === 'workspace'
             || activeNav === 'offline'
-    }
-    >
-        {activeNav === 'search' && <SearchContainer />}
-        {activeNav === 'mapLayers' && <MapLayersContainer />}
-        {activeNav === 'workspace' && <WorkspaceContainer />}
-        {activeNav === 'offline' && <OfflineContainer />}
-    </SideBar>
-);
+        }
+        >
+            {activeNav === 'search' && <SearchContainer />}
+            {activeNav === 'mapLayers' && <MapLayersContainer />}
+            {activeNav === 'workspace' && <WorkspaceContainer />}
+            {activeNav === 'offline' && <OfflineContainer />}
+        </SideBar>
+    );
+}
 
 export default SideBarView;

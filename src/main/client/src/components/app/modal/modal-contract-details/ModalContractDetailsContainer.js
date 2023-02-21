@@ -5,7 +5,7 @@ import { setActiveModal } from '../../../../reducers/modal/actions';
 import { updateLayerFields, updateRelatedLayersData } from '../../../../reducers/map/actions';
 import { showConfirmModal } from '../../../../reducers/confirmModal/actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { layerId, contractObjectId, source } = state.modal.activeModal.data;
     const { layerList } = state.map.layerGroups;
     const { layerId: activeAdmin } = state.adminTool.active;
@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     setActiveModal: (activeModal: string) => {
         dispatch(setActiveModal(activeModal));
     },

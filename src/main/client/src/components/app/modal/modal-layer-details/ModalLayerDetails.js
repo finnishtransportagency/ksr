@@ -64,7 +64,7 @@ class ModalFilter extends Component<Props, State> {
         };
     }
 
-    handlePropertySubmit = async (combinedData: Object) => {
+    handlePropertySubmit: any = async (combinedData: Object) => {
         const {
             view,
             originalLayerId,
@@ -114,7 +114,7 @@ class ModalFilter extends Component<Props, State> {
         }
     };
 
-    handleModalSubmit = async () => {
+    handleModalSubmit: any = async () => {
         const {
             addressField,
             view,
@@ -167,7 +167,7 @@ class ModalFilter extends Component<Props, State> {
         setActiveFeatureMode('create');
     };
 
-    setFormOptions = (
+    setFormOptions: any = (
         formOptions: Object,
     ) => {
         let geometryChanged = false;
@@ -197,7 +197,7 @@ class ModalFilter extends Component<Props, State> {
         });
     };
 
-    render() {
+    render(): any {
         const { activeLayer, editModeActive } = this.props;
         const { formOptions, existingAttributes } = this.state;
 

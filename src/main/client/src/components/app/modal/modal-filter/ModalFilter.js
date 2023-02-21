@@ -29,12 +29,12 @@ class ModalFilter extends Component<Props, State> {
         this.loadColumns();
     }
 
-    loadColumns = () => {
+    loadColumns: any = () => {
         const { columns } = this.props;
         this.setState({ columns: columns.map(c => ({ ...c })) });
     };
 
-    handleOnChange = (name: string) => {
+    handleOnChange: any = (name: string) => {
         const { columns } = this.state;
         const newColumns = columns.map(c => ({
             ...c,
@@ -43,7 +43,7 @@ class ModalFilter extends Component<Props, State> {
         this.setState({ columns: newColumns });
     };
 
-    render() {
+    render(): any {
         const { columns } = this.state;
         const { setColumns } = this.props;
 

@@ -12,7 +12,9 @@ type Action = {
     objectId: number,
 };
 
-export default (state: Object = initialState, action: Action) => {
+export default (state: Object = initialState, action: Action): | any
+  | { layerId: null, objectId: null, ... }
+  | { layerId: number, objectId: number, ... } => {
     switch (action.type) {
         case SET_CONTRACT_LIST_INFO:
             return {

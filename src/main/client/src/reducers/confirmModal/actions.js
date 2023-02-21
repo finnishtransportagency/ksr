@@ -7,7 +7,15 @@ export const showConfirmModal = (
     cancelText: string,
     accept: Function,
     cancel?: Function,
-) => ({
+): {
+  accept: any,
+  acceptText: string,
+  body: string,
+  cancel: any | void,
+  cancelText: string,
+  type: any,
+  ...
+} => ({
     type: types.SHOW_CONFIRM_MODAL,
     body,
     acceptText,
@@ -16,6 +24,6 @@ export const showConfirmModal = (
     cancel,
 });
 
-export const hideConfirmModal = () => ({
+export const hideConfirmModal = (): { type: any, ... } => ({
     type: types.HIDE_CONFIRM_MODAL,
 });

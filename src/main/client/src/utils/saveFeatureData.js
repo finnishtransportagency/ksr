@@ -38,7 +38,7 @@ const parseAttributes = (attributes: Object) => {
 * @param features Object[] Array of features
 * @return params URLSearchParams URLSearchParams generated
 */
-const featureDataToParams = (features: Object[]) => {
+const featureDataToParams = (features: Array<Object>): null | URLSearchParams => {
     if (features === null || features === undefined) {
         return null;
     }
@@ -98,7 +98,7 @@ const findMatchingLayers = (view: Object, layerId: string): Object[] => {
  * @param {Object} layersToRefresh Featurelayers to be refreshed on map.
  * @param {boolean} [hideToast] Show saving data toast or not.
  */
-const handleSaveResponse = (res: Object, layersToRefresh: Object, hideToast?: boolean) => {
+const handleSaveResponse = (res: Object, layersToRefresh: Object, hideToast?: boolean): any => {
     if (res && Array.isArray(res.addResults) && res.addResults.some(e => e.success)) {
         if (layersToRefresh && layersToRefresh.length > 0) {
             layersToRefresh.items.forEach(item => item.doRefresh());
@@ -245,7 +245,7 @@ const saveData = async (
     idFieldName: string,
     hideToast?: boolean,
     selected?: boolean,
-) => {
+): Promise<mixed> | Promise<null> => {
     const params = featureDataToParams(features);
     const layersToRefresh = findMatchingLayers(view, layerId);
     const { layers } = store.getState().table.features;
@@ -350,7 +350,7 @@ const saveDeletedFeatureData = (
     layerId: string,
     objectIds: string,
     deleteComment: string,
-) => {
+): Promise<void> => {
     const layersToRefresh = findMatchingLayers(view, layerId);
     const params = querystring.stringify({
         f: 'json',
@@ -373,7 +373,7 @@ const saveDeletedFeatureData = (
 *
 * @return Object New reshaped object
 */
-const formatToEsriCompliant = (obj: Object) => obj && Object.entries(obj).reduce(
+const formatToEsriCompliant = (obj: Object): any => obj && Object.entries(obj).reduce(
     (a, c) => (c[0] === 'geometry'
         ? { ...a, geometry: c[1] }
         : { ...a, attributes: { ...a.attributes, [c[0]]: c[1] } }),
@@ -429,7 +429,7 @@ const saveEditedFeatureData = (
     featureType: string,
     addressField: string,
     layerList: Object[],
-) => {
+): any => {
     if (view && Array.isArray(editedData)) {
         const promises = editedData.map((ed) => {
             let layerId = ed.id.replace('_s', '');

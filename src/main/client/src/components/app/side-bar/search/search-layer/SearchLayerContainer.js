@@ -6,7 +6,7 @@ import SearchLayer from './SearchLayer';
 import strings from '../../../../../translations';
 import { setActiveNav } from '../../../../../reducers/navigation/actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const allQueryableLayers = state.map.layerGroups.layerList
         .filter(l => l.queryable && l._source !== 'search')
         .map(l => ({ ...l, value: l.id, label: l.name }));
@@ -27,11 +27,11 @@ const mapStateToProps = (state) => {
     });
 };
 
-const mapDispatchToProps = dispatch => ({
-    searchFeatures: (queryMap) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    searchFeatures: (queryMap: any) => {
         dispatch(searchFeatures(queryMap));
     },
-    setSearchState: (layerId, textSearch, searchFieldValues, suggestions, suggestionsActive) => {
+    setSearchState: (layerId: any, textSearch: any, searchFieldValues: any, suggestions: any, suggestionsActive: any) => {
         dispatch(setSearchState(
             layerId,
             textSearch,
@@ -40,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
             suggestionsActive,
         ));
     },
-    setSearchOptions: (layerId, layerList) => {
+    setSearchOptions: (layerId: any, layerList: any) => {
         dispatch(setSearchOptions(layerId, layerList));
     },
     toggleTable: () => {
@@ -54,7 +54,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const mergeProps = (stateToProps, dispatchToProps) => ({
+const mergeProps = (stateToProps: any, dispatchToProps: any) => ({
     ...stateToProps,
     ...dispatchToProps,
     openSearchResultTable: (layerId: string) => {

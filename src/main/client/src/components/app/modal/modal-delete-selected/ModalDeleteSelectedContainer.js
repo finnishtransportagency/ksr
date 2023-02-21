@@ -5,7 +5,7 @@ import { getCodedValue } from '../../../../utils/parseFeatureData';
 import ModalDeleteSelected from './ModalDeleteSelected';
 import { nestedVal } from '../../../../utils/nestedValue';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { layerList } = state.map.layerGroups;
     const { layerId } = state.adminTool.active;
     const { layers } = state.table.features;
@@ -29,7 +29,7 @@ const mapStateToProps = (state) => {
     const filteredData = selectedData.map(d => Object.keys(d)
         .filter(key => columns.find(qc => key.includes(qc)
             || key.split('/').pop() === oidField))
-        .reduce((obj, key) => {
+        .reduce((obj: any, key) => {
             if (key.split('/').pop() === oidField) {
                 obj._id = d[key];
             } else {
@@ -50,7 +50,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     saveDeletedFeatures: (
         view: Object,
         layerId: string,

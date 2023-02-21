@@ -57,7 +57,7 @@ export const contractListTexts = (
  *
  * @returns {Object} Current-, and contract layers.
  */
-export const getContractLayers = (layerId: string, layerList: Object[]) => {
+export const getContractLayers = (layerId: string, layerList: Object[]): any => {
     if (!layerId) return { currentLayer: null, contractLayers: [] };
 
     const currentLayer = layerList.find(layer => layer.id === layerId
@@ -256,7 +256,7 @@ export const updateContractLink = async (
     layer: Object,
     objectId: number,
     view: Object,
-) => {
+): Promise<any> => {
     const objectIdFieldName = nestedVal(
         layer.fields.find(field => field.type === 'esriFieldTypeOID'),
         ['name'],
@@ -402,7 +402,7 @@ export const attributeValue = (
     domain: Object,
     name: string,
     edit: boolean,
-) => {
+): null | number | string => {
     if (value) {
         if (getCodedValue(domain, value) && !edit) {
             return getCodedValue(domain, value);
@@ -504,7 +504,7 @@ export const fieldEdited = (
     field: Object,
     name: string,
     existingAttributes: Object,
-    value: string,
+    value: number,
 ): boolean => {
     const existingValue = existingAttributes[name];
     if (field.name === name) {

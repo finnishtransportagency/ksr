@@ -55,15 +55,15 @@ class PortalWindow extends Component<Props, State> {
         });
     }
 
-    handleClose = () => {
+    handleClose: any = () => {
         const { togglePortal } = this.props;
         const { externalWindow } = this.state;
         togglePortal();
         window.removeEventListener('beforeunload', this.handleClose.bind(this));
         externalWindow.close();
-    }
+    };
 
-    copyStyles = (sourceDoc: any, targetDoc: any) => {
+    copyStyles: any = (sourceDoc: any, targetDoc: any) => {
         Array.from(sourceDoc.styleSheets).forEach((styleSheet) => {
             try {
                 if (styleSheet.cssRules) {
@@ -87,13 +87,13 @@ class PortalWindow extends Component<Props, State> {
             targetDoc.head.appendChild(styleSheet.ownerNode.cloneNode(true));
         });
         Array.from(sourceDoc.fonts).forEach(font => targetDoc.fonts.add(font));
-    }
+    };
 
-    handleEmptyStyle = (externalWindow: any) => {
+    handleEmptyStyle: any = (externalWindow: any) => {
         externalWindow.document.body.style = 'margin: 0; background: #444444;';
-    }
+    };
 
-    render() {
+    render(): any {
         const { externalWindow, elementContainer } = this.state;
         const { activeTable } = this.props;
 

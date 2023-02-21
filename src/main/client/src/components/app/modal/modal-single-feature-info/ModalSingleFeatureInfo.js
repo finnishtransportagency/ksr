@@ -10,7 +10,7 @@ const initialState = {
     featureData: [],
 };
 
-const ModalSingleFeatureInfo = () => {
+function ModalSingleFeatureInfo() {
     const [featureData, setFeatureData] = useState(initialState.featureData);
 
     const {
@@ -75,6 +75,6 @@ const ModalSingleFeatureInfo = () => {
             />
         </ModalContainer>
     );
-};
+}
 
 export default ModalSingleFeatureInfo;

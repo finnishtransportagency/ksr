@@ -8,7 +8,7 @@ type Action = {
     type: string,
 };
 
-export default (state: string = initialState, action: Action) => {
+export default (state: string = initialState, action: Action): string => {
     switch (action.type) {
         case GET_ACTIVE_LAYER_TAB:
             return state;

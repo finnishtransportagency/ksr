@@ -14,7 +14,14 @@ export const createWorkspaceJsonBody = (
     layerList: any,
     view: Object,
     selectedFeatures: any,
-) => {
+): {
+  centerLatitude: any,
+  centerLongitude: any,
+  layers: any,
+  name: string,
+  scale: any,
+  ...
+} => {
     const layers = layerList
         .filter(l => l.active && l._source !== 'shapefile')
         .map((l, i) => ({

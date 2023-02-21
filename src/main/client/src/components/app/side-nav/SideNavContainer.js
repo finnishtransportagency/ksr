@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { setActiveNav } from '../../../reducers/navigation/actions';
 import SideNavView from './SideNavView';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     activeNav: state.navigation.activeNav,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setActiveNav: (selectedNav) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setActiveNav: (selectedNav: any) => {
         dispatch(setActiveNav(selectedNav));
     },
 });

@@ -45,7 +45,7 @@ class LinkContract extends Component<Props, State> {
         this._isMounted = false;
     }
 
-    handleInputChange = (evt: Object) => {
+    handleInputChange: any = (evt: Object) => {
         const contractNumber = evt.target.value;
         window.clearTimeout(this.existsQuery);
         if (this.abortController) this.abortController.abort();
@@ -101,7 +101,7 @@ class LinkContract extends Component<Props, State> {
         }
     };
 
-    render() {
+    render(): any {
         const {
             contractNumber, fetching, contractExists,
         } = this.state;

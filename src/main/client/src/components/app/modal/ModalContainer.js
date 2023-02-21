@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import ModalView from './ModalView';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     activeModal: state.modal.activeModal.activeModal,
     confirmModal: state.confirmModal.show,
 });

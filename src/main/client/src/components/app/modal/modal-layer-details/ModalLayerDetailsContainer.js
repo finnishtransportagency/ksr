@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import ModalLayerDetails from './ModalLayerDetails';
 import { setActiveFeatureMode, setTempGraphicsLayer } from '../../../../reducers/map/actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const activeLayer = (
-        state.map.layerGroups.layerList && state.map.layerGroups.layerList.length ?
-            state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId) :
-            null
+        state.map.layerGroups.layerList && state.map.layerGroups.layerList.length
+            ? state.map.layerGroups.layerList.find(l => l.id === state.adminTool.active.layerId)
+            : null
     );
     const { addressField, featureType } = state.map.layerGroups.layerList
         .find(l => l.id === state.adminTool.active.layerId);
@@ -28,8 +28,8 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    setTempGraphicsLayer: (graphicsLayer) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setTempGraphicsLayer: (graphicsLayer: any) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
     },
     setActiveFeatureMode: (activeFeatureMode: string) => {

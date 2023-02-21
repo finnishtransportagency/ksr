@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import PortalView from './PortalView';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     portalIsOpen: state.portal.togglePortal,
 });
 

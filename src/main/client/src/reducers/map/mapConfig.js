@@ -25,7 +25,7 @@ const initialState = {
     fetching: true,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case GET_MAP_CONFIG:
             return {

@@ -17,5 +17,5 @@ export const layerData = (layerId: string): Promise<Object> => (
         })
     }`, config())
         .then(r => r.json())
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );

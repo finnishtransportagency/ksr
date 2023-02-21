@@ -20,7 +20,8 @@ export const project = (
     sSrs: string,
     tSrs: string,
     coords: any[],
-) => {
+): any => {
+    // $FlowFixMe
     if (Array.isArray(coords) && coords.length && coords.every(Number.isFinite)) {
         return proj4(sSrs, tSrs, coords);
     }

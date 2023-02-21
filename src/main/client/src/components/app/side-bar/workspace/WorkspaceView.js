@@ -18,7 +18,7 @@ type Props = {
     loadingLayers: boolean,
 }
 
-const WorkspaceView = ({
+function WorkspaceView({
     setActiveModal,
     workspaceList,
     handleDeleteWorkspace,
@@ -26,47 +26,49 @@ const WorkspaceView = ({
     handleSelectWorkspace,
     handleShareWorkspace,
     loadingLayers,
-}: Props) => (
-    <Fragment>
-        <SideBar.Header>
-            <H1>{strings.workspace.title}</H1>
-        </SideBar.Header>
-        <SideBar.Content>
-            <Scrollbars
-                autoHide
-                style={{
-                    height: 'calc(100% - 150px)',
-                }}
-                renderThumbVertical={scrollProps => <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
-            >
-                <WorkspaceWrapper>
-                    <PublicWorkspacesView
-                        workspaceList={workspaceList
-                            .filter(workspace => workspace.isPublic)
-                            .sort((a, b) => a.name.localeCompare(b.name))}
-                        handleSelectWorkspace={handleSelectWorkspace}
-                        loadingLayers={loadingLayers}
-                    />
-                    <UserWorkspacesView
-                        workspaceList={workspaceList.filter(workspace => !workspace.isPublic)}
-                        handleDeleteWorkspace={handleDeleteWorkspace}
-                        handleReplaceWorkspace={handleReplaceWorkspace}
-                        handleSelectWorkspace={handleSelectWorkspace}
-                        handleShareWorkspace={handleShareWorkspace}
-                        loadingLayers={loadingLayers}
-                        setActiveModal={setActiveModal}
-                    />
-                </WorkspaceWrapper>
-            </Scrollbars>
-            <WorkspaceWrapper>
-                <Button
-                    onClick={() => setActiveModal('newWorkspace')}
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <>
+            <SideBar.Header>
+                <H1>{strings.workspace.title}</H1>
+            </SideBar.Header>
+            <SideBar.Content>
+                <Scrollbars
+                    autoHide
+                    style={{
+                        height: 'calc(100% - 150px)',
+                    }}
+                    renderThumbVertical={scrollProps => <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
                 >
-                    {strings.workspace.newWorkspace}
-                </Button>
-            </WorkspaceWrapper>
-        </SideBar.Content>
-    </Fragment>
-);
+                    <WorkspaceWrapper>
+                        <PublicWorkspacesView
+                            workspaceList={workspaceList
+                                .filter(workspace => workspace.isPublic)
+                                .sort((a, b) => a.name.localeCompare(b.name))}
+                            handleSelectWorkspace={handleSelectWorkspace}
+                            loadingLayers={loadingLayers}
+                        />
+                        <UserWorkspacesView
+                            workspaceList={workspaceList.filter(workspace => !workspace.isPublic)}
+                            handleDeleteWorkspace={handleDeleteWorkspace}
+                            handleReplaceWorkspace={handleReplaceWorkspace}
+                            handleSelectWorkspace={handleSelectWorkspace}
+                            handleShareWorkspace={handleShareWorkspace}
+                            loadingLayers={loadingLayers}
+                            setActiveModal={setActiveModal}
+                        />
+                    </WorkspaceWrapper>
+                </Scrollbars>
+                <WorkspaceWrapper>
+                    <Button
+                        onClick={() => setActiveModal('newWorkspace')}
+                    >
+                        {strings.workspace.newWorkspace}
+                    </Button>
+                </WorkspaceWrapper>
+            </SideBar.Content>
+        </>
+    );
+}
 
 export default WorkspaceView;

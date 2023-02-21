@@ -2,7 +2,7 @@
 import { fetchGetUserInfo } from '../../api/user/currentUser';
 import * as types from '../../constants/actionTypes';
 
-export const setUserInfo = () => (dispatch: Function) => {
+export const setUserInfo = (): ((dispatch: any) => void) => (dispatch: Function) => {
     fetchGetUserInfo()
         .then((user) => {
             if (user) {

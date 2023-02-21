@@ -10,16 +10,18 @@ type Props = {
     portalIsOpen: boolean,
 };
 
-const TableView = ({ isOpen, activeNav, portalIsOpen }: Props) => (
-    <Table
-        sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
-        tableOpen={isOpen}
-        portalOpen={portalIsOpen}
-        id="TableView"
-    >
-        <TableButtonsContainer />
-        <TabbedTableContainer />
-    </Table>
-);
+function TableView({ isOpen, activeNav, portalIsOpen }: Props): React$Element<React$FragmentType> {
+    return (
+        <Table
+            sideBar={activeNav === 'search' || activeNav === 'mapLayers' || activeNav === 'workspace' || activeNav === 'offline'}
+            tableOpen={isOpen}
+            portalOpen={portalIsOpen}
+            id="TableView"
+        >
+            <TableButtonsContainer />
+            <TabbedTableContainer />
+        </Table>
+    );
+}
 
 export default TableView;

@@ -1,5 +1,6 @@
 // @flow
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
+import * as symbolUtils from '@arcgis/core/symbols/support/symbolUtils';
 
 /**
  * Get legend symbol.
@@ -7,12 +8,9 @@ import { loadModules } from 'esri-loader';
  * @param {Object} symbol Layer symbol.
  * @returns {Promise} Promise html element that contains legend symbol.
  */
-export const getLegendSymbol = async (symbol: Object) => {
-    const [symbolPreview] = await loadModules(['esri/symbols/support/symbolPreview']);
-    return symbolPreview.renderPreviewHTML(symbol, {
-        size: 12,
-    });
-};
+export const getLegendSymbol = async (symbol: Object): Promise<any> => symbolUtils.renderPreviewHTML(symbol, {
+    size: 12,
+});
 
 /**
  * Render layer legend previews for given layers.
@@ -37,6 +35,7 @@ export const setLayerLegend = async (
                 const uniqueSymbols = [];
                 for (let idx = 0; idx < fl.renderer.uniqueValueInfos.length; idx += 1) {
                     uniqueSymbols.push({
+                        // eslint-disable-next-line no-await-in-loop
                         symbol: await getLegendSymbol(fl.renderer.uniqueValueInfos[idx]
                             .symbol.clone()),
                         label: fl.renderer.uniqueValueInfos[idx].label,

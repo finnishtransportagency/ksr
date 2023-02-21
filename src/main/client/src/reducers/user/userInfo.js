@@ -34,7 +34,17 @@ const initialState = {
     username: '',
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): | State
+  | {
+    authorities: Array<any>,
+    email: string,
+    firstName: string,
+    lastName: string,
+    mobile: string,
+    organization: string,
+    username: string,
+    ...
+  } => {
     switch (action.type) {
         case SET_USER_INFO:
             return {

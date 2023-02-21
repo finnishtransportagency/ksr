@@ -26,7 +26,7 @@ const initialState = {
     loadingWorkspace: false,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case GET_WORKSPACE_LIST:
             return {

@@ -21,7 +21,7 @@ export const closeTableIfNothingToShow = () => {
  * @param dispatch Redux dispatch function.
  * @returns Whether should be toggled. Used for manual toggle check only.
  */
-export const shouldToggleLayerLegend = (dispatch: Function) => {
+export const shouldToggleLayerLegend = (dispatch: Function): any => {
     const { layerList } = store.getState().map.layerGroups;
     const { manualClose, layerLegendActive } = store.getState().map.layerLegend;
     const { scale } = store.getState().map.mapView.view;

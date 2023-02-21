@@ -26,7 +26,7 @@ export const mapSelectPopup = async (
     geometryType: string,
     x: number,
     y: number,
-) => {
+): any => {
     const getPropertyInfo = {
         title: strings.esriMap.getPropertyInfo,
         id: 'get-property-info',

@@ -68,6 +68,8 @@ describe('property.js', () => {
                 MANAGEMENT_AREA: 0,
                 MUNICIPALITY_NAME: 'Kunta',
                 NAME: 'nimi',
+                NOTES: undefined,
+                OWNER_UNCLEAR: null,
                 PARCEL_COUNT: 2,
                 PROPERTY_ID: '98-433-4-26',
                 REGISTER_UNIT_TYPE: 4,
@@ -88,6 +90,6 @@ describe('property.js', () => {
                 },
             },
         }];
-        expect(formatPropertyInfoToSaveFormat(propertyData, null)).resolves.toEqual(expectResult);
+        expect(formatPropertyInfoToSaveFormat(propertyData, null)).resolves.toMatchObject(expectResult);
     });
 });

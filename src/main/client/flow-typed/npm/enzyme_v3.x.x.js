@@ -1,12 +1,12 @@
 // flow-typed signature: c772ff354c6fd8cc5abd9bfd71b96489
 // flow-typed version: f7ac3b9713/enzyme_v3.x.x/flow_>=v0.104.x
 
-declare module "enzyme" {
+declare module 'enzyme' {
   declare type PredicateFunction<T: Wrapper<*>> = (
     wrapper: T,
     index: number
   ) => boolean;
-  declare type UntypedSelector = string | { [key: string]: number|string|boolean, ... };
+  declare type UntypedSelector = string | { [key: string]: number | string | boolean, ... };
   declare type EnzymeSelector = UntypedSelector | React$ElementType;
 
   // CheerioWrapper is a type alias for an actual cheerio instance

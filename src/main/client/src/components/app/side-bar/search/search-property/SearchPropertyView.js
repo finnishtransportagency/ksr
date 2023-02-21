@@ -22,7 +22,7 @@ type Props = {
     propertyId: string,
 };
 
-const SearchPropertyView = ({
+function SearchPropertyView({
     features,
     fetching,
     handlePropertyClick,
@@ -33,48 +33,47 @@ const SearchPropertyView = ({
     handleClear,
     submitDisabled,
     propertyId,
-}: Props) => (
-    <Scrollbars
-        autoHide
-        className="sidebar-content-scroll-wrapper"
-        renderView={scrollProps =>
-            <div {...scrollProps} className="sidebar-content-scroll-inner" />}
-        renderThumbVertical={scrollProps =>
-            <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
-    >
-        <label
-            htmlFor="propertyId"
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <Scrollbars
+            autoHide
+            className="sidebar-content-scroll-wrapper"
+            renderView={scrollProps => <div {...scrollProps} className="sidebar-content-scroll-inner" />}
+            renderThumbVertical={scrollProps => <div {...scrollProps} className="sidebar-content-scroll-thumb" />}
         >
-            <p>{strings.searchProperty.propertyIdentifier}</p>
-            <TextInput
-                type="text"
-                value={propertyId}
-                placeholder=""
-                name="propertyId"
-                disabled={fetching}
-                onChange={handlePropertyIdChange}
-            />
-            <Button
-                disabled={fetching || submitDisabled}
-                type="submit"
-                onClick={handleSubmit}
-                onKeyPress={handleSubmit}
+            <label
+                htmlFor="propertyId"
             >
-                {strings.search.buttonSearch}
-            </Button>
-            <Button
-                disabled={fetching || !features}
-                onClick={handleClear}
-                onKeyPress={handleClear}
-            >
-                {strings.search.buttonClear}
-            </Button>
-        </label>
-        {fetching && <LoadingIcon loading={fetching} />}
-        {features.length > 0 &&
-            <Fragment>
-                {features.map(property =>
-                    (
+                <p>{strings.searchProperty.propertyIdentifier}</p>
+                <TextInput
+                    type="text"
+                    value={propertyId}
+                    placeholder=""
+                    name="propertyId"
+                    disabled={fetching}
+                    onChange={handlePropertyIdChange}
+                />
+                <Button
+                    disabled={fetching || submitDisabled}
+                    type="submit"
+                    onClick={handleSubmit}
+                    onKeyPress={handleSubmit}
+                >
+                    {strings.search.buttonSearch}
+                </Button>
+                <Button
+                    disabled={fetching || !features}
+                    onClick={handleClear}
+                    onKeyPress={handleClear}
+                >
+                    {strings.search.buttonClear}
+                </Button>
+            </label>
+            {fetching && <LoadingIcon loading={fetching} />}
+            {features.length > 0
+            && (
+                <>
+                    {features.map(property => (
                         <Property active={activeProperty === property.id} key={property.id}>
                             <Property.Header>
                                 <Property.Header.Zoom
@@ -115,9 +114,10 @@ const SearchPropertyView = ({
                             </Property.Content>
                         </Property>
                     ))}
-            </Fragment>
-        }
-    </Scrollbars>
-);
+                </>
+            )}
+        </Scrollbars>
+    );
+}
 
 export default SearchPropertyView;

@@ -9,13 +9,13 @@ import TableButtons from './TableButtons';
 import { togglePortal, updatePortal } from '../../../../reducers/portal/actions';
 import { nestedVal } from '../../../../utils/nestedValue';
 
-const mapStateToProps = (state) => {
-    const removeUnderscore = (layer) => {
+const mapStateToProps = (state: Object) => {
+    const removeUnderscore = (layer: any) => {
         const filteredData = [];
         layer.data.map((d) => {
             const filtered = Object.keys(d)
                 .filter(key => key.substring(0, 1) !== '_')
-                .reduce((obj, key) => {
+                .reduce((obj, key: any) => {
                     obj[key] = d[key];
                     return obj;
                 }, {});
@@ -94,25 +94,25 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     toggleTable: () => {
         dispatch(toggleTable());
     },
     toggleFilter: () => {
         dispatch(toggleFilter());
     },
-    setActiveModal: (activeModal) => {
+    setActiveModal: (activeModal: any) => {
         dispatch(setActiveModal(activeModal));
     },
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    clearTableData: (view, editedLayers, featureType, addressField, layerList, isAdminAgfl) => {
+    clearTableData: (view: any, editedLayers: any, featureType: any, addressField: any, layerList: any, isAdminAgfl: any) => {
         dispatch(
             clearTableData(view, editedLayers, featureType, addressField, layerList, isAdminAgfl),
         );
     },
-    saveEditedFeatures: (view, editedLayers, featureType, addressField) => {
+    saveEditedFeatures: (view: any, editedLayers: any, featureType: any, addressField: any) => {
         dispatch(saveEditedFeatures(view, editedLayers, featureType, addressField));
     },
     setButtonAmount: (buttonAmount: ?number) => {
@@ -126,6 +126,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const TableButtonsContainer = connect(mapStateToProps, mapDispatchToProps)(TableButtons);
+const TableButtonsContainer: any = connect(mapStateToProps, mapDispatchToProps)(TableButtons);
 
 export default TableButtonsContainer;

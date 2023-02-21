@@ -2,7 +2,7 @@
 // flow-typed version: c6154227d1/redux_v4.x.x/flow_>=v0.104.x
 
 declare module 'redux' {
-  /*
+    /*
 
     S = State
     A = Action

@@ -25,7 +25,7 @@ type Props = {
     setTableInstance: Function,
     onFetchData: Function,
     onPageChange: Function,
-    activePage: Number,
+    activePage: number,
 };
 
 type State = {
@@ -35,7 +35,7 @@ type State = {
 
 class ReactTableView extends Component<Props, State> {
     // Custom view update handling to reduce redundant re-renders for improved performance
-    shouldComponentUpdate(nextProps: Props) {
+    shouldComponentUpdate(nextProps: Props): boolean {
         const {
             data, currentCellData, activeAdminTool, activeTable, columns, layerList, activePage,
         } = this.props;
@@ -68,7 +68,7 @@ class ReactTableView extends Component<Props, State> {
             || pageChanged;
     }
 
-    render() {
+    render(): any {
         const {
             data,
             columns,

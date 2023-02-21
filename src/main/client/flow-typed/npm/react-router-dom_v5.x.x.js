@@ -1,7 +1,7 @@
 // flow-typed signature: 5a959e600f16fdd755bffe764a262d15
 // flow-typed version: 45d63d67fa/react-router-dom_v5.x.x/flow_>=v0.104.x
 
-declare module "react-router-dom" {
+declare module 'react-router-dom' {
   declare export var BrowserRouter: React$ComponentType<{|
     basename?: string,
     forceRefresh?: boolean,

@@ -26,4 +26,3 @@ describe('<AddContract />', () => {
         expect(wrapper.find(FeatureDetailsForm).exists()).toBe(true);
     });
 });
-

@@ -5,7 +5,7 @@ const initialState = {
     layerToRemove: null,
 };
 
-export default (state: Object = initialState, action: Object) => {
+export default (state: Object = initialState, action: Object): any => {
     switch (action.type) {
         case REMOVE_USER_LAYER:
             return {

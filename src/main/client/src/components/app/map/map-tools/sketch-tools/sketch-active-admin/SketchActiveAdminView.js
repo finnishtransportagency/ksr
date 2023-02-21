@@ -20,7 +20,7 @@ type Props = {
     canUndo: boolean,
 };
 
-const SketchActiveAdminView = ({
+function SketchActiveAdminView({
     editSketchIcon,
     showAdminView,
     removeSketch,
@@ -35,8 +35,8 @@ const SketchActiveAdminView = ({
     undo,
     canRedo,
     canUndo,
-}: Props) => (
-    <Fragment>
+}: Props): React$Element<"div"> {
+    return (
         <div id="create-new-feature-wrapper">
             <div
                 style={{ visibility: hasAdminGraphics ? 'visible' : 'hidden' }}
@@ -60,11 +60,13 @@ const SketchActiveAdminView = ({
                 onClick={
                     hasAdminGraphics && validGeometry ? () => {
                         acceptSketch();
-                    } : null}
+                    } : null
+                }
                 onKeyPress={
                     hasAdminGraphics && validGeometry ? () => {
                         acceptSketch();
-                    } : null}
+                    } : null
+                }
             >
                 <span className="esri-icon-check-mark" />
             </div>
@@ -94,7 +96,7 @@ const SketchActiveAdminView = ({
                 <span className={`esri-icon-${editSketchIcon}`} />
             </div>
         </div>
-    </Fragment>
-);
+    );
+}
 
 export default SketchActiveAdminView;

@@ -74,7 +74,7 @@ export const parseColumns = (id: string, data: Object[]): Object[] => {
  * @param {Object} attributes Feature attributes.
  * @return {Object} Attributes contains layer id on the attribute name.
  */
-export const parseAttributes = (id: string, attributes: Object) => {
+export const parseAttributes = (id: string, attributes: Object): { ... } => {
     const a = Object.entries(attributes);
     const newObject = {};
     for (let i = 0; i < a.length; i += 1) {
@@ -91,7 +91,7 @@ export const parseAttributes = (id: string, attributes: Object) => {
  *
  * @returns {Object[]} Array of layers holding respective features and columns.
  */
-export const parseData = (data: Object, selected?: boolean) => {
+export const parseData = (data: Object, selected?: boolean): any => {
     if (data === undefined || data === null || data.layers === undefined) return [];
     return data.layers.filter(l => l)
         .map((l) => {
@@ -130,7 +130,7 @@ export const parseData = (data: Object, selected?: boolean) => {
  *
  * @returns {Object[] } Array of merged input arrays.
  */
-export const mergeData = (currentData: Object[], newData: Object[]) => {
+export const mergeData = (currentData: Object[], newData: Object[]): Array<any> => {
     const newFeatureIds = newData.map(d => d._id);
     return [...currentData]
         .filter(f => !newFeatureIds.some(nId => nId === f._id))
@@ -148,7 +148,7 @@ export const mergeData = (currentData: Object[], newData: Object[]) => {
  *
  * @returns {string} Id of active table.
  */
-export const getActiveTable = (layers: Object[], currentActiveTable: string) => {
+export const getActiveTable = (layers: Object[], currentActiveTable: string): any | string => {
     if (
         layers.find(l => l.id === currentActiveTable) === undefined
         || currentActiveTable === ''
@@ -291,7 +291,7 @@ export const removeFeatureFromTable = (
     layerId: string,
     objectId: number,
     objectIdFieldName: string,
-) => {
+): { activeTable: any | string, editedLayers: empty, layers: Array<any>, ... } => {
     const layers: Object[] = currentLayers.map((layer) => {
         if (layer.id === layerId) {
             const objectIdField = `${layerId}/${objectIdFieldName}`;

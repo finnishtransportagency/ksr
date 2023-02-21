@@ -108,7 +108,6 @@ describe('<ModalAddUserLayer />', () => {
         };
         wrapper.instance().handleInputChange(evt);
 
-
         const expectedLayerValues = {
             name: 'Taustakartta',
             type: '',

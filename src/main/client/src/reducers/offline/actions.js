@@ -19,7 +19,7 @@ const db = new OfflineCache(DATABASE_NAME, DATABASE_VERSION);
  * @param {string} action Type of action ( add | update | delete ).
  * @param {any[]} args Arguments that were used in the api-call initially.
  */
-export const handleFailedEdit = (action: string, args: any[]) => async (dispatch: Function) => {
+export const handleFailedEdit = (action: string, args: any[]): ((dispatch: any) => Promise<void>) => async (dispatch: Function) => {
     const edit = {
         action,
         args,
@@ -37,7 +37,7 @@ export const handleFailedEdit = (action: string, args: any[]) => async (dispatch
  *
  * When loaded dispatches a redux action to set the number of failed edits.
  */
-export const loadFailedEdits = () => async (dispatch: Function) => {
+export const loadFailedEdits = (): ((dispatch: any) => Promise<void>) => async (dispatch: Function) => {
     await db.open();
     const count = await db.editCount();
     await db.close();
@@ -54,7 +54,7 @@ export const loadFailedEdits = () => async (dispatch: Function) => {
  * @param {Object} edit The edit to save.
  * @returns {Promise} Promise that will resolve with edits key.
  */
-const retryEdit = async (edit) => {
+const retryEdit = async (edit: any) => {
     switch (edit.edit.action) {
         case 'add':
             return addFeatures(...edit.edit.args)
@@ -100,7 +100,7 @@ const retryEdit = async (edit) => {
  * @param {string[]} saves Array of saved edits.
  * @returns {Promise} Promise that will resolve with an array of saved edits.
  */
-const retryEditsInOrder = async (edits, saves) => {
+const retryEditsInOrder = async (edits: any, saves: any) => {
     const currentSaves = Array.isArray(saves) ? saves : [];
     if (edits.length > 0) {
         const edit = edits[0];
@@ -120,7 +120,7 @@ const retryEditsInOrder = async (edits, saves) => {
  *
  * Reads all edits from OfflineCache and then tries to save those edits in a sequence.
  */
-export const retryEdits = () => async (dispatch: Function) => {
+export const retryEdits = (): ((dispatch: any) => Promise<void>) => async (dispatch: Function) => {
     await db.open();
     const edits = await db.getAllEdits(true);
     const initialCount = edits.length;
@@ -146,7 +146,7 @@ export const retryEdits = () => async (dispatch: Function) => {
 * Removes edits from the OfflineCache.
 * When done, dispatches an action to set count of current unsaved edits.
 */
-export const removeEdits = () => async (dispatch: Function) => {
+export const removeEdits = (): ((dispatch: any) => Promise<void>) => async (dispatch: Function) => {
     await db.open();
     const edits = await db.getAllEdits(true);
     const removePromises = edits.map(edit => db.removeEdit(edit.key));

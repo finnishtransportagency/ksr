@@ -5,9 +5,11 @@ import { searchWorkspaceFeatures, selectFeatures } from '../../../../reducers/ta
 import { setWorkspace, setWorkspaceRejected, updateWorkspaces } from '../../../../reducers/workspace/actions';
 import { setActiveModal } from '../../../../reducers/modal/actions';
 import Workspace from './Workspace';
-import { setLayerList, toggleLayerLegend, activateLayers, deactivateLayer } from '../../../../reducers/map/actions';
+import {
+    setLayerList, toggleLayerLegend, activateLayers, deactivateLayer,
+} from '../../../../reducers/map/actions';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     workspaceList: state.workspace.workspace.workspaceList,
     selectedFeatures: state.table.features.layers,
     view: state.map.mapView.view,
@@ -16,8 +18,8 @@ const mapStateToProps = state => ({
     loadingLayers: state.loading.loadingLayers.length,
 });
 
-const mapDispatchToProps = dispatch => ({
-    selectFeatures: (features) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    selectFeatures: (features: any) => {
         dispatch(selectFeatures(features));
     },
     setActiveModal: (activeModal: string) => {
@@ -35,10 +37,10 @@ const mapDispatchToProps = dispatch => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },
-    searchWorkspaceFeatures: (workspace, layerList) => {
+    searchWorkspaceFeatures: (workspace: any, layerList: any) => {
         dispatch(searchWorkspaceFeatures(workspace, layerList));
     },
-    setLayerList: (layerList) => {
+    setLayerList: (layerList: any) => {
         dispatch(setLayerList(layerList));
     },
     toggleLayerLegend: () => {

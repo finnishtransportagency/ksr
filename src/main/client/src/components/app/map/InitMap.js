@@ -1,23 +1,45 @@
 // @flow
-import { loadModules, loadCss } from 'esri-loader';
+// import { loadModules, loadCss } from 'esri-loader';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
-import clone from 'clone';
+// import clone from 'clone';
 import { isMobile } from 'react-device-detect';
-import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
-import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
-import { queryFeatures } from '../../../utils/queryFeatures';
-import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loadWorkspace';
-import EsriMapContainer from './esri-map/EsriMapContainer';
-import { getStreetViewLink } from '../../../utils/map-selection/streetView';
-import { colorBackgroundDark, colorFeatureHighlight, extentGraphic } from '../../ui/defaultStyles';
-import { nestedVal } from '../../../utils/nestedValue';
-import strings from '../../../translations';
-import { copyFeature } from '../../../utils/map-selection/copyFeature';
+
+import Format from '@arcgis/core/widgets/CoordinateConversion/support/Format';
+import MapView from '@arcgis/core/views/MapView';
+import Map from '@arcgis/core/Map';
+import Locate from '@arcgis/core/widgets/Locate';
+import Track from '@arcgis/core/widgets/Track';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Compass from '@arcgis/core/widgets/Compass';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import Circle from '@arcgis/core/geometry/Circle';
+import Point from '@arcgis/core/geometry/Point';
+import Print from '@arcgis/core/widgets/Print';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import Graphic from '@arcgis/core/Graphic';
+import Legend from '@arcgis/core/widgets/Legend';
+import CoordinateConversion from '@arcgis/core/widgets/CoordinateConversion';
+import Conversion from '@arcgis/core/widgets/CoordinateConversion/support/Conversion';
+import Search from '@arcgis/core/widgets/Search';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+
 import { addLayers, removeGraphicsFromMap } from '../../../utils/map';
 import { convert } from '../../../utils/geojson';
 import { DigitransitLocatorBuilder } from '../../../utils/geocode';
 import { getDocumentUrl } from '../../../utils/contracts/contractDocument';
+
+import { copyFeature } from '../../../utils/map-selection/copyFeature';
+import strings from '../../../translations';
+import { nestedVal } from '../../../utils/nestedValue';
+import { colorBackgroundDark, colorFeatureHighlight, extentGraphic } from '../../ui/defaultStyles';
+import { getStreetViewLink } from '../../../utils/map-selection/streetView';
+import EsriMapContainer from './esri-map/EsriMapContainer';
+import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loadWorkspace';
+import { queryFeatures } from '../../../utils/queryFeatures';
+import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
+import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
 
 type Props = {
     layerList: Array<any>,
@@ -81,47 +103,7 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        loadCss('4.21');
-
-        const [
-            MapView,
-            Map,
-            Locate,
-            Track,
-            ScaleBar,
-            SpatialReference,
-            Compass,
-            geometryEngine,
-            Circle,
-            Point,
-            Print,
-            GraphicsLayer,
-            Graphic,
-            Legend,
-            CoordinateConversion,
-            Conversion,
-            Search,
-            watchUtils,
-        ] = await loadModules([
-            'esri/views/MapView',
-            'esri/Map',
-            'esri/widgets/Locate',
-            'esri/widgets/Track',
-            'esri/widgets/ScaleBar',
-            'esri/geometry/SpatialReference',
-            'esri/widgets/Compass',
-            'esri/geometry/geometryEngine',
-            'esri/geometry/Circle',
-            'esri/geometry/Point',
-            'esri/widgets/Print',
-            'esri/layers/GraphicsLayer',
-            'esri/Graphic',
-            'esri/widgets/Legend',
-            'esri/widgets/CoordinateConversion',
-            'esri/widgets/CoordinateConversion/support/Conversion',
-            'esri/widgets/Search',
-            'esri/core/watchUtils',
-        ]);
+        // loadCss('4.23');
 
         const {
             mapCenter,
@@ -167,7 +149,7 @@ class EsriMap extends Component<Props> {
             },
             highlightOptions: {
                 color: colorFeatureHighlight,
-                fillOpacity: 0,
+                fillOpacity: 0.1,
             },
         });
 
@@ -212,7 +194,7 @@ class EsriMap extends Component<Props> {
             includeDefaultSources: false,
             sources: [
                 {
-                    locator: new (await DigitransitLocatorBuilder.build())(),
+                    locator: new DigitransitLocatorBuilder(),
                     placeholder: strings.geocode.placeholder,
                     name: 'Digitransit',
                 },
@@ -257,14 +239,16 @@ class EsriMap extends Component<Props> {
             const formats = coordinateWidget.formats
                 .filter(f => f.name === 'basemap' || f.name === 'xy');
 
-            const epsg = formats.items.find(format => format.name === 'basemap');
-            const wgs = formats.items.find(format => format.name === 'xy');
+            const epsg = formats.find(format => format.name === 'basemap');
+            const wgs = formats.find(format => format.name === 'xy');
 
             if (epsg && wgs) {
-                const epsgClone = clone(epsg, true, 3);
+                const epsgClone = new Format({ ...epsg }); // clone(epsg, true, 3);
                 epsgClone.name = 'ETRS-TM35FIN';
-                const wgsClone = clone(wgs, true, 3);
+                epsgClone.label = 'ETRS-TM35FIN';
+                const wgsClone = new Format({ ...wgs }); // clone(wgs, true, 3);
                 wgsClone.name = 'WGS84';
+                wgsClone.label = 'WGS84';
 
                 coordinateWidget.formats.removeAll();
                 coordinateWidget.formats.addMany([epsgClone, wgsClone]);
@@ -292,7 +276,7 @@ class EsriMap extends Component<Props> {
             overview.graphics.add(extentgraphic);
 
             // Get the new extent of the view only when view is stationary.
-            watchUtils.whenTrue(view, 'stationary', () => {
+            reactiveUtils.when(() => view.stationary, () => {
                 if (view.extent) {
                     overview.goTo({
                         center: view.center,
@@ -306,7 +290,7 @@ class EsriMap extends Component<Props> {
             });
         });
 
-        const stopEvtPropagation = (event) => {
+        const stopEvtPropagation = (event: Object) => {
             event.stopPropagation();
         };
 
@@ -330,9 +314,7 @@ class EsriMap extends Component<Props> {
         // disable keyboard keys.
         overview.on('key-down', stopEvtPropagation);
 
-        watchUtils.watch(view, 'scale', () => {
-            setScale(view.scale);
-        });
+        reactiveUtils.watch(() => view.scale, () => setScale(view.scale));
 
         view.on('click', (event) => {
             view.popup.close();
@@ -389,14 +371,11 @@ class EsriMap extends Component<Props> {
             });
         });
 
-        (document.getElementById: Function)('select-tool-outer-wrapper').classList
-            .remove('esri-component');
+        document.getElementById('select-tool-outer-wrapper')?.classList?.remove('esri-component');
 
-        (document.getElementById: Function)('draw-tool-outer-wrapper').classList
-            .remove('esri-component');
+        document.getElementById('draw-tool-outer-wrapper')?.classList?.remove('esri-component');
 
-        (document.getElementById: Function)('create-new-feature-wrapper').classList
-            .remove('esri-component');
+        document.getElementById('create-new-feature-wrapper')?.classList?.remove('esri-component');
 
         view.popup.on('trigger-action', async (evt) => {
             const {
@@ -424,7 +403,6 @@ class EsriMap extends Component<Props> {
                 ['layer', 'id'],
             );
             const layer = layerList.find(ll => layerId && layerId.replace('_s', '') === ll.id);
-
 
             const copySelectedFeature = async (activeFeatureMode: string) => {
                 const copiedFeature = view.popup.viewModel.selectedFeature;
@@ -510,10 +488,10 @@ class EsriMap extends Component<Props> {
                     break;
                 case 'feature-data': {
                     const attributeData = view.popup.foundFeatures
-                        .find(feature => feature.layer.id === layer.id).attributes;
+                        .find(feature => feature.layer.id === layer?.id).attributes;
 
                     const modalData = {
-                        layerId: layer.id,
+                        layerId: layer?.id,
                         attributeData,
                         fromSource: 'map',
                     };
@@ -658,7 +636,7 @@ class EsriMap extends Component<Props> {
         setMapView(view);
         setTempGraphicsLayer(tempGraphicsLayer);
 
-        let workspace = await getWorkspaceFromUrl();
+        let workspace: any = await getWorkspaceFromUrl();
         if (workspace) {
             await loadWorkspace(
                 workspace,
@@ -686,7 +664,7 @@ class EsriMap extends Component<Props> {
         window.history.pushState({}, document.title, window.location.pathname);
     }
 
-    render() {
+    render(): React$Element<any> {
         return <EsriMapContainer printWidget={this.printWidget} legendWidget={this.legendWidget} />;
     }
 }

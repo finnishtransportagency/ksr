@@ -14,20 +14,20 @@ import { updatePortal } from '../portal/actions';
 import { closeTableIfNothingToShow } from '../utils';
 import { setActiveAdminTool } from '../adminTool/actions';
 
-export const toggleTable = () => ({
+export const toggleTable = (): { type: any, ... } => ({
     type: types.TOGGLE_TABLE,
 });
 
-export const toggleFilter = () => ({
+export const toggleFilter = (): { type: any, ... } => ({
     type: types.TOGGLE_FILTER,
 });
 
-export const selectFeatures = (features: {}) => ({
+export const selectFeatures = (features: {}): { layers: any, type: any, ... } => ({
     type: types.SELECT_FEATURES,
     layers: parseData(features, true),
 });
 
-export const addShapeFeaturesToTable = (features: {}) => ({
+export const addShapeFeaturesToTable = (features: {}): { layers: any, type: any, ... } => ({
     type: types.SELECT_FEATURES,
     layers: parseData(features, false),
 });
@@ -37,7 +37,7 @@ export const addUpdateLayers = (
     objectIdFieldName: string,
     objectId: number,
     selected?: boolean,
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     queryFeatures(
         parseInt(layerId, 10),
         `${objectIdFieldName} = ${objectId}`,
@@ -68,12 +68,12 @@ export const addUpdateLayers = (
         });
 };
 
-export const setColumns = (columns: Array<Object>) => ({
+export const setColumns = (columns: Array<Object>): { columns: Array<any>, type: any, ... } => ({
     type: types.SET_COLUMNS,
     columns,
 });
 
-export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Function) => {
+export const searchFeatures = (queryMap: Map<Object, string>): ((dispatch: any) => void) => (dispatch: Function) => {
     const layersToBeAdded = {
         layers: [],
     };
@@ -160,7 +160,7 @@ export const searchFeatures = (queryMap: Map<Object, string>) => (dispatch: Func
 export const searchWorkspaceFeatures = (
     workspace: Object,
     layerList: Object[],
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     const layersToBeAdded = {
         layers: [],
     };
@@ -224,7 +224,7 @@ export const searchWorkspaceFeatures = (
                         });
                     }
                 })
-                .catch(err => console.log(err)));
+                .catch(err => console.error(err)));
         }
     });
 
@@ -262,26 +262,26 @@ export const searchWorkspaceFeatures = (
     });
 };
 
-export const setActiveTable = (activeTable: string) => ({
+export const setActiveTable = (activeTable: string): { activeTable: string, type: any, ... } => ({
     type: types.SET_ACTIVE_TABLE,
     activeTable,
 });
 
-export const deSelectSelected = () => ({
+export const deSelectSelected = (): { type: any, ... } => ({
     type: types.DE_SELECT_SELECTED_FEATURES,
 });
 
-export const setRowFilter = (rows: Object[]) => ({
+export const setRowFilter = (rows: Array<Object>): { rows: Array<any>, type: any, ... } => ({
     type: types.SET_ROW_FILTER,
     rows,
 });
 
-export const toggleSelection = (feature: Object) => ({
+export const toggleSelection = (feature: Object): { feature: any, type: any, ... } => ({
     type: types.TOGGLE_SELECTION,
     feature,
 });
 
-export const toggleSelectAll = (layerId: string) => ({
+export const toggleSelectAll = (layerId: string): { layerId: string, type: any, ... } => ({
     type: types.TOGGLE_SELECT_ALL,
     layerId,
 });
@@ -293,7 +293,7 @@ export const clearTableData = (
     addressField: string,
     layerList: Object[],
     isAdminAgfl: boolean,
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     let editedLayer: any = null;
     editedLayers.map(layer => layer.id === layer.id.replace('_s', '') && layer.data.some((d) => {
         if (d._edited && d._edited.length > 0) {
@@ -361,12 +361,12 @@ export const clearTableData = (
     }
 };
 
-export const setEditedLayer = (data: Array<Object>) => ({
+export const setEditedLayer = (data: Array<Object>): { data: Array<any>, type: any, ... } => ({
     type: types.SET_EDITED_LAYER,
     data,
 });
 
-export const setSingleLayerGeometry = (geometry: Object) => ({
+export const setSingleLayerGeometry = (geometry: Object): { geometry: any, type: any, ... } => ({
     type: types.SET_SINGLE_LAYER_GEOMETRY,
     geometry,
 });
@@ -376,7 +376,7 @@ export const saveEditedFeatures = (
     editedLayers: Object[],
     featureType: string,
     addressField: string,
-) => (dispatch: Function, getState: Function) => {
+): ((dispatch: any, getState: any) => { type: string, ... }) => (dispatch: Function, getState: Function) => {
     const { layerList } = dispatch(getState).map.layerGroups;
     save.saveEditedFeatureData(view, editedLayers, featureType, addressField, layerList)
         .then((resEdits) => {
@@ -429,7 +429,7 @@ export const saveDeletedFeatures = (
     layerId: string,
     objectIds: string,
     deleteComment: string,
-) => (dispatch: Function, getState: Function) => {
+): ((dispatch: any, getState: any) => void) => (dispatch: Function, getState: Function) => {
     view.popup.close();
     const { layerList } = dispatch(getState).map.layerGroups;
     save.saveDeletedFeatureData(view, layerId, objectIds, deleteComment)
@@ -450,7 +450,7 @@ export const closeTableTab = (
     featureType: string,
     addressField: string,
     isAgfl: boolean,
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     const editedLayer = editedLayers.find(e => e.id === layerId);
     const containsEdit = editedLayer && editedLayer.data
         .some(d => d._edited.length > 0);
@@ -518,7 +518,7 @@ export const addNonSpatialContentToTable = (
     workspaceFeatures?: Object[],
     clear?: boolean,
     selectedFeatures?: Object[],
-) => async (dispatch: Function) => {
+): ((dispatch: any) => Promise<void>) => async (dispatch: Function) => {
     dispatch({
         type: types.SET_LOADING_LAYERS,
         layerIds: [layer.id],
@@ -574,27 +574,27 @@ export const addNonSpatialContentToTable = (
         .catch(err => console.error(err));
 };
 
-export const setSearchFeatures = (layers: Object[]) => ({
+export const setSearchFeatures = (layers: Array<Object>): { layers: any, type: any, ... } => ({
     type: types.SEARCH_FEATURES_FULFILLED,
     layers: parseData({ layers }, false),
 });
 
-export const setButtonAmount = (buttonAmount: ?number) => ({
+export const setButtonAmount = (buttonAmount: ?number): { buttonAmount: ?number, type: any, ... } => ({
     type: types.SET_BUTTON_AMOUNT,
     buttonAmount,
 });
 
-export const setActivePage = (page: Object) => ({
+export const setActivePage = (page: Object): { page: any, type: any, ... } => ({
     type: types.SET_ACTIVE_PAGE,
     page,
 });
 
-export const setTableEdited = (hasTableEdited: boolean) => ({
+export const setTableEdited = (hasTableEdited: boolean): { hasTableEdited: boolean, type: any, ... } => ({
     type: types.TABLE_EDITED,
     hasTableEdited,
 });
 
-export const addFiltered = (filtered: Array<Object>) => ({
+export const addFiltered = (filtered: Array<Object>): { filtered: Array<any>, type: any, ... } => ({
     type: types.ADD_FILTERED,
     filtered,
 });
@@ -605,7 +605,7 @@ export const sketchSaveData = (
     featureType: string,
     addressField: string,
     hasTableEdited: boolean,
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     if (hasTableEdited) {
         dispatch(showConfirmModal(
             strings.modalSaveEditedData.content,
@@ -632,7 +632,7 @@ export const sketchSaveData = (
     }
 };
 
-export const addFeatureNoGeometry = (featureNoGeometry: Object) => (dispatch: Function) => {
+export const addFeatureNoGeometry = (featureNoGeometry: Object): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({
         type: types.ADD_FEATURE_NO_GEOMETRY,
         featureNoGeometry,

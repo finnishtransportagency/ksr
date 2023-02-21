@@ -18,10 +18,6 @@ const initialState: State = {
 };
 
 class ModalDrawText extends React.Component<Props, State> {
-    handleTextChange: Function; // eslint-disable-line react/sort-comp
-    handleModalSubmit: Function; // eslint-disable-line react/sort-comp
-    handleModalCancel: Function; // eslint-disable-line react/sort-comp
-
     constructor(props: Props) {
         super(props);
 
@@ -32,24 +28,23 @@ class ModalDrawText extends React.Component<Props, State> {
         this.handleModalCancel = this.handleModalCancel.bind(this);
     }
 
-    handleTextChange(evt: any) {
+    handleTextChange: any = (evt: any) => {
         if (evt && evt.target && evt.target.value) {
             this.setState({
                 text: evt.target.value.trim(),
             });
         }
-    }
+    };
 
-    handleModalSubmit() {
+    handleModalSubmit: any = () => {
         this.props.setDrawText(this.state.text);
-    }
+    };
 
-    handleModalCancel() {
+    handleModalCancel: any = () => {
         this.props.setActiveTool('');
-    }
+    };
 
-
-    render() {
+    render(): React$Element<any> {
         const { text } = this.state;
         const modalSubmit = [{
             text: strings.modalDrawText.submitText,

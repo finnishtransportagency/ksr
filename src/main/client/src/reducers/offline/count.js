@@ -6,7 +6,7 @@ type Action = {
     type: string,
 };
 
-export default (state: number = 0, action: Action) => {
+export default (state: number = 0, action: Action): ?number => {
     switch (action.type) {
         case ADD_EDIT:
             return state + 1;

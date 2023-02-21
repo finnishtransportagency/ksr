@@ -1,4 +1,5 @@
-import styled, { css } from 'styled-components';
+// eslint-disable-next-line no-irregular-whitespace
+import styled, {  css } from 'styled-components';
 
 export const WorkspaceWrapper = styled.div`
     padding: 0 1em;

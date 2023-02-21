@@ -19,7 +19,7 @@ export const updateWorkspaces = (
     workspaceFetch: Function,
     fetchParam?: any,
     type?: string,
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({ type: types.GET_WORKSPACE_LIST });
     workspaceFetch(fetchParam)
         .then((r) => {
@@ -68,7 +68,7 @@ export const updateWorkspaces = (
                 throw new Error('GET_WORKSPACE_LIST_REJECTED -error');
             }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
 /**
@@ -80,7 +80,7 @@ export const updateWorkspaces = (
 export const setWorkspaceFeatures = (
     workspace: Object,
     layers: Object[],
-) => async (dispatch: Function, getState: Function) => {
+): ((dispatch: any, getState: any) => Promise<void>) => async (dispatch: Function, getState: Function) => {
     const spatialWorkspace = workspace.layers.filter(wl => layers.find(l => l.type !== 'agfl'
         && (l.id === wl.layerId || l.id === wl.userLayerId)));
     const workspaceFeatures = getWorkspaceFeatures(spatialWorkspace);
@@ -111,11 +111,11 @@ export const setWorkspaceFeatures = (
     });
 };
 
-export const setWorkspace = () => (dispatch: Function) => {
+export const setWorkspace = (): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({ type: types.CLEAR_TABLE_DATA });
     dispatch({ type: types.SET_WORKSPACE });
 };
 
-export const setWorkspaceRejected = () => (dispatch: Function) => {
+export const setWorkspaceRejected = (): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({ type: types.SET_WORKSPACE_REJECTED });
 };

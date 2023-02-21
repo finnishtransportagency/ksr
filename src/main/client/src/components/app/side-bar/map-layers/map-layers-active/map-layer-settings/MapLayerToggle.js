@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 // @flow
 import React, { Fragment } from 'react';
 import strings from '../../../../../../translations';
@@ -11,13 +12,13 @@ type Props = {
     mapScale: number,
     toggleLayer: (string) => void,
     childLayer: boolean,
-    toggleVisibleZoomOut: (string, number) => void,
-    layersViewableZoomOut: Object[],
+    toggleVisibleZoomOut?: (string, number) => void,
+    layersViewableZoomOut?: Object[],
 };
 
-const MapLayerToggle = ({
+function MapLayerToggle({
     layer, mapScale, toggleLayer, childLayer, toggleVisibleZoomOut, layersViewableZoomOut,
-}: Props) => {
+}: Props): React$Element<React$FragmentType> {
     const matching = layersViewableZoomOut !== undefined
         ? layersViewableZoomOut.find(l => l.id === layer.id)
         : undefined;
@@ -29,7 +30,7 @@ const MapLayerToggle = ({
     const getMultilayerNode = () => {
         const multiSymbolIcon: HTMLElement = document.createElement('i');
         multiSymbolIcon.className = 'fas fa-plus';
-        multiSymbolIcon.style = 'font-size: 0.7em';
+        multiSymbolIcon.style.fontSize = '0.7em';
         multiSymbolIcon.setAttribute('data-for', tooltipId);
         multiSymbolIcon.setAttribute('data-tip', 'tooltip');
         multiSymbolIcon.setAttribute('data-event', 'click');
@@ -50,9 +51,10 @@ const MapLayerToggle = ({
 
     const getTooltip = () => layer.uniqueSymbols && layer.uniqueSymbols.length && (
         <Tooltip id={tooltipId}>
-            {layer.uniqueSymbols.map(s => (
+            {layer.uniqueSymbols.map((s) => (
                 <div
                     style={{ display: 'flex' }}
+                    key={`${tooltipId}-${s.label}`}
                     ref={(node) => {
                         if (node) {
                             node.innerHTML = '';
@@ -73,32 +75,30 @@ const MapLayerToggle = ({
     const getContent = () => {
         if (matchingAndOriginallyHidden || !layerViewable(layer, mapScale)) {
             return (
-                <Fragment>
+                <>
                     {(shouldShowZoomOutToggle && matching)
                         ? (
-                            <Fragment>
-                                <div
-                                    className="symbolWrapper"
-                                    ref={(node) => {
-                                        if (node) {
-                                            const eyeNode: HTMLElement = document.createElement('i');
-                                            eyeNode.className = 'fas fa-eye';
-                                            node.innerHTML = '';
-                                            node.appendChild(layer.legendSymbol.cloneNode(true));
-                                            node.appendChild(eyeNode);
-                                        }
-                                    }}
-                                />
-                            </Fragment>
+                            <div
+                                className="symbolWrapper"
+                                ref={(node) => {
+                                    if (node) {
+                                        const eyeNode: HTMLElement = document.createElement('i');
+                                        eyeNode.className = 'fas fa-eye';
+                                        node.innerHTML = '';
+                                        node.appendChild(layer.legendSymbol.cloneNode(true));
+                                        node.appendChild(eyeNode);
+                                    }
+                                }}
+                            />
                         )
                         : <i className="fas fa-eye-slash" />}
 
-                    {shouldShowZoomOutToggle && <MapLayerToggleIcon visible={matching} /> }
-                </Fragment>
+                    {shouldShowZoomOutToggle && <MapLayerToggleIcon visible={matching || false} /> }
+                </>
             );
         } if (layer.legendSymbol) {
             return (
-                <Fragment>
+                <>
                     <div
                         className="symbolWrapper"
                         ref={(node) => {
@@ -109,7 +109,7 @@ const MapLayerToggle = ({
                         }}
                     />
                     <MapLayerToggleIcon visible={layer.visible} />
-                </Fragment>
+                </>
             );
         }
         return <MapLayerToggleIcon visible={layer.visible} />;
@@ -118,7 +118,7 @@ const MapLayerToggle = ({
     const onClick = () => {
         if (matching) {
             if (shouldShowZoomOutToggle) {
-                if (matchingAndOriginallyHidden) {
+                if (matchingAndOriginallyHidden && toggleVisibleZoomOut) {
                     toggleVisibleZoomOut(layer.id, layer.minScale);
                 } else {
                     toggleLayer(layer.id);
@@ -128,15 +128,15 @@ const MapLayerToggle = ({
             }
         } else if (layerViewable(layer, mapScale)) {
             toggleLayer(layer.id);
-        } else if (shouldShowZoomOutToggle) {
+        } else if (shouldShowZoomOutToggle && toggleVisibleZoomOut) {
             toggleVisibleZoomOut(layer.id, layer.minScale);
         }
     };
 
     return (
-        <Fragment>
+        <>
             <LayerSettings.Toggle
-                title={getTitle(layer, mapScale)}
+                title={getTitle()}
                 onClick={onClick}
                 viewable={anyToggleViewable}
                 childLayer={childLayer}
@@ -158,10 +158,9 @@ const MapLayerToggle = ({
                         }}
                     />,
                     getTooltip()]
-                )
-            }
-        </Fragment>
+                )}
+        </>
     );
-};
+}
 
 export default MapLayerToggle;

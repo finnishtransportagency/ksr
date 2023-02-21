@@ -6,9 +6,10 @@ const initialState = {};
 type Action = {
     type: string,
     page: Object,
+    layerId: any,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: any = initialState, action: Action): any => {
     switch (action.type) {
         case SET_ACTIVE_PAGE:
             return {

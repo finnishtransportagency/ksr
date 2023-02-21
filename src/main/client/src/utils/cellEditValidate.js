@@ -10,7 +10,7 @@ import { toUnixTime } from './date';
 *
 * @returns {Object} Matching row.
 */
-const getEdit = (edited, title) => edited.find(d => d.title === title);
+const getEdit = (edited: any, title: any) => edited.find(d => d.title === title);
 
 /**
 * Returns boolean indicating if there are any edits with given title.
@@ -20,7 +20,7 @@ const getEdit = (edited, title) => edited.find(d => d.title === title);
 *
 * @returns {boolean} Boolean indicating if any edits exist.
 */
-const isNewEdit = (edited, title) => getEdit(edited, title) === undefined;
+const isNewEdit = (edited: any, title: any) => getEdit(edited, title) === undefined;
 
 /**
 * Check if values are equal.
@@ -31,7 +31,7 @@ const isNewEdit = (edited, title) => getEdit(edited, title) === undefined;
 *
 * @returns {boolean} Boolean indicating if values are equal.
 */
-export const equals = (a: any, b: any) => {
+export const equals = (a: any, b: any): boolean => {
     const aClean = typeof a === 'string' ? a.trim() : a;
     const bClean = typeof b === 'string' ? b.trim() : b;
 
@@ -54,7 +54,7 @@ export const equals = (a: any, b: any) => {
 *
 * @returns {Object[]} New array of edited values.
 */
-const addEditedValue = (edited, title, value, originalData) => edited.reduce(
+const addEditedValue = (edited: any, title: any, value: null | number | string, originalData: any) => edited.reduce(
     (acc, cur) => {
         if (equals(cur.originalData, value) && cur.title === title) {
             return acc;
@@ -78,7 +78,7 @@ const addEditedValue = (edited, title, value, originalData) => edited.reduce(
 *
 * @returns {(string | number)} Value converted to corresponding type.
 */
-export const getValue = (type: string, value: string) => {
+export const getValue = (type: string, value: string): null | number | string => {
     switch (type) {
         case 'esriFieldTypeString':
             return value ? String(value).trim() : null;
@@ -104,7 +104,7 @@ export const getValue = (type: string, value: string) => {
 *
 * @returns {Object} Row with changes.
 */
-const applyChange = (row, value, cellInfo, cellField) => {
+const applyChange = (row: any, value: any, cellInfo: any, cellField: any) => {
     const newValue = getValue(
         cellField.type,
         value,
@@ -137,7 +137,7 @@ export const cellEditValidate = (
     layerData: Object[],
     cellField: Object,
     cellInfo: Object,
-) => {
+): any | null => {
     if (cellInfo.index < layerData.length) {
         return applyChange(layerData[cellInfo.index], value, cellInfo, cellField);
     }
@@ -156,7 +156,7 @@ export const cellEditValidate = (
  *
  * @returns method call or null
  */
-export const preventKeyPress = (e: Object, cellField: Object) => {
+export const preventKeyPress = (e: Object, cellField: Object): any | null => {
     if (Number.isInteger(cellField.length) && e.target.innerText.length >= cellField.length) {
         return e.preventDefault();
     }

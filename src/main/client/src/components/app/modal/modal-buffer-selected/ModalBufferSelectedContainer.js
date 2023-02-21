@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ModalBufferSelected from './ModalBufferSelected';
 import { setSingleLayerGeometry } from '../../../../reducers/table/actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const singleFeature = state.table.features.singleLayerGeometry.type !== undefined;
     const selectedGeometryData = [];
     if (singleFeature) {
@@ -40,8 +40,8 @@ const mapStateToProps = (state) => {
         singleFeature,
     };
 };
-const mapDispatchToProps = dispatch => ({
-    setSingleLayerGeometry: (geometry) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setSingleLayerGeometry: (geometry: any) => {
         dispatch(setSingleLayerGeometry(geometry));
     },
 });

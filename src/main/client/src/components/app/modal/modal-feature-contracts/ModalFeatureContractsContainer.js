@@ -6,7 +6,7 @@ import { getContractLayers } from '../../../../utils/contracts/contracts';
 import { nestedVal } from '../../../../utils/nestedValue';
 import { updateRelatedLayersData, updateLayerFields } from '../../../../reducers/map/actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { layerId } = state.contract.contractList;
 
     const {
@@ -31,14 +31,14 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     removeContractListInfo: () => {
         dispatch(removeContractListInfo());
     },
-    updateLayerFields: (layerId, fields) => {
+    updateLayerFields: (layerId: any, fields: any) => {
         dispatch(updateLayerFields(layerId, fields));
     },
-    updateLayerData: (layer) => {
+    updateLayerData: (layer: any) => {
         dispatch(updateRelatedLayersData([layer]));
     },
 });

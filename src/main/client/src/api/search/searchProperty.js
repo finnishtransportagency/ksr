@@ -57,7 +57,7 @@ export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
             }
             return res;
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
 /**
@@ -68,7 +68,7 @@ export const fetchPropertyInfo = (queryParameter: any, signal: any): Object => {
  *
  * @returns {Promise<Object>} Promise with PDF document link urls.
  */
-export const fetchPropertyPdfLinks = (propertyIdentifier: string, language: string) => (
+export const fetchPropertyPdfLinks = (propertyIdentifier: string, language: string): Promise<mixed> => (
     fetch(`api/property/pdf/links/?${
         querystring.stringify({ propertyIdentifier, language })
     }`, config())

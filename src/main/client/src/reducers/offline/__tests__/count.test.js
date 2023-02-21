@@ -1,7 +1,6 @@
 import countReducer from '../count';
 import { ADD_EDIT, SET_EDITS } from '../../../constants/actionTypes';
 
-
 describe('recuders - offline - count', () => {
     it('should return inital count', () => {
         expect(countReducer(undefined, {})).toBe(0);

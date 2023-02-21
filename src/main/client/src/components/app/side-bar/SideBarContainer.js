@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { getActiveNav } from '../../../reducers/navigation/actions';
 import SideBarView from './SideBarView';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     activeNav: state.navigation.activeNav,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     getActiveNav: () => {
         dispatch(getActiveNav());
     },

@@ -4,7 +4,7 @@ import { getContractLayers } from '../../../../../utils/contracts/contracts';
 import LinkContract from './LinkContract';
 import { findFirstContractLayer } from '../../../../../utils/layers';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { layerId } = state.contract.contractList;
     const { layerList } = state.map.layerGroups;
 

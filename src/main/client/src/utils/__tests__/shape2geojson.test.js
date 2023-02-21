@@ -1,20 +1,20 @@
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
 import { shape2geoJson, convertLayerListFormat } from '../shape2geojson';
 import { convert } from '../geojson';
 import { getLegendSymbol } from '../layerLegend';
 import strings from '../../translations';
 
-jest.mock('esri-loader');
+jest.mock('../featurelayer');
 jest.mock('../geojson');
 jest.mock('../layerLegend');
 
-class FeatureLayerMock {
+/* class FeatureLayerMock {
     constructor(params) {
         Object.entries(params).forEach(([key, value]) => {
             this[key] = value;
         });
     }
-}
+} */
 
 describe('shape2geojson4', () => {
     const decodeToArrayBuffer = (encoded) => {
@@ -29,13 +29,15 @@ describe('shape2geojson4', () => {
     };
 
     const setup = () => {
+        // eslint-disable-next-line max-len
         const shp = decodeToArrayBuffer('AAAnCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATugDAAABAAAAwUipZXuFF0HnnE8fQXJZQdOOBzOulxdBETJnKKFzWUEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAKAQAAAMFIqWV7hRdBETJnKKFzWUEAAAACAAAACgEAAADTjgczrpcXQeecTx9BcllB');
+        // eslint-disable-next-line max-len
         const dbf = decodeToArrayBuffer('A3cDGQIAAABhAFsAAAAAAAAAAAAAAAAAAAAAAAAAAABpZAAAAAAAAAAAAE4AAAAACgAAAAAAAAAAAAAAAAAAAHRleHQAAAAAAAAAQwAAAABQAAAAAAAAAAAAAAAAAAAADSAgICAgICAgICAxS2FtcHBpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMkthaXZvcHVpc3RvICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgGg==');
         return { shp, dbf };
     };
 
     beforeAll(() => {
-        loadModules.mockResolvedValue([FeatureLayerMock]);
+        // loadModules.mockResolvedValue([FeatureLayerMock]);
         convert.mockResolvedValue({
             x: 134,
             y: 131,
@@ -76,7 +78,10 @@ describe('shape2geojson4', () => {
         ];
 
         expect(fields).toMatchObject(expectedFields);
-        expect(symbol.color).toBe('#ff0000');
+        expect(symbol.color.r).toBe(255); // ('#ff0000');
+        expect(symbol.color.g).toBe(0);
+        expect(symbol.color.b).toBe(0);
+        expect(symbol.color.a).toBe(1);
     });
 
     it('convertLayerListFormat - should convert to layerListFormat', () => {

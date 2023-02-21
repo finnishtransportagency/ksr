@@ -45,7 +45,7 @@ class EditContract extends Component<Props, State> {
         await this.loadExistingAttributes();
     }
 
-    loadExistingAttributes = async () => {
+    loadExistingAttributes: any = async () => {
         const {
             currentLayer, objectId, fields, contractLayer, contractNumber,
         } = this.props;
@@ -54,6 +54,8 @@ class EditContract extends Component<Props, State> {
             currentLayer.id,
             objectId,
         );
+
+        if (!contracts || !contracts.length || contracts.length < 1) return;
 
         const contract = contracts
             .reduce((arr, c) => arr.concat(c.features), [])
@@ -82,7 +84,7 @@ class EditContract extends Component<Props, State> {
         });
     };
 
-    render() {
+    render(): any {
         const { contractLayer, setFormOptions } = this.props;
         const { fetching, existingAttributes } = this.state;
 

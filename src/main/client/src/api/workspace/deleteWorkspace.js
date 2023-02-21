@@ -9,7 +9,7 @@ import { config } from '../config';
  *
  * @returns {Promise<Object[]>} Promise with remaining workspace names and last updated times.
  */
-export const fetchDeleteWorkspace = (workspaceName: string) => (
+export const fetchDeleteWorkspace = (workspaceName: string): Promise<any> => (
     fetch(`api/workspace?${
         querystring.stringify({
             workspaceName,

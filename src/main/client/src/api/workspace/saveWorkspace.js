@@ -8,7 +8,7 @@ import { config } from '../config';
  *
  * @returns {Promise<Object[]>} Contains workspace names and last updated times.
  */
-export const fetchSaveWorkspace = (data: Object) => (
+export const fetchSaveWorkspace = (data: Object): Promise<any> => (
     fetch('api/workspace', {
         ...config(),
         method: 'POST',

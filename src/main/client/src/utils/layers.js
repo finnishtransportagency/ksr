@@ -11,7 +11,7 @@ import strings from '../translations';
  *
  * @returns {Object[]} layers Array of layers including the new layer.
  */
-export const addOrReplaceLayers = (layerList: Object[], layersToBeAdded: Object[]) => {
+export const addOrReplaceLayers = (layerList: Object[], layersToBeAdded: Object[]): Array<any> => {
     let layers = [...layerList];
     layersToBeAdded.forEach((layer) => {
         const i = layers.findIndex(l => l.id === layer.id);
@@ -73,7 +73,7 @@ export const addLayerToUserGroup = (
  * @param {number} mapScale Map scale.
  * @returns {boolean} Is layer viewable at given scale.
  */
-export const layerViewable = (layer: Object, mapScale: number) => (
+export const layerViewable = (layer: Object, mapScale: number): boolean => (
     layer.maxScale < mapScale && (layer.minScale > mapScale || layer.minScale === 0)
 );
 
@@ -84,7 +84,7 @@ export const layerViewable = (layer: Object, mapScale: number) => (
  * @param {Object} layer to determinate if it is contract layer.
  * @returns {boolean} Is layer contract layer.
  */
-export const isContract = (layer: Object) => {
+export const isContract = (layer: Object): boolean => {
     if (layer && layer.name && layer.type && layer.relations) {
         const relation = layer.relations.find(r => r);
         if (relation && layer.type === 'agfl') {
@@ -104,7 +104,7 @@ export const isContract = (layer: Object) => {
  * @param {Object[]} contractLayers List of contractLayers.
  * @return {Object} contract layer.
  */
-export const findFirstContractLayer = (contractLayers: Object[]) => (
+export const findFirstContractLayer = (contractLayers: Array<Object>): any | void => (
     contractLayers.find(c => c.name && c.name.toLowerCase() !== 'tlaite sopimushallinta')
 );
 
@@ -115,7 +115,7 @@ export const findFirstContractLayer = (contractLayers: Object[]) => (
  * @param layerList Given layers to get all related layers including itself.
  * @returns {[]|*[]} Related layers as array.
  */
-export const relatedLayers = (allLayersOriginal: Object[], layerList: Object[]) => {
+export const relatedLayers = (allLayersOriginal: Object[], layerList: Object[]): any => {
     if (!layerList) {
         return [];
     }
@@ -133,7 +133,7 @@ export const relatedLayers = (allLayersOriginal: Object[], layerList: Object[]) 
         if (contractLayers
             .some(l => l.id === layer.id || (parentLayer && l.id === parentLayer.id))) {
             contractLayers.forEach(l => layers.push(l));
-            const parent = parentLayer || contractLayers.find(lay => lay.name.toLowerCase() === 'maanvuokrasopimukset');
+            const parent: Object = parentLayer || contractLayers.find(lay => lay.name.toLowerCase() === 'maanvuokrasopimukset');
             allLayers.forEach((l) => {
                 if (l.parentLayer === parent.id) layers.push(l);
             });
@@ -152,7 +152,7 @@ export const relatedLayers = (allLayersOriginal: Object[], layerList: Object[]) 
     return layers;
 };
 
-export const getSiblingsOrSelf = (allLayers, layer) => {
+export const getSiblingsOrSelf = (allLayers: any, layer: any): any | Array<any> => {
     const parent = allLayers.find(l => l.id === layer.parentLayer);
     if (!parent) {
         return [layer];

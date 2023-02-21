@@ -13,7 +13,7 @@ describe('<MapLayerToggle />', () => {
                 minScale: 50000,
                 maxScale: 500,
                 legendSymbol: legendSymbol || null,
-                type: 'wms'
+                type: 'wms',
             },
             mapScale: mapScale || 1500,
             toggleVisibleZoomOut: jest.fn(),

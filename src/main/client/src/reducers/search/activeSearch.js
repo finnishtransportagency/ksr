@@ -10,7 +10,7 @@ type Action = {
 
 const initialState = 'layer';
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): string | State => {
     switch (action.type) {
         case SET_ACTIVE_SEARCH:
             return action.activeSearch;

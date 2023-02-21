@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import ModalZoomToFeatures from './ModalZoomToFeatures';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const selectedGeometryData = [];
     if (state.table.features.singleLayerGeometry.type === undefined) {
         state.table.features.layers.forEach((l) => {
@@ -38,6 +38,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const ModalZoomToFeaturesContainer = connect(mapStateToProps)(ModalZoomToFeatures);
+const ModalZoomToFeaturesContainer: any = connect(mapStateToProps)(ModalZoomToFeatures);
 
 export default ModalZoomToFeaturesContainer;

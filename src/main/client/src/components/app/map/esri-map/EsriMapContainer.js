@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import EsriMap from './EsriMap';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const selectedFeatures = state.table.features.layers
         .reduce((a, b) => a.concat(b.data.filter(d => d._selected)), []);
 

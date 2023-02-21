@@ -27,7 +27,7 @@ const initialState = {
 };
 
 class ModalExtractSelected extends Component<Props, State> {
-    modalOpen = true; // eslint-disable-line
+    modalOpen: boolean = true;
 
     constructor(props: Props) {
         super(props);
@@ -42,11 +42,11 @@ class ModalExtractSelected extends Component<Props, State> {
         this.modalOpen = false;
     }
 
-    handleRadioChange = (evt: Object) => {
+    handleRadioChange: any = (evt: Object) => {
         this.setState({ activeFormat: evt.target.value });
     };
 
-    handleModalSubmit = () => {
+    handleModalSubmit: any = () => {
         const { layerId, extractServiceUrl, selectedGeometryData } = this.props;
         const { activeFormat } = this.state;
 
@@ -80,7 +80,7 @@ class ModalExtractSelected extends Component<Props, State> {
             });
     };
 
-    render() {
+    render(): React$Element<any> {
         const {
             extracting,
             activeFormat,

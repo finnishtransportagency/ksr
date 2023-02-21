@@ -10,7 +10,6 @@ const emptyResponse = '{"type":"FeatureCollection","features":[]}';
 
 const errorResponse = '';
 
-
 describe('digitransit - api', () => {
     beforeAll(() => {
         convert.mockReturnValue({ x: 1, y: 2, spatialReference: { wkid: 3067 } });

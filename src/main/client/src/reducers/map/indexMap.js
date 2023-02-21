@@ -13,7 +13,7 @@ const initialState = {
     indexMapActive: false,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): State | { indexMapActive: boolean, ... } => {
     switch (action.type) {
         case TOGGLE_INDEX_MAP:
             return {

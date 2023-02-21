@@ -4,7 +4,6 @@ import ModalShapefileView from '../ModalShapefileView';
 import ShapefileDropView from '../shapefile-drop/ShapefileDropView';
 import ShapefileColorView from '../shapefile-color/ShapefileColorView';
 
-
 const setup = () => {
     const props = {
         onDrop: jest.fn(),
