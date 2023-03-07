@@ -1,8 +1,11 @@
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
 import { project } from '../../projection';
 import convert from '../convert';
 
-jest.mock('esri-loader');
+// jest.mock('esri-loader');
+// import Geometry from "@arcgis/core/geometry/Geometry";
+jest.mock('@arcgis/core/geometry/Geometry');
+jest.mock('@arcgis/core/geometry/Polygon');
 jest.mock('../../projection');
 
 class GeometryMock {
@@ -15,12 +18,12 @@ class GeometryMock {
 
 describe('geojson - convert', () => {
     beforeAll(() => {
-        loadModules.mockResolvedValue([
+        /* loadModules.mockResolvedValue([
             GeometryMock,
             GeometryMock,
             GeometryMock,
             GeometryMock,
-        ]);
+        ]); */
         project.mockReturnValue([11, 22]);
     });
 
@@ -33,7 +36,6 @@ describe('geojson - convert', () => {
         expect(point.x).toBeCloseTo(386378.77, 2);
         expect(point.y).toBeCloseTo(6672051.68, 2);
     });
-
     it('test type=Point, coordinate transform', async () => {
         const geometry = {
             type: 'Point',
@@ -100,7 +102,7 @@ describe('geojson - convert', () => {
         expect(geom.spatialReference).toMatchObject({ wkid: 3067 });
     });
 
-    it('test unkown type', async () => {
+    it('test unknown type', async () => {
         const geometry = {
             type: 'unknown',
             coordinates: [386378.77, 6672051.68],

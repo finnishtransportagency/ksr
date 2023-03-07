@@ -6,10 +6,12 @@ type Props = {
     portalIsOpen: boolean,
 }
 
-const PortalView = ({ portalIsOpen }: Props) => (
-    <Fragment>
-        {portalIsOpen && <PortalWindowContainer />}
-    </Fragment>
-);
+function PortalView({ portalIsOpen }: Props): React$Element<React$FragmentType> {
+    return (
+        <>
+            {portalIsOpen && <PortalWindowContainer />}
+        </>
+    );
+}
 
 export default PortalView;

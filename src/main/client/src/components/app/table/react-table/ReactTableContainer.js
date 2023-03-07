@@ -19,7 +19,7 @@ import { setActiveTool, setActiveToolMenu } from '../../../../reducers/map/actio
 import { resetMapTools } from '../../../../utils/mapTools';
 import { convertEsriGeometryType } from '../../../../utils/type';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { activeTable, editedLayers } = state.table.features;
     const { activePage } = state.table;
 
@@ -46,38 +46,38 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    toggleSelection: (feature) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    toggleSelection: (feature: any) => {
         dispatch(toggleSelection(feature));
     },
-    toggleSelectAll: (layerId) => {
+    toggleSelectAll: (layerId: any) => {
         dispatch(toggleSelectAll(layerId));
     },
-    setEditedLayer: (data) => {
+    setEditedLayer: (data: any) => {
         dispatch(setEditedLayer(data));
     },
-    setActiveModal: (activeModal, modalData) => {
+    setActiveModal: (activeModal: any, modalData: any) => {
         dispatch(setActiveModal(activeModal, modalData));
     },
-    setContractListInfo: (layerId, objectId) => {
+    setContractListInfo: (layerId: any, objectId: any) => {
         dispatch(setContractListInfo(layerId, objectId));
     },
-    setRowFilter: (activeTable) => {
+    setRowFilter: (activeTable: any) => {
         dispatch(setRowFilter(activeTable));
     },
-    setTableEdited: (hasEdited) => {
+    setTableEdited: (hasEdited: any) => {
         dispatch(setTableEdited(hasEdited));
     },
-    addFiltered: (filtered) => {
+    addFiltered: (filtered: any) => {
         dispatch(addFiltered(filtered));
     },
-    setActivePage: (page) => {
+    setActivePage: (page: any) => {
         dispatch(setActivePage(page));
     },
     updatePortal: () => {
         dispatch(updatePortal());
     },
-    addNewGeometryToFeature2: (draw, sketchViewModel, feature) => {
+    addNewGeometryToFeature2: (draw: any, sketchViewModel: any, feature: any) => {
         dispatch(addFeatureNoGeometry(feature));
         dispatch(setActiveToolMenu('sketchActiveAdmin'));
         resetMapTools(draw, sketchViewModel, input => dispatch(setActiveTool(input)));
@@ -85,12 +85,12 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const mergeProps = (stateToProps, dispatchToProps) => ({
+const mergeProps = (stateToProps: any, dispatchToProps: any) => ({
     ...stateToProps,
     ...dispatchToProps,
     addNewGeometryToFeature: (feature: Object) => {
         const { geometryType } = stateToProps.layerList.find(l => l.id === feature._layerId);
-        const mappedFeature = {};
+        const mappedFeature: any = {};
         Object.keys(feature).forEach((attribute) => {
             if (attribute.startsWith(feature._layerId)) {
                 mappedFeature[attribute.replace(`${feature._layerId}/`, '')] = feature[attribute];

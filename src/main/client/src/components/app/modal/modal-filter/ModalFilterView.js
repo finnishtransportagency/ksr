@@ -9,31 +9,33 @@ type Props = {
     handleOnChange: (name: string) => void,
 };
 
-const ModalFilterView = ({ columns, handleOnChange }: Props) => (
-    <Fragment>
-        <Description>{strings.modalFilter.description}</Description>
-        <ModalFilterWrapper>
-            {
-                columns.map(c => (
-                    <CheckboxWrapper key={c.Header}>
-                        <Checkbox className="content-checkbox" htmlFor={c.Header}>
-                            <p title={c.Header}>{c.Header}</p>
-                            <Checkbox.Input
-                                id={c.Header}
-                                name={c.Header}
-                                type="checkbox"
-                                checked={c.show}
-                                onChange={() => {
-                                    handleOnChange(c.Header);
-                                }}
-                            />
-                            <Checkbox.Checkmark />
-                        </Checkbox>
-                    </CheckboxWrapper>
-                ))
-            }
-        </ModalFilterWrapper>
-    </Fragment>
-);
+function ModalFilterView({ columns, handleOnChange }: Props): React$Element<React$FragmentType> {
+    return (
+        <>
+            <Description>{strings.modalFilter.description}</Description>
+            <ModalFilterWrapper>
+                {
+                    columns.map(c => (
+                        <CheckboxWrapper key={c.Header}>
+                            <Checkbox className="content-checkbox" htmlFor={c.Header}>
+                                <p title={c.Header}>{c.Header}</p>
+                                <Checkbox.Input
+                                    id={c.Header}
+                                    name={c.Header}
+                                    type="checkbox"
+                                    checked={c.show}
+                                    onChange={() => {
+                                        handleOnChange(c.Header);
+                                    }}
+                                />
+                                <Checkbox.Checkmark />
+                            </Checkbox>
+                        </CheckboxWrapper>
+                    ))
+                }
+            </ModalFilterWrapper>
+        </>
+    );
+}
 
 export default ModalFilterView;

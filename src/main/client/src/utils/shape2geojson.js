@@ -1,6 +1,9 @@
 // @flow
 import * as shapefile from 'shapefile';
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
+
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+
 import { convert } from './geojson';
 import { getLegendSymbol } from './layerLegend';
 import { toDisplayDate } from './date';
@@ -14,8 +17,8 @@ import strings from '../translations';
  *
  * @returns {Object[]} List of attributes.
  */
-const createAttributes = (properties: Object[], index: number) => {
-    const attributes = {};
+const createAttributes = (properties: Object, index: number) => {
+    const attributes: Object = {};
     attributes.ObjectID = index;
     Object.entries(properties).forEach(([key, value]) => {
         if (value instanceof Date) {
@@ -108,7 +111,7 @@ const createSymbol = (geometry: Object, color: ?string) => {
 const createFields = (attributes: Object) => {
     const fields = [];
     Object.entries(attributes).forEach(([key]) => {
-        const fieldObj = {};
+        const fieldObj: Object = {};
         fieldObj.name = key;
         fieldObj.alias = key;
         if (key === 'ObjectID') {
@@ -129,7 +132,30 @@ const createFields = (attributes: Object) => {
  *
  * @returns {Object} LayerList formatted Object.
  */
-export const convertLayerListFormat = (layer: Object) => ({
+export const convertLayerListFormat = (layer: Object): {
+  _source: string,
+  active: boolean,
+  attribution: string,
+  authentication: string,
+  fields: any,
+  id: any,
+  layerGroupName: any,
+  layerOrder: any,
+  layers: any,
+  legendSymbol: any,
+  maxScale: number,
+  minScale: number,
+  name: any,
+  opacity: number,
+  queryColumnsList: null,
+  queryable: boolean,
+  styles: string,
+  transparent: boolean,
+  type: string,
+  url: null,
+  visible: boolean,
+  ...
+} => ({
     active: true,
     attribution: '',
     authentication: '',
@@ -171,8 +197,6 @@ const createLayer = async (
     id: number,
     color: ?string,
 ) => {
-    const [FeatureLayer] = await loadModules(['esri/layers/FeatureLayer']);
-
     if (graphics.length < 1 || graphics[0].geometry === null) {
         return null;
     }
@@ -216,7 +240,7 @@ export const shape2geoJson = async (
     layerName: string,
     id: number,
     color: ?string,
-) => {
+): Promise<null> => {
     if (shp && dbf) {
         const geojson = await shapefile.read(shp, dbf);
         const graphics = await createGraphics(geojson);

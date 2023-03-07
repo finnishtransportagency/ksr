@@ -3,7 +3,6 @@ import { mount } from 'enzyme';
 import ModalBufferSelectedView from '../ModalBufferSelectedView';
 import { TextInput } from '../../../../ui/elements';
 
-
 const setup = (prop) => {
     const minProps = {
         handleBufferChange: jest.fn(),

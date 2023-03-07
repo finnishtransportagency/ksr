@@ -33,11 +33,11 @@ class ModalDeleteSelected extends Component<Props, State> {
         this.handleTextareaChange = this.handleTextareaChange.bind(this);
     }
 
-    handleTextareaChange = (e: Object) => {
+    handleTextareaChange: any = (e: Object) => {
         this.setState({ deleteComment: e.target.value });
     };
 
-    handleFeatureDelete = () => {
+    handleFeatureDelete: any = () => {
         const {
             view,
             filteredData,
@@ -53,7 +53,7 @@ class ModalDeleteSelected extends Component<Props, State> {
         saveDeletedFeatures(view, layerId.replace('_s', ''), objectIds, deleteComment);
     };
 
-    render() {
+    render(): React$Element<any> {
         const { filteredData } = this.props;
         const { deleteComment } = this.state;
 

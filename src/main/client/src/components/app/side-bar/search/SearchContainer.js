@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { setSearchState, setActiveSearch, togglePropertyAreaSearch } from '../../../../reducers/search/actions';
 import Search from './Search';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     searchState: state.search.searchState,
     activeSearch: state.search.activeSearch,
     propertyAreaSearch: state.search.propertyInfo.propertyAreaSearch,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setSearchState: (layerId, textSearch, searchFieldValues, suggestions, suggestionsActive) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setSearchState: (layerId: any, textSearch: any, searchFieldValues: any, suggestions: any, suggestionsActive: any) => {
         dispatch(setSearchState(
             layerId,
             textSearch,
@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
             suggestionsActive,
         ));
     },
-    setActiveSearch: (activeSearch) => {
+    setActiveSearch: (activeSearch: any) => {
         dispatch(setActiveSearch(activeSearch));
     },
     togglePropertyAreaSearch: () => {

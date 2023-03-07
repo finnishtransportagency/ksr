@@ -24,7 +24,7 @@ const initialState = {
 };
 
 class ConfirmModal extends Component<Props, State> {
-    static defaultProps = { cancel: () => {} };
+    static defaultProps: any = { cancel: () => {} };
 
     constructor(props: any) {
         super(props);
@@ -35,14 +35,14 @@ class ConfirmModal extends Component<Props, State> {
         this.handleCancel = this.handleCancel.bind(this);
     }
 
-    handleAccept = () => {
+    handleAccept: any = () => {
         const { accept } = this.props;
 
         accept();
         this.handleCancel();
     };
 
-    handleCancel = () => {
+    handleCancel: any = () => {
         const { cancel } = this.props;
 
         if (cancel) {
@@ -51,7 +51,7 @@ class ConfirmModal extends Component<Props, State> {
         this.hideModal();
     };
 
-    hideModal = () => {
+    hideModal: any = () => {
         const { hideConfirmModal } = this.props;
 
         this.setState({ fadeOut: true });
@@ -60,7 +60,7 @@ class ConfirmModal extends Component<Props, State> {
         }, 300);
     };
 
-    render() {
+    render(): any {
         const {
             show,
             body,

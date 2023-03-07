@@ -35,7 +35,7 @@ class Home extends Component<Props, null> {
         loadFailedEdits();
     }
 
-    render() {
+    render(): React$Element<(_0: Props) => any> {
         const { loading } = this.props;
         return <HomeView loading={loading} />;
     }

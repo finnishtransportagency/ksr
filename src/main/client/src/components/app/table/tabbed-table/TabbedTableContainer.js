@@ -5,7 +5,7 @@ import TabbedTableView from './TabbedTableView';
 import { closeTableTab, setActiveTable } from '../../../../reducers/table/actions';
 import { nestedVal } from '../../../../utils/nestedValue';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { layerList } = state.map.layerGroups;
 
     return {
@@ -26,11 +26,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    setActiveTable: (activeTable) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setActiveTable: (activeTable: any) => {
         dispatch(setActiveTable(activeTable));
     },
-    closeTableTab: (layerId, view, editedLayers, featureType, addressField, isAgfl) => {
+    closeTableTab: (layerId: any, view: any, editedLayers: any, featureType: any, addressField: any, isAgfl: any) => {
         dispatch(closeTableTab(layerId, view, editedLayers, featureType, addressField, isAgfl));
     },
 });

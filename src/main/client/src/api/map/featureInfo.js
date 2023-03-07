@@ -8,7 +8,7 @@ import { config } from '../config';
  *
  * @returns {Promise<Object>} Promise that will resolve with responses json-content.
  */
-export const getFeatureInfo = (url: string) => fetch(url, config())
+export const getFeatureInfo = (url: string): Promise<any | void> => fetch(url, config())
     .then(res => res.json())
     .catch((error) => {
         console.error(error);

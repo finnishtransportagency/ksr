@@ -30,11 +30,13 @@ class ModalShowAddress extends Component<Props, State> {
 
     async componentDidMount() {
         const { data } = this.props;
-        const { featureType } = data;
+        const featureType = data ? data.featureType : undefined;
         const addressField = 'address';
-        const feature = await createAddressFields(data,
+        const feature = await createAddressFields(
+            data,
             featureType,
-            addressField);
+            addressField,
+        );
         if (feature) {
             if (feature.attributes.address === '') {
                 this.setState({
@@ -56,7 +58,7 @@ class ModalShowAddress extends Component<Props, State> {
         }
     }
 
-    render() {
+    render(): any {
         const { address, modalSubmit, fetchingAddress } = this.state;
 
         return (

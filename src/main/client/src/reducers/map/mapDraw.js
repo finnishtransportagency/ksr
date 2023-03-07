@@ -24,7 +24,7 @@ type Action = {
     hasGraphics: boolean,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case SET_MAP_DRAW_TEXT:
             return {

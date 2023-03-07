@@ -17,7 +17,7 @@ type Props = {
 let controller;
 let signal;
 let existsQuery;
-const FeatureDetailsForm = (props: Props) => {
+function FeatureDetailsForm(props: Props): any {
     const {
         layer, setFormOptions, formType, existingAttributes,
     } = props;
@@ -26,6 +26,7 @@ const FeatureDetailsForm = (props: Props) => {
     const [requiredFields, setRequiredFields] = useState([]);
     const [requiredUniqueFields, setRequiredUniqueFields] = useState([]);
     const [validForm, setValidForm] = useState(false);
+    const [customValidatorsCheck, setCustomValidatorsCheck] = useState(true);
 
     /**
      * Gets form fields for the layer when component mounts.
@@ -63,13 +64,31 @@ const FeatureDetailsForm = (props: Props) => {
                     || (layer.contractIdField !== relationColumnOut
                         && relationColumnOut === field.name)
                     || (formType === 'edit'
-                        && field.unique),
+                        && field.unique)
+                    || (layer.name === 'Käyttöoikeussopimukset' && field.name === 'SOPIMUSTUNNISTE'),
             }))
             .map((field) => {
                 if (field.type === 'esriFieldTypeDate') {
                     return {
                         ...field,
                         data: toISODate(field.data),
+                    };
+                }
+                return field;
+            })
+            .map((field) => {
+                if (field.type === 'esriFieldTypeInteger') {
+                    return {
+                        ...field,
+                        max: 999999999,
+                        min: 0,
+                    };
+                }
+                if (field.type === 'esriFieldTypeSmallInteger') {
+                    return {
+                        ...field,
+                        max: 9999,
+                        min: 0,
                     };
                 }
                 return field;
@@ -117,8 +136,8 @@ const FeatureDetailsForm = (props: Props) => {
                     ? { ...editedFields, [objectIdField.name]: objectIdField.data }
                     : { ...editedFields },
                 submitDisabled: formType === 'edit'
-                    ? (!Object.entries(editedFields).length || !validForm)
-                    : !validForm,
+                    ? (!Object.entries(editedFields).length || !validForm) || !customValidatorsCheck
+                    : !validForm || !customValidatorsCheck,
             });
         }
     }, [fields, validForm]);
@@ -159,6 +178,15 @@ const FeatureDetailsForm = (props: Props) => {
             data: f.name === name ? value : f.data,
             edited: fieldEdited(f, name, existingAttributes, value),
         })));
+
+        setCustomValidatorsCheck(!fields.some((f) => {
+            const tempField = f.name === field.name ? field : f;
+            return ['esriFieldTypeInteger', 'esriFieldTypeSmallInteger'].includes(tempField.type)
+                && ((tempField.max !== undefined
+                && Number(value) > tempField.max)
+                || (tempField.min !== undefined
+                        && Number(value) < tempField.min));
+        }));
 
         if (!field.nullable) {
             if (field.unique) {
@@ -258,7 +286,7 @@ const FeatureDetailsForm = (props: Props) => {
             requiredUniqueFields={requiredUniqueFields}
         />
     );
-};
+}
 
 FeatureDetailsForm.defaultProps = {
     existingAttributes: {},

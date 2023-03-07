@@ -47,7 +47,7 @@ const initialState = {
     propertyAreaSearch: false,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case SET_PROPERTY_INFO:
             return {
@@ -86,8 +86,8 @@ export default (state: State = initialState, action: Action) => {
                     links: feature.properties.propertyIdentifier === action.propertyIdentifier
                         ? action.links
                         : feature.links,
-                    fetchingLinks: !feature.properties.propertyIdentifier ===
-                        action.propertyIdentifier,
+                    fetchingLinks: !feature.properties.propertyIdentifier
+                        === action.propertyIdentifier,
                 })): Property[]),
             };
         case SET_PROPERTY_INFO_LINKS_REJECTED:
@@ -95,8 +95,8 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 features: (state.features.map(property => ({
                     ...property,
-                    fetchingLinks: !property.properties.propertyIdentifier ===
-                        action.propertyIdentifier,
+                    fetchingLinks: !property.properties.propertyIdentifier
+                        === action.propertyIdentifier,
                 })): Property[]),
             };
         case TOGGLE_PROPERTY_AREA_SEARCH:

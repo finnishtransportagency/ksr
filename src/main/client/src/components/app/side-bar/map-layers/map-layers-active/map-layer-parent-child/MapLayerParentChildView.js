@@ -25,7 +25,7 @@ type Props = {
     layersVisibleZoomOut: Object[],
 };
 
-const MapLayerParentChildView = ({
+function MapLayerParentChildView({
     layer,
     layerList,
     onOpacityChange,
@@ -38,27 +38,28 @@ const MapLayerParentChildView = ({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) => (
-    <div>
-        {!layer.parentLayer && (
-            <LayerSettings
-                toggledHidden={mapScale && (
-                    !layerViewable(layer, mapScale)
+}: Props): React$Element<"div"> {
+    return (
+        <div>
+            {!layer.parentLayer && (
+                <LayerSettings
+                    toggledHidden={mapScale && (
+                        !layerViewable(layer, mapScale)
                     && !layerList.filter(l => l.parentLayer === layer.id)
                         .some(l => (layersVisibleZoomOut || []).find(la => la.id === l.id))
-                )}
-            >
-                <LayerSettings.Content>
-                    <LayerSettings.ContentMain>
-                        <LayerSettings.ContentTop>
-                            <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
-                                <MapLayerTitle layer={layer} showLayerGroup />
-                            </LayerSettings.Title>
-                            {
-                                ((nestedVal(
-                                    layerList.find(l => l.id === layer.id.replace('_s', '')),
-                                    ['active'],
-                                )
+                    )}
+                >
+                    <LayerSettings.Content>
+                        <LayerSettings.ContentMain>
+                            <LayerSettings.ContentTop>
+                                <LayerSettings.Title>
+                                    <MapLayerTitle layer={layer} showLayerGroup />
+                                </LayerSettings.Title>
+                                {
+                                    ((nestedVal(
+                                        layerList.find(l => l.id === layer.id.replace('_s', '')),
+                                        ['active'],
+                                    )
                                     && (layer.layerPermission.createLayer
                                         || layer.layerPermission.updateLayer
                                         || layer.layerPermission.deleteLayer)))
@@ -76,28 +77,29 @@ const MapLayerParentChildView = ({
                                         />
                                     </LayerSettings.Icons>
                                 )
-                            }
-                        </LayerSettings.ContentTop>
-                        {layerList.filter(l => l._source !== 'search' && l.parentLayer === layer.id)
-                            .map(l => (
-                                <MapLayerChildView
-                                    key={l.id}
-                                    layer={l}
-                                    toggleLayer={toggleLayer}
-                                    onOpacityChange={onOpacityChange}
-                                    createThemeLayer={createThemeLayer}
-                                    mapScale={mapScale}
-                                    populateTable={populateTable}
-                                    loadingLayers={loadingLayers}
-                                    toggleVisibleZoomOut={toggleVisibleZoomOut}
-                                    layersVisibleZoomOut={layersVisibleZoomOut}
-                                />
-                            ))}
-                    </LayerSettings.ContentMain>
-                </LayerSettings.Content>
-            </LayerSettings>
-        )}
-    </div>
-);
+                                }
+                            </LayerSettings.ContentTop>
+                            {layerList.filter(l => l._source !== 'search' && l.parentLayer === layer.id)
+                                .map(l => (
+                                    <MapLayerChildView
+                                        key={l.id}
+                                        layer={l}
+                                        toggleLayer={toggleLayer}
+                                        onOpacityChange={onOpacityChange}
+                                        createThemeLayer={createThemeLayer}
+                                        mapScale={mapScale}
+                                        populateTable={populateTable}
+                                        loadingLayers={loadingLayers}
+                                        toggleVisibleZoomOut={toggleVisibleZoomOut}
+                                        layersVisibleZoomOut={layersVisibleZoomOut}
+                                    />
+                                ))}
+                        </LayerSettings.ContentMain>
+                    </LayerSettings.Content>
+                </LayerSettings>
+            )}
+        </div>
+    );
+}
 
 export default MapLayerParentChildView;

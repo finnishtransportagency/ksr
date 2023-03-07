@@ -48,7 +48,7 @@ const createGetFeatureInfoUrl = (
  *
  * @returns {Promise} Promise that will resolve into an Object containing Graphic.
  */
-const featureInfoToGraphic = (layer, content) => (
+const featureInfoToGraphic = (layer: any, content: any) => (
     content.features.map((feat) => {
         // Keep only properties of some primitive type or null.
         // We don't want to display e.g. Arrays or Objects in Popup.
@@ -120,7 +120,7 @@ const fetchFeatureInfo = (
  *
  * @returns {Array} A new array that is flattened and is a result of func.
  */
-const flatMap = (arr, func): any[] => (
+const flatMap = (arr: any, func: any): any[] => (
     arr.reduce((acc, cur) => (acc.concat(func(cur)): any[]), [])
 );
 
@@ -143,7 +143,7 @@ export const getFeatureInfo = async (
     extent: Object,
     height: number,
     width: number,
-) => {
+): Promise<Array<any>> => {
     const promises = layers
         .filter(layer => layer.type === 'wms' && layer.active && layer.visible)
         .map(layer => fetchFeatureInfo(layer, x, y, extent, height, width));

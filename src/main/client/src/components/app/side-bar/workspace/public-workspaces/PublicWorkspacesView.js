@@ -10,27 +10,29 @@ type Props = {
     loadingLayers: boolean,
 }
 
-const PublicWorkspacesView = ({
+function PublicWorkspacesView({
     workspaceList,
     handleSelectWorkspace,
     loadingLayers,
-}: Props) => (
-    <Fragment>
-        <WorkspaceTitle>{strings.workspace.titlePublicWorkspace}</WorkspaceTitle>
-        {workspaceList.map(workspace => (
-            <Workspace key={workspace.name}>
-                <Workspace.TextColumn
-                    publicWorkspace
-                    disabled={loadingLayers}
-                    onClick={() => (!loadingLayers
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <>
+            <WorkspaceTitle>{strings.workspace.titlePublicWorkspace}</WorkspaceTitle>
+            {workspaceList.map(workspace => (
+                <Workspace key={workspace.name}>
+                    <Workspace.TextColumn
+                        publicWorkspace
+                        disabled={loadingLayers}
+                        onClick={() => (!loadingLayers
                             && handleSelectWorkspace(workspace.name, true))}
-                    title={workspace.name}
-                >
-                    <Workspace.Text>{workspace.name}</Workspace.Text>
-                </Workspace.TextColumn>
-            </Workspace>
-        ))}
-    </Fragment>
-);
+                        title={workspace.name}
+                    >
+                        <Workspace.Text>{workspace.name}</Workspace.Text>
+                    </Workspace.TextColumn>
+                </Workspace>
+            ))}
+        </>
+    );
+}
 
 export default PublicWorkspacesView;

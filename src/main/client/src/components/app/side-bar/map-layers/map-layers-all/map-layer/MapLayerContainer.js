@@ -5,7 +5,7 @@ import { removeUserLayer, removeUserLayerConfirmed } from '../../../../../../red
 import MapLayerView from './MapLayerView';
 import strings from '../../../../../../translations';
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state: Object, ownProps: Object) => ({
     layer: ownProps.layer,
     isUserlayer: ownProps.layer.userLayer
         && ownProps.layerGroupName === strings.mapLayers.userLayerGroupName,
@@ -14,7 +14,7 @@ const mapStateToProps = (state, ownProps) => ({
     loadingLayers: state.loading.loadingLayers,
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = (dispatch: Function, ownProps: Object) => ({
     handleLayerClick: () => {
         ownProps.handleLayerClick(ownProps.layer.id);
     },

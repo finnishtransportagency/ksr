@@ -23,7 +23,6 @@ declare module 'babel-preset-airbnb' {
  * needed.
  */
 
-
 // Filename aliases
 declare module 'babel-preset-airbnb/index' {
   declare module.exports: $Exports<'babel-preset-airbnb'>;

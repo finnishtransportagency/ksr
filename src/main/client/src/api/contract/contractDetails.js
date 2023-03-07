@@ -16,5 +16,5 @@ export const fetchContractDetails = (
     fetch(`api/contract/details/${layerId}/${layerObjectId}`, config())
         .then(handleErrors)
         .then(r => r.json())
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );

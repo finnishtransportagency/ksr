@@ -241,7 +241,7 @@ export const useModalSubmit = (
     detailList: Object[],
     activeFeature: Object,
     effectListeners: any[],
-) => {
+): any => {
     const [modalSubmit, setModalSubmit] = useState([]);
 
     useEffect(() => {

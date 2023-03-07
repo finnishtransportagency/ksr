@@ -14,51 +14,53 @@ type Props = {
     loadingLayers: boolean,
 }
 
-const UserWorkspacesView = ({
+function UserWorkspacesView({
     workspaceList,
     handleDeleteWorkspace,
     handleReplaceWorkspace,
     handleSelectWorkspace,
     handleShareWorkspace,
     loadingLayers,
-}: Props) => (
-    <Fragment>
-        <WorkspaceTitle extraPadding>{strings.workspace.titleUserWorkspace}</WorkspaceTitle>
-        {workspaceList.map(workspace => (
-            <Workspace key={workspace.name}>
-                <Workspace.Icon
-                    onClick={() => handleReplaceWorkspace(workspace.name)}
-                    title={strings.workspace.replaceWorkspace}
-                >
-                    <i className="fas fa-save" />
-                </Workspace.Icon>
-                <Workspace.Icon
-                    onClick={() => handleShareWorkspace(workspace.name)}
-                    title={strings.workspace.share.copyWorkspaceLink}
-                >
-                    <i className="fas fa-share-alt" />
-                </Workspace.Icon>
-                <Workspace.TextColumn
-                    userWorkspace
-                    disabled={loadingLayers}
-                    onClick={() => (!loadingLayers
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <>
+            <WorkspaceTitle extraPadding>{strings.workspace.titleUserWorkspace}</WorkspaceTitle>
+            {workspaceList.map(workspace => (
+                <Workspace key={workspace.name}>
+                    <Workspace.Icon
+                        onClick={() => handleReplaceWorkspace(workspace.name)}
+                        title={strings.workspace.replaceWorkspace}
+                    >
+                        <i className="fas fa-save" />
+                    </Workspace.Icon>
+                    <Workspace.Icon
+                        onClick={() => handleShareWorkspace(workspace.name)}
+                        title={strings.workspace.share.copyWorkspaceLink}
+                    >
+                        <i className="fas fa-share-alt" />
+                    </Workspace.Icon>
+                    <Workspace.TextColumn
+                        userWorkspace
+                        disabled={loadingLayers}
+                        onClick={() => (!loadingLayers
                             && handleSelectWorkspace(workspace.name, false))}
-                    title={`${workspace.name} ${toDisplayDateTime(workspace.updateTime)}`}
-                >
-                    <Workspace.Text>{workspace.name}</Workspace.Text>
-                    <Workspace.Text>
-                        {toDisplayDateTime(workspace.updateTime)}
-                    </Workspace.Text>
-                </Workspace.TextColumn>
-                <Workspace.Icon
-                    onClick={() => handleDeleteWorkspace(workspace.name)}
-                    title={strings.workspace.deleteWorkspace}
-                >
-                    <i className="fas fa-trash" />
-                </Workspace.Icon>
-            </Workspace>
-        ))}
-    </Fragment>
-);
+                        title={`${workspace.name} ${toDisplayDateTime(workspace.updateTime)}`}
+                    >
+                        <Workspace.Text>{workspace.name}</Workspace.Text>
+                        <Workspace.Text>
+                            {toDisplayDateTime(workspace.updateTime)}
+                        </Workspace.Text>
+                    </Workspace.TextColumn>
+                    <Workspace.Icon
+                        onClick={() => handleDeleteWorkspace(workspace.name)}
+                        title={strings.workspace.deleteWorkspace}
+                    >
+                        <i className="fas fa-trash" />
+                    </Workspace.Icon>
+                </Workspace>
+            ))}
+        </>
+    );
+}
 
 export default UserWorkspacesView;

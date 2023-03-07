@@ -78,7 +78,7 @@ const initialState = {
     filtered: [],
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case SELECT_FEATURES:
             return {
@@ -125,9 +125,13 @@ export default (state: State = initialState, action: Action) => {
                 ...state,
                 ...deSelectFeatures(state.layers, state.activeTable),
             };
-        case REMOVE_TABLE_FEATURE:
-            return {
+        case REMOVE_TABLE_FEATURE: {
+            // Because of FlowType
+            let spreaded: any = {
                 ...state,
+            };
+            spreaded = {
+                ...spreaded,
                 ...removeFeatureFromTable(
                     state.layers,
                     state.activeTable,
@@ -136,6 +140,8 @@ export default (state: State = initialState, action: Action) => {
                     action.objectIdFieldName,
                 ),
             };
+            return spreaded;
+        }
         case TOGGLE_SELECTION:
             return {
                 ...state,

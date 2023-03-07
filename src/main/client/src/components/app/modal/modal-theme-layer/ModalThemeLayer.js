@@ -46,15 +46,15 @@ class ModalThemeLayer extends Component<Props, State> {
         this.handleReset = this.handleReset.bind(this);
     }
 
-    handleFieldChange = (selectedField: string) => {
+    handleFieldChange: any = (selectedField: string) => {
         this.setState({ selectedField });
     };
 
-    handleClassificationChange = (event: Object) => {
+    handleClassificationChange: any = (event: Object) => {
         this.setState({ selectedClassification: event.target.value });
     };
 
-    handleInputChange = (evt: Object) => {
+    handleInputChange: any = (evt: Object) => {
         this.setState({ numClasses: evt.target.value });
         if (evt.target.value < 1 || evt.target.value > 10) {
             this.setState({ invalidNumber: true });
@@ -63,7 +63,7 @@ class ModalThemeLayer extends Component<Props, State> {
         }
     };
 
-    handleSubmit = async () => {
+    handleSubmit: any = async () => {
         const { layerId, view } = this.props;
         const fl = view.map.findLayerById(layerId);
 
@@ -94,12 +94,12 @@ class ModalThemeLayer extends Component<Props, State> {
                 layerList,
                 setLayerList,
             );
-            const layerVisible = layerList.find(layer => layer.id === layerId).visible;
+            const layerVisible = layerList.find(layer => layer.id === layerId)?.visible;
             if (!layerLegendActive && layerVisible) toggleLayerLegend();
         }
     };
 
-    handleReset = () => {
+    handleReset: any = () => {
         const {
             layerId,
             view,
@@ -114,7 +114,7 @@ class ModalThemeLayer extends Component<Props, State> {
         }
     };
 
-    render() {
+    render(): any {
         const {
             submitDisabled,
             fetching,

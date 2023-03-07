@@ -20,7 +20,7 @@ export const createGeoconvertParams = (
     geometry: Object,
     geometryType: string,
     featureType: string,
-) => {
+): any | Array<any> => {
     switch (geometryType) {
         case 'point':
             return (
@@ -55,20 +55,20 @@ export const createGeoconvertParams = (
     }
 };
 
-const createRailwayAddress = address => (
+const createRailwayAddress = (address: any) => (
     `${(address.etaisyys - (address.etaisyys % 10000)) / 10000}+
     ${address.etaisyys % 10000}, 
     ${address.kunta_nimi}`
 );
 
-const createRoadAddress = address => (
+const createRoadAddress = (address: any) => (
     `${strings.modalShowAddress.road}=${address.tie}, 
     ${strings.modalShowAddress.lane}=${address.ajorata}, 
     ${strings.modalShowAddress.part}=${address.osa}, 
     ${strings.modalShowAddress.distance}=${address.etaisyys}`
 );
 
-const createStreetAddress = (properties) => {
+const createStreetAddress = (properties: any) => {
     const address = properties.postalcode
         ? `${properties.name}, ${properties.postalcode}, ${properties.localadmin}`
         : `${properties.name}, ${properties.localadmin}`;
@@ -87,7 +87,7 @@ const createStreetAddress = (properties) => {
  */
 export const createAddressFields = (
     data: Object,
-    featureType: string,
+    featureType?: string,
     addressField: string,
 ): Promise<Object> => new Promise((resolve) => {
     if (!featureType || !addressField || !data.geometry) {
@@ -103,7 +103,7 @@ export const createAddressFields = (
 
         Promise.all(geoconvertFetches).then((r) => {
             if (r.length) {
-                let convertedAddress = [];
+                let convertedAddress: any[] = [];
                 switch (featureType) {
                     case 'road':
                         convertedAddress = r.map(address => (

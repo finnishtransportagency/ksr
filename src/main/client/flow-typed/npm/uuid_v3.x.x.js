@@ -1,7 +1,7 @@
 // flow-typed signature: 2af209d140e3c533e62e2a7b5f729cbb
 // flow-typed version: c6154227d1/uuid_v3.x.x/flow_>=v0.104.x
 
-declare module "uuid" {
+declare module 'uuid' {
   declare class uuid {
     static (
       options?: {|
@@ -35,7 +35,7 @@ declare module "uuid" {
   declare module.exports: Class<uuid>;
 }
 
-declare module "uuid/v1" {
+declare module 'uuid/v1' {
   declare class v1 {
     static (
       options?: {|
@@ -52,7 +52,7 @@ declare module "uuid/v1" {
   declare module.exports: Class<v1>;
 }
 
-declare module "uuid/v3" {
+declare module 'uuid/v3' {
   declare class v3 {
     static (
       name?: string | number[],
@@ -69,7 +69,7 @@ declare module "uuid/v3" {
   declare module.exports: Class<v3>;
 }
 
-declare module "uuid/v4" {
+declare module 'uuid/v4' {
   declare class v4 {
     static (
       options?: {|
@@ -84,7 +84,7 @@ declare module "uuid/v4" {
   declare module.exports: Class<v4>;
 }
 
-declare module "uuid/v5" {
+declare module 'uuid/v5' {
   declare class v5 {
     static (
       name?: string | number[],

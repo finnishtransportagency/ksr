@@ -36,7 +36,7 @@ type Props = {
     updateRelatedLayersData: (layers: Object[]) => void;
 };
 
-const ModalContractDetails = (props: Props) => {
+function ModalContractDetails(props: Props): React$Element<any> {
     let isMounted: boolean = true;
 
     const {
@@ -234,11 +234,13 @@ const ModalContractDetails = (props: Props) => {
         if (contractLayer.name.toLowerCase() === 'tlaite sopimushallinta') {
             try {
                 const turvalaiteId = layerList.filter(ll => ll._source !== 'search')
-                    .find(ll => ll.name.toLowerCase() === 'turvalaite').id;
+                    .find(ll => ll.name.toLowerCase() === 'turvalaite')?.id;
                 const turvalaiteSopimusId = layerList.filter(ll => ll._source !== 'search')
-                    .find(ll => ll.name.toLowerCase() === 'tlaite sopimus').id;
+                    .find(ll => ll.name.toLowerCase() === 'tlaite sopimus')?.id;
                 const turvalaiteNumero = contractDetailsRes
-                    .find(a => a.id === turvalaiteId).features[0].attributes.TLNUMERO;
+                    .find(a => a.id === turvalaiteId)?.features[0].attributes.TLNUMERO;
+
+                if (!turvalaiteId || !turvalaiteNumero || !turvalaiteSopimusId) return;
 
                 const contractDetailsResTurvalaite = await fetchContractRelation(
                     turvalaiteId,
@@ -339,7 +341,7 @@ const ModalContractDetails = (props: Props) => {
             cancelText={cancelText}
             handleGoBack={handleGoBack}
         >
-            <Fragment>
+            <>
                 {activeView === 'contractDetails' && (
                     <ModalContractDetailsView
                         contractLayer={contractLayer}
@@ -382,9 +384,9 @@ const ModalContractDetails = (props: Props) => {
                         existingAttributes={existingAttributes}
                     />
                 )}
-            </Fragment>
+            </>
         </ModalContainer>
     );
-};
+}
 
 export default ModalContractDetails;

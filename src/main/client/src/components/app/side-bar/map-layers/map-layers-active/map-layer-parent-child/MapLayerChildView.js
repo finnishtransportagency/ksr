@@ -24,7 +24,7 @@ type Props = {
     layersVisibleZoomOut: Object[],
 };
 
-const MapLayerChildView = ({
+function MapLayerChildView({
     layer,
     toggleLayer,
     onOpacityChange,
@@ -34,40 +34,42 @@ const MapLayerChildView = ({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) => (
-    <LayerSettings
-        childLayer
-        toggledHidden={
-            !layer.visible
-            || (mapScale && !layerViewable(layer, mapScale))
-        }
-    >
-        <LayerSettings.Content childLayer>
-            <MapLayerToggle
-                layer={layer}
-                mapScale={mapScale}
-                toggleLayer={toggleLayer}
-                childLayer
-                toggleVisibleZoomOut={toggleVisibleZoomOut}
-                layersViewableZoomOut={layersVisibleZoomOut}
-            />
-            <LayerSettings.ContentMain childLayer>
-                <LayerSettings.ContentTop>
-                    <LayerSettings.Title title={layer.name ? layer.name : layer.title}>
-                        <MapLayerTitle layer={layer} childLayer />
-                    </LayerSettings.Title>
-                    {
-                        <LayerSettings.Icons>
+}: Props): React$Element<React$FragmentType> {
+    const isLoading = loadingLayers && loadingLayers.some(ll => ll === layer.id);
+    return (
+        <LayerSettings
+            childLayer
+            toggledHidden={
+                !layer.visible
+          || (mapScale && !layerViewable(layer, mapScale))
+            }
+        >
+            <LayerSettings.Content childLayer>
+                <MapLayerToggle
+                    layer={layer}
+                    mapScale={mapScale}
+                    toggleLayer={toggleLayer}
+                    childLayer
+                    toggleVisibleZoomOut={toggleVisibleZoomOut}
+                    layersViewableZoomOut={layersVisibleZoomOut}
+                />
+                <LayerSettings.ContentMain childLayer>
+                    <LayerSettings.ContentTop>
+                        <LayerSettings.Title>
+                            <MapLayerTitle layer={layer} childLayer />
+                        </LayerSettings.Title>
+
+                        <LayerSettings.Icons hidden={!isLoading}>
                             <LayerSettings.Loading>
                                 {
-                                    loadingLayers && loadingLayers.some(ll => ll === layer.id)
-                                    && <LoadingIcon size={6} loading />
+                                    isLoading
+                                  && <LoadingIcon size={6} loading />
                                 }
                             </LayerSettings.Loading>
                         </LayerSettings.Icons>
-                    }
-                    {
-                        layer.type === 'agfs'
+
+                        {
+                            layer.type === 'agfs'
                         && (
                             <LayerSettings.Icons>
                                 <LayerSettings.Icon
@@ -80,32 +82,33 @@ const MapLayerChildView = ({
                                 />
                             </LayerSettings.Icons>
                         )
-                    }
-                    <LayerSettings.Icons>
-                        {themeLayerFields(layer).length > 0 && (
-                            <LayerSettings.Icon
-                                role="button"
-                                tabIndex={0}
-                                onKeyPress={() => createThemeLayer(layer.id)}
-                                onClick={() => createThemeLayer(layer.id)}
-                                className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
-                                title={strings.mapLayerSettings.createThemeLayer}
-                            />
-                        )}
-                    </LayerSettings.Icons>
-                </LayerSettings.ContentTop>
-                <LayerSettings.Slider>
-                    <Slider
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        defaultValue={layer.opacity}
-                        onChange={evt => onOpacityChange(evt, layer.id)}
-                    />
-                </LayerSettings.Slider>
-            </LayerSettings.ContentMain>
-        </LayerSettings.Content>
-    </LayerSettings>
-);
+                        }
+                        <LayerSettings.Icons>
+                            {themeLayerFields(layer).length > 0 && (
+                                <LayerSettings.Icon
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={() => createThemeLayer(layer.id)}
+                                    onClick={() => createThemeLayer(layer.id)}
+                                    className={`fas fa-palette ${layer.renderer ? 'theme-layer-created' : ''}`}
+                                    title={strings.mapLayerSettings.createThemeLayer}
+                                />
+                            )}
+                        </LayerSettings.Icons>
+                    </LayerSettings.ContentTop>
+                    <LayerSettings.Slider>
+                        <Slider
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            defaultValue={layer.opacity}
+                            onChange={evt => onOpacityChange(evt, layer.id)}
+                        />
+                    </LayerSettings.Slider>
+                </LayerSettings.ContentMain>
+            </LayerSettings.Content>
+        </LayerSettings>
+    );
+}
 
 export default MapLayerChildView;

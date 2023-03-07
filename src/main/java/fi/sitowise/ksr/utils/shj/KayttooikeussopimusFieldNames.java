@@ -20,8 +20,8 @@ public enum  KayttooikeussopimusFieldNames {
     LASKETTU_ALA("LASKETTU_ALA", "laskettuPintaala"),
     VAYLATYYPPI ("VAYLATYYPPI", "liikennemuoto"),
     MUISTIINPANOT ("MUISTIINPANOT", "lisatiedot"),
-    SAAJA ("SAAJA", "oikeudenSaaja"),
-    LUOVUTTAJA ("LUOVUTTAJA", "oikeudenLuovuttaja"),
+    OSAPUOLI_A ("OSAPUOLI_A", "osapuoli_a"),
+    OSAPUOLI_B ("OSAPUOLI_B", "osapuoli_b"),
     KUNTA ("KUNTA", "kunta"),
     ALUE ("ALUE", "alue"),
     DNRO ("DNRO", "diaarinumero");

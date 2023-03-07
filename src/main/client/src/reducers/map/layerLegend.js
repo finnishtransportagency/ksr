@@ -9,6 +9,7 @@ type State = {
 
 type Action = {
     type: string,
+    manualClose?: any;
 };
 
 const initialState = {
@@ -16,7 +17,7 @@ const initialState = {
     manualClose: false,
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case TOGGLE_LAYER_LEGEND:
             return {

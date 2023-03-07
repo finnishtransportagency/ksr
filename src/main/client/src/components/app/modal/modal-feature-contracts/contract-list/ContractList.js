@@ -99,7 +99,7 @@ class ContractList extends Component<Props, State> {
         });
     }
 
-    handleUnlinkContract = (contractNumber: string, layerId: string) => {
+    handleUnlinkContract: any = (contractNumber: string, layerId: string) => {
         const {
             currentLayer,
             contractLayers,
@@ -178,15 +178,17 @@ class ContractList extends Component<Props, State> {
         );
     };
 
-    handleContractDetailsClick = async (contractNumber: number, layerId: string) => {
+    handleContractDetailsClick: any = async (contractNumber: number, layerId: string) => {
         const { contractLayers, setActiveModal } = this.props;
         const { contracts } = this.state;
 
         const contractLayer = contractLayers.find(c => c.id === layerId);
 
-        const objectIdField = nestedVal(contractLayer
+        const objectIdField = nestedVal(
+            contractLayer
             && contractLayer.fields.find(field => field.type === 'esriFieldTypeOID'),
-        ['label']);
+            ['label'],
+        );
 
         const contractObject = contracts
             .find(c => c.contract && c.contract
@@ -209,7 +211,7 @@ class ContractList extends Component<Props, State> {
         setActiveModal('contractDetails', modalData);
     };
 
-    render() {
+    render(): any {
         const { contracts, fetchingContracts } = this.state;
         const {
             setActiveView,

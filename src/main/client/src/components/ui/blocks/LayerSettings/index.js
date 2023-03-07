@@ -36,6 +36,10 @@ const Icons = styled.div`
     .theme-layer-created {
         color: ${styles.colorDanger};
     }
+
+    ${props => props.hidden && css`
+            visibility: hidden;
+         `}
 `;
 
 const Icon = styled.i`

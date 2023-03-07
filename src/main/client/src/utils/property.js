@@ -2,9 +2,9 @@
 import { nestedVal } from './nestedValue';
 import { convert } from './geojson';
 
-const zeroRegexp = RegExp(/^([0-9]{14})$/);
-const hyphenRegexp = RegExp(/^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$/);
-const hyphenIdentifierPattern = RegExp(/\b0*([1-9][0-9]*|0)\b/);
+const zeroRegexp = /^([0-9]{14})$/;
+const hyphenRegexp = /^([0-9]{1,3}-[0-9]{1,3}-[0-9]{1,4}-[0-9]{1,4})$/;
+const hyphenIdentifierPattern = /\b0*([1-9][0-9]*|0)\b/;
 
 /**
  * Validate property id format.
@@ -12,7 +12,7 @@ const hyphenIdentifierPattern = RegExp(/\b0*([1-9][0-9]*|0)\b/);
  * @param {string} propertyId Property id.
  * @returns {boolean} Returns true or false if property id is in correct format.
  */
-export const validatePropertyId = (propertyId: string) => {
+export const validatePropertyId = (propertyId: string): boolean => {
     if (typeof propertyId !== 'string') {
         return false;
     }
@@ -25,7 +25,7 @@ export const validatePropertyId = (propertyId: string) => {
  * @param {string} propertyId Property id.
  * @returns {string} Returns formatted property id.
  */
-export const propertyIdFormat = (propertyId: string) => {
+export const propertyIdFormat = (propertyId: string): string => {
     if (typeof propertyId !== 'string') {
         return '';
     }
@@ -53,7 +53,7 @@ export const formatPropertyInfoToSaveFormat = (
     propertyData: Object,
     ownerUnclearValue: number,
     notes: string,
-) => {
+): Promise<$TupleMap<any, <T>(p: T | Promise<T>) => T>> | Promise<Array<empty>> => {
     if (Array.isArray(propertyData.features) && propertyData.features.length > 0) {
         return Promise.all(propertyData.features.map(async p => ({
             attributes: ({

@@ -6,9 +6,9 @@ import { config, handleErrors } from '../config';
  *
  * @returns {Promise} Promise with current users info.
  */
-export const fetchGetUserInfo = () => (
+export const fetchGetUserInfo = (): Promise<Object> => (
     fetch('api/user', config())
         .then(handleErrors)
         .then(res => res.json())
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );

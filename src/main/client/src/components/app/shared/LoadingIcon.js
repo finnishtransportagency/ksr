@@ -8,11 +8,13 @@ type Props = {
     size?: number,
 };
 
-const LoadingIcon = ({ loading, size }: Props) => (
-    <div className="loading-icon">
-        <PulseLoader color={styles.colorMain} size={size} loading={loading} />
-    </div>
-);
+function LoadingIcon({ loading, size }: Props): React$Element<"div"> {
+    return (
+        <div className="loading-icon">
+            <PulseLoader color={styles.colorMain} size={size} loading={loading} />
+        </div>
+    );
+}
 
 LoadingIcon.defaultProps = {
     size: 12,

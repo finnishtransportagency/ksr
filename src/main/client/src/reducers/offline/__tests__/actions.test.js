@@ -1,7 +1,9 @@
 import indexedDB from 'fake-indexeddb';
 import IDBDatabase from 'fake-indexeddb/lib/FDBDatabase';
 import OfflineCache from 'sw-offline-cache';
-import { handleFailedEdit, loadFailedEdits, removeEdits, retryEdits } from '../actions';
+import {
+    handleFailedEdit, loadFailedEdits, removeEdits, retryEdits,
+} from '../actions';
 
 describe('offline - actions', () => {
     const setup = () => {
@@ -14,7 +16,7 @@ describe('offline - actions', () => {
         await db.open();
         const edits = await db.getAllEdits(true);
         await Promise.all(edits.map(edit => db.removeEdit(edit.key)));
-        return await db.close();
+        return db.close();
     };
 
     it('should handleFailedEdits', () => {

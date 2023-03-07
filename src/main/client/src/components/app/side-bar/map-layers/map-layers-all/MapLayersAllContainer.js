@@ -5,7 +5,7 @@ import { setActiveAdminTool } from '../../../../../reducers/adminTool/actions';
 import MapLayersAll from './MapLayersAll';
 import { setSearchFeatures } from '../../../../../reducers/table/actions';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     layerGroups: state.map.layerGroups.layerGroups,
     layerList: state.map.layerGroups.layerList,
     fetching: state.map.layerGroups.fetching,
@@ -14,17 +14,17 @@ const mapStateToProps = state => ({
     loadingLayers: state.loading.loadingLayers,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setActiveAdminTool: (layerId, layerList) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setActiveAdminTool: (layerId: any, layerList: any) => {
         dispatch(setActiveAdminTool(layerId, layerList));
     },
-    activateLayers: (layers) => {
+    activateLayers: (layers: any) => {
         dispatch(activateLayers(layers));
     },
-    deactivateLayer: (layerId) => {
+    deactivateLayer: (layerId: any) => {
         dispatch(deactivateLayer(layerId));
     },
-    setSearchFeatures: (layers) => {
+    setSearchFeatures: (layers: any) => {
         dispatch(setSearchFeatures(layers));
     },
     hideLayer: (layerIds: string[]) => {

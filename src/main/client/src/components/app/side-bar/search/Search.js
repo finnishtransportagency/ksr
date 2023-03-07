@@ -20,7 +20,7 @@ type Props = {
 };
 
 class Search extends Component<Props, null> {
-    abortController: ?Object = null; // eslint-disable-line react/sort-comp
+    // abortController: ?Object = null; // eslint-disable-line react/sort-comp
 
     constructor(props: Props) {
         super(props);
@@ -29,7 +29,7 @@ class Search extends Component<Props, null> {
         this.handleRadioChange = this.handleRadioChange.bind(this);
     }
 
-    toggleSearchSuggestions = () => {
+    toggleSearchSuggestions: any = () => {
         const { setSearchState, searchState } = this.props;
         const {
             selectedLayer,
@@ -48,12 +48,12 @@ class Search extends Component<Props, null> {
         );
     };
 
-    handleRadioChange = (evt: Object) => {
+    handleRadioChange: any = (evt: Object) => {
         const { setActiveSearch } = this.props;
         setActiveSearch(evt.target.value);
     };
 
-    render() {
+    render(): any {
         const {
             searchState, activeSearch, propertyAreaSearch, togglePropertyAreaSearch,
         } = this.props;

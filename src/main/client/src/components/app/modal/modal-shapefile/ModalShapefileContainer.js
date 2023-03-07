@@ -5,19 +5,19 @@ import { setActiveModal } from '../../../../reducers/modal/actions';
 import { addShapefile } from '../../../../reducers/map/actions';
 import { addShapeFeaturesToTable } from '../../../../reducers/table/actions';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     view: state.map.mapView.view,
     layerList: state.map.layerGroups.layerList,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setActiveModal: (activeModal) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    setActiveModal: (activeModal: any) => {
         dispatch(setActiveModal(activeModal));
     },
-    addShapefile: (layer) => {
+    addShapefile: (layer: any) => {
         dispatch(addShapefile(layer));
     },
-    addShapeFeaturesToTable: (features) => {
+    addShapeFeaturesToTable: (features: any) => {
         dispatch(addShapeFeaturesToTable(features));
     },
 });

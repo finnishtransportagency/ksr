@@ -32,7 +32,7 @@ class SearchProperty extends Component<Props, State> {
         this.state = { ...initialState };
     }
 
-    onSubmit = (evt: Object) => {
+    onSubmit: any = (evt: Object) => {
         const {
             handleSubmit,
             view,
@@ -43,14 +43,14 @@ class SearchProperty extends Component<Props, State> {
         handleSubmit(propertyId, view, 'propertyArea', authorities);
     };
 
-    onClear = (evt: Object) => {
+    onClear: any = (evt: Object) => {
         evt.preventDefault();
         const { handleClear, view } = this.props;
         handleClear('propertyArea', view);
         this.setState(initialState);
     };
 
-    handlePropertyIdChange = (evt: Object) => {
+    handlePropertyIdChange: any = (evt: Object) => {
         const propertyId = evt.target.value;
         const valid = validatePropertyId(propertyId);
 
@@ -60,7 +60,7 @@ class SearchProperty extends Component<Props, State> {
         });
     };
 
-    handlePropertyClick = (id: string) => {
+    handlePropertyClick: any = (id: string) => {
         const { activeProperty } = this.state;
 
         if (activeProperty === id) {
@@ -70,13 +70,13 @@ class SearchProperty extends Component<Props, State> {
         }
     };
 
-    handlePropertyZoomClick = (id: string) => {
+    handlePropertyZoomClick: any = (id: string) => {
         const { view, features } = this.props;
         const foundProperty = features.find(property => property.id === id);
         if (foundProperty) zoomToProperty(view, id);
     };
 
-    render() {
+    render(): any {
         const { activeProperty, submitDisabled, propertyId } = this.state;
         const {
             fetching,

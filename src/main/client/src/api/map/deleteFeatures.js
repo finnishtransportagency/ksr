@@ -9,7 +9,7 @@ import { config } from '../config';
  *
  * @returns {Promise<Object>} Promise with json body.
  */
-export const deleteFeatures = (layerId: string, params: string) => (
+export const deleteFeatures = (layerId: string, params: string): Promise<any> => (
     fetch(`api/proxy/layer/${layerId}/deleteFeatures`, {
         ...config('x-www-form-urlencoded'),
         method: 'POST',

@@ -11,32 +11,34 @@ type Props = {
     layerList: Object[],
 };
 
-const DetailLayerSelect = ({
+function DetailLayerSelect({
     detailLayers,
     detailList,
     setActiveView,
     setActiveDetailLayer,
     layerList,
-}: Props) => (
-    <Fragment>
-        {detailLayers.map(detailLayer => (
-            <Button
-                key={detailLayer.id}
-                wide
-                disabled={!nestedVal(
-                    detailList.find(l => detailLayer.id === l.id),
-                    ['createPermission'],
-                )}
-                onClick={() => {
-                    setActiveView('addNewDetail');
-                    setActiveDetailLayer(layerList
-                        .find(l => l.id === detailLayer.id));
-                }}
-            >
-                {detailLayer.name}
-            </Button>
-        ))}
-    </Fragment>
-);
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <>
+            {detailLayers.map(detailLayer => (
+                <Button
+                    key={detailLayer.id}
+                    wide
+                    disabled={!nestedVal(
+                        detailList.find(l => detailLayer.id === l.id),
+                        ['createPermission'],
+                    )}
+                    onClick={() => {
+                        setActiveView('addNewDetail');
+                        setActiveDetailLayer(layerList
+                            .find(l => l.id === detailLayer.id));
+                    }}
+                >
+                    {detailLayer.name}
+                </Button>
+            ))}
+        </>
+    );
+}
 
 export default DetailLayerSelect;

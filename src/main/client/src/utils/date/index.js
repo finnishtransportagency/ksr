@@ -37,7 +37,7 @@ const display = (dt: any, pattern: string) => {
  *
  * @returns {?string} Formatted date if applicable otherwise empty string.
  */
-export const toDisplayDate = (dt: any) => display(dt, 'd.M.yyyy');
+export const toDisplayDate = (dt: any): string => display(dt, 'd.M.yyyy');
 
 /**
  * Returns a date-like object formatted according to Finnish datetime standards.
@@ -46,7 +46,7 @@ export const toDisplayDate = (dt: any) => display(dt, 'd.M.yyyy');
  *
  * @returns {?string} Formatted date if applicable otherwise empty string.
  */
-export const toDisplayDateTime = (dt: any) => display(dt, 'd.M.yyyy HH:mm:ss');
+export const toDisplayDateTime = (dt: any): string => display(dt, 'd.M.yyyy HH:mm:ss');
 
 /**
  * Returns a date-like object formatted according to ISO 8601 date (ignores time).
@@ -55,7 +55,7 @@ export const toDisplayDateTime = (dt: any) => display(dt, 'd.M.yyyy HH:mm:ss');
  *
  * @returns {?string} Formatted date if applicable otherwise empty string.
  */
-export const toISODate = (dt: any) => display(dt, 'yyyy-MM-dd');
+export const toISODate = (dt: any): string => display(dt, 'yyyy-MM-dd');
 
 /**
  * Returns Unix time in milliseconds for value if it can be converted to Date.
@@ -64,7 +64,7 @@ export const toISODate = (dt: any) => display(dt, 'yyyy-MM-dd');
  *
  * @returns {?number} Unix time (ms) if applicable otherwise null.
  */
-export const toUnixTime = (dt: any) => {
+export const toUnixTime = (dt: any): null | number => {
     const date = toDate(dt);
     return date ? date.getTime() : null;
 };

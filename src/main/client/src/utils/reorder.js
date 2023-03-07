@@ -24,7 +24,7 @@ export const reorder = (list: Object[], startIndex: number, endIndex: number): O
  *
  * @returns {Object[]} Reordered list.
  */
-export const reorderChildLayers = (layerList: Object[]) => {
+export const reorderChildLayers = (layerList: Array<Object>): Array<any> => {
     let reorderedList = layerList;
     const childLayers = layerList.filter(layer => layer.parentLayer && layer._source !== 'search')
         .sort((a, b) => a.originalLayerOrder - b.originalLayerOrder);
@@ -53,8 +53,8 @@ export const reorderChildLayers = (layerList: Object[]) => {
  * @param {Object} foundLayer Activated layer.
  *
  * @returns {Object[]} Reordered layer list.
- */
-export const reorderLayers = (layerGroups: Object[], layerList: Object[], foundLayer: Object) => {
+*/
+export const reorderLayers = (layerGroups: Object[], layerList: Object[], foundLayer: Object): Array<any> => {
     let originalLayerList: Object[] = [];
     layerGroups.forEach((layerGroup) => {
         layerGroup.layers.filter(layer => layerList

@@ -6,7 +6,7 @@ import { config } from '../config';
  *
  * @return {Object[]} Contains list of workspaces.
  */
-export const fetchGetWorkspaceList = () => (
+export const fetchGetWorkspaceList = (): Promise<?any> => (
     fetch('api/workspace/list', config())
         .then((r) => {
             if (r.ok) {
@@ -14,5 +14,5 @@ export const fetchGetWorkspaceList = () => (
             }
             return null;
         })
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 );

@@ -7,7 +7,7 @@ import { showConfirmModal } from '../../../../../reducers/confirmModal/actions';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 import { updateRelatedLayersData } from '../../../../../reducers/map/actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
     const { layerId, objectId } = state.contract.contractList;
     const { layerList } = state.map.layerGroups;
     const { currentLayer, contractLayers } = getContractLayers(layerId, layerList);
@@ -25,7 +25,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
     showConfirmModal: (body: string, acceptText: string, cancelText: string, accept: Function) => {
         dispatch(showConfirmModal(body, acceptText, cancelText, accept));
     },

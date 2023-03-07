@@ -132,7 +132,7 @@ class ReactTable extends Component<Props, State> {
         }
     }
 
-    getCellContent = (cellField: Object, cellInfo: Object) => {
+    getCellContent: any = (cellField: Object, cellInfo: Object) => {
         const { layerFeatures } = this.props;
         const { data } = layerFeatures;
 
@@ -144,7 +144,7 @@ class ReactTable extends Component<Props, State> {
         return data[cellInfo.index][cellInfo.column.id];
     };
 
-    getCellClassName = (contentEditable: boolean, cellField: Object, content: string) => {
+    getCellClassName: any = (contentEditable: boolean, cellField: Object, content: string) => {
         const { activeAdminTool, activeTable, layerList } = this.props;
 
         const activeLayer: Object = layerList.find(l => l.id === activeTable.replace('_s', ''));
@@ -169,7 +169,7 @@ class ReactTable extends Component<Props, State> {
         return className;
     };
 
-    getDisplayContent = (cellField: Object, content: any) => {
+    getDisplayContent: any = (cellField: Object, content: any) => {
         const { domain } = cellField;
         if (content === null) {
             return '';
@@ -178,7 +178,7 @@ class ReactTable extends Component<Props, State> {
         return getCodedValue(domain, content);
     };
 
-    getLayerData = (getParentLayer: boolean) => {
+    getLayerData: any = (getParentLayer: boolean) => {
         const { activeTable, layerList } = this.props;
 
         const layerId = activeTable.replace('_s', '');
@@ -188,9 +188,9 @@ class ReactTable extends Component<Props, State> {
             : layerList.find(l => l.id === layerId);
 
         return layer;
-    }
+    };
 
-    handleContractClick = (row: Object) => {
+    handleContractClick: any = (row: Object) => {
         const {
             setActiveModal, setContractListInfo, activeTable,
         } = this.props;
@@ -219,7 +219,7 @@ class ReactTable extends Component<Props, State> {
         }
     };
 
-    handleFeatureInfoClick = (row: Object) => {
+    handleFeatureInfoClick: any = (row: Object) => {
         const { setActiveModal } = this.props;
 
         const layer = this.getLayerData(false);
@@ -232,12 +232,17 @@ class ReactTable extends Component<Props, State> {
         setActiveModal('singleFeatureInfo', modalData);
     };
 
-    isCellEditable = (cellField: Object) => {
+    isCellEditable: any = (cellField: Object, cellInfo?: Object) => {
         const { activeAdminTool, layerList, activeTable } = this.props;
 
         const activeLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
         const parentLayer = activeLayer && activeLayer.parentLayer
             && layerList.find(l => l.id === activeLayer.parentLayer);
+
+        if (parentLayer && activeLayer && parentLayer.name === 'Käyttöoikeussopimukset'
+            && (cellField.name === 'SOPIMUSTUNNISTE' || (cellInfo && cellInfo.original[`${activeLayer.id}/SOPIMUSTUNNISTE`] != null))) {
+            return false;
+        }
 
         if (activeLayer && parentLayer) {
             return (activeAdminTool === activeLayer.id || activeAdminTool === parentLayer.id)
@@ -264,12 +269,12 @@ class ReactTable extends Component<Props, State> {
         return false;
     };
 
-    toggleSelection = (id: string, shiftKey: string, row: Object) => {
+    toggleSelection: any = (id: string, shiftKey: string, row: Object) => {
         const { toggleSelection } = this.props;
         toggleSelection(row);
     };
 
-    renderSelect = (cellField: Object, content: any, cellInfo: Object) => {
+    renderSelect: any = (cellField: Object, content: any, cellInfo: Object) => {
         const { setEditedLayer, layerFeatures, setTableEdited } = this.props;
         const { data } = layerFeatures;
         // Add empty option for empty and null values
@@ -299,13 +304,13 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
-    handlePageChange = (pageIndex) => {
+    handlePageChange: any = (pageIndex) => {
         const { activeTable, setActivePage } = this.props;
         setActivePage({ layerId: activeTable, page: pageIndex });
         document.getElementsByClassName('rtable-scroll-wrapper')[0].scrollTop = 0;
     };
 
-    renderSelectInput = (cellField: Object, cellInfo: Object, filter: any, onChange: Function) => {
+    renderSelectInput: any = (cellField: Object, cellInfo: Object, filter: any, onChange: Function) => {
         // Add empty option for empty and null values
         const options = [<option key="-" value="" />].concat(
             cellField.domain.codedValues.map(v => (
@@ -325,7 +330,7 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
-    renderDateInput = (cellField: Object, content: any, cellInfo: Object) => {
+    renderDateInput: any = (cellField: Object, content: any, cellInfo: Object) => {
         const { setEditedLayer, layerFeatures, setTableEdited } = this.props;
         const { data } = layerFeatures;
 
@@ -350,7 +355,7 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
-    renderDiv = (
+    renderDiv: any = (
         cellField: Object,
         content: any,
     ) => {
@@ -367,7 +372,7 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
-    renderEditableDiv = (
+    renderEditableDiv: any = (
         cellField: Object,
         content: any,
         cellInfo: Object,
@@ -393,7 +398,7 @@ class ReactTable extends Component<Props, State> {
                     }
                 }}
                 onInput={(evt) => {
-                    const updateCellWithDelay = (text, key) => {
+                    const updateCellWithDelay = (text: any, key: any) => {
                         cellEditTimer = setTimeout(() => {
                             const { currentCellData } = this.state;
                             if (currentCellData.key === key) {
@@ -459,7 +464,7 @@ class ReactTable extends Component<Props, State> {
         );
     };
 
-    renderInput = (cellField: Object, filter: any, onChange: Function) => (
+    renderInput: any = (cellField: Object, filter: any, onChange: Function) => (
         <TextInput
             style={{ minHeight: '1rem' }}
             type="text"
@@ -471,7 +476,7 @@ class ReactTable extends Component<Props, State> {
         />
     );
 
-    renderCustomCell = (cellInfo: Object) => {
+    renderCustomCell: any = (cellInfo: Object) => {
         const { layerList, activeTable, activeAdminTool } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
         const originalLayer = layerList.find(l => l.id === activeTable.replace('_s', ''));
@@ -491,7 +496,7 @@ class ReactTable extends Component<Props, State> {
                 || (parentLayer && activeAdminTool === parentLayer.id);
 
             if (currentAdminActive) {
-                const contentEditable = this.isCellEditable(cellField);
+                const contentEditable = this.isCellEditable(cellField, cellInfo);
                 const content = this.getCellContent(cellField, cellInfo);
 
                 if (contentEditable) {
@@ -534,7 +539,7 @@ class ReactTable extends Component<Props, State> {
         return null;
     };
 
-    renderFilter = (cellInfo: Object, filter: any, onChange: Function) => {
+    renderFilter: any = (cellInfo: Object, filter: any, onChange: Function) => {
         const { layerList, activeTable } = this.props;
         const activeLayer = layerList.find(l => l.id === activeTable);
         let originalLayer: Object = layerList.find(l => l.id === activeTable.replace('_s', ''));
@@ -572,11 +577,11 @@ class ReactTable extends Component<Props, State> {
         return null;
     };
 
-    setTableInstance = (instance: Object) => {
+    setTableInstance: any = (instance: Object) => {
         this.setState({ tableInstance: instance });
     };
 
-    onFetchData = () => {
+    onFetchData: any = () => {
         const { tableInstance } = this.state;
         if (tableInstance) {
             const { setRowFilter } = this.props;
@@ -588,7 +593,7 @@ class ReactTable extends Component<Props, State> {
         }
     };
 
-    render() {
+    render(): any {
         const {
             fetching,
             layerFeatures,
@@ -618,9 +623,11 @@ class ReactTable extends Component<Props, State> {
             const { columns, data } = layerFeatures;
             const { currentCellData } = this.state;
 
-            const parentLayer = nestedVal(layerList
-                .find(ll => ll.id === layerFeatures.id.replace('_s', '')),
-            ['parentLayer']);
+            const parentLayer = nestedVal(
+                layerList
+                    .find(ll => ll.id === layerFeatures.id.replace('_s', '')),
+                ['parentLayer'],
+            );
             const activeLayer: any = layerList.find(ll => ll.id === parentLayer)
                 || layerList.find(ll => ll.id === layerFeatures.id);
             const relationLayer = activeLayer && activeLayer.relations
@@ -635,6 +642,7 @@ class ReactTable extends Component<Props, State> {
                 && activeLayer.relations.find(r => r).relationType !== null
                 && (!relationLayer || (relationLayer && relationLayer.layerPermission.readLayer));
 
+            const adminToolCheck: boolean = activeAdminTool?.length > 0 && (activeAdminTool === activeLayer.id);
             const tableColumns = addActionColumn(
                 this.handleContractClick,
                 this.handleFeatureInfoClick,
@@ -642,7 +650,7 @@ class ReactTable extends Component<Props, State> {
                 isContract(activeLayer),
                 layerHasRelations,
                 activeLayer.type === 'agfl',
-                activeAdminTool && (activeAdminTool === activeLayer.id),
+                adminToolCheck,
                 sketchActive,
                 addNewGeometryToFeature,
             );

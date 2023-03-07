@@ -97,7 +97,7 @@ const initialState = {
     layersVisibleZoomOut: [],
 };
 
-const toggleLayerVisibleZoomOut = (state, action) => {
+const toggleLayerVisibleZoomOut = (state: Object, action: any) => {
     let layersVisibleZoomOut = state.layersVisibleZoomOut || [];
     const stored = layersVisibleZoomOut.find(l => l.id === action.layerId);
 
@@ -124,7 +124,7 @@ const toggleLayerVisibleZoomOut = (state, action) => {
     };
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: State = initialState, action: Action): any => {
     switch (action.type) {
         case GET_LAYER_GROUPS:
             return {

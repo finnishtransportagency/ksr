@@ -21,4 +21,3 @@ describe('<ModalDrawTextView />', () => {
         expect(wrapper.find(TextInput).exists()).toBe(true);
     });
 });
-

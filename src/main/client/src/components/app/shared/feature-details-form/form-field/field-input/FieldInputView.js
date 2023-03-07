@@ -12,9 +12,9 @@ type Props = {
     disabled: boolean,
 };
 
-const FieldInputView = ({
+function FieldInputView({
     field, handleOnChange, index, disabled,
-}: Props) => {
+}: Props): React$Element<React$FragmentType> {
     if (
         field.domain
         && (field.domain.type === 'codedValue' || field.domain.type === 'coded-value')
@@ -58,8 +58,10 @@ const FieldInputView = ({
             maxLength={field.length}
             required={!field.nullable}
             disabled={disabled}
+            max={field.max}
+            min={field.min}
         />
     );
-};
+}
 
 export default FieldInputView;

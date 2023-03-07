@@ -29,7 +29,6 @@ type Props = {
     featureType: string,
     addressField: string,
     view: Object,
-    activeAdminTool: string,
     currentTabAdmin: boolean,
     bufferExists: boolean,
     handleClearBuffer: Function,
@@ -41,9 +40,10 @@ type Props = {
     featureType: string,
     addressField: string,
     layerList: Object[],
+    activeAdminTool: string,
 };
 
-const TableButtonsView = ({
+function TableButtonsView({
     toggleTable,
     isOpen,
     setActiveModal,
@@ -70,73 +70,75 @@ const TableButtonsView = ({
     togglePortal,
     updatePortal,
     layerList,
-}: Props) => (
-    <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
-        <Table.Button
-            toggleButton
-            onClick={!portalIsOpen ? () => {
-                toggleTable();
-                updatePortal();
-            } : null}
-            disabled={portalIsOpen}
-        >
-            <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
-        </Table.Button>
-        <Table.Button
-            portalButton
-            title={strings.reactTable.windowPortal}
-            onClick={!portalIsOpen ? () => {
-                if (isOpen) {
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <Table.ButtonWrapper tableOpen={isOpen} id="table-button--wrapper">
+            <Table.Button
+                toggleButton
+                onClick={!portalIsOpen ? () => {
                     toggleTable();
-                }
-                togglePortal();
-            } : null}
-            id="portalButton"
-            disabled={portalIsOpen}
-        >
-            <i className="fas fa-external-link-square-alt" />
-        </Table.Button>
-        <AllLayersView
-            isOpen={isOpen}
-            setActiveModal={setActiveModal}
-            originalLayers={originalLayers}
-            geometryData={geometryData}
-            clearTableData={clearTableData}
-            view={view}
-            bufferExists={bufferExists}
-            handleClearBuffer={handleClearBuffer}
-            editedLayers={editedLayers}
-            featureType={featureType}
-            addressField={addressField}
-            layerList={layerList}
-            activeAdminTool={activeAdminTool}
-        />
-        <ActiveLayerView
-            isOpen={isOpen}
-            setActiveModal={setActiveModal}
-            originalLayers={originalLayers}
-            geometryDataSelected={geometryDataSelected}
-            activeTableDataSelected={activeTableDataSelected}
-            activeTableLayer={activeTableLayer}
-        />
-        {(activeAdminTool && currentTabAdmin) ? (
-            <AdminLayerView
+                    updatePortal();
+                } : null}
+                disabled={portalIsOpen}
+            >
+                <i className={isOpen ? 'fas fa-angle-down' : 'fas fa-angle-up'} />
+            </Table.Button>
+            <Table.Button
+                portalButton
+                title={strings.reactTable.windowPortal}
+                onClick={!portalIsOpen ? () => {
+                    if (isOpen) {
+                        toggleTable();
+                    }
+                    togglePortal();
+                } : null}
+                id="portalButton"
+                disabled={portalIsOpen}
+            >
+                <i className="fas fa-external-link-square-alt" />
+            </Table.Button>
+            <AllLayersView
                 isOpen={isOpen}
                 setActiveModal={setActiveModal}
-                activeDelete={activeDelete}
+                originalLayers={originalLayers}
+                geometryData={geometryData}
+                clearTableData={clearTableData}
+                view={view}
+                bufferExists={bufferExists}
+                handleClearBuffer={handleClearBuffer}
                 editedLayers={editedLayers}
-                selectedAdminData={selectedAdminData}
-                showConfirmModal={showConfirmModal}
-                saveEditedFeatures={saveEditedFeatures}
                 featureType={featureType}
                 addressField={addressField}
-                view={view}
+                layerList={layerList}
                 activeAdminTool={activeAdminTool}
-                currentTabAdmin={currentTabAdmin}
-                hasTableEdited={hasTableEdited}
             />
-        ) : null}
-    </Table.ButtonWrapper>
-);
+            <ActiveLayerView
+                isOpen={isOpen}
+                setActiveModal={setActiveModal}
+                originalLayers={originalLayers}
+                geometryDataSelected={geometryDataSelected}
+                activeTableDataSelected={activeTableDataSelected}
+                activeTableLayer={activeTableLayer}
+            />
+            {(activeAdminTool && currentTabAdmin) ? (
+                <AdminLayerView
+                    isOpen={isOpen}
+                    setActiveModal={setActiveModal}
+                    activeDelete={activeDelete}
+                    editedLayers={editedLayers}
+                    selectedAdminData={selectedAdminData}
+                    showConfirmModal={showConfirmModal}
+                    saveEditedFeatures={saveEditedFeatures}
+                    featureType={featureType}
+                    addressField={addressField}
+                    view={view}
+                    activeAdminTool={activeAdminTool}
+                    currentTabAdmin={currentTabAdmin}
+                    hasTableEdited={hasTableEdited}
+                />
+            ) : null}
+        </Table.ButtonWrapper>
+    );
+}
 
 export default TableButtonsView;

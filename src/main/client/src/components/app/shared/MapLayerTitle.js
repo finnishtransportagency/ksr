@@ -9,7 +9,7 @@ type Props = {
     childLayer?: boolean,
 };
 
-const MapLayerTitle = ({ layer, showLayerGroup, childLayer }: Props) => {
+function MapLayerTitle({ layer, showLayerGroup, childLayer }: Props): React$Element<React$FragmentType> {
     let iconClass = '';
     switch (layer._source) {
         case 'search': {
@@ -31,7 +31,7 @@ const MapLayerTitle = ({ layer, showLayerGroup, childLayer }: Props) => {
     }
 
     return (
-        <Fragment>
+        <>
             <MapLayerTitleWrapper>
                 {
                     iconClass
@@ -41,7 +41,7 @@ const MapLayerTitle = ({ layer, showLayerGroup, childLayer }: Props) => {
                         </Icon>
                     )
                 }
-                <Text>
+                <Text title={layer.name ? layer.name : layer.title}>
                     <span>{layer.name ? layer.name : layer.title}</span>
                 </Text>
             </MapLayerTitleWrapper>
@@ -49,16 +49,16 @@ const MapLayerTitle = ({ layer, showLayerGroup, childLayer }: Props) => {
                 showLayerGroup
                 && (
                     <MapLayerTitleWrapper color={colorBackgroundGrey} showLayerGroup childLayer>
-                        <Text>
+                        <Text title={layer.layerGroupName}>
                             <span>{layer.layerGroupName}</span>
                         </Text>
                     </MapLayerTitleWrapper>
                 )
             }
             {childLayer && <div style={{ height: '8px' }} />}
-        </Fragment>
+        </>
     );
-};
+}
 
 MapLayerTitle.defaultProps = {
     showLayerGroup: false,

@@ -29,7 +29,7 @@ export const addActionColumn = (
     adminActive: boolean,
     sketchToolActive: boolean,
     addNewGeometryToFeature: Function,
-) => {
+): any => {
     const actionColumn = {
         Header: '',
         columns: [{
@@ -39,7 +39,7 @@ export const addActionColumn = (
             filterable: false,
             resizable: false,
             Cell: (row: Object) => (
-                <Fragment>
+                <>
                     { layerHasRelations && (
                         <div
                             title={contract
@@ -84,7 +84,7 @@ export const addActionColumn = (
                             <i className="esri-icon-polygon" />
                         </div>
                     )}
-                </Fragment>
+                </>
             ),
             style: {
                 textAlign: 'center',

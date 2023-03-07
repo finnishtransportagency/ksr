@@ -18,23 +18,23 @@ import store from '../../store';
 import { getSiblingsOrSelf, relatedLayers as getRelatedLayers } from '../../utils/layers';
 import { fetchSearchQuery } from '../../api/search/searchQuery';
 
-export const setLayerList = (layerList: Array<any>) => ({
+export const setLayerList = (layerList: Array<any>): { layerList: Array<any>, type: any, ... } => ({
     type: types.SET_LAYER_LIST,
     layerList: reorderChildLayers(layerList),
 });
 
-export const updateLayer = (layer: Object) => ({
+export const updateLayer = (layer: Object): { layer: any, type: any, ... } => ({
     type: types.UPDATE_LAYER,
     layer,
 });
 
-export const updateLayerFields = (layerId: string, fields: Object[]) => ({
+export const updateLayerFields = (layerId: string, fields: Object[]): { fields: Array<any>, layerId: string, type: any, ... } => ({
     type: types.UPDATE_LAYER_FIELDS,
     layerId,
     fields,
 });
 
-export const getLayerGroups = () => async (dispatch: Function) => {
+export const getLayerGroups = (): ((dispatch: any) => Promise<empty>) => async (dispatch: Function) => {
     dispatch({ type: types.GET_LAYER_GROUPS });
 
     const layerGroups = await fetchLayerGroups();
@@ -53,7 +53,7 @@ export const getLayerGroups = () => async (dispatch: Function) => {
                 (fetchedLayer) => {
                     updateLayerFields(fetchedLayer.id, fetchedLayer.fields);
                 },
-            ).catch(err => console.log(err));
+            ).catch(err => console.error(err));
         }
     });
 
@@ -83,7 +83,7 @@ export const getLayerGroups = () => async (dispatch: Function) => {
 export const activateLayers = (
     layers: Object[],
     workspace?: Object,
-) => async (dispatch: Function, getState: Function) => {
+): ((dispatch: any, getState: any) => Promise<void>) => async (dispatch: Function, getState: Function) => {
     const { view } = dispatch(getState).map.mapView;
     const { activeAdminTool } = dispatch(getState).adminTool.active.layerId;
     const { layerList } = dispatch(getState).map.layerGroups;
@@ -194,7 +194,7 @@ export const activateLayers = (
     if (workspace !== undefined) dispatch(setWorkspaceFeatures(workspace, layersToBeActivated));
 };
 
-export const toggleLayerLegend = (forceToggle?: boolean) => (dispatch: Function) => {
+export const toggleLayerLegend = (forceToggle?: boolean): ((dispatch: any) => void) => (dispatch: Function) => {
     const { layerLegendActive, manualClose } = store.getState().map.layerLegend;
 
     if (forceToggle && layerLegendActive) {
@@ -244,9 +244,7 @@ const getSelectedLayersAndFeatures = (dispatch: Function, state: Object) => {
     return selectedLayers;
 };
 
-const addSelectedFeaturesForFetching = (
-    allLayers: Object[], layer: Object, selectedLayer: Object, fetchSelected: Map,
-) => {
+const addSelectedFeaturesForFetching = (allLayers: Object[], layer: Object, selectedLayer: Object, fetchSelected: Function) => {
     const siblingLayers = getSiblingsOrSelf(allLayers, layer);
     siblingLayers.forEach((l) => {
         let selectedFeatures;
@@ -262,9 +260,7 @@ const addSelectedFeaturesForFetching = (
     });
 };
 
-export const updateRelatedLayersData = (
-    layers: Object[],
-) => (dispatch: Function, getState: Function) => {
+export const updateRelatedLayersData = (layers: Array<Object>): ((dispatch: any, getState: any) => void) => (dispatch: Function, getState: Function) => {
     const state = dispatch(getState);
     const allLayers = state.map.layerGroups.layerList;
     const fetchSelected = new Map();
@@ -319,7 +315,7 @@ export const updateRelatedLayersData = (
     }
 };
 
-export const deactivateLayer = (layerId: string) => (dispatch: Function, getState: Function) => {
+export const deactivateLayer = (layerId: string): ((dispatch: any, getState: any) => void) => (dispatch: Function, getState: Function) => {
     const { layerList } = dispatch(getState).map.layerGroups;
 
     dispatch({
@@ -351,16 +347,16 @@ export const deactivateLayer = (layerId: string) => (dispatch: Function, getStat
     closeTableIfNothingToShow();
 };
 
-export const getActiveLayerTab = () => ({
+export const getActiveLayerTab = (): { type: any, ... } => ({
     type: types.GET_ACTIVE_LAYER_TAB,
 });
 
-export const setActiveLayerTab = (tab: string) => ({
+export const setActiveLayerTab = (tab: string): { tab: string, type: any, ... } => ({
     type: types.SET_ACTIVE_LAYER_TAB,
     tab,
 });
 
-export const getMapConfig = () => (dispatch: Function) => {
+export const getMapConfig = (): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({ type: types.GET_MAP_CONFIG });
     fetchMapConfig()
         .then(r => dispatch({
@@ -370,41 +366,41 @@ export const getMapConfig = () => (dispatch: Function) => {
             printServiceUrl: r.printServiceUrl,
             extractServiceUrl: r.extractServiceUrl,
         }))
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
-export const setMapView = (view: any) => ({
+export const setMapView = (view: any): { type: any, view: any, ... } => ({
     type: types.SET_MAP_VIEW,
     view,
 });
 
-export const setTempGraphicsLayer = (graphicsLayer: Object) => ({
+export const setTempGraphicsLayer = (graphicsLayer: Object): { graphicsLayer: any, type: any, ... } => ({
     type: types.SET_GRAPH_LAYER,
     graphicsLayer,
 });
 
-export const setMapTools = (draw: Object, sketchViewModel: Object) => ({
+export const setMapTools = (draw: Object, sketchViewModel: Object): { draw: any, sketchViewModel: any, type: any, ... } => ({
     type: types.SET_MAP_TOOLS,
     draw,
     sketchViewModel,
 });
 
-export const setActiveTool = (active: string) => ({
+export const setActiveTool = (active: string): { active: string, type: any, ... } => ({
     type: types.SET_ACTIVE_TOOL,
     active,
 });
 
-export const setActiveFeatureMode = (activeFeatureMode: string) => ({
+export const setActiveFeatureMode = (activeFeatureMode: string): { activeFeatureMode: string, type: any, ... } => ({
     type: types.SET_ACTIVE_FEATURE_MODE,
     activeFeatureMode,
 });
 
-export const setSnappingFeatureSources = (featureSources: Object) => ({
+export const setSnappingFeatureSources = (featureSources: Object): { featureSources: any, type: any, ... } => ({
     type: types.SET_SNAPPING_FEATURE_SOURCES,
     featureSources,
 });
 
-export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
+export const addUserLayer = (layerValues: Object): ((dispatch: any) => void) => (dispatch: Function) => {
     fetchAddUserLayer(layerValues)
         .then((l) => {
             if (!l.error) {
@@ -429,7 +425,7 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                             });
                             dispatch(activateLayers([userLayer]));
                         })
-                        .catch(err => console.log(err));
+                        .catch(err => console.error(err));
                 } else {
                     const userLayer = {
                         ...l,
@@ -445,10 +441,10 @@ export const addUserLayer = (layerValues: Object) => (dispatch: Function) => {
                 }
             }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 };
 
-export const removeUserLayer = (layerId: string) => ({
+export const removeUserLayer = (layerId: string): { layerId: string, type: any, ... } => ({
     type: types.REMOVE_USER_LAYER,
     layerId,
 });
@@ -456,7 +452,7 @@ export const removeUserLayer = (layerId: string) => ({
 export const removeUserLayerConfirmed = (
     layerId: string,
     layerList: Array<Object>,
-) => (dispatch: Function) => {
+): ((dispatch: any) => void) => (dispatch: Function) => {
     deleteUserLayer(layerId).then((res) => {
         if (res.ok) {
             dispatch({
@@ -475,32 +471,32 @@ export const removeUserLayerConfirmed = (
     }).catch(e => console.error(e));
 };
 
-export const addShapefile = (layer: Object) => ({
+export const addShapefile = (layer: Object): { layer: any, type: any, ... } => ({
     type: types.ADD_SHAPEFILE_LAYER,
     layer,
 });
 
-export const setMapDrawText = (text: string) => ({
+export const setMapDrawText = (text: string): { drawText: string, type: any, ... } => ({
     type: types.SET_MAP_DRAW_TEXT,
     drawText: text,
 });
 
-export const setActiveToolMenu = (activeToolMenu: string) => ({
+export const setActiveToolMenu = (activeToolMenu: string): { activeToolMenu: string, type: any, ... } => ({
     type: types.SET_ACTIVE_TOOL_MENU,
     activeToolMenu,
 });
 
-export const setHasGraphics = (hasGraphics: boolean) => ({
+export const setHasGraphics = (hasGraphics: boolean): { hasGraphics: boolean, type: any, ... } => ({
     type: types.SET_HAS_GRAPHICS,
     hasGraphics,
 });
 
-export const removeLayersView = (layerIds: Array<number>) => ({
+export const removeLayersView = (layerIds: Array<number>): { layerIds: Array<number>, type: any, ... } => ({
     type: types.REMOVE_LAYER_FROM_VIEW,
     layerIds,
 });
 
-export const toggleLayer = (layerId: string) => (dispatch: Function) => {
+export const toggleLayer = (layerId: string): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({
         type: types.TOGGLE_LAYER,
         layerId,
@@ -509,11 +505,11 @@ export const toggleLayer = (layerId: string) => (dispatch: Function) => {
     shouldToggleLayerLegend(dispatch);
 };
 
-export const toggleMeasurements = () => ({
+export const toggleMeasurements = (): { type: any, ... } => ({
     type: types.TOGGLE_MEASUREMENTS,
 });
 
-export const setScale = (mapScale: number) => (dispatch: Function) => {
+export const setScale = (mapScale: number): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({
         type: types.SET_SCALE,
         mapScale,
@@ -522,16 +518,16 @@ export const setScale = (mapScale: number) => (dispatch: Function) => {
     shouldToggleLayerLegend(dispatch);
 };
 
-export const hideLayer = (layerIds: string[]) => ({
+export const hideLayer = (layerIds: Array<string>): { layerIds: Array<string>, type: any, ... } => ({
     type: types.HIDE_LAYER,
     layerIds,
 });
 
-export const toggleIndexMap = () => ({
+export const toggleIndexMap = (): { type: any, ... } => ({
     type: types.TOGGLE_INDEX_MAP,
 });
 
-export const toggleLayerVisibleZoomOut = (layerId, originalMinScale) => (dispatch: Function) => {
+export const toggleLayerVisibleZoomOut = (layerId: any, originalMinScale: any): ((dispatch: any) => void) => (dispatch: Function) => {
     dispatch({
         type: types.TOGGLE_LAYER_VISIBLE_ZOOM_OUT,
         layerId,

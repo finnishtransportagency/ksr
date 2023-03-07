@@ -10,27 +10,30 @@ type Props = {
     removeEdits: Function,
 };
 
-const EditsView = ({ count, retryEdits, removeEdits }: Props) => (
-    <EditsWrapper>
-        <H2>{strings.offline.edits.title}</H2>
-        <p>
-            {
-                count === 0 ?
-                    strings.offline.edits.noEdits :
-                    `${count} ${strings.offline.edits.hasEdits}`
-            }
-        </p>
-        { count > 0 &&
-            <React.Fragment>
-                <Button onClick={retryEdits}>
-                    {strings.offline.edits.save}
-                </Button>
-                <Button onClick={removeEdits}>
-                    {strings.offline.edits.remove}
-                </Button>
-            </React.Fragment>
-        }
-    </EditsWrapper>
-);
+function EditsView({ count, retryEdits, removeEdits }: Props): React$Element<React$FragmentType> {
+    return (
+        <EditsWrapper>
+            <H2>{strings.offline.edits.title}</H2>
+            <p>
+                {
+                    count === 0
+                        ? strings.offline.edits.noEdits
+                        : `${count} ${strings.offline.edits.hasEdits}`
+                }
+            </p>
+            { count > 0
+            && (
+                <>
+                    <Button onClick={retryEdits}>
+                        {strings.offline.edits.save}
+                    </Button>
+                    <Button onClick={removeEdits}>
+                        {strings.offline.edits.remove}
+                    </Button>
+                </>
+            )}
+        </EditsWrapper>
+    );
+}
 
 export default EditsView;

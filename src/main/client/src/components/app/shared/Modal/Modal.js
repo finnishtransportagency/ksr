@@ -25,6 +25,7 @@ type Props = {
 
 type State = {
     fadeOut: boolean,
+    modalScrollSize: number;
 };
 
 const initialState = {
@@ -33,7 +34,7 @@ const initialState = {
 };
 
 class Modal extends Component<Props, State> {
-    static defaultProps = {
+    static defaultProps: any = {
         handleModalCancel: undefined,
         handleGoBack: undefined,
     };
@@ -49,7 +50,7 @@ class Modal extends Component<Props, State> {
         this.setModalScrollSize = this.setModalScrollSize.bind(this);
     }
 
-    toggleModal = () => {
+    toggleModal: any = () => {
         const { activeModal, setActiveModal } = this.props;
 
         this.setState({ fadeOut: true });
@@ -58,20 +59,20 @@ class Modal extends Component<Props, State> {
         }, 300);
     };
 
-    handleCancel = () => {
+    handleCancel: any = () => {
         const { handleModalCancel } = this.props;
         if (handleModalCancel) handleModalCancel();
         this.toggleModal();
     };
 
-    handleSubmit = (index: number) => {
+    handleSubmit: any = (index: number) => {
         const { modalSubmit } = this.props;
 
         modalSubmit[index].handleSubmit();
         if (modalSubmit[index].toggleModal) this.toggleModal();
     };
 
-    setModalScrollSize = () => {
+    setModalScrollSize: any = () => {
         this.setState(
             {
                 modalScrollSize: window.innerHeight - 220,
@@ -85,7 +86,7 @@ class Modal extends Component<Props, State> {
         window.addEventListener('resize', this.setModalScrollSize);
     }
 
-    render() {
+    render(): any {
         const {
             title,
             modalSubmit,

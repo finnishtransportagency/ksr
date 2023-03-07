@@ -25,7 +25,6 @@ const dateTimeFormat = (date) => {
     return `${dateFormat(date)} ${hh}:${mm}:${ss}`;
 };
 
-
 describe('test - date', () => {
     it('should return unix time - valid date', () => {
         const date = new Date();

@@ -25,5 +25,5 @@
  */
 export const nestedVal = (obj: ?Object, list: string[], defaultValue: any = null): any => (
     list instanceof Array && obj instanceof Object
-        ? list.reduce((val, next) => ((val && val[next]) ? val[next] : defaultValue), obj)
+        ? list.reduce((val: Object, next) => ((val && val[next]) ? val[next] : defaultValue), obj)
         : defaultValue);

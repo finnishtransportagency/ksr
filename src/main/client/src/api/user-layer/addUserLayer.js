@@ -8,7 +8,7 @@ import { config } from '../config';
  *
  * @returns {Promise<Object>} Promise with added layer data.
  */
-export const fetchAddUserLayer = (layerValues: Object) => (
+export const fetchAddUserLayer = (layerValues: Object): Promise<any> => (
     fetch('api/user-layer', {
         ...config(),
         method: 'POST',

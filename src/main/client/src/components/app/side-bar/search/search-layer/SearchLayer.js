@@ -63,7 +63,7 @@ class SearchLayer extends Component<Props, State> {
         }
     }
 
-    handleLayerChange = (layerId: string) => {
+    handleLayerChange: any = (layerId: string) => {
         const {
             setSearchState, setSearchOptions, layerList, searchState,
         } = this.props;
@@ -82,7 +82,7 @@ class SearchLayer extends Component<Props, State> {
         }
     };
 
-    handleTextChange = (evt: Object) => {
+    handleTextChange: any = (evt: Object) => {
         const { setSearchState, searchState } = this.props;
         const { selectedLayer, searchFieldValues, suggestionsActive } = searchState;
 
@@ -95,7 +95,7 @@ class SearchLayer extends Component<Props, State> {
         );
     };
 
-    handleAddField = (layerId: string) => {
+    handleAddField: any = (layerId: string) => {
         const { setSearchState, searchState } = this.props;
         const {
             optionsField,
@@ -131,7 +131,7 @@ class SearchLayer extends Component<Props, State> {
         );
     };
 
-    handleChangeField = (type: string, evt: Object, index: number) => {
+    handleChangeField: any = (type: string, evt: Object, index: number) => {
         const { suggestionQuery, fetchingSuggestions } = this.state;
         const { setSearchState, searchState } = this.props;
         const {
@@ -236,13 +236,13 @@ class SearchLayer extends Component<Props, State> {
         }
     };
 
-    handleFieldBlur = () => {
+    handleFieldBlur: any = () => {
         if (this.abortController != null) {
             this.abortController.abort();
         }
     };
 
-    handleRemoveField = (index: number) => {
+    handleRemoveField: any = (index: number) => {
         const { setSearchState, searchState } = this.props;
         const { selectedLayer, textSearch, suggestionsActive } = searchState;
 
@@ -254,7 +254,7 @@ class SearchLayer extends Component<Props, State> {
         setSearchState(selectedLayer, textSearch, searchFieldValues, [], suggestionsActive);
     };
 
-    handleSubmit = (evt: Object) => {
+    handleSubmit: any = (evt: Object) => {
         evt.preventDefault();
         const {
             searchFeatures, allQueryableLayers, activeQueryableLayers, searchState, layerList,
@@ -311,7 +311,7 @@ class SearchLayer extends Component<Props, State> {
         searchFeatures(queryMap);
     };
 
-    render() {
+    render(): any {
         const {
             setSearchState,
             queryOptions,

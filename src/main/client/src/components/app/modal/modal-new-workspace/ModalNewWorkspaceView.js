@@ -12,13 +12,13 @@ type Props = {
     fetching: boolean,
 };
 
-const ModalNewWorkspaceView = ({
+function ModalNewWorkspaceView({
     handleInputChange,
     workspaceName,
     submitDisabled,
     fetching,
-}: Props) => (
-    <Fragment>
+}: Props): React$Element<"label"> {
+    return (
         <label htmlFor={strings.modalNewWorkspace.workspaceName}>
             <span>{strings.modalNewWorkspace.workspaceName}</span>
             <InputWithIcon>
@@ -35,8 +35,7 @@ const ModalNewWorkspaceView = ({
                 <InputInfo
                     data-balloon={!fetching && submitDisabled && workspaceName.trim()
                         ? strings.modalNewWorkspace.workspaceNameExists
-                        : null
-                    }
+                        : null}
                     data-balloon-pos="left"
                     data-balloon-length="large"
                 >
@@ -46,7 +45,7 @@ const ModalNewWorkspaceView = ({
                 </InputInfo>
             </InputWithIcon>
         </label>
-    </Fragment>
-);
+    );
+}
 
 export default ModalNewWorkspaceView;

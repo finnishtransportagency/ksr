@@ -12,29 +12,31 @@ type Props = {
     fadeOut: boolean,
 };
 
-const ConfirmModalView = ({
+function ConfirmModalView({
     handleAccept,
     handleCancel,
     body,
     acceptText,
     cancelText,
     fadeOut,
-}: Props) => (
-    <Modal.Blur>
-        <Modal confirm fadeOut={fadeOut}>
-            <Modal.Content confirm>
-                <p>{body}</p>
-            </Modal.Content>
-            <Modal.Footer>
-                <Button onClick={handleAccept}>
-                    {acceptText}
-                </Button>
-                <Button flat onClick={handleCancel}>
-                    {cancelText}
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    </Modal.Blur>
-);
+}: Props): React$Element<React$FragmentType> {
+    return (
+        <Modal.Blur>
+            <Modal confirm fadeOut={fadeOut}>
+                <Modal.Content confirm>
+                    <p>{body}</p>
+                </Modal.Content>
+                <Modal.Footer>
+                    <Button onClick={handleAccept}>
+                        {acceptText}
+                    </Button>
+                    <Button flat onClick={handleCancel}>
+                        {cancelText}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </Modal.Blur>
+    );
+}
 
 export default ConfirmModalView;

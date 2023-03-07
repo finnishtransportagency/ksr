@@ -6,7 +6,6 @@ type Props = {
     toggleTable: Function,
     isOpen: boolean,
     setActiveModal: (modal: string) => void,
-    activeUpdate: boolean,
     activeDelete: boolean,
     originalLayers: Array<Object>,
     editedLayers: Array<Object>,
@@ -37,97 +36,41 @@ type Props = {
     layerList: Object[],
 };
 
-const TableButtons = ({
-    toggleTable,
-    isOpen,
-    setActiveModal,
-    activeUpdate,
-    activeDelete,
-    originalLayers,
-    editedLayers,
-    selectedAdminData,
-    geometryDataSelected,
-    geometryData,
-    activeTableDataSelected,
-    activeTableLayer,
-    showConfirmModal,
-    clearTableData,
-    saveEditedFeatures,
-    featureType,
-    addressField,
-    view,
-    activeAdminTool,
-    currentTabAdmin,
-    setButtonAmount,
-    viewGraphics,
-    hasTableEdited,
-    togglePortal,
-    portalIsOpen,
-    updatePortal,
-    layerList,
-}: Props) => {
+function TableButtons(props: Props): React$Element<any> {
     const [bufferExists, setBufferExists] = useState(false);
 
-    /** Update redux prop that keeps track of amount of visible buttons on table */
+    /** Update redux prop that keeps track of amount typeflowErrorPropsf */
     useEffect(() => {
         const tableButtonWrapper = document.getElementById('table-button--wrapper');
         const tableButtonAmount = tableButtonWrapper !== null
             ? tableButtonWrapper.childNodes.length
             : null;
 
-        setButtonAmount(tableButtonAmount);
-    }, [currentTabAdmin]);
+        props.setButtonAmount(tableButtonAmount);
+    }, [props.currentTabAdmin]);
 
     /** Set buffer as existing, if buffer added to the view */
     useEffect(() => {
-        setBufferExists(viewGraphics.some(graphic => graphic && graphic.id === 'buffer'));
-    }, [viewGraphics.length]);
+        setBufferExists(props.viewGraphics.some(graphic => graphic && graphic.id === 'buffer'));
+    }, [props.viewGraphics.length]);
 
     /** Remove buffer, if no layers open on table */
     useEffect(() => {
-        if (view && originalLayers && originalLayers.length === 0) {
-            view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+        if (props.view && props.originalLayers && props.originalLayers.length === 0) {
+            props.view.graphics.removeMany(props.view.graphics.filter(g => g && g.id === 'buffer'));
             setBufferExists(false);
         }
-    }, [originalLayers]);
+    }, [props.originalLayers]);
 
     /** Remove buffer graphics from the view */
-    const handleClearBuffer = () => {
-        view.graphics.removeMany(view.graphics.filter(g => g && g.id === 'buffer'));
+    const handleClearBuffer: Function = () => {
+        props.view.graphics.removeMany(props.view.graphics.filter(g => g && g.id === 'buffer'));
         setBufferExists(false);
     };
 
     return (
-        <TableButtonsView
-            toggleTable={toggleTable}
-            isOpen={isOpen}
-            setActiveModal={setActiveModal}
-            activeUpdate={activeUpdate}
-            activeDelete={activeDelete}
-            originalLayers={originalLayers}
-            editedLayers={editedLayers}
-            selectedAdminData={selectedAdminData}
-            geometryDataSelected={geometryDataSelected}
-            geometryData={geometryData}
-            activeTableDataSelected={activeTableDataSelected}
-            activeTableLayer={activeTableLayer}
-            showConfirmModal={showConfirmModal}
-            clearTableData={clearTableData}
-            saveEditedFeatures={saveEditedFeatures}
-            featureType={featureType}
-            addressField={addressField}
-            view={view}
-            activeAdminTool={activeAdminTool}
-            currentTabAdmin={currentTabAdmin}
-            bufferExists={bufferExists}
-            handleClearBuffer={handleClearBuffer}
-            hasTableEdited={hasTableEdited}
-            togglePortal={togglePortal}
-            portalIsOpen={portalIsOpen}
-            updatePortal={updatePortal}
-            layerList={layerList}
-        />
+        <TableButtonsView {...props} bufferExists={bufferExists} handleClearBuffer={handleClearBuffer} />
     );
-};
+}
 
 export default TableButtons;

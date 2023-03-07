@@ -24,11 +24,10 @@ const initialState = {
     color: '',
 };
 
-const getFileByExtension = (files, extension) => files
+const getFileByExtension = (files: any, extension: any) => files
     && files.find(file => file
         && file.name
         && file.name.split('.').pop() === extension);
-
 
 class ModalShapefile extends Component<Props, State> {
     constructor(props: Props) {
@@ -36,11 +35,11 @@ class ModalShapefile extends Component<Props, State> {
         this.state = { ...initialState };
     }
 
-    onDrop = (acceptedFiles: File[]) => {
+    onDrop: any = (acceptedFiles: File[]) => {
         this.setState({ acceptedFiles });
     };
 
-    onSubmit = async () => {
+    onSubmit: any = async () => {
         const { acceptedFiles, color } = this.state;
         const {
             layerList, view, addShapefile, addShapeFeaturesToTable,
@@ -85,7 +84,7 @@ class ModalShapefile extends Component<Props, State> {
         this.closeModal();
     };
 
-    readFile = (file: File): Promise<ArrayBuffer> => new Promise((resolve) => {
+    readFile: any = (file: File): Promise<ArrayBuffer> => new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (event: any) => {
             resolve(event.target.result);
@@ -93,16 +92,16 @@ class ModalShapefile extends Component<Props, State> {
         reader.readAsArrayBuffer(file);
     });
 
-    setColor = (color: string) => {
+    setColor: any = (color: string) => {
         this.setState({ color });
     };
 
-    closeModal = () => {
+    closeModal: any = () => {
         const { setActiveModal } = this.props;
         setActiveModal('');
     };
 
-    render() {
+    render(): any {
         const { acceptedFiles, color } = this.state;
         const hasShp = Boolean(getFileByExtension(acceptedFiles, 'shp'));
         const hasDbf = Boolean(getFileByExtension(acceptedFiles, 'dbf'));
@@ -115,20 +114,18 @@ class ModalShapefile extends Component<Props, State> {
         }];
 
         return (
-            <Fragment>
-                <ModalContainer
-                    title={strings.modalShapefile.title}
-                    modalSubmit={modalSubmit}
-                    cancelText={strings.modalShapefile.cancelText}
-                >
-                    <ModalShapefileView
-                        onDrop={this.onDrop}
-                        acceptedFiles={acceptedFiles}
-                        color={color}
-                        setColor={this.setColor}
-                    />
-                </ModalContainer>
-            </Fragment>
+            <ModalContainer
+                title={strings.modalShapefile.title}
+                modalSubmit={modalSubmit}
+                cancelText={strings.modalShapefile.cancelText}
+            >
+                <ModalShapefileView
+                    onDrop={this.onDrop}
+                    acceptedFiles={acceptedFiles}
+                    color={color}
+                    setColor={this.setColor}
+                />
+            </ModalContainer>
         );
     }
 }

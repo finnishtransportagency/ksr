@@ -7,7 +7,7 @@ import MapLayerParentChildView from './map-layer-parent-child/MapLayerParentChil
 
 type Props = {
     mapLayerList: Object[],
-    onDragEnd: (DropResult) => void,
+    onDragEnd: (any) => void,
     onOpacityChange: (evt: Number, id: Number) => void,
     createNonSpatialFeature: () => void,
     activeAdminTool: string,
@@ -21,7 +21,7 @@ type Props = {
     layersVisibleZoomOut: Object[],
 };
 
-const MapLayersView = ({
+function MapLayersView({
     mapLayerList,
     onDragEnd,
     onOpacityChange,
@@ -35,8 +35,8 @@ const MapLayersView = ({
     loadingLayers,
     toggleVisibleZoomOut,
     layersVisibleZoomOut,
-}: Props) => (
-    <Fragment>
+}: Props): React$Element<React$FragmentType> {
+    return (
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
                 {dropProvided => (
@@ -98,7 +98,7 @@ const MapLayersView = ({
                 )}
             </Droppable>
         </DragDropContext>
-    </Fragment>
-);
+    );
+}
 
 export default MapLayersView;

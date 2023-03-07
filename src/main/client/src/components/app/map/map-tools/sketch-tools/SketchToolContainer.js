@@ -8,10 +8,11 @@ import {
 } from '../../../../../reducers/map/actions';
 import { setPropertyInfo } from '../../../../../reducers/search/actions';
 import { addFeatureNoGeometry, selectFeatures, sketchSaveData } from '../../../../../reducers/table/actions';
-import SketchTool from './SketchTool';
+// import SketchTool from './SketchTool';
+import SketchTool2 from './SketchTool2';
 import { setActiveModal } from '../../../../../reducers/modal/actions';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: Object) => ({
     view: state.map.mapView.view,
     tempGraphicsLayer: state.map.mapView.graphicsLayer,
     active: state.map.mapTools.active,
@@ -33,29 +34,29 @@ const mapStateToProps = state => ({
     addressField: state.map.layerGroups.layerList,
 });
 
-const mapDispatchToProps = dispatch => ({
-    selectFeatures: (features) => {
+const mapDispatchToProps = (dispatch: Function) => ({
+    selectFeatures: (features: any) => {
         dispatch(selectFeatures(features));
     },
-    setActiveTool: (active) => {
+    setActiveTool: (active: any) => {
         dispatch(setActiveTool(active));
     },
-    setTempGraphicsLayer: (graphicsLayer) => {
+    setTempGraphicsLayer: (graphicsLayer: any) => {
         dispatch(setTempGraphicsLayer(graphicsLayer));
     },
     setActiveModal: (editModeActive: boolean) => {
         dispatch(setActiveModal('editLayerDetails', editModeActive));
     },
-    setActiveToolMenu: (activeMenu) => {
+    setActiveToolMenu: (activeMenu: any) => {
         dispatch(setActiveToolMenu(activeMenu));
     },
-    setPropertyInfo: (queryParameter, view, graphicId, authorities) => {
+    setPropertyInfo: (queryParameter: any, view: any, graphicId: any, authorities: any) => {
         dispatch(setPropertyInfo(queryParameter, view, graphicId, authorities));
     },
     setActiveFeatureMode: (activeFeatureMode: string) => {
         dispatch(setActiveFeatureMode(activeFeatureMode));
     },
-    sketchSaveData: (view, editedLayers, featureType, addressField, hasTableEdited) => {
+    sketchSaveData: (view: any, editedLayers: any, featureType: any, addressField: any, hasTableEdited: any) => {
         dispatch(sketchSaveData(view, editedLayers, featureType, addressField, hasTableEdited));
     },
     resetFeatureNoGeometry: () => {
@@ -63,6 +64,6 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-const SketchToolContainer = (connect(mapStateToProps, mapDispatchToProps)(SketchTool): any);
+const SketchToolContainer = (connect(mapStateToProps, mapDispatchToProps)(SketchTool2): any);
 
 export default SketchToolContainer;
