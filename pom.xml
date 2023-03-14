@@ -20,15 +20,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-	<!--
         <flyway.outOfOrder>true</flyway.outOfOrder>
-	-->
         <!-- Disable clean by default to avoid accidental cleaning. Enable
              clean for development in the application-dev.properties file
              if needed. -->
-	<!--
         <flyway.cleanDisabled>true</flyway.cleanDisabled>
-	-->
 	</properties>
 
 	<dependencies>
@@ -281,7 +277,6 @@
 					</execution>
 				</executions>
             </plugin>
-	<!--
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
@@ -298,7 +293,6 @@
                     </execution>
                 </executions>
             </plugin>
-		-->
 			<plugin>
 				<groupId>org.jooq.pro</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
