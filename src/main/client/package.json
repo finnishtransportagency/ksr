@@ -3,7 +3,7 @@
   "version": "1.7.1",
   "private": true,
   "dependencies": {
-    "@arcgis/core": "^4.25.5",
+    "@arcgis/core": "^4.26.5",
     "@babel/polyfill": "^7.12.1",
     "clone": "^2.1.2",
     "date-fns": "^2.7.0",
