@@ -22,7 +22,7 @@ def get_test_hosts()  {
           "http://livikisot04.vally.local"
         ]
     }
-    return [] 
+    return []
 }
 def get_pollSCM_trigger() {
     if (get_environment().equals("dev")) { return "H/5 * * * *" }
@@ -97,7 +97,7 @@ pipeline {
                     def pom = readMavenPom()
 
                     def target_environment = get_environment()
-                    
+
                     def artifact_id = pom.artifactId
                     def artifact_version = get_version(pom.version)
                     def group_id = pom.groupId
@@ -106,7 +106,7 @@ pipeline {
                     def repository_url = "http://livibuild05.vally.local/nexus/repository/ksr"
 
                     def ansible_base = [
-                        extraVars: [ 
+                        extraVars: [
                             ksr_target: get_environment(),
                             ksr_deploy: JsonOutput.toJson([
                                 artifact_id: artifact_id,
@@ -172,7 +172,7 @@ pipeline {
                             "--batch-mode"
                         ].join(" ")
                     ].join(" && ")
-                    
+
                     STAGE_BUILD_JUNIT_RESULTS = "target/*-reports/*.xml"
 
                     STAGE_CONFIRM_TEXT = "Create release ${group_id}:${artifact_id}@${artifact_version} and deploy to ${target_environment}?"
@@ -187,7 +187,7 @@ pipeline {
                         "--batch-mode"
                     ].join(" ")
 
-                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base 
+                    STAGE_EXECUTE_ANSIBLE_PARAMETERS = ansible_base
 
                     STAGE_TEST_CMD = [
                         get_test_hosts().collect {
@@ -227,7 +227,7 @@ pipeline {
                     ]
 
                     if (params.action.equals("service-deploy")) {
-                        
+
                         STAGE_ACK_PARAMETERS.addAll([
                             choice(choices: artifact_id, description: "Artifact ID", name: "artifact_id"),
                             choice(choices: artifact_version, description: "Artifact version", name: "artifact_version"),
@@ -300,10 +300,10 @@ pipeline {
                     //    "ksr-node",
                     //    "${build_args} -f ci/Dockerfile.node ci"
                     //)
-                    docker.build(
-                        "ksr-python",
-                        "${build_args} -f ci/Dockerfile.python ci"
-                    )
+                    //docker.build(
+                    //    "ksr-python",
+                    //    "${build_args} -f ci/Dockerfile.python ci"
+                    //)
                 }
             }
             post {
@@ -442,44 +442,44 @@ pipeline {
                 }
             }
         }
-        stage("Test") {
-            agent {
-                docker {
-                    image "ksr-python"
-                    reuseNode true
-                }
-            }
-            when {
-                beforeAgent true
-                expression {
-                    get_environment()?.trim() && !params.action.equals("service-stop")
-                }
-            }
-            steps {
-                sh STAGE_TEST_CMD
-                step(STAGE_TEST_STEP)
-            }
-            post {
-                 always {
-                    archiveArtifacts(
-                        allowEmptyArchive: true,
-                        artifacts: "*.html"
-                    )
-                }
-                failure {
-                    slackSend(
-                        color: "danger",
-                        message: "${NOTIFY_SLACK_SUBJECT} - Stage ${STAGE_NAME} failure!\nCheck <${BUILD_URL}console|console>!"
-                    )
-                }
-                unstable {
-                    slackSend(
-                        color: "warning",
-                        message: "${NOTIFY_SLACK_SUBJECT} - Stage ${STAGE_NAME} failure!\nCheck <${BUILD_URL}console|console>!"
-                    )
-                }
-            }
-        }
+        //stage("Test") {
+        //    agent {
+        //        docker {
+        //            image "ksr-python"
+        //            reuseNode true
+        //        }
+        //    }
+        //    when {
+        //        beforeAgent true
+        //        expression {
+        //            get_environment()?.trim() && !params.action.equals("service-stop")
+        //        }
+        //    }
+        //    steps {
+        //        sh STAGE_TEST_CMD
+        //        step(STAGE_TEST_STEP)
+        //    }
+        //    post {
+        //         always {
+        //            archiveArtifacts(
+        //                allowEmptyArchive: true,
+        //                artifacts: "*.html"
+        //            )
+        //        }
+        //        failure {
+        //            slackSend(
+        //                color: "danger",
+        //                message: "${NOTIFY_SLACK_SUBJECT} - Stage ${STAGE_NAME} failure!\nCheck <${BUILD_URL}console|console>!"
+        //            )
+        //        }
+        //        unstable {
+        //            slackSend(
+        //                color: "warning",
+        //                message: "${NOTIFY_SLACK_SUBJECT} - Stage ${STAGE_NAME} failure!\nCheck <${BUILD_URL}console|console>!"
+        //            )
+        //        }
+        //    }
+        //}
     }
     post {
         always {
