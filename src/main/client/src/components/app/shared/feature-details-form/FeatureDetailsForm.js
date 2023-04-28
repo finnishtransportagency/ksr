@@ -208,7 +208,7 @@ function FeatureDetailsForm(props: Props): any {
                     existsQuery = setTimeout(async () => {
                         const res = await queryFeatures(
                             layer.id,
-                            `${field.name} = '${value}'`,
+                            `${field.name} = ${field.type === 'esriFieldTypeInteger' ? value : `'${value}'`}`,
                             signal,
                         );
 
