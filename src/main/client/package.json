@@ -1,6 +1,6 @@
 {
   "name": "ksr",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "private": true,
   "dependencies": {
     "@arcgis/core": "^4.25.5",
