@@ -6,6 +6,7 @@ type State = {
     mapScale: number,
     printServiceUrl: ?string,
     extractServiceUrl: ?string,
+    searchApiKey: ?string,
     fetching: boolean,
 };
 
@@ -14,6 +15,7 @@ type Action = {
     mapScale: number,
     printServiceUrl: ?string,
     extractServiceUrl: ?string,
+    searchApiKey: ?string,
     type: string,
 };
 
@@ -22,6 +24,7 @@ const initialState = {
     mapScale: 0,
     printServiceUrl: null,
     extractServiceUrl: null,
+    searchApiKey: null,
     fetching: true,
 };
 
@@ -38,6 +41,7 @@ export default (state: State = initialState, action: Action) => {
                 mapScale: action.mapScale,
                 printServiceUrl: action.printServiceUrl,
                 extractServiceUrl: action.extractServiceUrl,
+                searchApiKey: action.searchApiKey,
                 fetching: false,
             };
         case SET_SCALE:

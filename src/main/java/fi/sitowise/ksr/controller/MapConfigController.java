@@ -28,6 +28,9 @@ public class MapConfigController {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
+    @Value("${digitransit.service.search.api-key}")
+    private String searchApiKey;
+
     /**
      * Gets map information.
      *
@@ -45,6 +48,7 @@ public class MapConfigController {
         mapConfigInformation.setExtractServiceUrl(
                 KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.EXTRACT_CONTROLLER_URL)
         );
+        mapConfigInformation.setSearchApiKey(searchApiKey);
         return mapConfigInformation;
     }
 }
