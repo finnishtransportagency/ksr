@@ -10,6 +10,7 @@ public class MapConfig implements Serializable {
     private int[] center;
     private String printServiceUrl;
     private String extractServiceUrl;
+    private String searchApiKey;
 
     /**
      * Gets printServiceUrl
@@ -85,5 +86,13 @@ public class MapConfig implements Serializable {
      */
     public void setCenter(int[] center) {
         this.center = center;
+    }
+
+    public String getSearchApiKey() {
+        return searchApiKey;
+    }
+
+    public void setSearchApiKey(String searchApiKey) {
+        this.searchApiKey = searchApiKey;
     }
 }
