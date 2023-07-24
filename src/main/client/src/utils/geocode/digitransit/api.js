@@ -1,6 +1,7 @@
 // @flow
 import querystring from 'querystring';
 import { convert } from '../../geojson';
+import store from '../../../store/index';
 
 const API_URL = 'https://api.digitransit.fi/geocoding/v1/search';
 
@@ -38,7 +39,15 @@ export const fetchAddresses = (text: string, size: number): Promise<Array<empty>
         (console: any).errror('Empty search term given. Unable to search.');
         return Promise.resolve([]);
     }
-    const params = querystring.stringify({ text, size, sources: 'openstreetmap,nlsfi,openaddresses' });
+
+    console.log('FETCHING');
+    const params = querystring.stringify({
+        text,
+        size,
+        'digitransit-subscription-key': store.getState().map.mapConfig.searchApiKey,
+        sources: 'openstreetmap,nlsfi,openaddresses',
+    });
+    console.log(store);
     return fetch(`${API_URL}?${params}`)
         .then(r => r.json())
         .then(fc => Promise.all(fc.features.map(convertFeature)))
