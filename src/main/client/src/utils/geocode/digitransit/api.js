@@ -36,23 +36,29 @@ const convertFeature = async (feature: Object) => ({
  */
 export const fetchAddresses = (text: string, size: number): Promise<Array<empty>> | Promise<any | Array<empty>> => {
     if (!text) {
-        (console: any).errror('Empty search term given. Unable to search.');
+        console.error('Empty search term given. Unable to search.');
         return Promise.resolve([]);
     }
 
-    console.log('FETCHING');
+    let apiKey = store.getState().map.mapConfig.searchApiKey;
+    // hard code apiKey, because Jenkins can't find the credential
+    // Api key would be shown in the request address anyways
+    if (apiKey === 'DIGITRANSIT_API_KEY') {
+        apiKey = '087c73b07b6049ee8c54f322b310cb06';
+    }
+
     const params = querystring.stringify({
         text,
         size,
-        'digitransit-subscription-key': store.getState().map.mapConfig.searchApiKey,
+        'digitransit-subscription-key': apiKey,
         sources: 'openstreetmap,nlsfi,openaddresses',
     });
-    console.log(store);
+
     return fetch(`${API_URL}?${params}`)
         .then(r => r.json())
         .then(fc => Promise.all(fc.features.map(convertFeature)))
         .catch((reason) => {
-            (console: any).error(reason);
+            console.error(reason);
             return [];
         });
 };

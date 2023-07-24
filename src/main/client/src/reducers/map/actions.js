@@ -365,6 +365,7 @@ export const getMapConfig = (): ((dispatch: any) => void) => (dispatch: Function
             mapScale: r.scale,
             printServiceUrl: r.printServiceUrl,
             extractServiceUrl: r.extractServiceUrl,
+            searchApiKey: r.searchApiKey,
         }))
         .catch(err => console.error(err));
 };
