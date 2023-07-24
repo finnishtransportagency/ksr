@@ -38,6 +38,9 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
+    @Value("${digitransit.service.search.api-key}")
+    private String searchApiKey;
+
     /**
      * Sets webAppContext and springSecurity.
      */
@@ -62,6 +65,7 @@ public class MapConfigControllerTests extends AuthControllerTestBase {
         mapConfigData.setExtractServiceUrl(
                 KsrStringUtils.replaceMultipleSlashes(contextPath + GeoprocessingController.EXTRACT_CONTROLLER_URL)
         );
+        mapConfigData.setSearchApiKey(searchApiKey);
 
         MvcResult result = this.mockMvc.perform(get("/api/map")
                 .headers(this.getHeadersWithGroup("KSR_ROLE_ADMIN")))
