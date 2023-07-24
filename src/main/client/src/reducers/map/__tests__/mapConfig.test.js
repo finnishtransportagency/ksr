@@ -9,6 +9,7 @@ describe('Map config reducer', () => {
             fetching: true,
             printServiceUrl: null,
             extractServiceUrl: null,
+            searchApiKey: null,
         };
 
         expect(reducer(undefined, {})).toEqual(initialState);
@@ -21,6 +22,7 @@ describe('Map config reducer', () => {
             fetching: true,
             printServiceUrl: null,
             extractServiceUrl: null,
+            searchApiKey: null,
         };
 
         expect(reducer(undefined, {
