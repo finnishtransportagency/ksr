@@ -51,6 +51,7 @@ pipeline {
         EXTRACT_OUTPUT_URL = credentials("extract_output_url_${get_environment()}")
         GEOCONVERT_SERVICE = credentials("geoconvert_service_${get_environment()}")
 		DIGITRANSIT_SERVICE = credentials("digitransit_service_${get_environment()}")
+		DIGITRANSIT_API_KEY = credentials("digitransit_api_key_${get_environment()}")
         KTJ_ENDPOINT = credentials("ktj_endpoint")
         KTJ_DEED_ENDPOINT = credentials("ktj_deed_endpoint")
         KTJ_EASEMENT_ENDPOINT = credentials("ktj_easement_endpoint")

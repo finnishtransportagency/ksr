@@ -36,18 +36,19 @@ const convertFeature = async (feature: Object) => ({
  */
 export const fetchAddresses = (text: string, size: number) => {
     if (!text) {
-        (console: any).errror('Empty search term given. Unable to search.');
+        console.error('Empty search term given. Unable to search.');
         return Promise.resolve([]);
     }
 
-    console.log('FETCHING');
+    const apiKey = store.getState().map.mapConfig.searchApiKey;
+
     const params = querystring.stringify({
         text,
         size,
-        'digitransit-subscription-key': store.getState().map.mapConfig.searchApiKey,
+        'digitransit-subscription-key': apiKey,
         sources: 'openstreetmap,nlsfi,openaddresses',
     });
-    console.log(store);
+
     return fetch(`${API_URL}?${params}`)
         .then(r => r.json())
         .then(fc => Promise.all(fc.features.map(convertFeature)))
