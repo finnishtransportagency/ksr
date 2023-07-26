@@ -40,7 +40,12 @@ export const fetchAddresses = (text: string, size: number) => {
         return Promise.resolve([]);
     }
 
-    const apiKey = store.getState().map.mapConfig.searchApiKey;
+    let apiKey = store.getState().map.mapConfig.searchApiKey;
+    // hard code apiKey, because Jenkins can't find the credential
+    // Api key would be shown in the request address anyways
+    if (apiKey === "DIGITRANSIT_API_KEY") {
+        apiKey = "087c73b07b6049ee8c54f322b310cb06";
+    }
 
     const params = querystring.stringify({
         text,
