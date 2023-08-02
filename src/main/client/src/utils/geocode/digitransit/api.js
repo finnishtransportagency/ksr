@@ -53,7 +53,7 @@ export const fetchAddresses = (text: string, size: number): Promise<Array<empty>
         .then(r => r.json())
         .then(fc => Promise.all(fc.features.map(convertFeature)))
         .catch((reason) => {
-            (console: any).error(reason);
+            console.error(reason);
             return [];
         });
 };
