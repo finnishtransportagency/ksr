@@ -10,7 +10,6 @@ import strings from '../../../translations';
 export const searchSrc = new SearchSource({
     placeholder: strings.geocode.placeholder,
     getResults: async (x) => {
-        console.log(x);
         const {
             maxResults, suggestResult: { text },
         } = x;
