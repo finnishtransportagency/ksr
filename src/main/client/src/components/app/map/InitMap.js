@@ -1,8 +1,6 @@
 // @flow
-// import { loadModules, loadCss } from 'esri-loader';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
-// import clone from 'clone';
 import { isMobile } from 'react-device-detect';
 
 import Format from '@arcgis/core/widgets/CoordinateConversion/support/Format';
@@ -25,9 +23,10 @@ import Conversion from '@arcgis/core/widgets/CoordinateConversion/support/Conver
 import Search from '@arcgis/core/widgets/Search';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
+import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import { addLayers, removeGraphicsFromMap } from '../../../utils/map';
 import { convert } from '../../../utils/geojson';
-import { DigitransitLocatorBuilder } from '../../../utils/geocode';
+import { searchSrc } from '../../../utils/geocode/digitransit/DigitransitLocatorBuilder';
 import { getDocumentUrl } from '../../../utils/contracts/contractDocument';
 
 import { copyFeature } from '../../../utils/map-selection/copyFeature';
@@ -40,6 +39,7 @@ import { getWorkspaceFromUrl, loadWorkspace } from '../../../utils/workspace/loa
 import { queryFeatures } from '../../../utils/queryFeatures';
 import { mapSelectPopup } from '../../../utils/map-selection/mapSelectPopup';
 import { fetchWorkspace } from '../../../api/workspace/userWorkspace';
+import { fetchAddresses } from '../../../utils/geocode/digitransit/api';
 
 type Props = {
     layerList: Array<any>,
@@ -103,8 +103,6 @@ class EsriMap extends Component<Props> {
     }
 
     async initMap() {
-        // loadCss('4.23');
-
         const {
             mapCenter,
             mapScale,
@@ -193,11 +191,7 @@ class EsriMap extends Component<Props> {
             locationEnabled: false,
             includeDefaultSources: false,
             sources: [
-                {
-                    locator: new DigitransitLocatorBuilder(),
-                    placeholder: strings.geocode.placeholder,
-                    name: 'Digitransit',
-                },
+                searchSrc,
             ],
         });
 
@@ -612,11 +606,16 @@ class EsriMap extends Component<Props> {
             if (graphic && graphic.attributes) {
                 const dnro = graphic.attributes.DNRO;
                 const template = graphic.getEffectivePopupTemplate();
-                template.actions.forEach((action) => {
-                    if (action.id === 'case-management-link') {
-                        action.disabled = !dnro;
-                    }
-                });
+                if (template.actions) {
+                    template.actions.forEach((action) => {
+                        if (action.id === 'case-management-link') {
+                            action.disabled = !dnro;
+                        }
+                    });
+                } else {
+                    // If no actions found, assumes it's a Search result
+                    view.goTo(graphic);
+                }
             }
         });
 
