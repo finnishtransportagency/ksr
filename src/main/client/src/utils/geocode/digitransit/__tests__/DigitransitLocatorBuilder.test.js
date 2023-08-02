@@ -1,6 +1,5 @@
-// import { loadModules } from 'esri-loader';
 import { when } from 'jest-when';
-import DigitransitLocatorBuilder from '../DigitransitLocatorBuilder';
+import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import { fetchAddresses } from '../api';
 import { addToCache } from '../cache';
 
@@ -58,8 +57,8 @@ describe('digitransit - DigitransitLocatorBuilder', () => {
         ]);
     });
 
-    it('should build a DigitransitLocator', async () => {
-        const DigitransitLocator = new DigitransitLocatorBuilder();
+    it('should build a SearchSource', async () => {
+        const DigitransitLocator = new SearchSource();
         expect(typeof DigitransitLocator).toBe('object');
     });
 /*
