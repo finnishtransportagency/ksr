@@ -24,7 +24,7 @@ export const extractSelected = (
         .map(geometry => new Graphic({ geometry }));
     const featureSet = new FeatureSet({ features: inputGraphicContainer });
 
-    return geoprocessor.submitJob({
+    return geoprocessor.submitJob(extractServiceUrl, {
         Layers_to_Clip: layerId.replace('_s', ''),
         Area_of_Interest: featureSet,
         Feature_Format: format,
