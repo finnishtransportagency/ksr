@@ -2,6 +2,7 @@
 // import { loadModules } from 'esri-loader';
 
 import Graphic from '@arcgis/core/Graphic';
+import Polygon from '@arcgis/core/geometry/Polygon';
 import * as geoprocessor from '@arcgis/core/rest/geoprocessor';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 
@@ -20,8 +21,23 @@ export const extractSelected = (
     format: string,
 ): any => {
     // const gp = new Geoprocessor(extractServiceUrl);
+
     const inputGraphicContainer = selectedGeometryData
-        .map(geometry => new Graphic({ geometry }));
+        .map(geometry => {
+            let geo = {};
+            if (geometry.rings) {
+                geo = new Polygon({
+                    rings: geometry.rings,
+                });
+            } else {
+                geo = {
+                    type: 'point',
+                    longitude: geometry.x,
+                    latitude: geometry.y,
+                };
+            }
+            return new Graphic({ geometry: geo });
+        });
     const featureSet = new FeatureSet({ features: inputGraphicContainer });
 
     return geoprocessor.submitJob(extractServiceUrl, {
