@@ -1,0 +1,1 @@
+UPDATE layer SET name = 'Asema-alueiden kunnossapito' WHERE name = 'Ratojen kunnossapitoalueet';
