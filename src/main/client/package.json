@@ -45,7 +45,7 @@
   "scripts": {
     "start": "react-scripts start",
     "legacyStartDev": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build && jest -u",
+    "build": "react-scripts --max_old_space_size=4096 build && jest -u",
     "justBuild": "react-scripts --openssl-legacy-provider build",
     "test": "jest",
     "test:max": "jest --maxWorkers 1",
