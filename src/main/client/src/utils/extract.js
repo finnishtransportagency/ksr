@@ -27,7 +27,7 @@ export const extractSelected = async (
         Area_of_Interest: featureSet,
         Feature_Format: format,
     }).then(result => result.waitForJobCompletion(result.jobId))
-        .then(r => r.fetchResultData(r.jobId, 'Output_Zip_File'))
+        .then(r => r.fetchResultData('Output_Zip_File'))
         .then(res => res.value.url)
         .catch((e) => console.error(e));
 };
