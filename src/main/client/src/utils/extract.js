@@ -1,8 +1,5 @@
 // @flow
-// import { loadModules } from 'esri-loader';
-
 import Graphic from '@arcgis/core/Graphic';
-import Polygon from '@arcgis/core/geometry/Polygon';
 import * as geoprocessor from '@arcgis/core/rest/geoprocessor';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 
@@ -14,30 +11,15 @@ import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
  * @param {Object[]} selectedGeometryData Array of geometry data.
  * @param {string} format Desired extract format.
  */
-export const extractSelected = (
+export const extractSelected = async (
     extractServiceUrl: string,
     layerId: string,
     selectedGeometryData: Array<Object>,
     format: string,
 ): any => {
-    // const gp = new Geoprocessor(extractServiceUrl);
-
-    const inputGraphicContainer = selectedGeometryData
-        .map(geometry => {
-            let geo = {};
-            if (geometry.rings) {
-                geo = new Polygon({
-                    rings: geometry.rings,
-                });
-            } else {
-                geo = {
-                    type: 'point',
-                    longitude: geometry.x,
-                    latitude: geometry.y,
-                };
-            }
-            return new Graphic({ geometry: geo });
-        });
+    const inputGraphicContainer = selectedGeometryData.map(
+        (geometry) => new Graphic({ geometry }),
+    );
     const featureSet = new FeatureSet({ features: inputGraphicContainer });
 
     return geoprocessor.submitJob(extractServiceUrl, {
@@ -45,7 +27,7 @@ export const extractSelected = (
         Area_of_Interest: featureSet,
         Feature_Format: format,
     }).then(result => result.waitForJobCompletion(result.jobId))
-        .then(r => r.getResultData(r.jobId, 'Output_Zip_File'))
+        .then(r => r.fetchResultData(r.jobId, 'Output_Zip_File'))
         .then(res => res.value.url)
         .catch((e) => console.error(e));
 };
