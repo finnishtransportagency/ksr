@@ -649,7 +649,7 @@ class ReactTable extends Component<Props, State> {
                 columns,
                 isContract(activeLayer),
                 layerHasRelations,
-                activeLayer.type === 'agfl',
+                activeLayer?.type === 'agfl',
                 adminToolCheck,
                 sketchActive,
                 addNewGeometryToFeature,
